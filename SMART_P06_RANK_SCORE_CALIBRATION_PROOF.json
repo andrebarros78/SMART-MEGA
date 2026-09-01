@@ -1,0 +1,94 @@
+{
+  "schema": "SMART_P06_RANK_SCORE_CALIBRATION_PROOF_1",
+  "point_id": "P06_RANK_SCORE_CALIBRATION",
+  "status": "MISSION_PROVEN",
+  "checks": {
+    "calibration_scope_only_to_2200": true,
+    "candidate_selected_0_5_pre_holdout": true,
+    "candidate_0_5_improved_calibration_brier": true,
+    "candidate_0_5_failed_final_holdout": true,
+    "no_positive_strength_selected_after_holdout_failure": true,
+    "default_policy_neutralized": true,
+    "neutralized_final_holdout_nonregression": true,
+    "neutralized_total_nonregression": true,
+    "published_probabilities_uniform": true,
+    "diagnostic_isotonic_preserved": true,
+    "rank_probability_mass_six": true,
+    "ranking_performance_p05_preserved": true,
+    "ranking_not_reordered": true,
+    "weights_not_changed_by_p06": true,
+    "future_freeze_hashes_p06": true,
+    "future_freeze_snapshots_p06": true,
+    "future_adjudication_evaluates_frozen_p06": true,
+    "no_p06_backfill_3051": true,
+    "active_3051_freeze_valid": true,
+    "no_3052_freeze_yet": true,
+    "p01_to_p05_preserved": true,
+    "p06_not_previously_claimed": true,
+    "pre3052_gate_still_blocked": true,
+    "coverage_100_lines": true,
+    "coverage_100_branches": true,
+    "pytest_global_pass": true,
+    "pip_check_clean": true,
+    "all_root_python_compiles": true,
+    "no_future_leakage_claim": true,
+    "no_prospective_superiority_claim": true
+  },
+  "implementation": {
+    "module": "smart_rank_score_calibration.py",
+    "module_sha256": "c07c3d55093b79aec8d56cf67607ef8dfb0bfb494ac59a6dcd0a086fb890a8e4",
+    "agent_sha256": "cac17b29ba7907e8916f9b3d7b2415d3e459cd26ef711ca463e4a58a9d4aa693",
+    "adjudication_sha256": "3fd279999cbec1b7bb6022f4300cfab59f4d7363793efbc7e08c14045a38c68f",
+    "governance_sha256": "fe4cc54a4cfc9ed9aba12b83c5a33a7d883e659fb2650c18b02b89fa8211e5d9",
+    "default_strength": 0.0,
+    "policy_id": "P06_NEUTRALIZED_AFTER_FINAL_HOLDOUT_20260830",
+    "published_probability_policy": "uniform 0.10 until nonzero calibration passes untouched OOS holdout",
+    "diagnostic_policy": "raw posterior + PAVA isotonic retained for monitoring and future recalibration"
+  },
+  "calibration": {
+    "file": "SMART_P06_STRENGTH_CALIBRATION.json",
+    "sha256": "5cbe633a4ae0f1f14cd4794842bb3fcc430a48f29f7006a011c44e524e3a5438",
+    "selected_pre_holdout": 0.5,
+    "raw_monotonic_violations_at_2200": 26
+  },
+  "rejected_candidate_holdout": {
+    "file": "SMART_P06_FINAL_HOLDOUT.json",
+    "sha256": "ab0302a3ad4c7b7cda0d36830517160aa55f4233de00347c071b4fbdcbf59d87",
+    "strength": 0.5,
+    "delta_vs_uniform": 1.3576700524302432e-05
+  },
+  "neutralized_validation": {
+    "file": "SMART_P06_NEUTRALIZED_VALIDATION.json",
+    "sha256": "cd8fb3fdb9250251f92e946a1dc1efb3bf4897c9526cb2ca9449893bcdccd1b9",
+    "final_holdout_delta_vs_uniform": 0.0,
+    "full_oos_delta_vs_uniform": 0.0,
+    "raw_monotonic_violations_at_3050": 24,
+    "isotonic_rank1": 0.10344202898550725,
+    "isotonic_rank60": 0.09380032206119163,
+    "published_rank1": 0.1,
+    "published_rank60": 0.1
+  },
+  "coverage": {
+    "statements": 1769,
+    "covered_lines": 1769,
+    "branches": 564,
+    "covered_branches": 564,
+    "file": "SMART_COVERAGE_P06_FINAL.json",
+    "sha256": "1c277ccdd71061020b769ac11c01cebbfc5fbd715bd51b6ab60c634553a9e347"
+  },
+  "regression": {
+    "pytest": "118 passed in 37.41s",
+    "pip_check": "No broken requirements found.",
+    "compile_errors": []
+  },
+  "governance": {
+    "p06_3051_backfill_events": 0,
+    "freeze_3052_events": 0,
+    "gate_block_reason": "SMART pre-3052 implementation gate blocked; pending=['P06_RANK_SCORE_CALIBRATION', 'P07_MULTI_CHALLENGERS', 'P08_META_GOVERNOR', 'P09_CONTINUOUS_RED_TEAM', 'P10_BOUNDED_ONLINE_LEARNING', 'P11_SIGNAL_EXPANSION_GOVERNANCE', 'P12_SEQUENTIAL_PROSPECTIVE_PROOF', 'P13_PROMOTION_GATE', 'P14_INDEPENDENT_AUDIT_NONREGRESSION', 'P15_EVIDENCE_ONLY_PROMOTION']"
+  },
+  "limits": {
+    "predictive_superiority_proven": false,
+    "global_6_of_6_proven": false,
+    "p07_not_claimed": true
+  }
+}

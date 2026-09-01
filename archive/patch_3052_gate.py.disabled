@@ -1,0 +1,15 @@
+from pathlib import Path
+p=Path(r'C:\New Projet\SMART-MEGA\smart_champion_challenger.py')
+s=p.read_text(encoding='utf-8-sig')
+anchor="E_BET_LAMBDA = 0.25\n"
+insert="""E_BET_LAMBDA = 0.25\nPRE_3052_GATE_PATH = Path('SMART_3052_IMPLEMENTATION_GATE.json')\nPRE_3052_GATE_SCHEMA = 'SMART_3052_IMPLEMENTATION_GATE_1'\n\n\ndef require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> dict[str, Any] | None:\n    if int(target) < 3052:\n        return None\n    if not gate_path.exists():\n        raise ValueError('SMART pre-3052 implementation gate missing')\n    obj = json.loads(gate_path.read_text(encoding='utf-8'))\n    items = obj.get('items', [])\n    if obj.get('schema') != PRE_3052_GATE_SCHEMA or len(items) != 15:\n        raise ValueError('SMART pre-3052 implementation gate invalid')\n    priorities = [int(item.get('priority', -1)) for item in items]\n    if priorities != list(range(1, 16)):\n        raise ValueError('SMART pre-3052 implementation gate priorities invalid')\n    pending = [item.get('id') for item in items\n               if item.get('status') != 'PROVEN' or not isinstance(item.get('evidence'), list) or not item.get('evidence')]\n    if pending or obj.get('freeze_allowed') is not True:\n        raise ValueError(f'SMART pre-3052 implementation gate blocked; pending={pending}')\n    return obj\n"""
+if anchor not in s:
+    raise SystemExit('anchor not found')
+s=s.replace(anchor,insert,1)
+anchor2="def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,\n                               start: int = 1000) -> dict[str, Any]:\n    draws, contests = e.load_draws(data)\n"
+repl2="def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,\n                               start: int = 1000) -> dict[str, Any]:\n    require_pre_3052_gate(target)\n    draws, contests = e.load_draws(data)\n"
+if anchor2 not in s:
+    raise SystemExit('freeze anchor not found')
+s=s.replace(anchor2,repl2,1)
+p.write_text(s,encoding='utf-8')
+print('patched')

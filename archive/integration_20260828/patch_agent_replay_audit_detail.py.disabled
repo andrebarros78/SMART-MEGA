@@ -1,0 +1,7 @@
+from pathlib import Path
+p=Path('smart_signal_agent.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("                             utility_base: dict[str, float] | None = None,\n                             penalties: dict[str, float] | None = None) -> SignalPrediction:","                             utility_base: dict[str, float] | None = None,\n                             penalties: dict[str, float] | None = None,\n                             audit_detail: bool = True) -> SignalPrediction:")
+s=s.replace("        raw = self._raw_snapshot(sc, cutoff_contest, target_contest, cutoff_timestamp, cutoff_timestamp_kind)\n        state = {n: self.states[n].audit_state(penalties[n]) for n in sc}","        raw = self._raw_snapshot(sc, cutoff_contest, target_contest, cutoff_timestamp, cutoff_timestamp_kind) if audit_detail else {}\n        state = {n: self.states[n].audit_state(penalties[n]) for n in sc} if audit_detail else {}")
+s=s.replace("                                             utility_base=utility_base, penalties=penalties)","                                             utility_base=utility_base, penalties=penalties, audit_detail=False)")
+p.write_text(s,encoding='utf-8')

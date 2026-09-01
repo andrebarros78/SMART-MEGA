@@ -1,0 +1,139 @@
+{
+  "schema": "SMART_P15_EVIDENCE_ONLY_PROMOTION_PROOF_1",
+  "priority": 15,
+  "id": "P15_EVIDENCE_ONLY_PROMOTION",
+  "title": "Promoção somente com evidência",
+  "status": "PROVEN",
+  "proven_brt": "2026-08-31T23:46:17.109228-03:00",
+  "requirement": "Challenger somente pode virar Champion após superioridade prospectiva material, reproduzível e sem deficiência material conhecida.",
+  "scope": "implementation and enforceable fail-closed production authorization mechanism; no fabricated future prospective superiority evidence",
+  "architecture": {
+    "p13_role": "statistical eligibility only",
+    "p15_role": "final production promotion authorization only",
+    "default": "KEEP_CHAMPION",
+    "production_switch_requires_p15_authorization": true,
+    "authorization_hash_required": true
+  },
+  "policy": {
+    "schema": "SMART_EVIDENCE_ONLY_PROMOTION_POLICY_1",
+    "p13_statistical_eligibility_required": true,
+    "p14_independent_audit_pass_required": true,
+    "all_15_implementation_items_proven_required": true,
+    "implementation_gate_exact_contract_required": true,
+    "implementation_gate_freeze_allowed_required": true,
+    "current_global_integrity_proof_required": true,
+    "audit_report_self_hash_required": true,
+    "audit_promotion_authority_must_be_false": true,
+    "audit_independence_flag_required": true,
+    "audit_coverage_lines_and_branches_required": true,
+    "audit_hash_integrity_required": true,
+    "audit_deterministic_replay_required": true,
+    "audit_future_leakage_absent_required": true,
+    "audit_full_champion_comparison_required": true,
+    "p13_p14_metric_identity_required": true,
+    "known_material_deficiency_count_must_be_zero": true,
+    "missing_or_invalid_evidence_keeps_champion": true,
+    "manual_override_prohibited": true,
+    "historical_or_synthetic_evidence_cannot_authorize_real_promotion": true,
+    "production_switch_requires_explicit_p15_authorization": true,
+    "required_audit_checks": [
+      "coverage_lines_and_branches",
+      "hash_integrity",
+      "deterministic_replay",
+      "future_leakage_absent",
+      "full_champion_comparison",
+      "promotion_lineage_recomputed",
+      "independence_no_forbidden_dependencies"
+    ],
+    "sha256": "2591a52595014fc6e95d950ba388fbd9fe66d55fd22abf4a40dc3876f899bd96"
+  },
+  "implementation": {
+    "module": "smart_evidence_only_promotion.py",
+    "module_sha256": "4395b2278c6478d705755bdb3dbf356f4183f749661b8288674f39d585d8694d",
+    "orchestrator": "smart_champion_challenger.py",
+    "orchestrator_sha256": "2ea9d64499509e40a99b974d882bfe6be995a03db6735ef5228ada33518a22c7",
+    "test_p15": "test_smart_evidence_only_promotion.py",
+    "test_p15_sha256": "c08fae4389e4062d61a0f77ee60933ed2fc7bfb1c163d3f9fd6ffeca2a484d9d",
+    "test_p13": "test_smart_promotion_gate.py",
+    "test_p13_sha256": "6fac435c20a942fa00504948b6b018826e7dcfc0274235a40739f8f4f3a5459b",
+    "test_agent": "test_smart_signal_agent.py",
+    "test_agent_sha256": "47b43cf9b0a6d1931efbbb86d92784a1345ca798a96daf69ee0344a5e6aff498",
+    "test_governance": "test_smart_coverage_governance.py",
+    "test_governance_sha256": "6790a19fd31164a9377f9233ffe085ea02d2f125807f5dd864bcbe5d221105d3"
+  },
+  "tests": {
+    "focused_p13_p15_integration": {
+      "passed": 34,
+      "failed": 0,
+      "duration_seconds": 39.06
+    },
+    "p15_coverage_suite": {
+      "passed": 15,
+      "failed": 0,
+      "duration_seconds": 11.75
+    },
+    "orchestrator_coverage_suite": {
+      "passed": 97,
+      "failed": 0,
+      "duration_seconds": 87.02
+    },
+    "full_regression": {
+      "passed": 235,
+      "failed": 0,
+      "duration_seconds": 87.44
+    }
+  },
+  "coverage": {
+    "p15_module": {
+      "file": "SMART_COVERAGE_P15_MODULE.json",
+      "sha256": "f9240d6667950b559fc9e717409be1a8a13efbe054d21f1844c8e331b24cf506",
+      "statements": 297,
+      "covered_statements": 297,
+      "branches": 160,
+      "covered_branches": 160,
+      "missing_lines": 0,
+      "missing_branches": 0,
+      "percent": 100.0,
+      "coverage": "100% lines + branches"
+    },
+    "orchestrator": {
+      "file": "SMART_COVERAGE_P15_ORCHESTRATOR.json",
+      "sha256": "44512e5a4829c19d9966653098a8c5f3866be596619817095c8033e35d4ffaf8",
+      "statements": 268,
+      "covered_statements": 268,
+      "branches": 104,
+      "covered_branches": 104,
+      "missing_lines": 0,
+      "missing_branches": 0,
+      "percent": 100.0,
+      "coverage": "100% lines + branches"
+    }
+  },
+  "invariants_proven": [
+    "P13 eligibility alone never authorizes a production promotion",
+    "all 15 implementation gates must be PROVEN with evidence before P15 may authorize production",
+    "freeze_allowed must be true before P15 may authorize production",
+    "P14 independent audit must PASS and have a valid self-hash",
+    "independent audit cannot itself hold promotion authority",
+    "required independent audit checks must all pass",
+    "prospective ledger hash integrity and no-future-leakage checks must pass",
+    "deterministic replay and causal cutoff must be proven",
+    "coverage evidence must pass",
+    "P13 and P14 comparison metrics must match exactly",
+    "all prospective pairs must be independently recomputed",
+    "known material deficiencies must be empty",
+    "authorization object must have correct schema, decision, zero blockers and valid hash",
+    "freeze snapshots preserve P15 policy and module hash for future contests",
+    "current real ledger remains KEEP_CHAMPION while evidence is incomplete"
+  ],
+  "current_real_ledger_decision": {
+    "file": "SMART_P15_CURRENT_LEDGER_DECISION.json",
+    "sha256": "a33b1ab10fde88d0c67df1ec3689b74f9b6c4089ce5ff89805b4e106ee266a27",
+    "authorized": false,
+    "decision": "KEEP_CHAMPION",
+    "blockers": [
+      "p13_not_eligible"
+    ]
+  },
+  "decision": "P15_IMPLEMENTATION_AND_ENFORCEMENT_PROVEN"
+}

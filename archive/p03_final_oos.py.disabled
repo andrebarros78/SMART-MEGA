@@ -1,0 +1,30 @@
+from __future__ import annotations
+import json, sys, hashlib
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+import smart_signal_agent as agent_mod
+from smart_signal_agent import SmartSignalAgent
+
+draws,contests=e.load_draws(ROOT/'Mega-Sena_through_3050.xlsx')
+orig=agent_mod.consensus_penalties
+
+def legacy(scores, base_utility=None, threshold=None):
+    p,_=e.redundancy_penalty(scores); return p,{'schema':'LEGACY_REDUNDANCY','penalties':p,'clusters':[]}
+agent_mod.consensus_penalties=legacy
+lp,lbt=SmartSignalAgent(start=1000).predict_next(draws,contests,target_contest=3051)
+agent_mod.consensus_penalties=orig
+pp,pbt=SmartSignalAgent(start=1000,redundancy_threshold=0.90).predict_next(draws,contests,target_contest=3051)
+legacy_rows={int(r['contest']):int(r['challenger_hits']) for r in lbt['rows']}
+p03_rows={int(r['contest']):int(r['challenger_hits']) for r in pbt['rows']}
+assert legacy_rows.keys()==p03_rows.keys()
+paired=[(c,p03_rows[c]-legacy_rows[c]) for c in sorted(legacy_rows)]
+blocks=[]
+for lo in [2201,2371,2541,2711,2881]:
+    hi=min(lo+169,3050); cs=[c for c in range(lo,hi+1) if c in legacy_rows]
+    blocks.append({'start':lo,'end':hi,'n':len(cs),'legacy_hits':sum(legacy_rows[c] for c in cs),'p03_hits':sum(p03_rows[c] for c in cs),'delta':sum(p03_rows[c]-legacy_rows[c] for c in cs)})
+hold=[x for c,x in paired if c>=2201]
+report={'schema':'SMART_P03_FINAL_OOS_1','threshold':0.90,'threshold_status':'PREDECLARED_BEFORE_EXPLORATORY_VALIDATION','legacy_total_hits':sum(legacy_rows.values()),'p03_total_hits':sum(p03_rows.values()),'total_delta':sum(x for _,x in paired),'holdout_start':2201,'legacy_holdout_hits':sum(legacy_rows[c] for c in legacy_rows if c>=2201),'p03_holdout_hits':sum(p03_rows[c] for c in p03_rows if c>=2201),'holdout_delta':sum(hold),'holdout_better_contests':sum(x>0 for x in hold),'holdout_worse_contests':sum(x<0 for x in hold),'holdout_equal_contests':sum(x==0 for x in hold),'blocks':blocks,'legacy_next_top6':lp.top6,'p03_next_top6':pp.top6,'p03_redundancy_consensus':pp.redundancy_consensus,'anti_overfit_note':'Exploratory threshold 0.95 won calibration but failed holdout and was rejected. Threshold 0.90 was already the code default before comparison and is retained without selection from holdout.','future_leakage':False}
+raw=json.dumps(report,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode(); report['sha256']=hashlib.sha256(raw).hexdigest()
+out=ROOT/'SMART_P03_FINAL_OOS.json'; out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({k:report[k] for k in ['legacy_total_hits','p03_total_hits','total_delta','legacy_holdout_hits','p03_holdout_hits','holdout_delta','holdout_better_contests','holdout_worse_contests','holdout_equal_contests','blocks','p03_next_top6','sha256']},ensure_ascii=False,indent=2))

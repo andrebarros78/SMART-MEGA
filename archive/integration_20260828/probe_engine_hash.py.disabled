@@ -1,0 +1,19 @@
+from pathlib import Path
+import hashlib
+p=Path('smart_v2_engine.py')
+b=p.read_bytes()
+print('len',len(b),'bom',b.startswith(b'\xef\xbb\xbf'),'first',b[:8].hex(),'last',b[-24:].hex())
+text=b.decode('utf-8-sig')
+print('repr_end',repr(text[-80:]))
+print('crlf',text.count('\r\n'),'lf_only',text.count('\n')-text.count('\r\n'))
+target='bff5d8beb464b94049d5933c9d6bee157f445aa9b6d15ebabcf42a848c4412d8'
+base=text.rstrip('\r\n')
+for nl in ('\n','\r\n'):
+    normalized=base.replace('\r\n','\n').replace('\r','\n').replace('\n',nl)
+    for final_count in range(0,4):
+        raw=(normalized+nl*final_count).encode('utf-8')
+        for bom in (False,True):
+            rb=(b'\xef\xbb\xbf'+raw) if bom else raw
+            h=hashlib.sha256(rb).hexdigest()
+            if len(rb) in range(9290,9311):
+                print('candidate',nl.encode(),final_count,bom,len(rb),h, 'TARGET' if h==target else '')

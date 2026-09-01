@@ -1,0 +1,7 @@
+from pathlib import Path
+p=Path('archive/build_p03_proof.py'); s=p.read_text(encoding='utf-8-sig')
+old="t=cov['totals']\nitems={x['id']:x for x in gate['items']}\n"
+new="""critical=['adjudicate_signal_challenger.py','freeze_next_research.py','smart_champion_challenger.py','smart_context_regime.py','smart_signal_agent.py','smart_signal_attribution.py','smart_signal_marginal_utility.py','smart_signal_quality.py','smart_signal_redundancy_consensus.py','smart_signal_weights.py','smart_v2_engine.py','smart_v2_production.py']\nsummary=[cov['files'][f]['summary'] for f in critical]\nt={'num_statements':sum(x['num_statements'] for x in summary),'covered_lines':sum(x['covered_lines'] for x in summary),'missing_lines':sum(x['missing_lines'] for x in summary),'num_branches':sum(x['num_branches'] for x in summary),'covered_branches':sum(x['covered_branches'] for x in summary),'missing_branches':sum(x['missing_branches'] for x in summary)}\nitems={x['id']:x for x in gate['items']}\n"""
+if old not in s: raise SystemExit('marker missing')
+p.write_text(s.replace(old,new),encoding='utf-8')
+print('patched proof coverage')

@@ -1,0 +1,4 @@
+@echo off
+call ..\smart_python.cmd patch_p04_integration.py
+if errorlevel 1 exit /b 1
+call ..\smart_python.cmd patch_p04_adjudication.py

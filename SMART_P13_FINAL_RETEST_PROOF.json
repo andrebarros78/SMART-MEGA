@@ -1,0 +1,58 @@
+{
+  "schema": "SMART_P13_FINAL_RETEST_PROOF_1",
+  "created_brt": "2026-08-31T12:41:43.915200-03:00",
+  "point": 13,
+  "id": "P13_PROMOTION_GATE",
+  "status": "MISSION_PROVEN",
+  "post_registration_retest": {
+    "focused_p13_passed": 13,
+    "full_suite_passed": 191,
+    "failures": 0
+  },
+  "coverage": {
+    "file": "SMART_COVERAGE_P13_FINAL.json",
+    "sha256": "c60527ae91af2377418b8bb9e88803b7dae8555bc37c4eed57a92749910c0daf",
+    "statements": 64,
+    "covered_statements": 64,
+    "branches": 26,
+    "covered_branches": 26,
+    "coverage": "100% lines + branches"
+  },
+  "current_hashes": {
+    "SMART_3052_IMPLEMENTATION_GATE.json": "34ba220738bf0eee5b5834949667c072108d1225111d7dc607d54e8165317f51",
+    "SMART_P13_PROMOTION_GATE_PROOF.json": "6542135e8805c225d2bf6b4b3425836d2017c15088b471930f2ee3c910d3938f",
+    "SMART_P13_CURRENT_LEDGER_DECISION.json": "35942ebbc528a1068aa28164ac03bcce366957033aa511964d34c68946ce327f",
+    "SMART_P13_GATE_UPDATE_PROOF.json": "6284bf7691a0c126cd4d2ac86620f8eccc55eb04f7e1a4c04c9615d47ed43444",
+    "SMART_COVERAGE_P13_FINAL.json": "c60527ae91af2377418b8bb9e88803b7dae8555bc37c4eed57a92749910c0daf",
+    "smart_promotion_gate.py": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+    "smart_champion_challenger.py": "ec9bc056292dee8b590517329dcdb732371ef593093d09e0374367ae09d43762",
+    "adjudicate_signal_challenger.py": "5bdbe5320ef1c63121c06e37c9a5353e1866f5649923cb3502ba252a451b289f",
+    "test_smart_promotion_gate.py": "b00d19f8f300f4bdf4fd3de4c8e84aa65cd8afc145059e8c2eb11fa785bec124",
+    "test_smart_architecture_alignment.py": "9bb012e8cb4dd2137aedcb23392a5d98030726a888018e6278d1e23908d06e53"
+  },
+  "gate_state": {
+    "p13_status": "PROVEN",
+    "p13_evidence_count": 7,
+    "proven_items": 10,
+    "total_items": 15,
+    "remaining_items": 5,
+    "freeze_allowed": false,
+    "remaining_pending_ids": [
+      "P09_CONTINUOUS_RED_TEAM",
+      "P10_BOUNDED_ONLINE_LEARNING",
+      "P11_SIGNAL_EXPANSION_GOVERNANCE",
+      "P14_INDEPENDENT_AUDIT_NONREGRESSION",
+      "P15_EVIDENCE_ONLY_PROMOTION"
+    ]
+  },
+  "real_ledger_behavior": {
+    "decision": "KEEP_CHAMPION",
+    "eligible": false,
+    "n": 1,
+    "challenger_hits": 1,
+    "champion_hits": 1,
+    "e_value": 1.0,
+    "production_switch_performed": false
+  },
+  "terminal_result": "P13 promotion gate is implemented, hardened, frozen, ledger-preserved, adversarially tested, non-regressive, and recorded as PROVEN without premature Champion replacement."
+}

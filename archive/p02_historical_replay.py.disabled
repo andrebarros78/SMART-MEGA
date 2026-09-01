@@ -1,0 +1,38 @@
+from __future__ import annotations
+import hashlib, json, sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent, SIGNAL_NAMES
+from smart_champion_challenger import load_ledger
+
+data=ROOT/'Mega-Sena_through_3050.xlsx'
+draws,contests=e.load_draws(data)
+agent=SmartSignalAgent(start=1000)
+pred,back=agent.predict_next(draws,contests,target_contest=3051)
+metrics={n:agent.marginal_states[n].metrics() for n in SIGNAL_NAMES}
+ranked=sorted(metrics.items(), key=lambda kv:(-kv[1]['shrunk_mean_delta_hits'],-kv[1]['mean_actual_rank_lift'],kv[0]))
+ledger=load_ledger(ROOT/'SMART_SIGNAL_LEDGER.json')
+mu=[ev for ev in ledger['events'] if ev.get('event_type')=='MARGINAL_UTILITY' and int(ev.get('target_contest',-1))==3051]
+report={
+ 'schema':'SMART_P02_HISTORICAL_REPLAY_1',
+ 'guardrail':'causal historical OOS measurement; no P02 weight effect and no prospective superiority claim',
+ 'cutoff_contest':int(contests[-1]),'target_contest':3051,'start_index':1000,
+ 'oos_predictions':len(back['rows']),'challenger_hits':back['total_hits'],'uniform_expected':back['uniform_expected_hits'],
+ 'next_top6':pred.top6,'marginal_observations_all':all(m['observations']==len(back['rows']) for m in metrics.values()),
+ 'weight_effect_enabled_any':any(m['weight_effect_enabled'] for m in metrics.values()),
+ 'per_signal':metrics,
+ 'ranking_by_shrunk_marginal_hits':[{'signal':n,**m} for n,m in ranked],
+ 'event_3051_count':len(mu),'event_3051_sha256':mu[0]['marginal_utility_sha256'] if len(mu)==1 else None,
+}
+out=ROOT/'SMART_P02_MARGINAL_UTILITY_HISTORICAL.json'
+out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({
+ 'oos_predictions':report['oos_predictions'],'challenger_hits':report['challenger_hits'],'next_top6':report['next_top6'],
+ 'marginal_observations_all':report['marginal_observations_all'],'weight_effect_enabled_any':report['weight_effect_enabled_any'],
+ 'top5':[{k:v for k,v in x.items() if k in ('signal','mean_delta_hits','shrunk_mean_delta_hits','ewma_delta_hits','confidence')} for x in report['ranking_by_shrunk_marginal_hits'][:5]],
+ 'bottom5':[{k:v for k,v in x.items() if k in ('signal','mean_delta_hits','shrunk_mean_delta_hits','ewma_delta_hits','confidence')} for x in report['ranking_by_shrunk_marginal_hits'][-5:]],
+ 'event_3051_count':report['event_3051_count'],'event_3051_sha256':report['event_3051_sha256'],
+ 'report_sha256':hashlib.sha256(out.read_bytes()).hexdigest()
+},ensure_ascii=False,indent=2))

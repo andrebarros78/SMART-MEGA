@@ -1,0 +1,6 @@
+from pathlib import Path
+p=Path('smart_context_regime.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace('REGIME_L1_THRESHOLD = 0.052','REGIME_L1_THRESHOLD = 0.049')
+s=s.replace("CALIBRATION_ID = 'SMART_CONTEXT_CAL_20260828_A'","CALIBRATION_ID = 'SMART_CONTEXT_CAL_20260828_B'")
+p.write_text(s,encoding='utf-8')

@@ -1,0 +1,43 @@
+from pathlib import Path
+import json, hashlib, sys
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent, write_state
+
+data=ROOT/'Mega-Sena_through_3050.xlsx'
+freeze=ROOT/'SMART_3051_CHAMPION_CHALLENGER_FREEZE.v3.json'
+out=ROOT/'SMART_SIGNAL_TRAINING_3050.json'
+state_out=ROOT/'SMART_SIGNAL_TRAINED_STATE_3050.json'
+
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+
+draws,contests=e.load_draws(data)
+agent=SmartSignalAgent(start=1000)
+pred,bt=agent.predict_next(draws,contests,target_contest=3051,cutoff_timestamp='2026-08-27',cutoff_timestamp_kind='source_draw_date')
+state=agent.state_document(data_sha256=sha(data))
+state_hash=write_state(state_out,state)
+fr=json.loads(freeze.read_text(encoding='utf-8'))
+weights_match=all(abs(float(pred.weights[k])-float(fr['challenger']['weights'][k]))<1e-15 for k in pred.weights)
+report={
+ 'schema':'SMART_SIGNAL_TRAINING_3050_1','mode':'CAUSAL_HISTORICAL_PREQUENTIAL_TRAINING',
+ 'source_file':data.name,'source_sha256':sha(data),'cutoff_contest':int(contests[-1]),
+ 'contests_total':len(draws),'supervised_oos_training_predictions':len(bt['rows']),'prewarm_contests':1000,
+ 'future_result_used':False,'target_3051_result_used':False,
+ 'training_total_hits':bt['total_hits'],'uniform_expected_hits':bt['uniform_expected_hits'],'excess_hits':bt['excess_hits'],
+ 'next_shadow_target':3051,'challenger_top6':pred.top6,'weights':pred.weights,
+ 'quality_metrics':pred.quality_metrics,'context_regime':pred.context_state,
+ 'trained_state_file':state_out.name,'trained_state_sha256':state_hash,'freeze_v3_sha256':sha(freeze),
+ 'alignment_checks':{
+   'cutoff_is_3050':int(contests[-1])==3050,
+   'target_result_not_present':3051 not in set(map(int,contests)),
+   'top6_matches_active_freeze_v3':pred.top6==fr['challenger']['top6'],
+   'weights_match_active_freeze_v3':weights_match,
+   'context_matches_active_freeze_v3':pred.context_state==fr['challenger']['context_regime'],
+   'champion_remains_active':fr['champion_remains_active'] is True,
+ },
+ 'guardrail':'Historical training is engineering learning; prospective proof remains separate and frozen.'
+}
+report['passed']=all(report['alignment_checks'].values())
+out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'passed':report['passed'],'training_predictions':len(bt['rows']),'hits':bt['total_hits'],'expected':bt['uniform_expected_hits'],'excess':bt['excess_hits'],'top6':pred.top6,'state_sha256':state_hash,'report_sha256':sha(out),'alignment_checks':report['alignment_checks']},ensure_ascii=False,indent=2))

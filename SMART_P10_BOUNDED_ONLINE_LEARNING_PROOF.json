@@ -1,0 +1,152 @@
+{
+  "schema": "SMART_P10_BOUNDED_ONLINE_LEARNING_PROOF_1",
+  "created_brt": "2026-08-31T22:21:07.213548-03:00",
+  "point": 10,
+  "id": "P10_BOUNDED_ONLINE_LEARNING",
+  "status": "PROVEN",
+  "historical_nonregression": {
+    "file": "SMART_P10_HISTORICAL_NONREGRESSION.json",
+    "sha256": "21e9c8f1ab40373b6cfa8b370be98a2014fefde2adff0f3be53ee7127eee8cd2",
+    "oos_predictions": 2050,
+    "total_delta": 0,
+    "holdout_delta": 0,
+    "next_weights_equal": true
+  },
+  "implementation": {
+    "module": "smart_bounded_online_learning.py",
+    "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07",
+    "agent": "smart_signal_agent.py",
+    "agent_sha256": "e0a161ad6b63c5d6aa7eb7577a87039f7623b49b4256ed6ad689114b3b7e59fd",
+    "context_regime_sha256": "df13599bdf9e3c254c499d28d8a52e212e822b9204afb0407e22621926759e61"
+  },
+  "guard": {
+    "expert": {
+      "schema": "SMART_BOUNDED_ONLINE_LEARNING_1",
+      "eta": 0.6931471805599453,
+      "baseline_hits": 0.6,
+      "max_abs_step": 2.5,
+      "warmup_max_abs_step": 1.0,
+      "prior_observations": 1000,
+      "warmup_full_after": 5,
+      "min_warmup_scale": 0.5,
+      "max_abs_centered_logit": 100.0,
+      "updates": 2050,
+      "clipped_update_count": 0,
+      "warmup_update_count": 0,
+      "spread_clip_count": 0,
+      "max_abs_proposed_delta": 2.356700413903814,
+      "max_abs_applied_delta": 2.356700413903814,
+      "last_update": {
+        "schema": "SMART_BOUNDED_ONLINE_LEARNING_1",
+        "update_index": 2050,
+        "evidence_scale": 1.0,
+        "effective_step_cap": 2.5,
+        "proposed_delta": {
+          "freq25": 0.2772588722239781,
+          "freq50": 0.9704060527839233,
+          "freq100": 0.2772588722239781,
+          "freq250": -0.4158883083359672,
+          "freq500": 0.9704060527839233,
+          "freq1000": 0.9704060527839233,
+          "freq_global": -0.4158883083359672,
+          "ewma10": 0.2772588722239781,
+          "ewma25": -0.4158883083359672,
+          "ewma50": 0.2772588722239781,
+          "ewma100": 0.2772588722239781,
+          "ewma250": 0.2772588722239781
+        },
+        "applied_delta": {
+          "freq25": 0.2772588722239781,
+          "freq50": 0.9704060527839233,
+          "freq100": 0.2772588722239781,
+          "freq250": -0.4158883083359672,
+          "freq500": 0.9704060527839233,
+          "freq1000": 0.9704060527839233,
+          "freq_global": -0.4158883083359672,
+          "ewma10": 0.2772588722239781,
+          "ewma25": -0.4158883083359672,
+          "ewma50": 0.2772588722239781,
+          "ewma100": 0.2772588722239781,
+          "ewma250": 0.2772588722239781
+        },
+        "clipped_ids": [],
+        "spread_clipped_ids": [],
+        "max_abs_step": 2.5,
+        "warmup_max_abs_step": 1.0,
+        "prior_observations": 1000,
+        "max_abs_centered_logit": 100.0,
+        "update_after_result_only": true,
+        "few_observation_protection": false,
+        "centering_regularization": true,
+        "bounded_centering_projection": true,
+        "recovery_supported_by_bounded_spread_and_downstream_prior": true
+      },
+      "downstream_recovery_prior_mix": 0.05,
+      "downstream_expert_cap": 0.42,
+      "downstream_family_cap": 0.7,
+      "causal_update_after_result_only": true
+    },
+    "family": {
+      "schema": "SMART_BOUNDED_ONLINE_LEARNING_1",
+      "eta": 0.6931471805599453,
+      "baseline_hits": 0.6,
+      "max_abs_step": 2.5,
+      "warmup_max_abs_step": 1.0,
+      "prior_observations": 1000,
+      "warmup_full_after": 5,
+      "min_warmup_scale": 0.5,
+      "max_abs_centered_logit": 100.0,
+      "updates": 2050,
+      "clipped_update_count": 0,
+      "warmup_update_count": 0,
+      "spread_clip_count": 0,
+      "max_abs_proposed_delta": 2.356700413903814,
+      "max_abs_applied_delta": 2.356700413903814,
+      "last_update": {
+        "schema": "SMART_BOUNDED_ONLINE_LEARNING_1",
+        "update_index": 2050,
+        "evidence_scale": 1.0,
+        "effective_step_cap": 2.5,
+        "proposed_delta": {
+          "ewma": -0.4158883083359672,
+          "freq": 0.2772588722239781
+        },
+        "applied_delta": {
+          "ewma": -0.4158883083359672,
+          "freq": 0.2772588722239781
+        },
+        "clipped_ids": [],
+        "spread_clipped_ids": [],
+        "max_abs_step": 2.5,
+        "warmup_max_abs_step": 1.0,
+        "prior_observations": 1000,
+        "max_abs_centered_logit": 100.0,
+        "update_after_result_only": true,
+        "few_observation_protection": false,
+        "centering_regularization": true,
+        "bounded_centering_projection": true,
+        "recovery_supported_by_bounded_spread_and_downstream_prior": true
+      },
+      "downstream_recovery_prior_mix": 0.05,
+      "downstream_expert_cap": 0.42,
+      "downstream_family_cap": 0.7,
+      "causal_update_after_result_only": true
+    }
+  },
+  "tests": {
+    "files": [
+      "test_smart_bounded_online_learning.py",
+      "test_smart_signal_expansion_governance.py"
+    ],
+    "combined_passed": 20,
+    "p10_test_sha256": "4b254bd4d812148b18ad9789709c39beb980334e6ccc602118190a924969d5c4"
+  },
+  "anti_false_learning": {
+    "holdout_used_for_tuning": false,
+    "configuration_predeclared": true,
+    "prospective_predictive_claim": false,
+    "nonregression_not_claimed_as_predictive_gain": true
+  },
+  "result": "Bounded online learning is causal, bounded, recoverable, and non-regressive against the unbounded reference on the declared historical OOS/holdout.",
+  "sha256": "1795944a9bb312bee6e280f088b0aeeb6ed99ed58eaa07f7e56e27bcf5ea8589"
+}

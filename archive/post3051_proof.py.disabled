@@ -1,0 +1,19 @@
+from __future__ import annotations
+import sys,json,hashlib,subprocess
+from pathlib import Path
+ROOT=Path(r'C:\New Projet\SMART-MEGA'); sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+
+def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+L=cc.load_ledger(ROOT/'SMART_SIGNAL_LEDGER.json'); fr=cc.active_freeze(L,3051); ad=[e for e in L['events'] if e.get('event_type')=='ADJUDICATION' and int(e.get('target_contest',-1))==3051]
+freeze=ROOT/fr['freeze_file']
+obj=json.loads(freeze.read_text(encoding='utf-8'))
+components={'smart_v2_engine.py':obj['engine_sha256'],'freeze_next_research.py':obj['champion_engine_sha256'],'smart_signal_agent.py':obj['signal_agent_sha256'],'smart_signal_quality.py':obj['signal_quality_sha256'],'smart_signal_weights.py':obj['signal_weights_sha256'],'smart_context_regime.py':obj['context_regime_sha256']}
+component_ok={k:sha(ROOT/k)==v for k,v in components.items()}
+py=subprocess.run([str(ROOT/'.venv/Scripts/python.exe'),'-m','pytest','-q'],cwd=ROOT,capture_output=True,text=True)
+post=json.loads((ROOT/'SMART_SIGNAL_POST_3051_LEARNING.json').read_text(encoding='utf-8'))
+cf=json.loads((ROOT/'SMART_3051_COUNTERFACTUAL.json').read_text(encoding='utf-8'))
+promo=cc.promotion_status(L)
+checks={'exactly_one_adjudication_3051':len(ad)==1,'actual_result_matches_user_image':ad[0]['actual_numbers']==[11,15,20,21,38,48],'champion_hits_1':ad[0]['champion_hits']==1,'challenger_hits_1':ad[0]['challenger_hits']==1,'e_value_1':float(ad[0]['e_value_after'])==1.0,'freeze_hash_valid':sha(freeze)==fr['freeze_sha256'],'freeze_components_unchanged':all(component_ok.values()),'post_learning_state_exists':(ROOT/'SMART_SIGNAL_TRAINED_STATE_3051.json').exists(),'post_learning_report_exists':(ROOT/'SMART_SIGNAL_POST_3051_LEARNING.json').exists(),'counterfactual_report_exists':(ROOT/'SMART_3051_COUNTERFACTUAL.json').exists(),'next_preview_not_frozen':cc.active_freeze(L,3052) is None,'promotion_still_blocked':promo['eligible'] is False and promo['decision']=='KEEP_CHAMPION' and promo['n']==1,'pytest_pass':py.returncode==0 and '59 passed' in py.stdout,'minimum_three_removals_for_38_top6':cf['minimal_removed_count_to_put_38_top6']==3,'learning_target_3052_preview_only':post['learning_after_result']['next_step_preview_target']==3052 and post['guardrails']['3052_preview_not_frozen'] is True}
+proof={'schema':'SMART_POST_3051_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'adjudication':ad[0],'promotion':promo,'component_hash_match':component_ok,'artifacts':{'freeze':{'file':fr['freeze_file'],'sha256':fr['freeze_sha256']},'ledger':{'file':'SMART_SIGNAL_LEDGER.json','sha256':sha(ROOT/'SMART_SIGNAL_LEDGER.json')},'post_learning':{'file':'SMART_SIGNAL_POST_3051_LEARNING.json','sha256':sha(ROOT/'SMART_SIGNAL_POST_3051_LEARNING.json')},'trained_state':{'file':'SMART_SIGNAL_TRAINED_STATE_3051.json','sha256':sha(ROOT/'SMART_SIGNAL_TRAINED_STATE_3051.json')},'counterfactual':{'file':'SMART_3051_COUNTERFACTUAL.json','sha256':sha(ROOT/'SMART_3051_COUNTERFACTUAL.json')}},'regression':py.stdout.strip().splitlines()[-1] if py.stdout.strip() else '', 'limits':{'post_result_learning_is_causal':True,'counterfactual_is_diagnostic_not_retroactive_optimization':True,'global_predictive_6_of_6_proven':False}}
+out=ROOT/'SMART_POST_3051_PROOF.json'; out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8'); print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],'proof_sha256':sha(out),'regression':proof['regression'],'promotion':promo,'next_preview':post['learning_after_result']['next_step_preview_top6']},ensure_ascii=False,indent=2))

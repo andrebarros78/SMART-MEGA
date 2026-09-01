@@ -1,0 +1,86 @@
+{
+  "schema": "SMART_P03_THRESHOLD_VALIDATION_1",
+  "data_cutoff": 3050,
+  "start": 1000,
+  "calibration_end": 2200,
+  "holdout_start": 2201,
+  "selection_rule": "max calibration hits; tie chooses higher threshold (more conservative)",
+  "legacy": {
+    "total_hits": 1269,
+    "calibration_n": 1200,
+    "calibration_hits": 728,
+    "holdout_n": 850,
+    "holdout_hits": 541
+  },
+  "candidates": {
+    "0.8": {
+      "total_hits": 1271,
+      "calibration_n": 1200,
+      "calibration_hits": 728,
+      "holdout_n": 850,
+      "holdout_hits": 543,
+      "next_top6": [
+        11,
+        27,
+        10,
+        30,
+        53,
+        43
+      ],
+      "threshold": 0.8
+    },
+    "0.85": {
+      "total_hits": 1274,
+      "calibration_n": 1200,
+      "calibration_hits": 729,
+      "holdout_n": 850,
+      "holdout_hits": 545,
+      "next_top6": [
+        11,
+        27,
+        10,
+        30,
+        53,
+        43
+      ],
+      "threshold": 0.85
+    },
+    "0.9": {
+      "total_hits": 1271,
+      "calibration_n": 1200,
+      "calibration_hits": 728,
+      "holdout_n": 850,
+      "holdout_hits": 543,
+      "next_top6": [
+        11,
+        27,
+        10,
+        30,
+        53,
+        43
+      ],
+      "threshold": 0.9
+    },
+    "0.95": {
+      "total_hits": 1268,
+      "calibration_n": 1200,
+      "calibration_hits": 731,
+      "holdout_n": 850,
+      "holdout_hits": 537,
+      "next_top6": [
+        11,
+        27,
+        10,
+        30,
+        53,
+        43
+      ],
+      "threshold": 0.95
+    }
+  },
+  "selected_threshold": 0.95,
+  "selected_holdout_delta_vs_legacy": -4,
+  "selected_total_delta_vs_legacy": -1,
+  "future_leakage": false,
+  "sha256": "871b45bfed646012f2a2a2c6bada76fdbad7aa17c19837fae57e5fe982fa2d65"
+}

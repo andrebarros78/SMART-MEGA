@@ -1,0 +1,8 @@
+from pathlib import Path
+p=Path('smart_signal_redundancy_consensus.py')
+s=p.read_text(encoding='utf-8-sig')
+old="""        for n in group:\n            peers = [abs(float(corr[n][p])) for p in group if p != n]\n            mean_peer = float(np.mean(peers)) if peers else 0.0\n            # Soft protection for near-threshold correlation inside the connected component.\n            soft = max(SOFT_FLOOR, 1.0 - mean_peer)\n            penalties[n] = max(SOFT_FLOOR, min(1.0, cluster_factor + (1.0 - cluster_factor) * soft))\n"""
+new="""        for n in group:\n            cluster_peers = [abs(float(corr[n][p])) for p in group if p != n]\n            mean_cluster_peer = float(np.mean(cluster_peers)) if cluster_peers else 0.0\n            soft = max(SOFT_FLOOR, 1.0 - mean_cluster_peer)\n            anti_multiplicity = max(SOFT_FLOOR, min(1.0, cluster_factor + (1.0 - cluster_factor) * soft))\n            all_peers = [abs(float(corr[n][p])) for p in names if p != n]\n            mean_abs_all = float(np.mean(all_peers)) if all_peers else 0.0\n            novelty = max(SOFT_FLOOR, min(1.0, 1.0 - mean_abs_all))\n            penalties[n] = max(SOFT_FLOOR, min(1.0, float(np.sqrt(novelty * anti_multiplicity))))\n"""
+if old not in s: raise SystemExit('marker not found')
+p.write_text(s.replace(old,new),encoding='utf-8')
+print('patched')

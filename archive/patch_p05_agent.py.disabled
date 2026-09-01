@@ -1,0 +1,24 @@
+from pathlib import Path
+p=Path(__file__).resolve().parents[1]/'smart_signal_agent.py'
+s=p.read_text(encoding='utf-8-sig')
+s=s.replace("from smart_signal_interactions import InteractionTracker\n", "from smart_signal_interactions import InteractionTracker\nfrom smart_contextual_meta_weights import contextual_meta_factors\n")
+s=s.replace("AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_4'", "AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_5'")
+s=s.replace("    interaction_state: dict[str, Any]\n", "    interaction_state: dict[str, Any]\n    contextual_meta_weights: dict[str, Any]\n")
+s=s.replace("            'signal_interactions': self.interaction_state,\n", "            'signal_interactions': self.interaction_state,\n            'contextual_meta_weights': self.contextual_meta_weights,\n")
+old="    def __init__(self, start: int = 1000, eta: float = math.log(2), redundancy_threshold: float = DEFAULT_CORRELATION_THRESHOLD):\n        self.start = int(start)\n        self.eta = float(eta)\n        self.redundancy_threshold = float(redundancy_threshold)\n        self._reset_states()\n"
+new="    def __init__(self, start: int = 1000, eta: float = math.log(2), redundancy_threshold: float = DEFAULT_CORRELATION_THRESHOLD, meta_strength: float = 0.0):\n        self.start = int(start)\n        self.eta = float(eta)\n        self.redundancy_threshold = float(redundancy_threshold)\n        self.meta_strength = float(meta_strength)\n        self._reset_states()\n"
+assert old in s
+s=s.replace(old,new)
+old="        families = self._families(sc)\n        weights, components = dynamic_weights(metrics, families)\n"
+new="        families = self._families(sc)\n        meta_factors, meta_audit = contextual_meta_factors(\n            sc, metrics, families, self.context_engine.metrics(), self.interaction_tracker.metrics(), self.meta_strength\n        )\n        for n in metrics:\n            metrics[n]['context_before_meta'] = float(metrics[n]['context'])\n            metrics[n]['contextual_meta_factor'] = float(meta_factors[n])\n            metrics[n]['context'] = float(metrics[n]['context']) * float(meta_factors[n])\n        weights, components = dynamic_weights(metrics, families)\n        for n in components:\n            components[n]['contextual_meta_factor'] = float(meta_factors[n])\n"
+assert old in s
+s=s.replace(old,new)
+old="            context_state=self.context_engine.metrics(), redundancy_consensus=redundancy_audit,\n            interaction_state=self.interaction_tracker.metrics(),\n        )\n"
+new="            context_state=self.context_engine.metrics(), redundancy_consensus=redundancy_audit,\n            interaction_state=self.interaction_tracker.metrics(), contextual_meta_weights=meta_audit,\n        )\n"
+assert old in s
+s=s.replace(old,new)
+s=s.replace("return {'schema': 'SMART_SIGNAL_STATE_4'", "return {'schema': 'SMART_SIGNAL_STATE_5'")
+s=s.replace("'training_rows': self.training_rows, 'start_index': self.start, 'eta': self.eta,\n", "'training_rows': self.training_rows, 'start_index': self.start, 'eta': self.eta, 'meta_strength': self.meta_strength,\n")
+s=s.replace("                'signal_interactions': self.interaction_tracker.metrics(),\n                'context_regime': self.context_engine.metrics()}\n", "                'signal_interactions': self.interaction_tracker.metrics(),\n                'contextual_meta_weights': {'strength': self.meta_strength, 'weight_effect_enabled': bool(self.meta_strength > 0.0)},\n                'context_regime': self.context_engine.metrics()}\n")
+p.write_text(s,encoding='utf-8')
+print('PATCHED')

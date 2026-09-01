@@ -1,0 +1,50 @@
+from pathlib import Path
+import sys,json,hashlib
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent
+
+DATA=ROOT/'Mega-Sena_through_3050.xlsx'
+draws,contests=e.load_draws(DATA)
+
+def run(strength):
+    a=SmartSignalAgent(start=1000,meta_strength=strength)
+    pred,bt=a.predict_next(draws,contests,target_contest=3051)
+    rows=bt['rows']
+    cal=[r for r in rows if r['contest']<=2200]
+    hold=[r for r in rows if r['contest']>=2201]
+    return a,pred,bt,cal,hold
+
+base_a,base_p,base_bt,base_cal,base_hold=run(0.0)
+p05_a,p05_p,p05_bt,p05_cal,p05_hold=run(0.08)
+assert [r['contest'] for r in base_bt['rows']]==[r['contest'] for r in p05_bt['rows']]
+base_by={r['contest']:r for r in base_bt['rows']}; p05_by={r['contest']:r for r in p05_bt['rows']}
+comp=[]
+for c in sorted(base_by):
+    d=int(p05_by[c]['challenger_hits'])-int(base_by[c]['challenger_hits'])
+    comp.append((c,d))
+blocks=[]
+for start in [2201,2371,2541,2711,2881]:
+    end=start+169
+    b=sum(base_by[c]['challenger_hits'] for c in range(start,end+1))
+    p=sum(p05_by[c]['challenger_hits'] for c in range(start,end+1))
+    blocks.append({'start':start,'end':end,'n':170,'baseline_hits':int(b),'p05_hits':int(p),'delta':int(p-b)})
+family_totals={}
+for n,w in p05_p.weights.items():
+    fam=e.family_of(n); family_totals[fam]=family_totals.get(fam,0.0)+float(w)
+active_rows=sum(1 for r in p05_bt['rows'] if abs(float(r['meta_factor_max_before_result'])-float(r['meta_factor_min_before_result']))>1e-12)
+report={
+ 'schema':'SMART_P05_PREDECLARED_VALIDATION_1',
+ 'data_cutoff':int(contests[-1]),'oos_start':1001,'calibration_end':2200,'holdout_start':2201,
+ 'predeclared_strength':0.08,'selection_on_holdout':False,
+ 'baseline':{'strength':0.0,'total_hits':base_bt['total_hits'],'calibration_hits':sum(r['challenger_hits'] for r in base_cal),'holdout_hits':sum(r['challenger_hits'] for r in base_hold),'next_top6':base_p.top6},
+ 'p05':{'strength':0.08,'total_hits':p05_bt['total_hits'],'calibration_hits':sum(r['challenger_hits'] for r in p05_cal),'holdout_hits':sum(r['challenger_hits'] for r in p05_hold),'next_top6':p05_p.top6,
+        'next_factor_min':p05_p.contextual_meta_weights['factor_min'],'next_factor_max':p05_p.contextual_meta_weights['factor_max'],'next_family_divergence':p05_p.contextual_meta_weights['family_divergence'],'next_regime_intensity':p05_p.contextual_meta_weights['regime_intensity'],
+        'next_max_weight':max(p05_p.weights.values()),'next_family_totals':family_totals,'active_adjustment_rows':active_rows},
+ 'comparison':{'total_delta':p05_bt['total_hits']-base_bt['total_hits'],'calibration_delta':sum(r['challenger_hits'] for r in p05_cal)-sum(r['challenger_hits'] for r in base_cal),'holdout_delta':sum(r['challenger_hits'] for r in p05_hold)-sum(r['challenger_hits'] for r in base_hold),
+               'better_contests':sum(d>0 for _,d in comp),'worse_contests':sum(d<0 for _,d in comp),'equal_contests':sum(d==0 for _,d in comp),'blocks':blocks},
+ 'guards':{'expert_cap_le_0_42':max(p05_p.weights.values())<=0.42+1e-12,'family_cap_le_0_70':max(family_totals.values())<=0.70+1e-12,'meta_factor_bounded':p05_p.contextual_meta_weights['factor_min']>=__import__('math').exp(-0.08)-1e-12 and p05_p.contextual_meta_weights['factor_max']<=__import__('math').exp(0.08)+1e-12,'future_leakage':False,'prospective_predictive_claim':False},
+ 'hashes':{'data':e.sha256(DATA),'meta_module':e.sha256(ROOT/'smart_contextual_meta_weights.py'),'agent':e.sha256(ROOT/'smart_signal_agent.py')}
+}
+raw=json.dumps(report,ensure_ascii=False,indent=2); out=ROOT/'SMART_P05_PREDECLARED_VALIDATION.json'; out.write_text(raw,encoding='utf-8'); report['sha256']=hashlib.sha256(out.read_bytes()).hexdigest()
+print(json.dumps(report,ensure_ascii=False,indent=2))

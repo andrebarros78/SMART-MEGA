@@ -1,0 +1,78 @@
+{
+  "schema": "SMART_P11_SIGNAL_EXPANSION_GOVERNANCE_PROOF_1",
+  "created_brt": "2026-08-31T22:21:07.223233-03:00",
+  "point": 11,
+  "id": "P11_SIGNAL_EXPANSION_GOVERNANCE",
+  "status": "PROVEN",
+  "validation": {
+    "file": "SMART_P11_SIGNAL_EXPANSION_VALIDATION.json",
+    "sha256": "4955286dc05ba4adeedff1d8153fb903e9502f6ee4bf3883fc21a5789bfd4d2c",
+    "checks": {
+      "good_eligible": true,
+      "overfit_rejected": true,
+      "redundant_rejected": true,
+      "noise_rejected": true,
+      "authorization_challenger_only": true,
+      "limited_cap": true,
+      "no_automatic_material_influence": true,
+      "authorization_proof_self_hash_valid": true
+    }
+  },
+  "authorization_proof": {
+    "schema": "SMART_SIGNAL_EXPANSION_AUTHORIZATION_PROOF_1",
+    "candidate_evidence": {
+      "candidate_id": "candidate_good",
+      "family": "freq",
+      "registered_cutoff": 3051,
+      "last_contest": 3301,
+      "total_oos": 250,
+      "calibration_oos": 150,
+      "validation_oos": 100,
+      "mean_delta_hits": 1.0,
+      "validation_mean_delta_hits": 1.0,
+      "validation_lcb95_delta_hits": 1.0,
+      "mean_novelty": 0.9000000000000038,
+      "checks": {
+        "minimum_total_oos": true,
+        "minimum_calibration_oos": true,
+        "minimum_validation_oos": true,
+        "positive_total_marginal_utility": true,
+        "positive_validation_marginal_utility": true,
+        "validation_lcb_positive": true,
+        "novelty_sufficient": true
+      }
+    },
+    "scope": "CHALLENGER_ONLY",
+    "champion_influence": false,
+    "material_weight_cap": 0.05,
+    "sha256": "a96ed3ff5d3fa10325c33b538f4e6d41d2ee2e9c9fada5ccfe96bc1e41622dd8"
+  },
+  "implementation": {
+    "module": "smart_signal_expansion_governance.py",
+    "sha256": "ad76396cefe2112403fec795c604d11e72d1ddd5c0e45c5d67ef18875e1ec95f",
+    "validation_script": "archive/p11_validation.py",
+    "validation_script_sha256": "e862fccad9612d5559a57aee1b4b2850d16b11484d7dd6b654c442ef10b4ed23"
+  },
+  "tests": {
+    "file": "test_smart_signal_expansion_governance.py",
+    "sha256": "e1fb0df0882ff986d70ceaf8b8c9643bd2f1d1dacf0af465dbccbd67c3a65721",
+    "combined_p10_p11_passed": 20
+  },
+  "policy": {
+    "min_calibration_oos": 150,
+    "min_validation_oos": 100,
+    "min_total_oos": 250,
+    "min_mean_novelty": 0.25,
+    "max_limited_challenger_weight": 0.05
+  },
+  "anti_false_learning": {
+    "overfit_rejected": true,
+    "redundant_rejected": true,
+    "noise_rejected": true,
+    "challenger_only": true,
+    "automatic_material_influence": false,
+    "predictive_signal_promoted": false
+  },
+  "result": "New signals remain shadow/Challenger-only until causal marginal OOS evidence and a matching self-hashed authorization proof exist.",
+  "sha256": "a4861d119234e0e772acda48b15e10c289e19107acaea4a929b610e7f67214e6"
+}

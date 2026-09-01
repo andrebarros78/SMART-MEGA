@@ -1,0 +1,106 @@
+from __future__ import annotations
+import sys, json, hashlib
+from pathlib import Path
+import numpy as np
+import pandas as pd
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+import smart_champion_challenger as cc
+from adjudicate_signal_challenger import adjudicate
+from smart_signal_agent import SmartSignalAgent, write_state
+
+TARGET=3051
+ACTUAL=[11,15,20,21,38,48]
+BASE=ROOT/'Mega-Sena_through_3050.xlsx'
+OUTDATA=ROOT/'Mega-Sena_through_3051.xlsx'
+LEDGER=ROOT/'SMART_SIGNAL_LEDGER.json'
+STATE=ROOT/'SMART_SIGNAL_TRAINED_STATE_3051.json'
+REPORT=ROOT/'SMART_SIGNAL_POST_3051_LEARNING.json'
+
+def sha(p:Path): return hashlib.sha256(p.read_bytes()).hexdigest()
+
+# Build/verify canonical extension without mutating the 3050 source.
+df=pd.read_excel(BASE)
+assert int(df.iloc[-1]['Concurso'])==3050
+assert not (df['Concurso'].astype(int)==TARGET).any()
+row={c:None for c in df.columns}
+row['Concurso']=TARGET
+if 'Data do Sorteio' in df.columns: row['Data do Sorteio']=pd.Timestamp('2026-08-30')
+for i,n in enumerate(ACTUAL,1): row[f'Bola{i}']=n
+ext=pd.concat([df,pd.DataFrame([row])],ignore_index=True)
+ext.to_excel(OUTDATA,index=False)
+draws,contests=e.load_draws(OUTDATA)
+assert int(contests[-1])==3051 and draws[-1].tolist()==ACTUAL
+
+# Adjudicate once; preserve append-only behavior if rerun.
+ledger=cc.load_ledger(LEDGER)
+existing=[ev for ev in ledger['events'] if ev.get('event_type')=='ADJUDICATION' and int(ev.get('target_contest',-1))==TARGET]
+if existing:
+    ad=existing[0]
+    adj={'target_contest':TARGET,'actual_numbers':ad['actual_numbers'],'champion_hits':ad['champion_hits'],'challenger_hits':ad['challenger_hits'],'e_value_after':ad['e_value_after'],'promotion':cc.promotion_status(ledger),'status':'ALREADY_ADJUDICATED_EVENT_PRESERVED'}
+else:
+    adj=adjudicate(OUTDATA,TARGET,LEDGER)
+    ledger=cc.load_ledger(LEDGER)
+
+fr=cc.active_freeze(ledger,TARGET)
+assert fr is not None
+snap=fr['snapshot']; weights={k:float(v) for k,v in snap['weights'].items()}
+actual_set=set(ACTUAL)
+
+def aggregate(ws):
+    agg=np.zeros(60,float)
+    z=sum(ws.values())
+    for name,w in ws.items():
+        vals=np.array([float(snap['raw_signals'][name]['values'][str(i)]) for i in range(1,61)])
+        agg+=(w/z)*vals
+    top,order=e.rank_top6(agg)
+    ranking=e.NUMBERS[order].tolist()
+    return agg,top,ranking
+
+base_agg,base_top,base_rank=aggregate(weights)
+# Leave-one-signal-out counterfactuals.
+loo=[]
+for name in weights:
+    ws={k:v for k,v in weights.items() if k!=name}
+    agg,top,ranking=aggregate(ws)
+    loo.append({'removed_signal':name,'top6':top,'hits':len(set(top)&actual_set),'rank38':ranking.index(38)+1,'rank15':ranking.index(15)+1,'rank20':ranking.index(20)+1,'rank21':ranking.index(21)+1,'rank48':ranking.index(48)+1})
+loo.sort(key=lambda r:(-r['hits'],r['rank38'],r['removed_signal']))
+
+# Exact signal contributions to the 43-vs-38 margin.
+margin=[]
+for name,w in weights.items():
+    vals=snap['raw_signals'][name]['values']
+    v43=float(vals['43']); v38=float(vals['38'])
+    margin.append({'signal':name,'weight':w,'v43':v43,'v38':v38,'weighted_margin_43_minus_38':w*(v43-v38),'expert_hits':next(ev['signal_contributions'][name]['expert_top6_hits'] for ev in ledger['events'] if ev.get('event_type')=='ADJUDICATION' and int(ev.get('target_contest',-1))==TARGET)})
+margin.sort(key=lambda x:x['weighted_margin_43_minus_38'],reverse=True)
+
+# Rebuild causal learning through the now-observed 3051 and obtain next-step policy preview.
+agent=SmartSignalAgent(start=1000)
+pred3052,back=agent.predict_next(draws,contests,target_contest=3052,cutoff_timestamp='2026-08-30T00:00:00-03:00',cutoff_timestamp_kind='source_draw_datetime')
+state_doc=agent.state_document(data_sha256=sha(OUTDATA))
+state_doc.update({'cutoff_contest':3051,'target_contest':3052,'learning_includes_adjudicated_3051':True,'actual_3051':ACTUAL})
+state_hash=write_state(STATE,state_doc)
+
+before=weights; after=pred3052.weights
+weight_changes=sorted([{'signal':n,'before':before[n],'after':after[n],'delta':after[n]-before[n]} for n in before],key=lambda x:abs(x['delta']),reverse=True)
+
+ad_event=[ev for ev in cc.load_ledger(LEDGER)['events'] if ev.get('event_type')=='ADJUDICATION' and int(ev.get('target_contest',-1))==TARGET][0]
+report={
+ 'schema':'SMART_SIGNAL_POST_3051_LEARNING_1',
+ 'source_result':'user-provided image, encoded as canonical extension file',
+ 'result_3051':ACTUAL,
+ 'result_data_file':OUTDATA.name,'result_data_sha256':sha(OUTDATA),
+ 'adjudication':adj,
+ 'active_freeze_sha256':fr['freeze_sha256'],
+ 'frozen_champion_top6':fr['champion_top6'],'frozen_challenger_top6':fr['challenger_top6'],
+ 'base_challenger_hits':len(set(base_top)&actual_set),
+ 'actual_ranks_before_result':{str(n):base_rank.index(n)+1 for n in ACTUAL},
+ 'leave_one_out':loo,
+ 'margin_43_vs_38':{'aggregate_score_43':float(base_agg[42]),'aggregate_score_38':float(base_agg[37]),'score_margin_43_minus_38':float(base_agg[42]-base_agg[37]),'signal_contributions':margin},
+ 'learning_after_result':{'historical_oos_predictions':len(back['rows']),'historical_total_hits_through_3051':back['total_hits'],'state_file':STATE.name,'state_sha256':state_hash,'next_step_preview_target':3052,'next_step_preview_top6':pred3052.top6,'weight_changes':weight_changes,'context_after_3051':pred3052.context_state},
+ 'ledger':{'sha256':sha(LEDGER),'promotion':cc.promotion_status(cc.load_ledger(LEDGER)),'adjudication_event_sha256':hashlib.sha256(json.dumps(ad_event,sort_keys=True,separators=(',',':')).encode()).hexdigest()},
+ 'guardrails':{'no_rewrite_of_3051_freeze':True,'learning_only_after_result':True,'3052_preview_not_frozen':True,'no_promotion_without_gate':True}
+}
+REPORT.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'adjudication':adj,'report_sha256':sha(REPORT),'state_sha256':state_hash,'next_preview_top6':pred3052.top6,'top_weight_changes':weight_changes[:6],'loo_best':loo[:5],'margin_top_favor_43':margin[:5],'margin_top_favor_38':list(reversed(margin[-5:]))},ensure_ascii=False,indent=2))

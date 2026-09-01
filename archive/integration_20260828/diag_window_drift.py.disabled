@@ -1,0 +1,46 @@
+from __future__ import annotations
+import json, os
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+import numpy as np
+import smart_v2_engine as e
+from smart_signal_50_round_simulation import build_scenario
+
+SIGNALS=['freq25','freq50','freq100','freq250','freq500','freq1000','freq_global','ewma10','ewma25','ewma50','ewma100','ewma250']
+
+def one(job):
+    kind,seed=job
+    d=build_scenario(kind,seed,steps=450)
+    pre=e.precompute_scores(e.onehot(d))
+    out={}
+    for short,long in [(10,40),(20,60),(25,75),(30,90)]:
+        mx=0.; mx_med=0.
+        for t in range(150,len(d)+1):
+            if t < short+long: continue
+            scores=[]
+            for n in SIGNALS:
+                a=pre[n][t-short:t].mean(axis=0)
+                b=pre[n][t-short-long:t-short].mean(axis=0)
+                scores.append(float(np.mean(np.abs(a-b))))
+            scores=np.asarray(scores)
+            mx=max(mx,float(scores.max()))
+            mx_med=max(mx_med,float(np.median(scores)))
+        out[f'{short}_{long}']={'max_any':mx,'max_median':mx_med}
+    return {'kind':kind,'seed':seed,'scores':out}
+
+def main():
+    jobs=[]
+    for i in range(100):
+        jobs += [('iid_null',833000+i),('regime_shift',844000+i)]
+    with ProcessPoolExecutor(max_workers=min(8,os.cpu_count() or 1)) as ex:
+        rows=list(ex.map(one,jobs,chunksize=2))
+    summary={}
+    for cfg in ['10_40','20_60','25_75','30_90']:
+        summary[cfg]={}
+        for kind in ['iid_null','regime_shift']:
+            vals_any=np.array([r['scores'][cfg]['max_any'] for r in rows if r['kind']==kind])
+            vals_med=np.array([r['scores'][cfg]['max_median'] for r in rows if r['kind']==kind])
+            summary[cfg][kind]={'any_q50':float(np.quantile(vals_any,.5)),'any_q90':float(np.quantile(vals_any,.9)),'any_q95':float(np.quantile(vals_any,.95)),'any_min':float(vals_any.min()),'any_max':float(vals_any.max()),
+                                'median_q50':float(np.quantile(vals_med,.5)),'median_q90':float(np.quantile(vals_med,.9)),'median_q95':float(np.quantile(vals_med,.95)),'median_min':float(vals_med.min()),'median_max':float(vals_med.max())}
+    Path('DIAG_WINDOW_DRIFT.json').write_text(json.dumps({'summary':summary,'rows':rows},indent=2),encoding='utf-8')
+if __name__=='__main__': main()

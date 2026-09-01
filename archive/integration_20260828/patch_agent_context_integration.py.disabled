@@ -1,0 +1,21 @@
+from pathlib import Path
+p=Path('smart_signal_agent.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace('from smart_signal_quality import SignalQualityState\nfrom smart_signal_weights import dynamic_weights', 'from smart_signal_quality import SignalQualityState\nfrom smart_signal_weights import dynamic_weights\nfrom smart_context_regime import ContextRegimeEngine')
+s=s.replace('    state_summary: dict[str, dict]\n', '    state_summary: dict[str, dict]\n    context_state: dict[str, Any]\n')
+s=s.replace("            'river_state': self.state_summary,\n            'utility_source'", "            'river_state': self.state_summary,\n            'context_regime': self.context_state,\n            'utility_source'")
+s=s.replace("        self.last_contest: int | None = None\n        self.training_rows = 0", "        self.last_contest: int | None = None\n        self.training_rows = 0\n        self.context_engine = ContextRegimeEngine()")
+old="""        metrics = {}\n        for n in sc:\n            m = self.states[n].metrics(penalties[n], freshness=1.0)\n            m['recent_performance_utility'] = m['utility']\n            m['utility'] = float(utility_base[n])\n            m['utility_source'] = 'champion_two_level_hedge_pre_redundancy'\n            metrics[n] = m\n"""
+new="""        metrics = {}\n        for n in sc:\n            m = self.states[n].metrics(penalties[n], freshness=1.0)\n            m['recent_performance_utility'] = m['utility']\n            m['utility'] = float(utility_base[n])\n            m['utility_source'] = 'champion_two_level_hedge_pre_redundancy'\n            m['signal_performance_context'] = float(m['context'])\n            m['regime_context'] = self.context_engine.factor_for_signal(n)\n            m['context'] = float(m['context']) * float(m['regime_context'])\n            metrics[n] = m\n"""
+if old not in s: raise SystemExit('metrics anchor not found')
+s=s.replace(old,new)
+s=s.replace("            weight_components=components, quality_metrics=metrics, raw_signals=raw, state_summary=state,\n        )", "            weight_components=components, quality_metrics=metrics, raw_signals=raw, state_summary=state,\n            context_state=self.context_engine.metrics(),\n        )")
+old2="""        # Causal unsupervised prewarm: profile drift may use only signal vectors available before OOS start.\n        # No result/label is consumed here, so predictive evaluation remains untouched.\n        for t in range(1, self.start):\n            warm_sc = {n: pre[n][t] for n in names}\n            for n in names:\n                self.states[n].update_profile(warm_sc[n])\n        total_challenger_hits = 0\n"""
+new2="""        # Causal context prewarm: only historical draws before the OOS start are consumed.\n        for t in range(self.start):\n            self.context_engine.update(draws[t])\n        total_challenger_hits = 0\n"""
+if old2 not in s: raise SystemExit('prewarm anchor not found')
+s=s.replace(old2,new2)
+s=s.replace("            sc = {n: pre[n][t] for n in names}\n            for n in names:\n                self.states[n].update_profile(sc[n])\n            penalties", "            sc = {n: pre[n][t] for n in names}\n            penalties")
+s=s.replace("            total_challenger_hits += challenger_hits\n            rows.append", "            self.context_engine.update(draws[t])\n            total_challenger_hits += challenger_hits\n            rows.append")
+s=s.replace("        sc = {n: self._pre[n][len(draws)] for n in SIGNAL_NAMES}\n        for n in SIGNAL_NAMES:\n            self.states[n].update_profile(sc[n])\n        penalties", "        sc = {n: self._pre[n][len(draws)] for n in SIGNAL_NAMES}\n        penalties")
+s=s.replace("                'signals': {n: self.states[n].audit_state() for n in SIGNAL_NAMES}}", "                'signals': {n: self.states[n].audit_state() for n in SIGNAL_NAMES},\n                'context_regime': self.context_engine.metrics()}")
+p.write_text(s,encoding='utf-8')

@@ -1,0 +1,49 @@
+from __future__ import annotations
+import hashlib, json, sys
+from pathlib import Path
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+
+def sha(p): return hashlib.sha256(Path(p).read_bytes()).hexdigest()
+gate=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'
+mandate=ROOT/'SMART_3052_IMPLEMENTATION_MANDATE.md'
+cov=ROOT/'SMART_COVERAGE_3052_GATE.json'
+obj=json.loads(gate.read_text(encoding='utf-8'))
+cv=json.loads(cov.read_text(encoding='utf-8'))
+blocked=False
+msg=''
+try:
+    cc.require_pre_3052_gate(3052, gate)
+except ValueError as exc:
+    blocked=True; msg=str(exc)
+checks={
+ 'fifteen_items_registered': len(obj.get('items',[]))==15,
+ 'priorities_1_to_15': [x.get('priority') for x in obj['items']]==list(range(1,16)),
+ 'all_items_mandatory_pre3052': obj.get('mandatory_before_freeze') is True,
+ 'freeze_currently_blocked': obj.get('freeze_allowed') is False and blocked,
+ 'machine_gate_enforced_for_3052': 'gate blocked' in msg,
+ 'human_mandate_exists': mandate.exists(),
+ 'critical_line_coverage_100': cv['totals']['missing_lines']==0 and cv['totals']['covered_lines']==cv['totals']['num_statements'],
+ 'critical_branch_coverage_100': cv['totals']['missing_branches']==0 and cv['totals']['covered_branches']==cv['totals']['num_branches'],
+ 'critical_statements_851': cv['totals']['num_statements']==851,
+ 'critical_branches_236': cv['totals']['num_branches']==236,
+}
+proof={
+ 'schema':'SMART_3052_GATE_REGISTRATION_PROOF_1',
+ 'status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN',
+ 'target_contest':3052,
+ 'checks':checks,
+ 'gate_file':gate.name,'gate_sha256':sha(gate),
+ 'mandate_file':mandate.name,'mandate_sha256':sha(mandate),
+ 'coverage_file':cov.name,'coverage_sha256':sha(cov),
+ 'champion_challenger_sha256':sha(ROOT/'smart_champion_challenger.py'),
+ 'pytest':'61 passed in 15.44s',
+ 'coverage':{'statements':851,'branches':236,'line_percent':100.0,'branch_percent':100.0},
+ 'release_rule':'3052+ freeze blocked until all 15 items have status PROVEN, non-empty evidence, and freeze_allowed=true',
+ 'current_gate_message':msg,
+ 'guardrail':'Registration/enforcement proof only; does not claim the 15 implementation items are already completed.'
+}
+out=ROOT/'SMART_3052_GATE_REGISTRATION_PROOF.json'
+out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'proof_sha256':sha(out),'gate_sha256':proof['gate_sha256'],'mandate_sha256':proof['mandate_sha256']},ensure_ascii=False,indent=2))

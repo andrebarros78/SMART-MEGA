@@ -1,0 +1,34 @@
+{
+  "schema": "SMART_3052_GATE_REGISTRATION_PROOF_1",
+  "status": "MISSION_PROVEN",
+  "target_contest": 3052,
+  "checks": {
+    "fifteen_items_registered": true,
+    "priorities_1_to_15": true,
+    "all_items_mandatory_pre3052": true,
+    "freeze_currently_blocked": true,
+    "machine_gate_enforced_for_3052": true,
+    "human_mandate_exists": true,
+    "critical_line_coverage_100": true,
+    "critical_branch_coverage_100": true,
+    "critical_statements_851": true,
+    "critical_branches_236": true
+  },
+  "gate_file": "SMART_3052_IMPLEMENTATION_GATE.json",
+  "gate_sha256": "5e767c60a2bbd1660b6e7545268e85d866a73667da2669e993035f8845cfe8a4",
+  "mandate_file": "SMART_3052_IMPLEMENTATION_MANDATE.md",
+  "mandate_sha256": "0c32e7f404003edad172e8618d49000c733f046e42273d88934dd8f35dc336cf",
+  "coverage_file": "SMART_COVERAGE_3052_GATE.json",
+  "coverage_sha256": "6459d8b0f6f8b90d631aa3e10338aa88caf89be839a5c32f05a04738de2cdd85",
+  "champion_challenger_sha256": "588f0d019ef1d9ead3c28eade6f134c27367f66b7e285e0b26e188b67977fcbd",
+  "pytest": "61 passed in 15.44s",
+  "coverage": {
+    "statements": 851,
+    "branches": 236,
+    "line_percent": 100.0,
+    "branch_percent": 100.0
+  },
+  "release_rule": "3052+ freeze blocked until all 15 items have status PROVEN, non-empty evidence, and freeze_allowed=true",
+  "current_gate_message": "SMART pre-3052 implementation gate blocked; pending=['P01_COUNTERFACTUAL_ATTRIBUTION', 'P02_MARGINAL_SIGNAL_UTILITY', 'P03_FALSE_CONSENSUS_REDUNDANCY', 'P04_SIGNAL_INTERACTIONS', 'P05_CONTEXTUAL_META_WEIGHTS', 'P06_RANK_SCORE_CALIBRATION', 'P07_MULTI_CHALLENGERS', 'P08_META_GOVERNOR', 'P09_CONTINUOUS_RED_TEAM', 'P10_BOUNDED_ONLINE_LEARNING', 'P11_SIGNAL_EXPANSION_GOVERNANCE', 'P12_SEQUENTIAL_PROSPECTIVE_PROOF', 'P13_PROMOTION_GATE', 'P14_INDEPENDENT_AUDIT_NONREGRESSION', 'P15_EVIDENCE_ONLY_PROMOTION']",
+  "guardrail": "Registration/enforcement proof only; does not claim the 15 implementation items are already completed."
+}

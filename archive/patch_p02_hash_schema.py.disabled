@@ -1,0 +1,22 @@
+from pathlib import Path
+
+p=Path('smart_signal_agent.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_2'", "AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_3'")
+s=s.replace("return {'schema': 'SMART_SIGNAL_STATE_2'", "return {'schema': 'SMART_SIGNAL_STATE_3'")
+p.write_text(s,encoding='utf-8')
+
+p=Path('smart_champion_challenger.py')
+s=p.read_text(encoding='utf-8-sig')
+s=s.replace("        'context_regime': sha256(Path('smart_context_regime.py')),\n", "        'context_regime': sha256(Path('smart_context_regime.py')),\n        'marginal_utility': sha256(Path('smart_signal_marginal_utility.py')),\n")
+s=s.replace("'signal_weights_sha256': component_hashes['signal_weights'], 'context_regime_sha256': component_hashes['context_regime'],\n", "'signal_weights_sha256': component_hashes['signal_weights'], 'context_regime_sha256': component_hashes['context_regime'],\n        'marginal_utility_sha256': component_hashes['marginal_utility'],\n")
+p.write_text(s,encoding='utf-8')
+
+p=Path('test_smart_architecture_alignment.py')
+s=p.read_text(encoding='utf-8-sig')
+s=s.replace("    'smart_signal_attribution.py',\n    'smart_champion_challenger.py',", "    'smart_signal_attribution.py',\n    'smart_signal_marginal_utility.py',\n    'smart_champion_challenger.py',")
+s=s.replace("    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n", "    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n    assert deps['smart_signal_marginal_utility.py'] & {'smart_champion_challenger', 'smart_signal_agent', 'adjudicate_signal_challenger'} == set()\n    assert 'smart_v2_engine' in deps['smart_signal_marginal_utility.py']\n")
+s=s.replace("        \"'context_regime': sha256(Path('smart_context_regime.py'))\",\n", "        \"'context_regime': sha256(Path('smart_context_regime.py'))\",\n        \"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))\",\n")
+s=s.replace("    assert \"'context_regime_sha256': component_hashes['context_regime']\" in text\n", "    assert \"'context_regime_sha256': component_hashes['context_regime']\" in text\n    assert \"'marginal_utility_sha256': component_hashes['marginal_utility']\" in text\n")
+p.write_text(s,encoding='utf-8')
+print('patched schemas, hashes, architecture')

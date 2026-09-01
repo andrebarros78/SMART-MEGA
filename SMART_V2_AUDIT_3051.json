@@ -1,0 +1,114 @@
+{
+  "schema": "SMART_V2_AUDIT_2",
+  "data_file": "Mega-Sena_through_3051.xlsx",
+  "data_sha256": "fd9d6c30d12b5ec1512becfead1974b1987a61d74716b0fae60037ff00bdaa13",
+  "engine_sha256": "bff5d8beb464b94049d5933c9d6bee157f445aa9b6d15ebabcf42a848c4412d8",
+  "contests_total": 3051,
+  "walk_start_index": 1000,
+  "walk_contests": 2051,
+  "dynamic_weighting": "two_level_hedge_reward_hits_minus_uniform_expectation",
+  "eta": 0.6931471805599453,
+  "prior_mix": 0.2,
+  "expert_cap_within_family": 0.6,
+  "family_cap": 0.7,
+  "redundancy_penalty": "1-mean_abs_expert_correlation, floor=0.15",
+  "tie_break": "score desc, number asc",
+  "walk_forward": {
+    "total_hits": 1262,
+    "uniform_expected_hits": 1230.6,
+    "excess_hits": 31.40000000000009,
+    "mean_hits": 0.6153096050706972,
+    "diagnostic_z_vs_uniform": 0.9862319410231557,
+    "final_weights": {
+      "ewma10": 0.04305539387653628,
+      "ewma25": 0.03438539260135093,
+      "ewma50": 0.0299749820846473,
+      "ewma100": 0.027449762887802934,
+      "ewma250": 0.16513446854966263,
+      "freq25": 0.03441289794630189,
+      "freq50": 0.034442494633891214,
+      "freq100": 0.03308832889239028,
+      "freq250": 0.0368121170995033,
+      "freq500": 0.04348865687426057,
+      "freq1000": 0.4697221442285215,
+      "freq_global": 0.04803336032513129
+    },
+    "final_family_weights": {
+      "ewma": 0.30000000000000004,
+      "freq": 0.7
+    },
+    "max_abs_expert_corr": 1.0
+  },
+  "placebo": {
+    "total_hits": 1243,
+    "expected": 1230.6,
+    "excess": 12.400000000000091
+  },
+  "ablation": {
+    "freq25": {
+      "hits_without": 1240,
+      "delta_full_minus_without": 22
+    },
+    "freq50": {
+      "hits_without": 1270,
+      "delta_full_minus_without": -8
+    },
+    "freq100": {
+      "hits_without": 1272,
+      "delta_full_minus_without": -10
+    },
+    "freq250": {
+      "hits_without": 1269,
+      "delta_full_minus_without": -7
+    },
+    "freq500": {
+      "hits_without": 1265,
+      "delta_full_minus_without": -3
+    },
+    "freq1000": {
+      "hits_without": 1235,
+      "delta_full_minus_without": 27
+    },
+    "freq_global": {
+      "hits_without": 1274,
+      "delta_full_minus_without": -12
+    },
+    "ewma10": {
+      "hits_without": 1268,
+      "delta_full_minus_without": -6
+    },
+    "ewma25": {
+      "hits_without": 1261,
+      "delta_full_minus_without": 1
+    },
+    "ewma50": {
+      "hits_without": 1264,
+      "delta_full_minus_without": -2
+    },
+    "ewma100": {
+      "hits_without": 1255,
+      "delta_full_minus_without": 7
+    },
+    "ewma250": {
+      "hits_without": 1250,
+      "delta_full_minus_without": 12
+    }
+  },
+  "monte_carlo_null": {
+    "trials": 40,
+    "steps": 400,
+    "warmup": 100,
+    "mean_excess": 1.425,
+    "std_excess": 11.473240885218807,
+    "p95_excess": 19.19999999999999,
+    "p99_excess": 27.879999999999995,
+    "positive_excess_rate": 0.45,
+    "false_positive_rate_z_ge_2": 0.025
+  },
+  "guardrails": {
+    "predictive_claim": false,
+    "legacy_v0_6_reproduced": false,
+    "prospective_proof": false,
+    "reason": "historical engineering evidence is not prospective proof"
+  }
+}

@@ -1,0 +1,52 @@
+from pathlib import Path
+
+p=Path('smart_signal_agent.py')
+s=p.read_text(encoding='utf-8-sig')
+s=s.replace("from smart_context_regime import ContextRegimeEngine\n", "from smart_context_regime import ContextRegimeEngine\nfrom smart_signal_marginal_utility import MarginalUtilityState, update_marginal_states\n")
+s=s.replace("        self.context_engine = ContextRegimeEngine()\n", "        self.context_engine = ContextRegimeEngine()\n        self.marginal_states = {n: MarginalUtilityState(name=n) for n in SIGNAL_NAMES}\n")
+old="""            m['context'] = float(m['context']) * float(m['regime_context'])
+            metrics[n] = m
+"""
+new="""            m['context'] = float(m['context']) * float(m['regime_context'])
+            marginal = self.marginal_states[n].metrics()
+            m['marginal_utility'] = marginal
+            m['marginal_utility_mean_delta_hits'] = float(marginal['mean_delta_hits'])
+            m['marginal_utility_confidence'] = float(marginal['confidence'])
+            m['marginal_utility_shrunk'] = float(marginal['shrunk_mean_delta_hits'])
+            m['marginal_utility_weight_effect_enabled'] = False
+            metrics[n] = m
+"""
+assert old in s
+s=s.replace(old,new)
+old="""            challenger_hits = len(set(pred.top6) & actual)
+            expert_hits = self._learn_actual(sc, draws[t])
+"""
+new="""            challenger_hits = len(set(pred.top6) & actual)
+            marginal_update = update_marginal_states(self.marginal_states, sc, pred.weights, draws[t])
+            expert_hits = self._learn_actual(sc, draws[t])
+"""
+assert old in s
+s=s.replace(old,new)
+old="""                         'expert_hits': expert_hits, 'family_hits': family_hits,
+                         'weights_before_result': pred.weights})
+"""
+new="""                         'expert_hits': expert_hits, 'family_hits': family_hits,
+                         'weights_before_result': pred.weights,
+                         'marginal_delta_hits_after_result': {
+                             n: (None if not item['available'] else int(item['delta_hits']))
+                             for n, item in marginal_update['per_signal'].items()
+                         }})
+"""
+assert old in s
+s=s.replace(old,new)
+old="""                'signals': {n: self.states[n].audit_state() for n in SIGNAL_NAMES},
+                'context_regime': self.context_engine.metrics()}
+"""
+new="""                'signals': {n: self.states[n].audit_state() for n in SIGNAL_NAMES},
+                'marginal_utility': {n: self.marginal_states[n].metrics() for n in SIGNAL_NAMES},
+                'context_regime': self.context_engine.metrics()}
+"""
+assert old in s
+s=s.replace(old,new)
+p.write_text(s, encoding='utf-8')
+print('patched smart_signal_agent.py')

@@ -1,0 +1,5 @@
+from pathlib import Path
+p=Path('test_smart_signal_interactions.py'); s=p.read_text(encoding='utf-8-sig')
+old="""    return {'raw_signals':raw,'weights':{'a':.4,'b':.35,'c':.25}}\n"""
+new="""    weights={'a':.4,'b':.35,'c':.25}\n    quality={n:{'quality':1.0,'confidence':1.0} for n in raw}\n    return {'raw_signals':raw,'weights':weights,'quality_metrics':quality}\n"""
+assert old in s; p.write_text(s.replace(old,new),encoding='utf-8'); print('quality fixture fixed')

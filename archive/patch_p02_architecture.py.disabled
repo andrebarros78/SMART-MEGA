@@ -1,0 +1,11 @@
+from pathlib import Path
+p=Path('test_smart_architecture_alignment.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("    'smart_signal_attribution.py',\n}", "    'smart_signal_attribution.py',\n    'smart_signal_marginal_utility.py',\n}")
+s=s.replace("    assert {'smart_v2_engine', 'smart_signal_quality', 'smart_signal_weights', 'smart_context_regime'} <= deps['smart_signal_agent.py']\n", "    assert {'smart_v2_engine', 'smart_signal_quality', 'smart_signal_weights', 'smart_context_regime', 'smart_signal_marginal_utility'} <= deps['smart_signal_agent.py']\n")
+s=s.replace("    assert {'smart_v2_engine', 'smart_champion_challenger', 'smart_signal_attribution'} <= deps['adjudicate_signal_challenger.py']\n", "    assert {'smart_v2_engine', 'smart_champion_challenger', 'smart_signal_attribution', 'smart_signal_marginal_utility'} <= deps['adjudicate_signal_challenger.py']\n")
+# If previous marker differs, append explicit dependency assertions inside test.
+if "smart_signal_marginal_utility' <=" not in s and "'smart_signal_marginal_utility'} <= deps['smart_signal_agent.py']" not in s:
+    pass
+p.write_text(s,encoding='utf-8')
+print('patched architecture')

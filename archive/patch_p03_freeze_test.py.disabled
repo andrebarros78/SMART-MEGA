@@ -1,0 +1,11 @@
+from pathlib import Path
+p=Path('test_smart_signal_agent.py'); s=p.read_text(encoding='utf-8-sig')
+old="""    assert len(obj['challenger']['raw_signals']) == len(SIGNAL_NAMES)\n    led = json.loads(ledger.read_text(encoding='utf-8'))\n"""
+new="""    assert len(obj['challenger']['raw_signals']) == len(SIGNAL_NAMES)\n    assert len(obj['redundancy_consensus_sha256']) == 64\n    assert obj['challenger']['redundancy_consensus']['threshold'] == 0.90\n    led = json.loads(ledger.read_text(encoding='utf-8'))\n"""
+if old not in s: raise SystemExit('marker1')
+s=s.replace(old,new)
+old2="""    assert led['events'][0]['frozen_before_result'] is True\n"""
+new2="""    assert led['events'][0]['frozen_before_result'] is True\n    assert len(led['events'][0]['hashes']['redundancy_consensus']) == 64\n    assert led['events'][0]['snapshot']['redundancy_consensus']['threshold'] == 0.90\n"""
+s=s.replace(old2,new2)
+p.write_text(s,encoding='utf-8')
+print('patched')

@@ -1,0 +1,60 @@
+{
+  "schema": "SMART_P15_FINAL_RETEST_PROOF_1",
+  "created_brt": "2026-08-31T16:17:00.559139-03:00",
+  "project_id": "smart-mega",
+  "root": "C:\\New Projet\\SMART-MEGA",
+  "point": 15,
+  "id": "P15_EVIDENCE_ONLY_PROMOTION",
+  "status": "MISSION_PROVEN_P15",
+  "post_registration_tests": {
+    "focused_p13_p15_integration": {
+      "passed": 35,
+      "failed": 0,
+      "duration_seconds": 23.47
+    },
+    "full_regression": {
+      "passed": 235,
+      "failed": 0
+    }
+  },
+  "coverage": {
+    "p15_module": "100% lines + branches (197/197 statements; 102/102 branches)",
+    "orchestrator": "100% lines + branches (173/173 statements; 60/60 branches)"
+  },
+  "hashes": {
+    "p15_module_sha256": "83c4726989989ec302aaa7fb8cdabbf1d266ef3a64afcf427f64bf91b86ef28b",
+    "orchestrator_sha256": "4659358f8b991114b424c66b2fb74e8658e32184faf3e7c0e58c414ef5e72ff8",
+    "p15_test_sha256": "18cad5797a66cb7213dba283b1775091efa9e1491349981170e09adbc1db98d7",
+    "p15_coverage_sha256": "7310e4006d8060ae2a6cff8c2ad14c87914150928b20c8a5bbcf1f516709acd7",
+    "orchestrator_coverage_sha256": "99e2e0fa24e1673e22c17240a7bf1fd6934a47af145ccdbff9cda0a2bb19d628",
+    "p15_implementation_proof_sha256": "fefc1b1c7ec990755e79ab09077ba093642ad9db39b6ea2741d6ab744c87b37d",
+    "gate_sha256": "3adcadbf0b7f77fff8a5777b66b9bdf6666f8cf974c81dbfe18a904a55e03479",
+    "ledger_sha256": "0aff0ea01a4714185709a174159642fa512bc3202a8411a8a7028f4053fb710a"
+  },
+  "gate": {
+    "p15_status": "PROVEN",
+    "p15_evidence_count": 7,
+    "progress": {
+      "proven_items": 11,
+      "total_items": 15,
+      "remaining_items": 4
+    },
+    "freeze_allowed": false,
+    "remaining_pending_ids": [
+      "P09_CONTINUOUS_RED_TEAM",
+      "P10_BOUNDED_ONLINE_LEARNING",
+      "P11_SIGNAL_EXPANSION_GOVERNANCE",
+      "P14_INDEPENDENT_AUDIT_NONREGRESSION"
+    ]
+  },
+  "current_real_promotion": {
+    "decision": "KEEP_CHAMPION",
+    "authorized": false,
+    "production_switch_may_proceed": false,
+    "blockers": [
+      "p13_not_eligible"
+    ],
+    "champion_remains_active": true
+  },
+  "conclusion": "P15 evidence-only promotion mechanism is implemented, fully covered, integrated, fail-closed on the real ledger, persisted as PROVEN, and non-regression tested after gate registration."
+}

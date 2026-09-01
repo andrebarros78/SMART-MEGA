@@ -1,0 +1,103 @@
+{
+  "schema": "SMART_P13_PROMOTION_GATE_PROOF_1",
+  "created_brt": "2026-08-31T12:39:08.933009-03:00",
+  "point": 13,
+  "id": "P13_PROMOTION_GATE",
+  "requirement": "Implement and preserve a promotion gate requiring prospective minimum sample, cumulative superiority, favorable regret, sequential evidence, and larger samples for smaller advantages.",
+  "status": "PROVEN",
+  "mechanism_scope": "Gate mechanism proven before contest 3052; no impossible prospective evidence was fabricated.",
+  "policy": {
+    "schema": "SMART_PROMOTION_GATE_POLICY_1",
+    "base_min_prospective_contests": 20,
+    "min_e_value": 10.0,
+    "must_beat_champion_cumulatively": true,
+    "must_have_favorable_regret": true,
+    "adaptive_sample_rule": {
+      "mean_hit_advantage_gte_0_50": 20,
+      "mean_hit_advantage_gte_0_25": 30,
+      "mean_hit_advantage_gte_0_10": 50,
+      "mean_hit_advantage_gt_0": 80
+    },
+    "promotion_before_evidence_prohibited": true,
+    "accepted_hit_domain": [
+      0,
+      6
+    ],
+    "invalid_or_nonfinite_inputs_rejected": true
+  },
+  "implementation": {
+    "module": "smart_promotion_gate.py",
+    "module_sha256": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+    "orchestrator": "smart_champion_challenger.py",
+    "orchestrator_sha256": "ec9bc056292dee8b590517329dcdb732371ef593093d09e0374367ae09d43762",
+    "adjudicator": "adjudicate_signal_challenger.py",
+    "adjudicator_sha256": "5bdbe5320ef1c63121c06e37c9a5353e1866f5649923cb3502ba252a451b289f",
+    "freeze_hashes_promotion_gate": true,
+    "freeze_preserves_promotion_policy": true,
+    "ledger_freeze_snapshot_preserves_promotion_policy": true,
+    "promotion_reads_only_causal_freeze_adjudication_pairs": true
+  },
+  "gate_conditions": {
+    "base_min_prospective_contests": 20,
+    "adaptive_sample_when_advantage_small": true,
+    "cumulative_superiority_required": true,
+    "favorable_regret_required": true,
+    "sequential_e_value_threshold": 10.0,
+    "invalid_hit_domain_rejected": true,
+    "nonfinite_or_negative_evidence_rejected": true,
+    "champion_kept_if_any_gate_fails": true
+  },
+  "coverage": {
+    "file": "SMART_COVERAGE_P13_FINAL.json",
+    "sha256": "c60527ae91af2377418b8bb9e88803b7dae8555bc37c4eed57a92749910c0daf",
+    "statements": 64,
+    "covered_statements": 64,
+    "branches": 26,
+    "covered_branches": 26,
+    "coverage": "100% lines + branches"
+  },
+  "tests": {
+    "focused_file": "test_smart_promotion_gate.py",
+    "focused_file_sha256": "b00d19f8f300f4bdf4fd3de4c8e84aa65cd8afc145059e8c2eb11fa785bec124",
+    "focused_passed": 13,
+    "focused_plus_architecture_passed": 18,
+    "full_suite_passed": 191,
+    "architecture_alignment_file": "test_smart_architecture_alignment.py",
+    "architecture_alignment_sha256": "9bb012e8cb4dd2137aedcb23392a5d98030726a888018e6278d1e23908d06e53",
+    "tested": [
+      "adaptive sample floors 20/30/50/80",
+      "promotion only when all gate conditions pass",
+      "small advantage blocks early promotion",
+      "sequential evidence threshold is mandatory",
+      "cumulative superiority and favorable regret are mandatory",
+      "zero prospective evidence never promotes",
+      "invalid hit values are rejected rather than truncated",
+      "nonfinite/negative sequential evidence is rejected",
+      "promotion policy and module hash are frozen and ledger-preserved",
+      "architecture dependency remains layered/non-circular"
+    ]
+  },
+  "current_real_ledger": {
+    "file": "SMART_P13_CURRENT_LEDGER_DECISION.json",
+    "sha256": "35942ebbc528a1068aa28164ac03bcce366957033aa511964d34c68946ce327f",
+    "decision": "KEEP_CHAMPION",
+    "eligible": false,
+    "n": 1,
+    "challenger_hits": 1,
+    "champion_hits": 1,
+    "e_value": 1.0,
+    "blockers": [
+      "no_cumulative_superiority",
+      "regret_not_favorable",
+      "insufficient_adaptive_sample",
+      "insufficient_sequential_evidence"
+    ]
+  },
+  "anti_false_learning": {
+    "historical_or_synthetic_improvement_does_not_promote": true,
+    "no_retroactive_optimization": true,
+    "no_production_switch_performed_by_this_proof": true,
+    "prospective_gate_remains_authoritative": true
+  },
+  "result": "P13 mechanism implemented, adversarially tested, frozen, ledger-preserved, and non-regressive."
+}

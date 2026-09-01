@@ -1,0 +1,123 @@
+{
+  "schema": "SMART_P15_CURRENT_LEDGER_DECISION_1",
+  "created_brt": "2026-08-31T23:46:17.109228-03:00",
+  "ledger_file": "SMART_SIGNAL_LEDGER.json",
+  "ledger_sha256": "0aff0ea01a4714185709a174159642fa512bc3202a8411a8a7028f4053fb710a",
+  "implementation_gate_sha256_before_p15_registration": "16b063c0cf2fd6e5f2b4b9800ac948945bfbf2584ef79b53f26d75a0c47d4cbc",
+  "independent_audit_file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+  "independent_audit_file_exists": true,
+  "decision": {
+    "schema": "SMART_EVIDENCE_ONLY_PROMOTION_AUTHORIZATION_1",
+    "decision": "KEEP_CHAMPION",
+    "authorized": false,
+    "production_switch_may_proceed": false,
+    "champion_remains_active": true,
+    "p13_eligible": false,
+    "p13_gate": {
+      "decision": "KEEP_CHAMPION",
+      "eligible": false,
+      "n": 0,
+      "challenger_hits": 0,
+      "champion_hits": 0,
+      "advantage_hits": 0,
+      "mean_hit_advantage": 0.0,
+      "cumulative_regret": 0,
+      "e_value": 1.0,
+      "inputs_validated": true,
+      "base_min_prospective_contests": 20,
+      "required_prospective_contests": 20,
+      "adaptive_sample_escalated": false,
+      "enough_contests": false,
+      "superior_to_champion": false,
+      "favorable_regret": false,
+      "sequential_evidence": false,
+      "blockers": [
+        "no_adjudicated_prospective_contests",
+        "insufficient_adaptive_sample",
+        "insufficient_sequential_evidence"
+      ],
+      "reason": "no adjudicated prospective contests",
+      "candidate_fingerprint": null,
+      "lineage_pair_count": 0,
+      "total_versioned_causal_pairs": 0,
+      "unversioned_causal_pairs_ignored": 1,
+      "discarded_prior_version_pairs": 0,
+      "lineage_e_value": 1.0,
+      "stored_global_e_value_trusted_for_promotion": false,
+      "lineage_reset_on_predictive_architecture_change": true,
+      "promotion_lineage_components": [
+        "engine",
+        "champion_engine",
+        "signal_agent",
+        "signal_quality",
+        "signal_weights",
+        "context_regime",
+        "redundancy_consensus",
+        "marginal_utility",
+        "contextual_meta_weights",
+        "rank_score_calibration",
+        "multi_challengers",
+        "meta_governor",
+        "bounded_online_learning",
+        "signal_interactions",
+        "signal_expansion_governance"
+      ]
+    },
+    "implementation_gate": {
+      "available": false
+    },
+    "independent_audit": {
+      "available": false
+    },
+    "global_integrity": {
+      "available": false,
+      "verified": false
+    },
+    "global_integrity_verified": false,
+    "known_material_deficiencies": [
+      "p13_not_eligible"
+    ],
+    "known_material_deficiency_count": 1,
+    "blockers": [
+      "p13_not_eligible"
+    ],
+    "reason": "evidence-only promotion requirements not met",
+    "policy": {
+      "schema": "SMART_EVIDENCE_ONLY_PROMOTION_POLICY_1",
+      "p13_statistical_eligibility_required": true,
+      "p14_independent_audit_pass_required": true,
+      "all_15_implementation_items_proven_required": true,
+      "implementation_gate_exact_contract_required": true,
+      "implementation_gate_freeze_allowed_required": true,
+      "current_global_integrity_proof_required": true,
+      "audit_report_self_hash_required": true,
+      "audit_promotion_authority_must_be_false": true,
+      "audit_independence_flag_required": true,
+      "audit_coverage_lines_and_branches_required": true,
+      "audit_hash_integrity_required": true,
+      "audit_deterministic_replay_required": true,
+      "audit_future_leakage_absent_required": true,
+      "audit_full_champion_comparison_required": true,
+      "p13_p14_metric_identity_required": true,
+      "known_material_deficiency_count_must_be_zero": true,
+      "missing_or_invalid_evidence_keeps_champion": true,
+      "manual_override_prohibited": true,
+      "historical_or_synthetic_evidence_cannot_authorize_real_promotion": true,
+      "production_switch_requires_explicit_p15_authorization": true,
+      "required_audit_checks": [
+        "coverage_lines_and_branches",
+        "hash_integrity",
+        "deterministic_replay",
+        "future_leakage_absent",
+        "full_champion_comparison",
+        "promotion_lineage_recomputed",
+        "independence_no_forbidden_dependencies"
+      ],
+      "sha256": "2591a52595014fc6e95d950ba388fbd9fe66d55fd22abf4a40dc3876f899bd96"
+    },
+    "sha256": "cccbb4ba60a5b548e8d98fc56867223c00e463b12ca66016400b17c7a7a52fe2"
+  },
+  "production_switch_performed": false,
+  "champion_remains_active": true,
+  "conclusion": "Current real ledger remains fail-closed; P15 does not authorize promotion while implementation/audit/material-evidence requirements are incomplete."
+}

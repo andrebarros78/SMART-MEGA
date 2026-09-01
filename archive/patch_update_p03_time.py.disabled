@@ -1,0 +1,5 @@
+from pathlib import Path
+p=Path('archive/update_p03_gate.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace("import hashlib,json,sys\n", "import hashlib,json,sys\nfrom datetime import datetime\nfrom zoneinfo import ZoneInfo\n")
+s=s.replace("gate['last_update_brt']='2026-08-30T15:00:00-03:00'", "gate['last_update_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()")
+p.write_text(s,encoding='utf-8'); print('patched')

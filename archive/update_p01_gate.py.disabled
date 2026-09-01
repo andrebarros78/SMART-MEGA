@@ -1,0 +1,62 @@
+from __future__ import annotations
+import hashlib, json, sys
+from datetime import datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+
+
+def sha(p:Path)->str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+gate_path=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'
+proof_path=ROOT/'SMART_P01_COUNTERFACTUAL_ATTRIBUTION_PROOF.json'
+cov_path=ROOT/'SMART_COVERAGE_P01_FINAL.json'
+ledger_path=ROOT/'SMART_SIGNAL_LEDGER.json'
+gate=json.loads(gate_path.read_text(encoding='utf-8'))
+proof=json.loads(proof_path.read_text(encoding='utf-8'))
+ledger=json.loads(ledger_path.read_text(encoding='utf-8'))
+if proof.get('status')!='MISSION_PROVEN' or not all(proof.get('checks',{}).values()):
+    raise SystemExit('P01 proof is not proven')
+attrs=[e for e in ledger['events'] if e.get('event_type')=='ATTRIBUTION' and int(e.get('target_contest',-1))==3051]
+if len(attrs)!=1:
+    raise SystemExit('expected exactly one 3051 attribution event')
+item=next(x for x in gate['items'] if x['id']=='P01_COUNTERFACTUAL_ATTRIBUTION')
+item['status']='PROVEN'
+item['proven_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+item['evidence']=[
+    {'type':'implementation_proof','file':proof_path.name,'sha256':sha(proof_path)},
+    {'type':'coverage','file':cov_path.name,'sha256':sha(cov_path),'statements':1011,'branches':306,'coverage':'100% lines + branches'},
+    {'type':'module','file':'smart_signal_attribution.py','sha256':sha(ROOT/'smart_signal_attribution.py')},
+    {'type':'integration','file':'adjudicate_signal_challenger.py','sha256':sha(ROOT/'adjudicate_signal_challenger.py'),'flow':'ADJUDICATION -> ATTRIBUTION'},
+    {'type':'prospective_ledger_attribution','target_contest':3051,'attribution_sha256':attrs[0]['attribution_sha256'],'freeze_sha256':attrs[0]['freeze_sha256']},
+]
+proven=[x for x in gate['items'] if x.get('status')=='PROVEN' and isinstance(x.get('evidence'),list) and x.get('evidence')]
+gate['progress']={'proven_items':len(proven),'total_items':15,'remaining_items':15-len(proven)}
+gate['freeze_allowed']=len(proven)==15
+gate['last_updated_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+gate_path.write_text(json.dumps(gate,ensure_ascii=False,indent=2),encoding='utf-8')
+blocked=False; reason=''
+try:
+    cc.require_pre_3052_gate(3052,gate_path)
+except ValueError as exc:
+    blocked=True; reason=str(exc)
+checks={
+ 'p01_status_proven':item['status']=='PROVEN',
+ 'p01_has_evidence':bool(item['evidence']),
+ 'exactly_one_item_proven':len(proven)==1,
+ 'other_14_not_falsely_proven':all(x.get('status')!='PROVEN' for x in gate['items'] if x['id']!='P01_COUNTERFACTUAL_ATTRIBUTION'),
+ 'freeze_3052_still_blocked':blocked and 'P01_COUNTERFACTUAL_ATTRIBUTION' not in reason,
+ 'freeze_allowed_false':gate['freeze_allowed'] is False,
+}
+out={
+ 'schema':'SMART_P01_GATE_UPDATE_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN',
+ 'checks':checks,'gate_sha256':sha(gate_path),'p01_proof_sha256':sha(proof_path),
+ 'progress':gate['progress'],'freeze_3052_block_reason':reason,
+}
+out_path=ROOT/'SMART_P01_GATE_UPDATE_PROOF.json'
+out_path.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({**out,'proof_sha256':sha(out_path)},ensure_ascii=False,indent=2))

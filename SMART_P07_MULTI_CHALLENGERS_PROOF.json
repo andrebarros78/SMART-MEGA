@@ -1,0 +1,168 @@
+{
+  "schema": "SMART_P07_MULTI_CHALLENGERS_PROOF_1",
+  "point_id": "P07_MULTI_CHALLENGERS",
+  "status": "MISSION_PROVEN",
+  "all_checks_pass": true,
+  "checks": {
+    "coverage_100_lines": true,
+    "coverage_100_branches": true,
+    "five_policies": true,
+    "oos_2050": true,
+    "no_selection": true,
+    "primary_preserved": true,
+    "current_module_hash": true,
+    "current_agent_hash": true,
+    "freeze_3051_valid": true,
+    "no_p07_backfill_3051": true,
+    "p01_p06_proven": true,
+    "focused_tests_pass": true
+  },
+  "failed": [],
+  "evidence": {
+    "coverage": {
+      "statements": 1962,
+      "branches": 654,
+      "percent": 100.0
+    },
+    "historical": {
+      "schema": "SMART_P07_MULTI_CHALLENGERS_HISTORICAL_OOS_1",
+      "data_cutoff": 3050,
+      "oos_start": 1001,
+      "oos_predictions": 2050,
+      "policy_ids": [
+        "quality_dynamic",
+        "diversity_max",
+        "low_redundancy",
+        "regime_context",
+        "conservative"
+      ],
+      "selection_performed": false,
+      "selection_deferred_to_p08": true,
+      "retroactive_selection_prohibited": true,
+      "total_hits": {
+        "quality_dynamic": 1271,
+        "diversity_max": 1235,
+        "low_redundancy": 1258,
+        "regime_context": 1271,
+        "conservative": 1244
+      },
+      "uniform_expected_hits": 1230.0,
+      "primary_challenger_total_hits": 1271,
+      "different_top6_vs_quality_dynamic": {
+        "quality_dynamic": 0,
+        "diversity_max": 1797,
+        "low_redundancy": 1201,
+        "regime_context": 0,
+        "conservative": 1302
+      },
+      "pairwise_different_top6_contests": {
+        "quality_dynamic|diversity_max": 1797,
+        "quality_dynamic|low_redundancy": 1201,
+        "quality_dynamic|regime_context": 0,
+        "quality_dynamic|conservative": 1302,
+        "diversity_max|low_redundancy": 1829,
+        "diversity_max|regime_context": 1797,
+        "diversity_max|conservative": 1317,
+        "low_redundancy|regime_context": 1201,
+        "low_redundancy|conservative": 1576,
+        "regime_context|conservative": 1302
+      },
+      "next_prediction_shadow": {
+        "quality_dynamic": {
+          "top6": [
+            11,
+            27,
+            10,
+            30,
+            53,
+            43
+          ],
+          "max_weight": 0.37819895814726584,
+          "family_totals": {
+            "ewma": 0.30000000000000004,
+            "freq": 0.7
+          }
+        },
+        "diversity_max": {
+          "top6": [
+            58,
+            11,
+            30,
+            6,
+            43,
+            27
+          ],
+          "max_weight": 0.10000000000000003,
+          "family_totals": {
+            "ewma": 0.5000000000000002,
+            "freq": 0.5000000000000001
+          }
+        },
+        "low_redundancy": {
+          "top6": [
+            11,
+            27,
+            10,
+            30,
+            53,
+            43
+          ],
+          "max_weight": 0.33444442148424447,
+          "family_totals": {
+            "ewma": 0.30000000000000004,
+            "freq": 0.7000000000000001
+          }
+        },
+        "regime_context": {
+          "top6": [
+            11,
+            27,
+            10,
+            30,
+            53,
+            43
+          ],
+          "max_weight": 0.37819895814726584,
+          "family_totals": {
+            "ewma": 0.30000000000000004,
+            "freq": 0.7
+          }
+        },
+        "conservative": {
+          "top6": [
+            11,
+            27,
+            30,
+            58,
+            43,
+            6
+          ],
+          "max_weight": 0.22481376478791865,
+          "family_totals": {
+            "ewma": 0.4000000000000001,
+            "freq": 0.6000000000000001
+          }
+        }
+      },
+      "primary_top6_preserved": true,
+      "current_multi_sha256": "fe516126e45c83229789d25d2ff431c1b96df663db3171de972d19ab26bc2d90",
+      "hashes": {
+        "data": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+        "module": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+        "agent": "5ce58d176e4230660be800d725a7ebb98cd653ee17572c6835b52113051b3c53"
+      },
+      "limits": {
+        "historical_winner_not_selected": true,
+        "prospective_predictive_claim": false,
+        "production_switch": false
+      }
+    },
+    "focused_pytest": ".....................                                                    [100%]\n21 passed in 33.51s",
+    "global_pytest_last_observed": "134 passed in 156.84s",
+    "pip_check_last_observed": "No broken requirements found.",
+    "module_sha256": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+    "agent_sha256": "5ce58d176e4230660be800d725a7ebb98cd653ee17572c6835b52113051b3c53",
+    "freeze_3051_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53"
+  },
+  "generated_utc": "2026-08-30T23:01:19.165013+00:00"
+}

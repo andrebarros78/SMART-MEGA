@@ -1,0 +1,85 @@
+from pathlib import Path
+import sys,json,hashlib,subprocess,py_compile
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+from smart_signal_interactions import analyze_snapshot
+
+sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+gate=json.loads((ROOT/'SMART_3052_IMPLEMENTATION_GATE.json').read_text(encoding='utf-8'))
+ledger=json.loads((ROOT/'SMART_SIGNAL_LEDGER.json').read_text(encoding='utf-8'))
+fr=cc.active_freeze(ledger,3051)
+ints=[x for x in ledger['events'] if x.get('event_type')=='INTERACTIONS' and int(x.get('target_contest',-1))==3051]
+corrections=[x for x in ledger['events'] if x.get('event_type')=='INTERACTIONS_CORRECTION' and int(x.get('target_contest',-1))==3051]
+ads=[x for x in ledger['events'] if x.get('event_type')=='ADJUDICATION' and int(x.get('target_contest',-1))==3051]
+recompute=analyze_snapshot(fr['snapshot'],ads[0]['actual_numbers'],max_group_order=3)
+hist=json.loads((ROOT/'SMART_P04_INTERACTIONS_HISTORICAL.json').read_text(encoding='utf-8'))
+cov=json.loads((ROOT/'SMART_COVERAGE_P04_FINAL.json').read_text(encoding='utf-8'))
+critical={'adjudicate_signal_challenger.py','freeze_next_research.py','smart_champion_challenger.py','smart_context_regime.py','smart_signal_agent.py','smart_signal_attribution.py','smart_signal_interactions.py','smart_signal_marginal_utility.py','smart_signal_quality.py','smart_signal_redundancy_consensus.py','smart_signal_weights.py','smart_v2_engine.py','smart_v2_production.py'}
+files={Path(k).name:v for k,v in cov['files'].items() if Path(k).name in critical}
+stmts=sum(v['summary']['num_statements'] for v in files.values()); covered=sum(v['summary']['covered_lines'] for v in files.values())
+branches=sum(v['summary']['num_branches'] for v in files.values()); covered_b=sum(v['summary']['covered_branches'] for v in files.values())
+# regression + environment
+py=str(ROOT/'.venv/Scripts/python.exe')
+env=dict(__import__('os').environ); env.pop('PYTHONPATH',None)
+pytest=subprocess.run([py,'-m','pytest','-q'],cwd=ROOT,env=env,text=True,capture_output=True)
+pip=subprocess.run([py,'-m','pip','check'],cwd=ROOT,env=env,text=True,capture_output=True)
+compile_errors=[]
+for p in ROOT.glob('*.py'):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as ex: compile_errors.append(f'{p.name}: {ex}')
+try:
+    cc.require_pre_3052_gate(3052); blocked=False
+except ValueError:
+    blocked=True
+pitems={x['id']:x for x in gate['items']}
+# The original P04 event is immutable. A later schema-hardening correction may supersede it
+# without rewriting history. Numeric behavior must remain identical while the current engine
+# recomputes to the correction hash.
+def semantic_signature(a):
+    return {
+        'actual_numbers':a['actual_numbers'],'full_hits':a['full_hits'],'full_top6':a['full_top6'],
+        'single_effects':a['single_effects'],
+        'pairs':{k:{x:v[x] for x in ('hits_without_pair','joint_delta_hits','interaction_delta_hits')}
+                 for k,v in a['pair_interactions'].items() if v.get('available',True)},
+        'triples':{k:{x:v[x] for x in ('hits_without_group','joint_delta_hits','pure_interaction_delta_hits')}
+                   for k,v in a['triple_interactions'].items()},
+    }
+active_interaction = corrections[0] if len(corrections)==1 else (ints[0] if len(ints)==1 else None)
+semantic_equal = bool(len(ints)==1 and len(corrections)==1 and semantic_signature(ints[0]['analysis'])==semantic_signature(corrections[0]['analysis']))
+checks={
+ 'single_original_interaction_event_3051':len(ints)==1,
+ 'single_interaction_correction_3051':len(corrections)==1,
+ 'single_adjudication_3051':len(ads)==1,
+ 'original_interaction_preserved_append_only':len(ints)==1 and len(corrections)==1 and corrections[0].get('supersedes_interaction_sha256')==ints[0].get('interaction_sha256') and corrections[0].get('retroactive_rewrite') is False,
+ 'interaction_references_active_freeze':active_interaction is not None and active_interaction['freeze_sha256']==fr['freeze_sha256'],
+ 'behavioral_recompute_identical':active_interaction is not None and recompute['interaction_sha256']==active_interaction['interaction_sha256'],
+ 'correction_semantically_equivalent_to_original':semantic_equal,
+ 'pair_count_3051_66':active_interaction is not None and len(active_interaction['analysis']['pair_interactions'])==66,
+ 'triple_count_3051_220':active_interaction is not None and len(active_interaction['analysis']['triple_interactions'])==220,
+ 'interaction_measurement_only':active_interaction is not None and active_interaction['analysis']['weight_effect_enabled'] is False and active_interaction['policy_effect']=='NONE_P04_MEASUREMENT_ONLY',
+ 'historical_oos_2050':hist['oos_predictions']==2050,
+ 'historical_all_66_pairs_2050':hist['pair_count']==66 and hist['all_pairs_2050'] is True,
+ 'historical_p03_performance_preserved':hist['challenger_hits']==1271,
+ 'historical_ranking_preserved':hist['next_top6']==[11,27,10,30,53,43],
+ 'historical_weight_effect_disabled':hist['weight_effect_enabled'] is False,
+ 'future_freeze_hashes_p04':"'signal_interactions': sha256(Path('smart_signal_interactions.py'))" in (ROOT/'smart_champion_challenger.py').read_text(encoding='utf-8-sig'),
+ 'future_freeze_snapshots_p04':"'signal_interactions': freeze_obj['challenger']['signal_interactions']" in (ROOT/'smart_champion_challenger.py').read_text(encoding='utf-8-sig'),
+ 'active_3051_freeze_hash_valid':Path(fr['freeze_file']).exists() and sha(fr['freeze_file'])==fr['freeze_sha256'],
+ 'p01_p02_p03_preserved':all(pitems[x]['status']=='PROVEN' for x in ['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY','P03_FALSE_CONSENSUS_REDUNDANCY']),
+ 'p04_not_previously_claimed':pitems['P04_SIGNAL_INTERACTIONS']['status']!='PROVEN',
+ 'pre3052_gate_still_blocked':blocked,
+ 'coverage_100_lines':stmts==covered,
+ 'coverage_100_branches':branches==covered_b,
+ 'pytest_global_pass':pytest.returncode==0,
+ 'pip_check_clean':pip.returncode==0,
+ 'all_root_python_compiles':not compile_errors,
+}
+proof={'schema':'SMART_P04_SIGNAL_INTERACTIONS_PROOF_1','point_id':'P04_SIGNAL_INTERACTIONS','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,
+ 'implementation':{'module':'smart_signal_interactions.py','module_sha256':sha(ROOT/'smart_signal_interactions.py'),'agent_sha256':sha(ROOT/'smart_signal_agent.py'),'adjudication_sha256':sha(ROOT/'adjudicate_signal_challenger.py'),'governance_sha256':sha(ROOT/'smart_champion_challenger.py'),'pair_interactions':66,'max_group_order':3,'weight_effect_enabled':False,'p05_boundary':'P04 measures/learns interactions; P05 may convert them into contextual meta-weights'},
+ 'coverage':{'statements':stmts,'covered_lines':covered,'branches':branches,'covered_branches':covered_b,'report':'SMART_COVERAGE_P04_FINAL.json','sha256':sha(ROOT/'SMART_COVERAGE_P04_FINAL.json')},
+ 'historical_oos':{'file':'SMART_P04_INTERACTIONS_HISTORICAL.json','sha256':sha(ROOT/'SMART_P04_INTERACTIONS_HISTORICAL.json'),'predictions':hist['oos_predictions'],'challenger_hits':hist['challenger_hits'],'pair_count':hist['pair_count'],'all_pairs_2050':hist['all_pairs_2050'],'next_top6':hist['next_top6'],'top10_synergies':hist['top10_synergies'],'top10_antagonisms':hist['top10_antagonisms']},
+ 'contest_3051':{'original_interaction_sha256':ints[0]['interaction_sha256'],'active_interaction_sha256':active_interaction['interaction_sha256'],'correction_supersedes':corrections[0]['supersedes_interaction_sha256'],'pair_count':len(active_interaction['analysis']['pair_interactions']),'triple_count':len(active_interaction['analysis']['triple_interactions']),'behavioral_recompute_identical':recompute['interaction_sha256']==active_interaction['interaction_sha256'],'semantic_equivalence_original_correction':semantic_equal},
+ 'regression':{'pytest':(pytest.stdout+pytest.stderr).strip().splitlines()[-1] if (pytest.stdout+pytest.stderr).strip() else '', 'pip_check':(pip.stdout+pip.stderr).strip(),'compile_errors':compile_errors},
+ 'limits':{'prospective_predictive_claim':False,'retroactive_weight_change':False,'p05_not_claimed':True,'global_6_of_6_not_claimed':True}}
+out=ROOT/'SMART_P04_SIGNAL_INTERACTIONS_PROOF.json'; out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],'proof_sha256':sha(out),'coverage':[stmts,branches],'pytest':proof['regression']['pytest'],'event_3051':proof['contest_3051']},ensure_ascii=False,indent=2))

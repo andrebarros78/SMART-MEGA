@@ -1,0 +1,67 @@
+from __future__ import annotations
+import hashlib, json, sys
+from pathlib import Path
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent
+from smart_champion_challenger import load_ledger, active_freeze, sha256
+
+def h(p:Path)->str: return hashlib.sha256(p.read_bytes()).hexdigest()
+
+data=ROOT/'Mega-Sena_through_3050.xlsx'
+trained_state=ROOT/'SMART_SIGNAL_TRAINED_STATE_3050.json'
+ledger_path=ROOT/'SMART_SIGNAL_LEDGER.json'
+ledger=load_ledger(ledger_path)
+fr=active_freeze(ledger,3051)
+if fr is None: raise SystemExit('no active freeze 3051')
+freeze_path=ROOT/fr['freeze_file']
+freeze=json.loads(freeze_path.read_text(encoding='utf-8'))
+draws,contests=e.load_draws(data)
+if int(contests[-1])!=3050: raise SystemExit('canonical cutoff is not 3050')
+if 3051 in set(int(x) for x in contests): raise SystemExit('3051 already present: refusing prospective application')
+agent=SmartSignalAgent(start=1000)
+pred,back=agent.predict_next(draws,contests,target_contest=3051,cutoff_timestamp='2026-08-27',cutoff_timestamp_kind='source_draw_date')
+# ranking with score values
+ranking=[{'rank':i+1,'number':int(n),'score':float(pred.aggregate_scores[str(int(n))])} for i,n in enumerate(pred.ranking60)]
+weights_sorted=sorted(({'signal':k,'weight':float(v),'family':e.family_of(k)} for k,v in pred.weights.items()), key=lambda x:-x['weight'])
+checks={
+ 'cutoff_3050': int(pred.cutoff_contest)==3050,
+ 'target_3051': int(pred.target_contest)==3051,
+ 'target_absent_from_data': 3051 not in set(int(x) for x in contests),
+ 'trained_state_exists': trained_state.exists(),
+ 'trained_state_hash_matches_prior': h(trained_state)=='ee4745f2a141bbf89b5dffcc9154a87ea6e6484cddcb07223fdbd575ca6306e7',
+ 'matches_active_freeze_top6': pred.top6==freeze['challenger']['top6'],
+ 'matches_active_freeze_ranking60': pred.ranking60==freeze['challenger']['ranking60'],
+ 'matches_active_freeze_scores': all(abs(float(pred.aggregate_scores[k])-float(freeze['challenger']['aggregate_scores'][k]))<1e-15 for k in pred.aggregate_scores),
+ 'matches_active_freeze_weights': all(abs(float(pred.weights[k])-float(freeze['challenger']['weights'][k]))<1e-15 for k in pred.weights),
+ 'context_same_as_freeze': pred.context_state==freeze['challenger']['context_regime'],
+ 'champion_remains_active': freeze.get('champion_remains_active') is True and freeze.get('production_switch_performed') is False,
+ 'no_adjudication_3051': not any(ev.get('event_type')=='ADJUDICATION' and int(ev.get('target_contest',-1))==3051 for ev in ledger['events']),
+}
+report={
+ 'schema':'SMART_3051_TRAINED_APPLICATION_1',
+ 'contest':3051,
+ 'scheduled_date_user_supplied':'2026-08-30',
+ 'cutoff_contest':3050,
+ 'causal':True,
+ 'result_used':False,
+ 'data_file':str(data.name),
+ 'data_sha256':h(data),
+ 'trained_state_file':trained_state.name,
+ 'trained_state_sha256':h(trained_state),
+ 'active_freeze_file':freeze_path.name,
+ 'active_freeze_sha256':h(freeze_path),
+ 'champion_top6':freeze['champion']['top6'],
+ 'challenger_top6':pred.top6,
+ 'challenger_ranking60':ranking,
+ 'signal_weights_ranked':weights_sorted,
+ 'context_regime':pred.context_state,
+ 'historical_training_summary':{k:v for k,v in back.items() if k!='rows'},
+ 'checks':checks,
+ 'all_checks_pass':all(checks.values()),
+ 'guardrail':'Application of trained historical state only; not a guarantee of lottery outcome or prospective predictive superiority.'
+}
+out=ROOT/'SMART_3051_TRAINED_APPLICATION.json'
+out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'all_checks_pass':report['all_checks_pass'],'challenger_top6':pred.top6,'champion_top6':freeze['champion']['top6'],'top12':ranking[:12],'weights_top5':weights_sorted[:5],'context':pred.context_state,'artifact':out.name,'artifact_sha256':h(out)},ensure_ascii=False,indent=2))

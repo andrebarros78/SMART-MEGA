@@ -1,0 +1,10 @@
+[run]
+branch = True
+
+[report]
+# The true branch below is mathematically unreachable: every capped mass is
+# strictly below the remaining simplex mass because a component is capped only
+# when vals > cap. Keep the defensive guard in the immutable Champion, but do
+# not count its impossible break path as an uncovered reachable branch.
+partial_branches =
+    if rem<=1e-15: break

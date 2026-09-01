@@ -1,0 +1,37 @@
+from pathlib import Path
+import sys,json,hashlib,math
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent
+DATA=ROOT/'Mega-Sena_through_3050.xlsx'; draws,contests=e.load_draws(DATA)
+
+def run(st):
+    a=SmartSignalAgent(start=1000,meta_strength=st); p,b=a.predict_next(draws,contests,target_contest=3051); return a,p,b
+base_a,base_p,base=run(0.0)
+p05_a,p05_p,p05=run(0.06)
+base_by={r['contest']:r for r in base['rows']}; p05_by={r['contest']:r for r in p05['rows']}
+final_contests=list(range(2801,3051)); validation_contests=list(range(2201,2801))
+def hits(d,cs): return int(sum(d[c]['challenger_hits'] for c in cs))
+def compare(cs):
+    ds=[int(p05_by[c]['challenger_hits'])-int(base_by[c]['challenger_hits']) for c in cs]
+    return {'n':len(cs),'baseline_hits':hits(base_by,cs),'p05_hits':hits(p05_by,cs),'delta':hits(p05_by,cs)-hits(base_by,cs),
+            'better':sum(x>0 for x in ds),'worse':sum(x<0 for x in ds),'equal':sum(x==0 for x in ds)}
+blocks=[]
+for start in [2801,2851,2901,2951,3001]:
+    cs=list(range(start,start+50)); blocks.append({'start':start,'end':start+49,**compare(cs)})
+fams={}
+for n,w in p05_p.weights.items(): fam=e.family_of(n); fams[fam]=fams.get(fam,0.0)+float(w)
+weight_delta={n:float(p05_p.weights[n])-float(base_p.weights[n]) for n in p05_p.weights}
+report={'schema':'SMART_P05_FINAL_HOLDOUT_1','selected_strength':0.06,'selection_source':'SMART_P05_STRENGTH_CALIBRATION.json contests<=2200 only',
+        'final_holdout_scope':'2801_TO_3050_NOT_USED_FOR_STRENGTH_SELECTION','baseline_total_hits':base['total_hits'],'p05_total_hits':p05['total_hits'],'total_delta':p05['total_hits']-base['total_hits'],
+        'intermediate_validation_2201_2800':compare(validation_contests),'final_holdout_2801_3050':compare(final_contests),'final_holdout_blocks_50':blocks,
+        'next_prediction_shadow':{'baseline_top6':base_p.top6,'p05_top6':p05_p.top6,'factor_min':p05_p.contextual_meta_weights['factor_min'],'factor_max':p05_p.contextual_meta_weights['factor_max'],
+                                  'family_divergence':p05_p.contextual_meta_weights['family_divergence'],'regime_intensity':p05_p.contextual_meta_weights['regime_intensity'],
+                                  'max_abs_weight_delta':max(abs(v) for v in weight_delta.values()),'weights_delta':weight_delta,'max_weight':max(p05_p.weights.values()),'family_totals':fams},
+        'guards':{'final_holdout_nonregression':hits(p05_by,final_contests)>=hits(base_by,final_contests),'total_nonregression':p05['total_hits']>=base['total_hits'],
+                  'expert_cap':max(p05_p.weights.values())<=0.42+1e-12,'family_cap':max(fams.values())<=0.70+1e-12,
+                  'meta_bound':p05_p.contextual_meta_weights['factor_min']>=math.exp(-0.06)-1e-12 and p05_p.contextual_meta_weights['factor_max']<=math.exp(0.06)+1e-12,
+                  'future_leakage':False,'prospective_claim':False},
+        'hashes':{'data':e.sha256(DATA),'meta_module':e.sha256(ROOT/'smart_contextual_meta_weights.py'),'agent':e.sha256(ROOT/'smart_signal_agent.py'),'calibration':e.sha256(ROOT/'SMART_P05_STRENGTH_CALIBRATION.json')}}
+out=ROOT/'SMART_P05_FINAL_HOLDOUT.json'; out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({**report,'sha256':hashlib.sha256(out.read_bytes()).hexdigest()},ensure_ascii=False,indent=2))

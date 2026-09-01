@@ -1,0 +1,43 @@
+from pathlib import Path
+p=Path('smart_signal_agent.py'); s=p.read_text(encoding='utf-8-sig')
+if 'from smart_signal_interactions import InteractionTracker' not in s:
+    s=s.replace('from smart_signal_redundancy_consensus import DEFAULT_CORRELATION_THRESHOLD, consensus_penalties\n', 'from smart_signal_redundancy_consensus import DEFAULT_CORRELATION_THRESHOLD, consensus_penalties\nfrom smart_signal_interactions import InteractionTracker\n')
+if 'interaction_state: dict[str, Any]' not in s:
+    s=s.replace('    redundancy_consensus: dict[str, Any]\n', '    redundancy_consensus: dict[str, Any]\n    interaction_state: dict[str, Any]\n')
+if "'signal_interactions': self.interaction_state" not in s:
+    s=s.replace("            'redundancy_consensus': self.redundancy_consensus,\n", "            'redundancy_consensus': self.redundancy_consensus,\n            'signal_interactions': self.interaction_state,\n")
+if 'self.interaction_tracker = InteractionTracker(SIGNAL_NAMES)' not in s:
+    s=s.replace("        self.marginal_states = {n: MarginalUtilityState(name=n) for n in SIGNAL_NAMES}\n", "        self.marginal_states = {n: MarginalUtilityState(name=n) for n in SIGNAL_NAMES}\n        self.interaction_tracker = InteractionTracker(SIGNAL_NAMES)\n")
+if 'interaction_state=self.interaction_tracker.metrics()' not in s:
+    s=s.replace('            context_state=self.context_engine.metrics(), redundancy_consensus=redundancy_audit,\n        )', '            context_state=self.context_engine.metrics(), redundancy_consensus=redundancy_audit,\n            interaction_state=self.interaction_tracker.metrics(),\n        )')
+if 'interaction_update = self.interaction_tracker.update' not in s:
+    s=s.replace('            marginal_update = update_marginal_states(self.marginal_states, sc, pred.weights, draws[t])\n', '            marginal_update = update_marginal_states(self.marginal_states, sc, pred.weights, draws[t])\n            interaction_update = self.interaction_tracker.update(sc, pred.weights, draws[t])\n')
+if "'pair_interactions_after_result':" not in s:
+    s=s.replace("                         'marginal_delta_hits_after_result': {\n", "                         'pair_interactions_after_result': {k:int(v['interaction_delta_hits']) for k,v in interaction_update['pair_interactions'].items()},\n                         'marginal_delta_hits_after_result': {\n")
+if "'signal_interactions': self.interaction_tracker.metrics()" not in s:
+    s=s.replace("                'marginal_utility': {n: self.marginal_states[n].metrics() for n in SIGNAL_NAMES},\n", "                'marginal_utility': {n: self.marginal_states[n].metrics() for n in SIGNAL_NAMES},\n                'signal_interactions': self.interaction_tracker.metrics(),\n")
+p.write_text(s,encoding='utf-8')
+
+p=Path('smart_champion_challenger.py'); s=p.read_text(encoding='utf-8-sig')
+if "'signal_interactions': sha256(Path('smart_signal_interactions.py'))" not in s:
+    s=s.replace("        'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),\n", "        'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),\n        'signal_interactions': sha256(Path('smart_signal_interactions.py')),\n")
+if "'signal_interactions_sha256': component_hashes['signal_interactions']" not in s:
+    s=s.replace("        'signal_redundancy_consensus_sha256': component_hashes['signal_redundancy_consensus'],\n", "        'signal_redundancy_consensus_sha256': component_hashes['signal_redundancy_consensus'],\n        'signal_interactions_sha256': component_hashes['signal_interactions'],\n")
+if "'signal_interactions': freeze_obj['challenger']['signal_interactions']" not in s:
+    s=s.replace("'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus']", "'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus'], 'signal_interactions': freeze_obj['challenger']['signal_interactions']")
+p.write_text(s,encoding='utf-8')
+
+p=Path('test_smart_architecture_alignment.py'); s=p.read_text(encoding='utf-8-sig')
+if "'smart_signal_interactions.py'" not in s:
+    s=s.replace("    'smart_signal_redundancy_consensus.py',\n", "    'smart_signal_redundancy_consensus.py',\n    'smart_signal_interactions.py',\n")
+if "'smart_signal_interactions'} <= deps['smart_signal_agent.py']" not in s:
+    old="'smart_signal_marginal_utility', 'smart_signal_redundancy_consensus'} <= deps['smart_signal_agent.py']"
+    if old in s: s=s.replace(old,"'smart_signal_marginal_utility', 'smart_signal_redundancy_consensus', 'smart_signal_interactions'} <= deps['smart_signal_agent.py']")
+if "deps['smart_signal_interactions.py']" not in s:
+    marker="    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n"
+    s=s.replace(marker, marker+"    assert deps['smart_signal_interactions.py'] & {'smart_signal_agent','smart_champion_challenger','adjudicate_signal_challenger'} == set()\n")
+if "'signal_interactions': sha256(Path('smart_signal_interactions.py'))" not in s:
+    marker="        \"'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))\",\n"
+    s=s.replace(marker, marker+"        \"'signal_interactions': sha256(Path('smart_signal_interactions.py'))\",\n")
+p.write_text(s,encoding='utf-8')
+print('p04 integrated now')

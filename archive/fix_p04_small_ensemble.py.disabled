@@ -1,0 +1,11 @@
+from pathlib import Path
+p=Path('smart_signal_interactions.py'); s=p.read_text(encoding='utf-8-sig')
+old="""    pairs = {}\n    for a, b in itertools.combinations(names, 2):\n        h_ab, _ = _hits(_aggregate(arrays, weights, (a, b)), actual)\n        joint = full_hits - h_ab\n        interaction = joint - single[a]['delta_hits'] - single[b]['delta_hits']\n        key = f'{a}|{b}'\n        pairs[key] = {'signals': [a, b], 'hits_without_pair': h_ab,\n                      'joint_delta_hits': int(joint), 'interaction_delta_hits': int(interaction)}\n"""
+new="""    pairs = {}\n    for a, b in itertools.combinations(names, 2):\n        key = f'{a}|{b}'\n        if len(names) <= 2:\n            pairs[key] = {'signals':[a,b], 'available':False,\n                          'reason':'leave-two-out undefined when pair is the full ensemble'}\n            continue\n        h_ab, _ = _hits(_aggregate(arrays, weights, (a, b)), actual)\n        joint = full_hits - h_ab\n        interaction = joint - single[a]['delta_hits'] - single[b]['delta_hits']\n        pairs[key] = {'signals': [a, b], 'available':True, 'hits_without_pair': h_ab,\n                      'joint_delta_hits': int(joint), 'interaction_delta_hits': int(interaction)}\n"""
+assert old in s; s=s.replace(old,new)
+s=s.replace("            pair_sum = sum(pairs['|'.join(sorted(pair))]['interaction_delta_hits']\n", "            pair_sum = sum(pairs['|'.join(sorted(pair))]['interaction_delta_hits']\n")
+old2="""        for key, row in analysis['pair_interactions'].items():\n            self.pairs[key].update(row['interaction_delta_hits'])\n"""
+new2="""        for key, row in analysis['pair_interactions'].items():\n            if row.get('available', True):\n                self.pairs[key].update(row['interaction_delta_hits'])\n"""
+assert old2 in s; s=s.replace(old2,new2)
+p.write_text(s,encoding='utf-8')
+print('small ensemble fixed')

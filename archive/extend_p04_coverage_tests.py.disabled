@@ -1,0 +1,63 @@
+from pathlib import Path
+p=Path('test_smart_signal_interactions.py'); s=p.read_text(encoding='utf-8-sig')
+add=r'''
+
+def test_interaction_private_guard_paths_for_coverage():
+    import smart_signal_interactions as si
+    good=np.linspace(0,1,60)
+    with pytest.raises(ValueError,match='60 finite'):
+        si._inputs({'a':np.zeros(59)},{'a':1.0})
+    with pytest.raises(ValueError,match='invalid weight'):
+        si._inputs({'a':good},{'a':float('nan')})
+    with pytest.raises(ValueError,match='positive mass'):
+        si._inputs({'a':good},{'a':0.0})
+    arrays={'a':good,'b':good[::-1]}
+    with pytest.raises(ValueError,match='remove all'):
+        si._aggregate(arrays,{'a':.5,'b':.5},('a','b'))
+    with pytest.raises(ValueError,match='zero weight'):
+        si._aggregate(arrays,{'a':1.0,'b':0.0},('a',))
+    with pytest.raises(ValueError,match='snapshot requires'):
+        si.analyze_snapshot({},[1,2,3,4,5,6])
+
+
+def test_tracker_mismatch_and_unavailable_pair_branch():
+    from smart_signal_interactions import InteractionTracker
+    a=np.linspace(0,1,60); b=a[::-1]; c=np.roll(a,3)
+    t=InteractionTracker(('a','b'))
+    r=t.update({'a':a,'b':b},{'a':.6,'b':.4},[1,2,3,4,5,6])
+    assert r['pair_interactions']['a|b']['available'] is False
+    assert t.metrics()['pairs']['a|b']['observations']==0
+    with pytest.raises(ValueError,match='interaction ids'):
+        t.update({'a':a,'b':b,'c':c},{'a':.4,'b':.3,'c':.3},[1,2,3,4,5,6])
+
+
+def test_interaction_ledger_error_guards_and_predate_adjudication(tmp_path: Path):
+    # Missing adjudication.
+    freeze=tmp_path/'f3.json'; freeze.write_text('{}'); fh=cc.sha256(freeze)
+    fr={'event_type':'FREEZE','target_contest':12,'freeze_file':str(freeze),'freeze_sha256':fh,
+        'frozen_before_result':True,'causal_cutoff':True,'snapshot':make_snapshot(),
+        'champion_top6':[1,2,3,4,5,6],'challenger_top6':[1,2,3,4,5,7]}
+    lp=tmp_path/'l3.json'; cc.write_ledger(lp,{'schema':cc.LEDGER_SCHEMA,'events':[fr]})
+    with pytest.raises(ValueError,match='exactly one adjudication'):
+        adj.append_interactions_for_existing(lp,12)
+    # Adjudication references different freeze.
+    badad={'event_type':'ADJUDICATION','target_contest':12,'freeze_sha256':'x'*64,'actual_numbers':[1,2,3,4,5,6],
+           'challenger_hits':5,'champion_hits':6,'e_value_after':1.0}
+    cc.write_ledger(lp,{'schema':cc.LEDGER_SCHEMA,'events':[fr,badad]})
+    with pytest.raises(ValueError,match='active freeze'):
+        adj.append_interactions_for_existing(lp,12)
+    # Duplicate interaction events are rejected.
+    ie={'event_type':'INTERACTIONS','target_contest':12,'interaction_sha256':'a'*64}
+    cc.write_ledger(lp,{'schema':cc.LEDGER_SCHEMA,'events':[fr,badad,ie,dict(ie)]})
+    with pytest.raises(ValueError,match='at most one interaction'):
+        adj.append_interactions_for_existing(lp,12)
+    # Interaction cannot exist before adjudication.
+    pre={'schema':cc.LEDGER_SCHEMA,'events':[fr,ie]}; cc.write_ledger(lp,pre)
+    import pandas as pd
+    row={'Concurso':12}; row.update({f'Bola{i}':i for i in range(1,7)})
+    result=tmp_path/'r12.xlsx'; pd.DataFrame([row]).to_excel(result,index=False)
+    with pytest.raises(ValueError,match='interactions cannot predate'):
+        adj.adjudicate(result,12,lp)
+'''
+if 'test_interaction_private_guard_paths_for_coverage' not in s: s += add
+p.write_text(s,encoding='utf-8'); print('coverage tests extended')

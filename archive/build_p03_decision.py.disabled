@@ -1,0 +1,23 @@
+from __future__ import annotations
+import json, hashlib, sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+from smart_signal_redundancy_consensus import consensus_penalties
+from smart_signal_weights import dynamic_weights
+import numpy as np
+
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+expl=json.loads((ROOT/'SMART_P03_THRESHOLD_VALIDATION.json').read_text(encoding='utf-8'))
+final=json.loads((ROOT/'SMART_P03_FINAL_OOS.json').read_text(encoding='utf-8'))
+rng=np.random.default_rng(30303); dup=rng.normal(size=60); independent=rng.normal(size=60)
+scores={f'dup{i}':dup.copy() for i in range(4)}; scores['independent']=independent
+pen,audit=consensus_penalties(scores,threshold=0.90)
+fam={n:'x' for n in scores}
+base={n:{'utility':1,'quality':1,'confidence':1,'context':1,'redundancy_penalty':1} for n in scores}
+adj={n:{'utility':1,'quality':1,'confidence':1,'context':1,'redundancy_penalty':pen[n]} for n in scores}
+w0,_=dynamic_weights(base,fam); w1,_=dynamic_weights(adj,fam)
+naive=sum(w0[f'dup{i}'] for i in range(4)); corrected=sum(w1[f'dup{i}'] for i in range(4))
+report={'schema':'SMART_P03_THRESHOLD_DECISION_1','decision':'ADOPT_PREDECLARED_0_90','adopted_threshold':0.90,'exploratory_candidate_0_95':'REJECTED_OVERFIT','reason':'0.95 won calibration but lost 4 holdout hits vs legacy; 0.90 was predeclared before comparison and achieved +2 holdout hits without selection on holdout','exploratory_report_sha256':sha(ROOT/'SMART_P03_THRESHOLD_VALIDATION.json'),'final_oos_sha256':sha(ROOT/'SMART_P03_FINAL_OOS.json'),'final_oos':{'legacy_total':final['legacy_total_hits'],'p03_total':final['p03_total_hits'],'total_delta':final['total_delta'],'legacy_holdout':final['legacy_holdout_hits'],'p03_holdout':final['p03_holdout_hits'],'holdout_delta':final['holdout_delta'],'better':final['holdout_better_contests'],'worse':final['holdout_worse_contests'],'equal':final['holdout_equal_contests'],'blocks':final['blocks']},'synthetic_false_consensus':{'duplicate_count':4,'naive_duplicate_mass':naive,'corrected_duplicate_mass':corrected,'independent_weight_before':w0['independent'],'independent_weight_after':w1['independent'],'duplicate_mass_reduced':corrected<naive,'independent_weight_increased':w1['independent']>w0['independent'],'audit_sha256':audit['sha256']},'prospective_claim':False,'future_leakage':False}
+raw=json.dumps(report,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode(); report['sha256']=hashlib.sha256(raw).hexdigest()
+out=ROOT/'SMART_P03_THRESHOLD_DECISION.json'; out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps(report,ensure_ascii=False,indent=2))

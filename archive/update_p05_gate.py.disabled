@@ -1,0 +1,43 @@
+from pathlib import Path
+import json,hashlib
+from datetime import datetime
+from zoneinfo import ZoneInfo
+ROOT=Path(__file__).resolve().parents[1]
+sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+gp=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'; gate=json.loads(gp.read_text(encoding='utf-8'))
+items={x['id']:x for x in gate['items']}; p05=items['P05_CONTEXTUAL_META_WEIGHTS']
+proof=ROOT/'SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF.json'; cov=ROOT/'SMART_COVERAGE_P05_FINAL.json'; mod=ROOT/'smart_contextual_meta_weights.py'; dec=ROOT/'SMART_P05_DECISION.json'; cal=ROOT/'SMART_P05_STRENGTH_CALIBRATION.json'; val=ROOT/'SMART_P05_FINAL_HOLDOUT.json'
+p05['status']='PROVEN'
+p05['evidence']=[
+ {'type':'implementation_proof','file':proof.name,'sha256':sha(proof)},
+ {'type':'coverage','file':cov.name,'sha256':sha(cov),'statements':1604,'branches':514,'coverage':'100% critical lines + branches'},
+ {'type':'module','file':mod.name,'sha256':sha(mod),'default_meta_strength':0.06,'max_meta_strength':0.15},
+ {'type':'anti_overfit_decision','file':dec.name,'sha256':sha(dec),'rejected_strength':0.08,'adopted_strength':0.06},
+ {'type':'calibration','file':cal.name,'sha256':sha(cal),'scope':'1001-2200 only','selected_strength':0.06,'holdout_used_for_selection':False},
+ {'type':'final_holdout','file':val.name,'sha256':sha(val),'scope':'2801-3050','baseline_hits':150,'p05_hits':150,'delta':0,'total_baseline_hits':1271,'total_p05_hits':1271},
+ {'type':'future_freeze_governance','file':'smart_champion_challenger.py','sha256':sha(ROOT/'smart_champion_challenger.py'),'hashes_contextual_meta_weights':True,'snapshots_contextual_meta_weights':True},
+]
+p05['proven_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+proven=[x for x in gate['items'] if x.get('status')=='PROVEN' and x.get('evidence')]
+gate['freeze_allowed']=len(proven)==15
+gate['last_update_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+gp.write_text(json.dumps(gate,ensure_ascii=False,indent=2),encoding='utf-8')
+# verify enforcement
+import sys; sys.path.insert(0,str(ROOT)); import smart_champion_challenger as cc
+try:
+    cc.require_pre_3052_gate(3052); blocked=False; reason=''
+except ValueError as ex:
+    blocked=True; reason=str(ex)
+items2={x['id']:x for x in gate['items']}
+checks={
+ 'p01_to_p04_preserved':all(items2[x]['status']=='PROVEN' for x in ['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY','P03_FALSE_CONSENSUS_REDUNDANCY','P04_SIGNAL_INTERACTIONS']),
+ 'p05_status_proven':items2['P05_CONTEXTUAL_META_WEIGHTS']['status']=='PROVEN',
+ 'p05_has_evidence':bool(items2['P05_CONTEXTUAL_META_WEIGHTS']['evidence']),
+ 'exactly_five_items_proven':sum(x['status']=='PROVEN' for x in gate['items'])==5,
+ 'remaining_10_not_falsely_proven':all(x['status']!='PROVEN' for x in gate['items'] if int(x['priority'])>=6),
+ 'freeze_3052_still_blocked':blocked,
+ 'freeze_allowed_false':gate['freeze_allowed'] is False,
+}
+out={'schema':'SMART_P05_GATE_UPDATE_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'gate_sha256':sha(gp),'p05_proof_sha256':sha(proof),'progress':{'proven_items':5,'total_items':15,'remaining_items':10},'freeze_3052_block_reason':reason}
+op=ROOT/'SMART_P05_GATE_UPDATE_PROOF.json'; op.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':out['status'],'failed':[k for k,v in checks.items() if not v],'gate_sha256':sha(gp),'update_proof_sha256':sha(op),'block_reason':reason},ensure_ascii=False,indent=2))

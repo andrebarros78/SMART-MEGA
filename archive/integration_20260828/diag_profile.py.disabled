@@ -1,0 +1,12 @@
+import json, numpy as np
+from smart_signal_quality import SignalQualityState, PROFILE_PROJECTIONS
+s=SignalQualityState('p','freq')
+a=np.zeros(60); a[:6]=1
+b=np.zeros(60); b[30:36]=1
+vals={'proj_a':(PROFILE_PROJECTIONS@a).tolist(),'proj_b':(PROFILE_PROJECTIONS@b).tolist()}
+for _ in range(300): s.update_profile(a)
+mid=[{'width':d.width,'est':d.estimation,'n':d.n_detections} for d in s.profile_detectors]
+for _ in range(300): s.update_profile(b)
+end=[{'width':d.width,'est':d.estimation,'n':d.n_detections} for d in s.profile_detectors]
+vals.update({'mid':mid,'end':end,'count':s.profile_drift_count,'alerts':s.profile_alert_cooldowns})
+open('DIAG_PROFILE.json','w').write(json.dumps(vals,indent=2))

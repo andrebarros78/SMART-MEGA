@@ -1,0 +1,68 @@
+{
+  "schema": "SMART_P06_STRENGTH_CALIBRATION_1",
+  "point_id": "P06_RANK_SCORE_CALIBRATION",
+  "data_scope": "CONTESTS_1_TO_2200_ONLY",
+  "oos_scope": "1001_TO_2200",
+  "candidate_strengths": [
+    0.0,
+    0.25,
+    0.5,
+    0.75,
+    1.0
+  ],
+  "selection_rule": "minimum prequential Brier score; tie chooses lower strength",
+  "selected_strength": 0.5,
+  "holdout_2201_plus_accessed_for_selection": false,
+  "uniform_brier": 0.09,
+  "candidates": {
+    "0.0": {
+      "strength": 0.0,
+      "n": 1200,
+      "mean_brier": 0.09000000000000236,
+      "raw_unconstrained_posterior_mean_brier": 0.09023270739474416
+    },
+    "0.25": {
+      "strength": 0.25,
+      "n": 1200,
+      "mean_brier": 0.08999649851344328,
+      "raw_unconstrained_posterior_mean_brier": 0.09023270739474416
+    },
+    "0.5": {
+      "strength": 0.5,
+      "n": 1200,
+      "mean_brier": 0.08999616444351495,
+      "raw_unconstrained_posterior_mean_brier": 0.09023270739474416
+    },
+    "0.75": {
+      "strength": 0.75,
+      "n": 1200,
+      "mean_brier": 0.08999899779021496,
+      "raw_unconstrained_posterior_mean_brier": 0.09023270739474416
+    },
+    "1.0": {
+      "strength": 1.0,
+      "n": 1200,
+      "mean_brier": 0.09000499855354303,
+      "raw_unconstrained_posterior_mean_brier": 0.09023270739474416
+    }
+  },
+  "final_rank_state_calibration_scope": {
+    "observations": 1200,
+    "raw_monotonic_violations": 26,
+    "monotonic_after_isotonic": true,
+    "probability_sum": 6.0,
+    "rank1_probability_full_strength": 0.10195160031225604,
+    "rank60_probability_full_strength": 0.09262295081967213
+  },
+  "anti_overfit": {
+    "future_leakage": false,
+    "final_holdout_not_used": true,
+    "ranking_or_weights_changed_by_calibration": false
+  },
+  "hashes": {
+    "data": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+    "module": "ab57cf021f6eac64abee389555724458d6f205a4005e6b430aa1d6ccd32db09e",
+    "agent": "cac17b29ba7907e8916f9b3d7b2415d3e459cd26ef711ca463e4a58a9d4aa693"
+  },
+  "sha256": "6c369458cfc55ba87e6414f6e6c378b0dfd23ccf861fd7d1100fed315243dcc0"
+}

@@ -1,0 +1,42 @@
+{
+  "schema": "SMART_P09_P14_GATE_REGISTRATION_PROOF_1",
+  "created_brt": "2026-08-31T23:46:15.634609-03:00",
+  "p09": {
+    "file": "SMART_P09_RED_TEAM_LATEST.json",
+    "file_sha256": "cb38e5b90f75aa414c21cbda80cc3ec47dc12dda7b1b328880be79f9af1d8d9d",
+    "self_sha256": "bf4ffcfa52c79e19dada9ed0fdb598007513a2c4ede83f34218e87de7547b3e1",
+    "verified": true,
+    "all_checks_pass": true,
+    "checks": {
+      "iid": true,
+      "gradual_drift": true,
+      "abrupt_shift": true,
+      "false_signal_recovery": true,
+      "missing_corrupt_data": true,
+      "redundancy_false_consensus": true,
+      "online_anti_ranking": true,
+      "recurring_regimes": true,
+      "regime_recovery": true,
+      "full_stack_smoke": true
+    }
+  },
+  "p14": {
+    "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+    "file_sha256": "0bd29349d65c00ec3fe281bac16cacea3899073c0b133f50fae805026407373a",
+    "self_sha256": "66fd1dcaabb715c74e516a13c25c88a39fd49cf0b40405a904c8197a170e2e45",
+    "verified": true,
+    "material_deficiencies": [],
+    "checks": {
+      "coverage_lines_and_branches": true,
+      "hash_integrity": true,
+      "deterministic_replay": true,
+      "future_leakage_absent": true,
+      "full_champion_comparison": true,
+      "promotion_lineage_recomputed": true,
+      "independence_no_forbidden_dependencies": true
+    },
+    "coverage_bindings": 4,
+    "deterministic": true,
+    "no_future_leakage": true
+  }
+}

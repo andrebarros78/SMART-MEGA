@@ -1,0 +1,45 @@
+from __future__ import annotations
+import json, sys, hashlib
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+import smart_signal_agent as a
+from smart_signal_agent import SmartSignalAgent
+from smart_signal_redundancy_consensus import consensus_penalties
+
+DATA=ROOT/'Mega-Sena_through_3050.xlsx'
+draws, contests=e.load_draws(DATA)
+CAL_END=2200
+HOLD_START=2201
+
+def summarize(rows):
+    cal=[r for r in rows if int(r['contest'])<=CAL_END]
+    hold=[r for r in rows if int(r['contest'])>=HOLD_START]
+    return {'total_hits':sum(r['challenger_hits'] for r in rows),'calibration_n':len(cal),'calibration_hits':sum(r['challenger_hits'] for r in cal),'holdout_n':len(hold),'holdout_hits':sum(r['challenger_hits'] for r in hold)}
+
+def legacy(scores, base_utility=None, threshold=None):
+    p,_=e.redundancy_penalty(scores)
+    return p, {'schema':'LEGACY_REDUNDANCY','threshold':None,'clusters':[],'penalties':p}
+
+orig=a.consensus_penalties
+a.consensus_penalties=legacy
+legacy_agent=SmartSignalAgent(start=1000)
+legacy_pred, legacy_bt=legacy_agent.predict_next(draws,contests,target_contest=3051)
+base=summarize(legacy_bt['rows'])
+a.consensus_penalties=orig
+
+candidates={}
+for th in (0.80,0.85,0.90,0.95):
+    agent=SmartSignalAgent(start=1000,redundancy_threshold=th)
+    pred,bt=agent.predict_next(draws,contests,target_contest=3051)
+    s=summarize(bt['rows']); s['next_top6']=pred.top6; s['threshold']=th
+    candidates[str(th)]=s
+# selection only calibration; tie -> higher threshold (more conservative)
+best=max((v for v in candidates.values()), key=lambda x:(x['calibration_hits'],x['threshold']))
+selected=best['threshold']
+validation=candidates[str(selected)]
+report={'schema':'SMART_P03_THRESHOLD_VALIDATION_1','data_cutoff':3050,'start':1000,'calibration_end':CAL_END,'holdout_start':HOLD_START,'selection_rule':'max calibration hits; tie chooses higher threshold (more conservative)','legacy':base,'candidates':candidates,'selected_threshold':selected,'selected_holdout_delta_vs_legacy':validation['holdout_hits']-base['holdout_hits'],'selected_total_delta_vs_legacy':validation['total_hits']-base['total_hits'],'future_leakage':False}
+raw=json.dumps(report,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode(); report['sha256']=hashlib.sha256(raw).hexdigest()
+out=ROOT/'SMART_P03_THRESHOLD_VALIDATION.json'; out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps(report,ensure_ascii=False,indent=2))

@@ -1,0 +1,40 @@
+{
+  "schema": "SMART_COVERAGE_P12_UNION_1",
+  "created_brt": "2026-08-31T11:57:53.080976-03:00",
+  "source_file": "smart_champion_challenger.py",
+  "source_sha256": "a38bfaaaf59e0049fa69fc1719a8c21399e0133ae2aeb1b92c82b70c0b298b28",
+  "method": "union of branch-coverage executions; prior freeze-focused coverage plus corrected canonical gate branch execution",
+  "inputs": [
+    {
+      "file": "SMART_COVERAGE_P12_FREEZE.json",
+      "sha256": "c875775807b8317b88b88c1a0560c95c3cd0ce00221c0c3bd677cdc62faf8dd9",
+      "timestamp": "2026-08-31T09:14:19.324080"
+    },
+    {
+      "file": "SMART_COVERAGE_P12_FINAL.json",
+      "sha256": "fd5c8795687111bf83404372164538c8736c2679ff0eeaa2f245f6c66ffb900e",
+      "timestamp": "2026-08-31T11:52:17.000206"
+    }
+  ],
+  "summary": {
+    "covered_lines": 173,
+    "num_statements": 173,
+    "missing_lines": [],
+    "covered_branches": 62,
+    "num_branches": 62,
+    "missing_branches": [],
+    "coverage": "100% lines + branches by union"
+  },
+  "previously_missing_now_executed": {
+    "lines": [
+      44,
+      45
+    ],
+    "branches": [
+      [
+        43,
+        44
+      ]
+    ]
+  }
+}

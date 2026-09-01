@@ -1,0 +1,28 @@
+from pathlib import Path
+import sys, json, hashlib
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import adjudicate_signal_challenger as adj
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent, SIGNAL_NAMES
+
+ledger=ROOT/'SMART_SIGNAL_LEDGER.json'
+backfill=adj.append_interactions_for_existing(ledger,3051)
+draws,contests=e.load_draws(ROOT/'Mega-Sena_through_3050.xlsx')
+agent=SmartSignalAgent(start=1000)
+pred,bt=agent.predict_next(draws,contests,target_contest=3051)
+metrics=agent.interaction_tracker.metrics()
+rows=[]
+for key,m in metrics['pairs'].items():
+    rows.append({'pair':key,'observations':m['observations'],'mean':m['mean_interaction_delta_hits'],'ewma':m['ewma_interaction_delta_hits'],'confidence':m['confidence'],'shrunk':m['shrunk_interaction'],'positive':m['positive_updates'],'zero':m['zero_updates'],'negative':m['negative_updates']})
+rows.sort(key=lambda r:(-r['shrunk'],r['pair']))
+L=json.loads(ledger.read_text(encoding='utf-8'))
+ev=[x for x in L['events'] if x.get('event_type')=='INTERACTIONS' and int(x.get('target_contest',-1))==3051]
+analysis=ev[0]['analysis']
+report={'schema':'SMART_P04_INTERACTIONS_HISTORICAL_1','oos_predictions':len(bt['rows']),'challenger_hits':bt['total_hits'],'next_top6':pred.top6,
+        'pair_count':metrics['pair_count'],'all_pairs_2050':all(r['observations']==2050 for r in rows),'weight_effect_enabled':metrics['weight_effect_enabled'],
+        'top10_synergies':rows[:10],'top10_antagonisms':list(reversed(rows[-10:])),
+        'event_3051_count':len(ev),'event_3051_sha256':ev[0]['interaction_sha256'],'event_3051_pair_count':len(analysis['pair_interactions']),
+        'event_3051_triple_count':len(analysis['triple_interactions']),'event_3051_weight_effect_enabled':analysis['weight_effect_enabled'],
+        'backfill_status':backfill['status']}
+raw=json.dumps(report,ensure_ascii=False,indent=2).encode(); out=ROOT/'SMART_P04_INTERACTIONS_HISTORICAL.json'; out.write_bytes(raw); report['report_sha256']=hashlib.sha256(raw).hexdigest()
+print(json.dumps(report,ensure_ascii=False,indent=2))

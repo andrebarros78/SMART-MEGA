@@ -1,0 +1,81 @@
+from __future__ import annotations
+import hashlib, json, sys
+from datetime import datetime
+from pathlib import Path
+from zoneinfo import ZoneInfo
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+
+def sha(p:Path)->str: return hashlib.sha256(p.read_bytes()).hexdigest()
+
+proof_path=ROOT/'SMART_P02_MARGINAL_SIGNAL_UTILITY_PROOF.json'
+coverage_path=ROOT/'SMART_COVERAGE_P02_FINAL.json'
+hist_path=ROOT/'SMART_P02_MARGINAL_UTILITY_HISTORICAL.json'
+gate_path=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'
+mandate_path=ROOT/'SMART_3052_IMPLEMENTATION_MANDATE.md'
+proof=json.loads(proof_path.read_text(encoding='utf-8'))
+assert proof.get('status')=='MISSION_PROVEN' and all(proof.get('checks',{}).values())
+gate=json.loads(gate_path.read_text(encoding='utf-8'))
+p01=next(i for i in gate['items'] if i['id']=='P01_COUNTERFACTUAL_ATTRIBUTION')
+p02=next(i for i in gate['items'] if i['id']=='P02_MARGINAL_SIGNAL_UTILITY')
+assert p01.get('status')=='PROVEN' and p01.get('evidence')
+assert p02.get('status')!='PROVEN'
+ledger=cc.load_ledger(ROOT/'SMART_SIGNAL_LEDGER.json')
+mu=[ev for ev in ledger['events'] if ev.get('event_type')=='MARGINAL_UTILITY' and int(ev.get('target_contest',-1))==3051]
+assert len(mu)==1
+p02['status']='PROVEN'
+p02['evidence']=[
+ {'type':'implementation_proof','file':proof_path.name,'sha256':sha(proof_path)},
+ {'type':'coverage','file':coverage_path.name,'sha256':sha(coverage_path),'statements':1195,'branches':362,'coverage':'100% lines + branches'},
+ {'type':'historical_oos','file':hist_path.name,'sha256':sha(hist_path),'predictions':2050,'challenger_hits':1269,'weight_effect_enabled':False},
+ {'type':'module','file':'smart_signal_marginal_utility.py','sha256':sha(ROOT/'smart_signal_marginal_utility.py')},
+ {'type':'agent_integration','file':'smart_signal_agent.py','sha256':sha(ROOT/'smart_signal_agent.py'),'flow':'pre-result metrics -> result -> leave-one-out marginal update -> next contest'},
+ {'type':'adjudication_integration','file':'adjudicate_signal_challenger.py','sha256':sha(ROOT/'adjudicate_signal_challenger.py'),'flow':'ADJUDICATION -> ATTRIBUTION -> MARGINAL_UTILITY'},
+ {'type':'prospective_ledger_marginal_utility','target_contest':3051,'marginal_utility_sha256':mu[0]['marginal_utility_sha256'],'freeze_sha256':mu[0]['freeze_sha256']},
+]
+gate['last_updated_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+gate['freeze_allowed']=all(i.get('status')=='PROVEN' and isinstance(i.get('evidence'),list) and i.get('evidence') for i in gate['items'])
+gate_path.write_text(json.dumps(gate,ensure_ascii=False,indent=2),encoding='utf-8')
+
+proven=[i['id'] for i in gate['items'] if i.get('status')=='PROVEN']
+pending=[i['id'] for i in gate['items'] if i.get('status')!='PROVEN']
+try:
+    cc.require_pre_3052_gate(3052)
+    blocked=False; reason='gate unexpectedly allowed'
+except ValueError as exc:
+    blocked=True; reason=str(exc)
+checks={
+ 'p01_preserved_proven':p01.get('status')=='PROVEN' and bool(p01.get('evidence')),
+ 'p02_status_proven':p02.get('status')=='PROVEN',
+ 'p02_has_evidence':bool(p02.get('evidence')),
+ 'exactly_two_items_proven':proven==['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY'],
+ 'remaining_13_not_falsely_proven':len(pending)==13 and pending[0]=='P03_FALSE_CONSENSUS_REDUNDANCY' and pending[-1]=='P15_EVIDENCE_ONLY_PROMOTION',
+ 'freeze_3052_still_blocked':blocked,
+ 'freeze_allowed_false':gate.get('freeze_allowed') is False,
+}
+update={
+ 'schema':'SMART_P02_GATE_UPDATE_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN',
+ 'checks':checks,'gate_sha256':sha(gate_path),'p02_proof_sha256':sha(proof_path),
+ 'progress':{'proven_items':len(proven),'total_items':15,'remaining_items':len(pending)},
+ 'freeze_3052_block_reason':reason,
+}
+upath=ROOT/'SMART_P02_GATE_UPDATE_PROOF.json'
+upath.write_text(json.dumps(update,ensure_ascii=False,indent=2),encoding='utf-8')
+
+text=mandate_path.read_text(encoding='utf-8')
+marker='## Estado de implementação — 30/08/2026 13h58 BRT'
+if marker in text:
+    text=text[:text.index(marker)].rstrip()+"\n\n"
+text += """## Estado de implementação — P02 concluído
+
+- **P01 — Atribuição marginal e contrafactual permanente: PROVEN.** Evidência preservada em `SMART_P01_COUNTERFACTUAL_ATTRIBUTION_PROOF.json`.
+- **P02 — Utilidade marginal por sinal: PROVEN.** Leave-one-out causal OOS por sinal, Δ hits do ensemble, lift de rank, média/variância/EWMA/confiança, estado incremental e evento append-only `MARGINAL_UTILITY`. Evidência: `SMART_P02_MARGINAL_SIGNAL_UTILITY_PROOF.json`.
+- **P03–P15: pendentes.** A freeze 3052 permanece bloqueada.
+
+O P02 mede utilidade marginal e a expõe ao agente, mas permanece com `weight_effect_enabled = false`. Isso impede transformar medição pós-resultado em alteração automática de pesos antes dos pontos posteriores de governança/calibração.
+"""
+mandate_path.write_text(text,encoding='utf-8')
+print(json.dumps({'status':update['status'],'checks':checks,'progress':update['progress'],'gate_sha256':update['gate_sha256'],
+                  'update_proof_sha256':sha(upath),'mandate_sha256':sha(mandate_path)},ensure_ascii=False,indent=2))

@@ -1,0 +1,35 @@
+from __future__ import annotations
+import hashlib,json,sys
+from datetime import datetime
+from zoneinfo import ZoneInfo
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+
+def sha(p): return hashlib.sha256(p.read_bytes()).hexdigest()
+gp=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'; gate=json.loads(gp.read_text(encoding='utf-8'))
+proof=ROOT/'SMART_P03_FALSE_CONSENSUS_REDUNDANCY_PROOF.json'; cov=ROOT/'SMART_COVERAGE_P03_FINAL.json'; decision=ROOT/'SMART_P03_THRESHOLD_DECISION.json'; oos=ROOT/'SMART_P03_FINAL_OOS.json'; module=ROOT/'smart_signal_redundancy_consensus.py'
+p=json.loads(proof.read_text(encoding='utf-8')); assert p['status']=='MISSION_PROVEN' and all(p['checks'].values())
+found=False
+for item in gate['items']:
+    if item['id']=='P03_FALSE_CONSENSUS_REDUNDANCY':
+        item['status']='PROVEN'; item['evidence']=[
+            {'type':'implementation_proof','file':proof.name,'sha256':sha(proof)},
+            {'type':'coverage','file':cov.name,'sha256':sha(cov),'statements':1296,'branches':400,'coverage':'100% critical lines + branches'},
+            {'type':'module','file':module.name,'sha256':sha(module),'threshold':0.90},
+            {'type':'anti_overfit_decision','file':decision.name,'sha256':sha(decision),'rejected_exploratory_threshold':0.95,'adopted_predeclared_threshold':0.90},
+            {'type':'historical_oos','file':oos.name,'sha256':sha(oos),'legacy_total_hits':1269,'p03_total_hits':1271,'legacy_holdout_hits':541,'p03_holdout_hits':543},
+        ]; found=True
+assert found
+proven=[x for x in gate['items'] if x['status']=='PROVEN']
+assert [x['id'] for x in proven]==['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY','P03_FALSE_CONSENSUS_REDUNDANCY']
+gate['freeze_allowed']=all(x['status']=='PROVEN' and x.get('evidence') for x in gate['items'])
+gate['last_update_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+gp.write_text(json.dumps(gate,ensure_ascii=False,indent=2),encoding='utf-8')
+blocked=False; reason=''
+try: cc.require_pre_3052_gate(3052,gp)
+except ValueError as exc: blocked=True; reason=str(exc)
+checks={'p01_preserved_proven':gate['items'][0]['status']=='PROVEN','p02_preserved_proven':gate['items'][1]['status']=='PROVEN','p03_status_proven':gate['items'][2]['status']=='PROVEN','p03_has_evidence':bool(gate['items'][2]['evidence']),'exactly_three_items_proven':len(proven)==3,'remaining_12_not_falsely_proven':all(x['status']!='PROVEN' for x in gate['items'][3:]),'freeze_3052_still_blocked':blocked,'freeze_allowed_false':gate['freeze_allowed'] is False}
+outobj={'schema':'SMART_P03_GATE_UPDATE_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'gate_sha256':sha(gp),'p03_proof_sha256':sha(proof),'progress':{'proven_items':3,'total_items':15,'remaining_items':12},'freeze_3052_block_reason':reason}
+out=ROOT/'SMART_P03_GATE_UPDATE_PROOF.json'; out.write_text(json.dumps(outobj,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({**outobj,'proof_sha256':sha(out)},ensure_ascii=False,indent=2))

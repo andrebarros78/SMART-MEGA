@@ -1,0 +1,35 @@
+from pathlib import Path
+import sys,json,hashlib,subprocess,py_compile,os
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+py=str(ROOT/'.venv/Scripts/python.exe'); env=dict(os.environ); env.pop('PYTHONPATH',None)
+pytest=subprocess.run([py,'-m','pytest','-q'],cwd=ROOT,env=env,text=True,capture_output=True)
+pip=subprocess.run([py,'-m','pip','check'],cwd=ROOT,env=env,text=True,capture_output=True)
+compile_errors=[]
+for p in ROOT.glob('*.py'):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as ex: compile_errors.append(f'{p.name}: {ex}')
+gate=json.loads((ROOT/'SMART_3052_IMPLEMENTATION_GATE.json').read_text(encoding='utf-8'))
+ledger=json.loads((ROOT/'SMART_SIGNAL_LEDGER.json').read_text(encoding='utf-8'))
+fr=cc.active_freeze(ledger,3051)
+items={x['id']:x for x in gate['items']}
+try:
+    cc.require_pre_3052_gate(3052); blocked=False; reason=''
+except ValueError as ex:
+    blocked=True; reason=str(ex)
+checks={
+ 'pytest_pass':pytest.returncode==0,
+ 'pip_clean':pip.returncode==0,
+ 'compile_clean':not compile_errors,
+ 'p01_to_p05_proven':all(items[x]['status']=='PROVEN' for x in ['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY','P03_FALSE_CONSENSUS_REDUNDANCY','P04_SIGNAL_INTERACTIONS','P05_CONTEXTUAL_META_WEIGHTS']),
+ 'exactly_5_proven':sum(x['status']=='PROVEN' for x in gate['items'])==5,
+ 'p06_to_p15_pending':all(x['status']!='PROVEN' for x in gate['items'] if int(x['priority'])>=6),
+ 'freeze_allowed_false':gate['freeze_allowed'] is False,
+ 'gate_blocks_3052':blocked,
+ 'freeze_3051_hash_valid':fr is not None and (ROOT/fr['freeze_file']).exists() and sha(ROOT/fr['freeze_file'])==fr['freeze_sha256'],
+ 'p05_proof_still_valid_file':json.loads((ROOT/'SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF.json').read_text(encoding='utf-8'))['status']=='MISSION_PROVEN',
+}
+out={'schema':'SMART_P05_POSTGATE_CHECK_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'failed':[k for k,v in checks.items() if not v],'pytest':(pytest.stdout+pytest.stderr).strip().splitlines()[-1] if (pytest.stdout+pytest.stderr).strip() else '', 'pip':(pip.stdout+pip.stderr).strip(),'compile_errors':compile_errors,'gate_sha256':sha(ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'),'p05_proof_sha256':sha(ROOT/'SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF.json'),'p05_gate_update_sha256':sha(ROOT/'SMART_P05_GATE_UPDATE_PROOF.json'),'mandate_sha256':sha(ROOT/'SMART_3052_IMPLEMENTATION_MANDATE.md'),'freeze_3051_sha256':fr['freeze_sha256'] if fr else None,'block_reason':reason}
+op=ROOT/'SMART_P05_POSTGATE_CHECK.json'; op.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps(out,ensure_ascii=False,indent=2))

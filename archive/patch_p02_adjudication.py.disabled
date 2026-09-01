@@ -1,0 +1,82 @@
+from pathlib import Path
+
+p=Path('adjudicate_signal_challenger.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("from smart_signal_attribution import ATTRIBUTION_SCHEMA, analyze_attribution\n", "from smart_signal_attribution import ATTRIBUTION_SCHEMA, analyze_attribution\nfrom smart_signal_marginal_utility import MARGINAL_UTILITY_SCHEMA, analyze_marginal_utility_snapshot\n")
+anchor="""def _attribution_events(ledger: dict, target: int) -> list[dict]:
+    return [ev for ev in ledger.get('events', [])
+            if ev.get('event_type') == 'ATTRIBUTION' and int(ev.get('target_contest', -1)) == int(target)]
+
+
+"""
+insert=anchor+"""def _marginal_utility_events(ledger: dict, target: int) -> list[dict]:
+    return [ev for ev in ledger.get('events', [])
+            if ev.get('event_type') == 'MARGINAL_UTILITY' and int(ev.get('target_contest', -1)) == int(target)]
+
+
+def _build_marginal_utility_event(fr: dict, actual: list[int], target: int, attribution_sha256: str | None = None) -> dict:
+    analysis = analyze_marginal_utility_snapshot(fr['snapshot'], actual)
+    return {
+        'event_type': 'MARGINAL_UTILITY',
+        'target_contest': int(target),
+        'created_utc': datetime.now(timezone.utc).isoformat(),
+        'freeze_sha256': fr['freeze_sha256'],
+        'attribution_sha256': attribution_sha256,
+        'marginal_utility_schema': MARGINAL_UTILITY_SCHEMA,
+        'marginal_utility_engine_file': 'smart_signal_marginal_utility.py',
+        'marginal_utility_engine_sha256': sha256(Path('smart_signal_marginal_utility.py')),
+        'marginal_utility_sha256': analysis['marginal_utility_sha256'],
+        'analysis': analysis,
+        'retroactive_rewrite': False,
+        'policy_effect': 'NONE_P02_MEASUREMENT_ONLY',
+    }
+
+
+def append_marginal_utility_for_existing(ledger_path: Path, target: int) -> dict:
+    ledger = load_ledger(ledger_path)
+    existing = _marginal_utility_events(ledger, target)
+    if existing:
+        if len(existing) != 1:
+            raise ValueError('ledger must contain at most one marginal utility event per contest')
+        return {'status': 'ALREADY_MARGINAL_UTILITY_EVENT_PRESERVED', 'target_contest': int(target),
+                'marginal_utility_sha256': existing[0]['marginal_utility_sha256'], 'ledger_sha256': sha256(ledger_path)}
+    adjudications = [ev for ev in ledger.get('events', [])
+                     if ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == int(target)]
+    if len(adjudications) != 1:
+        raise ValueError('exactly one adjudication is required before marginal utility')
+    ad = adjudications[0]
+    fr = active_freeze(ledger, target)
+    if fr is None or str(ad.get('freeze_sha256')) != str(fr.get('freeze_sha256')):
+        raise ValueError('adjudication must reference the active frozen prediction')
+    attrs = _attribution_events(ledger, target)
+    if len(attrs) > 1:
+        raise ValueError('ledger must contain at most one attribution event per contest')
+    attr_sha = attrs[0].get('attribution_sha256') if attrs else None
+    event = _build_marginal_utility_event(fr, [int(x) for x in ad['actual_numbers']], target, attr_sha)
+    ledger['events'].append(event)
+    ledger_hash = write_ledger(ledger_path, ledger)
+    return {'status': 'MARGINAL_UTILITY_APPENDED', 'target_contest': int(target),
+            'marginal_utility_sha256': event['marginal_utility_sha256'], 'ledger_sha256': ledger_hash}
+
+
+"""
+assert anchor in s
+s=s.replace(anchor, insert)
+s=s.replace("    if _attribution_events(ledger, target):\n        raise ValueError('attribution cannot predate adjudication')\n", "    if _attribution_events(ledger, target):\n        raise ValueError('attribution cannot predate adjudication')\n    if _marginal_utility_events(ledger, target):\n        raise ValueError('marginal utility cannot predate adjudication')\n")
+old="""    attribution_event = _build_attribution_event(fr, actual, target)
+    ledger['events'].append(event)
+    ledger['events'].append(attribution_event)
+    ledger_hash = write_ledger(ledger_path, ledger)
+"""
+new="""    attribution_event = _build_attribution_event(fr, actual, target)
+    marginal_event = _build_marginal_utility_event(fr, actual, target, attribution_event['attribution_sha256'])
+    ledger['events'].append(event)
+    ledger['events'].append(attribution_event)
+    ledger['events'].append(marginal_event)
+    ledger_hash = write_ledger(ledger_path, ledger)
+"""
+assert old in s
+s=s.replace(old,new)
+s=s.replace("            'attribution_sha256': attribution_event['attribution_sha256'],\n            'promotion': promotion_status(ledger)}\n", "            'attribution_sha256': attribution_event['attribution_sha256'],\n            'marginal_utility_sha256': marginal_event['marginal_utility_sha256'],\n            'promotion': promotion_status(ledger)}\n")
+p.write_text(s, encoding='utf-8')
+print('patched adjudicate_signal_challenger.py')

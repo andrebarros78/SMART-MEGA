@@ -1,0 +1,78 @@
+{
+  "schema": "SMART_V2_SANDBOX_1",
+  "scenarios": {
+    "iid_null_20_seeds": {
+      "mean_z": -0.015903300034553425,
+      "max_z": 1.2722640027642715,
+      "min_z": -1.5903300034553396,
+      "rate_z_ge_2": 0.0
+    },
+    "persistent_bias": {
+      "hits": 979,
+      "expected": 420.0,
+      "excess": 559.0,
+      "z": 30.053498415322697,
+      "max_corr": 1.0
+    },
+    "regime_shift": {
+      "hits": 926,
+      "expected": 420.0,
+      "excess": 506.0,
+      "z": 27.20406117737618,
+      "max_corr": 1.0
+    },
+    "signal_vanishes": {
+      "full": {
+        "hits": 662,
+        "expected": 420.0,
+        "excess": 242.0,
+        "z": 13.010637954397303,
+        "max_corr": 1.0
+      },
+      "uniform_tail": {
+        "hits": 199,
+        "expected": 180.0,
+        "excess": 19.0,
+        "z": 1.5603614766503167,
+        "max_corr": 1.0
+      }
+    },
+    "alternating_regimes": {
+      "hits": 689,
+      "expected": 420.0,
+      "excess": 269.0,
+      "z": 14.462238056747415,
+      "max_corr": 1.0
+    },
+    "label_permutation_null": {
+      "original_z": 1.451766027949597,
+      "permuted_z": 1.916331156893468,
+      "abs_delta_z": 0.46456512894387103
+    },
+    "determinism": {
+      "identical": true,
+      "run1": {
+        "hits": 281,
+        "expected": 270.0,
+        "excess": 11.0,
+        "z": 0.7375962061926071,
+        "max_corr": 1.0
+      },
+      "run2": {
+        "hits": 281,
+        "expected": 270.0,
+        "excess": 11.0,
+        "z": 0.7375962061926071,
+        "max_corr": 1.0
+      }
+    }
+  },
+  "checks": {
+    "null_fpr_le_0_10": true,
+    "detects_persistent_bias_z_ge_2": true,
+    "detects_regime_shift_z_ge_2": true,
+    "deterministic": true,
+    "permutation_null_not_materially_changed": true
+  },
+  "passed": true
+}

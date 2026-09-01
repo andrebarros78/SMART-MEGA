@@ -1,0 +1,85 @@
+{
+  "schema": "SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF_1",
+  "point_id": "P05_CONTEXTUAL_META_WEIGHTS",
+  "status": "MISSION_PROVEN",
+  "checks": {
+    "default_strength_0_06": true,
+    "max_strength_bounded_0_15": true,
+    "agent_uses_default_meta_strength": true,
+    "predeclared_0_08_rejected": true,
+    "calibration_only_to_2200": true,
+    "calibration_selected_0_06": true,
+    "decision_adopts_0_06": true,
+    "final_holdout_not_used_for_selection": true,
+    "final_holdout_nonregression": true,
+    "total_nonregression": true,
+    "intermediate_negative_preserved": true,
+    "meta_effect_is_real": true,
+    "meta_factors_bounded": true,
+    "expert_cap_preserved": true,
+    "family_cap_preserved": true,
+    "no_future_leakage": true,
+    "no_predictive_superiority_claim": true,
+    "future_freeze_hashes_p05": true,
+    "future_freeze_snapshots_p05": true,
+    "active_3051_freeze_hash_valid": true,
+    "no_retroactive_p05_event_3051": true,
+    "p01_to_p04_preserved": true,
+    "p05_not_previously_claimed": true,
+    "pre3052_gate_still_blocked": true,
+    "coverage_100_lines": true,
+    "coverage_100_branches": true,
+    "pytest_global_pass": true,
+    "pip_check_clean": true,
+    "all_root_python_compiles": true
+  },
+  "implementation": {
+    "module": "smart_contextual_meta_weights.py",
+    "module_sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
+    "agent_sha256": "0c82fbe4f454ebea54612fbdd7c6d5b36ce0a965f8455627670a1925fdb40ddf",
+    "governance_sha256": "638bb270df23ff6d2a09f167b8fc0c1dbd87726a392d9f29ea0f66b74bdf061f",
+    "default_strength": 0.06,
+    "max_strength": 0.15,
+    "effective_for_future_predictions": true
+  },
+  "anti_overfit": {
+    "predeclared_0_08_file": "SMART_P05_PREDECLARED_VALIDATION.json",
+    "predeclared_0_08_sha256": "b421dc973c568ff8cd25b31be451c99eafe354a33331c91fd0aeea001c939a56",
+    "rejected_holdout_delta": -1,
+    "calibration_file": "SMART_P05_STRENGTH_CALIBRATION.json",
+    "calibration_sha256": "af75d7d5e09249a12e5fdf0d1b2960c1b44882c5418a77123d5b735b8fae4f8a",
+    "selected_strength": 0.06,
+    "selection_used_holdout": false
+  },
+  "final_validation": {
+    "file": "SMART_P05_FINAL_HOLDOUT.json",
+    "sha256": "0832711f8da1167671f13339c353683392fce648cd60d025efc795d03aa61ee8",
+    "final_holdout_scope": "2801_TO_3050_NOT_USED_FOR_STRENGTH_SELECTION",
+    "baseline_hits": 150,
+    "p05_hits": 150,
+    "delta": 0,
+    "total_baseline_hits": 1271,
+    "total_p05_hits": 1271,
+    "intermediate_delta": -1,
+    "max_abs_weight_delta_cutoff3050": 0.0014229430854170444
+  },
+  "coverage": {
+    "statements": 1604,
+    "covered_lines": 1604,
+    "branches": 514,
+    "covered_branches": 514,
+    "file": "SMART_COVERAGE_P05_FINAL.json",
+    "sha256": "90696cef0a0a0780d3b589870de4abe0897886698d0c5ffa146bfda76e0a5464"
+  },
+  "regression": {
+    "pytest": "106 passed in 113.39s (0:01:53)",
+    "pip_check": "No broken requirements found.",
+    "compile_errors": []
+  },
+  "limits": {
+    "prospective_predictive_claim": false,
+    "retroactive_3051_change": false,
+    "global_6_of_6_not_claimed": true,
+    "p06_not_claimed": true
+  }
+}

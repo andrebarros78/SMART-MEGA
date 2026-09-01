@@ -1,0 +1,70 @@
+{
+  "schema": "SMART_P06_NEUTRALIZED_VALIDATION_1",
+  "adopted_strength": 0.0,
+  "decision": "NEUTRALIZE_PROBABILITY_INTERPRETATION_KEEP_RANKING_DIAGNOSTIC",
+  "full_oos": {
+    "start": 1001,
+    "end": 3050,
+    "n": 2050,
+    "mean_brier": 0.09000000000000279,
+    "uniform_brier": 0.09000000000000279,
+    "delta_vs_uniform": 0.0
+  },
+  "intermediate": {
+    "start": 2201,
+    "end": 2800,
+    "n": 600,
+    "mean_brier": 0.09000000000000132,
+    "uniform_brier": 0.09000000000000132,
+    "delta_vs_uniform": 0.0
+  },
+  "final_holdout": {
+    "start": 2801,
+    "end": 3050,
+    "n": 250,
+    "mean_brier": 0.08999999999999989,
+    "uniform_brier": 0.08999999999999989,
+    "delta_vs_uniform": 0.0
+  },
+  "ranking": {
+    "challenger_hits": 1271,
+    "expected_hits": 1230.0,
+    "next_top6_shadow": [
+      11,
+      27,
+      10,
+      30,
+      53,
+      43
+    ]
+  },
+  "state": {
+    "observations": 2050,
+    "mode": "NEUTRALIZED",
+    "policy_id": "P06_NEUTRALIZED_AFTER_FINAL_HOLDOUT_20260830",
+    "raw_monotonic_violations": 24,
+    "monotonic_after_isotonic": true,
+    "probability_sum": 5.999999999999998,
+    "isotonic_rank1": 0.10344202898550725,
+    "isotonic_rank60": 0.09380032206119163,
+    "published_rank1": 0.1,
+    "published_rank60": 0.1
+  },
+  "guards": {
+    "final_holdout_nonregression": true,
+    "total_nonregression": true,
+    "published_probabilities_uniform": true,
+    "diagnostic_isotonic_preserved": true,
+    "ranking_not_reordered": true,
+    "weights_not_changed": true,
+    "future_leakage": false,
+    "prospective_predictive_claim": false,
+    "retroactive_3051_change": false
+  },
+  "hashes": {
+    "data": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+    "module": "c07c3d55093b79aec8d56cf67607ef8dfb0bfb494ac59a6dcd0a086fb890a8e4",
+    "agent": "cac17b29ba7907e8916f9b3d7b2415d3e459cd26ef711ca463e4a58a9d4aa693"
+  },
+  "sha256": "a1d33c8cabd86e04d5e6c381821da6f0405f11c26b4a3573f731651ae3570e80"
+}

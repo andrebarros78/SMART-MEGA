@@ -1,0 +1,50 @@
+from pathlib import Path
+import json,hashlib
+from datetime import datetime
+from zoneinfo import ZoneInfo
+import sys
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+gp=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'
+gate=json.loads(gp.read_text(encoding='utf-8'))
+proofp=ROOT/'SMART_P04_SIGNAL_INTERACTIONS_PROOF.json'; proof=json.loads(proofp.read_text(encoding='utf-8'))
+if proof.get('status')!='MISSION_PROVEN' or not all(proof.get('checks',{}).values()):
+    raise SystemExit('P04 proof is not fully proven')
+ledger=json.loads((ROOT/'SMART_SIGNAL_LEDGER.json').read_text(encoding='utf-8'))
+fr=cc.active_freeze(ledger,3051)
+orig=[e for e in ledger['events'] if e.get('event_type')=='INTERACTIONS' and int(e.get('target_contest',-1))==3051]
+corr=[e for e in ledger['events'] if e.get('event_type')=='INTERACTIONS_CORRECTION' and int(e.get('target_contest',-1))==3051]
+if len(orig)!=1 or len(corr)!=1: raise SystemExit('expected exactly one original and one correction')
+item=next(x for x in gate['items'] if x['id']=='P04_SIGNAL_INTERACTIONS')
+item['status']='PROVEN'
+item['evidence']=[
+ {'type':'implementation_proof','file':'SMART_P04_SIGNAL_INTERACTIONS_PROOF.json','sha256':sha(proofp)},
+ {'type':'coverage','file':'SMART_COVERAGE_P04_FINAL.json','sha256':sha(ROOT/'SMART_COVERAGE_P04_FINAL.json'),'statements':1472,'branches':460,'coverage':'100% lines + branches'},
+ {'type':'historical_oos','file':'SMART_P04_INTERACTIONS_HISTORICAL.json','sha256':sha(ROOT/'SMART_P04_INTERACTIONS_HISTORICAL.json'),'predictions':2050,'pair_count':66,'challenger_hits':1271,'weight_effect_enabled':False},
+ {'type':'module','file':'smart_signal_interactions.py','sha256':sha(ROOT/'smart_signal_interactions.py')},
+ {'type':'prospective_ledger_interactions','target_contest':3051,'freeze_sha256':fr['freeze_sha256'],'original_interaction_sha256':orig[0]['interaction_sha256'],'active_correction_sha256':corr[0]['interaction_sha256'],'semantic_equivalence':True,'pair_count':66,'triple_count':220},
+ {'type':'future_freeze_governance','file':'smart_champion_challenger.py','sha256':sha(ROOT/'smart_champion_challenger.py'),'hashes_signal_interactions':True,'snapshots_signal_interactions':True}
+]
+item['proven_brt']=datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat()
+gate['freeze_allowed']=bool(all(x.get('status')=='PROVEN' and isinstance(x.get('evidence'),list) and x['evidence'] for x in gate['items']))
+gp.write_text(json.dumps(gate,ensure_ascii=False,indent=2),encoding='utf-8')
+try:
+    cc.require_pre_3052_gate(3052); blocked=False; reason='NOT_BLOCKED'
+except ValueError as ex:
+    blocked=True; reason=str(ex)
+proven=[x for x in gate['items'] if x.get('status')=='PROVEN']
+checks={
+ 'p01_preserved_proven':next(x for x in gate['items'] if x['id']=='P01_COUNTERFACTUAL_ATTRIBUTION')['status']=='PROVEN',
+ 'p02_preserved_proven':next(x for x in gate['items'] if x['id']=='P02_MARGINAL_SIGNAL_UTILITY')['status']=='PROVEN',
+ 'p03_preserved_proven':next(x for x in gate['items'] if x['id']=='P03_FALSE_CONSENSUS_REDUNDANCY')['status']=='PROVEN',
+ 'p04_status_proven':item['status']=='PROVEN',
+ 'p04_has_evidence':bool(item['evidence']),
+ 'exactly_four_items_proven':len(proven)==4,
+ 'remaining_11_not_falsely_proven':all(x.get('status')!='PROVEN' for x in gate['items'][4:]),
+ 'freeze_3052_still_blocked':blocked,
+ 'freeze_allowed_false':gate['freeze_allowed'] is False,
+}
+out={'schema':'SMART_P04_GATE_UPDATE_PROOF_1','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'gate_sha256':sha(gp),'p04_proof_sha256':sha(proofp),'progress':{'proven_items':len(proven),'total_items':15,'remaining_items':15-len(proven)},'freeze_3052_block_reason':reason}
+op=ROOT/'SMART_P04_GATE_UPDATE_PROOF.json'; op.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({**out,'gate_update_proof_sha256':sha(op)},ensure_ascii=False,indent=2))

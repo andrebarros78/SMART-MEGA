@@ -1,0 +1,6 @@
+from pathlib import Path
+p=Path('smart_signal_quality.py')
+s=p.read_text(encoding='utf-8')
+s=s.replace("drift_active = self.performance_drift_cooldown > 0 or self.profile_drift_cooldown > 0","drift_active = self.performance_drift_cooldown > 0")
+s=s.replace("'profile_projection_seed': PROFILE_SEED,","'profile_projection_seed': PROFILE_SEED,\n            'profile_drift_penalty_enabled': False,")
+p.write_text(s,encoding='utf-8')

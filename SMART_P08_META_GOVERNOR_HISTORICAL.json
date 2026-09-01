@@ -1,0 +1,114 @@
+{
+  "schema": "SMART_P08_META_GOVERNOR_HISTORICAL_OOS_1",
+  "data_cutoff": 3050,
+  "oos_start": 1001,
+  "oos_predictions": 2050,
+  "parameters": {
+    "eta": 0.11552453009332421,
+    "prior_mix": 0.2,
+    "tuned_on_replay": false
+  },
+  "selected_cumulative_hits": 1259,
+  "fixed_policy_hits": {
+    "quality_dynamic": 1271,
+    "diversity_max": 1235,
+    "low_redundancy": 1258,
+    "regime_context": 1271,
+    "conservative": 1244
+  },
+  "selection_counts": {
+    "quality_dynamic": 1374,
+    "conservative": 285,
+    "low_redundancy": 10,
+    "diversity_max": 381
+  },
+  "switches": 22,
+  "posthoc_oracle_hits_not_used": 1618,
+  "oracle_selection_prohibited": true,
+  "next_selection_shadow": {
+    "schema": "SMART_META_GOVERNOR_1",
+    "observations_before_result": 2050,
+    "eta": 0.11552453009332421,
+    "prior_mix": 0.2,
+    "policy_weights_before_result": {
+      "quality_dynamic": 0.3904861467711276,
+      "diversity_max": 0.04547634604329874,
+      "low_redundancy": 0.11806191472108367,
+      "regime_context": 0.3904861467711276,
+      "conservative": 0.05548944569336247
+    },
+    "selected_policy": "quality_dynamic",
+    "selected_top6": [
+      11,
+      27,
+      10,
+      30,
+      53,
+      43
+    ],
+    "selected_policy_sha256": "58d5981b8317508509f04f4ec5da45e3111f3e50376cb00429e11ff236829af0",
+    "selection_causal": true,
+    "selection_uses_current_result": false,
+    "selection_scope": "P07_CHALLENGERS_ONLY",
+    "production_authority": false,
+    "champion_remains_active": true,
+    "retroactive_selection_prohibited": true,
+    "sha256": "97258fa3d1dd76a06197c8d41b8edea42b0fc0716eb629edf19ff3a76929619b"
+  },
+  "governor_state": {
+    "schema": "SMART_META_GOVERNOR_1",
+    "eta": 0.11552453009332421,
+    "prior_mix": 0.2,
+    "observations": 2050,
+    "log_weights": {
+      "quality_dynamic": 4.736505733826304,
+      "diversity_max": 0.5776226504666074,
+      "low_redundancy": 3.234686842613058,
+      "regime_context": 4.736505733826304,
+      "conservative": 1.6173434213065156
+    },
+    "policy_weights": {
+      "quality_dynamic": 0.3904861467711276,
+      "diversity_max": 0.04547634604329874,
+      "low_redundancy": 0.11806191472108367,
+      "regime_context": 0.3904861467711276,
+      "conservative": 0.05548944569336247
+    },
+    "cumulative_hits": {
+      "quality_dynamic": 1271,
+      "diversity_max": 1235,
+      "low_redundancy": 1258,
+      "regime_context": 1271,
+      "conservative": 1244
+    },
+    "selection_counts": {
+      "quality_dynamic": 1374,
+      "diversity_max": 381,
+      "low_redundancy": 10,
+      "regime_context": 0,
+      "conservative": 285
+    },
+    "selected_cumulative_hits": 1259,
+    "last_selected_policy": "quality_dynamic",
+    "selection_scope": "P07_CHALLENGERS_ONLY",
+    "production_authority": false,
+    "champion_remains_active": true,
+    "sha256": "31e1b34c7b06926e11862eae71c8833a7cd7f7a2760c13a9691e078c7afc5d6b"
+  },
+  "guards": {
+    "selection_before_result_all": true,
+    "update_after_result_only": true,
+    "selected_hits_state_matches": true,
+    "production_authority": false,
+    "champion_remains_active": true,
+    "retroactive_selection": false,
+    "primary_challenger_not_rewritten": true
+  },
+  "hashes": {
+    "data": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+    "meta_governor": "759fd9b627110ca6fa5aa553950e71966948bd8727ff93d21d14ed7fcd81284f",
+    "multi_challengers": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+    "agent": "c1188e5604ccb89384572d33257504fc0bdab20361d1e07f4629f7611849e27a"
+  },
+  "interpretation": "historical causal engineering evidence only; no prospective superiority claim"
+}

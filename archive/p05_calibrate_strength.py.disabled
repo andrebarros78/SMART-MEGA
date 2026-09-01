@@ -1,0 +1,21 @@
+from pathlib import Path
+import sys,json,hashlib
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent
+DATA=ROOT/'Mega-Sena_through_3050.xlsx'; draws,contests=e.load_draws(DATA)
+mask=contests<=2200; dcal=draws[mask]; ccal=contests[mask]
+strengths=[0.02,0.04,0.06]
+rows={}
+for st in strengths:
+    a=SmartSignalAgent(start=1000,meta_strength=st)
+    pred,bt=a.predict_next(dcal,ccal,target_contest=2201)
+    rows[str(st)]={'strength':st,'calibration_hits':bt['total_hits'],'n':len(bt['rows']),'next_top6':pred.top6,
+                   'factor_min':pred.contextual_meta_weights['factor_min'],'factor_max':pred.contextual_meta_weights['factor_max']}
+selected=min(strengths,key=lambda st:(-rows[str(st)]['calibration_hits'],st))
+report={'schema':'SMART_P05_STRENGTH_CALIBRATION_1','data_scope':'CONTESTS_1_TO_2200_ONLY','oos_scope':'1001_TO_2200',
+        'candidates':rows,'selection_rule':'max calibration hits; tie chooses lower strength','selected_strength':selected,
+        'holdout_2201_plus_accessed_for_selection':False,'rejected_prior_0_08':'separate failed candidate; not eligible',
+        'hashes':{'data':e.sha256(DATA),'meta_module':e.sha256(ROOT/'smart_contextual_meta_weights.py'),'agent':e.sha256(ROOT/'smart_signal_agent.py')}}
+out=ROOT/'SMART_P05_STRENGTH_CALIBRATION.json'; out.write_text(json.dumps(report,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({**report,'sha256':hashlib.sha256(out.read_bytes()).hexdigest()},ensure_ascii=False,indent=2))

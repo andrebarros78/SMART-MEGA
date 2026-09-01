@@ -1,0 +1,312 @@
+{
+  "schema": "SMART_P04_SIGNAL_INTERACTIONS_PROOF_1",
+  "point_id": "P04_SIGNAL_INTERACTIONS",
+  "status": "MISSION_PROVEN",
+  "checks": {
+    "single_original_interaction_event_3051": true,
+    "single_interaction_correction_3051": true,
+    "single_adjudication_3051": true,
+    "original_interaction_preserved_append_only": true,
+    "interaction_references_active_freeze": true,
+    "behavioral_recompute_identical": true,
+    "correction_semantically_equivalent_to_original": true,
+    "pair_count_3051_66": true,
+    "triple_count_3051_220": true,
+    "interaction_measurement_only": true,
+    "historical_oos_2050": true,
+    "historical_all_66_pairs_2050": true,
+    "historical_p03_performance_preserved": true,
+    "historical_ranking_preserved": true,
+    "historical_weight_effect_disabled": true,
+    "future_freeze_hashes_p04": true,
+    "future_freeze_snapshots_p04": true,
+    "active_3051_freeze_hash_valid": true,
+    "p01_p02_p03_preserved": true,
+    "p04_not_previously_claimed": true,
+    "pre3052_gate_still_blocked": true,
+    "coverage_100_lines": true,
+    "coverage_100_branches": true,
+    "pytest_global_pass": true,
+    "pip_check_clean": true,
+    "all_root_python_compiles": true
+  },
+  "implementation": {
+    "module": "smart_signal_interactions.py",
+    "module_sha256": "666c959b9ae0ad7b0116f71d8ebfabb85ee172514b203611057ee6df6a07b447",
+    "agent_sha256": "82a5d89cfcf378a704ecf771cfa32387c99056b172a93217cd13853b1f46f7ce",
+    "adjudication_sha256": "d60da771274b741b5ee6a00a94a3785ec8db1f3731afd5201b0ab6fd5e7d685b",
+    "governance_sha256": "686a561f946666f1a9d29d50ce0a97e36bd8e3328c6a3cbe500d0379e64e1d51",
+    "pair_interactions": 66,
+    "max_group_order": 3,
+    "weight_effect_enabled": false,
+    "p05_boundary": "P04 measures/learns interactions; P05 may convert them into contextual meta-weights"
+  },
+  "coverage": {
+    "statements": 1472,
+    "covered_lines": 1472,
+    "branches": 460,
+    "covered_branches": 460,
+    "report": "SMART_COVERAGE_P04_FINAL.json",
+    "sha256": "79120b107d930a72cd353167b802d63c8827fe46adee0fb567e103adb9d45c26"
+  },
+  "historical_oos": {
+    "file": "SMART_P04_INTERACTIONS_HISTORICAL.json",
+    "sha256": "2356aa4c5cb50b2a98633b3c9920c59495abbb337e35561407e73004921840da",
+    "predictions": 2050,
+    "challenger_hits": 1271,
+    "pair_count": 66,
+    "all_pairs_2050": true,
+    "next_top6": [
+      11,
+      27,
+      10,
+      30,
+      53,
+      43
+    ],
+    "top10_synergies": [
+      {
+        "pair": "ewma10|ewma50",
+        "observations": 2050,
+        "mean": 0.008292682926829279,
+        "ewma": -0.00030660015454304375,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.007906976744186058,
+        "positive": 62,
+        "zero": 1944,
+        "negative": 44
+      },
+      {
+        "pair": "ewma10|freq25",
+        "observations": 2050,
+        "mean": 0.007804878048780486,
+        "ewma": 0.01682478033485965,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.007441860465116278,
+        "positive": 75,
+        "zero": 1915,
+        "negative": 60
+      },
+      {
+        "pair": "ewma250|freq1000",
+        "observations": 2050,
+        "mean": 0.007804878048780485,
+        "ewma": -0.04766027331434364,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.007441860465116277,
+        "positive": 108,
+        "zero": 1851,
+        "negative": 91
+      },
+      {
+        "pair": "ewma10|freq_global",
+        "observations": 2050,
+        "mean": 0.005365853658536599,
+        "ewma": 0.05704119364311526,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.0051162790697674545,
+        "positive": 72,
+        "zero": 1917,
+        "negative": 61
+      },
+      {
+        "pair": "ewma10|freq500",
+        "observations": 2050,
+        "mean": 0.0048780487804878205,
+        "ewma": 0.022019290277440314,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.004651162790697689,
+        "positive": 64,
+        "zero": 1931,
+        "negative": 55
+      },
+      {
+        "pair": "ewma250|freq100",
+        "observations": 2050,
+        "mean": 0.0048780487804878135,
+        "ewma": -0.026040541998556196,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.004651162790697683,
+        "positive": 82,
+        "zero": 1894,
+        "negative": 74
+      },
+      {
+        "pair": "ewma10|ewma250",
+        "observations": 2050,
+        "mean": 0.004390243902439043,
+        "ewma": -0.01457473542975715,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.004186046511627925,
+        "positive": 82,
+        "zero": 1895,
+        "negative": 73
+      },
+      {
+        "pair": "ewma250|freq500",
+        "observations": 2050,
+        "mean": 0.004390243902439029,
+        "ewma": 0.05244407701893651,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.004186046511627912,
+        "positive": 73,
+        "zero": 1913,
+        "negative": 64
+      },
+      {
+        "pair": "ewma10|freq50",
+        "observations": 2050,
+        "mean": 0.0039024390243902534,
+        "ewma": 0.05179934201880354,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.003720930232558149,
+        "positive": 78,
+        "zero": 1903,
+        "negative": 69
+      },
+      {
+        "pair": "freq100|freq500",
+        "observations": 2050,
+        "mean": 0.0034146341463414803,
+        "ewma": 0.00818566655948842,
+        "confidence": 0.9534883720930233,
+        "shrunk": 0.0032558139534883883,
+        "positive": 56,
+        "zero": 1943,
+        "negative": 51
+      }
+    ],
+    "top10_antagonisms": [
+      {
+        "pair": "freq250|freq_global",
+        "observations": 2050,
+        "mean": -0.013170731707317116,
+        "ewma": 0.04988995442136379,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.012558139534883762,
+        "positive": 36,
+        "zero": 1952,
+        "negative": 62
+      },
+      {
+        "pair": "ewma25|freq250",
+        "observations": 2050,
+        "mean": -0.012195121951219561,
+        "ewma": 0.04202371615851004,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.011627906976744233,
+        "positive": 34,
+        "zero": 1958,
+        "negative": 58
+      },
+      {
+        "pair": "freq25|freq50",
+        "observations": 2050,
+        "mean": -0.012195121951219516,
+        "ewma": 0.06024410719308815,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.01162790697674419,
+        "positive": 51,
+        "zero": 1924,
+        "negative": 75
+      },
+      {
+        "pair": "freq50|freq_global",
+        "observations": 2050,
+        "mean": -0.010731707317073194,
+        "ewma": 0.04024886027080529,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.010232558139534907,
+        "positive": 56,
+        "zero": 1916,
+        "negative": 78
+      },
+      {
+        "pair": "ewma50|freq250",
+        "observations": 2050,
+        "mean": -0.010731707317073184,
+        "ewma": 0.019026715152994787,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.010232558139534897,
+        "positive": 35,
+        "zero": 1960,
+        "negative": 55
+      },
+      {
+        "pair": "freq50|freq500",
+        "observations": 2050,
+        "mean": -0.009756097560975634,
+        "ewma": 0.07801402859595591,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.009302325581395373,
+        "positive": 50,
+        "zero": 1931,
+        "negative": 69
+      },
+      {
+        "pair": "freq250|freq500",
+        "observations": 2050,
+        "mean": -0.007804878048780503,
+        "ewma": 0.06009751551058081,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.007441860465116294,
+        "positive": 38,
+        "zero": 1959,
+        "negative": 53
+      },
+      {
+        "pair": "ewma25|freq1000",
+        "observations": 2050,
+        "mean": -0.007804878048780498,
+        "ewma": 0.01381914906697534,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.007441860465116289,
+        "positive": 61,
+        "zero": 1912,
+        "negative": 77
+      },
+      {
+        "pair": "freq1000|freq250",
+        "observations": 2050,
+        "mean": -0.007804878048780486,
+        "ewma": -0.02723099804839064,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.007441860465116278,
+        "positive": 57,
+        "zero": 1920,
+        "negative": 73
+      },
+      {
+        "pair": "freq1000|freq500",
+        "observations": 2050,
+        "mean": -0.007804878048780481,
+        "ewma": -0.05618086656697484,
+        "confidence": 0.9534883720930233,
+        "shrunk": -0.0074418604651162725,
+        "positive": 71,
+        "zero": 1893,
+        "negative": 86
+      }
+    ]
+  },
+  "contest_3051": {
+    "original_interaction_sha256": "81993db0cca46ac33ad0ad4fa87cf83ef4d9d7f3a8de05da62df6489557e0311",
+    "active_interaction_sha256": "ce280becbd05b5278a833331e8c64d7e8b613a0a00dccc9ea3fc9db66a6d5190",
+    "correction_supersedes": "81993db0cca46ac33ad0ad4fa87cf83ef4d9d7f3a8de05da62df6489557e0311",
+    "pair_count": 66,
+    "triple_count": 220,
+    "behavioral_recompute_identical": true,
+    "semantic_equivalence_original_correction": true
+  },
+  "regression": {
+    "pytest": "96 passed in 24.19s",
+    "pip_check": "No broken requirements found.",
+    "compile_errors": []
+  },
+  "limits": {
+    "prospective_predictive_claim": false,
+    "retroactive_weight_change": false,
+    "p05_not_claimed": true,
+    "global_6_of_6_not_claimed": true
+  }
+}

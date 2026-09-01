@@ -1,0 +1,51 @@
+from pathlib import Path
+p=Path(__file__).resolve().parent/'build_p04_proof.py'
+s=p.read_text(encoding='utf-8')
+s=s.replace("ints=[x for x in ledger['events'] if x.get('event_type')=='INTERACTIONS' and int(x.get('target_contest',-1))==3051]\nads=", "ints=[x for x in ledger['events'] if x.get('event_type')=='INTERACTIONS' and int(x.get('target_contest',-1))==3051]\ncorrections=[x for x in ledger['events'] if x.get('event_type')=='INTERACTIONS_CORRECTION' and int(x.get('target_contest',-1))==3051]\nads=")
+old="""checks={
+ 'single_interaction_event_3051':len(ints)==1,
+ 'single_adjudication_3051':len(ads)==1,
+ 'interaction_references_active_freeze':len(ints)==1 and ints[0]['freeze_sha256']==fr['freeze_sha256'],
+ 'behavioral_recompute_identical':len(ints)==1 and recompute['interaction_sha256']==ints[0]['interaction_sha256'],
+ 'pair_count_3051_66':len(ints)==1 and len(ints[0]['analysis']['pair_interactions'])==66,
+ 'triple_count_3051_220':len(ints)==1 and len(ints[0]['analysis']['triple_interactions'])==220,
+ 'interaction_measurement_only':len(ints)==1 and ints[0]['analysis']['weight_effect_enabled'] is False and ints[0]['policy_effect']=='NONE_P04_MEASUREMENT_ONLY',
+"""
+new="""# The original P04 event is immutable. A later schema-hardening correction may supersede it
+# without rewriting history. Numeric behavior must remain identical while the current engine
+# recomputes to the correction hash.
+def semantic_signature(a):
+    return {
+        'actual_numbers':a['actual_numbers'],'full_hits':a['full_hits'],'full_top6':a['full_top6'],
+        'single_effects':a['single_effects'],
+        'pairs':{k:{x:v[x] for x in ('hits_without_pair','joint_delta_hits','interaction_delta_hits')}
+                 for k,v in a['pair_interactions'].items() if v.get('available',True)},
+        'triples':{k:{x:v[x] for x in ('hits_without_group','joint_delta_hits','pure_interaction_delta_hits')}
+                   for k,v in a['triple_interactions'].items()},
+    }
+active_interaction = corrections[0] if len(corrections)==1 else (ints[0] if len(ints)==1 else None)
+semantic_equal = bool(len(ints)==1 and len(corrections)==1 and semantic_signature(ints[0]['analysis'])==semantic_signature(corrections[0]['analysis']))
+checks={
+ 'single_original_interaction_event_3051':len(ints)==1,
+ 'single_interaction_correction_3051':len(corrections)==1,
+ 'single_adjudication_3051':len(ads)==1,
+ 'original_interaction_preserved_append_only':len(ints)==1 and len(corrections)==1 and corrections[0].get('supersedes_interaction_sha256')==ints[0].get('interaction_sha256') and corrections[0].get('retroactive_rewrite') is False,
+ 'interaction_references_active_freeze':active_interaction is not None and active_interaction['freeze_sha256']==fr['freeze_sha256'],
+ 'behavioral_recompute_identical':active_interaction is not None and recompute['interaction_sha256']==active_interaction['interaction_sha256'],
+ 'correction_semantically_equivalent_to_original':semantic_equal,
+ 'pair_count_3051_66':active_interaction is not None and len(active_interaction['analysis']['pair_interactions'])==66,
+ 'triple_count_3051_220':active_interaction is not None and len(active_interaction['analysis']['triple_interactions'])==220,
+ 'interaction_measurement_only':active_interaction is not None and active_interaction['analysis']['weight_effect_enabled'] is False and active_interaction['policy_effect']=='NONE_P04_MEASUREMENT_ONLY',
+"""
+if old not in s:
+    raise SystemExit('checks marker not found')
+s=s.replace(old,new)
+old2=""" 'contest_3051':{'interaction_sha256':ints[0]['interaction_sha256'],'pair_count':len(ints[0]['analysis']['pair_interactions']),'triple_count':len(ints[0]['analysis']['triple_interactions']),'behavioral_recompute_identical':recompute['interaction_sha256']==ints[0]['interaction_sha256']},
+"""
+new2=""" 'contest_3051':{'original_interaction_sha256':ints[0]['interaction_sha256'],'active_interaction_sha256':active_interaction['interaction_sha256'],'correction_supersedes':corrections[0]['supersedes_interaction_sha256'],'pair_count':len(active_interaction['analysis']['pair_interactions']),'triple_count':len(active_interaction['analysis']['triple_interactions']),'behavioral_recompute_identical':recompute['interaction_sha256']==active_interaction['interaction_sha256'],'semantic_equivalence_original_correction':semantic_equal},
+"""
+if old2 not in s:
+    raise SystemExit('contest marker not found')
+s=s.replace(old2,new2)
+p.write_text(s,encoding='utf-8')
+print('patched')

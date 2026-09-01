@@ -1,0 +1,25 @@
+from __future__ import annotations
+import sys,json,itertools,hashlib
+from pathlib import Path
+import numpy as np
+ROOT=Path(r'C:\New Projet\SMART-MEGA'); sys.path.insert(0,str(ROOT))
+import smart_v2_engine as e, smart_champion_challenger as cc
+L=cc.load_ledger(ROOT/'SMART_SIGNAL_LEDGER.json'); fr=cc.active_freeze(L,3051); s=fr['snapshot']; actual={11,15,20,21,38,48}
+weights={k:float(v) for k,v in s['weights'].items()}; names=list(weights)
+vals={n:np.array([float(s['raw_signals'][n]['values'][str(i)]) for i in range(1,61)]) for n in names}
+def eval_removed(rem):
+ keep=[n for n in names if n not in rem]; z=sum(weights[n] for n in keep); agg=sum((weights[n]/z)*vals[n] for n in keep); top,order=e.rank_top6(agg); rank=e.NUMBERS[order].tolist(); return {'removed':sorted(rem),'top6':top,'hits':len(set(top)&actual),'rank38':rank.index(38)+1,'rank11':rank.index(11)+1,'score38':float(agg[37]),'cutoff_score':float(agg[order[5]])}
+base=eval_removed(set())
+minimal=[]; maxhits=base['hits']; best=[]
+for k in range(1,7):
+ rows=[]
+ for comb in itertools.combinations(names,k):
+  r=eval_removed(set(comb)); rows.append(r); maxhits=max(maxhits,r['hits'])
+ if not minimal:
+  candidates=[r for r in rows if r['rank38']<=6]
+  if candidates:
+   minimal=sorted(candidates,key=lambda r:(-r['hits'],r['rank38'],r['removed']))[:20]; min_k=k
+ best.extend(sorted(rows,key=lambda r:(-r['hits'],r['rank38'],r['removed']))[:5])
+ if minimal and k>=min_k+1: break
+out={'schema':'SMART_3051_COUNTERFACTUAL_1','guardrail':'post-result diagnostic only; prohibited for retroactive optimization or promotion','actual':[11,15,20,21,38,48],'base':base,'minimal_removed_count_to_put_38_top6':min_k if minimal else None,'minimal_examples':minimal,'max_hits_found':maxhits,'best_diagnostics':sorted(best,key=lambda r:(-r['hits'],len(r['removed']),r['rank38']))[:20]}
+p=ROOT/'SMART_3051_COUNTERFACTUAL.json'; p.write_text(json.dumps(out,ensure_ascii=False,indent=2),encoding='utf-8'); print(json.dumps({'base':base,'min_removed':out['minimal_removed_count_to_put_38_top6'],'minimal_examples':minimal[:10],'max_hits_found':maxhits,'sha256':hashlib.sha256(p.read_bytes()).hexdigest()},ensure_ascii=False,indent=2))

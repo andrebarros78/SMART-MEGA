@@ -1,0 +1,32 @@
+{
+  "schema": "SMART_P05_POSTGATE_FINAL_1",
+  "status": "MISSION_PROVEN",
+  "checks": {
+    "p05_proof_mission_proven": true,
+    "p05_gate_update_mission_proven": true,
+    "postgate_targeted_p05_arch_agent_22_passed": true,
+    "postgate_gate_tests_2_passed": true,
+    "pip_check_clean": true,
+    "root_python_compiles": true,
+    "p01_to_p05_proven": true,
+    "exactly_five_proven": true,
+    "p06_to_p15_pending": true,
+    "freeze_allowed_false": true,
+    "gate_3052_blocked": true,
+    "freeze_3051_hash_valid": true
+  },
+  "failed": [],
+  "postgate_tests": {
+    "p05_architecture_agent": "22 passed in 87.79s",
+    "gate_3052": "2 passed, 17 deselected in 20.57s",
+    "note": "full 106-test suite already passed in the canonical P05 proof before the document-only gate update; two later full-suite post-gate attempts hit worker timeout without test failure output"
+  },
+  "pip_check": "No broken requirements found.",
+  "compile_errors": [],
+  "gate_sha256": "8082227440616031bd2e23eec71b1ae05cf71450ddd6cff8afa3af3c0bd939de",
+  "p05_proof_sha256": "4360d33d2073ffe9415a62a087d03b1a46781a02e44c479fcdddf677bcaac1cb",
+  "p05_gate_update_sha256": "6dd9a69d98f632ea98b371bc09123fc50814dccac770a8496170ec0b1ba79284",
+  "mandate_sha256": "d084db677d7b3b24aa1afe4e7811b63b3bae3b70323e42f1b3e0566bc41e87d8",
+  "freeze_3051_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+  "block_reason": "SMART pre-3052 implementation gate blocked; pending=['P06_RANK_SCORE_CALIBRATION', 'P07_MULTI_CHALLENGERS', 'P08_META_GOVERNOR', 'P09_CONTINUOUS_RED_TEAM', 'P10_BOUNDED_ONLINE_LEARNING', 'P11_SIGNAL_EXPANSION_GOVERNANCE', 'P12_SEQUENTIAL_PROSPECTIVE_PROOF', 'P13_PROMOTION_GATE', 'P14_INDEPENDENT_AUDIT_NONREGRESSION', 'P15_EVIDENCE_ONLY_PROMOTION']"
+}

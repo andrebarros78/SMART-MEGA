@@ -1,0 +1,1757 @@
+{
+  "schema": "SMART_50_ROUND_SIMULATION_1",
+  "purpose": "Simulated robustness exercise only; not prospective predictive proof.",
+  "river_version": "0.26.1",
+  "engine_sha256": "bff5d8beb464b94049d5933c9d6bee157f445aa9b6d15ebabcf42a848c4412d8",
+  "simulation_sha256": "aafa876cc642c2dd873325c7f9ea405c8687234f083a1fb57fc042efb7df73e6",
+  "base_seed": 20260828,
+  "rounds_total": 50,
+  "scenario_distribution": {
+    "alternating_adversarial": 10,
+    "iid_null": 10,
+    "persistent_bias": 10,
+    "regime_shift": 10,
+    "signal_vanishes": 10
+  },
+  "summary": {
+    "alternating_adversarial": {
+      "rounds": 10,
+      "mean_hits": 678.0,
+      "mean_excess": 258.0,
+      "mean_z": 13.870845422456629,
+      "min_z": 12.795586087382471,
+      "max_z": 15.161156624545617,
+      "rate_z_ge_2": 1.0,
+      "all_finite": true
+    },
+    "iid_null": {
+      "rounds": 10,
+      "mean_hits": 295.1,
+      "mean_excess": -4.9,
+      "mean_z": -0.31170468067724644,
+      "min_z": -1.1450376024878444,
+      "max_z": 1.3994904030406987,
+      "rate_z_ge_2": 0.0,
+      "all_finite": true
+    },
+    "persistent_bias": {
+      "rounds": 10,
+      "mean_hits": 991.7,
+      "mean_excess": 571.7,
+      "mean_z": 30.73628809309479,
+      "min_z": 28.655661279726292,
+      "max_z": 33.49432828756,
+      "rate_z_ge_2": 1.0,
+      "all_finite": true
+    },
+    "regime_shift": {
+      "rounds": 10,
+      "mean_hits": 906.4,
+      "mean_excess": 486.4,
+      "mean_z": 26.150307029003507,
+      "min_z": 24.67720173995191,
+      "max_z": 27.41911304439101,
+      "rate_z_ge_2": 1.0,
+      "all_finite": true,
+      "adwin_detection_rate": 1.0,
+      "adwin_mean_delay": 115.4
+    },
+    "signal_vanishes": {
+      "rounds": 10,
+      "mean_hits": 623.5,
+      "mean_excess": 203.5,
+      "mean_z": 10.940763734379551,
+      "min_z": 9.83862291592854,
+      "max_z": 12.58053422036764,
+      "rate_z_ge_2": 1.0,
+      "all_finite": true,
+      "uniform_tail_mean_z": -0.22994800708530985,
+      "uniform_tail_rate_abs_z_ge_2": 0.1,
+      "adwin_detection_rate": 1.0,
+      "adwin_mean_delay": 137.8
+    }
+  },
+  "structural_checks": {
+    "exactly_50_rounds": true,
+    "ten_per_scenario": true,
+    "all_metrics_finite": true,
+    "null_false_positive_rate_le_0_10": true,
+    "persistent_bias_detected_majority": true,
+    "regime_shift_detected_majority": true,
+    "river_adwin_detects_shift_majority": true,
+    "river_adwin_detects_vanishing_signal_majority": true
+  },
+  "passed": true,
+  "records": [
+    {
+      "round": 1,
+      "scenario": "iid_null",
+      "seed": 20261837,
+      "result": {
+        "eval_draws": 500,
+        "hits": 288,
+        "expected": 300.0,
+        "excess": -12.0,
+        "z": -0.763358401658563,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 2,
+      "scenario": "iid_null",
+      "seed": 20262846,
+      "result": {
+        "eval_draws": 500,
+        "hits": 290,
+        "expected": 300.0,
+        "excess": -10.0,
+        "z": -0.6361320013821358,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 3,
+      "scenario": "iid_null",
+      "seed": 20263855,
+      "result": {
+        "eval_draws": 500,
+        "hits": 282,
+        "expected": 300.0,
+        "excess": -18.0,
+        "z": -1.1450376024878444,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 4,
+      "scenario": "iid_null",
+      "seed": 20264864,
+      "result": {
+        "eval_draws": 500,
+        "hits": 283,
+        "expected": 300.0,
+        "excess": -17.0,
+        "z": -1.0814244023496309,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 5,
+      "scenario": "iid_null",
+      "seed": 20265873,
+      "result": {
+        "eval_draws": 500,
+        "hits": 298,
+        "expected": 300.0,
+        "excess": -2.0,
+        "z": -0.12722640027642715,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 6,
+      "scenario": "iid_null",
+      "seed": 20266882,
+      "result": {
+        "eval_draws": 500,
+        "hits": 301,
+        "expected": 300.0,
+        "excess": 1.0,
+        "z": 0.06361320013821357,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.6333333333333333,
+          "freq": 0.3666666666666667
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 7,
+      "scenario": "iid_null",
+      "seed": 20267891,
+      "result": {
+        "eval_draws": 500,
+        "hits": 291,
+        "expected": 300.0,
+        "excess": -9.0,
+        "z": -0.5725188012439222,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 8,
+      "scenario": "iid_null",
+      "seed": 20268900,
+      "result": {
+        "eval_draws": 500,
+        "hits": 299,
+        "expected": 300.0,
+        "excess": -1.0,
+        "z": -0.06361320013821357,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 9,
+      "scenario": "iid_null",
+      "seed": 20269909,
+      "result": {
+        "eval_draws": 500,
+        "hits": 322,
+        "expected": 300.0,
+        "excess": 22.0,
+        "z": 1.3994904030406987,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 10,
+      "scenario": "iid_null",
+      "seed": 20270918,
+      "result": {
+        "eval_draws": 500,
+        "hits": 297,
+        "expected": 300.0,
+        "excess": -3.0,
+        "z": -0.19083960041464074,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 11,
+      "scenario": "persistent_bias",
+      "seed": 20271927,
+      "target": [
+        2,
+        9,
+        24,
+        30,
+        55,
+        60
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 1043,
+        "expected": 420.0,
+        "excess": 623.0,
+        "z": 33.49432828756,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 12,
+      "scenario": "persistent_bias",
+      "seed": 20272936,
+      "target": [
+        5,
+        15,
+        26,
+        34,
+        41,
+        59
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 1026,
+        "expected": 420.0,
+        "excess": 606.0,
+        "z": 32.580357852746964,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 13,
+      "scenario": "persistent_bias",
+      "seed": 20273945,
+      "target": [
+        4,
+        22,
+        28,
+        40,
+        41,
+        45
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 980,
+        "expected": 420.0,
+        "excess": 560.0,
+        "z": 30.107261382076405,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 14,
+      "scenario": "persistent_bias",
+      "seed": 20274954,
+      "target": [
+        19,
+        25,
+        31,
+        44,
+        50,
+        59
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 999,
+        "expected": 420.0,
+        "excess": 579.0,
+        "z": 31.128757750396854,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 15,
+      "scenario": "persistent_bias",
+      "seed": 20275963,
+      "target": [
+        7,
+        8,
+        18,
+        20,
+        29,
+        45
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 1025,
+        "expected": 420.0,
+        "excess": 605.0,
+        "z": 32.526594885993255,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 16,
+      "scenario": "persistent_bias",
+      "seed": 20276972,
+      "target": [
+        2,
+        16,
+        22,
+        29,
+        36,
+        54
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 954,
+        "expected": 420.0,
+        "excess": 534.0,
+        "z": 28.70942424648,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 17,
+      "scenario": "persistent_bias",
+      "seed": 20277981,
+      "target": [
+        5,
+        11,
+        14,
+        38,
+        43,
+        44
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 956,
+        "expected": 420.0,
+        "excess": 536.0,
+        "z": 28.816950179987415,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 18,
+      "scenario": "persistent_bias",
+      "seed": 20278990,
+      "target": [
+        15,
+        21,
+        27,
+        48,
+        52,
+        59
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 977,
+        "expected": 420.0,
+        "excess": 557.0,
+        "z": 29.945972481815282,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 19,
+      "scenario": "persistent_bias",
+      "seed": 20279999,
+      "target": [
+        1,
+        2,
+        9,
+        21,
+        38,
+        40
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 1004,
+        "expected": 420.0,
+        "excess": 584.0,
+        "z": 31.397572584165392,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 20,
+      "scenario": "persistent_bias",
+      "seed": 20281008,
+      "target": [
+        8,
+        18,
+        27,
+        28,
+        39,
+        49
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 953,
+        "expected": 420.0,
+        "excess": 533.0,
+        "z": 28.655661279726292,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 21,
+      "scenario": "regime_shift",
+      "seed": 20282017,
+      "target_a": [
+        16,
+        22,
+        35,
+        37,
+        39,
+        46
+      ],
+      "target_b": [
+        18,
+        19,
+        26,
+        40,
+        51,
+        55
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 919,
+        "expected": 420.0,
+        "excess": 499.0,
+        "z": 26.827720410100223,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 22,
+      "scenario": "regime_shift",
+      "seed": 20283026,
+      "target_a": [
+        5,
+        23,
+        32,
+        37,
+        48,
+        58
+      ],
+      "target_b": [
+        3,
+        11,
+        46,
+        47,
+        50,
+        53
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 899,
+        "expected": 420.0,
+        "excess": 479.0,
+        "z": 25.752461075026066,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.5,
+          "freq": 0.5
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          543
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 543,
+        "delay": 93
+      }
+    },
+    {
+      "round": 23,
+      "scenario": "regime_shift",
+      "seed": 20284035,
+      "target_a": [
+        7,
+        19,
+        24,
+        40,
+        42,
+        51
+      ],
+      "target_b": [
+        10,
+        27,
+        28,
+        30,
+        35,
+        41
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 917,
+        "expected": 420.0,
+        "excess": 497.0,
+        "z": 26.72019447659281,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 24,
+      "scenario": "regime_shift",
+      "seed": 20285044,
+      "target_a": [
+        6,
+        17,
+        27,
+        28,
+        32,
+        44
+      ],
+      "target_b": [
+        2,
+        5,
+        14,
+        20,
+        33,
+        36
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 928,
+        "expected": 420.0,
+        "excess": 508.0,
+        "z": 27.311587110883597,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 25,
+      "scenario": "regime_shift",
+      "seed": 20286053,
+      "target_a": [
+        8,
+        12,
+        15,
+        16,
+        50,
+        56
+      ],
+      "target_b": [
+        7,
+        10,
+        24,
+        34,
+        35,
+        44
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 882,
+        "expected": 420.0,
+        "excess": 462.0,
+        "z": 24.838490640213035,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 26,
+      "scenario": "regime_shift",
+      "seed": 20287062,
+      "target_a": [
+        10,
+        24,
+        31,
+        41,
+        57,
+        59
+      ],
+      "target_b": [
+        11,
+        15,
+        33,
+        34,
+        36,
+        37
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 892,
+        "expected": 420.0,
+        "excess": 472.0,
+        "z": 25.376120307750114,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 27,
+      "scenario": "regime_shift",
+      "seed": 20288071,
+      "target_a": [
+        10,
+        14,
+        18,
+        42,
+        43,
+        45
+      ],
+      "target_b": [
+        8,
+        30,
+        39,
+        46,
+        57,
+        58
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 930,
+        "expected": 420.0,
+        "excess": 510.0,
+        "z": 27.41911304439101,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          543
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 543,
+        "delay": 93
+      }
+    },
+    {
+      "round": 28,
+      "scenario": "regime_shift",
+      "seed": 20289080,
+      "target_a": [
+        14,
+        22,
+        23,
+        24,
+        26,
+        57
+      ],
+      "target_b": [
+        11,
+        13,
+        25,
+        29,
+        30,
+        40
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 879,
+        "expected": 420.0,
+        "excess": 459.0,
+        "z": 24.67720173995191,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 29,
+      "scenario": "regime_shift",
+      "seed": 20290089,
+      "target_a": [
+        1,
+        14,
+        46,
+        52,
+        55,
+        56
+      ],
+      "target_b": [
+        7,
+        27,
+        42,
+        48,
+        54,
+        57
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 897,
+        "expected": 420.0,
+        "excess": 477.0,
+        "z": 25.64493514151865,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 30,
+      "scenario": "regime_shift",
+      "seed": 20291098,
+      "target_a": [
+        22,
+        23,
+        36,
+        39,
+        46,
+        57
+      ],
+      "target_b": [
+        11,
+        12,
+        20,
+        25,
+        30,
+        38
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 921,
+        "expected": 420.0,
+        "excess": 501.0,
+        "z": 26.93524634360764,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.5000000000000228,
+          "freq": 0.49999999999997724
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          543
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 543,
+        "delay": 93
+      }
+    },
+    {
+      "round": 31,
+      "scenario": "signal_vanishes",
+      "seed": 20292107,
+      "target": [
+        4,
+        8,
+        33,
+        41,
+        45,
+        54
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 603,
+        "expected": 420.0,
+        "excess": 183.0,
+        "z": 9.83862291592854,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 165,
+        "expected": 180.0,
+        "excess": -15.0,
+        "z": -1.2318643236713027,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 32,
+      "scenario": "signal_vanishes",
+      "seed": 20293116,
+      "target": [
+        9,
+        12,
+        28,
+        40,
+        48,
+        57
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 614,
+        "expected": 420.0,
+        "excess": 194.0,
+        "z": 10.430015550219325,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 181,
+        "expected": 180.0,
+        "excess": 1.0,
+        "z": 0.08212428824475351,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.5,
+          "freq": 0.5
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          639
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 639,
+        "delay": 189
+      }
+    },
+    {
+      "round": 33,
+      "scenario": "signal_vanishes",
+      "seed": 20294125,
+      "target": [
+        12,
+        18,
+        30,
+        34,
+        49,
+        57
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 625,
+        "expected": 420.0,
+        "excess": 205.0,
+        "z": 11.021408184510113,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 178,
+        "expected": 180.0,
+        "excess": -2.0,
+        "z": -0.16424857648950703,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          607
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 607,
+        "delay": 157
+      }
+    },
+    {
+      "round": 34,
+      "scenario": "signal_vanishes",
+      "seed": 20295134,
+      "target": [
+        18,
+        19,
+        22,
+        27,
+        33,
+        50
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 616,
+        "expected": 420.0,
+        "excess": 196.0,
+        "z": 10.537541483726741,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 167,
+        "expected": 180.0,
+        "excess": -13.0,
+        "z": -1.0676157471817957,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 35,
+      "scenario": "signal_vanishes",
+      "seed": 20296143,
+      "target": [
+        4,
+        18,
+        23,
+        25,
+        36,
+        53
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 628,
+        "expected": 420.0,
+        "excess": 208.0,
+        "z": 11.182697084771236,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 186,
+        "expected": 180.0,
+        "excess": 6.0,
+        "z": 0.4927457294685211,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 36,
+      "scenario": "signal_vanishes",
+      "seed": 20297152,
+      "target": [
+        3,
+        6,
+        9,
+        12,
+        15,
+        39
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 654,
+        "expected": 420.0,
+        "excess": 234.0,
+        "z": 12.58053422036764,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 188,
+        "expected": 180.0,
+        "excess": 8.0,
+        "z": 0.6569943059580281,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 37,
+      "scenario": "signal_vanishes",
+      "seed": 20298161,
+      "target": [
+        5,
+        18,
+        24,
+        31,
+        45,
+        47
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 622,
+        "expected": 420.0,
+        "excess": 202.0,
+        "z": 10.860119284248988,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 176,
+        "expected": 180.0,
+        "excess": -4.0,
+        "z": -0.32849715297901405,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 38,
+      "scenario": "signal_vanishes",
+      "seed": 20299170,
+      "target": [
+        24,
+        25,
+        29,
+        33,
+        38,
+        59
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 628,
+        "expected": 420.0,
+        "excess": 208.0,
+        "z": 11.182697084771236,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 195,
+        "expected": 180.0,
+        "excess": 15.0,
+        "z": 1.2318643236713027,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 39,
+      "scenario": "signal_vanishes",
+      "seed": 20300179,
+      "target": [
+        14,
+        29,
+        34,
+        37,
+        42,
+        49
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 620,
+        "expected": 420.0,
+        "excess": 200.0,
+        "z": 10.752593350741574,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 153,
+        "expected": 180.0,
+        "excess": -27.0,
+        "z": -2.2173557826083448,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          607
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 607,
+        "delay": 157
+      }
+    },
+    {
+      "round": 40,
+      "scenario": "signal_vanishes",
+      "seed": 20301188,
+      "target": [
+        11,
+        12,
+        18,
+        46,
+        47,
+        55
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 625,
+        "expected": 420.0,
+        "excess": 205.0,
+        "z": 11.021408184510113,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.7,
+          "freq": 0.30000000000000004
+        },
+        "finite": true
+      },
+      "uniform_tail": {
+        "eval_draws": 300,
+        "hits": 183,
+        "expected": 180.0,
+        "excess": 3.0,
+        "z": 0.24637286473426054,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      },
+      "river_adwin": {
+        "detections": [
+          575
+        ],
+        "detected_after_boundary": true,
+        "first_after_boundary": 575,
+        "delay": 125
+      }
+    },
+    {
+      "round": 41,
+      "scenario": "alternating_adversarial",
+      "seed": 20302197,
+      "target_a": [
+        6,
+        13,
+        21,
+        28,
+        34,
+        52
+      ],
+      "target_b": [
+        7,
+        11,
+        18,
+        38,
+        55,
+        56
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 665,
+        "expected": 420.0,
+        "excess": 245.0,
+        "z": 13.171926854658427,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 42,
+      "scenario": "alternating_adversarial",
+      "seed": 20303206,
+      "target_a": [
+        2,
+        12,
+        36,
+        44,
+        49,
+        60
+      ],
+      "target_b": [
+        15,
+        18,
+        22,
+        26,
+        27,
+        30
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 667,
+        "expected": 420.0,
+        "excess": 247.0,
+        "z": 13.279452788165843,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 43,
+      "scenario": "alternating_adversarial",
+      "seed": 20304215,
+      "target_a": [
+        5,
+        10,
+        14,
+        34,
+        49,
+        50
+      ],
+      "target_b": [
+        1,
+        2,
+        36,
+        46,
+        47,
+        58
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 691,
+        "expected": 420.0,
+        "excess": 271.0,
+        "z": 14.569763990254831,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 44,
+      "scenario": "alternating_adversarial",
+      "seed": 20305224,
+      "target_a": [
+        20,
+        29,
+        33,
+        42,
+        57,
+        59
+      ],
+      "target_b": [
+        3,
+        12,
+        15,
+        30,
+        38,
+        40
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 658,
+        "expected": 420.0,
+        "excess": 238.0,
+        "z": 12.795586087382471,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 45,
+      "scenario": "alternating_adversarial",
+      "seed": 20306233,
+      "target_a": [
+        17,
+        20,
+        24,
+        25,
+        50,
+        56
+      ],
+      "target_b": [
+        26,
+        27,
+        35,
+        41,
+        43,
+        53
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 669,
+        "expected": 420.0,
+        "excess": 249.0,
+        "z": 13.386978721673259,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 46,
+      "scenario": "alternating_adversarial",
+      "seed": 20307242,
+      "target_a": [
+        11,
+        17,
+        24,
+        45,
+        55,
+        57
+      ],
+      "target_b": [
+        2,
+        27,
+        30,
+        43,
+        44,
+        46
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 702,
+        "expected": 420.0,
+        "excess": 282.0,
+        "z": 15.161156624545617,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 47,
+      "scenario": "alternating_adversarial",
+      "seed": 20308251,
+      "target_a": [
+        3,
+        9,
+        28,
+        38,
+        44,
+        53
+      ],
+      "target_b": [
+        7,
+        29,
+        30,
+        31,
+        45,
+        51
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 696,
+        "expected": 420.0,
+        "excess": 276.0,
+        "z": 14.83857882402337,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 48,
+      "scenario": "alternating_adversarial",
+      "seed": 20309260,
+      "target_a": [
+        8,
+        14,
+        22,
+        24,
+        27,
+        40
+      ],
+      "target_b": [
+        5,
+        7,
+        13,
+        16,
+        55,
+        57
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 672,
+        "expected": 420.0,
+        "excess": 252.0,
+        "z": 13.548267621934382,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 49,
+      "scenario": "alternating_adversarial",
+      "seed": 20310269,
+      "target_a": [
+        14,
+        17,
+        27,
+        52,
+        53,
+        54
+      ],
+      "target_b": [
+        11,
+        12,
+        35,
+        39,
+        44,
+        47
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 672,
+        "expected": 420.0,
+        "excess": 252.0,
+        "z": 13.548267621934382,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    },
+    {
+      "round": 50,
+      "scenario": "alternating_adversarial",
+      "seed": 20311278,
+      "target_a": [
+        13,
+        28,
+        31,
+        41,
+        53,
+        60
+      ],
+      "target_b": [
+        7,
+        8,
+        30,
+        42,
+        44,
+        48
+      ],
+      "result": {
+        "eval_draws": 700,
+        "hits": 688,
+        "expected": 420.0,
+        "excess": 268.0,
+        "z": 14.408475089993708,
+        "max_abs_corr": 1.0,
+        "final_family_weights": {
+          "ewma": 0.30000000000000004,
+          "freq": 0.7
+        },
+        "finite": true
+      }
+    }
+  ]
+}

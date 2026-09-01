@@ -1,0 +1,28 @@
+from pathlib import Path
+import sys,json,hashlib
+from datetime import datetime,timezone
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+from smart_signal_interactions import analyze_snapshot
+ledger_path=ROOT/'SMART_SIGNAL_LEDGER.json'; L=cc.load_ledger(ledger_path); fr=cc.active_freeze(L,3051)
+ads=[e for e in L['events'] if e.get('event_type')=='ADJUDICATION' and int(e.get('target_contest',-1))==3051]
+base=[e for e in L['events'] if e.get('event_type')=='INTERACTIONS' and int(e.get('target_contest',-1))==3051]
+cor=[e for e in L['events'] if e.get('event_type')=='INTERACTIONS_CORRECTION' and int(e.get('target_contest',-1))==3051]
+if len(ads)!=1 or len(base)!=1: raise SystemExit('base prerequisites invalid')
+current=analyze_snapshot(fr['snapshot'],ads[0]['actual_numbers'],max_group_order=3)
+# Semantic equality excluding newly explicit availability flags.
+def semantic(a):
+    return {
+      'full_hits':a['full_hits'],'full_top6':a['full_top6'],'single_effects':a['single_effects'],
+      'pairs':{k:{x:v for x,v in row.items() if x!='available'} for k,row in a['pair_interactions'].items()},
+      'triples':a['triple_interactions']}
+if semantic(base[0]['analysis']) != semantic(current): raise SystemExit('semantic interaction values changed')
+if not cor:
+    event={'event_type':'INTERACTIONS_CORRECTION','target_contest':3051,'created_utc':datetime.now(timezone.utc).isoformat(),
+           'freeze_sha256':fr['freeze_sha256'],'supersedes_interaction_sha256':base[0]['interaction_sha256'],
+           'interaction_engine_file':'smart_signal_interactions.py','interaction_engine_sha256':cc.sha256(ROOT/'smart_signal_interactions.py'),
+           'interaction_sha256':current['interaction_sha256'],'analysis':current,'reason':'schema hardening: explicit pair availability; numeric pair/triple behavior unchanged',
+           'retroactive_rewrite':False,'policy_effect':'NONE_P04_MEASUREMENT_ONLY'}
+    L['events'].append(event); cc.write_ledger(ledger_path,L); cor=[event]
+elif len(cor)!=1: raise SystemExit('multiple corrections')
+print(json.dumps({'base_sha':base[0]['interaction_sha256'],'active_correction_sha':cor[0]['interaction_sha256'],'semantic_equal':semantic(base[0]['analysis'])==semantic(cor[0]['analysis']),'correction_count':len(cor),'ledger_sha256':cc.sha256(ledger_path)},indent=2))

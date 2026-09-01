@@ -1,0 +1,29 @@
+{
+  "mission": "Execute one simulated SMART test cycle with exactly 50 rounds",
+  "status": "MISSION_PROVEN",
+  "completed_brt": "2026-08-28T12:24:09-03:00",
+  "project_root": "C:\\New Projet\\SMART-MEGA",
+  "rounds_total": 50,
+  "scenario_distribution": {
+    "iid_null": 10,
+    "persistent_bias": 10,
+    "regime_shift": 10,
+    "signal_vanishes": 10,
+    "alternating_adversarial": 10
+  },
+  "key_results": {
+    "iid_null": {"mean_z": -0.31170468067724644, "false_positive_rate_z_ge_2": 0.0},
+    "persistent_bias": {"mean_z": 30.73628809309479, "detection_rate_z_ge_2": 1.0},
+    "regime_shift": {"mean_z": 26.150307029003507, "detection_rate_z_ge_2": 1.0, "adwin_detection_rate": 1.0, "adwin_mean_delay": 115.4},
+    "signal_vanishes": {"mean_z": 10.940763734379551, "uniform_tail_mean_z": -0.22994800708530985, "uniform_tail_rate_abs_z_ge_2": 0.1, "adwin_detection_rate": 1.0, "adwin_mean_delay": 137.8},
+    "alternating_adversarial": {"mean_z": 13.870845422456629, "detection_rate_z_ge_2": 1.0}
+  },
+  "structural_checks_passed": true,
+  "post_simulation_regression": "23 passed in 4.66s",
+  "sha256": {
+    "SMART_50_ROUND_SIMULATION.json": "716A1AB656E6A9E358969A0DD89E5A5150A61FB91CF4FA89B2816C9AB37313D2",
+    "smart_v2_engine.py": "BFF5D8BEB464B94049D5933C9D6BEE157F445AA9B6D15EBABCF42A848C4412D8",
+    "smart_v2_production.py": "068F2EC120791795D3C64D7A9414344D2825C799E5F49F8CED65AA85D6AFA6E8"
+  },
+  "guardrail": "Synthetic simulation validates engineering behavior and robustness only. It does not constitute prospective predictive proof for Mega-Sena."
+}

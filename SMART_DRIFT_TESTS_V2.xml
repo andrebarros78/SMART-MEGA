@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="1" skipped="0" tests="10" time="5.383" timestamp="2026-08-28T14:28:47.202426-03:00" hostname="DESKTOP-JNS08PU"><testcase classname="test_smart_signal_agent" name="test_signal_adapter_exposes_all_signals_with_causal_cutoff_and_hashes" time="0.457" /><testcase classname="test_smart_signal_agent" name="test_dynamic_weights_are_complete_normalized_and_use_required_factors" time="0.595" /><testcase classname="test_smart_signal_agent" name="test_future_result_does_not_change_pre_result_signal_vector" time="0.018" /><testcase classname="test_smart_signal_agent" name="test_river_adwin_updates_and_detects_large_regime_change" time="0.002" /><testcase classname="test_smart_signal_agent" name="test_promotion_requires_all_prospective_gates" time="0.001" /><testcase classname="test_smart_signal_agent" name="test_freeze_creates_champion_challenger_and_append_only_event" time="1.257" /><testcase classname="test_smart_signal_agent" name="test_profile_adwin_detects_signal_vector_regime_shift" time="0.024"><failure message="assert 0 &gt;= 1">def test_profile_adwin_detects_signal_vector_regime_shift():
+        state = SignalQualityState('profile', 'freq')
+        a = np.zeros(60, dtype=float); a[:6] = 1.0
+        b = np.zeros(60, dtype=float); b[30:36] = 1.0
+        for _ in range(300):
+            state.update_profile(a)
+        for _ in range(300):
+            state.update_profile(b)
+        metrics = state.metrics(1.0)
+        assert metrics['profile_observations'] == 600
+&gt;       assert metrics['profile_drift_count'] &gt;= 1
+E       assert 0 &gt;= 1
+
+test_smart_signal_agent.py:122: AssertionError</failure></testcase><testcase classname="test_river_integration" name="test_river_version_is_pinned" time="0.001" /><testcase classname="test_river_integration" name="test_ewa_reweights_experts_from_observed_loss" time="0.001" /><testcase classname="test_river_integration" name="test_adwin_detects_regime_shift" time="0.001" /></testsuite></testsuites>

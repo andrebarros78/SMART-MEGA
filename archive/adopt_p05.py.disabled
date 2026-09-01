@@ -1,0 +1,40 @@
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]
+# meta module default
+p=ROOT/'smart_contextual_meta_weights.py'; s=p.read_text(encoding='utf-8-sig')
+s=s.replace('DEFAULT_META_STRENGTH = 0.08','DEFAULT_META_STRENGTH = 0.06')
+p.write_text(s,encoding='utf-8')
+# agent default/import
+p=ROOT/'smart_signal_agent.py'; s=p.read_text(encoding='utf-8-sig')
+s=s.replace('from smart_contextual_meta_weights import contextual_meta_factors','from smart_contextual_meta_weights import DEFAULT_META_STRENGTH, contextual_meta_factors')
+s=s.replace('meta_strength: float = 0.0)', 'meta_strength: float = DEFAULT_META_STRENGTH)')
+p.write_text(s,encoding='utf-8')
+# freeze governance
+p=ROOT/'smart_champion_challenger.py'; s=p.read_text(encoding='utf-8-sig')
+old="        'marginal_utility': sha256(Path('smart_signal_marginal_utility.py')),\n"
+new=old+"        'contextual_meta_weights': sha256(Path('smart_contextual_meta_weights.py')),\n"
+assert old in s and "'contextual_meta_weights': sha256" not in s
+s=s.replace(old,new)
+old="        'marginal_utility_sha256': component_hashes['marginal_utility'],\n"
+new=old+"        'contextual_meta_weights_sha256': component_hashes['contextual_meta_weights'],\n"
+assert old in s
+s=s.replace(old,new)
+old="                     'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus'], 'signal_interactions': freeze_obj['challenger']['signal_interactions']},\n"
+new="                     'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus'], 'signal_interactions': freeze_obj['challenger']['signal_interactions'],\n                     'contextual_meta_weights': freeze_obj['challenger']['contextual_meta_weights']},\n"
+assert old in s
+s=s.replace(old,new)
+p.write_text(s,encoding='utf-8')
+# architecture test
+p=ROOT/'test_smart_architecture_alignment.py'; s=p.read_text(encoding='utf-8-sig')
+s=s.replace("    'smart_signal_interactions.py',\n", "    'smart_signal_interactions.py',\n    'smart_contextual_meta_weights.py',\n")
+s=s.replace("    assert deps['smart_signal_interactions.py'] & {'smart_signal_agent','smart_champion_challenger','adjudicate_signal_challenger'} == set()\n", "    assert deps['smart_signal_interactions.py'] & {'smart_signal_agent','smart_champion_challenger','adjudicate_signal_challenger'} == set()\n    assert deps['smart_contextual_meta_weights.py'] & {'smart_signal_agent','smart_champion_challenger','adjudicate_signal_challenger'} == set()\n")
+s=s.replace("'smart_signal_redundancy_consensus', 'smart_signal_interactions'} <= deps['smart_signal_agent.py']", "'smart_signal_redundancy_consensus', 'smart_signal_interactions', 'smart_contextual_meta_weights'} <= deps['smart_signal_agent.py']")
+s=s.replace("        \"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))\",\n", "        \"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))\",\n        \"'contextual_meta_weights': sha256(Path('smart_contextual_meta_weights.py'))\",\n")
+s=s.replace("    assert \"'marginal_utility_sha256': component_hashes['marginal_utility']\" in text\n", "    assert \"'marginal_utility_sha256': component_hashes['marginal_utility']\" in text\n    assert \"'contextual_meta_weights_sha256': component_hashes['contextual_meta_weights']\" in text\n    assert \"'contextual_meta_weights': freeze_obj['challenger']['contextual_meta_weights']\" in text\n")
+p.write_text(s,encoding='utf-8')
+# schema fixture updates
+for tp in ROOT.glob('test_*.py'):
+    s=tp.read_text(encoding='utf-8-sig')
+    ns=s.replace("SMART_SIGNAL_STATE_4","SMART_SIGNAL_STATE_5").replace("SMART_SIGNAL_AGENT_4","SMART_SIGNAL_AGENT_5")
+    if ns!=s: tp.write_text(ns,encoding='utf-8')
+print('ADOPTED_P05')

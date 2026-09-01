@@ -1,0 +1,43 @@
+from __future__ import annotations
+import json, os
+from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
+import numpy as np
+import smart_v2_engine as e
+from smart_signal_50_round_simulation import build_scenario
+
+def scores(draws, recent, ref):
+    X=e.onehot(draws)
+    cs=np.vstack([np.zeros((1,60)),np.cumsum(X,axis=0)])
+    vals=[]
+    for t in range(recent+ref,len(draws)+1):
+        a=(cs[t]-cs[t-recent])/recent
+        b=(cs[t-recent]-cs[t-recent-ref])/ref
+        pooled=(recent*a+ref*b)/(recent+ref)
+        den=np.sqrt(np.maximum(1e-6, pooled*(1-pooled)*(1/recent+1/ref)))
+        z=np.abs(a-b)/den
+        vals.append({'l1':float(np.mean(np.abs(a-b))), 'zmean':float(np.mean(z)), 'zmax':float(np.max(z)), 'zq90':float(np.quantile(z,.9))})
+    return vals
+
+def one(job):
+    kind,seed=job; d=build_scenario(kind,seed,steps=450)
+    out={}
+    for recent,ref in [(25,100),(50,100),(50,150),(75,150)]:
+        s=scores(d,recent,ref)
+        out[f'{recent}_{ref}']={k:float(max(x[k] for x in s)) for k in ['l1','zmean','zmax','zq90']}
+    return {'kind':kind,'seed':seed,'scores':out}
+
+def main():
+    jobs=[]
+    for i in range(100): jobs += [('iid_null',855000+i),('regime_shift',866000+i)]
+    with ProcessPoolExecutor(max_workers=min(8,os.cpu_count() or 1)) as ex: rows=list(ex.map(one,jobs,chunksize=2))
+    summary={}
+    for cfg in ['25_100','50_100','50_150','75_150']:
+        summary[cfg]={}
+        for metric in ['l1','zmean','zmax','zq90']:
+            summary[cfg][metric]={}
+            for kind in ['iid_null','regime_shift']:
+                a=np.array([r['scores'][cfg][metric] for r in rows if r['kind']==kind])
+                summary[cfg][metric][kind]={'q50':float(np.quantile(a,.5)),'q90':float(np.quantile(a,.9)),'q95':float(np.quantile(a,.95)),'min':float(a.min()),'max':float(a.max())}
+    Path('DIAG_CONTEXT_REGIME.json').write_text(json.dumps({'summary':summary,'rows':rows},indent=2),encoding='utf-8')
+if __name__=='__main__': main()

@@ -1,0 +1,14 @@
+import json, numpy as np
+from river import drift
+from smart_signal_quality import PROFILE_PROJECTIONS
+A=np.zeros(60); A[:6]=1
+B=np.zeros(60); B[30:36]=1
+D=[drift.ADWIN(delta=0.002) for _ in range(4)]
+events=[[] for _ in range(4)]
+for t in range(600):
+    x=A if t<300 else B
+    vals=PROFILE_PROJECTIONS@x
+    for i,(d,v) in enumerate(zip(D,vals)):
+        d.update(float(v))
+        if d.drift_detected: events[i].append(t+1)
+open('DIAG_PROFILE_TIMES.json','w').write(json.dumps({'events':events,'widths':[d.width for d in D]},indent=2))

@@ -1,0 +1,163 @@
+from __future__ import annotations
+import hashlib, json, os, py_compile, subprocess, sys
+from pathlib import Path
+
+ROOT = Path(__file__).resolve().parents[2]
+sys.path.insert(0, str(ROOT))
+os.chdir(ROOT)
+import smart_champion_challenger as cc
+
+
+def sha(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+sim_path = ROOT / 'SMART_SIGNAL_2000_SIMULATION.json'
+cov_path = ROOT / 'SMART_COVERAGE_CRITICAL_100.json'
+hist_path = ROOT / 'SMART_SIGNAL_HISTORICAL_COMPARISON.json'
+rob_path = ROOT / 'SMART_V2_ROBUSTNESS.json'
+stress_path = ROOT / 'SMART_V2_STRESS.json'
+ledger_path = ROOT / 'SMART_SIGNAL_LEDGER.json'
+state_path = ROOT / 'SMART_SIGNAL_STATE.json'
+
+sim = json.loads(sim_path.read_text(encoding='utf-8'))
+cov = json.loads(cov_path.read_text(encoding='utf-8'))
+hist = json.loads(hist_path.read_text(encoding='utf-8'))
+rob = json.loads(rob_path.read_text(encoding='utf-8'))
+stress = json.loads(stress_path.read_text(encoding='utf-8'))
+ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
+active = cc.active_freeze(ledger, 3051)
+assert active is not None
+freeze_path = ROOT / active['freeze_file']
+freeze = json.loads(freeze_path.read_text(encoding='utf-8'))
+
+source_files = [
+    'smart_v2_engine.py','smart_v2_production.py','freeze_next_research.py',
+    'smart_signal_agent.py','smart_signal_quality.py','smart_signal_weights.py',
+    'smart_context_regime.py','smart_champion_challenger.py','adjudicate_signal_challenger.py'
+]
+hashes = {f: sha(ROOT / f) for f in source_files}
+
+compile_errors = []
+root_py = sorted(ROOT.glob('*.py'))
+for p in root_py:
+    try:
+        py_compile.compile(str(p), doraise=True)
+    except Exception as exc:
+        compile_errors.append({'file': p.name, 'error': repr(exc)})
+
+pip_check = subprocess.run([sys.executable, '-m', 'pip', 'check'], cwd=ROOT, capture_output=True, text=True)
+pytest_run = subprocess.run([sys.executable, '-m', 'pytest', '-q'], cwd=ROOT, capture_output=True, text=True)
+
+freeze_hash_map = {
+    'smart_v2_engine.py': freeze['engine_sha256'],
+    'freeze_next_research.py': freeze['champion_engine_sha256'],
+    'smart_signal_agent.py': freeze['signal_agent_sha256'],
+    'smart_signal_quality.py': freeze['signal_quality_sha256'],
+    'smart_signal_weights.py': freeze['signal_weights_sha256'],
+    'smart_context_regime.py': freeze['context_regime_sha256'],
+}
+freeze_component_matches = {k: hashes[k] == v for k, v in freeze_hash_map.items()}
+no_adjudication = not any(ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == 3051 for ev in ledger['events'])
+
+totals = cov['totals']
+raw_signals = freeze['challenger']['raw_signals']
+weights = freeze['challenger']['weights']
+quality = freeze['challenger']['quality_metrics']
+checks = {
+    'all_root_python_compiles': not compile_errors,
+    'pip_check_clean': pip_check.returncode == 0,
+    'pytest_global_59_pass': pytest_run.returncode == 0 and '59 passed' in pytest_run.stdout,
+    'coverage_lines_100': totals['covered_lines'] == totals['num_statements'] == 832 and totals['missing_lines'] == 0,
+    'coverage_branches_100': totals['covered_branches'] == totals['num_branches'] == 226 and totals['missing_branches'] == 0,
+    'simulation_2000_pass': sim.get('passed') is True and sim.get('rounds_total') == 2000 and sim.get('total_predictions') == 600000,
+    'simulation_source_hashes_unchanged': sim['checks']['source_hashes_unchanged_during_validation'] is True,
+    'simulation_current_sources_match': all(hashes[k] == v for k, v in sim['source_hashes_after'].items()),
+    'single_active_freeze_3051': active['freeze_sha256'] == sha(freeze_path) == '795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53',
+    'freeze_all_behavioral_hashes_match_current': all(freeze_component_matches.values()),
+    'freeze_causal_and_before_result_flagged': bool(freeze.get('causal_cutoff')) and bool(freeze.get('frozen_before_result')),
+    'champion_still_active': freeze.get('champion_remains_active') is True and freeze.get('production_switch_performed') is False,
+    'no_prospective_adjudication_yet': no_adjudication,
+    'promotion_blocked_without_evidence': cc.promotion_status(ledger).get('eligible') is False,
+    'twelve_signals': len(raw_signals) == 12,
+    'sixty_values_each': all(len(s['values']) == 60 for s in raw_signals.values()),
+    'signal_hashes_present': all(len(s['values_sha256']) == 64 for s in raw_signals.values()),
+    'quality_covers_all_signals': set(quality) == set(raw_signals),
+    'weights_cover_all_signals': set(weights) == set(raw_signals),
+    'weights_sum_one': abs(sum(float(v) for v in weights.values()) - 1.0) < 1e-10,
+    'max_weight_cap': max(float(v) for v in weights.values()) <= 0.4200001,
+    'context_snapshot_present': 'context_regime' in freeze['challenger'],
+    'context_hash_present': len(freeze['context_regime_sha256']) == 64,
+    'historical_cutoff_3050': hist['cutoff_contest'] == 3050 and hist['target_contest'] == 3051,
+    'requirements_coverage_pinned': 'coverage==7.10.6' in (ROOT / 'requirements.txt').read_text(encoding='utf-8'),
+}
+
+proof = {
+    'schema': 'SMART_SIGNAL_INTEGRATION_FINAL_PROOF_1',
+    'mission_scope': 'SMART Signal Intelligence Agent integration and alignment as Challenger; executable-line/branch verification; 2000-run synthetic validation; Champion-Challenger governance',
+    'status': 'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN',
+    'checks': checks,
+    'coverage': {
+        'covered_lines': totals['covered_lines'], 'statements': totals['num_statements'], 'line_percent': totals['percent_covered'],
+        'covered_branches': totals['covered_branches'], 'branches': totals['num_branches'], 'branch_percent': 100.0,
+        'coverage_report': cov_path.name, 'coverage_report_sha256': sha(cov_path),
+    },
+    'regression': {
+        'pytest_returncode': pytest_run.returncode,
+        'pytest_summary': pytest_run.stdout.strip().splitlines()[-1] if pytest_run.stdout.strip() else '',
+        'pip_check': pip_check.stdout.strip(),
+        'root_python_files_compiled': len(root_py),
+        'compile_errors': compile_errors,
+    },
+    'simulation': {
+        'rounds': sim['rounds_total'], 'predictions': sim['total_predictions'], 'passed': sim['passed'],
+        'summary': sim['summary'], 'global': sim['global'], 'checks': sim['checks'],
+        'report_file': sim_path.name, 'report_sha256': sha(sim_path),
+    },
+    'historical_engineering': {
+        **hist,
+        'report_file': hist_path.name,
+        'report_sha256': sha(hist_path),
+    },
+    'robustness': {
+        'temporal_folds': rob['temporal_folds'],
+        'synthetic_power': rob['synthetic_power'],
+        'report_file': rob_path.name, 'report_sha256': sha(rob_path),
+    },
+    'stress': {
+        'historical_eta_sensitivity': stress['historical_eta_sensitivity'],
+        'null': stress['null'],
+        'power_curve': stress['power_curve'],
+        'report_file': stress_path.name, 'report_sha256': sha(stress_path),
+    },
+    'active_freeze': {
+        'target_contest': 3051, 'event': active, 'file': active['freeze_file'], 'sha256': active['freeze_sha256'],
+        'champion_top6': freeze['champion']['top6'], 'challenger_top6': freeze['challenger']['top6'],
+        'freeze_component_matches': freeze_component_matches,
+    },
+    'promotion': cc.promotion_status(ledger),
+    'source_hashes': hashes,
+    'artifact_hashes': {
+        'ledger': sha(ledger_path), 'state': sha(state_path), 'freeze': sha(freeze_path),
+        'requirements': sha(ROOT / 'requirements.txt'), 'requirements_lock': sha(ROOT / 'requirements.lock.txt'),
+        'coverage': sha(cov_path), 'simulation': sha(sim_path), 'historical_comparison': sha(hist_path),
+    },
+    'limits': {
+        'synthetic_engineering_proof_is_not_prospective_predictive_proof': True,
+        'historical_engineering_evidence_is_not_prospective_predictive_proof': True,
+        'global_smart_6_of_6_prospectively_proven': False,
+        'reason': 'Promotion still requires adjudicated prospective contests and sequential evidence; current ledger has zero adjudicated prospective contests.'
+    }
+}
+
+out = ROOT / 'SMART_SIGNAL_INTEGRATION_FINAL_PROOF.json'
+out.write_text(json.dumps(proof, ensure_ascii=False, indent=2), encoding='utf-8')
+print(json.dumps({
+    'status': proof['status'],
+    'all_checks_pass': all(checks.values()),
+    'checks_failed': [k for k,v in checks.items() if not v],
+    'coverage': proof['coverage'],
+    'proof_file': out.name,
+    'proof_sha256': sha(out),
+    'pytest': proof['regression']['pytest_summary'],
+    'pip_check': proof['regression']['pip_check'],
+}, ensure_ascii=False, indent=2))

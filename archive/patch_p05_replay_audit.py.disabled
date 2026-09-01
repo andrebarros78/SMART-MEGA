@@ -1,0 +1,13 @@
+from pathlib import Path
+p=Path(__file__).resolve().parents[1]/'smart_signal_agent.py'
+s=p.read_text(encoding='utf-8-sig')
+old="                         'weights_before_result': pred.weights,\n                         'pair_interactions_after_result': {k:int(v['interaction_delta_hits']) for k,v in interaction_update['pair_interactions'].items()},\n"
+new="                         'weights_before_result': pred.weights,\n                         'meta_strength_before_result': self.meta_strength,\n                         'meta_factor_min_before_result': float(pred.contextual_meta_weights['factor_min']),\n                         'meta_factor_max_before_result': float(pred.contextual_meta_weights['factor_max']),\n                         'meta_family_divergence_before_result': float(pred.contextual_meta_weights['family_divergence']),\n                         'meta_regime_intensity_before_result': float(pred.contextual_meta_weights['regime_intensity']),\n                         'pair_interactions_after_result': {k:int(v['interaction_delta_hits']) for k,v in interaction_update['pair_interactions'].items()},\n"
+assert old in s
+s=s.replace(old,new)
+old="        return {'rows': rows, 'total_hits': int(total_challenger_hits),\n                'mean_hits': float(total_challenger_hits / len(rows)),\n"
+new="        return {'rows': rows, 'total_hits': int(total_challenger_hits), 'meta_strength': self.meta_strength,\n                'mean_hits': float(total_challenger_hits / len(rows)),\n"
+assert old in s
+s=s.replace(old,new)
+p.write_text(s,encoding='utf-8')
+print('PATCHED')

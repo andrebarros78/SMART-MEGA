@@ -1,0 +1,37 @@
+{
+  "schema": "SMART_P06_DECISION_1",
+  "point_id": "P06_RANK_SCORE_CALIBRATION",
+  "decision": "ADOPT_NEUTRALIZED_PROBABILITY_LAYER",
+  "calibration_candidate_selected_pre_holdout": 0.5,
+  "candidate_selection_file": "SMART_P06_STRENGTH_CALIBRATION.json",
+  "candidate_selection_scope": "1001-2200 only",
+  "candidate_final_holdout_file": "SMART_P06_FINAL_HOLDOUT.json",
+  "candidate_final_holdout_scope": "2801-3050",
+  "candidate_final_holdout_brier": 0.09001357670052432,
+  "candidate_final_holdout_uniform_brier": 0.08999999999999989,
+  "candidate_final_holdout_delta": 0.000013576700524302432,
+  "candidate_rejected": true,
+  "rejection_reason": "Selected positive calibration strength regressed the untouched final holdout Brier score versus uniform; no alternative positive strength was selected using holdout results.",
+  "adopted_strength": 0.0,
+  "adopted_mode": "NEUTRALIZED",
+  "neutralized_validation_file": "SMART_P06_NEUTRALIZED_VALIDATION.json",
+  "neutralized_final_holdout_delta_vs_uniform": 0.0,
+  "neutralized_total_delta_vs_uniform": 0.0,
+  "diagnostic_policy": "Keep raw rank posterior and isotonic monotonic curve for audit/learning, but publish 0.10 probability per number until future OOS evidence supports nonzero calibration strength.",
+  "observed_rank_diagnostics_at_3050": {
+    "raw_monotonic_violations": 24,
+    "isotonic_monotonic": true,
+    "isotonic_rank1_probability": 0.10344202898550725,
+    "isotonic_rank60_probability": 0.09380032206119163,
+    "published_rank1_probability": 0.1,
+    "published_rank60_probability": 0.1
+  },
+  "governance": {
+    "no_future_leakage": true,
+    "no_holdout_parameter_search_after_failure": true,
+    "ranking_not_reordered": true,
+    "weights_not_changed": true,
+    "retroactive_3051_change": false,
+    "prospective_predictive_claim": false
+  }
+}

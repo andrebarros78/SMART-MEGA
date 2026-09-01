@@ -1,0 +1,106 @@
+from __future__ import annotations
+import hashlib, json, os, py_compile, subprocess, sys
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT)); os.chdir(ROOT)
+import adjudicate_signal_challenger as adj
+import smart_champion_challenger as cc
+from smart_signal_marginal_utility import analyze_marginal_utility_snapshot
+
+
+def sha(p:Path)->str: return hashlib.sha256(p.read_bytes()).hexdigest()
+
+coverage_path=ROOT/'SMART_COVERAGE_P02_FINAL.json'
+hist_path=ROOT/'SMART_P02_MARGINAL_UTILITY_HISTORICAL.json'
+ledger_path=ROOT/'SMART_SIGNAL_LEDGER.json'
+gate_path=ROOT/'SMART_3052_IMPLEMENTATION_GATE.json'
+cov=json.loads(coverage_path.read_text(encoding='utf-8'))
+hist=json.loads(hist_path.read_text(encoding='utf-8'))
+ledger=cc.load_ledger(ledger_path)
+gate=json.loads(gate_path.read_text(encoding='utf-8'))
+active=cc.active_freeze(ledger,3051)
+assert active is not None
+freeze_path=ROOT/active['freeze_file']
+freeze=json.loads(freeze_path.read_text(encoding='utf-8'))
+adjudications=[ev for ev in ledger['events'] if ev.get('event_type')=='ADJUDICATION' and int(ev.get('target_contest',-1))==3051]
+attrs=[ev for ev in ledger['events'] if ev.get('event_type')=='ATTRIBUTION' and int(ev.get('target_contest',-1))==3051]
+mu=[ev for ev in ledger['events'] if ev.get('event_type')=='MARGINAL_UTILITY' and int(ev.get('target_contest',-1))==3051]
+actual=[int(x) for x in adjudications[0]['actual_numbers']] if len(adjudications)==1 else []
+recomputed=analyze_marginal_utility_snapshot(active['snapshot'],actual) if actual else {}
+
+critical=['adjudicate_signal_challenger.py','freeze_next_research.py','smart_champion_challenger.py','smart_context_regime.py','smart_signal_agent.py','smart_signal_attribution.py','smart_signal_marginal_utility.py','smart_signal_quality.py','smart_signal_weights.py','smart_v2_engine.py','smart_v2_production.py']
+statements=sum(int(cov['files'][f]['summary']['num_statements']) for f in critical)
+covered=sum(int(cov['files'][f]['summary']['covered_lines']) for f in critical)
+branches=sum(int(cov['files'][f]['summary']['num_branches']) for f in critical)
+covered_branches=sum(int(cov['files'][f]['summary']['covered_branches']) for f in critical)
+missing=sum(int(cov['files'][f]['summary']['missing_lines']) for f in critical)
+missing_branches=sum(int(cov['files'][f]['summary']['missing_branches']) for f in critical)
+
+pytest_run=subprocess.run([sys.executable,'-m','pytest','-q'],cwd=ROOT,capture_output=True,text=True)
+pip_check=subprocess.run([sys.executable,'-m','pip','check'],cwd=ROOT,capture_output=True,text=True)
+compile_errors=[]
+for p in sorted(ROOT.glob('*.py')):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as exc: compile_errors.append({'file':p.name,'error':repr(exc)})
+
+text_agent=(ROOT/'smart_signal_agent.py').read_text(encoding='utf-8-sig')
+text_gov=(ROOT/'smart_champion_challenger.py').read_text(encoding='utf-8-sig')
+p02_item=next(i for i in gate['items'] if i['id']=='P02_MARGINAL_SIGNAL_UTILITY')
+try:
+    cc.require_pre_3052_gate(3052)
+    gate_blocked=False
+except ValueError:
+    gate_blocked=True
+
+checks={
+ 'single_adjudication_3051':len(adjudications)==1,
+ 'single_attribution_3051_p01_preserved':len(attrs)==1,
+ 'single_marginal_utility_event_3051':len(mu)==1,
+ 'marginal_event_references_active_freeze':len(mu)==1 and mu[0].get('freeze_sha256')==active.get('freeze_sha256'),
+ 'marginal_event_recompute_identical':len(mu)==1 and recomputed.get('marginal_utility_sha256')==mu[0].get('marginal_utility_sha256'),
+ 'marginal_event_measurement_only':len(mu)==1 and mu[0].get('policy_effect')=='NONE_P02_MEASUREMENT_ONLY' and mu[0].get('retroactive_rewrite') is False,
+ 'historical_oos_2050':hist.get('oos_predictions')==2050,
+ 'historical_all_signals_2050_observations':hist.get('marginal_observations_all') is True and all(v.get('observations')==2050 for v in hist.get('per_signal',{}).values()),
+ 'historical_weight_effect_disabled':hist.get('weight_effect_enabled_any') is False and all(v.get('weight_effect_enabled') is False for v in hist.get('per_signal',{}).values()),
+ 'historical_prediction_nonregression':hist.get('challenger_hits')==1269 and hist.get('next_top6')==active.get('challenger_top6'),
+ 'agent_exposes_marginal_metrics':"m['marginal_utility'] = marginal" in text_agent and 'update_marginal_states' in text_agent,
+ 'future_freeze_hashes_marginal_component':"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))" in text_gov and "'marginal_utility_sha256': component_hashes['marginal_utility']" in text_gov,
+ 'active_3051_freeze_unchanged_valid':freeze_path.exists() and sha(freeze_path)==active.get('freeze_sha256') and int(active.get('target_contest'))==3051,
+ 'p02_not_previously_claimed':p02_item.get('status')!='PROVEN',
+ 'pre3052_gate_still_blocked':gate_blocked and gate.get('freeze_allowed') is False,
+ 'coverage_100_lines':statements==covered and missing==0 and statements==1195,
+ 'coverage_100_branches':branches==covered_branches and missing_branches==0 and branches==362,
+ 'pytest_global_pass':pytest_run.returncode==0 and '80 passed' in pytest_run.stdout,
+ 'pip_check_clean':pip_check.returncode==0,
+ 'all_root_python_compiles':not compile_errors,
+}
+proof={
+ 'schema':'SMART_P02_MARGINAL_SIGNAL_UTILITY_PROOF_1','point_id':'P02_MARGINAL_SIGNAL_UTILITY',
+ 'status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,
+ 'implementation':{
+   'module':'smart_signal_marginal_utility.py','module_sha256':sha(ROOT/'smart_signal_marginal_utility.py'),
+   'agent_sha256':sha(ROOT/'smart_signal_agent.py'),'adjudication_sha256':sha(ROOT/'adjudicate_signal_challenger.py'),
+   'governance_sha256':sha(ROOT/'smart_champion_challenger.py'),
+   'online_semantics':'predict with pre-result state -> observe outcome -> leave-one-out delta hits/rank -> update marginal state -> next contest',
+   'weight_effect_enabled':False,
+ },
+ 'coverage':{'statements':statements,'covered_lines':covered,'branches':branches,'covered_branches':covered_branches,
+             'report':coverage_path.name,'sha256':sha(coverage_path)},
+ 'historical_oos':{'file':hist_path.name,'sha256':sha(hist_path),'predictions':hist['oos_predictions'],
+                   'challenger_hits':hist['challenger_hits'],'uniform_expected':hist['uniform_expected'],
+                   'next_top6':hist['next_top6'],'ranking_by_shrunk_marginal_hits':hist['ranking_by_shrunk_marginal_hits']},
+ 'contest_3051':{'actual_numbers':actual,'marginal_utility_sha256':mu[0]['marginal_utility_sha256'] if len(mu)==1 else None,
+                 'event_engine_sha256':mu[0].get('marginal_utility_engine_sha256') if len(mu)==1 else None,
+                 'current_engine_sha256':sha(ROOT/'smart_signal_marginal_utility.py'),
+                 'behavioral_recompute_identical':checks['marginal_event_recompute_identical']},
+ 'regression':{'pytest':pytest_run.stdout.strip().splitlines()[-1] if pytest_run.stdout.strip() else '',
+               'pip_check':pip_check.stdout.strip(),'compile_errors':compile_errors},
+ 'limits':{'p02_measures_but_does_not_yet_change_weights':True,'p03_redundancy_policy_not_claimed':True,
+           'global_6_of_6_not_claimed':True,'prospective_superiority_not_claimed':True}
+}
+out=ROOT/'SMART_P02_MARGINAL_SIGNAL_UTILITY_PROOF.json'
+out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],
+                  'proof_sha256':sha(out),'pytest':proof['regression']['pytest'],'pip_check':proof['regression']['pip_check'],
+                  'coverage':proof['coverage']},ensure_ascii=False,indent=2))

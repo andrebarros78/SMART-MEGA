@@ -1,0 +1,32 @@
+from pathlib import Path
+# Correct audit wording: reduction, not exact invariance.
+p=Path('smart_signal_redundancy_consensus.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace("# Exact clone-invariance: m redundant copies cannot create m times the voting mass.", "# Anti-multiplicity: a redundant cluster is downweighted so copies cannot scale influence linearly.")
+s=s.replace("'clone_invariance_policy': 'connected redundant cluster receives per-member anti-multiplicity penalty',", "'false_consensus_policy': 'connected redundant cluster receives per-member anti-multiplicity penalty; influence growth must be sublinear',")
+p.write_text(s,encoding='utf-8')
+
+# Hash/freeze the behavioral P03 component and snapshot its audit.
+p=Path('smart_champion_challenger.py'); s=p.read_text(encoding='utf-8-sig')
+marker="        'context_regime': sha256(Path('smart_context_regime.py')),\n"
+if "'redundancy_consensus': sha256" not in s:
+    s=s.replace(marker, marker+"        'redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),\n")
+marker2="        'signal_weights_sha256': component_hashes['signal_weights'], 'context_regime_sha256': component_hashes['context_regime'],\n"
+if "redundancy_consensus_sha256" not in s:
+    s=s.replace(marker2, marker2+"        'redundancy_consensus_sha256': component_hashes['redundancy_consensus'],\n")
+marker3="                     'river_state': freeze_obj['challenger']['river_state']},\n"
+if "'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus']" not in s:
+    s=s.replace(marker3, "                     'river_state': freeze_obj['challenger']['river_state'],\n                     'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus']},\n")
+p.write_text(s,encoding='utf-8')
+
+# Architecture list/dependency/hash expectations.
+p=Path('test_smart_architecture_alignment.py'); s=p.read_text(encoding='utf-8-sig')
+if "'smart_signal_redundancy_consensus.py'," not in s:
+    s=s.replace("    'smart_signal_attribution.py',\n", "    'smart_signal_attribution.py',\n    'smart_signal_redundancy_consensus.py',\n")
+s=s.replace("'smart_signal_marginal_utility'} <= deps['smart_signal_agent.py']", "'smart_signal_marginal_utility', 'smart_signal_redundancy_consensus'} <= deps['smart_signal_agent.py']")
+if "'smart_signal_redundancy_consensus' not in deps['smart_signal_redundancy_consensus.py']" not in s:
+    insert="    assert deps['smart_signal_redundancy_consensus.py'] & {'smart_champion_challenger', 'smart_signal_agent', 'adjudicate_signal_challenger'} == set()\n    assert 'smart_v2_engine' not in deps['smart_signal_redundancy_consensus.py']\n"
+    s=s.replace("    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n", "    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n"+insert)
+if "redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))" not in s:
+    s=s.replace("        \"'context_regime': sha256(Path('smart_context_regime.py'))\",\n", "        \"'context_regime': sha256(Path('smart_context_regime.py'))\",\n        \"'redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))\",\n")
+p.write_text(s,encoding='utf-8')
+print('patched governance')

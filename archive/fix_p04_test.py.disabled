@@ -1,0 +1,7 @@
+from pathlib import Path
+p=Path('test_smart_signal_interactions.py'); s=p.read_text(encoding='utf-8-sig')
+old="""def test_pair_and_triple_interactions_complete_and_hashed():\n    s=scores(); w={'a':.4,'b':.35,'c':.25}; actual=[55,56,57,58,59,60]\n    r=analyze_interactions(s,w,actual,3)\n    assert len(r['pair_interactions'])==3 and len(r['triple_interactions'])==1\n    assert len(r['interaction_sha256'])==64 and r['weight_effect_enabled'] is False\n    assert r==analyze_interactions(s,w,actual,3)\n"""
+new="""def test_pair_and_triple_interactions_complete_and_hashed():\n    s=scores(); s['d']=np.roll(np.linspace(0,1,60),13); w={'a':.30,'b':.25,'c':.25,'d':.20}; actual=[55,56,57,58,59,60]\n    r=analyze_interactions(s,w,actual,3)\n    assert len(r['pair_interactions'])==6 and len(r['triple_interactions'])==4\n    assert len(r['interaction_sha256'])==64 and r['weight_effect_enabled'] is False\n    assert r==analyze_interactions(s,w,actual,3)\n"""
+assert old in s
+p.write_text(s.replace(old,new),encoding='utf-8')
+print('fixed test')

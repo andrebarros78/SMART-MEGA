@@ -1,0 +1,21 @@
+from pathlib import Path
+p=Path('smart_signal_agent.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace("AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_3'", "AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_4'")
+s=s.replace("'schema': 'SMART_SIGNAL_STATE_3'", "'schema': 'SMART_SIGNAL_STATE_4'")
+p.write_text(s,encoding='utf-8')
+
+p=Path('smart_champion_challenger.py'); s=p.read_text(encoding='utf-8-sig')
+if "'signal_interactions': sha256(Path('smart_signal_interactions.py'))" not in s:
+    s=s.replace("        'marginal_utility': sha256(Path('smart_signal_marginal_utility.py')),\n", "        'marginal_utility': sha256(Path('smart_signal_marginal_utility.py')),\n        'signal_interactions': sha256(Path('smart_signal_interactions.py')),\n")
+if "'signal_interactions_sha256': component_hashes['signal_interactions']" not in s:
+    s=s.replace("        'marginal_utility_sha256': component_hashes['marginal_utility'],\n", "        'marginal_utility_sha256': component_hashes['marginal_utility'],\n        'signal_interactions_sha256': component_hashes['signal_interactions'],\n")
+p.write_text(s,encoding='utf-8')
+
+p=Path('test_smart_architecture_alignment.py'); s=p.read_text(encoding='utf-8-sig')
+if "'signal_interactions': sha256(Path('smart_signal_interactions.py'))" not in s:
+    s=s.replace("        \"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))\",\n", "        \"'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))\",\n        \"'signal_interactions': sha256(Path('smart_signal_interactions.py'))\",\n")
+if "'signal_interactions_sha256': component_hashes['signal_interactions']" not in s:
+    s=s.replace("    assert \"'marginal_utility_sha256': component_hashes['marginal_utility']\" in text\n", "    assert \"'marginal_utility_sha256': component_hashes['marginal_utility']\" in text\n    assert \"'signal_interactions_sha256': component_hashes['signal_interactions']\" in text\n    assert \"'signal_interactions': freeze_obj['challenger']['signal_interactions']\" in text\n")
+s=s.replace("{'smart_v2_engine', 'smart_champion_challenger', 'smart_signal_attribution', 'smart_signal_marginal_utility'} <= deps['adjudicate_signal_challenger.py']", "{'smart_v2_engine', 'smart_champion_challenger', 'smart_signal_attribution', 'smart_signal_marginal_utility', 'smart_signal_interactions'} <= deps['adjudicate_signal_challenger.py']")
+p.write_text(s,encoding='utf-8')
+print('p04 hash/schema fixed')

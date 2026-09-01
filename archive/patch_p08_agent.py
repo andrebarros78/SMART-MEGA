@@ -1,0 +1,16 @@
+from pathlib import Path
+p=Path(__file__).resolve().parents[1]/'smart_signal_agent.py'
+s=p.read_text(encoding='utf-8')
+s=s.replace('from smart_multi_challengers import build_multi_challengers\n','from smart_multi_challengers import build_multi_challengers\nfrom smart_meta_governor import MetaGovernor\n')
+s=s.replace("AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_7'","AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_8'")
+s=s.replace('    multi_challengers: dict[str, Any]\n','    multi_challengers: dict[str, Any]\n    meta_governor: dict[str, Any]\n')
+s=s.replace("            'multi_challengers': self.multi_challengers,\n", "            'multi_challengers': self.multi_challengers,\n            'meta_governor': self.meta_governor,\n")
+s=s.replace('        self.rank_calibrator = RankScoreCalibrator(strength=self.calibration_strength)\n','        self.rank_calibrator = RankScoreCalibrator(strength=self.calibration_strength)\n        self.meta_governor = MetaGovernor()\n')
+s=s.replace("        if multi['policies']['quality_dynamic']['top6'] != top6:\n            raise RuntimeError('quality_dynamic policy must reproduce primary challenger')\n", "        if multi['policies']['quality_dynamic']['top6'] != top6:\n            raise RuntimeError('quality_dynamic policy must reproduce primary challenger')\n        governor = self.meta_governor.select(multi)\n")
+s=s.replace('            rank_score_calibration=calibration_audit, multi_challengers=multi,\n', '            rank_score_calibration=calibration_audit, multi_challengers=multi, meta_governor=governor,\n')
+s=s.replace("            multi_hits = {pid: len(set(row['top6']) & actual) for pid, row in pred.multi_challengers['policies'].items()}\n", "            multi_hits = {pid: len(set(row['top6']) & actual) for pid, row in pred.multi_challengers['policies'].items()}\n            governor_update = self.meta_governor.update(multi_hits, pred.meta_governor['selected_policy'])\n")
+s=s.replace("                         'multi_challenger_hits_after_result': multi_hits,\n", "                         'multi_challenger_hits_after_result': multi_hits,\n                         'meta_governor_before_result': pred.meta_governor,\n                         'meta_governor_update_after_result': governor_update,\n")
+s=s.replace("return {'schema': 'SMART_SIGNAL_STATE_7'", "return {'schema': 'SMART_SIGNAL_STATE_8'")
+s=s.replace("                'multi_challengers': {'schema':'SMART_MULTI_CHALLENGERS_1','policy_count':5,'shadow_only':True,'selection_deferred_to_p08':True}}\n", "                'multi_challengers': {'schema':'SMART_MULTI_CHALLENGERS_1','policy_count':5,'shadow_only':True,'selection_deferred_to_p08':False},\n                'meta_governor': self.meta_governor.state()}\n")
+p.write_text(s,encoding='utf-8')
+print('patched p08 agent')

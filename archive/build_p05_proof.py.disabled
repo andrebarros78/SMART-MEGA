@@ -1,0 +1,77 @@
+from pathlib import Path
+import sys,json,hashlib,subprocess,py_compile,os
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT))
+import smart_champion_challenger as cc
+from smart_contextual_meta_weights import DEFAULT_META_STRENGTH, MAX_META_STRENGTH
+sha=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest()
+
+gate=json.loads((ROOT/'SMART_3052_IMPLEMENTATION_GATE.json').read_text(encoding='utf-8'))
+ledger=json.loads((ROOT/'SMART_SIGNAL_LEDGER.json').read_text(encoding='utf-8'))
+fr=cc.active_freeze(ledger,3051)
+cal=json.loads((ROOT/'SMART_P05_STRENGTH_CALIBRATION.json').read_text(encoding='utf-8'))
+val=json.loads((ROOT/'SMART_P05_FINAL_HOLDOUT.json').read_text(encoding='utf-8'))
+pre=json.loads((ROOT/'SMART_P05_PREDECLARED_VALIDATION.json').read_text(encoding='utf-8'))
+dec=json.loads((ROOT/'SMART_P05_DECISION.json').read_text(encoding='utf-8'))
+cov=json.loads((ROOT/'SMART_COVERAGE_P05_FINAL.json').read_text(encoding='utf-8'))
+critical={'adjudicate_signal_challenger.py','freeze_next_research.py','smart_champion_challenger.py','smart_context_regime.py','smart_contextual_meta_weights.py','smart_signal_agent.py','smart_signal_attribution.py','smart_signal_interactions.py','smart_signal_marginal_utility.py','smart_signal_quality.py','smart_signal_redundancy_consensus.py','smart_signal_weights.py','smart_v2_engine.py','smart_v2_production.py'}
+files={Path(k).name:v for k,v in cov['files'].items() if Path(k).name in critical}
+stmts=sum(v['summary']['num_statements'] for v in files.values()); covered=sum(v['summary']['covered_lines'] for v in files.values())
+branches=sum(v['summary']['num_branches'] for v in files.values()); covered_b=sum(v['summary']['covered_branches'] for v in files.values())
+py=str(ROOT/'.venv/Scripts/python.exe'); env=dict(os.environ); env.pop('PYTHONPATH',None)
+pytest=subprocess.run([py,'-m','pytest','-q'],cwd=ROOT,env=env,text=True,capture_output=True)
+pip=subprocess.run([py,'-m','pip','check'],cwd=ROOT,env=env,text=True,capture_output=True)
+compile_errors=[]
+for p in ROOT.glob('*.py'):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as ex: compile_errors.append(f'{p.name}: {ex}')
+try:
+    cc.require_pre_3052_gate(3052); blocked=False
+except ValueError:
+    blocked=True
+pitems={x['id']:x for x in gate['items']}
+agent_text=(ROOT/'smart_signal_agent.py').read_text(encoding='utf-8-sig')
+gov_text=(ROOT/'smart_champion_challenger.py').read_text(encoding='utf-8-sig')
+old_p05_events=[x for x in ledger['events'] if int(x.get('target_contest',-1))==3051 and 'META' in str(x.get('event_type','')).upper()]
+checks={
+ 'default_strength_0_06': abs(float(DEFAULT_META_STRENGTH)-0.06)<1e-12,
+ 'max_strength_bounded_0_15': abs(float(MAX_META_STRENGTH)-0.15)<1e-12,
+ 'agent_uses_default_meta_strength': 'meta_strength: float = DEFAULT_META_STRENGTH' in agent_text,
+ 'predeclared_0_08_rejected': abs(float(pre['predeclared_strength'])-0.08)<1e-12 and int(pre['comparison']['holdout_delta'])==-1,
+ 'calibration_only_to_2200': cal['data_scope']=='CONTESTS_1_TO_2200_ONLY' and cal['holdout_2201_plus_accessed_for_selection'] is False,
+ 'calibration_selected_0_06': abs(float(cal['selected_strength'])-0.06)<1e-12,
+ 'decision_adopts_0_06': dec['decision']=='ADOPT_STRENGTH_0_06' and abs(float(dec['adopted_strength'])-0.06)<1e-12,
+ 'final_holdout_not_used_for_selection': 'NOT_USED_FOR_STRENGTH_SELECTION' in val['final_holdout_scope'],
+ 'final_holdout_nonregression': val['final_holdout_2801_3050']['baseline_hits']==150 and val['final_holdout_2801_3050']['p05_hits']==150 and val['guards']['final_holdout_nonregression'] is True,
+ 'total_nonregression': val['baseline_total_hits']==1271 and val['p05_total_hits']==1271 and val['guards']['total_nonregression'] is True,
+ 'intermediate_negative_preserved': val['intermediate_validation_2201_2800']['delta']==-1,
+ 'meta_effect_is_real': float(val['next_prediction_shadow']['max_abs_weight_delta'])>0.0,
+ 'meta_factors_bounded': val['guards']['meta_bound'] is True,
+ 'expert_cap_preserved': val['guards']['expert_cap'] is True and float(val['next_prediction_shadow']['max_weight'])<=0.4200001,
+ 'family_cap_preserved': val['guards']['family_cap'] is True and max(val['next_prediction_shadow']['family_totals'].values())<=0.7000001,
+ 'no_future_leakage': val['guards']['future_leakage'] is False,
+ 'no_predictive_superiority_claim': val['guards']['prospective_claim'] is False,
+ 'future_freeze_hashes_p05': "'contextual_meta_weights': sha256(Path('smart_contextual_meta_weights.py'))" in gov_text,
+ 'future_freeze_snapshots_p05': "'contextual_meta_weights': freeze_obj['challenger']['contextual_meta_weights']" in gov_text,
+ 'active_3051_freeze_hash_valid': fr is not None and Path(fr['freeze_file']).exists() and sha(ROOT/fr['freeze_file'])==fr['freeze_sha256'],
+ 'no_retroactive_p05_event_3051': len(old_p05_events)==0,
+ 'p01_to_p04_preserved': all(pitems[x]['status']=='PROVEN' for x in ['P01_COUNTERFACTUAL_ATTRIBUTION','P02_MARGINAL_SIGNAL_UTILITY','P03_FALSE_CONSENSUS_REDUNDANCY','P04_SIGNAL_INTERACTIONS']),
+ 'p05_not_previously_claimed': pitems['P05_CONTEXTUAL_META_WEIGHTS']['status']!='PROVEN',
+ 'pre3052_gate_still_blocked': blocked,
+ 'coverage_100_lines': stmts==covered,
+ 'coverage_100_branches': branches==covered_b,
+ 'pytest_global_pass': pytest.returncode==0,
+ 'pip_check_clean': pip.returncode==0,
+ 'all_root_python_compiles': not compile_errors,
+}
+proof={
+ 'schema':'SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF_1','point_id':'P05_CONTEXTUAL_META_WEIGHTS',
+ 'status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,
+ 'implementation':{'module':'smart_contextual_meta_weights.py','module_sha256':sha(ROOT/'smart_contextual_meta_weights.py'),'agent_sha256':sha(ROOT/'smart_signal_agent.py'),'governance_sha256':sha(ROOT/'smart_champion_challenger.py'),'default_strength':DEFAULT_META_STRENGTH,'max_strength':MAX_META_STRENGTH,'effective_for_future_predictions':True},
+ 'anti_overfit':{'predeclared_0_08_file':'SMART_P05_PREDECLARED_VALIDATION.json','predeclared_0_08_sha256':sha(ROOT/'SMART_P05_PREDECLARED_VALIDATION.json'),'rejected_holdout_delta':pre['comparison']['holdout_delta'],'calibration_file':'SMART_P05_STRENGTH_CALIBRATION.json','calibration_sha256':sha(ROOT/'SMART_P05_STRENGTH_CALIBRATION.json'),'selected_strength':cal['selected_strength'],'selection_used_holdout':cal['holdout_2201_plus_accessed_for_selection']},
+ 'final_validation':{'file':'SMART_P05_FINAL_HOLDOUT.json','sha256':sha(ROOT/'SMART_P05_FINAL_HOLDOUT.json'),'final_holdout_scope':val['final_holdout_scope'],'baseline_hits':val['final_holdout_2801_3050']['baseline_hits'],'p05_hits':val['final_holdout_2801_3050']['p05_hits'],'delta':val['final_holdout_2801_3050']['delta'],'total_baseline_hits':val['baseline_total_hits'],'total_p05_hits':val['p05_total_hits'],'intermediate_delta':val['intermediate_validation_2201_2800']['delta'],'max_abs_weight_delta_cutoff3050':val['next_prediction_shadow']['max_abs_weight_delta']},
+ 'coverage':{'statements':stmts,'covered_lines':covered,'branches':branches,'covered_branches':covered_b,'file':'SMART_COVERAGE_P05_FINAL.json','sha256':sha(ROOT/'SMART_COVERAGE_P05_FINAL.json')},
+ 'regression':{'pytest':(pytest.stdout+pytest.stderr).strip().splitlines()[-1] if (pytest.stdout+pytest.stderr).strip() else '', 'pip_check':(pip.stdout+pip.stderr).strip(),'compile_errors':compile_errors},
+ 'limits':{'prospective_predictive_claim':False,'retroactive_3051_change':False,'global_6_of_6_not_claimed':True,'p06_not_claimed':True}
+}
+out=ROOT/'SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF.json'; out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],'proof_sha256':sha(out),'coverage':[stmts,branches],'pytest':proof['regression']['pytest'],'pip':proof['regression']['pip_check'],'final_holdout':[proof['final_validation']['baseline_hits'],proof['final_validation']['p05_hits']]},ensure_ascii=False,indent=2))

@@ -1,0 +1,140 @@
+{
+  "schema": "SMART_P03_FALSE_CONSENSUS_REDUNDANCY_PROOF_1",
+  "point_id": "P03_FALSE_CONSENSUS_REDUNDANCY",
+  "status": "MISSION_PROVEN",
+  "checks": {
+    "predeclared_threshold_is_0_90": true,
+    "exploratory_0_95_rejected_for_holdout_regression": true,
+    "p03_total_nonregression": true,
+    "p03_holdout_nonregression": true,
+    "false_consensus_duplicate_mass_reduced": true,
+    "independent_signal_weight_recovers": true,
+    "future_freeze_hashes_p03_component": true,
+    "future_freeze_snapshots_p03_audit": true,
+    "active_3051_freeze_unchanged_valid": true,
+    "3051_not_retroactively_superseded_after_adjudication": true,
+    "p01_preserved_proven": true,
+    "p02_preserved_proven": true,
+    "p03_not_previously_claimed": true,
+    "pre3052_gate_still_blocked_before_update": true,
+    "coverage_100_lines": true,
+    "coverage_100_branches": true,
+    "pytest_global_pass": true,
+    "pip_check_clean": true,
+    "all_root_python_compiles": true
+  },
+  "implementation": {
+    "module": "smart_signal_redundancy_consensus.py",
+    "module_sha256": "eaa93c230dd6444547e8eb252bbd0e7bc3d2bd8addf82b67a62adffdfd5ab201",
+    "agent_sha256": "ead7fbfb597d5ccd2b2960b0dae23df258354c7b976af8b762188a0395b0c683",
+    "governance_sha256": "a58e0da9d4180759259177c0e1c52683af678260324f151b4222cba94a566234",
+    "threshold": 0.9,
+    "policy": "global novelty penalty + connected-cluster anti-multiplicity correction; applied before dynamic weight caps",
+    "future_freeze_hashes_component": true
+  },
+  "anti_overfit": {
+    "exploratory_report": "SMART_P03_THRESHOLD_VALIDATION.json",
+    "exploratory_sha256": "b6088756585d19ab267501825588620d93a95633fb1fd0b55b318ee6874a91bf",
+    "decision_report": "SMART_P03_THRESHOLD_DECISION.json",
+    "decision_sha256": "12bb52bf6182896b471c74afe958c608a84b70c5cbb7e94eebe1839703562a75",
+    "rejected_threshold": 0.95,
+    "adopted_predeclared_threshold": 0.9
+  },
+  "oos": {
+    "report": "SMART_P03_FINAL_OOS.json",
+    "sha256": "39018a9db3887d188f95cd1efb78027e2526c7fc939b2ace8a38813ecb3af249",
+    "legacy_total_hits": 1269,
+    "p03_total_hits": 1271,
+    "total_delta": 2,
+    "legacy_holdout_hits": 541,
+    "p03_holdout_hits": 543,
+    "holdout_delta": 2,
+    "better": 16,
+    "worse": 14,
+    "equal": 820,
+    "blocks": [
+      {
+        "start": 2201,
+        "end": 2370,
+        "n": 170,
+        "legacy_hits": 106,
+        "p03_hits": 106,
+        "delta": 0
+      },
+      {
+        "start": 2371,
+        "end": 2540,
+        "n": 170,
+        "legacy_hits": 98,
+        "p03_hits": 103,
+        "delta": 5
+      },
+      {
+        "start": 2541,
+        "end": 2710,
+        "n": 170,
+        "legacy_hits": 122,
+        "p03_hits": 118,
+        "delta": -4
+      },
+      {
+        "start": 2711,
+        "end": 2880,
+        "n": 170,
+        "legacy_hits": 114,
+        "p03_hits": 115,
+        "delta": 1
+      },
+      {
+        "start": 2881,
+        "end": 3050,
+        "n": 170,
+        "legacy_hits": 101,
+        "p03_hits": 101,
+        "delta": 0
+      }
+    ],
+    "next_top6": [
+      11,
+      27,
+      10,
+      30,
+      53,
+      43
+    ]
+  },
+  "false_consensus_synthetic": {
+    "duplicate_count": 4,
+    "naive_duplicate_mass": 0.8,
+    "corrected_duplicate_mass": 0.58,
+    "independent_weight_before": 0.2,
+    "independent_weight_after": 0.42,
+    "duplicate_mass_reduced": true,
+    "independent_weight_increased": true,
+    "audit_sha256": "9e8d57aa519d03b1cf4ffd6fb95961a3f8c36c90e5bffab5484556a1799b8f8b"
+  },
+  "coverage": {
+    "statements": 1296,
+    "covered_lines": 1296,
+    "branches": 400,
+    "covered_branches": 400,
+    "report": "SMART_COVERAGE_P03_FINAL.json",
+    "sha256": "251e138332f6512893bb97b109102a6db77cd2f08c92a16644142358d343c768"
+  },
+  "regression": {
+    "pytest": "86 passed in 19.93s",
+    "pip_check": "No broken requirements found.",
+    "compile_errors": []
+  },
+  "3051_guardrail": {
+    "freeze_file": "SMART_3051_CHAMPION_CHALLENGER_FREEZE.v3.json",
+    "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+    "freeze_hash_valid": true,
+    "retroactive_rewrite": false
+  },
+  "limits": {
+    "historical_gain_is_not_prospective_predictive_proof": true,
+    "global_6_of_6_not_claimed": true,
+    "point_4_signal_interactions_not_claimed": true
+  }
+}

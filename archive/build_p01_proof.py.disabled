@@ -1,0 +1,75 @@
+from __future__ import annotations
+import hashlib, json, py_compile, subprocess, sys
+from pathlib import Path
+
+ROOT=Path(__file__).resolve().parents[1]
+sys.path.insert(0,str(ROOT))
+import adjudicate_signal_challenger as adj
+import smart_champion_challenger as cc
+import smart_signal_attribution as attr
+
+
+def sha(p:Path)->str:
+    return hashlib.sha256(p.read_bytes()).hexdigest()
+
+ledger_path=ROOT/'SMART_SIGNAL_LEDGER.json'
+coverage_path=ROOT/'SMART_COVERAGE_P01_FINAL.json'
+ledger=json.loads(ledger_path.read_text(encoding='utf-8'))
+coverage=json.loads(coverage_path.read_text(encoding='utf-8'))
+attrs=[e for e in ledger['events'] if e.get('event_type')=='ATTRIBUTION' and int(e.get('target_contest',-1))==3051]
+ads=[e for e in ledger['events'] if e.get('event_type')=='ADJUDICATION' and int(e.get('target_contest',-1))==3051]
+fr=cc.active_freeze(ledger,3051)
+assert fr is not None and len(attrs)==1 and len(ads)==1
+recomputed=attr.analyze_attribution(fr['snapshot'],ads[0]['actual_numbers'])
+tot=coverage['totals']
+compile_errors=[]
+for p in sorted(ROOT.glob('*.py')):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as exc: compile_errors.append({'file':p.name,'error':repr(exc)})
+pip=subprocess.run([sys.executable,'-m','pip','check'],cwd=ROOT,capture_output=True,text=True)
+pytest=subprocess.run([sys.executable,'-m','pytest','-q'],cwd=ROOT,capture_output=True,text=True)
+checks={
+ 'single_attribution_event_3051':len(attrs)==1,
+ 'single_adjudication_3051':len(ads)==1,
+ 'attribution_references_active_freeze':attrs[0]['freeze_sha256']==fr['freeze_sha256']==ads[0]['freeze_sha256'],
+ 'recompute_matches_ledger_attribution':recomputed['attribution_sha256']==attrs[0]['attribution_sha256'],
+ 'post_result_only_no_policy_effect':attrs[0]['policy_effect']=='NONE_POST_RESULT_DIAGNOSTIC_ONLY' and attrs[0]['retroactive_rewrite'] is False,
+ 'loo_all_signals':set(recomputed['per_signal'])==set(fr['snapshot']['weights']),
+ 'redundancy_all_signals':all('redundancy' in x for x in recomputed['per_signal'].values()),
+ 'push_down_all_missed_traceable':set(recomputed['missed_actual_numbers'])=={15,20,21,38,48},
+ 'coalitions_permanent_and_bounded':recomputed['coalition_analysis']['coalitions_tested']==298 and recomputed['coalition_analysis']['max_removal_size']==3,
+ '3051_minimal_improving_removal_size_three':recomputed['coalition_analysis']['minimal_improving_removal_size']==3,
+ 'coverage_100_lines':tot['covered_lines']==tot['num_statements'] and tot['missing_lines']==0 and tot['percent_covered']==100.0,
+ 'coverage_100_branches':tot['covered_branches']==tot['num_branches'] and tot['missing_branches']==0,
+ 'pytest_global_pass':pytest.returncode==0 and '70 passed' in pytest.stdout,
+ 'pip_check_clean':pip.returncode==0,
+ 'all_root_python_compiles':not compile_errors,
+}
+proof={
+ 'schema':'SMART_P01_COUNTERFACTUAL_ATTRIBUTION_PROOF_1',
+ 'point_id':'P01_COUNTERFACTUAL_ATTRIBUTION',
+ 'status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN',
+ 'checks':checks,
+ 'implementation':{
+  'module':'smart_signal_attribution.py','module_sha256':sha(ROOT/'smart_signal_attribution.py'),
+  'adjudication_module':'adjudicate_signal_challenger.py','adjudication_sha256':sha(ROOT/'adjudicate_signal_challenger.py'),
+  'automatic_future_event':'ADJUDICATION -> ATTRIBUTION',
+  'legacy_3051_append_only_backfill':True,
+  'retroactive_policy_change':False,
+ },
+ 'coverage':{'statements':tot['num_statements'],'covered_lines':tot['covered_lines'],'branches':tot['num_branches'],'covered_branches':tot['covered_branches'],'report':coverage_path.name,'sha256':sha(coverage_path)},
+ 'contest_3051':{
+  'actual_numbers':ads[0]['actual_numbers'],'base':recomputed['base'],
+  'missed':recomputed['missed_actual_numbers'],'coalitions_tested':recomputed['coalition_analysis']['coalitions_tested'],
+  'minimal_improving_removal_size':recomputed['coalition_analysis']['minimal_improving_removal_size'],
+  'attribution_sha256':recomputed['attribution_sha256'],
+  'ledger_attribution_engine_sha256_at_creation':attrs[0]['attribution_engine_sha256'],
+  'current_engine_sha256':sha(ROOT/'smart_signal_attribution.py'),
+  'behavioral_recompute_identical':recomputed['attribution_sha256']==attrs[0]['attribution_sha256'],
+ },
+ 'regression':{'pytest':pytest.stdout.strip().splitlines()[-1] if pytest.stdout.strip() else '', 'pip_check':pip.stdout.strip(), 'compile_errors':compile_errors},
+ 'limits':{'diagnostic_not_weight_update':True,'point_2_marginal_utility_not_claimed':True,'global_6_of_6_not_claimed':True},
+}
+out=ROOT/'SMART_P01_COUNTERFACTUAL_ATTRIBUTION_PROOF.json'
+out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],'proof_sha256':sha(out),'module_sha256':proof['implementation']['module_sha256'],'pytest':proof['regression']['pytest']},ensure_ascii=False,indent=2))

@@ -1,0 +1,49 @@
+from __future__ import annotations
+import hashlib, json, os, py_compile, subprocess, sys
+from pathlib import Path
+ROOT=Path(__file__).resolve().parents[1]; sys.path.insert(0,str(ROOT)); os.chdir(ROOT)
+import smart_champion_challenger as cc
+from smart_signal_redundancy_consensus import DEFAULT_CORRELATION_THRESHOLD
+
+def sha(p:Path)->str: return hashlib.sha256(p.read_bytes()).hexdigest()
+
+def load(name): return json.loads((ROOT/name).read_text(encoding='utf-8'))
+
+cov=load('SMART_COVERAGE_P03_FINAL.json'); oos=load('SMART_P03_FINAL_OOS.json'); decision=load('SMART_P03_THRESHOLD_DECISION.json'); exploratory=load('SMART_P03_THRESHOLD_VALIDATION.json'); gate=load('SMART_3052_IMPLEMENTATION_GATE.json'); ledger=load('SMART_SIGNAL_LEDGER.json')
+active=cc.active_freeze(ledger,3051); assert active is not None
+freeze_path=ROOT/active['freeze_file']; freeze_valid=freeze_path.exists() and sha(freeze_path)==active['freeze_sha256']
+pytest_run=subprocess.run([sys.executable,'-m','pytest','-q'],cwd=ROOT,capture_output=True,text=True)
+pip=subprocess.run([sys.executable,'-m','pip','check'],cwd=ROOT,capture_output=True,text=True)
+compile_errors=[]
+for p in sorted(ROOT.glob('*.py')):
+    try: py_compile.compile(str(p),doraise=True)
+    except Exception as exc: compile_errors.append({'file':p.name,'error':repr(exc)})
+critical=['adjudicate_signal_challenger.py','freeze_next_research.py','smart_champion_challenger.py','smart_context_regime.py','smart_signal_agent.py','smart_signal_attribution.py','smart_signal_marginal_utility.py','smart_signal_quality.py','smart_signal_redundancy_consensus.py','smart_signal_weights.py','smart_v2_engine.py','smart_v2_production.py']
+summary=[cov['files'][f]['summary'] for f in critical]
+t={'num_statements':sum(x['num_statements'] for x in summary),'covered_lines':sum(x['covered_lines'] for x in summary),'missing_lines':sum(x['missing_lines'] for x in summary),'num_branches':sum(x['num_branches'] for x in summary),'covered_branches':sum(x['covered_branches'] for x in summary),'missing_branches':sum(x['missing_branches'] for x in summary)}
+items={x['id']:x for x in gate['items']}
+source=ROOT/'smart_champion_challenger.py'; txt=source.read_text(encoding='utf-8-sig')
+checks={
+ 'predeclared_threshold_is_0_90': DEFAULT_CORRELATION_THRESHOLD==0.90 and decision['adopted_threshold']==0.90,
+ 'exploratory_0_95_rejected_for_holdout_regression': decision['exploratory_candidate_0_95']=='REJECTED_OVERFIT' and exploratory['candidates']['0.95']['holdout_hits']<exploratory['legacy']['holdout_hits'],
+ 'p03_total_nonregression': oos['p03_total_hits']>=oos['legacy_total_hits'] and oos['total_delta']==2,
+ 'p03_holdout_nonregression': oos['p03_holdout_hits']>=oos['legacy_holdout_hits'] and oos['holdout_delta']==2,
+ 'false_consensus_duplicate_mass_reduced': decision['synthetic_false_consensus']['duplicate_mass_reduced'] is True,
+ 'independent_signal_weight_recovers': decision['synthetic_false_consensus']['independent_weight_increased'] is True,
+ 'future_freeze_hashes_p03_component': "'redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))" in txt and "'redundancy_consensus_sha256': component_hashes['redundancy_consensus']" in txt,
+ 'future_freeze_snapshots_p03_audit': "'redundancy_consensus': freeze_obj['challenger']['redundancy_consensus']" in txt,
+ 'active_3051_freeze_unchanged_valid': freeze_valid,
+ '3051_not_retroactively_superseded_after_adjudication': not any(ev.get('event_type')=='SUPERSEDE' and int(ev.get('target_contest',-1))==3051 and ev.get('created_utc','')>next((a.get('created_utc','') for a in ledger['events'] if a.get('event_type')=='ADJUDICATION' and int(a.get('target_contest',-1))==3051),'') for ev in ledger['events']),
+ 'p01_preserved_proven': items['P01_COUNTERFACTUAL_ATTRIBUTION']['status']=='PROVEN',
+ 'p02_preserved_proven': items['P02_MARGINAL_SIGNAL_UTILITY']['status']=='PROVEN',
+ 'p03_not_previously_claimed': items['P03_FALSE_CONSENSUS_REDUNDANCY']['status']!='PROVEN',
+ 'pre3052_gate_still_blocked_before_update': gate['freeze_allowed'] is False,
+ 'coverage_100_lines': t['covered_lines']==t['num_statements'] and t['missing_lines']==0,
+ 'coverage_100_branches': t['covered_branches']==t['num_branches'] and t['missing_branches']==0,
+ 'pytest_global_pass': pytest_run.returncode==0 and '86 passed' in pytest_run.stdout,
+ 'pip_check_clean': pip.returncode==0 and 'No broken requirements found' in pip.stdout,
+ 'all_root_python_compiles': not compile_errors,
+}
+proof={'schema':'SMART_P03_FALSE_CONSENSUS_REDUNDANCY_PROOF_1','point_id':'P03_FALSE_CONSENSUS_REDUNDANCY','status':'MISSION_PROVEN' if all(checks.values()) else 'MISSION_NOT_PROVEN','checks':checks,'implementation':{'module':'smart_signal_redundancy_consensus.py','module_sha256':sha(ROOT/'smart_signal_redundancy_consensus.py'),'agent_sha256':sha(ROOT/'smart_signal_agent.py'),'governance_sha256':sha(ROOT/'smart_champion_challenger.py'),'threshold':DEFAULT_CORRELATION_THRESHOLD,'policy':'global novelty penalty + connected-cluster anti-multiplicity correction; applied before dynamic weight caps','future_freeze_hashes_component':True},'anti_overfit':{'exploratory_report':'SMART_P03_THRESHOLD_VALIDATION.json','exploratory_sha256':sha(ROOT/'SMART_P03_THRESHOLD_VALIDATION.json'),'decision_report':'SMART_P03_THRESHOLD_DECISION.json','decision_sha256':sha(ROOT/'SMART_P03_THRESHOLD_DECISION.json'),'rejected_threshold':0.95,'adopted_predeclared_threshold':0.90},'oos':{'report':'SMART_P03_FINAL_OOS.json','sha256':sha(ROOT/'SMART_P03_FINAL_OOS.json'),'legacy_total_hits':oos['legacy_total_hits'],'p03_total_hits':oos['p03_total_hits'],'total_delta':oos['total_delta'],'legacy_holdout_hits':oos['legacy_holdout_hits'],'p03_holdout_hits':oos['p03_holdout_hits'],'holdout_delta':oos['holdout_delta'],'better':oos['holdout_better_contests'],'worse':oos['holdout_worse_contests'],'equal':oos['holdout_equal_contests'],'blocks':oos['blocks'],'next_top6':oos['p03_next_top6']},'false_consensus_synthetic':decision['synthetic_false_consensus'],'coverage':{'statements':t['num_statements'],'covered_lines':t['covered_lines'],'branches':t['num_branches'],'covered_branches':t['covered_branches'],'report':'SMART_COVERAGE_P03_FINAL.json','sha256':sha(ROOT/'SMART_COVERAGE_P03_FINAL.json')},'regression':{'pytest':pytest_run.stdout.strip().splitlines()[-1] if pytest_run.stdout.strip() else '', 'pip_check':pip.stdout.strip(),'compile_errors':compile_errors},'3051_guardrail':{'freeze_file':active['freeze_file'],'freeze_sha256':active['freeze_sha256'],'freeze_hash_valid':freeze_valid,'retroactive_rewrite':False},'limits':{'historical_gain_is_not_prospective_predictive_proof':True,'global_6_of_6_not_claimed':True,'point_4_signal_interactions_not_claimed':True}}
+out=ROOT/'SMART_P03_FALSE_CONSENSUS_REDUNDANCY_PROOF.json'; out.write_text(json.dumps(proof,ensure_ascii=False,indent=2),encoding='utf-8')
+print(json.dumps({'status':proof['status'],'all_checks_pass':all(checks.values()),'failed':[k for k,v in checks.items() if not v],'proof_sha256':sha(out),'pytest':proof['regression']['pytest'],'pip_check':proof['regression']['pip_check'],'oos_delta':oos['total_delta'],'holdout_delta':oos['holdout_delta']},ensure_ascii=False,indent=2))

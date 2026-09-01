@@ -1,0 +1,191 @@
+{
+  "schema": "SMART_P08_META_GOVERNOR_PROOF_1",
+  "point_id": "P08_META_GOVERNOR",
+  "status": "MISSION_PROVEN",
+  "all_checks_pass": true,
+  "checks": {
+    "coverage_modified_modules_100": true,
+    "oos_2050": true,
+    "causal_selection": true,
+    "no_production_authority": true,
+    "no_retroactive_selection": true,
+    "primary_not_rewritten": true,
+    "underperformance_not_promoted": true,
+    "parameters_not_tuned_on_replay": true,
+    "current_meta_hash": true,
+    "current_multi_hash": true,
+    "current_agent_hash": true,
+    "p01_p07_proven": true,
+    "freeze_3051_valid": true,
+    "no_p08_backfill_3051": true,
+    "focused_tests_pass": true
+  },
+  "failed": [],
+  "evidence": {
+    "coverage_union": {
+      "schema": "SMART_P08_COVERAGE_UNION_1",
+      "sources": [
+        "SMART_COVERAGE_P08_DELTA_FINAL.json",
+        "SMART_COVERAGE_P08_GUARDS.json"
+      ],
+      "modules": {
+        "adjudicate_signal_challenger.py": {
+          "statements": 229,
+          "covered_statements": 229,
+          "branches": 86,
+          "covered_branches": 86,
+          "missing_lines": [],
+          "missing_branches": [],
+          "coverage_100": true
+        },
+        "smart_champion_challenger.py": {
+          "statements": 164,
+          "covered_statements": 164,
+          "branches": 60,
+          "covered_branches": 60,
+          "missing_lines": [],
+          "missing_branches": [],
+          "coverage_100": true
+        },
+        "smart_meta_governor.py": {
+          "statements": 95,
+          "covered_statements": 95,
+          "branches": 30,
+          "covered_branches": 30,
+          "missing_lines": [],
+          "missing_branches": [],
+          "coverage_100": true
+        },
+        "smart_signal_agent.py": {
+          "statements": 214,
+          "covered_statements": 214,
+          "branches": 38,
+          "covered_branches": 38,
+          "missing_lines": [],
+          "missing_branches": [],
+          "coverage_100": true
+        }
+      },
+      "all_modified_modules_100": true
+    },
+    "historical": {
+      "schema": "SMART_P08_META_GOVERNOR_HISTORICAL_OOS_1",
+      "data_cutoff": 3050,
+      "oos_start": 1001,
+      "oos_predictions": 2050,
+      "parameters": {
+        "eta": 0.11552453009332421,
+        "prior_mix": 0.2,
+        "tuned_on_replay": false
+      },
+      "selected_cumulative_hits": 1259,
+      "fixed_policy_hits": {
+        "quality_dynamic": 1271,
+        "diversity_max": 1235,
+        "low_redundancy": 1258,
+        "regime_context": 1271,
+        "conservative": 1244
+      },
+      "selection_counts": {
+        "quality_dynamic": 1374,
+        "conservative": 285,
+        "low_redundancy": 10,
+        "diversity_max": 381
+      },
+      "switches": 22,
+      "posthoc_oracle_hits_not_used": 1618,
+      "oracle_selection_prohibited": true,
+      "next_selection_shadow": {
+        "schema": "SMART_META_GOVERNOR_1",
+        "observations_before_result": 2050,
+        "eta": 0.11552453009332421,
+        "prior_mix": 0.2,
+        "policy_weights_before_result": {
+          "quality_dynamic": 0.3904861467711276,
+          "diversity_max": 0.04547634604329874,
+          "low_redundancy": 0.11806191472108367,
+          "regime_context": 0.3904861467711276,
+          "conservative": 0.05548944569336247
+        },
+        "selected_policy": "quality_dynamic",
+        "selected_top6": [
+          11,
+          27,
+          10,
+          30,
+          53,
+          43
+        ],
+        "selected_policy_sha256": "58d5981b8317508509f04f4ec5da45e3111f3e50376cb00429e11ff236829af0",
+        "selection_causal": true,
+        "selection_uses_current_result": false,
+        "selection_scope": "P07_CHALLENGERS_ONLY",
+        "production_authority": false,
+        "champion_remains_active": true,
+        "retroactive_selection_prohibited": true,
+        "sha256": "97258fa3d1dd76a06197c8d41b8edea42b0fc0716eb629edf19ff3a76929619b"
+      },
+      "governor_state": {
+        "schema": "SMART_META_GOVERNOR_1",
+        "eta": 0.11552453009332421,
+        "prior_mix": 0.2,
+        "observations": 2050,
+        "log_weights": {
+          "quality_dynamic": 4.736505733826304,
+          "diversity_max": 0.5776226504666074,
+          "low_redundancy": 3.234686842613058,
+          "regime_context": 4.736505733826304,
+          "conservative": 1.6173434213065156
+        },
+        "policy_weights": {
+          "quality_dynamic": 0.3904861467711276,
+          "diversity_max": 0.04547634604329874,
+          "low_redundancy": 0.11806191472108367,
+          "regime_context": 0.3904861467711276,
+          "conservative": 0.05548944569336247
+        },
+        "cumulative_hits": {
+          "quality_dynamic": 1271,
+          "diversity_max": 1235,
+          "low_redundancy": 1258,
+          "regime_context": 1271,
+          "conservative": 1244
+        },
+        "selection_counts": {
+          "quality_dynamic": 1374,
+          "diversity_max": 381,
+          "low_redundancy": 10,
+          "regime_context": 0,
+          "conservative": 285
+        },
+        "selected_cumulative_hits": 1259,
+        "last_selected_policy": "quality_dynamic",
+        "selection_scope": "P07_CHALLENGERS_ONLY",
+        "production_authority": false,
+        "champion_remains_active": true,
+        "sha256": "31e1b34c7b06926e11862eae71c8833a7cd7f7a2760c13a9691e078c7afc5d6b"
+      },
+      "guards": {
+        "selection_before_result_all": true,
+        "update_after_result_only": true,
+        "selected_hits_state_matches": true,
+        "production_authority": false,
+        "champion_remains_active": true,
+        "retroactive_selection": false,
+        "primary_challenger_not_rewritten": true
+      },
+      "hashes": {
+        "data": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+        "meta_governor": "759fd9b627110ca6fa5aa553950e71966948bd8727ff93d21d14ed7fcd81284f",
+        "multi_challengers": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+        "agent": "c1188e5604ccb89384572d33257504fc0bdab20361d1e07f4629f7611849e27a"
+      },
+      "interpretation": "historical causal engineering evidence only; no prospective superiority claim"
+    },
+    "global_pytest_last_observed": "145 passed in 180.52s",
+    "focused_pytest": ".................                                                        [100%]\n17 passed in 28.80s",
+    "freeze_3051_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+    "interpretation": "P08 is proven as causal shadow governor; historical underperformance prohibits replacing quality_dynamic"
+  },
+  "generated_utc": "2026-08-30T23:48:17.825747+00:00"
+}

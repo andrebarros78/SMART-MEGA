@@ -1,0 +1,54 @@
+{
+  "schema": "SMART_P13_CURRENT_LEDGER_DECISION_1",
+  "created_brt": "2026-08-31T12:39:08.912978-03:00",
+  "ledger_file": "SMART_SIGNAL_LEDGER.json",
+  "ledger_sha256": "0aff0ea01a4714185709a174159642fa512bc3202a8411a8a7028f4053fb710a",
+  "promotion_policy": {
+    "schema": "SMART_PROMOTION_GATE_POLICY_1",
+    "base_min_prospective_contests": 20,
+    "min_e_value": 10.0,
+    "must_beat_champion_cumulatively": true,
+    "must_have_favorable_regret": true,
+    "adaptive_sample_rule": {
+      "mean_hit_advantage_gte_0_50": 20,
+      "mean_hit_advantage_gte_0_25": 30,
+      "mean_hit_advantage_gte_0_10": 50,
+      "mean_hit_advantage_gt_0": 80
+    },
+    "promotion_before_evidence_prohibited": true,
+    "accepted_hit_domain": [
+      0,
+      6
+    ],
+    "invalid_or_nonfinite_inputs_rejected": true
+  },
+  "promotion_status": {
+    "decision": "KEEP_CHAMPION",
+    "eligible": false,
+    "n": 1,
+    "challenger_hits": 1,
+    "champion_hits": 1,
+    "advantage_hits": 0,
+    "mean_hit_advantage": 0.0,
+    "cumulative_regret": 0,
+    "e_value": 1.0,
+    "inputs_validated": true,
+    "base_min_prospective_contests": 20,
+    "required_prospective_contests": 20,
+    "adaptive_sample_escalated": false,
+    "enough_contests": false,
+    "superior_to_champion": false,
+    "favorable_regret": false,
+    "sequential_evidence": false,
+    "blockers": [
+      "no_cumulative_superiority",
+      "regret_not_favorable",
+      "insufficient_adaptive_sample",
+      "insufficient_sequential_evidence"
+    ],
+    "reason": "prospective promotion conditions not met"
+  },
+  "production_switch_performed": false,
+  "champion_remains_active": true,
+  "interpretation": "Current real prospective ledger does not meet promotion conditions; Champion must remain active."
+}

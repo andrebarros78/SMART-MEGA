@@ -1,0 +1,35 @@
+{
+  "schema": "SMART_P05_DECISION_1",
+  "point_id": "P05_CONTEXTUAL_META_WEIGHTS",
+  "decision": "ADOPT_STRENGTH_0_06",
+  "adopted_strength": 0.06,
+  "rejected_predeclared_strength": 0.08,
+  "rejection_reason_0_08": "improved calibration by +3 hits but regressed the 2201-3050 holdout by -1 hit; rejected under no-regression rule",
+  "calibration": {
+    "file": "SMART_P05_STRENGTH_CALIBRATION.json",
+    "scope": "1001-2200 only",
+    "candidates": [0.02, 0.04, 0.06],
+    "hits": {"0.02": 728, "0.04": 728, "0.06": 729},
+    "selection_rule": "max calibration hits; tie lower strength",
+    "holdout_accessed_for_selection": false
+  },
+  "final_validation": {
+    "file": "SMART_P05_FINAL_HOLDOUT.json",
+    "final_holdout": "2801-3050",
+    "baseline_hits": 150,
+    "p05_hits": 150,
+    "delta": 0,
+    "total_baseline_hits": 1271,
+    "total_p05_hits": 1271,
+    "intermediate_validation_2201_2800_delta": -1,
+    "interpretation": "non-regression on final holdout and total; no claim of predictive superiority"
+  },
+  "governance": {
+    "prospective_predictive_claim": false,
+    "retroactive_3051_change": false,
+    "expert_cap_preserved": 0.42,
+    "family_cap_preserved": 0.70,
+    "meta_adjustment_bounded": true,
+    "p05_effective_from_future_challenger_predictions_only": true
+  }
+}

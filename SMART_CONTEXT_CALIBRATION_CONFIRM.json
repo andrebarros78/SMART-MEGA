@@ -1,0 +1,2445 @@
+{
+  "schema": "SMART_CONTEXT_CALIBRATION_CONFIRM_1",
+  "threshold": 0.052,
+  "calibration_id": "SMART_CONTEXT_CAL_20260828_A",
+  "seed_sets": {
+    "iid": "877000..877099",
+    "regime": "888000..888099",
+    "vanishes": "899000..899099"
+  },
+  "summary": {
+    "iid_null": {
+      "rounds": 100,
+      "detection_rate": 0.0,
+      "mean_detections": 0.0,
+      "max_score_q50": 0.040444444444444456,
+      "max_score_q95": 0.04423333333333333,
+      "max_score_max": 0.04755555555555555
+    },
+    "regime_shift": {
+      "rounds": 100,
+      "detection_rate": 1.0,
+      "mean_detections": 3.66,
+      "max_score_q50": 0.06666666666666667,
+      "max_score_q95": 0.07312222222222223,
+      "max_score_max": 0.07600000000000003
+    },
+    "signal_vanishes": {
+      "rounds": 100,
+      "detection_rate": 0.73,
+      "mean_detections": 1.1,
+      "max_score_q50": 0.053555555555555565,
+      "max_score_q95": 0.05933333333333333,
+      "max_score_max": 0.06266666666666668
+    }
+  },
+  "checks": {
+    "iid_false_positive_rate_le_0_10": true,
+    "regime_detection_rate_ge_0_80": true,
+    "vanishing_signal_detection_rate_ge_0_80": false,
+    "exactly_300_rounds": true
+  },
+  "passed": false,
+  "rows": [
+    {
+      "kind": "iid_null",
+      "seed": 877000,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03822222222222223
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888000,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 275,
+      "max_score": 0.0708888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899000,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05088888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877001,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.036222222222222225
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888001,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 265,
+      "max_score": 0.07044444444444446
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899001,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 294,
+      "max_score": 0.05555555555555555
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877002,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04111111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888002,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 277,
+      "max_score": 0.066
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899002,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 299,
+      "max_score": 0.05355555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877003,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.037333333333333336
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888003,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 265,
+      "max_score": 0.07133333333333333
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899003,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 293,
+      "max_score": 0.053111111111111116
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877004,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04088888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888004,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 277,
+      "max_score": 0.06711111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899004,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 308,
+      "max_score": 0.05266666666666667
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877005,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04044444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888005,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 285,
+      "max_score": 0.062000000000000006
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899005,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.047555555555555566
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877006,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04244444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888006,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 281,
+      "max_score": 0.06688888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899006,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 313,
+      "max_score": 0.05311111111111111
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877007,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04266666666666667
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888007,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 282,
+      "max_score": 0.06666666666666667
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899007,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 304,
+      "max_score": 0.05533333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877008,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.037333333333333336
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888008,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 286,
+      "max_score": 0.06244444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899008,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 301,
+      "max_score": 0.05200000000000001
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877009,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04311111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888009,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 270,
+      "max_score": 0.06755555555555556
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899009,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05111111111111111
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877010,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04044444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888010,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 276,
+      "max_score": 0.06577777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899010,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 292,
+      "max_score": 0.058888888888888886
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877011,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.039999999999999994
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888011,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 282,
+      "max_score": 0.06577777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899011,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 282,
+      "max_score": 0.059333333333333335
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877012,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03844444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888012,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 266,
+      "max_score": 0.06444444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899012,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 301,
+      "max_score": 0.05422222222222221
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877013,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03711111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888013,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 255,
+      "max_score": 0.0648888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899013,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05066666666666667
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877014,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.041555555555555554
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888014,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 269,
+      "max_score": 0.061111111111111116
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899014,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 295,
+      "max_score": 0.05577777777777778
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877015,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03888888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888015,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 274,
+      "max_score": 0.06822222222222223
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899015,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.050666666666666665
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877016,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04088888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888016,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 283,
+      "max_score": 0.062000000000000006
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899016,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.049555555555555554
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877017,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04311111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888017,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 274,
+      "max_score": 0.06244444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899017,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 287,
+      "max_score": 0.05688888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877018,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03644444444444445
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888018,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 270,
+      "max_score": 0.07022222222222221
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899018,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 301,
+      "max_score": 0.05222222222222222
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877019,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04066666666666666
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888019,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 269,
+      "max_score": 0.074
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899019,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 282,
+      "max_score": 0.056888888888888885
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877020,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04000000000000001
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888020,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 284,
+      "max_score": 0.0628888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899020,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05133333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877021,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042222222222222223
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888021,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 271,
+      "max_score": 0.06888888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899021,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 293,
+      "max_score": 0.05888888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877022,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.036000000000000004
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888022,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 280,
+      "max_score": 0.07600000000000003
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899022,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 300,
+      "max_score": 0.05266666666666667
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877023,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03977777777777778
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888023,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 277,
+      "max_score": 0.06666666666666667
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899023,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04777777777777777
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877024,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042666666666666665
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888024,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 274,
+      "max_score": 0.07111111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899024,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 293,
+      "max_score": 0.05644444444444444
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877025,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.041111111111111105
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888025,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 266,
+      "max_score": 0.06977777777777776
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899025,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 284,
+      "max_score": 0.05933333333333333
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877026,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03844444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888026,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 275,
+      "max_score": 0.07111111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899026,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 293,
+      "max_score": 0.060444444444444446
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877027,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04088888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888027,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 277,
+      "max_score": 0.06266666666666668
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899027,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05022222222222222
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877028,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04755555555555555
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888028,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 272,
+      "max_score": 0.0631111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899028,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05066666666666667
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877029,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04333333333333333
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888029,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 277,
+      "max_score": 0.06555555555555556
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899029,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 304,
+      "max_score": 0.054000000000000006
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877030,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03911111111111112
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888030,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 270,
+      "max_score": 0.07311111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899030,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05022222222222224
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877031,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.038444444444444455
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888031,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 287,
+      "max_score": 0.064
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899031,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 292,
+      "max_score": 0.05355555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877032,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03977777777777777
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888032,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 261,
+      "max_score": 0.06911111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899032,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 303,
+      "max_score": 0.05422222222222221
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877033,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04266666666666666
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888033,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 282,
+      "max_score": 0.06511111111111112
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899033,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 301,
+      "max_score": 0.053111111111111116
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877034,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04155555555555556
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888034,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 290,
+      "max_score": 0.0588888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899034,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.049555555555555554
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877035,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.038
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888035,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 292,
+      "max_score": 0.06088888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899035,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05022222222222222
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877036,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.040444444444444456
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888036,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 281,
+      "max_score": 0.06377777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899036,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 295,
+      "max_score": 0.05244444444444444
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877037,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04177777777777779
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888037,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 278,
+      "max_score": 0.06422222222222222
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899037,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 310,
+      "max_score": 0.05222222222222222
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877038,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03844444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888038,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 283,
+      "max_score": 0.068
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899038,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 295,
+      "max_score": 0.056222222222222236
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877039,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03955555555555555
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888039,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 286,
+      "max_score": 0.06333333333333332
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899039,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 282,
+      "max_score": 0.05533333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877040,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04022222222222222
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888040,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 273,
+      "max_score": 0.06688888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899040,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05177777777777778
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877041,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04133333333333333
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888041,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 286,
+      "max_score": 0.061999999999999986
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899041,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 304,
+      "max_score": 0.053555555555555565
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877042,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03888888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888042,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 274,
+      "max_score": 0.068
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899042,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 297,
+      "max_score": 0.05511111111111112
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877043,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042888888888888886
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888043,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 279,
+      "max_score": 0.06511111111111112
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899043,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 292,
+      "max_score": 0.05333333333333332
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877044,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03755555555555556
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888044,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 270,
+      "max_score": 0.07044444444444443
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899044,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.051333333333333335
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877045,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04244444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888045,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 274,
+      "max_score": 0.06977777777777779
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899045,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05088888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877046,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.038444444444444455
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888046,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 287,
+      "max_score": 0.06288888888888888
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899046,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 290,
+      "max_score": 0.06266666666666668
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877047,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04088888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888047,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 283,
+      "max_score": 0.068
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899047,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 297,
+      "max_score": 0.05533333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877048,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04133333333333333
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888048,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 272,
+      "max_score": 0.06888888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899048,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 294,
+      "max_score": 0.056888888888888885
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877049,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04022222222222223
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888049,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 272,
+      "max_score": 0.064
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899049,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.0488888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877050,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04155555555555557
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888050,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 270,
+      "max_score": 0.06933333333333334
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899050,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 292,
+      "max_score": 0.055555555555555566
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877051,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04177777777777778
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888051,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 268,
+      "max_score": 0.07244444444444445
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899051,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 321,
+      "max_score": 0.05644444444444444
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877052,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.040444444444444456
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888052,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 275,
+      "max_score": 0.06222222222222223
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899052,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 330,
+      "max_score": 0.05488888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877053,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04088888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888053,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 282,
+      "max_score": 0.066
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899053,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 298,
+      "max_score": 0.05377777777777777
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877054,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888054,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 269,
+      "max_score": 0.06955555555555556
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899054,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 317,
+      "max_score": 0.053111111111111116
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877055,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03822222222222223
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888055,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 270,
+      "max_score": 0.064
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899055,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 287,
+      "max_score": 0.05733333333333333
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877056,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.044888888888888895
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888056,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 282,
+      "max_score": 0.06155555555555555
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899056,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.051333333333333335
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877057,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.0391111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888057,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 265,
+      "max_score": 0.07244444444444445
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899057,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 298,
+      "max_score": 0.055555555555555566
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877058,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042888888888888886
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888058,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 274,
+      "max_score": 0.06377777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899058,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 316,
+      "max_score": 0.05244444444444445
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877059,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03711111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888059,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 258,
+      "max_score": 0.07355555555555555
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899059,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.048666666666666664
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877060,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04111111111111112
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888060,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 276,
+      "max_score": 0.06377777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899060,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 291,
+      "max_score": 0.056666666666666664
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877061,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04511111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888061,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 268,
+      "max_score": 0.06577777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899061,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 297,
+      "max_score": 0.05533333333333333
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877062,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.041333333333333326
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888062,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 268,
+      "max_score": 0.06555555555555556
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899062,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 292,
+      "max_score": 0.06133333333333333
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877063,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03822222222222222
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888063,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 273,
+      "max_score": 0.06888888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899063,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 283,
+      "max_score": 0.054
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877064,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04022222222222222
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888064,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 276,
+      "max_score": 0.06644444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899064,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 307,
+      "max_score": 0.05355555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877065,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04044444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888065,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 281,
+      "max_score": 0.06355555555555556
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899065,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 282,
+      "max_score": 0.05355555555555557
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877066,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04266666666666666
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888066,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 273,
+      "max_score": 0.06288888888888887
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899066,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 301,
+      "max_score": 0.054000000000000006
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877067,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04377777777777778
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888067,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 283,
+      "max_score": 0.0651111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899067,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 281,
+      "max_score": 0.05644444444444445
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877068,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03866666666666666
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888068,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 276,
+      "max_score": 0.06577777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899068,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 292,
+      "max_score": 0.05444444444444444
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877069,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03711111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888069,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 271,
+      "max_score": 0.07066666666666667
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899069,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 294,
+      "max_score": 0.058
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877070,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04155555555555556
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888070,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 267,
+      "max_score": 0.06933333333333333
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899070,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 298,
+      "max_score": 0.05511111111111112
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877071,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04488888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888071,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 271,
+      "max_score": 0.06711111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899071,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 284,
+      "max_score": 0.05777777777777778
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877072,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.0408888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888072,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 265,
+      "max_score": 0.07444444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899072,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04955555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877073,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03933333333333334
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888073,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 274,
+      "max_score": 0.06977777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899073,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05155555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877074,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03688888888888889
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888074,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 265,
+      "max_score": 0.07133333333333332
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899074,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 298,
+      "max_score": 0.05266666666666666
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877075,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.044000000000000004
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888075,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 289,
+      "max_score": 0.064
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899075,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 300,
+      "max_score": 0.05288888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877076,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.044222222222222225
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888076,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 284,
+      "max_score": 0.06533333333333333
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899076,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.050444444444444445
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877077,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.038444444444444455
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888077,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 279,
+      "max_score": 0.0708888888888889
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899077,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 298,
+      "max_score": 0.05333333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877078,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04311111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888078,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 278,
+      "max_score": 0.06822222222222221
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899078,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 295,
+      "max_score": 0.052888888888888895
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877079,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.038444444444444455
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888079,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 266,
+      "max_score": 0.07333333333333332
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899079,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04711111111111111
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877080,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.044444444444444446
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888080,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 275,
+      "max_score": 0.0651111111111111
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899080,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 295,
+      "max_score": 0.056
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877081,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.041777777777777775
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888081,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 286,
+      "max_score": 0.06666666666666667
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899081,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 287,
+      "max_score": 0.05866666666666666
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877082,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03844444444444444
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888082,
+      "detected": true,
+      "detections": 5,
+      "first_detection": 272,
+      "max_score": 0.06444444444444446
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899082,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04888888888888889
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877083,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042888888888888886
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888083,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 279,
+      "max_score": 0.06733333333333333
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899083,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 277,
+      "max_score": 0.05444444444444445
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877084,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.040444444444444456
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888084,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 287,
+      "max_score": 0.06422222222222224
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899084,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 290,
+      "max_score": 0.05600000000000001
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877085,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.040444444444444436
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888085,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 279,
+      "max_score": 0.07022222222222223
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899085,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.05000000000000002
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877086,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.042
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888086,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 280,
+      "max_score": 0.06666666666666665
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899086,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 296,
+      "max_score": 0.05333333333333334
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877087,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.040888888888888884
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888087,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 267,
+      "max_score": 0.06822222222222223
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899087,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 298,
+      "max_score": 0.054
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877088,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03955555555555556
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888088,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 279,
+      "max_score": 0.06377777777777778
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899088,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 290,
+      "max_score": 0.05222222222222221
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877089,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.043777777777777784
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888089,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 256,
+      "max_score": 0.06977777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899089,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 297,
+      "max_score": 0.053555555555555565
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877090,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04111111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888090,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 272,
+      "max_score": 0.07244444444444444
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899090,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 300,
+      "max_score": 0.054222222222222234
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877091,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.041555555555555554
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888091,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 268,
+      "max_score": 0.06666666666666667
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899091,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 293,
+      "max_score": 0.05733333333333333
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877092,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03955555555555556
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888092,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 278,
+      "max_score": 0.06844444444444446
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899092,
+      "detected": true,
+      "detections": 1,
+      "first_detection": 294,
+      "max_score": 0.05577777777777778
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877093,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04311111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888093,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 268,
+      "max_score": 0.07044444444444445
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899093,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 296,
+      "max_score": 0.05644444444444445
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877094,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03911111111111112
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888094,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 267,
+      "max_score": 0.06377777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899094,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 274,
+      "max_score": 0.059555555555555556
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877095,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03911111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888095,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 278,
+      "max_score": 0.061111111111111116
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899095,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.051777777777777784
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877096,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.03866666666666667
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888096,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 272,
+      "max_score": 0.06777777777777777
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899096,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 296,
+      "max_score": 0.05288888888888888
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877097,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.037333333333333336
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888097,
+      "detected": true,
+      "detections": 4,
+      "first_detection": 279,
+      "max_score": 0.06488888888888888
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899097,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 288,
+      "max_score": 0.05511111111111111
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877098,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04111111111111111
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888098,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 284,
+      "max_score": 0.06733333333333333
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899098,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.051333333333333335
+    },
+    {
+      "kind": "iid_null",
+      "seed": 877099,
+      "detected": false,
+      "detections": 0,
+      "first_detection": null,
+      "max_score": 0.04000000000000001
+    },
+    {
+      "kind": "regime_shift",
+      "seed": 888099,
+      "detected": true,
+      "detections": 3,
+      "first_detection": 286,
+      "max_score": 0.05822222222222222
+    },
+    {
+      "kind": "signal_vanishes",
+      "seed": 899099,
+      "detected": true,
+      "detections": 2,
+      "first_detection": 280,
+      "max_score": 0.05866666666666665
+    }
+  ]
+}

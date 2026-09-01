@@ -1,0 +1,26 @@
+from pathlib import Path
+
+p=Path('smart_signal_agent.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace('from smart_signal_marginal_utility import MarginalUtilityState, update_marginal_states\n', 'from smart_signal_marginal_utility import MarginalUtilityState, update_marginal_states\nfrom smart_signal_interactions import InteractionTracker\n')
+s=s.replace('    context_state: dict[str, Any]\n', '    context_state: dict[str, Any]\n    interaction_state: dict[str, Any]\n')
+s=s.replace("            'context_regime': self.context_state,\n", "            'context_regime': self.context_state,\n            'signal_interactions': self.interaction_state,\n")
+s=s.replace("        self.marginal_states = {n: MarginalUtilityState(name=n) for n in SIGNAL_NAMES}\n", "        self.marginal_states = {n: MarginalUtilityState(name=n) for n in SIGNAL_NAMES}\n        self.interaction_tracker = InteractionTracker(SIGNAL_NAMES)\n")
+s=s.replace('            context_state=self.context_engine.metrics(),\n        )', '            context_state=self.context_engine.metrics(), interaction_state=self.interaction_tracker.metrics(),\n        )')
+s=s.replace('            marginal_update = update_marginal_states(self.marginal_states, sc, pred.weights, draws[t])\n', '            marginal_update = update_marginal_states(self.marginal_states, sc, pred.weights, draws[t])\n            interaction_update = self.interaction_tracker.update(sc, pred.weights, draws[t])\n')
+s=s.replace("                         'marginal_delta_hits_after_result': {\n", "                         'pair_interactions_after_result': {k: int(v['interaction_delta_hits']) for k,v in interaction_update['pair_interactions'].items()},\n                         'marginal_delta_hits_after_result': {\n")
+s=s.replace("                'marginal_utility': {n: self.marginal_states[n].metrics() for n in SIGNAL_NAMES},\n", "                'marginal_utility': {n: self.marginal_states[n].metrics() for n in SIGNAL_NAMES},\n                'signal_interactions': self.interaction_tracker.metrics(),\n")
+p.write_text(s, encoding='utf-8')
+
+p=Path('smart_champion_challenger.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace("        'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),\n", "        'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),\n        'signal_interactions': sha256(Path('smart_signal_interactions.py')),\n")
+s=s.replace("        'signal_state_file': str(state_path),\n", "        'signal_interactions_sha256': component_hashes['signal_interactions'],\n        'signal_state_file': str(state_path),\n")
+s=s.replace("                     'river_state': freeze_obj['challenger']['river_state']", "                     'river_state': freeze_obj['challenger']['river_state'], 'signal_interactions': freeze_obj['challenger']['signal_interactions']")
+p.write_text(s, encoding='utf-8')
+
+p=Path('test_smart_architecture_alignment.py'); s=p.read_text(encoding='utf-8-sig')
+s=s.replace("    'smart_signal_redundancy_consensus.py',\n", "    'smart_signal_redundancy_consensus.py',\n    'smart_signal_interactions.py',\n")
+s=s.replace("'smart_signal_marginal_utility'} <= deps['smart_signal_agent.py']", "'smart_signal_marginal_utility', 'smart_signal_interactions'} <= deps['smart_signal_agent.py']")
+s=s.replace("    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n", "    assert 'smart_v2_engine' in deps['smart_signal_attribution.py']\n    assert deps['smart_signal_interactions.py'] & {'smart_signal_agent','smart_champion_challenger','adjudicate_signal_challenger'} == set()\n")
+s=s.replace("        \"'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))\",\n", "        \"'signal_redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))\",\n        \"'signal_interactions': sha256(Path('smart_signal_interactions.py'))\",\n")
+p.write_text(s, encoding='utf-8')
+print('patched p04 agent/freeze/architecture')

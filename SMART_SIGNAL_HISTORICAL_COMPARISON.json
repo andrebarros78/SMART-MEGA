@@ -1,0 +1,53 @@
+{
+  "schema": "SMART_SIGNAL_HISTORICAL_COMPARISON_1",
+  "guardrail": "historical engineering evidence only; not prospective proof",
+  "cutoff_contest": 3050,
+  "target_contest": 3051,
+  "walk_start": 1000,
+  "predictions": 2050,
+  "uniform_expected": 1230.0,
+  "champion_hits": 1261,
+  "challenger_hits": 1269,
+  "challenger_minus_champion": 8,
+  "champion_excess": 31.0,
+  "challenger_excess": 39.0,
+  "challenger_top6": [
+    11,
+    27,
+    10,
+    30,
+    53,
+    43
+  ],
+  "context_regime": {
+    "schema": "SMART_CONTEXT_REGIME_1",
+    "observations": 3050,
+    "recent_window": 75,
+    "reference_window": 150,
+    "l1_score": 0.03644444444444443,
+    "l1_threshold": 0.049,
+    "active": false,
+    "detection_count": 0,
+    "last_detection_step": null,
+    "cooldown": 0,
+    "river_adwin_width": 1194,
+    "river_adwin_estimation": 0.03417848501768098,
+    "river_adwin_drift_detected": false,
+    "calibration_id": "SMART_CONTEXT_CAL_20260828_B",
+    "causal": true
+  },
+  "weights": {
+    "freq25": 0.045921302723283784,
+    "freq50": 0.04642654058126453,
+    "freq100": 0.04534628528148898,
+    "freq250": 0.05099438007039234,
+    "freq500": 0.05731271584318948,
+    "freq1000": 0.39339492471738313,
+    "freq_global": 0.060603850782997834,
+    "ewma10": 0.04532093770924872,
+    "ewma25": 0.03620140914947572,
+    "ewma50": 0.03341894592964877,
+    "ewma100": 0.031202251121402822,
+    "ewma250": 0.15385645609022386
+  }
+}
