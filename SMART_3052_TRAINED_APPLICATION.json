@@ -1,0 +1,83 @@
+{
+  "schema": "SMART_3052_TRAINED_APPLICATION_1",
+  "contest": 3052,
+  "scheduled_date_user_supplied": "2026-09-01",
+  "version": "6.0.0",
+  "cutoff_contest": 3051,
+  "causal": true,
+  "result_used": false,
+  "data_file": "Mega-Sena_through_3051.xlsx",
+  "data_sha256": "fd9d6c30d12b5ec1512becfead1974b1987a61d74716b0fae60037ff00bdaa13",
+  "active_freeze_file": "SMART_3052_CHAMPION_CHALLENGER_FREEZE.json",
+  "active_freeze_sha256": "06eceb02da2636dee98924d7e766b0c96f45efa75915b7e3374eafa705423cd5",
+  "champion_top6": [
+    11,
+    27,
+    10,
+    38,
+    30,
+    46
+  ],
+  "challenger_top6": [
+    11,
+    27,
+    10,
+    38,
+    30,
+    53
+  ],
+  "governed_challenger_top6": [
+    11,
+    27,
+    10,
+    38,
+    30,
+    53
+  ],
+  "governed_challenger_policy": "quality_dynamic",
+  "production_switch_performed": false,
+  "champion_remains_active": true,
+  "frozen_utc": "2026-09-01T04:58:15.602286+00:00",
+  "signal_state_file": "SMART_SIGNAL_STATE.json",
+  "signal_state_sha256": "0818ca154dda296503191d59d3174cc91d69c0d7196b2631cb22177e77d77441",
+  "promotion_policy": {
+    "schema": "SMART_PROMOTION_GATE_POLICY_1",
+    "base_min_prospective_contests": 20,
+    "min_e_value": 10.0,
+    "must_beat_champion_cumulatively": true,
+    "must_have_favorable_regret": true,
+    "adaptive_sample_rule": {
+      "mean_hit_advantage_gte_0_50": 20,
+      "mean_hit_advantage_gte_0_25": 30,
+      "mean_hit_advantage_gte_0_10": 50,
+      "mean_hit_advantage_gt_0": 80
+    },
+    "promotion_before_evidence_prohibited": true,
+    "accepted_hit_domain": [
+      0,
+      6
+    ],
+    "invalid_or_nonfinite_inputs_rejected": true
+  },
+  "sequential_prospective_proof": {
+    "schema": "SMART_SEQUENTIAL_PROSPECTIVE_FREEZE_RULES_1",
+    "freeze_before_result_required": true,
+    "single_active_freeze_required": true,
+    "linear_supersede_chain_required": true,
+    "supersede_must_immediately_link_new_freeze": true,
+    "adjudication_unique_required": true,
+    "adjudication_must_reference_active_freeze": true,
+    "derived_events_after_adjudication_only": true,
+    "learning_after_adjudication_only": true,
+    "learning_state_must_end_at_target": true,
+    "learning_state_hash_required": true,
+    "sequence_proof_after_learning_only": true,
+    "append_only_prefix_preservation_required": true,
+    "retroactive_rewrite_prohibited": true,
+    "sha256": "f9ebdb6a2ef4f8122569736a50eb3f7ff4fa43b59e917ffb96ca929d9756a4fb"
+  },
+  "global_integrity_proof": {
+    "file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
+    "sha256": "0ef579306a04d785376a69b7155a5c06b19dd6353bbc29d52b1dd85f914c98a6"
+  }
+}

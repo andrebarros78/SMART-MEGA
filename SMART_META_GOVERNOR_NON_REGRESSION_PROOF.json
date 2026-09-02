@@ -1,0 +1,67 @@
+{
+  "schema": "SMART_META_GOVERNOR_NON_REGRESSION_PROOF_1",
+  "version": "6.0.1",
+  "created_utc": "2026-09-02T01:55:57.284913+00:00",
+  "scope": "architecture/governance correction; no lottery predictability claim",
+  "uses_3052_result_for_parameter_selection": false,
+  "rejected_hypotheses": {
+    "hard_expert_cap": {
+      "selected": null,
+      "status": "REJECTED_NO_ROBUST_GAIN"
+    },
+    "marginal_utility_weight_effect": {
+      "selected": null,
+      "status": "REJECTED_NO_ROBUST_GAIN"
+    }
+  },
+  "defect": {
+    "component": "smart_meta_governor.py",
+    "before_selected_hits": 1260,
+    "anchor_quality_dynamic_hits": 1272,
+    "before_regression_hits": -12,
+    "before_three_plus": 25,
+    "anchor_three_plus": 27
+  },
+  "correction": {
+    "default_anchor_policy": "quality_dynamic",
+    "alternate_policy_mode": "shadow unless explicit prospective promotion enables alternate selection",
+    "after_selected_hits": 1272,
+    "after_three_plus": 27,
+    "after_four_plus": 1,
+    "after_selection_counts": {
+      "quality_dynamic": 2051
+    },
+    "non_regression_vs_anchor": true
+  },
+  "validation": {
+    "pytest_passed": 321,
+    "pytest_failures": 0,
+    "red_team_scenarios_passed": 10,
+    "red_team_scenarios_total": 10,
+    "red_team_file_sha256": "06dfdff19a0c28a2dd2401c97717de91de28b880090dedeaa0c74f06c55c2c39",
+    "global_integrity_file_sha256": "384820143d3f28019c9dafeaa2f6ffe5672bc1963bdbb18752907af265eddee7",
+    "global_integrity_status": "PASS"
+  },
+  "prospective_3052": {
+    "freeze_sha256": "06eceb02da2636dee98924d7e766b0c96f45efa75915b7e3374eafa705423cd5",
+    "actual": [
+      16,
+      30,
+      40,
+      47,
+      48,
+      60
+    ],
+    "champion_hits": 1,
+    "challenger_hits": 1,
+    "advantage_hits": 0,
+    "e_value_after": 1.0,
+    "ledger_sha256": "dc110413ea12c81a0e1a82b587ecf131dc148c557633655eabcaeadbca8bb1b5",
+    "promotion_decision": "KEEP_CHAMPION",
+    "prospective_pairs_current_lineage": 1,
+    "retroactive_rewrite": false
+  },
+  "predictive_advantage_proven": false,
+  "material_architecture_deficiencies_known": [],
+  "sha256": "8133b278a22c3a5eeffa442ccf28d6ec5f09fb4f6362073d0fb1779c17b9abbb"
+}

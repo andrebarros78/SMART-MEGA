@@ -21,7 +21,7 @@ import adjudicate_signal_challenger as adj
 
 import smart_champion_challenger as cc
 
-from smart_meta_governor import META_ETA, PRIOR_MIX, MetaGovernor, SCHEMA
+from smart_meta_governor import META_ETA, PRIOR_MIX, MIN_ALT_OBSERVATIONS, MetaGovernor, SCHEMA
 
 from smart_multi_challengers import POLICY_IDS, build_multi_challengers
 
@@ -83,23 +83,53 @@ def test_initial_tie_break_is_quality_dynamic_and_shadow_only():
 
 
 
-def test_online_update_can_change_next_selection_only_after_result():
+def test_online_update_can_change_next_selection_only_after_accumulated_evidence():
 
-    g=MetaGovernor(); before=g.select(_multi())
+    g=MetaGovernor(allow_alternate_selection=True); before=g.select(_multi())
 
     assert before['selected_policy']=='quality_dynamic'
 
     hits={p:0 for p in POLICY_IDS}; hits['low_redundancy']=6
 
-    g.update(hits,before['selected_policy'])
+    for i in range(MIN_ALT_OBSERVATIONS):
+
+        frozen=g.select(_multi())
+
+        if i < MIN_ALT_OBSERVATIONS:
+
+            assert frozen['selected_policy']=='quality_dynamic'
+
+        g.update(hits,frozen['selected_policy'])
 
     after=g.select(_multi())
 
     assert after['selected_policy']=='low_redundancy'
 
-    assert after['observations_before_result']==1
+    assert after['alternate_authorized'] is True
+
+    assert after['observations_before_result']==MIN_ALT_OBSERVATIONS
 
 
+
+
+
+def test_default_governor_keeps_anchor_while_hedge_remains_shadow():
+
+    g=MetaGovernor(); hits={p:0 for p in POLICY_IDS}; hits['low_redundancy']=6
+
+    for _ in range(MIN_ALT_OBSERVATIONS + 5):
+
+        frozen=g.select(_multi()); g.update(hits,frozen['selected_policy'])
+
+    after=g.select(_multi())
+
+    assert after['hedge_candidate_policy']=='low_redundancy'
+
+    assert after['selected_policy']=='quality_dynamic'
+
+    assert after['alternate_authorized'] is False
+
+    assert 'explicit_prospective_promotion_required' in after['alternate_evidence']['blockers']
 
 
 
@@ -213,11 +243,17 @@ def test_replay_deterministic_selection_sequence():
 
 def _snapshot_with_meta(selected='quality_dynamic'):
 
-    multi=_multi(active=True); g=MetaGovernor(); sel=g.select(multi)
+    multi=_multi(active=True); g=MetaGovernor(allow_alternate_selection=(selected!='quality_dynamic')); sel=g.select(multi)
 
     if selected!='quality_dynamic':
 
-        h={p:0 for p in POLICY_IDS}; h[selected]=6; g.update(h,sel['selected_policy']); sel=g.select(multi)
+        h={p:0 for p in POLICY_IDS}; h[selected]=6
+
+        for _ in range(MIN_ALT_OBSERVATIONS):
+
+            frozen=g.select(multi); g.update(h,frozen['selected_policy'])
+
+        sel=g.select(multi)
 
         assert sel['selected_policy']==selected
 

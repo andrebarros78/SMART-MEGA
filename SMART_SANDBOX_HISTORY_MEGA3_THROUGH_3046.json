@@ -1,0 +1,63 @@
+{
+  "schema": "SMART_SANDBOX_HISTORICAL_LEARNING_V1",
+  "execution_order": 1,
+  "label": "Mega-Sena(3)",
+  "mode": "deterministic_causal_replay_no_gpt",
+  "uploaded_file_sha256": "e2ab323d0d02ab4780522c5d20aabe4c4c79cb3de7de3982927692c467d3047b",
+  "logical_source": "contests 1..3046, executed from canonical prefix of the local file4 dataset",
+  "first_contest": 1,
+  "last_contest": 3046,
+  "rows": 3046,
+  "backtest": {
+    "total_hits": 1269,
+    "meta_strength": 0.06,
+    "mean_hits": 0.6202346041055719,
+    "uniform_expected_hits": 1227.6,
+    "excess_hits": 41.40000000000009
+  },
+  "frozen_target": 3047,
+  "frozen_top6": [
+    10,
+    27,
+    11,
+    42,
+    46,
+    30
+  ],
+  "weights": {
+    "max": [
+      "freq1000",
+      0.4022469088152596
+    ],
+    "min": [
+      "ewma100",
+      0.023551757742068226
+    ],
+    "all": {
+      "freq25": 0.03279945471047126,
+      "freq50": 0.03537692770977722,
+      "freq100": 0.052812774050923036,
+      "freq250": 0.058731113755410784,
+      "freq500": 0.06129877340553441,
+      "freq1000": 0.4022469088152596,
+      "freq_global": 0.0567340475526235,
+      "ewma10": 0.032912941332560515,
+      "ewma25": 0.02463745252677248,
+      "ewma50": 0.024107334651131428,
+      "ewma100": 0.023551757742068226,
+      "ewma250": 0.19479051374746767
+    }
+  },
+  "causal_rule": "contest 3047 not consumed before prediction",
+  "adjudication_after_freeze": {
+    "actual": [
+      4,
+      18,
+      22,
+      26,
+      31,
+      58
+    ],
+    "hits": 0
+  }
+}

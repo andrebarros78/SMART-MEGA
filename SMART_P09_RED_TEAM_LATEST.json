@@ -28,7 +28,7 @@
     "smart_contextual_meta_weights.py": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
     "smart_rank_score_calibration.py": "c07c3d55093b79aec8d56cf67607ef8dfb0bfb494ac59a6dcd0a086fb890a8e4",
     "smart_multi_challengers.py": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
-    "smart_meta_governor.py": "759fd9b627110ca6fa5aa553950e71966948bd8727ff93d21d14ed7fcd81284f",
+    "smart_meta_governor.py": "fec894222e9226bb115b77da49786207679a831d680f6bd7a0c19bee4c4e56f6",
     "smart_bounded_online_learning.py": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07",
     "smart_signal_expansion_governance.py": "ad76396cefe2112403fec795c604d11e72d1ddd5c0e45c5d67ef18875e1ec95f",
     "smart_sequential_prospective_proof.py": "72fd4bbbfdcedd92deb238b78ac96913c0bc4ce23511e1faab962c3376ab3654",
@@ -190,10 +190,18 @@
         },
         "selected_cumulative_hits": 0,
         "last_selected_policy": "quality_dynamic",
+        "anchor_policy": "quality_dynamic",
+        "allow_alternate_selection": false,
+        "alternate_activation_mode": "EXPLICIT_PROSPECTIVE_PROMOTION_REQUIRED",
+        "alternate_guard": {
+          "min_observations": 20,
+          "min_log_weight_lead": 0.6931471805599453,
+          "min_cumulative_hit_lead": 1
+        },
         "selection_scope": "P07_CHALLENGERS_ONLY",
         "production_authority": false,
         "champion_remains_active": true,
-        "sha256": "4961c473aee3556cab967612847aa71f3c09ea9fdd3081b772e075b8a1f611e2"
+        "sha256": "a0b5f634d641533fe9b462fb33b2ad37ff6d9fda906fa279bce77e3eecd5ded0"
       },
       "pass": true,
       "criterion": "adaptive anti-ranking adversary cannot trigger post-result reselection or invalid state"
@@ -248,7 +256,7 @@
             48
           ],
           "policy_count": 5,
-          "meta_policy": "conservative",
+          "meta_policy": "quality_dynamic",
           "weights_finite": true,
           "weight_sum": 1.0,
           "pass": true
@@ -265,7 +273,7 @@
             20
           ],
           "policy_count": 5,
-          "meta_policy": "diversity_max",
+          "meta_policy": "quality_dynamic",
           "weights_finite": true,
           "weight_sum": 1.0,
           "pass": true
@@ -292,5 +300,5 @@
       "criterion": "full P01-P08 stack remains finite and structurally valid under IID smoke"
     }
   },
-  "sha256": "bf4ffcfa52c79e19dada9ed0fdb598007513a2c4ede83f34218e87de7547b3e1"
+  "sha256": "352b77cf8a8fd791bd9a705aa014509773d36491e7c45ac097d5148b3adcea04"
 }

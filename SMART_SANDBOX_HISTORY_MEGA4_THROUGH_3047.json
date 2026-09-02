@@ -1,0 +1,53 @@
+{
+  "schema": "SMART_SANDBOX_HISTORICAL_LEARNING_V1",
+  "execution_order": 2,
+  "label": "Mega-Sena(4)",
+  "mode": "deterministic_causal_replay_no_gpt",
+  "local_file": "C:\\Ana\\Downloads\\Mega-Sena.xlsx",
+  "local_file_sha256": "866d2942a8e159a4793f62bb606db83bf7fb1017ce942ddafcbfdd6f5b7201e1",
+  "expected_uploaded_sha256": "866d2942a8e159a4793f62bb606db83bf7fb1017ce942ddafcbfdd6f5b7201e1",
+  "byte_identical_to_uploaded_file4": true,
+  "first_contest": 1,
+  "last_contest": 3047,
+  "rows": 3047,
+  "backtest": {
+    "total_hits": 1269,
+    "meta_strength": 0.06,
+    "mean_hits": 0.6199316072300928,
+    "uniform_expected_hits": 1228.2,
+    "excess_hits": 40.799999999999955
+  },
+  "next_target": 3048,
+  "next_top6": [
+    10,
+    11,
+    27,
+    58,
+    42,
+    46
+  ],
+  "weights": {
+    "max": [
+      "freq1000",
+      0.39808493102098186
+    ],
+    "min": [
+      "ewma100",
+      0.02378910298686139
+    ],
+    "all": {
+      "freq25": 0.0501531053666802,
+      "freq50": 0.03414440516210617,
+      "freq100": 0.049606363850035265,
+      "freq250": 0.05515684879888791,
+      "freq500": 0.057666727949127944,
+      "freq1000": 0.39808493102098186,
+      "freq_global": 0.05518761785218051,
+      "ewma10": 0.03255252614552378,
+      "ewma25": 0.025418159713227428,
+      "ewma50": 0.024880742096201978,
+      "ewma100": 0.02378910298686139,
+      "ewma250": 0.19335946905818532
+    }
+  }
+}
