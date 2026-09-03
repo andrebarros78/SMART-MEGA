@@ -1,0 +1,65 @@
+{
+  "schema": "SMART_3053_TRAINED_APPLICATION_1",
+  "contest": 3053,
+  "scheduled_date": "2026-09-03",
+  "smart_version": "6.0.1",
+  "status": "FROZEN_PRE_RESULT",
+  "cutoff_contest": 3052,
+  "causal": true,
+  "result_used": false,
+  "production_authority": "CHAMPION",
+  "promotion_decision": "KEEP_CHAMPION",
+  "production_switch_performed": false,
+  "final_operational_combination": [
+    10,
+    11,
+    27,
+    30,
+    38,
+    46
+  ],
+  "final_operational_combination_internal_order": [
+    11,
+    27,
+    30,
+    10,
+    38,
+    46
+  ],
+  "shadow_challenger": {
+    "top6": [
+      11,
+      30,
+      27,
+      10,
+      38,
+      16
+    ],
+    "governed_top6": [
+      11,
+      30,
+      27,
+      10,
+      38,
+      16
+    ],
+    "policy": "quality_dynamic",
+    "production_authority": false
+  },
+  "data_file": "Mega-Sena_through_3052.xlsx",
+  "data_sha256": "6b4e1a43c443a88a4dd6625b394685578fe4d3a18be679ea835803a20199dd90",
+  "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256": "bf922af0011f69d41cde5a699915d4a6a560641a4e8c9bc98197633e501bc7fa",
+  "state_file": "SMART_SIGNAL_STATE.json",
+  "state_sha256": "1c36e5f5e439d8e0d3f5109d370d206a19adfda67ca67a75a54430d0a0a28734",
+  "ledger_file": "SMART_SIGNAL_LEDGER.json",
+  "ledger_sha256": "4c2c4a9dd450fe59260714a8a356e652b4281ff46a39530b179d9157ddffeed2",
+  "validation": {
+    "pytest_passed": 321,
+    "pytest_failed": 0,
+    "freeze_invariants_passed": true
+  },
+  "anti_inertia_pre3052_decision": "REJECT_CAP_ADJUSTMENT",
+  "marginal_weight_pre3052_decision": "REJECT_MARGINAL_WEIGHT_EFFECT",
+  "note": "Only the active Champion is an operational combination. Challenger remains shadow evidence until prospective promotion is authorized."
+}

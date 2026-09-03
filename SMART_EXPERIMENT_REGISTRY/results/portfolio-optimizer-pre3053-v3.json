@@ -1,0 +1,30 @@
+{
+  "schema": "SMART_EXPERIMENT_RESULT_V1",
+  "experiment_id": "portfolio-optimizer-pre3053-v3",
+  "spec_sha256": "134ae830f1284abdf929d51cd23440a16a4a2def7c3d7634cd26f356d8bb3a01",
+  "recorded_at_utc": "2026-09-03T21:04:53.330203+00:00",
+  "metrics": {
+    "unique_number_count": 12.0,
+    "max_pairwise_overlap": 3.0,
+    "solver_optimal": 1.0,
+    "objective_gap": 0.0,
+    "single_game_preserved": 1.0,
+    "canonical_tests_passed": 340.0
+  },
+  "guardrail_status": {
+    "single_game_top6_preserved": true,
+    "overlap_constraint_respected": true,
+    "predictive_scores_unchanged": true,
+    "data_quality_pass": true,
+    "canonical_tests_pass": true,
+    "non_regression_pass": true
+  },
+  "decision": "PROMOTE",
+  "lesson": "A native CP-SAT portfolio layer can be added after the frozen SMART scoring engine without changing single-game selection. On the predeclared v3 instance it proved the declared portfolio optimum, covered all 12 candidate numbers across four games, and respected pairwise overlap <= 3.",
+  "artifacts": [
+    "SMART_3053_PORTFOLIO_OPTIMIZATION.json",
+    "SMART_DATA_QUALITY_3052.json",
+    "SMART_NULL_MONTE_CARLO_2751_3052.json"
+  ],
+  "result_sha256": "43064104b7387ec709f6c69799238a6148acfa92707003e0b3f497586fdf96d3"
+}

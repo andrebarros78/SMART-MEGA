@@ -1,0 +1,337 @@
+{
+  "schema": "SMART_CAPABILITY_INTEGRATION_V2",
+  "experiment_id": "portfolio-optimizer-pre3053-v1",
+  "target_contest": 3053,
+  "cutoff_contest": 3052,
+  "preregistration": {
+    "experiment_id": "portfolio-optimizer-pre3053-v1",
+    "hypothesis": "A CP-SAT portfolio layer can optimize multi-game coverage under explicit overlap constraints while preserving the frozen SMART champion selection for a single game and without changing predictive scores.",
+    "primary_metric": "unique_number_count",
+    "direction": "maximize",
+    "baseline": "frozen champion ranking without portfolio optimization",
+    "cutoff_contest": 3052,
+    "dataset_sha256": "6b4e1a43c443a88a4dd6625b394685578fe4d3a18be679ea835803a20199dd90",
+    "code_sha256": "73f4549bca242fd3ee0a14c71ef9ebde9ebed4bfe3e111589016f8bf7f4898ec",
+    "seed": 42,
+    "minimum_effect": 6.0,
+    "guardrails": [
+      "single_game_top6_preserved",
+      "overlap_constraint_respected",
+      "predictive_scores_unchanged",
+      "data_quality_pass",
+      "canonical_tests_pass",
+      "non_regression_pass"
+    ],
+    "analysis_plan": "Use only SMART_3053 frozen champion scores. First verify one-game equivalence. Then solve a 10-game, 18-number candidate portfolio with CP-SAT and max pairwise overlap 4. Evaluate only operational portfolio metrics; do not claim improved draw predictability.",
+    "tags": {
+      "target_contest": "3053",
+      "capability": "portfolio_optimization"
+    },
+    "schema": "SMART_EXPERIMENT_PROTOCOL_V1",
+    "registered_at_utc": "2026-09-03T20:57:55.728249+00:00",
+    "spec_sha256": "d8703f651d6f76ce4735b8e4bb6549e3c43dfacef3c14613deeae3f48a1d6391"
+  },
+  "acceptance": {
+    "data_quality_status": "PASS",
+    "single_game_top6_preserved": true,
+    "multi_game_solver_status": "OPTIMAL",
+    "max_pairwise_overlap": 4,
+    "minimum_unique_numbers": 12,
+    "predictive_scores_unchanged": true,
+    "canonical_tests_status": "PASS",
+    "non_regression_status": "PASS"
+  },
+  "pre_final_checks": {
+    "data_quality_pass": true,
+    "single_game_top6_preserved": true,
+    "multi_game_solver_optimal": false,
+    "overlap_constraint_respected": true,
+    "minimum_unique_numbers_met": true,
+    "predictive_scores_unchanged": true
+  },
+  "single_game_control": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "OPTIMAL",
+    "objective_value": 3764674320.0,
+    "best_objective_bound": 3764674320.0,
+    "config": {
+      "game_count": 1,
+      "candidate_pool_size": 18,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 4,
+      "coverage_bonus": 0.0,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 5.0,
+      "random_seed": 42
+    },
+    "candidate_pool": [
+      11,
+      27,
+      30,
+      10,
+      38,
+      46,
+      53,
+      16,
+      35,
+      43,
+      42,
+      37,
+      14,
+      58,
+      6,
+      44,
+      17,
+      60
+    ],
+    "games": [
+      [
+        10,
+        11,
+        27,
+        30,
+        38,
+        46
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        10,
+        11,
+        27,
+        30,
+        38,
+        46
+      ],
+      "unique_number_count": 6,
+      "average_pairwise_overlap": 0.0,
+      "max_pairwise_overlap_observed": 0,
+      "raw_selection_score": 4.638135695315421,
+      "raw_unique_score": 4.638135695315421
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3053,
+      "cutoff_contest": 3052,
+      "head": "champion"
+    }
+  },
+  "portfolio": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "FEASIBLE",
+    "objective_value": 37771379080.0,
+    "best_objective_bound": 41847251700.0,
+    "config": {
+      "game_count": 10,
+      "candidate_pool_size": 18,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 4,
+      "coverage_bonus": 0.75,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 15.0,
+      "random_seed": 42
+    },
+    "candidate_pool": [
+      11,
+      27,
+      30,
+      10,
+      38,
+      46,
+      53,
+      16,
+      35,
+      43,
+      42,
+      37,
+      14,
+      58,
+      6,
+      44,
+      17,
+      60
+    ],
+    "games": [
+      [
+        6,
+        11,
+        27,
+        30,
+        37,
+        43
+      ],
+      [
+        10,
+        11,
+        14,
+        27,
+        30,
+        46
+      ],
+      [
+        10,
+        11,
+        16,
+        27,
+        30,
+        43
+      ],
+      [
+        10,
+        11,
+        27,
+        30,
+        35,
+        53
+      ],
+      [
+        10,
+        11,
+        27,
+        30,
+        38,
+        42
+      ],
+      [
+        10,
+        11,
+        27,
+        38,
+        46,
+        53
+      ],
+      [
+        11,
+        16,
+        27,
+        30,
+        38,
+        58
+      ],
+      [
+        11,
+        27,
+        30,
+        35,
+        38,
+        46
+      ],
+      [
+        11,
+        27,
+        30,
+        38,
+        43,
+        53
+      ],
+      [
+        11,
+        27,
+        30,
+        42,
+        43,
+        46
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        6,
+        10,
+        11,
+        14,
+        16,
+        27,
+        30,
+        35,
+        37,
+        38,
+        42,
+        43,
+        46,
+        53,
+        58
+      ],
+      "unique_number_count": 15,
+      "average_pairwise_overlap": 3.6444444444444444,
+      "max_pairwise_overlap_observed": 4,
+      "raw_selection_score": 44.99768914359097,
+      "raw_unique_score": 10.2977315369551
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3053,
+      "cutoff_contest": 3052,
+      "head": "champion"
+    }
+  },
+  "data_quality": {
+    "schema": "SMART_DRAW_DATA_QUALITY_V1",
+    "status": "PASS",
+    "file": "Mega-Sena_through_3052.xlsx",
+    "file_sha256": "6b4e1a43c443a88a4dd6625b394685578fe4d3a18be679ea835803a20199dd90",
+    "row_count": 3052,
+    "contest_min": 1,
+    "contest_max": 3052,
+    "required_columns_present": true,
+    "null_cell_count": 0,
+    "duplicate_contest_count": 0,
+    "out_of_order_count": 0,
+    "invalid_draw_count": 0,
+    "non_integer_value_count": 0,
+    "future_contest_count": 0,
+    "checks": {
+      "required_columns": true,
+      "no_nulls": true,
+      "unique_contests": true,
+      "strictly_increasing_contests": true,
+      "integer_values": true,
+      "valid_six_unique_numbers_1_to_60": true,
+      "cutoff_respected": true
+    }
+  },
+  "null_monte_carlo": {
+    "schema": "SMART_MONTE_CARLO_NULL_V1",
+    "contest_count": 302,
+    "observed_total_hits": 186,
+    "observed_mean_hits": 0.6158940397350994,
+    "uniform_expected_total_hits": 181.2,
+    "replications": 20000,
+    "seed": 42,
+    "null_mean_total_hits": 181.16955,
+    "null_std_total_hits": 12.198091755255142,
+    "null_q95": 201.0,
+    "null_q99": 210.0,
+    "p_null_ge_observed": 0.3624318784060797,
+    "p_mcse": 0.0033989958719317604,
+    "z_vs_null": 0.3960004644102611,
+    "contract": {
+      "null_model": "independent fair 6-of-60 draws",
+      "no_future_information": true,
+      "tail": "greater_or_equal_total_hits"
+    },
+    "scope": {
+      "start_contest": 2751,
+      "end_contest": 3052,
+      "engineering_diagnostic_only": true,
+      "not_independent_prospective_proof": true
+    }
+  },
+  "source_hashes": {
+    "freeze_sha256": "bf922af0011f69d41cde5a699915d4a6a560641a4e8c9bc98197633e501bc7fa",
+    "data_sha256": "6b4e1a43c443a88a4dd6625b394685578fe4d3a18be679ea835803a20199dd90",
+    "combined_code_sha256": "73f4549bca242fd3ee0a14c71ef9ebde9ebed4bfe3e111589016f8bf7f4898ec"
+  },
+  "pre_final_status": "FAIL"
+}

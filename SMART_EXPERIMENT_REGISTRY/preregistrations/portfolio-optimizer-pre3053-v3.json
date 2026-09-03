@@ -1,0 +1,28 @@
+{
+  "experiment_id": "portfolio-optimizer-pre3053-v3",
+  "hypothesis": "A CP-SAT portfolio layer can optimize multi-game coverage under explicit overlap constraints while preserving the frozen SMART champion selection for a single game and without changing predictive scores.",
+  "primary_metric": "unique_number_count",
+  "direction": "maximize",
+  "baseline": "frozen champion ranking without portfolio optimization",
+  "cutoff_contest": 3052,
+  "dataset_sha256": "6b4e1a43c443a88a4dd6625b394685578fe4d3a18be679ea835803a20199dd90",
+  "code_sha256": "c8867be17a3180272d8dfb629dff541b77f2a9072905e37f8d9b2779a31a4ed3",
+  "seed": 42,
+  "minimum_effect": 6.0,
+  "guardrails": [
+    "single_game_top6_preserved",
+    "overlap_constraint_respected",
+    "predictive_scores_unchanged",
+    "data_quality_pass",
+    "canonical_tests_pass",
+    "non_regression_pass"
+  ],
+  "analysis_plan": "Use only SMART_3053 frozen champion scores. First verify one-game equivalence. Then solve a 4-game, 12-number candidate portfolio with CP-SAT and max pairwise overlap 3. Evaluate only operational portfolio metrics; do not claim improved draw predictability.",
+  "tags": {
+    "target_contest": "3053",
+    "capability": "portfolio_optimization"
+  },
+  "schema": "SMART_EXPERIMENT_PROTOCOL_V1",
+  "registered_at_utc": "2026-09-03T21:02:27.202678+00:00",
+  "spec_sha256": "134ae830f1284abdf929d51cd23440a16a4a2def7c3d7634cd26f356d8bb3a01"
+}
