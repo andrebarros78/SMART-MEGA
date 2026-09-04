@@ -47,3 +47,40 @@ def test_u4_preserves_exact_marginals():
 def test_default_monte_carlo_resolution_is_research_grade():
     assert rc.DEFAULT_REPLICATIONS >= 1000
     assert 1.0 / (rc.DEFAULT_REPLICATIONS + 1) <= 0.001
+
+
+def test_fast_stat_matches_full_descriptor_projection():
+    d=sample(240,seed=91)
+    fast=rc._stat(d); full=rc.atlas_descriptors(d)
+    expected={
+        'marginal_std':full['marginal_std'],
+        'sum_mean':full['sum']['mean'],
+        'span_mean':full['span']['mean'],
+        'repeat_prev_mean':full['repeat_from_previous_mean'],
+        'consecutive_pairs_mean':full['consecutive_pairs_mean'],
+        'entropy':full['binary_entropy_mean_bits'],
+    }
+    assert fast == pytest.approx(expected,abs=1e-15,rel=1e-15)
+
+
+def test_u4_prepared_masks_preserve_exact_marginals_and_determinism():
+    d=sample(120,seed=92); prepared=rc.prepare_u4_marginals(d)
+    a=rc.u4_marginals_preserved(d,np.random.default_rng(17),swap_steps=2500,prepared_masks=prepared)
+    b=rc.u4_marginals_preserved(d,np.random.default_rng(17),swap_steps=2500,prepared_masks=prepared)
+    assert np.array_equal(a,b)
+    assert np.array_equal(rc.onehot(d).sum(axis=0),rc.onehot(a).sum(axis=0))
+    valid(a,len(d))
+
+
+def test_u5_prepared_fit_matches_default_for_same_seed():
+    d=sample(100,seed=93); tr,base=rc.prepare_u5_dynamic(d)
+    direct=rc.u5_fitted_dynamic(d,np.random.default_rng(33))
+    prepared=rc.u5_fitted_dynamic(d,np.random.default_rng(33),transition_weights=tr,base_marginals=base)
+    assert np.array_equal(direct,prepared)
+
+
+def test_vectorized_u0_has_uniform_marginal_sanity():
+    d=rc.u0_uniform_iid(20000,np.random.default_rng(12345))
+    marg=rc.onehot(d).mean(axis=0)
+    assert abs(float(marg.mean())-0.1) < 1e-12
+    assert float(np.max(np.abs(marg-0.1))) < 0.012

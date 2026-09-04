@@ -1,6 +1,6 @@
 {
-  "schema": "SMART_P1_P2_CARTOGRAPHY_PROOF_V2",
-  "created_brasilia": "2026-09-04T14:36:27.129840-03:00",
+  "schema": "SMART_P1_P2_CARTOGRAPHY_PROOF_V3",
+  "created_at_utc": "2026-09-04T20:06:22.725230+00:00",
   "cutoff_contest": 3053,
   "data_file": "Mega-Sena_through_3053_v2.xlsx",
   "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
@@ -14,18 +14,37 @@
     "U5",
     "U6"
   ],
-  "p1_manifest_sha256": "2549905c830502210af24684432d9d9bff63dba0c334cc23b57fe1714e7e6c74",
-  "p2_atlas_sha256": "71cfd7355e4f7dee8f32ce9249d1f7bf568aa562213420192be8ddfaf4bffb8c",
-  "replications": 100,
+  "p1_manifest_sha256": "dc1b8343700f728216f990aab37ec4d487113857d18a3f233f9d169436bdc4de",
+  "p2_atlas_sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132",
+  "replications": 1000,
   "seed": 20260904,
+  "convergence_artifact": "SMART_MONTE_CARLO_CONVERGENCE_1000.json",
+  "convergence_sha256": "03b64a554e7105218edeaa7d1a171836e922543341187d2a488c58fe5b54029d",
+  "convergence_summary": {
+    "reference_checkpoint": 200,
+    "max_p_abs_delta_vs_1000": 0.10227086346489334,
+    "median_p_abs_delta_vs_1000": 0.02915492467731272,
+    "max_mean_delta_in_final_null_sd_vs_1000": 0.15143765391161537,
+    "degenerate_metric_count": 16,
+    "max_degenerate_mean_abs_delta": 2.842170943040401e-14,
+    "interpretation": "descriptive Monte Carlo convergence diagnostic; degenerate null metrics are audited as invariants and excluded from p-delta stability aggregates"
+  },
   "freeze_3054_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
   "freeze_3054_modified": false,
   "scientific_status": "DIAGNOSTIC_ONLY_NO_PREDICTIVE_ADVANTAGE_CLAIM",
-  "engineering_status": "P1_P2_ARTIFACT_BINDING_REPAIRED",
+  "engineering_status": "P1_P2_1000_REPLICATION_CANONICAL_PROMOTED_AFTER_CONVERGENCE_AUDIT",
+  "predictive_weight_authorized": false,
+  "terminal_6of6_proven": false,
   "integrity_assertions": {
-    "manifest_replications_match": true,
-    "atlas_replications_match": true,
-    "manifest_atlas_data_hash_match": true,
-    "freeze_unchanged": true
+    "manifest_replications_1000": true,
+    "atlas_replications_1000": true,
+    "cutoff_3053": true,
+    "manifest_data_bound": true,
+    "atlas_data_bound": true,
+    "convergence_final_1000": true,
+    "convergence_atlas_bound": true,
+    "freeze_immutable": true,
+    "canonical_manifest_matches_1000_source": true,
+    "canonical_atlas_matches_1000_source": true
   }
 }

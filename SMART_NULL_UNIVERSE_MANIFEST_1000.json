@@ -1,0 +1,21 @@
+{
+  "schema": "SMART_NULL_UNIVERSE_MANIFEST_V1",
+  "seed": 20260904,
+  "replications": 1000,
+  "trajectory_length": 3053,
+  "families": {
+    "U0": "uniform iid 6-of-60 without replacement",
+    "U1": "temporal permutation preserving real draws",
+    "U2": "global label permutation 1..60",
+    "U3": "temporal block shuffle block_size=25",
+    "U4": "exact fixed-marginal swap surrogate preserving each number total frequency and six numbers per draw",
+    "U5": "fitted first-order conditional inclusion generator",
+    "U6": "adversarial controls: null, persistent bias, regime switch, repeated motif"
+  },
+  "seeds_policy": "single master PCG64 seed fixed execution order",
+  "monte_carlo_error_policy": "add-one empirical p-value; null std and replication count reported",
+  "causal_claim": false,
+  "data_file": "Mega-Sena_through_3053_v2.xlsx",
+  "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "cutoff_contest": 3053
+}

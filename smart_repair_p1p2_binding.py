@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import hashlib, json, os
 from pathlib import Path
 from datetime import datetime, timezone, timedelta
@@ -11,7 +11,7 @@ TM=Path('SMART_NULL_UNIVERSE_MANIFEST.json.tmp')
 TA=Path('SMART_RANDOMNESS_ATLAS.json.tmp')
 FREEZE=Path('SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json')
 PROOF=Path('SMART_P1_P2_CARTOGRAPHY_PROOF.json')
-SEED=20260904; REPS=100
+SEED=20260904; REPS=rc.DEFAULT_REPLICATIONS
 
 def sha(p):
  h=hashlib.sha256()

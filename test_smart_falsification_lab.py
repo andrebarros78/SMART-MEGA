@@ -103,3 +103,27 @@ def test_falsification_reports_monte_carlo_resolution():
     )
     assert out["multiplicity"]["minimum_replications_for_resolution"] == 199
     assert out["multiplicity"]["resolution_sufficient"] is False
+
+
+def test_fast_mi_matches_reference_binary_mi():
+    draws=sample(220,seed=101); x=fl.onehot(draws)
+    reference=float(np.mean([fl.binary_mi(x[:-1,j],x[1:,j]) for j in range(60)]))
+    assert fl._lag1_binary_mutual_information_mean_bits(x) == pytest.approx(reference,abs=1e-14,rel=1e-12)
+
+
+def test_fast_network_clustering_matches_reference_networkx():
+    draws=sample(260,seed=102); x=fl.onehot(draws)
+    reference=float(fl.network_structure(draws)['average_clustering'])
+    assert fl._network_average_clustering_from_onehot(x) == pytest.approx(reference,abs=1e-14,rel=1e-12)
+
+
+def test_selective_metric_vector_matches_full_projection():
+    draws=sample(180,seed=103); full=fl.metric_vector(draws)
+    for metric in fl.ALL_METRICS:
+        assert fl.metric_vector(draws,{metric})[metric] == pytest.approx(full[metric],abs=1e-14,rel=1e-12)
+
+
+def test_default_replications_have_holm_resolution():
+    assert fl.FAMILY_SIZE == 10
+    assert fl.MIN_REPLICATIONS_FOR_HOLM_RESOLUTION == 199
+    assert fl.DEFAULT_REPLICATIONS >= fl.MIN_REPLICATIONS_FOR_HOLM_RESOLUTION
