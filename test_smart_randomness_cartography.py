@@ -42,3 +42,8 @@ def test_u4_preserves_exact_marginals():
     assert np.array_equal(rc.onehot(d).sum(axis=0),rc.onehot(s).sum(axis=0))
     assert np.all(rc.onehot(s).sum(axis=1)==6)
 
+
+
+def test_default_monte_carlo_resolution_is_research_grade():
+    assert rc.DEFAULT_REPLICATIONS >= 1000
+    assert 1.0 / (rc.DEFAULT_REPLICATIONS + 1) <= 0.001

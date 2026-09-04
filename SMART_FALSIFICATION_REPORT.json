@@ -1,23 +1,32 @@
 {
-  "schema": "SMART_FALSIFICATION_REPORT_V1",
+  "schema": "SMART_FALSIFICATION_REPORT_CANONICAL_V3",
   "cutoff_contest": 3053,
-  "status": "OPEN",
-  "null_universes": [
-    "U0",
-    "U1",
-    "U2",
-    "U3",
-    "U4",
-    "U5",
-    "U6"
-  ],
-  "controls": {
-    "future_leakage": "PROHIBITED",
-    "placebo": "EXISTING",
-    "ablation": "EXISTING",
-    "adversarial_controls": "IMPLEMENTED",
-    "multiplicity": "REQUIRED_BEFORE_PROMOTION"
+  "status": "INCONCLUSIVE_POWER_LIMITED_RETROSPECTIVE",
+  "preregistration": "SMART_P4_P5_PREREGISTRATION.json",
+  "report": "SMART_FALSIFICATION_REPORT_V2.json",
+  "power_audit": "SMART_FALSIFICATION_POWER_AUDIT.json",
+  "evaluation": {
+    "start_contest": 2138,
+    "end_contest": 3053,
+    "draws": 916,
+    "integrity": "RETROSPECTIVE_TIME_SPLIT_NOT_PRISTINE",
+    "replications_per_null": 100,
+    "comparisons": 10,
+    "multiplicity": "Holm familywise alpha 0.05",
+    "rejected_comparisons": [],
+    "minimum_raw_empirical_p": 0.009900990099009901,
+    "best_case_smallest_holm_adjusted_p": 0.09900990099009901,
+    "resolution_sufficient_for_declared_alpha": false,
+    "minimum_replications_for_numerical_possibility": 199
   },
-  "current_conclusion": "No diagnostic deviation is authorized as predictive evidence. P5 remains open until multiplicity-controlled, holdout/prospective falsification is completed.",
-  "promotion_authority": false
+  "controls": {
+    "persistent_bias_detected": true,
+    "repeated_motif_detected": true,
+    "regime_switch_detected": true,
+    "future_leakage": "PROHIBITED"
+  },
+  "current_conclusion": "The diagnostics detected all declared adversarial structures. The real evaluation had no Holm rejection, but 100 replications cannot numerically reach familywise alpha 0.05 across 10 tests; the result is inconclusive, not evidence for the null and not predictive evidence.",
+  "predictive_weight_authorized": false,
+  "terminal_6of6_proven": false,
+  "mission_state": "MISSION_ACTIVE"
 }

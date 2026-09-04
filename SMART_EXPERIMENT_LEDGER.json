@@ -1,8 +1,8 @@
 {
-  "schema": "SMART_EXPERIMENT_LEDGER_V1",
+  "schema": "SMART_EXPERIMENT_LEDGER_V2",
   "cutoff_contest": 3053,
   "canonical_engine": "smart_experiment_lab.py",
-  "existing_records": [
+  "records": [
     {
       "artifact": "SMART_SIGNAL_LEDGER.json",
       "schema": "SMART_SIGNAL_LEDGER_1"
@@ -14,7 +14,28 @@
       "artifact": "SMART_MARGINAL_UTILITY_WEIGHT_EXPERIMENT_PRE3052.json"
     },
     {
-      "artifact": "SMART_P1_P2_CARTOGRAPHY_PROOF.json"
+      "artifact": "SMART_P1_P2_CARTOGRAPHY_PROOF.json",
+      "decision": "ENGINEERING_PASS_DIAGNOSTIC_ONLY"
+    },
+    {
+      "experiment_id": "SMART_P4_P5_FALSIFICATION_3053_V1",
+      "preregistration": "SMART_P4_P5_PREREGISTRATION.json",
+      "result": "SMART_FALSIFICATION_REPORT_V2.json",
+      "decision": "INCONCLUSIVE",
+      "lesson": "100-replication Monte Carlo cannot resolve alpha=0.05 after Holm over 10 comparisons; no predictive promotion and no evidence-for-null claim.",
+      "power_audit": "SMART_FALSIFICATION_POWER_AUDIT.json"
+    },
+    {
+      "experiment_id": "SMART_P6_PROBABILITY_AUDIT_3053_V1",
+      "result": "SMART_PROBABILITY_AUDIT.json",
+      "decision": "RETAIN_UNIFORM_BASELINE",
+      "lesson": "All five historical holdout candidates had mean hits below 0.6 and Brier score worse than 0.09."
+    },
+    {
+      "experiment_id": "SMART_P7_PROSPECTIVE_3054_V1",
+      "registration": "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
+      "decision": "AWAIT_OFFICIAL_RESULT",
+      "lesson": "All 60 probabilities per candidate were retained before adjudication."
     }
   ],
   "rules": {
@@ -25,7 +46,8 @@
       "PROMOTE",
       "REJECT",
       "RETAIN_BASELINE",
-      "INCONCLUSIVE"
+      "INCONCLUSIVE",
+      "AWAIT_RESULT"
     ],
     "future_leakage_prohibited": true
   }

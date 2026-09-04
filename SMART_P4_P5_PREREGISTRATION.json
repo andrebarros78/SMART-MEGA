@@ -1,0 +1,63 @@
+{
+  "schema": "SMART_P4_P5_PREREGISTRATION_V1",
+  "objective": "falsify four diagnostic structure hypotheses against declared null universes",
+  "data_file": "Mega-Sena_through_3053_v2.xlsx",
+  "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "code_sha256": "887233437d1291c5678e7f5aaa643959c17e675c9f2fba6ee4aae0b9dc3d76d1",
+  "contest_min": 1,
+  "cutoff_contest": 3053,
+  "calibration_end_contest": 2137,
+  "evaluation_start_contest": 2138,
+  "evaluation_end_contest": 3053,
+  "holdout_fraction": 0.3,
+  "holdout_integrity": "RETROSPECTIVE_TIME_SPLIT_NOT_PRISTINE",
+  "replications": 100,
+  "seed": 20260904,
+  "alpha_familywise": 0.05,
+  "multiplicity": "Holm correction across every hypothesis-null comparison",
+  "tail": "greater; add-one empirical Monte Carlo p-value",
+  "hypotheses": {
+    "H_MARGINAL_001": {
+      "metric": "marginal_std",
+      "direction": "greater",
+      "nulls": [
+        "U0"
+      ],
+      "claim": "marginal dispersion exceeds uniform 6-of-60 sampling variation"
+    },
+    "H_MEMORY_001": {
+      "metric": "lag1_binary_mutual_information_mean_bits",
+      "direction": "greater",
+      "nulls": [
+        "U1",
+        "U3",
+        "U4"
+      ],
+      "claim": "lag-1 inclusion dependence exceeds temporal and fixed-marginal surrogates"
+    },
+    "H_GRAPH_001": {
+      "metric": "network_average_clustering",
+      "direction": "greater",
+      "nulls": [
+        "U0",
+        "U4"
+      ],
+      "claim": "cooccurrence clustering exceeds iid and fixed-marginal surrogates"
+    },
+    "H_REGIME_001": {
+      "metric": "regime_max_cusum",
+      "direction": "greater",
+      "nulls": [
+        "U0",
+        "U1",
+        "U3",
+        "U5"
+      ],
+      "claim": "the causal feature stream has a change-point score beyond declared nulls"
+    }
+  },
+  "promotion_authority": false,
+  "terminal_6of6_claim": false,
+  "design_sha256": "4f2804101048709bf9e74d5c78aac3d67f9e408b73504cbfc2c3d2d248b63a76",
+  "registered_at_utc": "2026-09-04T17:36:06.314648+00:00"
+}

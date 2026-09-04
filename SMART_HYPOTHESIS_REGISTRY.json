@@ -1,39 +1,92 @@
 {
-  "schema": "SMART_HYPOTHESIS_REGISTRY_V1",
+  "schema": "SMART_HYPOTHESIS_REGISTRY_V3",
   "cutoff_contest": 3053,
   "rules": {
     "preregister_before_test": true,
     "future_leakage_prohibited": true,
     "multiplicity_control_required": true,
-    "historical_discovery_not_proof": true
+    "historical_discovery_not_proof": true,
+    "failure_to_reject_does_not_prove_the_null": true,
+    "monte_carlo_resolution_must_allow_declared_alpha": true,
+    "predictive_weight_requires_oos_and_prospective_evidence": true
   },
   "hypotheses": [
     {
       "id": "H_NULL_IID",
+      "family": "reference",
       "claim": "draws are compatible with uniform 6-of-60 without replacement",
-      "status": "ACTIVE_NULL_REFERENCE",
-      "evidence": [
-        "SMART_NULL_UNIVERSE_MANIFEST.json",
-        "SMART_RANDOMNESS_ATLAS.json"
-      ]
+      "primary_null": "U0",
+      "status": "ACTIVE_NULL_REFERENCE_NOT_PROVEN"
     },
     {
-      "id": "H_NONTRIVIAL_STRUCTURE",
-      "claim": "one or more reproducible structures differ from appropriate null universes",
-      "status": "UNPROVEN_DIAGNOSTIC",
+      "id": "H_MARGINAL_001",
+      "family": "marginal_dispersion",
+      "metric": "marginal_std",
+      "nulls": ["U0"],
+      "status": "TESTED_INCONCLUSIVE_POWER_LIMITED_RETROSPECTIVE",
+      "evidence": ["SMART_FALSIFICATION_REPORT_V2.json", "SMART_FALSIFICATION_POWER_AUDIT.json"],
+      "promotion_authority": false
+    },
+    {
+      "id": "H_MEMORY_001",
+      "family": "temporal_memory",
+      "metric": "lag1_binary_mutual_information_mean_bits",
+      "nulls": ["U1", "U3", "U4"],
+      "status": "TESTED_INCONCLUSIVE_POWER_LIMITED_RETROSPECTIVE",
+      "evidence": ["SMART_FALSIFICATION_REPORT_V2.json", "SMART_FALSIFICATION_POWER_AUDIT.json"],
+      "promotion_authority": false
+    },
+    {
+      "id": "H_GRAPH_001",
+      "family": "cooccurrence_network",
+      "metric": "network_average_clustering",
+      "nulls": ["U0", "U4"],
+      "status": "TESTED_INCONCLUSIVE_POWER_LIMITED_RETROSPECTIVE",
+      "evidence": ["SMART_FALSIFICATION_REPORT_V2.json", "SMART_FALSIFICATION_POWER_AUDIT.json"],
+      "promotion_authority": false
+    },
+    {
+      "id": "H_REGIME_001",
+      "family": "regime_change",
+      "metric": "regime_max_cusum",
+      "nulls": ["U0", "U1", "U3", "U5"],
+      "status": "TESTED_INCONCLUSIVE_POWER_LIMITED_RETROSPECTIVE",
+      "evidence": ["SMART_FALSIFICATION_REPORT_V2.json", "SMART_FALSIFICATION_POWER_AUDIT.json"],
+      "promotion_authority": false
+    },
+    {
+      "id": "H_HAZARD_001",
+      "family": "recurrence_hazard",
+      "status": "HISTORICAL_HOLDOUT_RETAINS_UNIFORM_BASELINE",
+      "evidence": "SMART_PROBABILITY_AUDIT.json",
+      "promotion_authority": false
+    },
+    {
+      "id": "H_MARKOV_001",
+      "family": "conditional_transition",
+      "status": "HISTORICAL_HOLDOUT_RETAINS_UNIFORM_BASELINE",
+      "evidence": "SMART_PROBABILITY_AUDIT.json",
       "promotion_authority": false
     },
     {
       "id": "H_PROSPECTIVE_ADVANTAGE",
-      "claim": "a frozen causal Top-6/model beats declared baselines prospectively",
-      "status": "UNPROVEN",
+      "family": "operational",
+      "claim": "frozen causal Top-6/model beats declared baselines prospectively",
+      "status": "REGISTERED_3054_AWAITING_OFFICIAL_RESULT",
+      "evidence": "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
       "promotion_authority": false
     },
     {
       "id": "H_TERMINAL_6OF6",
-      "claim": "a frozen pre-result Top-6 achieves 6/6 in an official contest",
+      "family": "terminal",
+      "claim": "a frozen pre-result Top-6 achieves exact 6/6 in an official contest",
       "status": "UNPROVEN",
       "promotion_authority": false
     }
-  ]
+  ],
+  "multiplicity_policy": {
+    "familywise_primary": "holm",
+    "exploratory_secondary": "benjamini_hochberg",
+    "no_single_p_value_promotion": true
+  }
 }

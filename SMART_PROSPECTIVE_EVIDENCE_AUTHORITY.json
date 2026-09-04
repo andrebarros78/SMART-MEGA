@@ -1,0 +1,87 @@
+{
+  "schema": "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY_V1",
+  "created_brasilia": "2026-09-04T14:39:30.814129-03:00",
+  "canonical_sequential_ledger": "SMART_SIGNAL_LEDGER.json",
+  "canonical_sequential_ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+  "canonical_schema": "SMART_SIGNAL_LEDGER_1",
+  "legacy_ledger": "SMART_PROSPECTIVE_LEDGER.json",
+  "legacy_ledger_sha256": "c49726673b1653e3e4dec33b6772a8d27722e228d838bdc41f174c226b569225",
+  "legacy_role": "COMPATIBILITY_ONLY_NON_AUTHORITATIVE_FOR_CURRENT_SEQUENTIAL_PROOF",
+  "targets": {
+    "3051": {
+      "event_types": [
+        "FREEZE",
+        "FREEZE",
+        "SUPERSEDE",
+        "FREEZE",
+        "SUPERSEDE",
+        "ADJUDICATION",
+        "ATTRIBUTION",
+        "MARGINAL_UTILITY",
+        "INTERACTIONS",
+        "INTERACTIONS_CORRECTION"
+      ],
+      "active_or_latest_freeze_hash": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+      "adjudicated": true,
+      "sequential_proof": false
+    },
+    "3052": {
+      "event_types": [
+        "FREEZE",
+        "ADJUDICATION",
+        "ATTRIBUTION",
+        "MARGINAL_UTILITY",
+        "INTERACTIONS",
+        "MULTI_CHALLENGERS",
+        "META_GOVERNOR",
+        "RANK_SCORE_CALIBRATION"
+      ],
+      "active_or_latest_freeze_hash": "06eceb02da2636dee98924d7e766b0c96f45efa75915b7e3374eafa705423cd5",
+      "adjudicated": true,
+      "sequential_proof": false
+    },
+    "3053": {
+      "event_types": [
+        "FREEZE",
+        "FREEZE",
+        "SUPERSEDE",
+        "ADJUDICATION",
+        "ATTRIBUTION",
+        "MARGINAL_UTILITY",
+        "INTERACTIONS",
+        "MULTI_CHALLENGERS",
+        "META_GOVERNOR",
+        "RANK_SCORE_CALIBRATION",
+        "LEARNING_UPDATE",
+        "SEQUENTIAL_PROOF"
+      ],
+      "active_or_latest_freeze_hash": "e8773cf0d5f29bab5c0dfb3a3352130ee36dafe13b6c6db6747412789c9a8781",
+      "adjudicated": true,
+      "sequential_proof": true
+    },
+    "3054": {
+      "event_types": [
+        "FREEZE",
+        "FREEZE",
+        "SUPERSEDE"
+      ],
+      "active_or_latest_freeze_hash": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+      "adjudicated": false,
+      "sequential_proof": false
+    }
+  },
+  "independent_audit": {
+    "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+    "sha256": "55199b35357699579a0a274ddc31aaf79b47c0e649cc3fe52e4c8ec5079721c5",
+    "status": "PASS",
+    "pair_count": 2,
+    "no_future_leakage": true,
+    "hash_integrity": true,
+    "e_process_recomputed": true
+  },
+  "policy": {
+    "retroactive_legacy_backfill_prohibited": true,
+    "all_future_freeze_adjudication_learning_proof_events_go_to_canonical_signal_ledger": true,
+    "legacy_records_do_not_create_promotion_evidence": true
+  }
+}

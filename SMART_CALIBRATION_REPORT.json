@@ -1,26 +1,31 @@
 {
-  "schema": "SMART_CALIBRATION_REPORT_V1",
+  "schema": "SMART_CALIBRATION_REPORT_V2",
   "cutoff_contest": 3053,
-  "status": "ACTIVE",
+  "status": "ACTIVE_UNIFORM_BASELINE_RETAINED",
   "canonical_evidence": [
-    {
-      "artifact": "SMART_P05_STRENGTH_CALIBRATION.json",
-      "schema": "SMART_P05_STRENGTH_CALIBRATION_1"
-    },
-    {
-      "artifact": "SMART_P06_RANK_SCORE_CALIBRATION_PROOF.json"
-    },
-    {
-      "artifact": "SMART_CONTEXT_CALIBRATION_CONFIRM_V2.json"
-    },
-    {
-      "artifact": "SMART_SIGNAL_DRIFT_CALIBRATION.json"
-    }
+    {"artifact": "SMART_P05_STRENGTH_CALIBRATION.json", "schema": "SMART_P05_STRENGTH_CALIBRATION_1"},
+    {"artifact": "SMART_P06_RANK_SCORE_CALIBRATION_PROOF.json"},
+    {"artifact": "SMART_CONTEXT_CALIBRATION_CONFIRM_V2.json"},
+    {"artifact": "SMART_SIGNAL_DRIFT_CALIBRATION.json"},
+    {"artifact": "SMART_PROBABILITY_AUDIT.json", "schema": "SMART_PROBABILITY_AUDIT_V1"}
   ],
+  "latest_probability_audit": {
+    "partition": "holdout",
+    "contests": 353,
+    "candidates": 5,
+    "uniform_expected_mean_hits": 0.6,
+    "uniform_mean_brier": 0.09,
+    "candidate_decisions": "RETAIN_UNIFORM_BASELINE",
+    "historical_probability_vectors_retained": false,
+    "prospective_probability_vectors_retained_for_3054": true
+  },
   "rules": {
     "prediction_vs_result_feedback": true,
     "dynamic_weights": true,
     "non_regression_required": true,
-    "holdout_protection": true
-  }
+    "holdout_protection": true,
+    "full_probability_retention_required_prospectively": true,
+    "reliability_and_brier_required_before_promotion": true
+  },
+  "predictive_weight_authorized": false
 }

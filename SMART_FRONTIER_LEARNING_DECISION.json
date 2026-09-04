@@ -1,0 +1,74 @@
+{
+  "schema": "SMART_FRONTIER_LEARNING_DECISION_V1",
+  "created_brasilia": "2026-09-04T14:35:19.730307-03:00",
+  "cutoff_contest": 3053,
+  "source_artifact": "SMART_FRONTIER_HISTORICAL_3053.json",
+  "source_sha256": "5e05af8e5adc8b5b23ab74df79895dedd7bb48c377386d8a8a2260cc8e1cbfa5",
+  "evaluated_contests": 2053,
+  "partitions": {
+    "calibration": "1001-2200",
+    "validation": "2201-2700",
+    "holdout": "2701-3053"
+  },
+  "multiplicity": {
+    "method": "Holm",
+    "family_size": 5,
+    "alpha": 0.05
+  },
+  "decisions": {
+    "frontier_gap_hazard": {
+      "family": "recurrence_hazard",
+      "historical_diagnostic_pass": false,
+      "holdout_n": 353,
+      "holdout_mean_delta_hits_vs_champion": -0.0764872521246459,
+      "holdout_mean_brier_delta_vs_uniform": 0.004480666790288621,
+      "holm_adjusted_p": 1.0,
+      "material_weight": 0.0,
+      "decision": "REJECT_FOR_PREDICTIVE_PROMOTION_ON_CURRENT_HISTORICAL_EVIDENCE"
+    },
+    "frontier_transition_markov": {
+      "family": "conditional_transition",
+      "historical_diagnostic_pass": false,
+      "holdout_n": 353,
+      "holdout_mean_delta_hits_vs_champion": -0.07365439093484419,
+      "holdout_mean_brier_delta_vs_uniform": 0.0019099933366132156,
+      "holm_adjusted_p": 1.0,
+      "material_weight": 0.0,
+      "decision": "REJECT_FOR_PREDICTIVE_PROMOTION_ON_CURRENT_HISTORICAL_EVIDENCE"
+    },
+    "frontier_cooccurrence_graph": {
+      "family": "hypergraph_link",
+      "historical_diagnostic_pass": false,
+      "holdout_n": 353,
+      "holdout_mean_delta_hits_vs_champion": -0.06515580736543909,
+      "holdout_mean_brier_delta_vs_uniform": 0.0018762071870071216,
+      "holm_adjusted_p": 1.0,
+      "material_weight": 0.0,
+      "decision": "REJECT_FOR_PREDICTIVE_PROMOTION_ON_CURRENT_HISTORICAL_EVIDENCE"
+    },
+    "frontier_weekday_bayes": {
+      "family": "procedural_calendar",
+      "historical_diagnostic_pass": false,
+      "holdout_n": 353,
+      "holdout_mean_delta_hits_vs_champion": -0.059490084985835696,
+      "holdout_mean_brier_delta_vs_uniform": 0.0021331730265812202,
+      "holm_adjusted_p": 1.0,
+      "material_weight": 0.0,
+      "decision": "REJECT_FOR_PREDICTIVE_PROMOTION_ON_CURRENT_HISTORICAL_EVIDENCE"
+    },
+    "frontier_recent_lift": {
+      "family": "bayesian_change",
+      "historical_diagnostic_pass": false,
+      "holdout_n": 353,
+      "holdout_mean_delta_hits_vs_champion": -0.04815864022662889,
+      "holdout_mean_brier_delta_vs_uniform": 0.002359660569164307,
+      "holm_adjusted_p": 1.0,
+      "material_weight": 0.0,
+      "decision": "REJECT_FOR_PREDICTIVE_PROMOTION_ON_CURRENT_HISTORICAL_EVIDENCE"
+    }
+  },
+  "global_decision": "NO_FRONTIER_CANDIDATE_PROMOTED",
+  "operational_effect": "ALL_MATERIAL_WEIGHTS_REMAIN_ZERO",
+  "freeze_3054_policy": "existing shadow freeze remains immutable and diagnostic; no production influence",
+  "learning": "negative holdout evidence is incorporated by neutralizing promotion authority instead of forcing diversity or preserving candidates by inertia"
+}

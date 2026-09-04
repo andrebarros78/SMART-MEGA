@@ -4,7 +4,7 @@ from pathlib import Path
 import numpy as np
 from smart_v2_engine import load_draws, onehot
 SCHEMA_NULL='SMART_NULL_UNIVERSE_MANIFEST_V1'; SCHEMA_ATLAS='SMART_RANDOMNESS_ATLAS_V1'
-NUMBERS=np.arange(1,61,dtype=int); K=6; DEFAULT_SEED=20260904; DEFAULT_REPLICATIONS=100
+NUMBERS=np.arange(1,61,dtype=int); K=6; DEFAULT_SEED=20260904; DEFAULT_REPLICATIONS=1000
 ATLAS_WINDOWS=(1,2,3,5,10,25,50,100,250,500,1000)
 
 def sha256_file(path):
