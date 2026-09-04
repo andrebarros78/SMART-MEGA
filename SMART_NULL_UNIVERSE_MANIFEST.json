@@ -1,14 +1,14 @@
 {
   "schema": "SMART_NULL_UNIVERSE_MANIFEST_V1",
   "seed": 20260904,
-  "replications": 100,
+  "replications": 20,
   "trajectory_length": 3053,
   "families": {
     "U0": "uniform iid 6-of-60 without replacement",
     "U1": "temporal permutation preserving real draws",
     "U2": "global label permutation 1..60",
     "U3": "temporal block shuffle block_size=25",
-    "U4": "weighted resampling from empirical marginals",
+    "U4": "exact fixed-marginal swap surrogate preserving each number total frequency and six numbers per draw",
     "U5": "fitted first-order conditional inclusion generator",
     "U6": "adversarial controls: null, persistent bias, regime switch, repeated motif"
   },

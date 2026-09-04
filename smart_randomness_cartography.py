@@ -33,8 +33,20 @@ def u2_label_permutation(draws,rng):
 def u3_block_shuffle(draws,rng,block_size=25):
  a=_v(draws); blocks=[a[i:i+block_size] for i in range(0,len(a),block_size)]; return np.vstack([blocks[i] for i in rng.permutation(len(blocks))])
 def empirical_marginals(draws): return onehot(_v(draws)).mean(axis=0)
-def u4_marginals_preserved(draws,rng):
- a=_v(draws); w=empirical_marginals(a); return np.asarray([_weighted(rng,w) for _ in range(len(a))],int)
+def u4_marginals_preserved(draws,rng,swap_steps=None):
+ a=_v(draws).copy(); X=onehot(a).astype(np.uint8); n=len(a)
+ steps=int(swap_steps or max(1000,5*n))
+ accepted=0
+ for _ in range(steps):
+  i,j=rng.integers(0,n,size=2)
+  if i==j: continue
+  left=np.flatnonzero((X[i]==1)&(X[j]==0)); right=np.flatnonzero((X[j]==1)&(X[i]==0))
+  if not len(left) or not len(right): continue
+  x=int(rng.choice(left)); y=int(rng.choice(right))
+  X[i,x]=0; X[j,x]=1; X[j,y]=0; X[i,y]=1; accepted+=1
+ out=np.asarray([np.flatnonzero(row)+1 for row in X],int)
+ return np.sort(out,axis=1)
+
 def fit_transition_weights(draws,alpha=1.0):
  a=_v(draws); X=onehot(a); c=np.full((60,60),alpha,float); d=np.full(60,2*alpha,float)
  for t in range(len(X)-1):
@@ -80,7 +92,7 @@ def _windows(draws):
 def build_null_manifest(draws,replications=DEFAULT_REPLICATIONS,seed=DEFAULT_SEED,block_size=25):
  a=_v(draws)
  if replications<20: raise ValueError('replications must be >=20')
- return {'schema':SCHEMA_NULL,'seed':int(seed),'replications':int(replications),'trajectory_length':int(len(a)),'families':{'U0':'uniform iid 6-of-60 without replacement','U1':'temporal permutation preserving real draws','U2':'global label permutation 1..60','U3':f'temporal block shuffle block_size={block_size}','U4':'weighted resampling from empirical marginals','U5':'fitted first-order conditional inclusion generator','U6':'adversarial controls: null, persistent bias, regime switch, repeated motif'},'seeds_policy':'single master PCG64 seed fixed execution order','monte_carlo_error_policy':'add-one empirical p-value; null std and replication count reported','causal_claim':False}
+ return {'schema':SCHEMA_NULL,'seed':int(seed),'replications':int(replications),'trajectory_length':int(len(a)),'families':{'U0':'uniform iid 6-of-60 without replacement','U1':'temporal permutation preserving real draws','U2':'global label permutation 1..60','U3':f'temporal block shuffle block_size={block_size}','U4':'exact fixed-marginal swap surrogate preserving each number total frequency and six numbers per draw','U5':'fitted first-order conditional inclusion generator','U6':'adversarial controls: null, persistent bias, regime switch, repeated motif'},'seeds_policy':'single master PCG64 seed fixed execution order','monte_carlo_error_policy':'add-one empirical p-value; null std and replication count reported','causal_claim':False}
 def build_atlas(draws,contests,replications=DEFAULT_REPLICATIONS,seed=DEFAULT_SEED,block_size=25):
  a=_v(draws); contests=np.asarray(contests,int)
  if len(a)!=len(contests): raise ValueError('contests length mismatch')
@@ -104,4 +116,5 @@ def main():
  ap=argparse.ArgumentParser(); ap.add_argument('--data',default='Mega-Sena_through_3053_v2.xlsx'); ap.add_argument('--manifest',default='SMART_NULL_UNIVERSE_MANIFEST.json'); ap.add_argument('--atlas',default='SMART_RANDOMNESS_ATLAS.json'); ap.add_argument('--replications',type=int,default=DEFAULT_REPLICATIONS); ap.add_argument('--seed',type=int,default=DEFAULT_SEED); ap.add_argument('--expected-max-contest',type=int,default=3053); a=ap.parse_args()
  m,r=write_program_artifacts(a.data,a.manifest,a.atlas,a.replications,a.seed,a.expected_max_contest); print(json.dumps({'manifest':m['schema'],'atlas':r['schema'],'cutoff':r['contest_max'],'replications':r['replications']}))
 if __name__=='__main__': main()
+
 

@@ -1,0 +1,32 @@
+{
+  "schema": "SMART_EXPERIMENT_LEDGER_V1",
+  "cutoff_contest": 3053,
+  "canonical_engine": "smart_experiment_lab.py",
+  "existing_records": [
+    {
+      "artifact": "SMART_SIGNAL_LEDGER.json",
+      "schema": "SMART_SIGNAL_LEDGER_1"
+    },
+    {
+      "artifact": "SMART_ANTI_INERTIA_CAP_EXPERIMENT_PRE3052.json"
+    },
+    {
+      "artifact": "SMART_MARGINAL_UTILITY_WEIGHT_EXPERIMENT_PRE3052.json"
+    },
+    {
+      "artifact": "SMART_P1_P2_CARTOGRAPHY_PROOF.json"
+    }
+  ],
+  "rules": {
+    "preregistration_required": true,
+    "immutable_experiment_id": true,
+    "lesson_required": true,
+    "decision_domain": [
+      "PROMOTE",
+      "REJECT",
+      "RETAIN_BASELINE",
+      "INCONCLUSIVE"
+    ],
+    "future_leakage_prohibited": true
+  }
+}

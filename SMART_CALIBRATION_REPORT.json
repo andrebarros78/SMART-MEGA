@@ -1,0 +1,26 @@
+{
+  "schema": "SMART_CALIBRATION_REPORT_V1",
+  "cutoff_contest": 3053,
+  "status": "ACTIVE",
+  "canonical_evidence": [
+    {
+      "artifact": "SMART_P05_STRENGTH_CALIBRATION.json",
+      "schema": "SMART_P05_STRENGTH_CALIBRATION_1"
+    },
+    {
+      "artifact": "SMART_P06_RANK_SCORE_CALIBRATION_PROOF.json"
+    },
+    {
+      "artifact": "SMART_CONTEXT_CALIBRATION_CONFIRM_V2.json"
+    },
+    {
+      "artifact": "SMART_SIGNAL_DRIFT_CALIBRATION.json"
+    }
+  ],
+  "rules": {
+    "prediction_vs_result_feedback": true,
+    "dynamic_weights": true,
+    "non_regression_required": true,
+    "holdout_protection": true
+  }
+}

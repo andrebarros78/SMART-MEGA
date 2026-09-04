@@ -34,3 +34,11 @@ def test_write_rejects_future(monkeypatch,tmp_path:Path):
  with pytest.raises(ValueError,match='future contest'): rc.write_program_artifacts(f,tmp_path/'m.json',tmp_path/'a.json',20,4,128)
 def test_write_artifacts_bind_hash(monkeypatch,tmp_path:Path):
  d=sample(30); c=np.arange(100,130); monkeypatch.setattr(rc,'load_draws',lambda _:(d,c)); f=tmp_path/'x.xlsx'; f.write_bytes(b'xyz'); m=tmp_path/'m.json'; a=tmp_path/'a.json'; mm,aa=rc.write_program_artifacts(f,m,a,20,4,129); assert json.loads(m.read_text())['data_sha256']==rc.sha256_file(f); assert json.loads(a.read_text())['data_sha256']==mm['data_sha256']==aa['data_sha256']
+
+
+def test_u4_preserves_exact_marginals():
+    d=sample(80)
+    s=rc.u4_marginals_preserved(d,np.random.default_rng(77),swap_steps=4000)
+    assert np.array_equal(rc.onehot(d).sum(axis=0),rc.onehot(s).sum(axis=0))
+    assert np.all(rc.onehot(s).sum(axis=1)==6)
+

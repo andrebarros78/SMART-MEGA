@@ -1,0 +1,39 @@
+{
+  "schema": "SMART_HYPOTHESIS_REGISTRY_V1",
+  "cutoff_contest": 3053,
+  "rules": {
+    "preregister_before_test": true,
+    "future_leakage_prohibited": true,
+    "multiplicity_control_required": true,
+    "historical_discovery_not_proof": true
+  },
+  "hypotheses": [
+    {
+      "id": "H_NULL_IID",
+      "claim": "draws are compatible with uniform 6-of-60 without replacement",
+      "status": "ACTIVE_NULL_REFERENCE",
+      "evidence": [
+        "SMART_NULL_UNIVERSE_MANIFEST.json",
+        "SMART_RANDOMNESS_ATLAS.json"
+      ]
+    },
+    {
+      "id": "H_NONTRIVIAL_STRUCTURE",
+      "claim": "one or more reproducible structures differ from appropriate null universes",
+      "status": "UNPROVEN_DIAGNOSTIC",
+      "promotion_authority": false
+    },
+    {
+      "id": "H_PROSPECTIVE_ADVANTAGE",
+      "claim": "a frozen causal Top-6/model beats declared baselines prospectively",
+      "status": "UNPROVEN",
+      "promotion_authority": false
+    },
+    {
+      "id": "H_TERMINAL_6OF6",
+      "claim": "a frozen pre-result Top-6 achieves 6/6 in an official contest",
+      "status": "UNPROVEN",
+      "promotion_authority": false
+    }
+  ]
+}
