@@ -1,0 +1,35 @@
+﻿{
+  "schema": "SMART_PROCEDURAL_OBSERVABLES_ACQUISITION_V1",
+  "created_brasilia": "2026-09-04T14:30:00-03:00",
+  "status": "SOURCE_DISCOVERY_COMPLETE_INGESTION_PENDING",
+  "purpose": "Expand causal pre-result observables beyond historical six-number outcomes without granting predictive authority before OOS/prospective validation.",
+  "official_sources": [
+    {
+      "authority": "CAIXA",
+      "url": "https://loterias.caixa.gov.br/Paginas/regras-sorteios.aspx",
+      "supports": ["prepublished_draw_location", "scheduled_day_time", "equipment_rules", "public_auditors", "live_pre_draw_procedures", "one_globe_01_to_60"]
+    },
+    {
+      "authority": "CAIXA Noticias",
+      "url": "https://caixanoticias.caixa.gov.br/Paginas/Noticias/2019/05-MAIO/nota-da-caixa-esclarecimentos-sobre-a-apuracao-da-mega-sena.aspx",
+      "supports": ["periodic_ball_weight_diameter_measurement", "sealed_ball_cases", "acrylic_globe", "continuous_paddle_mixing"]
+    }
+  ],
+  "candidate_observables": [
+    {"id":"draw_location","available_before_result":true,"mode":"shadow_only"},
+    {"id":"scheduled_draw_timestamp","available_before_result":true,"mode":"shadow_only"},
+    {"id":"exceptional_venue_flag","available_before_result":true,"mode":"shadow_only"},
+    {"id":"ball_case_opening_and_loading_metadata","available_before_result":true,"mode":"shadow_only","requires":"auditable_live_or_archived_pre_draw_capture"},
+    {"id":"manual_ball_release_before_draw","available_before_result":true,"mode":"shadow_only","requires":"timestamped_public_transmission"},
+    {"id":"auditor_procedural_intervention_before_draw","available_before_result":true,"mode":"shadow_only","requires":"timestamped_public_transmission"},
+    {"id":"ball_weight_diameter_batch_measurement","available_before_result":"only_if_publicly_released_before_target","mode":"shadow_only"}
+  ],
+  "hard_gates": {
+    "future_leakage_prohibited": true,
+    "post_result_video_features_for_prediction_prohibited": true,
+    "diagnostic_signal_not_equal_predictive_signal": true,
+    "material_weight_requires_holdout_and_prospective_evidence": true,
+    "source_timestamp_and_hash_required": true
+  },
+  "production_authority": false
+}
