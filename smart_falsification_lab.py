@@ -248,6 +248,9 @@ def evaluate_falsification(
             }
             comparisons.append(row)
 
+    family_size = len(comparisons)
+    minimum_replications_for_holm_resolution = int(math.ceil(family_size / ALPHA - 1))
+    resolution_sufficient = replications >= minimum_replications_for_holm_resolution
     adjusted = holm_adjust(
         [row["empirical_p_greater_add_one"] for row in comparisons]
     )
@@ -297,9 +300,11 @@ def evaluate_falsification(
         "comparisons": comparisons,
         "multiplicity": {
             "method": "Holm",
-            "family_size": len(comparisons),
+            "family_size": family_size,
             "alpha": ALPHA,
             "rejected_comparisons": rejected,
+            "minimum_replications_for_resolution": minimum_replications_for_holm_resolution,
+            "resolution_sufficient": bool(resolution_sufficient),
         },
         "adversarial_sensitivity": {
             "checks": sensitivity,

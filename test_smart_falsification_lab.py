@@ -89,3 +89,17 @@ def test_write_rejects_future_cutoff(monkeypatch, tmp_path):
             replications=20,
             expected_max_contest=int(contests.max()) - 1,
         )
+
+
+def test_falsification_reports_monte_carlo_resolution():
+    draws = sample(160, seed=77)
+    contests = np.arange(1, 161)
+    out = fl.evaluate_falsification(
+        draws,
+        contests,
+        replications=20,
+        seed=8,
+        holdout_fraction=0.30,
+    )
+    assert out["multiplicity"]["minimum_replications_for_resolution"] == 199
+    assert out["multiplicity"]["resolution_sufficient"] is False
