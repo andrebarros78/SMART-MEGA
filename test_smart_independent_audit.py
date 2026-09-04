@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import copy
 import hashlib
@@ -724,3 +724,109 @@ def test_p14_lineage_discards_prior_version(monkeypatch, tmp_path: Path):
     pc=out['promotion_lineage_comparison']
     assert pc['adjudicated_contests']==1
     assert pc['discarded_prior_version_pairs']==1
+
+
+def test_state_evidence_archive_and_legacy_contracts(tmp_path, monkeypatch):
+    state = tmp_path / 'state.json'
+    state.write_text('{"state": 7}', encoding='utf-8')
+    sha = _sha(state)
+    fr = {'freeze_file': str(tmp_path / 'freeze.json'), 'state_archive_sha256': sha}
+    frozen = {
+        'signal_state_file': state.name,
+        'signal_state_sha256': sha,
+        'signal_state_archive_file': state.name,
+        'signal_state_archive_sha256': sha,
+    }
+    out = ia.audit_frozen_state_evidence(tmp_path, 4000, fr, frozen, sha)
+    assert out['mode'] == 'IMMUTABLE_HASH_ARCHIVE'
+
+    bad = dict(frozen); bad['signal_state_archive_sha256'] = None
+    with pytest.raises(ValueError, match='metadata invalid'):
+        ia.audit_frozen_state_evidence(tmp_path, 4000, fr, bad, sha)
+    bad = dict(frozen); bad['signal_state_archive_file'] = 'missing.json'
+    with pytest.raises(ValueError, match='archive hash mismatch'):
+        ia.audit_frozen_state_evidence(tmp_path, 4000, fr, bad, sha)
+    bad_fr = dict(fr); bad_fr['state_archive_sha256'] = '0' * 64
+    with pytest.raises(ValueError, match='ledger state archive hash mismatch'):
+        ia.audit_frozen_state_evidence(tmp_path, 4000, bad_fr, frozen, sha)
+
+    live_frozen = {'signal_state_file': state.name, 'signal_state_sha256': sha}
+    live = ia.audit_frozen_state_evidence(tmp_path, 4000, {}, live_frozen, sha)
+    assert live['mode'] == 'LEGACY_LIVE_FILE_EXACT_HASH'
+    state.write_text('changed', encoding='utf-8')
+    monkeypatch.setattr(ia, 'audit_legacy_state_continuity', lambda *a, **k: {'status':'PASS','mode':'FALLBACK'})
+    assert ia.audit_frozen_state_evidence(tmp_path, 4000, {}, live_frozen, sha)['mode'] == 'FALLBACK'
+
+
+def test_legacy_state_continuity_3051_all_guards(tmp_path, monkeypatch):
+    monkeypatch.setattr(ia, 'LEGACY_MUTABLE_STATE_EVIDENCE', {3051:'proof.json'})
+    fr = {'freeze_sha256': 'a' * 64}
+    frozen = {'data_sha256': 'd' * 64}
+    state_sha = 'b' * 64
+    with pytest.raises(ValueError, match='evidence missing'):
+        ia.audit_legacy_state_continuity(tmp_path, 3051, fr, frozen, state_sha)
+
+    proof = tmp_path / 'proof.json'
+    def write(obj): proof.write_text(json.dumps(obj), encoding='utf-8')
+    base = {
+        'schema':'SMART_SIGNAL_INTEGRATION_FINAL_PROOF_1', 'status':'MISSION_PROVEN',
+        'active_freeze': {'sha256': fr['freeze_sha256'], 'event': {'freeze_sha256':fr['freeze_sha256'], 'hashes':{'state':state_sha}}},
+        'artifact_hashes': {'freeze':fr['freeze_sha256'], 'state':state_sha},
+    }
+    x = copy.deepcopy(base); x['status']='FAIL'; write(x)
+    with pytest.raises(ValueError, match='proof invalid'):
+        ia.audit_legacy_state_continuity(tmp_path,3051,fr,frozen,state_sha)
+    x = copy.deepcopy(base); x['active_freeze']=None; write(x)
+    with pytest.raises(ValueError, match='proof incomplete'):
+        ia.audit_legacy_state_continuity(tmp_path,3051,fr,frozen,state_sha)
+    x = copy.deepcopy(base); x['active_freeze']['sha256']='c'*64; write(x)
+    with pytest.raises(ValueError, match='freeze mismatch'):
+        ia.audit_legacy_state_continuity(tmp_path,3051,fr,frozen,state_sha)
+    x = copy.deepcopy(base); x['artifact_hashes']['state']='c'*64; write(x)
+    with pytest.raises(ValueError, match='hash mismatch'):
+        ia.audit_legacy_state_continuity(tmp_path,3051,fr,frozen,state_sha)
+    write(base)
+    good = ia.audit_legacy_state_continuity(tmp_path,3051,fr,frozen,state_sha)
+    assert good['mode']=='LEGACY_HASH_BOUND_CONTINUITY' and good['mutable_state_path_not_trusted'] is True
+
+
+def test_legacy_state_continuity_3052_and_unsupported_guards(tmp_path, monkeypatch):
+    fr = {'freeze_sha256':'a'*64}; frozen={'data_sha256':'d'*64}; state_sha='b'*64
+    monkeypatch.setattr(ia, 'LEGACY_MUTABLE_STATE_EVIDENCE', {3052:'app.json'})
+    app = tmp_path/'app.json'
+    base = {'schema':'SMART_3052_TRAINED_APPLICATION_1','contest':3052,'causal':True,'result_used':False,
+            'active_freeze_sha256':fr['freeze_sha256'],'signal_state_sha256':state_sha,'data_sha256':frozen['data_sha256']}
+    def write(obj): app.write_text(json.dumps(obj),encoding='utf-8')
+    x=dict(base); x['contest']=1; write(x)
+    with pytest.raises(ValueError,match='proof invalid'): ia.audit_legacy_state_continuity(tmp_path,3052,fr,frozen,state_sha)
+    x=dict(base); x['causal']=False; write(x)
+    with pytest.raises(ValueError,match='causal flags'): ia.audit_legacy_state_continuity(tmp_path,3052,fr,frozen,state_sha)
+    x=dict(base); x['signal_state_sha256']='c'*64; write(x)
+    with pytest.raises(ValueError,match='hash mismatch'): ia.audit_legacy_state_continuity(tmp_path,3052,fr,frozen,state_sha)
+    x=dict(base); x['data_sha256']='e'*64; write(x)
+    with pytest.raises(ValueError,match='data mismatch'): ia.audit_legacy_state_continuity(tmp_path,3052,fr,frozen,state_sha)
+    write(base)
+    assert ia.audit_legacy_state_continuity(tmp_path,3052,fr,frozen,state_sha)['status']=='PASS'
+
+    monkeypatch.setattr(ia, 'LEGACY_MUTABLE_STATE_EVIDENCE', {})
+    with pytest.raises(ValueError,match='frozen signal state hash mismatch'):
+        ia.audit_legacy_state_continuity(tmp_path,9999,fr,frozen,state_sha)
+    monkeypatch.setattr(ia, 'LEGACY_MUTABLE_STATE_EVIDENCE', {9999:'other.json'})
+    (tmp_path/'other.json').write_text('{}',encoding='utf-8')
+    with pytest.raises(ValueError,match='unsupported legacy'):
+        ia.audit_legacy_state_continuity(tmp_path,9999,fr,frozen,state_sha)
+
+
+def test_prospective_audit_accepts_pair_without_optional_state_hash(tmp_path):
+    ledger, pre, result, freeze, state, fr, ad, actual = _pair_fixture(tmp_path, target=11)
+    frozen = json.loads(freeze.read_text(encoding='utf-8'))
+    frozen.pop('signal_state_file', None)
+    frozen.pop('signal_state_sha256', None)
+    freeze.write_text(json.dumps(frozen), encoding='utf-8')
+    new_sha = _sha(freeze)
+    fr['freeze_sha256'] = new_sha
+    fr['hashes'].pop('state', None)
+    ad['freeze_sha256'] = new_sha
+    ledger.write_text(json.dumps({'schema': ia.LEDGER_SCHEMA, 'events':[fr,ad]}), encoding='utf-8')
+    out = ia.audit_prospective_ledger(tmp_path, ledger)
+    assert out['status']=='PASS' and out['pair_count']==1

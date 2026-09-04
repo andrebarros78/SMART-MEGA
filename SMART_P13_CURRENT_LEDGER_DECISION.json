@@ -1,28 +1,9 @@
 {
-  "schema": "SMART_P13_CURRENT_LEDGER_DECISION_1",
-  "created_brt": "2026-08-31T12:39:08.912978-03:00",
+  "schema": "SMART_P13_CURRENT_LEDGER_DECISION_2",
+  "created_brt": "2026-09-03T20:58:51.359123-03:00",
   "ledger_file": "SMART_SIGNAL_LEDGER.json",
-  "ledger_sha256": "0aff0ea01a4714185709a174159642fa512bc3202a8411a8a7028f4053fb710a",
-  "promotion_policy": {
-    "schema": "SMART_PROMOTION_GATE_POLICY_1",
-    "base_min_prospective_contests": 20,
-    "min_e_value": 10.0,
-    "must_beat_champion_cumulatively": true,
-    "must_have_favorable_regret": true,
-    "adaptive_sample_rule": {
-      "mean_hit_advantage_gte_0_50": 20,
-      "mean_hit_advantage_gte_0_25": 30,
-      "mean_hit_advantage_gte_0_10": 50,
-      "mean_hit_advantage_gt_0": 80
-    },
-    "promotion_before_evidence_prohibited": true,
-    "accepted_hit_domain": [
-      0,
-      6
-    ],
-    "invalid_or_nonfinite_inputs_rejected": true
-  },
-  "promotion_status": {
+  "ledger_sha256": "0a64e3aba55bf9ed17aab4163988f5e645e0c124bf820646845256f7e75f3c54",
+  "decision": {
     "decision": "KEEP_CHAMPION",
     "eligible": false,
     "n": 1,
@@ -46,9 +27,33 @@
       "insufficient_adaptive_sample",
       "insufficient_sequential_evidence"
     ],
-    "reason": "prospective promotion conditions not met"
+    "reason": "prospective promotion conditions not met",
+    "candidate_fingerprint": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486",
+    "lineage_pair_count": 1,
+    "total_versioned_causal_pairs": 1,
+    "unversioned_causal_pairs_ignored": 1,
+    "discarded_prior_version_pairs": 0,
+    "lineage_e_value": 1.0,
+    "stored_global_e_value_trusted_for_promotion": false,
+    "lineage_reset_on_predictive_architecture_change": true,
+    "promotion_lineage_components": [
+      "engine",
+      "champion_engine",
+      "signal_agent",
+      "signal_quality",
+      "signal_weights",
+      "context_regime",
+      "redundancy_consensus",
+      "marginal_utility",
+      "contextual_meta_weights",
+      "rank_score_calibration",
+      "multi_challengers",
+      "meta_governor",
+      "bounded_online_learning",
+      "signal_interactions",
+      "signal_expansion_governance"
+    ]
   },
-  "production_switch_performed": false,
-  "champion_remains_active": true,
-  "interpretation": "Current real prospective ledger does not meet promotion conditions; Champion must remain active."
+  "production_authority": false,
+  "champion_remains_active": true
 }

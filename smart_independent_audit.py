@@ -43,6 +43,7 @@ LEGACY_CONTINUITY_SCHEMA = 'SMART_P14_LEGACY_RESULT_CONTINUITY_1'
 LEGACY_CONTINUITY_TARGET = 3051
 
 PROMOTION_LINEAGE_SCHEMA = 'SMART_PROMOTION_LINEAGE_1'
+LEGACY_MUTABLE_STATE_EVIDENCE = {3051: 'SMART_SIGNAL_INTEGRATION_FINAL_PROOF.json', 3052: 'SMART_3052_TRAINED_APPLICATION.json'}
 
 PROMOTION_LINEAGE_COMPONENTS = (
 
@@ -334,6 +335,78 @@ def audit_legacy_result_continuity(root: Path, target: int, adjudication: dict[s
 
 
 
+
+def audit_legacy_state_continuity(root: Path, target: int, fr: dict[str, Any], frozen: dict[str, Any], state_sha: str) -> dict[str, Any]:
+    evidence_name = LEGACY_MUTABLE_STATE_EVIDENCE.get(int(target))
+    if evidence_name is None:
+        raise ValueError('frozen signal state hash mismatch')
+    evidence_path = Path(root) / evidence_name
+    if not evidence_path.is_file():
+        raise ValueError('legacy state continuity evidence missing')
+    evidence = _load_json(evidence_path)
+    freeze_sha = str(fr.get('freeze_sha256', ''))
+    if int(target) == 3051:
+        active = evidence.get('active_freeze')
+        artifacts = evidence.get('artifact_hashes')
+        event = active.get('event') if isinstance(active, dict) else None
+        if evidence.get('schema') != 'SMART_SIGNAL_INTEGRATION_FINAL_PROOF_1' or evidence.get('status') != 'MISSION_PROVEN':
+            raise ValueError('legacy 3051 state continuity proof invalid')
+        if not isinstance(active, dict) or not isinstance(event, dict) or not isinstance(artifacts, dict):
+            raise ValueError('legacy 3051 state continuity proof incomplete')
+        if active.get('sha256') != freeze_sha or event.get('freeze_sha256') != freeze_sha or artifacts.get('freeze') != freeze_sha:
+            raise ValueError('legacy 3051 state continuity freeze mismatch')
+        if event.get('hashes', {}).get('state') != state_sha or artifacts.get('state') != state_sha:
+            raise ValueError('legacy 3051 state continuity hash mismatch')
+    elif int(target) == 3052:
+        if evidence.get('schema') != 'SMART_3052_TRAINED_APPLICATION_1' or int(evidence.get('contest', -1)) != 3052:
+            raise ValueError('legacy 3052 state continuity proof invalid')
+        if evidence.get('causal') is not True or evidence.get('result_used') is not False:
+            raise ValueError('legacy 3052 state continuity causal flags invalid')
+        if evidence.get('active_freeze_sha256') != freeze_sha or evidence.get('signal_state_sha256') != state_sha:
+            raise ValueError('legacy 3052 state continuity hash mismatch')
+        if evidence.get('data_sha256') != frozen.get('data_sha256'):
+            raise ValueError('legacy 3052 state continuity data mismatch')
+    else:
+        raise ValueError('unsupported legacy mutable state target')
+    return {
+        'status': 'PASS',
+        'mode': 'LEGACY_HASH_BOUND_CONTINUITY',
+        'target_contest': int(target),
+        'evidence_file': evidence_path.name,
+        'evidence_file_sha256': sha256_file(evidence_path),
+        'freeze_sha256': freeze_sha,
+        'state_sha256': state_sha,
+        'mutable_state_path_not_trusted': True,
+        'legacy_scope_only': True,
+    }
+
+
+def audit_frozen_state_evidence(root: Path, target: int, fr: dict[str, Any], frozen: dict[str, Any], state_sha: str) -> dict[str, Any]:
+    archive_raw = frozen.get('signal_state_archive_file')
+    archive_sha = frozen.get('signal_state_archive_sha256')
+    if archive_raw is not None or archive_sha is not None:
+        if not isinstance(archive_raw, str) or not isinstance(archive_sha, str) or archive_sha != state_sha:
+            raise ValueError('immutable state archive metadata invalid')
+        archive_path = _resolve(root, archive_raw)
+        if not archive_path.is_file() or sha256_file(archive_path) != state_sha:
+            raise ValueError('immutable state archive hash mismatch')
+        if fr.get('state_archive_sha256') != state_sha:
+            raise ValueError('ledger state archive hash mismatch')
+        return {
+            'status': 'PASS', 'mode': 'IMMUTABLE_HASH_ARCHIVE',
+            'archive_file': archive_path.name, 'archive_sha256': state_sha,
+            'legacy_scope_only': False,
+        }
+    state_file = _resolve(root, str(frozen.get('signal_state_file', '')))
+    if state_file.is_file() and sha256_file(state_file) == state_sha:
+        return {
+            'status': 'PASS', 'mode': 'LEGACY_LIVE_FILE_EXACT_HASH',
+            'state_file': state_file.name, 'state_sha256': state_sha,
+            'legacy_scope_only': True,
+        }
+    return audit_legacy_state_continuity(root, target, fr, frozen, state_sha)
+
+
 def policy_snapshot() -> dict[str, Any]:
 
     payload = {
@@ -353,6 +426,8 @@ def policy_snapshot() -> dict[str, Any]:
         'evidence_only_promotion_coverage_required': True,
 
         'frozen_artifact_hash_required': True,
+        'immutable_state_archive_required_for_new_freezes': True,
+        'legacy_mutable_state_continuity_targets': sorted(LEGACY_MUTABLE_STATE_EVIDENCE),
 
         'frozen_data_hash_required': True,
 
@@ -980,13 +1055,13 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
 
                 raise ValueError(f'frozen component hash mismatch: {component}')
 
-        state_file = _resolve(root, str(frozen.get('signal_state_file', '')))
-
         state_sha = hashes.get('state')
 
-        if state_sha is not None and (not state_file.is_file() or sha256_file(state_file) != state_sha):
+        state_evidence = None
 
-            raise ValueError('frozen signal state hash mismatch')
+        if state_sha is not None:
+
+            state_evidence = audit_frozen_state_evidence(root, target, fr, frozen, state_sha)
 
 
 
@@ -1017,6 +1092,8 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
             'freeze_hash_verified': True,
 
             'frozen_data_hash_verified': True,
+
+            'state_evidence': state_evidence,
 
             'result_data_hash_verified': legacy_continuity is None,
 

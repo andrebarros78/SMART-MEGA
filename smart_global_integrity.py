@@ -43,7 +43,8 @@ REQUIRED_GLOBAL_COVERAGE_SOURCES = (
     'smart_sequential_prospective_proof.py', 'smart_promotion_gate.py',
     'smart_independent_audit.py', 'smart_evidence_only_promotion.py',
     'smart_continuous_red_team.py', 'smart_global_integrity.py',
-    'smart_champion_challenger.py',
+    'smart_champion_challenger.py', 'adjudicate_signal_challenger.py',
+    'smart_v2_production.py', 'smart_portfolio_optimizer.py', 'smart_portfolio_pipeline.py',
 )
 CRITICAL_SOURCE_FILES = (
     'smart_v2_engine.py', 'smart_v2_production.py', 'freeze_next_research.py',
@@ -56,6 +57,7 @@ CRITICAL_SOURCE_FILES = (
     'smart_independent_audit.py', 'smart_evidence_only_promotion.py',
     'smart_signal_agent.py', 'smart_champion_challenger.py', 'adjudicate_signal_challenger.py',
     'smart_continuous_red_team.py', 'smart_global_integrity.py',
+    'smart_portfolio_optimizer.py', 'smart_portfolio_pipeline.py',
 )
 
 

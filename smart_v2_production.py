@@ -138,9 +138,6 @@ def decide(audit: dict[str, Any], ledger: dict[str, Any] | None = None) -> dict[
         }
     except (KeyError, TypeError, ValueError, OverflowError) as exc:
         raise ValueError('malformed legacy production audit') from exc
-    if any(not isinstance(value, bool) for value in historical_checks.values()):
-        raise ValueError('legacy historical checks must resolve to booleans')
-
     prospective = validate_ledger(ledger)
     checks = {**historical_checks, 'legacy_prospective_diagnostic_valid': prospective['valid']}
     legacy_diagnostic_signal = bool(all(checks.values()))

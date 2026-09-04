@@ -1,0 +1,9666 @@
+{
+  "schema": "SMART_PORTFOLIO_BACKTEST_V1",
+  "data_file": "Mega-Sena_through_3052.xlsx",
+  "eval_from_contest": 2901,
+  "eval_through_contest": 2950,
+  "hedge_start_index": 1000,
+  "eta": 0.6931471805599453,
+  "causal": true,
+  "future_leakage": false,
+  "policies": {
+    "1": {
+      "policy": {
+        "game_count": 1,
+        "candidate_pool_size": 6,
+        "max_pairwise_overlap": 5,
+        "coverage_bonus": 0.0,
+        "rank_bonus": 0.02,
+        "time_limit_seconds": 0.5,
+        "require_full_candidate_coverage": false,
+        "min_number_exposure": null,
+        "max_number_exposure": null
+      },
+      "contests": 50,
+      "total_games": 50,
+      "sum_game_hits": 30,
+      "mean_hits_per_game": 0.6,
+      "mean_best_game_hits": 0.6,
+      "mean_union_hits": 0.6,
+      "contests_any_3plus": 0,
+      "contests_any_4plus": 0,
+      "contests_any_5plus": 0,
+      "contests_any_6": 0,
+      "mean_unique_numbers": 6.0,
+      "max_overlap_observed": 0,
+      "solver_optimal": 0,
+      "solver_feasible": 0,
+      "uniform_baseline": {
+        "expected_sum_game_hits": 30.0,
+        "expected_mean_hits_per_game": 0.6,
+        "expected_contests_any_3plus_independent_games": 0.5172094201286115,
+        "expected_contests_any_4plus_independent_games": 0.021762205311376404,
+        "expected_contests_any_5plus_independent_games": 0.00032458543947622154,
+        "expected_contests_any_6_independent_games": 9.987244309339616e-07,
+        "single_game_hit_probabilities": {
+          "0": 0.5158844124284464,
+          "1": 0.3790171193351851,
+          "2": 0.09475427983379629,
+          "3": 0.00990894429634471,
+          "4": 0.00042875239743799226,
+          "5": 6.471734300950826e-06,
+          "6": 1.997448858318156e-08
+        }
+      },
+      "excess_sum_hits_vs_uniform_expectation": 0.0,
+      "excess_any_3plus_vs_uniform_independent_expectation": -0.5172094201286115,
+      "excess_any_4plus_vs_uniform_independent_expectation": -0.021762205311376404
+    },
+    "2": {
+      "policy": {
+        "game_count": 2,
+        "candidate_pool_size": 10,
+        "max_pairwise_overlap": 2,
+        "coverage_bonus": 0.0,
+        "rank_bonus": 0.02,
+        "time_limit_seconds": 0.05,
+        "require_full_candidate_coverage": true,
+        "min_number_exposure": 1,
+        "max_number_exposure": 2
+      },
+      "contests": 50,
+      "total_games": 100,
+      "sum_game_hits": 55,
+      "mean_hits_per_game": 0.55,
+      "mean_best_game_hits": 0.84,
+      "mean_union_hits": 0.96,
+      "contests_any_3plus": 1,
+      "contests_any_4plus": 0,
+      "contests_any_5plus": 0,
+      "contests_any_6": 0,
+      "mean_unique_numbers": 10.0,
+      "max_overlap_observed": 2,
+      "solver_optimal": 50,
+      "solver_feasible": 0,
+      "uniform_baseline": {
+        "expected_sum_game_hits": 60.0,
+        "expected_mean_hits_per_game": 0.6,
+        "expected_contests_any_3plus_independent_games": 1.0290687285718247,
+        "expected_contests_any_4plus_independent_games": 0.04351493875115464,
+        "expected_contests_any_5plus_independent_games": 0.0006491687718379602,
+        "expected_contests_any_6_independent_games": 1.9974488396634626e-06,
+        "single_game_hit_probabilities": {
+          "0": 0.5158844124284464,
+          "1": 0.3790171193351851,
+          "2": 0.09475427983379629,
+          "3": 0.00990894429634471,
+          "4": 0.00042875239743799226,
+          "5": 6.471734300950826e-06,
+          "6": 1.997448858318156e-08
+        }
+      },
+      "excess_sum_hits_vs_uniform_expectation": -5.0,
+      "excess_any_3plus_vs_uniform_independent_expectation": -0.029068728571824742,
+      "excess_any_4plus_vs_uniform_independent_expectation": -0.04351493875115464
+    },
+    "4": {
+      "policy": {
+        "game_count": 4,
+        "candidate_pool_size": 12,
+        "max_pairwise_overlap": 2,
+        "coverage_bonus": 0.0,
+        "rank_bonus": 0.02,
+        "time_limit_seconds": 0.05,
+        "require_full_candidate_coverage": true,
+        "min_number_exposure": 2,
+        "max_number_exposure": 2
+      },
+      "contests": 50,
+      "total_games": 200,
+      "sum_game_hits": 114,
+      "mean_hits_per_game": 0.57,
+      "mean_best_game_hits": 1.02,
+      "mean_union_hits": 1.14,
+      "contests_any_3plus": 1,
+      "contests_any_4plus": 1,
+      "contests_any_5plus": 0,
+      "contests_any_6": 0,
+      "mean_unique_numbers": 12.0,
+      "max_overlap_observed": 2,
+      "solver_optimal": 50,
+      "solver_feasible": 0,
+      "uniform_baseline": {
+        "expected_sum_game_hits": 120.0,
+        "expected_mean_hits_per_game": 0.6,
+        "expected_contests_any_3plus_independent_games": 2.0369578081811666,
+        "expected_contests_any_4plus_independent_games": 0.08699200650441608,
+        "expected_contests_any_5plus_independent_games": 0.0012983291152735,
+        "expected_contests_any_6_independent_games": 3.9948976016113136e-06,
+        "single_game_hit_probabilities": {
+          "0": 0.5158844124284464,
+          "1": 0.3790171193351851,
+          "2": 0.09475427983379629,
+          "3": 0.00990894429634471,
+          "4": 0.00042875239743799226,
+          "5": 6.471734300950826e-06,
+          "6": 1.997448858318156e-08
+        }
+      },
+      "excess_sum_hits_vs_uniform_expectation": -6.0,
+      "excess_any_3plus_vs_uniform_independent_expectation": -1.0369578081811666,
+      "excess_any_4plus_vs_uniform_independent_expectation": 0.9130079934955839
+    },
+    "6": {
+      "policy": {
+        "game_count": 6,
+        "candidate_pool_size": 12,
+        "max_pairwise_overlap": 3,
+        "coverage_bonus": 0.0,
+        "rank_bonus": 0.02,
+        "time_limit_seconds": 0.05,
+        "require_full_candidate_coverage": true,
+        "min_number_exposure": 3,
+        "max_number_exposure": 3
+      },
+      "contests": 50,
+      "total_games": 300,
+      "sum_game_hits": 171,
+      "mean_hits_per_game": 0.57,
+      "mean_best_game_hits": 1.06,
+      "mean_union_hits": 1.14,
+      "contests_any_3plus": 2,
+      "contests_any_4plus": 0,
+      "contests_any_5plus": 0,
+      "contests_any_6": 0,
+      "mean_unique_numbers": 12.0,
+      "max_overlap_observed": 3,
+      "solver_optimal": 50,
+      "solver_feasible": 0,
+      "uniform_baseline": {
+        "expected_sum_game_hits": 180.0,
+        "expected_mean_hits_per_game": 0.6,
+        "expected_contests_any_3plus_independent_games": 3.0241031451166025,
+        "expected_contests_any_4plus_independent_games": 0.13043123621886976,
+        "expected_contests_any_5plus_independent_games": 0.0019474810304176415,
+        "expected_contests_any_6_independent_games": 5.992346285843553e-06,
+        "single_game_hit_probabilities": {
+          "0": 0.5158844124284464,
+          "1": 0.3790171193351851,
+          "2": 0.09475427983379629,
+          "3": 0.00990894429634471,
+          "4": 0.00042875239743799226,
+          "5": 6.471734300950826e-06,
+          "6": 1.997448858318156e-08
+        }
+      },
+      "excess_sum_hits_vs_uniform_expectation": -9.0,
+      "excess_any_3plus_vs_uniform_independent_expectation": -1.0241031451166025,
+      "excess_any_4plus_vs_uniform_independent_expectation": -0.13043123621886976
+    }
+  },
+  "rows": {
+    "1": [
+      {
+        "contest": 2901,
+        "cutoff_contest": 2900,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2902,
+        "cutoff_contest": 2901,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2903,
+        "cutoff_contest": 2902,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2904,
+        "cutoff_contest": 2903,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2905,
+        "cutoff_contest": 2904,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2906,
+        "cutoff_contest": 2905,
+        "games": [
+          [
+            10,
+            34,
+            38,
+            43,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2907,
+        "cutoff_contest": 2906,
+        "games": [
+          [
+            10,
+            34,
+            37,
+            38,
+            43,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2908,
+        "cutoff_contest": 2907,
+        "games": [
+          [
+            10,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2909,
+        "cutoff_contest": 2908,
+        "games": [
+          [
+            10,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2910,
+        "cutoff_contest": 2909,
+        "games": [
+          [
+            10,
+            37,
+            38,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2911,
+        "cutoff_contest": 2910,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2912,
+        "cutoff_contest": 2911,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2913,
+        "cutoff_contest": 2912,
+        "games": [
+          [
+            10,
+            25,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2914,
+        "cutoff_contest": 2913,
+        "games": [
+          [
+            10,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2915,
+        "cutoff_contest": 2914,
+        "games": [
+          [
+            10,
+            25,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2916,
+        "cutoff_contest": 2915,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2917,
+        "cutoff_contest": 2916,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2918,
+        "cutoff_contest": 2917,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2919,
+        "cutoff_contest": 2918,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2920,
+        "cutoff_contest": 2919,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2921,
+        "cutoff_contest": 2920,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2922,
+        "cutoff_contest": 2921,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2923,
+        "cutoff_contest": 2922,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2924,
+        "cutoff_contest": 2923,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2925,
+        "cutoff_contest": 2924,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2926,
+        "cutoff_contest": 2925,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2927,
+        "cutoff_contest": 2926,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2928,
+        "cutoff_contest": 2927,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2929,
+        "cutoff_contest": 2928,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2930,
+        "cutoff_contest": 2929,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2931,
+        "cutoff_contest": 2930,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2932,
+        "cutoff_contest": 2931,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2933,
+        "cutoff_contest": 2932,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2934,
+        "cutoff_contest": 2933,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2935,
+        "cutoff_contest": 2934,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2936,
+        "cutoff_contest": 2935,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2937,
+        "cutoff_contest": 2936,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2938,
+        "cutoff_contest": 2937,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2939,
+        "cutoff_contest": 2938,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2940,
+        "cutoff_contest": 2939,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2941,
+        "cutoff_contest": 2940,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2942,
+        "cutoff_contest": 2941,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2943,
+        "cutoff_contest": 2942,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2944,
+        "cutoff_contest": 2943,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2945,
+        "cutoff_contest": 2944,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2946,
+        "cutoff_contest": 2945,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2947,
+        "cutoff_contest": 2946,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2948,
+        "cutoff_contest": 2947,
+        "games": [
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2949,
+        "cutoff_contest": 2948,
+        "games": [
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2950,
+        "cutoff_contest": 2949,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "TOP6_DIRECT",
+        "unique_number_count": 6,
+        "max_pairwise_overlap": 0,
+        "game_hits": [
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      }
+    ],
+    "2": [
+      {
+        "contest": 2901,
+        "cutoff_contest": 2900,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            43,
+            46
+          ],
+          [
+            10,
+            32,
+            34,
+            38,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2902,
+        "cutoff_contest": 2901,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            43,
+            46
+          ],
+          [
+            10,
+            32,
+            34,
+            38,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2903,
+        "cutoff_contest": 2902,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            43,
+            46
+          ],
+          [
+            10,
+            19,
+            34,
+            38,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2904,
+        "cutoff_contest": 2903,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            27,
+            38,
+            56
+          ],
+          [
+            10,
+            34,
+            38,
+            43,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          2
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2905,
+        "cutoff_contest": 2904,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            27,
+            34,
+            38,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2906,
+        "cutoff_contest": 2905,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            38,
+            43,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2907,
+        "cutoff_contest": 2906,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            37,
+            38,
+            46
+          ],
+          [
+            25,
+            34,
+            38,
+            43,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2908,
+        "cutoff_contest": 2907,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            46,
+            56
+          ],
+          [
+            34,
+            37,
+            38,
+            43,
+            44,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          2
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2909,
+        "cutoff_contest": 2908,
+        "games": [
+          [
+            10,
+            20,
+            35,
+            37,
+            38,
+            46
+          ],
+          [
+            34,
+            38,
+            43,
+            44,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2910,
+        "cutoff_contest": 2909,
+        "games": [
+          [
+            10,
+            20,
+            37,
+            38,
+            44,
+            46
+          ],
+          [
+            34,
+            38,
+            43,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2911,
+        "cutoff_contest": 2910,
+        "games": [
+          [
+            10,
+            37,
+            38,
+            43,
+            44,
+            46
+          ],
+          [
+            11,
+            34,
+            38,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2912,
+        "cutoff_contest": 2911,
+        "games": [
+          [
+            10,
+            27,
+            38,
+            46,
+            53,
+            56
+          ],
+          [
+            11,
+            32,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2913,
+        "cutoff_contest": 2912,
+        "games": [
+          [
+            10,
+            32,
+            37,
+            38,
+            46,
+            53
+          ],
+          [
+            11,
+            25,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2914,
+        "cutoff_contest": 2913,
+        "games": [
+          [
+            10,
+            17,
+            32,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            25,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          2
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2915,
+        "cutoff_contest": 2914,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            37,
+            38,
+            46
+          ],
+          [
+            25,
+            34,
+            35,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          3,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 3,
+        "union_hits": 3,
+        "any_3plus": 1,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2916,
+        "cutoff_contest": 2915,
+        "games": [
+          [
+            10,
+            35,
+            37,
+            38,
+            46,
+            52
+          ],
+          [
+            11,
+            25,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2917,
+        "cutoff_contest": 2916,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            35,
+            38,
+            46
+          ],
+          [
+            25,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          2
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2918,
+        "cutoff_contest": 2917,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            35,
+            38,
+            46
+          ],
+          [
+            25,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2919,
+        "cutoff_contest": 2918,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            35,
+            38,
+            46
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2920,
+        "cutoff_contest": 2919,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            46,
+            53
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2921,
+        "cutoff_contest": 2920,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            38,
+            46,
+            53
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2922,
+        "cutoff_contest": 2921,
+        "games": [
+          [
+            10,
+            11,
+            16,
+            25,
+            38,
+            46
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2923,
+        "cutoff_contest": 2922,
+        "games": [
+          [
+            10,
+            11,
+            16,
+            25,
+            38,
+            46
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          2
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2924,
+        "cutoff_contest": 2923,
+        "games": [
+          [
+            10,
+            11,
+            16,
+            25,
+            38,
+            46
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2925,
+        "cutoff_contest": 2924,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            38,
+            46,
+            54
+          ],
+          [
+            10,
+            19,
+            27,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2926,
+        "cutoff_contest": 2925,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2927,
+        "cutoff_contest": 2926,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            27,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          2
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 4,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2928,
+        "cutoff_contest": 2927,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            27,
+            35,
+            38
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2929,
+        "cutoff_contest": 2928,
+        "games": [
+          [
+            10,
+            27,
+            34,
+            37,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            27,
+            32,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2930,
+        "cutoff_contest": 2929,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            35,
+            46,
+            56
+          ],
+          [
+            27,
+            32,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2931,
+        "cutoff_contest": 2930,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            11,
+            14,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2932,
+        "cutoff_contest": 2931,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            27,
+            35,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2933,
+        "cutoff_contest": 2932,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2934,
+        "cutoff_contest": 2933,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2935,
+        "cutoff_contest": 2934,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2936,
+        "cutoff_contest": 2935,
+        "games": [
+          [
+            9,
+            11,
+            25,
+            34,
+            38,
+            46
+          ],
+          [
+            10,
+            19,
+            27,
+            34,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2937,
+        "cutoff_contest": 2936,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            32,
+            38,
+            46
+          ],
+          [
+            11,
+            19,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2938,
+        "cutoff_contest": 2937,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            32,
+            34,
+            38
+          ],
+          [
+            11,
+            19,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2939,
+        "cutoff_contest": 2938,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            34,
+            38,
+            46
+          ],
+          [
+            11,
+            27,
+            34,
+            35,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2940,
+        "cutoff_contest": 2939,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            34,
+            35,
+            38
+          ],
+          [
+            27,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2941,
+        "cutoff_contest": 2940,
+        "games": [
+          [
+            9,
+            11,
+            27,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2942,
+        "cutoff_contest": 2941,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            34,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2943,
+        "cutoff_contest": 2942,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            34,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2944,
+        "cutoff_contest": 2943,
+        "games": [
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2945,
+        "cutoff_contest": 2944,
+        "games": [
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2946,
+        "cutoff_contest": 2945,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            14,
+            27,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2947,
+        "cutoff_contest": 2946,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            14,
+            27,
+            34,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2948,
+        "cutoff_contest": 2947,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            14,
+            34,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0
+        ],
+        "sum_game_hits": 1,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2949,
+        "cutoff_contest": 2948,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            53
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2950,
+        "cutoff_contest": 2949,
+        "games": [
+          [
+            4,
+            11,
+            27,
+            34,
+            38,
+            46
+          ],
+          [
+            10,
+            35,
+            37,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 10,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      }
+    ],
+    "4": [
+      {
+        "contest": 2901,
+        "cutoff_contest": 2900,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            46,
+            53
+          ],
+          [
+            10,
+            19,
+            32,
+            34,
+            43,
+            57
+          ],
+          [
+            11,
+            19,
+            38,
+            46,
+            56,
+            57
+          ],
+          [
+            25,
+            32,
+            38,
+            43,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2902,
+        "cutoff_contest": 2901,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            38,
+            53,
+            56
+          ],
+          [
+            10,
+            11,
+            25,
+            32,
+            34,
+            46
+          ],
+          [
+            19,
+            34,
+            43,
+            44,
+            46,
+            53
+          ],
+          [
+            25,
+            32,
+            38,
+            43,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2903,
+        "cutoff_contest": 2902,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            34,
+            46
+          ],
+          [
+            10,
+            11,
+            32,
+            38,
+            53,
+            56
+          ],
+          [
+            19,
+            25,
+            38,
+            43,
+            44,
+            56
+          ],
+          [
+            32,
+            34,
+            43,
+            44,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2904,
+        "cutoff_contest": 2903,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            38,
+            44,
+            46
+          ],
+          [
+            10,
+            11,
+            25,
+            34,
+            43,
+            56
+          ],
+          [
+            19,
+            27,
+            34,
+            44,
+            54,
+            56
+          ],
+          [
+            25,
+            27,
+            38,
+            43,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          0,
+          0,
+          2
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2905,
+        "cutoff_contest": 2904,
+        "games": [
+          [
+            10,
+            11,
+            38,
+            43,
+            44,
+            46
+          ],
+          [
+            10,
+            25,
+            27,
+            37,
+            46,
+            54
+          ],
+          [
+            11,
+            34,
+            37,
+            38,
+            54,
+            56
+          ],
+          [
+            25,
+            27,
+            34,
+            43,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2906,
+        "cutoff_contest": 2905,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            27,
+            37,
+            46
+          ],
+          [
+            10,
+            19,
+            38,
+            46,
+            54,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            38,
+            43,
+            56
+          ],
+          [
+            19,
+            25,
+            34,
+            37,
+            43,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2907,
+        "cutoff_contest": 2906,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            25,
+            38,
+            56
+          ],
+          [
+            10,
+            19,
+            27,
+            38,
+            43,
+            46
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            34,
+            37
+          ],
+          [
+            17,
+            34,
+            37,
+            43,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2908,
+        "cutoff_contest": 2907,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            43,
+            44
+          ],
+          [
+            10,
+            17,
+            34,
+            38,
+            46,
+            52
+          ],
+          [
+            11,
+            17,
+            37,
+            44,
+            52,
+            56
+          ],
+          [
+            25,
+            34,
+            37,
+            43,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2909,
+        "cutoff_contest": 2908,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            38,
+            46
+          ],
+          [
+            10,
+            20,
+            35,
+            43,
+            44,
+            46
+          ],
+          [
+            11,
+            20,
+            25,
+            37,
+            44,
+            56
+          ],
+          [
+            34,
+            35,
+            37,
+            38,
+            43,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2910,
+        "cutoff_contest": 2909,
+        "games": [
+          [
+            10,
+            20,
+            34,
+            43,
+            44,
+            46
+          ],
+          [
+            10,
+            25,
+            35,
+            38,
+            46,
+            53
+          ],
+          [
+            20,
+            34,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            25,
+            35,
+            37,
+            43,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2911,
+        "cutoff_contest": 2910,
+        "games": [
+          [
+            10,
+            11,
+            20,
+            35,
+            38,
+            46
+          ],
+          [
+            10,
+            34,
+            43,
+            44,
+            46,
+            53
+          ],
+          [
+            11,
+            37,
+            38,
+            44,
+            53,
+            56
+          ],
+          [
+            20,
+            34,
+            35,
+            37,
+            43,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2912,
+        "cutoff_contest": 2911,
+        "games": [
+          [
+            10,
+            11,
+            38,
+            43,
+            46,
+            54
+          ],
+          [
+            10,
+            27,
+            32,
+            34,
+            46,
+            53
+          ],
+          [
+            11,
+            34,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            27,
+            32,
+            37,
+            43,
+            54,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2913,
+        "cutoff_contest": 2912,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            38,
+            53,
+            56
+          ],
+          [
+            10,
+            27,
+            32,
+            34,
+            43,
+            56
+          ],
+          [
+            11,
+            32,
+            34,
+            37,
+            46,
+            53
+          ],
+          [
+            25,
+            27,
+            37,
+            38,
+            43,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2914,
+        "cutoff_contest": 2913,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            43,
+            53,
+            56
+          ],
+          [
+            10,
+            25,
+            32,
+            34,
+            38,
+            56
+          ],
+          [
+            11,
+            17,
+            25,
+            32,
+            37,
+            46
+          ],
+          [
+            34,
+            37,
+            38,
+            43,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          2,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2915,
+        "cutoff_contest": 2914,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            32,
+            35,
+            53
+          ],
+          [
+            10,
+            17,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            17,
+            34,
+            35,
+            37,
+            38
+          ],
+          [
+            32,
+            37,
+            38,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          1,
+          2,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 3,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2916,
+        "cutoff_contest": 2915,
+        "games": [
+          [
+            10,
+            11,
+            38,
+            43,
+            46,
+            53
+          ],
+          [
+            10,
+            34,
+            35,
+            46,
+            52,
+            56
+          ],
+          [
+            11,
+            25,
+            37,
+            38,
+            52,
+            56
+          ],
+          [
+            25,
+            34,
+            35,
+            37,
+            43,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2917,
+        "cutoff_contest": 2916,
+        "games": [
+          [
+            10,
+            25,
+            38,
+            46,
+            52,
+            53
+          ],
+          [
+            10,
+            27,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            11,
+            25,
+            35,
+            37,
+            38,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            37,
+            52,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2918,
+        "cutoff_contest": 2917,
+        "games": [
+          [
+            10,
+            19,
+            38,
+            46,
+            52,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            35,
+            46
+          ],
+          [
+            11,
+            19,
+            27,
+            34,
+            37,
+            52
+          ],
+          [
+            11,
+            25,
+            35,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          2,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2919,
+        "cutoff_contest": 2918,
+        "games": [
+          [
+            10,
+            25,
+            34,
+            37,
+            52,
+            54
+          ],
+          [
+            10,
+            27,
+            35,
+            37,
+            38,
+            56
+          ],
+          [
+            11,
+            25,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            11,
+            27,
+            38,
+            46,
+            52,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          0,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2920,
+        "cutoff_contest": 2919,
+        "games": [
+          [
+            10,
+            25,
+            34,
+            35,
+            37,
+            54
+          ],
+          [
+            10,
+            27,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            25,
+            34,
+            46,
+            53,
+            56
+          ],
+          [
+            11,
+            27,
+            35,
+            38,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2921,
+        "cutoff_contest": 2920,
+        "games": [
+          [
+            10,
+            16,
+            19,
+            25,
+            34,
+            37
+          ],
+          [
+            10,
+            27,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            16,
+            25,
+            27,
+            38,
+            46
+          ],
+          [
+            11,
+            19,
+            34,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          1,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2922,
+        "cutoff_contest": 2921,
+        "games": [
+          [
+            10,
+            16,
+            19,
+            34,
+            37,
+            53
+          ],
+          [
+            10,
+            25,
+            27,
+            37,
+            38,
+            56
+          ],
+          [
+            11,
+            16,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            27,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2923,
+        "cutoff_contest": 2922,
+        "games": [
+          [
+            10,
+            16,
+            19,
+            37,
+            53,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            37,
+            38
+          ],
+          [
+            11,
+            16,
+            25,
+            27,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            34,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          2,
+          0
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2924,
+        "cutoff_contest": 2923,
+        "games": [
+          [
+            10,
+            16,
+            27,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            19,
+            25,
+            32,
+            34,
+            37
+          ],
+          [
+            11,
+            16,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            27,
+            32,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          2,
+          0,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2925,
+        "cutoff_contest": 2924,
+        "games": [
+          [
+            10,
+            19,
+            27,
+            34,
+            46,
+            54
+          ],
+          [
+            10,
+            25,
+            32,
+            38,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            32,
+            34,
+            37
+          ],
+          [
+            11,
+            27,
+            37,
+            38,
+            54,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2926,
+        "cutoff_contest": 2925,
+        "games": [
+          [
+            10,
+            19,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            10,
+            32,
+            37,
+            38,
+            46,
+            54
+          ],
+          [
+            11,
+            19,
+            27,
+            32,
+            34,
+            54
+          ],
+          [
+            11,
+            25,
+            27,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2927,
+        "cutoff_contest": 2926,
+        "games": [
+          [
+            10,
+            19,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            10,
+            25,
+            37,
+            38,
+            46,
+            54
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            35,
+            54
+          ],
+          [
+            11,
+            27,
+            34,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          0,
+          2,
+          4
+        ],
+        "sum_game_hits": 8,
+        "best_game_hits": 4,
+        "union_hits": 4,
+        "any_3plus": 1,
+        "any_4plus": 1,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2928,
+        "cutoff_contest": 2927,
+        "games": [
+          [
+            10,
+            19,
+            34,
+            35,
+            37,
+            38
+          ],
+          [
+            10,
+            25,
+            38,
+            46,
+            54,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            37,
+            54
+          ],
+          [
+            11,
+            27,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2929,
+        "cutoff_contest": 2928,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            32,
+            35,
+            37
+          ],
+          [
+            10,
+            11,
+            19,
+            34,
+            46,
+            56
+          ],
+          [
+            14,
+            27,
+            35,
+            38,
+            46,
+            56
+          ],
+          [
+            19,
+            27,
+            32,
+            34,
+            37,
+            38
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2930,
+        "cutoff_contest": 2929,
+        "games": [
+          [
+            10,
+            11,
+            32,
+            34,
+            46,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            27,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            19,
+            34,
+            35,
+            37
+          ],
+          [
+            27,
+            32,
+            35,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          2,
+          0
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2931,
+        "cutoff_contest": 2930,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            19,
+            32,
+            35,
+            37,
+            38
+          ],
+          [
+            11,
+            19,
+            27,
+            32,
+            34,
+            46
+          ],
+          [
+            14,
+            27,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2932,
+        "cutoff_contest": 2931,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            32,
+            35,
+            38
+          ],
+          [
+            11,
+            14,
+            27,
+            32,
+            34,
+            46
+          ],
+          [
+            19,
+            27,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2933,
+        "cutoff_contest": 2932,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            34,
+            35,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            25,
+            27,
+            37
+          ],
+          [
+            11,
+            14,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            19,
+            25,
+            35,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2934,
+        "cutoff_contest": 2933,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            25,
+            35,
+            38
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            35,
+            46
+          ],
+          [
+            19,
+            25,
+            27,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2935,
+        "cutoff_contest": 2934,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            25,
+            35,
+            38
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            35,
+            46
+          ],
+          [
+            19,
+            25,
+            27,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2936,
+        "cutoff_contest": 2935,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            38,
+            46,
+            56
+          ],
+          [
+            9,
+            11,
+            19,
+            25,
+            34,
+            56
+          ],
+          [
+            10,
+            11,
+            34,
+            35,
+            37,
+            38
+          ],
+          [
+            19,
+            25,
+            27,
+            35,
+            37,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          0,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2937,
+        "cutoff_contest": 2936,
+        "games": [
+          [
+            9,
+            10,
+            19,
+            27,
+            34,
+            38
+          ],
+          [
+            9,
+            11,
+            19,
+            32,
+            46,
+            56
+          ],
+          [
+            10,
+            11,
+            25,
+            37,
+            38,
+            46
+          ],
+          [
+            25,
+            27,
+            32,
+            34,
+            37,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2938,
+        "cutoff_contest": 2937,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            19,
+            27,
+            34
+          ],
+          [
+            9,
+            19,
+            32,
+            38,
+            46,
+            56
+          ],
+          [
+            10,
+            25,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            25,
+            27,
+            32,
+            37,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2939,
+        "cutoff_contest": 2938,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            27,
+            35,
+            38
+          ],
+          [
+            9,
+            11,
+            27,
+            34,
+            46,
+            56
+          ],
+          [
+            10,
+            19,
+            32,
+            34,
+            38,
+            56
+          ],
+          [
+            11,
+            14,
+            19,
+            32,
+            35,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2940,
+        "cutoff_contest": 2939,
+        "games": [
+          [
+            9,
+            10,
+            32,
+            34,
+            38,
+            56
+          ],
+          [
+            9,
+            11,
+            32,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            14,
+            27,
+            35,
+            37,
+            38
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          0,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2941,
+        "cutoff_contest": 2940,
+        "games": [
+          [
+            9,
+            10,
+            27,
+            35,
+            37,
+            38
+          ],
+          [
+            9,
+            11,
+            14,
+            37,
+            46,
+            53
+          ],
+          [
+            10,
+            14,
+            34,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2942,
+        "cutoff_contest": 2941,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            27,
+            38,
+            56
+          ],
+          [
+            9,
+            11,
+            14,
+            34,
+            35,
+            46
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            38,
+            53
+          ],
+          [
+            11,
+            27,
+            37,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2943,
+        "cutoff_contest": 2942,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            35,
+            46,
+            56
+          ],
+          [
+            9,
+            14,
+            27,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            14,
+            27,
+            37,
+            53
+          ],
+          [
+            34,
+            35,
+            37,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2944,
+        "cutoff_contest": 2943,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            14,
+            27,
+            53
+          ],
+          [
+            9,
+            34,
+            35,
+            38,
+            46,
+            53
+          ],
+          [
+            10,
+            11,
+            35,
+            37,
+            46,
+            56
+          ],
+          [
+            14,
+            27,
+            34,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2945,
+        "cutoff_contest": 2944,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            14,
+            27,
+            53
+          ],
+          [
+            9,
+            34,
+            35,
+            38,
+            46,
+            53
+          ],
+          [
+            10,
+            11,
+            35,
+            37,
+            46,
+            56
+          ],
+          [
+            14,
+            27,
+            34,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2946,
+        "cutoff_contest": 2945,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            27,
+            33,
+            56
+          ],
+          [
+            9,
+            11,
+            33,
+            34,
+            38,
+            46
+          ],
+          [
+            10,
+            11,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            14,
+            34,
+            35,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2947,
+        "cutoff_contest": 2946,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            14,
+            27,
+            33,
+            53,
+            56
+          ],
+          [
+            11,
+            33,
+            34,
+            38,
+            46,
+            53
+          ],
+          [
+            14,
+            34,
+            35,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          2,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 4,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2948,
+        "cutoff_contest": 2947,
+        "games": [
+          [
+            4,
+            10,
+            27,
+            34,
+            44,
+            46
+          ],
+          [
+            4,
+            35,
+            37,
+            38,
+            44,
+            56
+          ],
+          [
+            10,
+            11,
+            14,
+            27,
+            37,
+            38
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 2,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2949,
+        "cutoff_contest": 2948,
+        "games": [
+          [
+            4,
+            10,
+            14,
+            27,
+            37,
+            46
+          ],
+          [
+            4,
+            14,
+            34,
+            35,
+            38,
+            53
+          ],
+          [
+            10,
+            11,
+            35,
+            46,
+            53,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            37,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          1,
+          2,
+          1,
+          2
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 3,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2950,
+        "cutoff_contest": 2949,
+        "games": [
+          [
+            4,
+            10,
+            11,
+            35,
+            54,
+            56
+          ],
+          [
+            4,
+            27,
+            35,
+            37,
+            46,
+            53
+          ],
+          [
+            10,
+            11,
+            27,
+            34,
+            38,
+            53
+          ],
+          [
+            34,
+            37,
+            38,
+            46,
+            54,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 2,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      }
+    ],
+    "6": [
+      {
+        "contest": 2901,
+        "cutoff_contest": 2900,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            43,
+            57
+          ],
+          [
+            10,
+            19,
+            34,
+            46,
+            56,
+            57
+          ],
+          [
+            10,
+            25,
+            32,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            19,
+            32,
+            34,
+            38,
+            57
+          ],
+          [
+            11,
+            25,
+            38,
+            43,
+            46,
+            53
+          ],
+          [
+            32,
+            34,
+            43,
+            46,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2902,
+        "cutoff_contest": 2901,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            32,
+            38,
+            46
+          ],
+          [
+            10,
+            11,
+            34,
+            43,
+            46,
+            56
+          ],
+          [
+            10,
+            19,
+            34,
+            44,
+            53,
+            56
+          ],
+          [
+            11,
+            19,
+            32,
+            43,
+            44,
+            53
+          ],
+          [
+            19,
+            25,
+            38,
+            44,
+            46,
+            53
+          ],
+          [
+            25,
+            32,
+            34,
+            38,
+            43,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2903,
+        "cutoff_contest": 2902,
+        "games": [
+          [
+            10,
+            19,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            10,
+            19,
+            32,
+            43,
+            44,
+            53
+          ],
+          [
+            10,
+            25,
+            32,
+            34,
+            38,
+            53
+          ],
+          [
+            11,
+            19,
+            25,
+            43,
+            44,
+            46
+          ],
+          [
+            11,
+            32,
+            38,
+            46,
+            53,
+            56
+          ],
+          [
+            11,
+            34,
+            38,
+            43,
+            44,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2904,
+        "cutoff_contest": 2903,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            43,
+            44,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            43,
+            56
+          ],
+          [
+            10,
+            27,
+            38,
+            46,
+            54,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            38,
+            44,
+            54
+          ],
+          [
+            11,
+            25,
+            27,
+            34,
+            38,
+            46
+          ],
+          [
+            19,
+            34,
+            43,
+            44,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          2,
+          1,
+          2,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2905,
+        "cutoff_contest": 2904,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            44
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            44,
+            56
+          ],
+          [
+            10,
+            34,
+            43,
+            44,
+            46,
+            54
+          ],
+          [
+            11,
+            25,
+            37,
+            46,
+            54,
+            56
+          ],
+          [
+            11,
+            34,
+            37,
+            38,
+            43,
+            54
+          ],
+          [
+            25,
+            27,
+            38,
+            43,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2906,
+        "cutoff_contest": 2905,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            43,
+            46
+          ],
+          [
+            10,
+            11,
+            34,
+            37,
+            46,
+            54
+          ],
+          [
+            10,
+            19,
+            27,
+            38,
+            54,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            34,
+            37,
+            56
+          ],
+          [
+            19,
+            34,
+            38,
+            43,
+            46,
+            56
+          ],
+          [
+            25,
+            27,
+            37,
+            38,
+            43,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          2,
+          0,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2907,
+        "cutoff_contest": 2906,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            37,
+            46,
+            56
+          ],
+          [
+            10,
+            17,
+            25,
+            37,
+            43,
+            56
+          ],
+          [
+            10,
+            19,
+            27,
+            38,
+            43,
+            56
+          ],
+          [
+            11,
+            17,
+            19,
+            27,
+            34,
+            38
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            37,
+            46
+          ],
+          [
+            17,
+            25,
+            34,
+            38,
+            43,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2908,
+        "cutoff_contest": 2907,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            46,
+            52,
+            56
+          ],
+          [
+            10,
+            11,
+            25,
+            37,
+            44,
+            46
+          ],
+          [
+            10,
+            34,
+            37,
+            38,
+            43,
+            56
+          ],
+          [
+            11,
+            17,
+            34,
+            38,
+            43,
+            52
+          ],
+          [
+            17,
+            25,
+            34,
+            37,
+            44,
+            52
+          ],
+          [
+            25,
+            38,
+            43,
+            44,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          1,
+          2,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2909,
+        "cutoff_contest": 2908,
+        "games": [
+          [
+            10,
+            11,
+            20,
+            25,
+            34,
+            56
+          ],
+          [
+            10,
+            20,
+            35,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            44,
+            46
+          ],
+          [
+            11,
+            20,
+            25,
+            37,
+            43,
+            44
+          ],
+          [
+            11,
+            25,
+            34,
+            38,
+            43,
+            46
+          ],
+          [
+            35,
+            38,
+            43,
+            44,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2910,
+        "cutoff_contest": 2909,
+        "games": [
+          [
+            10,
+            20,
+            25,
+            43,
+            46,
+            56
+          ],
+          [
+            10,
+            34,
+            35,
+            38,
+            46,
+            56
+          ],
+          [
+            10,
+            37,
+            38,
+            44,
+            46,
+            53
+          ],
+          [
+            20,
+            25,
+            34,
+            35,
+            44,
+            53
+          ],
+          [
+            20,
+            25,
+            34,
+            37,
+            38,
+            43
+          ],
+          [
+            35,
+            37,
+            43,
+            44,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2911,
+        "cutoff_contest": 2910,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            44,
+            46,
+            53
+          ],
+          [
+            10,
+            20,
+            35,
+            37,
+            43,
+            46
+          ],
+          [
+            10,
+            34,
+            38,
+            43,
+            44,
+            56
+          ],
+          [
+            11,
+            20,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            34,
+            35,
+            43,
+            53,
+            56
+          ],
+          [
+            20,
+            34,
+            35,
+            38,
+            44,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2912,
+        "cutoff_contest": 2911,
+        "games": [
+          [
+            10,
+            11,
+            32,
+            37,
+            46,
+            56
+          ],
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            10,
+            32,
+            43,
+            46,
+            53,
+            54
+          ],
+          [
+            11,
+            27,
+            32,
+            34,
+            38,
+            56
+          ],
+          [
+            11,
+            37,
+            43,
+            53,
+            54,
+            56
+          ],
+          [
+            27,
+            34,
+            38,
+            43,
+            53,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          0,
+          0,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2913,
+        "cutoff_contest": 2912,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            32,
+            46,
+            56
+          ],
+          [
+            10,
+            27,
+            32,
+            37,
+            43,
+            53
+          ],
+          [
+            11,
+            25,
+            32,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            34,
+            37,
+            43,
+            46,
+            53
+          ],
+          [
+            27,
+            34,
+            38,
+            43,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          0,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2914,
+        "cutoff_contest": 2913,
+        "games": [
+          [
+            10,
+            11,
+            17,
+            34,
+            43,
+            53
+          ],
+          [
+            10,
+            11,
+            32,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            25,
+            32,
+            43,
+            53,
+            56
+          ],
+          [
+            11,
+            34,
+            37,
+            38,
+            46,
+            53
+          ],
+          [
+            17,
+            25,
+            32,
+            38,
+            43,
+            46
+          ],
+          [
+            17,
+            25,
+            34,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2915,
+        "cutoff_contest": 2914,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            17,
+            25,
+            35,
+            37,
+            38
+          ],
+          [
+            10,
+            17,
+            32,
+            34,
+            38,
+            53
+          ],
+          [
+            11,
+            17,
+            32,
+            37,
+            46,
+            53
+          ],
+          [
+            11,
+            34,
+            35,
+            46,
+            53,
+            56
+          ],
+          [
+            25,
+            32,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          3,
+          2,
+          2,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 9,
+        "best_game_hits": 3,
+        "union_hits": 3,
+        "any_3plus": 1,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2916,
+        "cutoff_contest": 2915,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            37,
+            38
+          ],
+          [
+            10,
+            25,
+            34,
+            43,
+            52,
+            53
+          ],
+          [
+            10,
+            34,
+            37,
+            46,
+            52,
+            56
+          ],
+          [
+            11,
+            25,
+            38,
+            46,
+            52,
+            56
+          ],
+          [
+            11,
+            35,
+            38,
+            43,
+            53,
+            56
+          ],
+          [
+            25,
+            35,
+            37,
+            43,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2917,
+        "cutoff_contest": 2916,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            27,
+            34,
+            37,
+            46
+          ],
+          [
+            10,
+            11,
+            35,
+            37,
+            52,
+            53
+          ],
+          [
+            25,
+            27,
+            35,
+            52,
+            53,
+            56
+          ],
+          [
+            25,
+            27,
+            37,
+            38,
+            46,
+            56
+          ],
+          [
+            34,
+            35,
+            38,
+            46,
+            52,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          0,
+          0,
+          2,
+          2
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2918,
+        "cutoff_contest": 2917,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            35,
+            52
+          ],
+          [
+            10,
+            11,
+            25,
+            27,
+            34,
+            37
+          ],
+          [
+            10,
+            25,
+            37,
+            38,
+            46,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            19,
+            27,
+            35,
+            38,
+            52,
+            56
+          ],
+          [
+            19,
+            34,
+            35,
+            37,
+            46,
+            52
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          2,
+          0,
+          2,
+          1,
+          0
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2919,
+        "cutoff_contest": 2918,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            27,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            34,
+            52,
+            54,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            37,
+            46,
+            54
+          ],
+          [
+            11,
+            35,
+            37,
+            46,
+            52,
+            54
+          ],
+          [
+            25,
+            27,
+            34,
+            35,
+            38,
+            46
+          ],
+          [
+            34,
+            35,
+            37,
+            38,
+            52,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2920,
+        "cutoff_contest": 2919,
+        "games": [
+          [
+            10,
+            11,
+            37,
+            46,
+            53,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            38,
+            46,
+            53
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            54,
+            56
+          ],
+          [
+            11,
+            25,
+            34,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            27,
+            35,
+            37,
+            38,
+            54
+          ],
+          [
+            25,
+            27,
+            34,
+            35,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2921,
+        "cutoff_contest": 2920,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            27,
+            53
+          ],
+          [
+            10,
+            11,
+            19,
+            34,
+            37,
+            46
+          ],
+          [
+            10,
+            16,
+            34,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            16,
+            19,
+            25,
+            46,
+            56
+          ],
+          [
+            16,
+            27,
+            37,
+            38,
+            46,
+            56
+          ],
+          [
+            25,
+            27,
+            34,
+            37,
+            38,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2922,
+        "cutoff_contest": 2921,
+        "games": [
+          [
+            10,
+            11,
+            25,
+            34,
+            37,
+            38
+          ],
+          [
+            10,
+            16,
+            34,
+            37,
+            46,
+            56
+          ],
+          [
+            10,
+            19,
+            25,
+            27,
+            38,
+            53
+          ],
+          [
+            11,
+            16,
+            19,
+            25,
+            46,
+            53
+          ],
+          [
+            11,
+            27,
+            37,
+            46,
+            53,
+            56
+          ],
+          [
+            16,
+            19,
+            27,
+            34,
+            38,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2923,
+        "cutoff_contest": 2922,
+        "games": [
+          [
+            10,
+            11,
+            16,
+            25,
+            27,
+            34
+          ],
+          [
+            10,
+            11,
+            19,
+            25,
+            37,
+            46
+          ],
+          [
+            10,
+            34,
+            37,
+            46,
+            53,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            38,
+            53,
+            56
+          ],
+          [
+            16,
+            19,
+            27,
+            34,
+            38,
+            53
+          ],
+          [
+            16,
+            19,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          1,
+          2,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2924,
+        "cutoff_contest": 2923,
+        "games": [
+          [
+            10,
+            11,
+            32,
+            34,
+            37,
+            46
+          ],
+          [
+            10,
+            16,
+            19,
+            27,
+            32,
+            56
+          ],
+          [
+            10,
+            16,
+            25,
+            34,
+            38,
+            46
+          ],
+          [
+            11,
+            16,
+            19,
+            25,
+            37,
+            56
+          ],
+          [
+            11,
+            27,
+            37,
+            38,
+            46,
+            56
+          ],
+          [
+            19,
+            25,
+            27,
+            32,
+            34,
+            38
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          2,
+          1,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2925,
+        "cutoff_contest": 2924,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            25,
+            37,
+            38
+          ],
+          [
+            10,
+            27,
+            32,
+            34,
+            38,
+            46
+          ],
+          [
+            10,
+            32,
+            34,
+            37,
+            54,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            32,
+            46
+          ],
+          [
+            11,
+            19,
+            34,
+            46,
+            54,
+            56
+          ],
+          [
+            25,
+            27,
+            37,
+            38,
+            54,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2926,
+        "cutoff_contest": 2925,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            32,
+            38,
+            46
+          ],
+          [
+            10,
+            19,
+            32,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            54,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            37,
+            56
+          ],
+          [
+            11,
+            32,
+            34,
+            37,
+            46,
+            54
+          ],
+          [
+            19,
+            25,
+            34,
+            38,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2927,
+        "cutoff_contest": 2926,
+        "games": [
+          [
+            10,
+            11,
+            34,
+            35,
+            37,
+            38
+          ],
+          [
+            10,
+            19,
+            25,
+            37,
+            54,
+            56
+          ],
+          [
+            10,
+            27,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            34,
+            54
+          ],
+          [
+            11,
+            19,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            25,
+            35,
+            38,
+            46,
+            54,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          2,
+          1,
+          3,
+          3,
+          2,
+          1
+        ],
+        "sum_game_hits": 12,
+        "best_game_hits": 3,
+        "union_hits": 4,
+        "any_3plus": 1,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2928,
+        "cutoff_contest": 2927,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            27,
+            34,
+            35
+          ],
+          [
+            10,
+            11,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            10,
+            19,
+            25,
+            37,
+            54,
+            56
+          ],
+          [
+            11,
+            19,
+            27,
+            38,
+            46,
+            56
+          ],
+          [
+            25,
+            27,
+            35,
+            38,
+            54,
+            56
+          ],
+          [
+            25,
+            34,
+            35,
+            37,
+            46,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          1,
+          0,
+          1,
+          0,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2929,
+        "cutoff_contest": 2928,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            37,
+            46,
+            56
+          ],
+          [
+            10,
+            14,
+            27,
+            32,
+            34,
+            56
+          ],
+          [
+            11,
+            14,
+            19,
+            32,
+            35,
+            46
+          ],
+          [
+            11,
+            19,
+            27,
+            34,
+            35,
+            38
+          ],
+          [
+            32,
+            34,
+            35,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          1,
+          2,
+          2
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2930,
+        "cutoff_contest": 2929,
+        "games": [
+          [
+            10,
+            11,
+            27,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            32,
+            35,
+            56
+          ],
+          [
+            10,
+            27,
+            32,
+            35,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            19,
+            34,
+            35,
+            46
+          ],
+          [
+            11,
+            32,
+            34,
+            37,
+            38,
+            46
+          ],
+          [
+            14,
+            19,
+            27,
+            34,
+            37,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          0,
+          2,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2931,
+        "cutoff_contest": 2930,
+        "games": [
+          [
+            10,
+            11,
+            19,
+            27,
+            34,
+            56
+          ],
+          [
+            10,
+            14,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            10,
+            19,
+            32,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            35,
+            46
+          ],
+          [
+            11,
+            32,
+            35,
+            37,
+            38,
+            56
+          ],
+          [
+            14,
+            19,
+            27,
+            32,
+            35,
+            37
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2932,
+        "cutoff_contest": 2931,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            32,
+            34,
+            37
+          ],
+          [
+            10,
+            19,
+            27,
+            34,
+            38,
+            56
+          ],
+          [
+            10,
+            32,
+            37,
+            38,
+            46,
+            56
+          ],
+          [
+            11,
+            14,
+            19,
+            27,
+            35,
+            56
+          ],
+          [
+            11,
+            19,
+            34,
+            35,
+            38,
+            46
+          ],
+          [
+            14,
+            27,
+            32,
+            35,
+            37,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2933,
+        "cutoff_contest": 2932,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            25,
+            37,
+            38
+          ],
+          [
+            10,
+            19,
+            25,
+            34,
+            46,
+            56
+          ],
+          [
+            10,
+            25,
+            27,
+            34,
+            35,
+            38
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            37,
+            56
+          ],
+          [
+            11,
+            19,
+            27,
+            35,
+            38,
+            46
+          ],
+          [
+            14,
+            19,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2934,
+        "cutoff_contest": 2933,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            19,
+            35,
+            37
+          ],
+          [
+            10,
+            11,
+            19,
+            25,
+            34,
+            38
+          ],
+          [
+            10,
+            19,
+            25,
+            27,
+            35,
+            46
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            37,
+            56
+          ],
+          [
+            14,
+            27,
+            35,
+            38,
+            46,
+            56
+          ],
+          [
+            25,
+            34,
+            37,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2935,
+        "cutoff_contest": 2934,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            35,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            19,
+            34,
+            37,
+            46
+          ],
+          [
+            10,
+            19,
+            25,
+            37,
+            38,
+            56
+          ],
+          [
+            11,
+            14,
+            19,
+            27,
+            34,
+            35
+          ],
+          [
+            14,
+            25,
+            27,
+            35,
+            38,
+            46
+          ],
+          [
+            25,
+            27,
+            34,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2936,
+        "cutoff_contest": 2935,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            27,
+            34,
+            56
+          ],
+          [
+            9,
+            10,
+            19,
+            35,
+            37,
+            56
+          ],
+          [
+            9,
+            27,
+            34,
+            35,
+            38,
+            46
+          ],
+          [
+            10,
+            19,
+            25,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            19,
+            25,
+            27,
+            34,
+            38
+          ],
+          [
+            11,
+            25,
+            35,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2937,
+        "cutoff_contest": 2936,
+        "games": [
+          [
+            9,
+            10,
+            25,
+            32,
+            38,
+            56
+          ],
+          [
+            9,
+            11,
+            25,
+            27,
+            34,
+            37
+          ],
+          [
+            9,
+            11,
+            32,
+            37,
+            38,
+            46
+          ],
+          [
+            10,
+            11,
+            19,
+            27,
+            34,
+            56
+          ],
+          [
+            10,
+            19,
+            25,
+            34,
+            37,
+            46
+          ],
+          [
+            19,
+            27,
+            32,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          1,
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2938,
+        "cutoff_contest": 2937,
+        "games": [
+          [
+            9,
+            10,
+            19,
+            27,
+            32,
+            34
+          ],
+          [
+            9,
+            19,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            9,
+            25,
+            27,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            19,
+            32,
+            38,
+            46
+          ],
+          [
+            10,
+            11,
+            25,
+            32,
+            37,
+            56
+          ],
+          [
+            11,
+            25,
+            27,
+            34,
+            37,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1,
+          2,
+          0
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2939,
+        "cutoff_contest": 2938,
+        "games": [
+          [
+            9,
+            10,
+            19,
+            27,
+            46,
+            56
+          ],
+          [
+            9,
+            11,
+            34,
+            35,
+            38,
+            46
+          ],
+          [
+            9,
+            14,
+            19,
+            27,
+            34,
+            35
+          ],
+          [
+            10,
+            11,
+            32,
+            38,
+            46,
+            56
+          ],
+          [
+            10,
+            14,
+            19,
+            27,
+            32,
+            38
+          ],
+          [
+            11,
+            14,
+            32,
+            34,
+            35,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2940,
+        "cutoff_contest": 2939,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            32,
+            34,
+            38
+          ],
+          [
+            9,
+            14,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            9,
+            27,
+            32,
+            37,
+            38,
+            56
+          ],
+          [
+            10,
+            11,
+            14,
+            27,
+            37,
+            56
+          ],
+          [
+            10,
+            32,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            11,
+            14,
+            34,
+            35,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2941,
+        "cutoff_contest": 2940,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            34,
+            35,
+            38
+          ],
+          [
+            9,
+            14,
+            37,
+            46,
+            53,
+            56
+          ],
+          [
+            9,
+            27,
+            34,
+            35,
+            37,
+            56
+          ],
+          [
+            10,
+            11,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            14,
+            27,
+            38,
+            46,
+            53
+          ],
+          [
+            11,
+            14,
+            34,
+            38,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          1,
+          1,
+          1,
+          1,
+          1
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 1,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2942,
+        "cutoff_contest": 2941,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            27,
+            38,
+            56
+          ],
+          [
+            9,
+            10,
+            14,
+            34,
+            35,
+            46
+          ],
+          [
+            9,
+            11,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            10,
+            11,
+            27,
+            34,
+            37,
+            53
+          ],
+          [
+            11,
+            14,
+            35,
+            37,
+            53,
+            56
+          ],
+          [
+            27,
+            35,
+            37,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          1,
+          1,
+          0,
+          0,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2943,
+        "cutoff_contest": 2942,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            34,
+            37,
+            53
+          ],
+          [
+            9,
+            11,
+            27,
+            35,
+            46,
+            56
+          ],
+          [
+            9,
+            27,
+            37,
+            38,
+            53,
+            56
+          ],
+          [
+            10,
+            11,
+            34,
+            35,
+            38,
+            53
+          ],
+          [
+            10,
+            14,
+            27,
+            35,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            34,
+            37,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2944,
+        "cutoff_contest": 2943,
+        "games": [
+          [
+            9,
+            10,
+            14,
+            27,
+            37,
+            38
+          ],
+          [
+            9,
+            11,
+            37,
+            38,
+            46,
+            53
+          ],
+          [
+            9,
+            27,
+            34,
+            35,
+            53,
+            56
+          ],
+          [
+            10,
+            11,
+            14,
+            34,
+            35,
+            56
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            46,
+            53
+          ],
+          [
+            11,
+            14,
+            27,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2945,
+        "cutoff_contest": 2944,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            14,
+            34,
+            56
+          ],
+          [
+            9,
+            10,
+            35,
+            37,
+            53,
+            56
+          ],
+          [
+            9,
+            27,
+            35,
+            38,
+            46,
+            53
+          ],
+          [
+            10,
+            34,
+            35,
+            37,
+            38,
+            46
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            37,
+            46
+          ],
+          [
+            11,
+            14,
+            27,
+            38,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          1,
+          0,
+          1,
+          1
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2946,
+        "cutoff_contest": 2945,
+        "games": [
+          [
+            9,
+            10,
+            11,
+            14,
+            27,
+            38
+          ],
+          [
+            9,
+            10,
+            33,
+            35,
+            37,
+            56
+          ],
+          [
+            9,
+            10,
+            34,
+            38,
+            46,
+            56
+          ],
+          [
+            11,
+            14,
+            27,
+            34,
+            35,
+            46
+          ],
+          [
+            11,
+            27,
+            33,
+            34,
+            37,
+            56
+          ],
+          [
+            14,
+            33,
+            35,
+            37,
+            38,
+            46
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2947,
+        "cutoff_contest": 2946,
+        "games": [
+          [
+            10,
+            11,
+            14,
+            27,
+            37,
+            46
+          ],
+          [
+            10,
+            11,
+            34,
+            35,
+            46,
+            56
+          ],
+          [
+            10,
+            27,
+            33,
+            34,
+            38,
+            53
+          ],
+          [
+            11,
+            33,
+            35,
+            37,
+            53,
+            56
+          ],
+          [
+            14,
+            27,
+            34,
+            37,
+            38,
+            56
+          ],
+          [
+            14,
+            33,
+            35,
+            38,
+            46,
+            53
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          2,
+          1,
+          1,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 6,
+        "best_game_hits": 2,
+        "union_hits": 2,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2948,
+        "cutoff_contest": 2947,
+        "games": [
+          [
+            4,
+            10,
+            11,
+            14,
+            37,
+            44
+          ],
+          [
+            4,
+            11,
+            27,
+            34,
+            44,
+            56
+          ],
+          [
+            4,
+            14,
+            35,
+            38,
+            44,
+            46
+          ],
+          [
+            10,
+            14,
+            27,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            27,
+            34,
+            37,
+            38,
+            56
+          ],
+          [
+            11,
+            34,
+            35,
+            38,
+            46,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          1,
+          0,
+          0,
+          1,
+          1,
+          0
+        ],
+        "sum_game_hits": 3,
+        "best_game_hits": 1,
+        "union_hits": 1,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2949,
+        "cutoff_contest": 2948,
+        "games": [
+          [
+            4,
+            10,
+            14,
+            27,
+            35,
+            38
+          ],
+          [
+            4,
+            11,
+            14,
+            34,
+            46,
+            56
+          ],
+          [
+            4,
+            34,
+            37,
+            38,
+            46,
+            53
+          ],
+          [
+            10,
+            11,
+            14,
+            27,
+            37,
+            46
+          ],
+          [
+            10,
+            27,
+            34,
+            35,
+            53,
+            56
+          ],
+          [
+            11,
+            35,
+            37,
+            38,
+            53,
+            56
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          2,
+          2,
+          2,
+          1,
+          0,
+          2
+        ],
+        "sum_game_hits": 9,
+        "best_game_hits": 2,
+        "union_hits": 3,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      },
+      {
+        "contest": 2950,
+        "cutoff_contest": 2949,
+        "games": [
+          [
+            4,
+            10,
+            34,
+            46,
+            54,
+            56
+          ],
+          [
+            4,
+            10,
+            35,
+            38,
+            46,
+            53
+          ],
+          [
+            4,
+            11,
+            34,
+            35,
+            37,
+            46
+          ],
+          [
+            10,
+            11,
+            27,
+            38,
+            53,
+            56
+          ],
+          [
+            11,
+            27,
+            34,
+            37,
+            54,
+            56
+          ],
+          [
+            27,
+            35,
+            37,
+            38,
+            53,
+            54
+          ]
+        ],
+        "solver_status": "OPTIMAL",
+        "unique_number_count": 12,
+        "max_pairwise_overlap": 3,
+        "game_hits": [
+          0,
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "sum_game_hits": 0,
+        "best_game_hits": 0,
+        "union_hits": 0,
+        "any_3plus": 0,
+        "any_4plus": 0,
+        "any_5plus": 0,
+        "any_6": 0
+      }
+    ]
+  },
+  "runtime_seconds": 11.576642036437988,
+  "interpretation_contract": {
+    "portfolio_layer_only": true,
+    "uniform_comparison_is_reference_not_proof_of_predictability": true,
+    "historical_backtest_is_engineering_evidence_not_prospective_proof": true
+  }
+}

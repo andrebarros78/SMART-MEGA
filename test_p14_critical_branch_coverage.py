@@ -197,4 +197,44 @@ def test_p15_authorization_requires_global_integrity_flag():
     with pytest.raises(PermissionError, match='global integrity'):
         p15.require_authorized_promotion(bad)
 
+def test_p14_default_gate_path_enforces_current_red_team_and_global_integrity(monkeypatch, tmp_path: Path):
+    import smart_continuous_red_team as rt
+    import smart_global_integrity as gi
+    gate_path = tmp_path / 'gate.json'
+    gate = {
+        'schema': cc.PRE_3052_GATE_SCHEMA,
+        'freeze_allowed': True,
+        'items': [
+            {'priority': i, 'id': f'P{i:02d}', 'status': 'PROVEN', 'evidence': [{'proof': i}]}
+            for i in range(1, 16)
+        ],
+    }
+    gate_path.write_text(json.dumps(gate), encoding='utf-8')
+    calls = []
+    monkeypatch.setattr(cc, 'PRE_3052_GATE_PATH', gate_path)
+    monkeypatch.setattr(rt, 'verify_latest_report', lambda **kwargs: calls.append(('red', kwargs)) or {'status': 'PASS'})
+    monkeypatch.setattr(gi, 'verify_global_integrity', lambda **kwargs: calls.append(('global', kwargs)) or {'status': 'PASS'})
+    out = cc.require_pre_3052_gate(3052, gate_path)
+    assert out['freeze_allowed'] is True
+    assert [name for name, _ in calls] == ['red', 'global']
+
+
+def test_p14_immutable_state_archive_fail_closed_branches(tmp_path, monkeypatch):
+    import smart_champion_challenger as cc
+    state = tmp_path / 'state.json'
+    state.write_text('{"x":1}', encoding='utf-8')
+    expected = cc.sha256(state)
+    archive = cc.archive_state_snapshot(state, expected)
+    assert archive.is_file() and cc.sha256(archive) == expected
+    assert cc.archive_state_snapshot(state, expected) == archive
+    archive.write_text('corrupt', encoding='utf-8')
+    with pytest.raises(ValueError, match='collision/mismatch'):
+        cc.archive_state_snapshot(state, expected)
+
+    archive.unlink()
+    original_sha = cc.sha256
+    monkeypatch.setattr(cc, 'sha256', lambda path: '0' * 64 if Path(path).parent.name == 'SMART_STATE_ARCHIVE' else original_sha(Path(path)))
+    with pytest.raises(ValueError, match='write verification failed'):
+        cc.archive_state_snapshot(state, expected)
+    assert not archive.exists()
 

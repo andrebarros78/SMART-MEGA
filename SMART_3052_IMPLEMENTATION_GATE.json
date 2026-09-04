@@ -426,28 +426,28 @@
         {
           "type": "continuous_red_team",
           "file": "SMART_P09_RED_TEAM_LATEST.json",
-          "sha256": "cb38e5b90f75aa414c21cbda80cc3ec47dc12dda7b1b328880be79f9af1d8d9d",
-          "report_sha256": "bf4ffcfa52c79e19dada9ed0fdb598007513a2c4ede83f34218e87de7547b3e1",
+          "sha256": "c40964e94d98288dbb0323c2b9525df287447d8a46beea93d6b77e0d6186e225",
+          "report_sha256": "13e3e90b489aff180b2b6ca1bf2a6fbde6b2d49baf16942be74a16c8aff6943e",
           "all_checks_pass": true
         },
         {
           "type": "registration_proof",
           "file": "SMART_P09_P14_GATE_REGISTRATION_PROOF.json",
-          "sha256": "d438efb23f48f6195caea05d1817274362f4ac09dd875a16149197e96fbcc856"
-        },
-        {
-          "type": "context_regime_module",
-          "file": "smart_context_regime.py",
-          "sha256": "df13599bdf9e3c254c499d28d8a52e212e822b9204afb0407e22621926759e61",
-          "calibration_id": "SMART_CONTEXT_CAL_20260831_C"
+          "sha256": "d86a76c0a7c8edb7978581b23e0416b7f756b9bffad6d82ee8341c91efde832a"
         },
         {
           "type": "red_team_module",
           "file": "smart_continuous_red_team.py",
           "sha256": "2d299962d8ee1be107956a2710276045c8f3336d0eb8859a7d00bb90fce475c4"
+        },
+        {
+          "type": "global_critical_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% lines + branches"
         }
       ],
-      "proven_brt": "2026-08-31T23:46:15.634609-03:00"
+      "proven_brt": "2026-09-03T20:58:51.359123-03:00"
     },
     {
       "priority": 10,
@@ -608,20 +608,32 @@
           "flow": "ADJUDICATION appends e_value_after then returns promotion_status"
         },
         {
-          "type": "current_real_ledger_decision",
-          "file": "SMART_P13_CURRENT_LEDGER_DECISION.json",
-          "sha256": "35942ebbc528a1068aa28164ac03bcce366957033aa511964d34c68946ce327f",
-          "decision": "KEEP_CHAMPION",
-          "n": 1,
-          "e_value": 1.0
-        },
-        {
           "type": "regression",
           "test_file": "test_smart_promotion_gate.py",
           "test_sha256": "b00d19f8f300f4bdf4fd3de4c8e84aa65cd8afc145059e8c2eb11fa785bec124",
           "focused_passed": 13,
           "focused_plus_architecture_passed": 18,
           "full_suite_passed": 191
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "current_real_ledger_decision",
+          "file": "SMART_P13_CURRENT_LEDGER_DECISION.json",
+          "sha256": "6eb594c29e5a9b8e4e482b092dfda2728cbf4d93d62f1dad46b7621629b82b2f",
+          "decision": "KEEP_CHAMPION",
+          "n": 1,
+          "e_value": 1.0
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
         }
       ],
       "proven_brt": "2026-08-31T12:39:08.964236-03:00"
@@ -636,39 +648,39 @@
         {
           "type": "independent_audit",
           "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
-          "sha256": "0bd29349d65c00ec3fe281bac16cacea3899073c0b133f50fae805026407373a",
-          "report_sha256": "66fd1dcaabb715c74e516a13c25c88a39fd49cf0b40405a904c8197a170e2e45",
+          "sha256": "55199b35357699579a0a274ddc31aaf79b47c0e649cc3fe52e4c8ec5079721c5",
+          "report_sha256": "69d8c0190d1d1ffdb8e81d3a83576c3f2ff6987ac15b30d7d24740187c246ed7",
           "material_deficiencies": []
         },
         {
           "type": "registration_proof",
           "file": "SMART_P09_P14_GATE_REGISTRATION_PROOF.json",
-          "sha256": "d438efb23f48f6195caea05d1817274362f4ac09dd875a16149197e96fbcc856"
+          "sha256": "d86a76c0a7c8edb7978581b23e0416b7f756b9bffad6d82ee8341c91efde832a"
         },
         {
           "type": "coverage_binding",
           "file": "SMART_P14_COVERAGE_BINDING_AUDIT.json",
-          "sha256": "4914448e8efa1f720e4f488d0232cc29e0080c478893e9b28da0c1eb532d760c",
+          "sha256": "6338aa6881058a21aad4d6d60dc2ddbf73d626fca8d063fdbcf7882c2f98e1bf",
           "source_file": "smart_independent_audit.py",
-          "covered_lines": 431,
-          "statements": 431,
-          "covered_branches": 212,
-          "branches": 212
+          "covered_lines": 480,
+          "statements": 480,
+          "covered_branches": 246,
+          "branches": 246
         },
         {
           "type": "coverage_binding",
           "file": "SMART_P14_COVERAGE_BINDING_ORCHESTRATOR.json",
-          "sha256": "01f30135583ebbbb6eda89218c7117d9427a20194dd604dc46eb6dc72526b1e6",
+          "sha256": "69399cb57389a7c5fed03ff3545948ec9b36f403b6cb908e80b668bbec5734ed",
           "source_file": "smart_champion_challenger.py",
-          "covered_lines": 268,
-          "statements": 268,
-          "covered_branches": 104,
-          "branches": 104
+          "covered_lines": 286,
+          "statements": 286,
+          "covered_branches": 110,
+          "branches": 110
         },
         {
           "type": "coverage_binding",
           "file": "SMART_P14_COVERAGE_BINDING_PROMOTION.json",
-          "sha256": "a769c2339fc238dd8696e825c7e85cb61f81114aa9ea64707521cfc351779a33",
+          "sha256": "68abcb5470907ba85d705c083ffe3c8bbd1842c771406a3b0e5cfbdf40f14943",
           "source_file": "smart_promotion_gate.py",
           "covered_lines": 64,
           "statements": 64,
@@ -678,7 +690,7 @@
         {
           "type": "coverage_binding",
           "file": "SMART_P14_COVERAGE_BINDING_EVIDENCE_ONLY.json",
-          "sha256": "76d0a107e89f6425b083e1fd841a43edca3a2c780667a880fe74bb32c10379e8",
+          "sha256": "78d8536dc146b2d0db7e41842a39bfa6dbc49c4586b7ea54fad7a7b9f03ba569",
           "source_file": "smart_evidence_only_promotion.py",
           "covered_lines": 297,
           "statements": 297,
@@ -686,12 +698,13 @@
           "branches": 160
         },
         {
-          "type": "critical_branch_regression",
-          "file": "test_p14_critical_branch_coverage.py",
-          "sha256": "283c49fa910d71399038aa9d8c8eedb8f119ddf6bdd64759e3dca6fd2b9cddbb"
+          "type": "global_critical_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% lines + branches"
         }
       ],
-      "proven_brt": "2026-08-31T23:46:15.634609-03:00"
+      "proven_brt": "2026-09-03T20:58:51.359123-03:00"
     },
     {
       "priority": 15,
@@ -733,13 +746,6 @@
           "flow": "P13 ELIGIBILITY -> P15 EVIDENCE/AUDIT/MATERIAL-DEFICIENCY GATE -> KEEP_CHAMPION or AUTHORIZED PROMOTION"
         },
         {
-          "type": "current_real_ledger_decision",
-          "file": "SMART_P15_CURRENT_LEDGER_DECISION.json",
-          "sha256": "a33b1ab10fde88d0c67df1ec3689b74f9b6c4089ce5ff89805b4e106ee266a27",
-          "decision": "KEEP_CHAMPION",
-          "authorized": false
-        },
-        {
           "type": "regression",
           "test_file": "test_smart_evidence_only_promotion.py",
           "test_sha256": "c08fae4389e4062d61a0f77ee60933ed2fc7bfb1c163d3f9fd6ffeca2a484d9d",
@@ -747,6 +753,25 @@
           "p15_coverage_passed": 15,
           "orchestrator_coverage_passed": 97,
           "full_suite_passed": 235
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "current_real_ledger_decision",
+          "file": "SMART_P15_CURRENT_LEDGER_DECISION.json",
+          "sha256": "bc966bd16cecda9ea91b95907abc82f1e5d478327af22e188b889a804982c2e4",
+          "decision": "KEEP_CHAMPION",
+          "authorized": false
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
         }
       ],
       "proven_brt": "2026-08-31T23:46:17.109228-03:00"
@@ -760,14 +785,15 @@
   "progress": {
     "proven_items": 15,
     "total_items": 15,
-    "remaining_items": 0
+    "remaining_items": 0,
+    "remaining_ids": []
   },
-  "last_updated_brt": "2026-08-31T23:46:17.109228-03:00",
+  "last_updated_brt": "2026-09-03T20:58:51.359123-03:00",
   "last_update_brt": "2026-08-30T18:04:22.174453-03:00",
-  "updated_brt": "2026-08-31T23:46:17.109228-03:00",
+  "updated_brt": "2026-09-03T20:58:51.359123-03:00",
   "global_integrity": {
     "file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
-    "sha256": "384820143d3f28019c9dafeaa2f6ffe5672bc1963bdbb18752907af265eddee7",
+    "sha256": "e709e87f5ae3b6bbd3290fb8821473b3d31d9348c70159c8abdf34b0a5c3e208",
     "status": "PASS",
     "material_deficiencies": []
   }

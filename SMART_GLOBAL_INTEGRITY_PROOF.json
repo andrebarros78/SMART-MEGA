@@ -19,14 +19,18 @@
       "smart_evidence_only_promotion.py",
       "smart_continuous_red_team.py",
       "smart_global_integrity.py",
-      "smart_champion_challenger.py"
+      "smart_champion_challenger.py",
+      "adjudicate_signal_challenger.py",
+      "smart_v2_production.py",
+      "smart_portfolio_optimizer.py",
+      "smart_portfolio_pipeline.py"
     ],
     "full_regression_junit_required": true,
     "proof_self_hash_required": true,
     "any_critical_source_change_invalidates_proof": true,
-    "sha256": "227b6fbf6e773dcd4914afcffa8e5fd3071f2dfc59eb975572f24a931a060b06"
+    "sha256": "86199c386104cb5ba9b0cc2e1f58632363477b9f232f7ea2285e0213c21289de"
   },
-  "gate_state_sha256": "1e02e24f3b21262803ed1d132f09f921d9a258776086cb61c554f458e6c9e961",
+  "gate_state_sha256": "cc9ca2ed376d3ae5a46ba66b1dff8c2720ce19b617f47bef52d654baa7c0c9e0",
   "gate_check": {
     "status": "PASS",
     "item_count": 15,
@@ -36,7 +40,7 @@
   },
   "critical_source_hashes": {
     "smart_v2_engine.py": "bff5d8beb464b94049d5933c9d6bee157f445aa9b6d15ebabcf42a848c4412d8",
-    "smart_v2_production.py": "435d2edc63dc03c1d2080100f3448799a961e386180060dc44a512fb721a9b66",
+    "smart_v2_production.py": "b14892a0043c38908ddc22531cdabab4c15701c829ebd94d351cebae59c115dd",
     "freeze_next_research.py": "5159a4b16aab382c0baa03a8241235e87b62d8324801ad664215ceefb999c613",
     "smart_signal_quality.py": "6e28e3bc2d163fffa3809d892e97cc282660284f08abed1e57b832c4641aee07",
     "smart_signal_weights.py": "c8fe83045e9db20b8ec077dd0cfa3007a0d01d42a254e106337b4000969a4681",
@@ -52,18 +56,20 @@
     "smart_signal_expansion_governance.py": "ad76396cefe2112403fec795c604d11e72d1ddd5c0e45c5d67ef18875e1ec95f",
     "smart_sequential_prospective_proof.py": "72fd4bbbfdcedd92deb238b78ac96913c0bc4ce23511e1faab962c3376ab3654",
     "smart_promotion_gate.py": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
-    "smart_independent_audit.py": "bf6fa697fe23d46b725a7f2dacefcb96666cb44b9293becb4d41190930ef2dc1",
+    "smart_independent_audit.py": "44309a1389502285416b53e4bc3a29f32d4165f14d3045f3bf52087f8cfe63ef",
     "smart_evidence_only_promotion.py": "4395b2278c6478d705755bdb3dbf356f4183f749661b8288674f39d585d8694d",
     "smart_signal_agent.py": "e0a161ad6b63c5d6aa7eb7577a87039f7623b49b4256ed6ad689114b3b7e59fd",
-    "smart_champion_challenger.py": "2ea9d64499509e40a99b974d882bfe6be995a03db6735ef5228ada33518a22c7",
-    "adjudicate_signal_challenger.py": "c6b242e8d910852eca4cffb6d01ab0aaabef616da5329fdc3af5a4f2970d7efc",
+    "smart_champion_challenger.py": "06189ce46eff68bf43e89dcc05f4614074c1a0b36b6946355290c8143818f197",
+    "adjudicate_signal_challenger.py": "72e0714b702257b9c01d234844a963f079ab9edbb031d1bffb0e21d5d2d20c3e",
     "smart_continuous_red_team.py": "2d299962d8ee1be107956a2710276045c8f3336d0eb8859a7d00bb90fce475c4",
-    "smart_global_integrity.py": "7f06ca3869da83d45aa00c10097624f58cc5043b20e969f0de07b1e9bc138230"
+    "smart_global_integrity.py": "118d48194f653a89d9776562845e4b1beac55770f16c23715440eae9cecd8390",
+    "smart_portfolio_optimizer.py": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8",
+    "smart_portfolio_pipeline.py": "379559bf70b23a416f8da73da57390bcaf4ffdc1a305e6df08e6cc3f136a3d18"
   },
   "coverage": [
     {
-      "report_file": "SMART_COVERAGE_P10_CURRENT.json",
-      "report_sha256": "90a37dcca9209c2adc54a6fb1268d38133a41384516a93944a8579dac188c5cf",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_bounded_online_learning.py",
       "covered_lines": 133,
       "statements": 133,
@@ -71,8 +77,8 @@
       "branches": 52
     },
     {
-      "report_file": "SMART_COVERAGE_P11_CURRENT.json",
-      "report_sha256": "eda4a548116851e7285c5ebc31231135dcc2c6d0dfe0faa9714224b44b5e269d",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_signal_expansion_governance.py",
       "covered_lines": 263,
       "statements": 263,
@@ -80,8 +86,8 @@
       "branches": 102
     },
     {
-      "report_file": "SMART_COVERAGE_GLOBAL_SEQUENTIAL.json",
-      "report_sha256": "132ddcad23b53e15149514e031656ffb3d7bc25f4af1ab3d1f6341f0861b144a",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_sequential_prospective_proof.py",
       "covered_lines": 230,
       "statements": 230,
@@ -89,8 +95,8 @@
       "branches": 124
     },
     {
-      "report_file": "SMART_COVERAGE_P14_PROMOTION.json",
-      "report_sha256": "e8e881a72ce6bb33e78d9db938de4e49b629453b7c43f0acb0a6b794e6af233c",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_promotion_gate.py",
       "covered_lines": 64,
       "statements": 64,
@@ -98,17 +104,17 @@
       "branches": 26
     },
     {
-      "report_file": "SMART_COVERAGE_P14_MODULE.json",
-      "report_sha256": "9921d700927da866de4de29e83a579ee96190d3803be5229cdfd0c5d390ac399",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_independent_audit.py",
-      "covered_lines": 431,
-      "statements": 431,
-      "covered_branches": 212,
-      "branches": 212
+      "covered_lines": 480,
+      "statements": 480,
+      "covered_branches": 246,
+      "branches": 246
     },
     {
-      "report_file": "SMART_COVERAGE_P15_MODULE.json",
-      "report_sha256": "f9240d6667950b559fc9e717409be1a8a13efbe054d21f1844c8e331b24cf506",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_evidence_only_promotion.py",
       "covered_lines": 297,
       "statements": 297,
@@ -116,8 +122,8 @@
       "branches": 160
     },
     {
-      "report_file": "SMART_COVERAGE_GLOBAL_RED_TEAM.json",
-      "report_sha256": "6cb2c37a71d3e88b9e2b89009d39632b997901ba2a410e915bc7016946018113",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_continuous_red_team.py",
       "covered_lines": 259,
       "statements": 259,
@@ -125,8 +131,8 @@
       "branches": 74
     },
     {
-      "report_file": "SMART_COVERAGE_GLOBAL_INTEGRITY.json",
-      "report_sha256": "1b8e40925871925764499ce4d851013d551d59002866259b5ba2e8eeca9d18e0",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_global_integrity.py",
       "covered_lines": 224,
       "statements": 224,
@@ -134,39 +140,75 @@
       "branches": 114
     },
     {
-      "report_file": "SMART_COVERAGE_P15_ORCHESTRATOR.json",
-      "report_sha256": "44512e5a4829c19d9966653098a8c5f3866be596619817095c8033e35d4ffaf8",
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
       "source_key": "smart_champion_challenger.py",
-      "covered_lines": 268,
-      "statements": 268,
-      "covered_branches": 104,
-      "branches": 104
+      "covered_lines": 286,
+      "statements": 286,
+      "covered_branches": 110,
+      "branches": 110
+    },
+    {
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+      "source_key": "adjudicate_signal_challenger.py",
+      "covered_lines": 379,
+      "statements": 379,
+      "covered_branches": 184,
+      "branches": 184
+    },
+    {
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+      "source_key": "smart_v2_production.py",
+      "covered_lines": 115,
+      "statements": 115,
+      "covered_branches": 38,
+      "branches": 38
+    },
+    {
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+      "source_key": "smart_portfolio_optimizer.py",
+      "covered_lines": 147,
+      "statements": 147,
+      "covered_branches": 64,
+      "branches": 64
+    },
+    {
+      "report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+      "report_sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+      "source_key": "smart_portfolio_pipeline.py",
+      "covered_lines": 57,
+      "statements": 57,
+      "covered_branches": 16,
+      "branches": 16
     }
   ],
   "red_team": {
     "status": "PASS",
-    "report_sha256": "06dfdff19a0c28a2dd2401c97717de91de28b880090dedeaa0c74f06c55c2c39",
+    "report_sha256": "c40964e94d98288dbb0323c2b9525df287447d8a46beea93d6b77e0d6186e225",
     "behavioral_hashes_current": true,
     "self_hash_valid": true,
     "scenario_count": 10,
     "file": "SMART_P09_RED_TEAM_LATEST.json",
-    "file_sha256": "06dfdff19a0c28a2dd2401c97717de91de28b880090dedeaa0c74f06c55c2c39"
+    "file_sha256": "c40964e94d98288dbb0323c2b9525df287447d8a46beea93d6b77e0d6186e225"
   },
   "independent_audit": {
     "status": "PASS",
     "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
-    "file_sha256": "0bd29349d65c00ec3fe281bac16cacea3899073c0b133f50fae805026407373a",
-    "report_sha256": "66fd1dcaabb715c74e516a13c25c88a39fd49cf0b40405a904c8197a170e2e45",
+    "file_sha256": "55199b35357699579a0a274ddc31aaf79b47c0e649cc3fe52e4c8ec5079721c5",
+    "report_sha256": "69d8c0190d1d1ffdb8e81d3a83576c3f2ff6987ac15b30d7d24740187c246ed7",
     "material_deficiencies": []
   },
   "full_regression": {
-    "junit_file": "SMART_AUDIT_JUNIT_FINAL.xml",
-    "junit_sha256": "7a57997ad79945da68714d3c3610ce02cd929bf3b9cf85bb0ba43b632331325b",
-    "tests": 321,
+    "junit_file": "SMART_FINAL_JUNIT.xml",
+    "junit_sha256": "3f5acce8cf8cb0c765fa748868a6fc93aecce4f0deb64acea956b5e3ade499c3",
+    "tests": 381,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "material_deficiencies": [],
-  "sha256": "e66a02ba579c6bcefc11feda19c568122400e576e04f5a7fb6b95441f2b28017"
+  "sha256": "526c2cfa1727c71cf360fa2c42f39bdbbb461681f53dba825ea3e5f66c6e6632"
 }

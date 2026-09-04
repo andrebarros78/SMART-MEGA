@@ -1,0 +1,233 @@
+{
+  "schema": "SMART_MISSION_PROVEN_6OF6_1",
+  "status": "MISSION_PROVEN",
+  "created_brt": "2026-09-03T20:58:51.359123-03:00",
+  "criteria": {
+    "1_capture_quality": "PROVEN",
+    "2_interpretation": "PROVEN",
+    "3_dynamic_weights": "PROVEN",
+    "4_calibration_adaptation": "PROVEN",
+    "5_learning_robustness": "PROVEN",
+    "6_result_governance_proof": "PROVEN"
+  },
+  "gate": {
+    "file": "SMART_3052_IMPLEMENTATION_GATE.json",
+    "sha256": "ad2145d6b8caa6bebfaef6b2f53e39b3af44b3ad2f75b187033dfd741a86c6d9",
+    "proven_items": 15,
+    "total_items": 15,
+    "freeze_allowed": true
+  },
+  "global_integrity": {
+    "status": "PASS",
+    "proof_file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
+    "proof_file_sha256": "e709e87f5ae3b6bbd3290fb8821473b3d31d9348c70159c8abdf34b0a5c3e208",
+    "critical_source_hashes_current": true,
+    "coverage_current": true,
+    "red_team_current": true,
+    "independent_audit_current": true,
+    "full_regression_current": true,
+    "material_deficiencies": []
+  },
+  "coverage": {
+    "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+    "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+    "sources": 13,
+    "covered_statements": 2934,
+    "statements": 2934,
+    "covered_branches": 1310,
+    "branches": 1310
+  },
+  "regression": {
+    "file": "SMART_FINAL_JUNIT.xml",
+    "sha256": "3f5acce8cf8cb0c765fa748868a6fc93aecce4f0deb64acea956b5e3ade499c3",
+    "tests": 381,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "red_team": {
+    "file": "SMART_P09_RED_TEAM_LATEST.json",
+    "sha256": "c40964e94d98288dbb0323c2b9525df287447d8a46beea93d6b77e0d6186e225",
+    "status": "PASS",
+    "scenario_count": 10
+  },
+  "independent_audit": {
+    "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+    "sha256": "55199b35357699579a0a274ddc31aaf79b47c0e649cc3fe52e4c8ec5079721c5",
+    "report_sha256": "69d8c0190d1d1ffdb8e81d3a83576c3f2ff6987ac15b30d7d24740187c246ed7",
+    "status": "PASS",
+    "pair_count": 2,
+    "no_future_leakage": true,
+    "deterministic_replay": true
+  },
+  "promotion": {
+    "p13": {
+      "decision": "KEEP_CHAMPION",
+      "eligible": false,
+      "n": 1,
+      "challenger_hits": 1,
+      "champion_hits": 1,
+      "advantage_hits": 0,
+      "mean_hit_advantage": 0.0,
+      "cumulative_regret": 0,
+      "e_value": 1.0,
+      "inputs_validated": true,
+      "base_min_prospective_contests": 20,
+      "required_prospective_contests": 20,
+      "adaptive_sample_escalated": false,
+      "enough_contests": false,
+      "superior_to_champion": false,
+      "favorable_regret": false,
+      "sequential_evidence": false,
+      "blockers": [
+        "no_cumulative_superiority",
+        "regret_not_favorable",
+        "insufficient_adaptive_sample",
+        "insufficient_sequential_evidence"
+      ],
+      "reason": "prospective promotion conditions not met",
+      "candidate_fingerprint": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486",
+      "lineage_pair_count": 1,
+      "total_versioned_causal_pairs": 1,
+      "unversioned_causal_pairs_ignored": 1,
+      "discarded_prior_version_pairs": 0,
+      "lineage_e_value": 1.0,
+      "stored_global_e_value_trusted_for_promotion": false,
+      "lineage_reset_on_predictive_architecture_change": true,
+      "promotion_lineage_components": [
+        "engine",
+        "champion_engine",
+        "signal_agent",
+        "signal_quality",
+        "signal_weights",
+        "context_regime",
+        "redundancy_consensus",
+        "marginal_utility",
+        "contextual_meta_weights",
+        "rank_score_calibration",
+        "multi_challengers",
+        "meta_governor",
+        "bounded_online_learning",
+        "signal_interactions",
+        "signal_expansion_governance"
+      ]
+    },
+    "p15_final": {
+      "schema": "SMART_EVIDENCE_ONLY_PROMOTION_AUTHORIZATION_1",
+      "decision": "KEEP_CHAMPION",
+      "authorized": false,
+      "production_switch_may_proceed": false,
+      "champion_remains_active": true,
+      "p13_eligible": false,
+      "p13_gate": {
+        "decision": "KEEP_CHAMPION",
+        "eligible": false,
+        "n": 1,
+        "challenger_hits": 1,
+        "champion_hits": 1,
+        "advantage_hits": 0,
+        "mean_hit_advantage": 0.0,
+        "cumulative_regret": 0,
+        "e_value": 1.0,
+        "inputs_validated": true,
+        "base_min_prospective_contests": 20,
+        "required_prospective_contests": 20,
+        "adaptive_sample_escalated": false,
+        "enough_contests": false,
+        "superior_to_champion": false,
+        "favorable_regret": false,
+        "sequential_evidence": false,
+        "blockers": [
+          "no_cumulative_superiority",
+          "regret_not_favorable",
+          "insufficient_adaptive_sample",
+          "insufficient_sequential_evidence"
+        ],
+        "reason": "prospective promotion conditions not met",
+        "candidate_fingerprint": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486",
+        "lineage_pair_count": 1,
+        "total_versioned_causal_pairs": 1,
+        "unversioned_causal_pairs_ignored": 1,
+        "discarded_prior_version_pairs": 0,
+        "lineage_e_value": 1.0,
+        "stored_global_e_value_trusted_for_promotion": false,
+        "lineage_reset_on_predictive_architecture_change": true,
+        "promotion_lineage_components": [
+          "engine",
+          "champion_engine",
+          "signal_agent",
+          "signal_quality",
+          "signal_weights",
+          "context_regime",
+          "redundancy_consensus",
+          "marginal_utility",
+          "contextual_meta_weights",
+          "rank_score_calibration",
+          "multi_challengers",
+          "meta_governor",
+          "bounded_online_learning",
+          "signal_interactions",
+          "signal_expansion_governance"
+        ]
+      },
+      "implementation_gate": {
+        "available": false
+      },
+      "independent_audit": {
+        "available": false
+      },
+      "global_integrity": {
+        "available": false,
+        "verified": false
+      },
+      "global_integrity_verified": false,
+      "known_material_deficiencies": [
+        "p13_not_eligible"
+      ],
+      "known_material_deficiency_count": 1,
+      "blockers": [
+        "p13_not_eligible"
+      ],
+      "reason": "evidence-only promotion requirements not met",
+      "policy": {
+        "schema": "SMART_EVIDENCE_ONLY_PROMOTION_POLICY_1",
+        "p13_statistical_eligibility_required": true,
+        "p14_independent_audit_pass_required": true,
+        "all_15_implementation_items_proven_required": true,
+        "implementation_gate_exact_contract_required": true,
+        "implementation_gate_freeze_allowed_required": true,
+        "current_global_integrity_proof_required": true,
+        "audit_report_self_hash_required": true,
+        "audit_promotion_authority_must_be_false": true,
+        "audit_independence_flag_required": true,
+        "audit_coverage_lines_and_branches_required": true,
+        "audit_hash_integrity_required": true,
+        "audit_deterministic_replay_required": true,
+        "audit_future_leakage_absent_required": true,
+        "audit_full_champion_comparison_required": true,
+        "p13_p14_metric_identity_required": true,
+        "known_material_deficiency_count_must_be_zero": true,
+        "missing_or_invalid_evidence_keeps_champion": true,
+        "manual_override_prohibited": true,
+        "historical_or_synthetic_evidence_cannot_authorize_real_promotion": true,
+        "production_switch_requires_explicit_p15_authorization": true,
+        "required_audit_checks": [
+          "coverage_lines_and_branches",
+          "hash_integrity",
+          "deterministic_replay",
+          "future_leakage_absent",
+          "full_champion_comparison",
+          "promotion_lineage_recomputed",
+          "independence_no_forbidden_dependencies"
+        ],
+        "sha256": "2591a52595014fc6e95d950ba388fbd9fe66d55fd22abf4a40dc3876f899bd96"
+      },
+      "sha256": "c0b933a582188e59af5ca9511310020050c84971e5d75cb9a70f114882489091"
+    },
+    "champion_remains_active": true,
+    "fabricated_superiority_evidence": false
+  },
+  "material_deficiencies": [],
+  "conclusion": "6/6 engineering/governance objectively proven on current state; predictive promotion remains fail-closed until prospective P13 evidence is sufficient.",
+  "sha256": "80c41f45cb7422b1c5fe9bdd23fed5e8aad9abd4fdabb28d1775500e91dcbca7"
+}

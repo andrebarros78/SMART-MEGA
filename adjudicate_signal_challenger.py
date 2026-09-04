@@ -38,6 +38,85 @@ def _strict_top6(value, label: str) -> list[int]:
     return out
 
 
+
+
+def _resolve_evidence_file(raw: object, fr: dict) -> Path:
+    path = Path(str(raw))
+    if not path.is_absolute() and not path.is_file():
+        freeze_file = Path(str(fr.get('freeze_file', '')))
+        path = freeze_file.parent / path.name
+    return path
+
+
+def _validate_state_archive_evidence(fr: dict, frozen: dict) -> None:
+    archive_raw = frozen.get('signal_state_archive_file')
+    archive_sha = frozen.get('signal_state_archive_sha256')
+    if archive_raw is None and archive_sha is None:
+        return
+    if not isinstance(archive_raw, str) or not isinstance(archive_sha, str):
+        raise ValueError('frozen state archive evidence is incomplete')
+    if archive_sha != frozen.get('signal_state_sha256'):
+        raise ValueError('frozen state archive hash differs from state hash')
+    if fr.get('state_archive_file') != archive_raw or fr.get('state_archive_sha256') != archive_sha:
+        raise ValueError('ledger state archive evidence differs from frozen artifact')
+    archive_path = _resolve_evidence_file(archive_raw, fr)
+    if not archive_path.is_file():
+        raise ValueError('immutable state archive missing')
+    if sha256(archive_path) != archive_sha:
+        raise ValueError('immutable state archive hash mismatch')
+
+
+def _validate_portfolio_evidence(fr: dict, frozen: dict, target: int) -> None:
+    fields = ('portfolio_file', 'portfolio_sha256', 'portfolio_status', 'portfolio_games', 'portfolio_metrics')
+    present = [fr.get(name) is not None for name in fields]
+    policy = frozen.get('portfolio_policy')
+    required = isinstance(policy, dict) and policy.get('enabled') is True
+    if not any(present):
+        if required:
+            raise ValueError('portfolio-enabled freeze is missing portfolio evidence')
+        return
+    if not all(present):
+        raise ValueError('portfolio evidence is incomplete')
+
+    portfolio_path = _resolve_evidence_file(fr['portfolio_file'], fr)
+    if not portfolio_path.is_file():
+        raise ValueError('portfolio artifact missing')
+    if sha256(portfolio_path) != str(fr['portfolio_sha256']):
+        raise ValueError('portfolio artifact hash mismatch')
+
+    try:
+        portfolio = json.loads(portfolio_path.read_text(encoding='utf-8-sig'))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError('portfolio artifact invalid JSON') from exc
+    if not isinstance(portfolio, dict) or portfolio.get('schema') != 'SMART_PORTFOLIO_PIPELINE_V1':
+        raise ValueError('portfolio artifact schema invalid')
+    if portfolio.get('status') != 'PASS' or fr.get('portfolio_status') != 'PASS':
+        raise ValueError('portfolio artifact is not PASS')
+    if _strict_int(portfolio.get('target_contest'), 'portfolio target', lo=1) != target:
+        raise ValueError('portfolio target mismatch')
+    if _strict_int(portfolio.get('cutoff_contest'), 'portfolio cutoff', lo=0) != target - 1:
+        raise ValueError('portfolio cutoff mismatch')
+    if portfolio.get('freeze_sha256') != fr.get('freeze_sha256'):
+        raise ValueError('portfolio is not bound to active freeze hash')
+    if portfolio.get('optimizer_sha256') != frozen.get('portfolio_optimizer_sha256'):
+        raise ValueError('portfolio optimizer hash differs from frozen artifact')
+    if portfolio.get('pipeline_sha256') != frozen.get('portfolio_pipeline_sha256'):
+        raise ValueError('portfolio pipeline hash differs from frozen artifact')
+
+    portfolio_body = portfolio.get('portfolio')
+    if not isinstance(portfolio_body, dict):
+        raise ValueError('portfolio body missing')
+    if portfolio_body.get('games') != fr.get('portfolio_games'):
+        raise ValueError('portfolio games differ from ledger event')
+    if portfolio_body.get('metrics') != fr.get('portfolio_metrics'):
+        raise ValueError('portfolio metrics differ from ledger event')
+    contract = portfolio.get('contract')
+    if not isinstance(contract, dict) or contract.get('post_scoring_component') is not True \
+            or contract.get('predictive_model_unchanged') is not True \
+            or contract.get('no_retroactive_result_use') is not True:
+        raise ValueError('portfolio causal contract invalid')
+
+
 def _validate_freeze_event_against_artifact(fr: dict, frozen: dict, target: int) -> None:
     target = _strict_int(target, 'target contest', lo=1)
     if not isinstance(fr, dict) or not isinstance(frozen, dict):
@@ -92,6 +171,9 @@ def _validate_freeze_event_against_artifact(fr: dict, frozen: dict, target: int)
         field = 'signal_state_sha256' if component == 'state' else f'{component}_sha256'
         if field not in frozen or frozen.get(field) != observed:
             raise ValueError(f'freeze component hash differs from artifact: {component}')
+
+    _validate_state_archive_evidence(fr, frozen)
+    _validate_portfolio_evidence(fr, frozen, target)
 
 
 def _next_e_value(ledger: dict, challenger_hits: int, champion_hits: int) -> float:

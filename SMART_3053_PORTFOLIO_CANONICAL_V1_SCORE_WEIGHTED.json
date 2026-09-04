@@ -1,0 +1,205 @@
+{
+  "schema": "SMART_PORTFOLIO_PIPELINE_V1",
+  "generated_utc": "2026-09-03T21:40:32.889971+00:00",
+  "status": "PASS",
+  "target_contest": 3053,
+  "cutoff_contest": 3052,
+  "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256": "bf922af0011f69d41cde5a699915d4a6a560641a4e8c9bc98197633e501bc7fa",
+  "optimizer_file": "smart_portfolio_optimizer.py",
+  "optimizer_sha256": "006f3d609894c32d8a1eae7bd8c1a1af4d927b5cba7a168d3cc365a9e6729080",
+  "pipeline_sha256": "0b691dcb2c5d7c727974317142032d6b7d0a0381146d6340ced477f00ec25c6e",
+  "config": {
+    "game_count": 4,
+    "candidate_pool_size": 12,
+    "numbers_per_game": 6,
+    "max_pairwise_overlap": 3,
+    "coverage_bonus": 2.0,
+    "rank_bonus": 0.02,
+    "time_limit_seconds": 30.0,
+    "random_seed": 42
+  },
+  "champion_top6": [
+    11,
+    27,
+    30,
+    10,
+    38,
+    46
+  ],
+  "single_game_control": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "OPTIMAL",
+    "objective_value": 2506539000.0,
+    "best_objective_bound": 2506539000.0,
+    "config": {
+      "game_count": 1,
+      "candidate_pool_size": 6,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 4,
+      "coverage_bonus": 0.0,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 5.0,
+      "random_seed": 42
+    },
+    "candidate_pool": [
+      11,
+      27,
+      30,
+      10,
+      38,
+      46
+    ],
+    "games": [
+      [
+        10,
+        11,
+        27,
+        30,
+        38,
+        46
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        10,
+        11,
+        27,
+        30,
+        38,
+        46
+      ],
+      "unique_number_count": 6,
+      "average_pairwise_overlap": 0.0,
+      "max_pairwise_overlap_observed": 0,
+      "raw_selection_score": 4.638135695315421,
+      "raw_unique_score": 4.638135695315421
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3053,
+      "cutoff_contest": 3052,
+      "head": "champion"
+    }
+  },
+  "portfolio": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "OPTIMAL",
+    "objective_value": 18598127000.0,
+    "best_objective_bound": 18598127000.0,
+    "config": {
+      "game_count": 4,
+      "candidate_pool_size": 12,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 3,
+      "coverage_bonus": 2.0,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 30.0,
+      "random_seed": 42
+    },
+    "candidate_pool": [
+      11,
+      27,
+      30,
+      10,
+      38,
+      46,
+      53,
+      16,
+      35,
+      43,
+      42,
+      37
+    ],
+    "games": [
+      [
+        10,
+        11,
+        16,
+        27,
+        38,
+        53
+      ],
+      [
+        10,
+        11,
+        27,
+        30,
+        35,
+        43
+      ],
+      [
+        10,
+        11,
+        30,
+        38,
+        42,
+        46
+      ],
+      [
+        11,
+        27,
+        30,
+        37,
+        46,
+        53
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        10,
+        11,
+        16,
+        27,
+        30,
+        35,
+        37,
+        38,
+        42,
+        43,
+        46,
+        53
+      ],
+      "unique_number_count": 12,
+      "average_pairwise_overlap": 3.0,
+      "max_pairwise_overlap_observed": 3,
+      "raw_selection_score": 17.957062601121468,
+      "raw_unique_score": 8.512846363299559
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3053_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3053,
+      "cutoff_contest": 3052,
+      "head": "champion"
+    }
+  },
+  "checks": {
+    "pre_result_freeze": true,
+    "causal_cutoff": true,
+    "single_game_preserved": true,
+    "solver_optimal": true,
+    "objective_gap_zero": true,
+    "overlap_within_contract": true,
+    "portfolio_only": true,
+    "scores_unchanged": true,
+    "canonical_full_candidate_coverage": true
+  },
+  "contract": {
+    "post_scoring_component": true,
+    "predictive_model_unchanged": true,
+    "no_retroactive_result_use": true,
+    "no_claim_of_predictability_gain": true
+  }
+}

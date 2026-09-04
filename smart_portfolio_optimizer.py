@@ -21,6 +21,9 @@ class PortfolioConfig:
     rank_bonus: float = 0.02
     time_limit_seconds: float = 5.0
     random_seed: int = 42
+    require_full_candidate_coverage: bool = False
+    min_number_exposure: int | None = None
+    max_number_exposure: int | None = None
 
     def validate(self) -> None:
         if self.game_count < 1:
@@ -35,6 +38,12 @@ class PortfolioConfig:
             raise ValueError("objective bonuses must be non-negative")
         if self.time_limit_seconds <= 0:
             raise ValueError("time_limit_seconds must be positive")
+        if self.min_number_exposure is not None and not 0 <= self.min_number_exposure <= self.game_count:
+            raise ValueError("min_number_exposure must be between 0 and game_count")
+        if self.max_number_exposure is not None and not 0 <= self.max_number_exposure <= self.game_count:
+            raise ValueError("max_number_exposure must be between 0 and game_count")
+        if self.min_number_exposure is not None and self.max_number_exposure is not None and self.min_number_exposure > self.max_number_exposure:
+            raise ValueError("min_number_exposure cannot exceed max_number_exposure")
 
 
 def _coerce_scores(scores: Mapping[int | str, float]) -> dict[int, float]:
@@ -108,10 +117,17 @@ def optimize_portfolio(
             model.add(signatures[g] < signatures[g + 1])
 
     covered = {n: model.new_bool_var(f"covered_n{n}") for n in candidates}
+    exposure = {n: sum(x[g, n] for g in range(cfg.game_count)) for n in candidates}
     for n in candidates:
         for g in range(cfg.game_count):
             model.add(covered[n] >= x[g, n])
-        model.add(covered[n] <= sum(x[g, n] for g in range(cfg.game_count)))
+        model.add(covered[n] <= exposure[n])
+        if cfg.require_full_candidate_coverage:
+            model.add(exposure[n] >= 1)
+        if cfg.min_number_exposure is not None:
+            model.add(exposure[n] >= cfg.min_number_exposure)
+        if cfg.max_number_exposure is not None:
+            model.add(exposure[n] <= cfg.max_number_exposure)
 
     if cfg.game_count > 1:
         for g1 in range(cfg.game_count):
@@ -155,6 +171,10 @@ def optimize_portfolio(
     unique = sorted(set(selected))
     raw_selection_score = sum(scores[n] for n in selected)
     raw_unique_score = sum(scores[n] for n in unique)
+    exposure_counts = {n: int(sum(1 for game in games if n in game)) for n in candidates}
+    exposure_values = list(exposure_counts.values())
+    exposure_mean = float(sum(exposure_values) / len(exposure_values)) if exposure_values else 0.0
+    exposure_stddev = float(math.sqrt(sum((v - exposure_mean) ** 2 for v in exposure_values) / len(exposure_values))) if exposure_values else 0.0
 
     return {
         "schema": PORTFOLIO_SCHEMA,
@@ -172,6 +192,11 @@ def optimize_portfolio(
             "max_pairwise_overlap_observed": max(overlaps) if overlaps else 0,
             "raw_selection_score": raw_selection_score,
             "raw_unique_score": raw_unique_score,
+            "exposure_counts": {str(n): exposure_counts[n] for n in candidates},
+            "exposure_mean": exposure_mean,
+            "exposure_stddev": exposure_stddev,
+            "min_number_exposure_observed": min(exposure_values) if exposure_values else 0,
+            "max_number_exposure_observed": max(exposure_values) if exposure_values else 0,
         },
         "contract": {
             "predictive_scores_unchanged": True,

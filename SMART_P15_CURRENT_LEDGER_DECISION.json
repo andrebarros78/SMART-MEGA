@@ -1,11 +1,9 @@
 {
-  "schema": "SMART_P15_CURRENT_LEDGER_DECISION_1",
-  "created_brt": "2026-08-31T23:46:17.109228-03:00",
+  "schema": "SMART_P15_CURRENT_LEDGER_DECISION_2",
+  "created_brt": "2026-09-03T20:58:51.359123-03:00",
   "ledger_file": "SMART_SIGNAL_LEDGER.json",
-  "ledger_sha256": "0aff0ea01a4714185709a174159642fa512bc3202a8411a8a7028f4053fb710a",
-  "implementation_gate_sha256_before_p15_registration": "16b063c0cf2fd6e5f2b4b9800ac948945bfbf2584ef79b53f26d75a0c47d4cbc",
+  "ledger_sha256": "0a64e3aba55bf9ed17aab4163988f5e645e0c124bf820646845256f7e75f3c54",
   "independent_audit_file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
-  "independent_audit_file_exists": true,
   "decision": {
     "schema": "SMART_EVIDENCE_ONLY_PROMOTION_AUTHORIZATION_1",
     "decision": "KEEP_CHAMPION",
@@ -16,9 +14,9 @@
     "p13_gate": {
       "decision": "KEEP_CHAMPION",
       "eligible": false,
-      "n": 0,
-      "challenger_hits": 0,
-      "champion_hits": 0,
+      "n": 1,
+      "challenger_hits": 1,
+      "champion_hits": 1,
       "advantage_hits": 0,
       "mean_hit_advantage": 0.0,
       "cumulative_regret": 0,
@@ -32,14 +30,15 @@
       "favorable_regret": false,
       "sequential_evidence": false,
       "blockers": [
-        "no_adjudicated_prospective_contests",
+        "no_cumulative_superiority",
+        "regret_not_favorable",
         "insufficient_adaptive_sample",
         "insufficient_sequential_evidence"
       ],
-      "reason": "no adjudicated prospective contests",
-      "candidate_fingerprint": null,
-      "lineage_pair_count": 0,
-      "total_versioned_causal_pairs": 0,
+      "reason": "prospective promotion conditions not met",
+      "candidate_fingerprint": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486",
+      "lineage_pair_count": 1,
+      "total_versioned_causal_pairs": 1,
       "unversioned_causal_pairs_ignored": 1,
       "discarded_prior_version_pairs": 0,
       "lineage_e_value": 1.0,
@@ -115,9 +114,8 @@
       ],
       "sha256": "2591a52595014fc6e95d950ba388fbd9fe66d55fd22abf4a40dc3876f899bd96"
     },
-    "sha256": "cccbb4ba60a5b548e8d98fc56867223c00e463b12ca66016400b17c7a7a52fe2"
+    "sha256": "c0b933a582188e59af5ca9511310020050c84971e5d75cb9a70f114882489091"
   },
   "production_switch_performed": false,
-  "champion_remains_active": true,
-  "conclusion": "Current real ledger remains fail-closed; P15 does not authorize promotion while implementation/audit/material-evidence requirements are incomplete."
+  "champion_remains_active": true
 }

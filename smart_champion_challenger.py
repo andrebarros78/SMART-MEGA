@@ -14,6 +14,7 @@ import smart_v2_engine as e
 import freeze_next_research as champion_engine
 from smart_signal_agent import SmartSignalAgent, write_state, SIGNAL_NAMES, AGENT_SCHEMA
 from smart_signal_expansion_governance import REGISTRY_PATH, load_registry
+from smart_portfolio_pipeline import build_portfolio_package
 from smart_promotion_gate import (
     BASE_MIN_PROSPECTIVE_CONTESTS, MIN_E_VALUE, assess_promotion_records, policy_snapshot
 )
@@ -68,6 +69,23 @@ def sha256(path: Path) -> str:
         for chunk in iter(lambda: f.read(1024 * 1024), b''):
             h.update(chunk)
     return h.hexdigest()
+
+
+
+def archive_state_snapshot(state_path: Path, state_hash: str) -> Path:
+    state_path = Path(state_path)
+    archive_dir = state_path.parent / 'SMART_STATE_ARCHIVE'
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    archive_path = archive_dir / f'{state_hash}.json'
+    if archive_path.exists():
+        if sha256(archive_path) != state_hash:
+            raise ValueError('immutable state archive hash collision/mismatch')
+    else:
+        archive_path.write_bytes(state_path.read_bytes())
+        if sha256(archive_path) != state_hash:
+            archive_path.unlink(missing_ok=True)
+            raise ValueError('immutable state archive write verification failed')
+    return archive_path
 
 
 def source_cutoff_timestamp(data: Path) -> str | None:
@@ -313,6 +331,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'independent_audit': sha256(Path('smart_independent_audit.py')),
         'evidence_only_promotion': sha256(Path('smart_evidence_only_promotion.py')),
         'global_integrity': sha256(Path('smart_global_integrity.py')),
+        'portfolio_optimizer': sha256(Path('smart_portfolio_optimizer.py')),
+        'portfolio_pipeline': sha256(Path('smart_portfolio_pipeline.py')),
     }
     data_hash = sha256(data)
     expansion_governance = load_registry(REGISTRY_PATH, tuple(SIGNAL_NAMES))
@@ -371,6 +391,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
                   'signal_cutoff_timestamp_kind': signal_ts_kind,
                   'signal_expansion_governance': expansion_snapshot})
     state_hash = write_state(state_path, state)
+    state_archive_path = archive_state_snapshot(state_path, state_hash)
 
     actual_out = _next_version_path(out) if active else out
     freeze_obj = {
@@ -397,13 +418,19 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'independent_audit_sha256': component_hashes['independent_audit'],
         'evidence_only_promotion_sha256': component_hashes['evidence_only_promotion'],
         'global_integrity_sha256': component_hashes['global_integrity'],
+        'portfolio_optimizer_sha256': component_hashes['portfolio_optimizer'],
+        'portfolio_pipeline_sha256': component_hashes['portfolio_pipeline'],
+        'portfolio_policy': {'enabled': True, 'post_scoring_only': True, 'generated_from_frozen_champion_scores': True},
         'global_integrity_proof': global_integrity_ref,
         'signal_expansion_registry_file': str(REGISTRY_PATH),
         'signal_expansion_registry_sha256': expansion_registry_hash,
         'signal_expansion_governance': expansion_snapshot,
         'sequential_prospective_proof': sequential_snapshot,
         'signal_state_file': str(state_path),
-        'signal_state_sha256': state_hash, 'champion': champion, 'challenger': challenger_pred.as_dict(),
+        'signal_state_sha256': state_hash,
+        'signal_state_archive_file': str(state_archive_path),
+        'signal_state_archive_sha256': state_hash,
+        'champion': champion, 'challenger': challenger_pred.as_dict(),
         'governed_challenger_top6': challenger_pred.meta_governor['selected_top6'],
         'governed_challenger_policy': challenger_pred.meta_governor['selected_policy'],
         'challenger_historical_walk_forward_summary': {k: v for k, v in challenger_backtest.items() if k != 'rows'},
@@ -415,6 +442,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     }
     actual_out.write_text(json.dumps(freeze_obj, ensure_ascii=False, indent=2), encoding='utf-8')
     freeze_hash = sha256(actual_out)
+    portfolio_out = actual_out.with_name(f'{actual_out.stem}_PORTFOLIO.json')
+    portfolio_package = build_portfolio_package(actual_out, portfolio_out)
+    portfolio_hash = sha256(portfolio_out)
 
     new_event = {
         'event_type': 'FREEZE', 'target_contest': int(target), 'cutoff_contest': int(contests[-1]),
@@ -422,6 +452,11 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'start_index': int(start), 'river_version': str(river.__version__),
         'promotion_lineage': promotion_lineage,
         'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash, 'data_sha256': data_hash,
+        'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
+        'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
+        'portfolio_status': portfolio_package['status'],
+        'portfolio_games': portfolio_package['portfolio']['games'],
+        'portfolio_metrics': portfolio_package['portfolio']['metrics'],
         'champion_top6': champion['top6'], 'challenger_top6': freeze_obj['challenger']['top6'],
         'governed_challenger_top6': freeze_obj['governed_challenger_top6'], 'governed_challenger_policy': freeze_obj['governed_challenger_policy'],
         'snapshot': {'raw_signals': freeze_obj['challenger']['raw_signals'], 'quality_metrics': freeze_obj['challenger']['quality_metrics'],
@@ -456,7 +491,11 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     return {'status': 'FROZEN_SUPERSEDING_PRIOR' if active else 'FROZEN', 'target_contest': int(target),
             'champion_top6': champion['top6'], 'challenger_top6': freeze_obj['challenger']['top6'],
             'governed_challenger_top6': freeze_obj['governed_challenger_top6'], 'governed_challenger_policy': freeze_obj['governed_challenger_policy'],
-            'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash, 'ledger_sha256': ledger_hash,
+            'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash,
+            'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
+            'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
+            'portfolio_status': portfolio_package['status'],
+            'ledger_sha256': ledger_hash,
             'state_sha256': state_hash, 'promotion': promotion_status(ledger)}
 
 
