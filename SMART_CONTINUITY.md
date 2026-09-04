@@ -1,17 +1,20 @@
-# SMART-MEGA â€” CONTINUIDADE CANÃ”NICA
+# SMART-MEGA — CONTINUIDADE CANÔNICA
 
-**AtualizaÃ§Ã£o:** 2026-09-04T20:21:52.913243+00:00
+**Atualização:** 2026-09-04T22:57:47.819700+00:00
 **Workspace:** `C:\New Projet\SMART-MEGA`
 **Branch:** `master`
 **Estado soberano:** `MISSION_ACTIVE`
 
-## ImplantaÃ§Ã£o consolidada
+## Autoridade de missão
 
-Os dois estados de continuidade de 04/09/2026 foram unificados em `SMART_CHAT_CONSOLIDATION_20260904.json`, sempre subordinados Ã  evidÃªncia real do repositÃ³rio. A integraÃ§Ã£o de agentes e skills estÃ¡ materializada em `SMART_AGENT_SKILL_ORCHESTRATION.json`.
+A autoridade canônica do estado da missão é `SMART_MISSION_STATUS.json`.
+Artefatos de engenharia, agentes, skills, sandboxes e relatórios não podem declarar o 6/6 terminal por conta própria.
+
+## Integração consolidada
 
 - capacidades reconciliadas: **41**;
-- agentes canÃ´nicos: **9**;
-- cÃ³digo externo: quarentena/source-only, sem autoexecuÃ§Ã£o;
+- agentes canônicos: **9**;
+- código externo: quarentena/source-only, sem autoexecução;
 - autoridade direta para pesos: **nenhuma**;
 - autoridade para alterar freeze: **nenhuma**;
 - autoridade terminal de agentes: **nenhuma**.
@@ -22,45 +25,55 @@ Os dois estados de continuidade de 04/09/2026 foram unificados em `SMART_CHAT_CO
 
 SHA-256: `503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816`
 
-A freeze permaneceu imutÃ¡vel durante toda a implantaÃ§Ã£o.
+A freeze permanece imutável.
 
-## P1/P2 â€” cartografia canÃ´nica
+## Cartografia e falsificação
 
-Os universos U0â€“U6 e o atlas canÃ´nico foram promovidos para **1.000 rÃ©plicas**, vinculados ao dataset atÃ© o concurso 3053. A promoÃ§Ã£o ocorreu somente apÃ³s auditoria de integridade e convergÃªncia.
+- atlas canônico: **1.000 réplicas**;
+- convergência 200→1000, máximo |Δp| não degenerado: **0.102271**;
+- falsificação powered: **200 réplicas** para mínimo Holm **199**;
+- resolução suficiente: **true**;
+- rejeições Holm: **0**;
+- novo peso preditivo autorizado: **não**.
 
-ConvergÃªncia 200 â†’ 1000, excluindo nulos degenerados dos agregados de p:
+## Reconciliação de hipóteses
 
-- mÃ¡ximo |Î”p|: **0.102271**;
-- mediana |Î”p|: **0.029155**;
-- mÃ¡ximo deslocamento da mÃ©dia em desvios-padrÃ£o nulos finais: **0.151438**;
-- mÃ©tricas nulas degeneradas auditadas separadamente: **16**;
-- maior diferenÃ§a absoluta de mÃ©dia entre degeneradas: **2.842e-14**.
+Registro: `SMART_HYPOTHESIS_REGISTRY_V4`.
+Os quatro testes retrospectivos powered estão em `RETROSPECTIVE_NO_REJECTION_POWER_RESOLVED_NO_NULL_PROOF`.
+Isso significa que o limite numérico de Monte Carlo foi resolvido, mas **não** que o nulo foi provado e **não** que existe autorização preditiva.
+Experimento powered: `SMART_P4_P5_FALSIFICATION_3053_POWERED_V2`.
 
-Esses nÃºmeros sÃ£o diagnÃ³stico de Monte Carlo, nÃ£o autorizaÃ§Ã£o preditiva.
+## Base canônica de resultados
 
-## FalsificaÃ§Ã£o com poder suficiente
+`Mega-Sena.xlsx` está contínuo até o concurso **3053**; foram incorporados **6** concursos que faltavam, sem alterar a freeze 3054.
 
-- rÃ©plicas: **200**;
-- famÃ­lia Holm: **10** comparaÃ§Ãµes;
-- mÃ­nimo necessÃ¡rio para resoluÃ§Ã£o declarada: **199**;
-- resoluÃ§Ã£o suficiente: **true**;
-- rejeiÃ§Ãµes Holm: **0**;
-- controles adversariais esperados detectados: **true**;
-- novo peso preditivo autorizado: **nÃ£o**.
+## Prontidão prospectiva 3054
 
-## RegressÃ£o final da implantaÃ§Ã£o
+- preflight: **PASS**;
+- candidatos com probabilidades integrais: **5**;
+- 60 probabilidades preservadas por candidato: **true**;
+- adjudicação em sandbox: **PASS**;
+- ciclo `adjudicar → aprender → prova sequencial` em sandbox: **PASS**;
+- estado aprendido sintético termina em 3054: **3054**;
+- nenhuma execução sandbox modificou os artefatos prospectivos canônicos.
 
-`481 passed / 0 failures / 0 errors`
+## Evidência oficial
 
-JUnit: `SMART_AUDIT_JUNIT_DEPLOYMENT_20260904.xml`
-SHA-256: `622b22f62de733f937680362ba02c182df0377f7005e00a4129326fbf7313055`
+O resultado operacional pode ser obtido pelo endpoint oficial da CAIXA por concurso. A corroboração de fonte usa também o download consolidado da CAIXA quando ele já contém o alvo. Fonte secundária atrasada/indisponível não conta como consenso, conflito entre canais é fatal, e auditoria independente continua obrigatória para qualquer prova terminal.
+
+## Regressão atual
+
+`507 passed / 0 failures / 0 errors`
+
+JUnit: `SMART_AUDIT_JUNIT_CURRENT.xml`
+SHA-256: `b117427bd73487c4e53cc4a17bb655e91b6c1663fa9e80d53a6d7418605dd24e`
 
 ## Regra de continuidade
 
-A autoridade canÃ´nica do estado da missÃ£o Ã© `SMART_MISSION_STATUS.json`.
-
-A engenharia desta implantaÃ§Ã£o estÃ¡ comprovada, mas isso **nÃ£o** satisfaz o critÃ©rio cientÃ­fico terminal 6/6. O prÃ³ximo gate empÃ­rico soberano permanece a adjudicaÃ§Ã£o prospectiva do concurso 3054 contra a freeze jÃ¡ registrada. Pesquisa shadow pode continuar, sem modificar retroativamente a previsÃ£o 3054 e sem promover sinais sem nova evidÃªncia vÃ¡lida.
+O próximo gate empírico é o resultado oficial do concurso 3054. Até lá, pesquisa shadow pode continuar, mas nenhuma informação posterior pode alterar retroativamente a freeze 3054.
 
 Estado terminal: `MISSION_ACTIVE`
 
-NÃ£o declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou enquanto faltar a evidÃªncia prospectiva exigida pelo contrato terminal.
+Não declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou enquanto faltar a evidência prospectiva e auditoria independente exigidas pelo contrato terminal.
+
+Compatibilidade textual legada: NÃ£o declarar `MISSION_PROVEN` sem cumprir a regra terminal.

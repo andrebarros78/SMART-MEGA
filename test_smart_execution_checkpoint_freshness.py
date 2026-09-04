@@ -12,7 +12,7 @@ def test_checkpoint_is_derived_from_current_evidence():
     cp = json.loads((ROOT / 'SMART_EXECUTION_CHECKPOINT_20260904.json').read_text(encoding='utf-8'))
     mc = json.loads((ROOT / 'SMART_MONTE_CARLO_CONVERGENCE_1000.json').read_text(encoding='utf-8'))
     fp = json.loads((ROOT / 'SMART_FALSIFICATION_REPORT_POWERED.json').read_text(encoding='utf-8'))
-    assert cp['schema'] == 'SMART_EXECUTION_CHECKPOINT_20260904_V2'
+    assert cp['schema'] == 'SMART_EXECUTION_CHECKPOINT_20260904_V3'
     assert cp['monte_carlo']['final_replications'] == mc['final_replications'] == 1000
     assert cp['falsification_resolution']['replications'] == fp['replications'] == 200
     assert cp['falsification_resolution']['resolution_sufficient'] is True

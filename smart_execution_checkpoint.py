@@ -3,20 +3,21 @@ from __future__ import annotations
 import hashlib
 import json
 import xml.etree.ElementTree as ET
-from datetime import datetime, timezone, timedelta
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
+JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
 
 
 def load_json(name: str):
-    return json.loads((ROOT / name).read_text(encoding="utf-8"))
+    return json.loads((ROOT / name).read_text(encoding="utf-8-sig"))
 
 
 def sha(name: str) -> str:
     h = hashlib.sha256()
-    with (ROOT / name).open("rb") as f:
-        for block in iter(lambda: f.read(1048576), b""):
+    with (ROOT / name).open("rb") as handle:
+        for block in iter(lambda: handle.read(1024 * 1024), b""):
             h.update(block)
     return h.hexdigest()
 
@@ -24,29 +25,46 @@ def sha(name: str) -> str:
 def junit_totals(name: str):
     root = ET.parse(ROOT / name).getroot()
     suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
-    tests = sum(int(s.attrib.get("tests", 0)) for s in suites)
-    failures = sum(int(s.attrib.get("failures", 0)) for s in suites)
-    errors = sum(int(s.attrib.get("errors", 0)) for s in suites)
-    skipped = sum(int(s.attrib.get("skipped", 0)) for s in suites)
+    if root.tag == "testsuites" and root.attrib.get("tests") is not None:
+        tests = int(root.attrib.get("tests", 0))
+        failures = int(root.attrib.get("failures", 0))
+        errors = int(root.attrib.get("errors", 0))
+        skipped = int(root.attrib.get("skipped", 0))
+        if tests == 0:
+            tests = sum(int(item.attrib.get("tests", 0)) for item in suites)
+            failures = sum(int(item.attrib.get("failures", 0)) for item in suites)
+            errors = sum(int(item.attrib.get("errors", 0)) for item in suites)
+            skipped = sum(int(item.attrib.get("skipped", 0)) for item in suites)
+    else:
+        tests = sum(int(item.attrib.get("tests", 0)) for item in suites)
+        failures = sum(int(item.attrib.get("failures", 0)) for item in suites)
+        errors = sum(int(item.attrib.get("errors", 0)) for item in suites)
+        skipped = sum(int(item.attrib.get("skipped", 0)) for item in suites)
     return {"tests": tests, "failures": failures, "errors": errors, "skipped": skipped}
 
 
 freeze = load_json("SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json")
 monte = load_json("SMART_MONTE_CARLO_CONVERGENCE_1000.json")
 falsification = load_json("SMART_FALSIFICATION_REPORT_POWERED.json")
+hypothesis = load_json("SMART_HYPOTHESIS_STATE_RECONCILIATION.json")
+result_store = load_json("SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json")
+preflight = load_json("SMART_3054_ADJUDICATION_PREFLIGHT.json")
+full_cycle = load_json("SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json")
 mission = load_json("SMART_MISSION_STATUS.json")
-junit = junit_totals("SMART_AUDIT_JUNIT_CURRENT.xml")
+junit = junit_totals(JUNIT)
 resolution = bool(falsification.get("multiplicity", {}).get("resolution_sufficient"))
 
 blockers = [
+    "official contest 3054 result is not yet ingested/adjudicated",
     "no prospectively proven advantage over declared baselines",
     "terminal exact 6/6 has not occurred/proven",
+    "independent terminal audit cannot occur before official 3054 adjudication",
 ]
 if not resolution:
     blockers.append("falsification Monte Carlo resolution is insufficient for the declared multiplicity family")
 
 obj = {
-    "schema": "SMART_EXECUTION_CHECKPOINT_20260904_V2",
+    "schema": "SMART_EXECUTION_CHECKPOINT_20260904_V3",
     "created_brasilia": datetime.now(timezone(timedelta(hours=-3))).isoformat(),
     "cutoff_contest": int(freeze["cutoff_contest"]),
     "target_contest": int(freeze["target_contest"]),
@@ -55,13 +73,17 @@ obj = {
     "completed": [
         "terminal authority repaired; historical engineering MISSION_PROVEN artifacts demoted",
         f"P1/P2 Monte Carlo cartography promoted to {int(monte['final_replications'])} final replications with convergence diagnostics",
-        "model registry rebound exactly to immutable 3054 freeze",
+        "agent/skill integration reconciled with no direct terminal/freeze/predictive authority",
         "prospective evidence authority reconciled to SMART_SIGNAL_LEDGER",
         "five frontier families rejected for predictive promotion on causal historical holdout",
-        "probability audit retains uniform baseline for all five frontier candidates",
         "3054 full probability vectors registered prospectively with zero production authority",
-        f"falsification multiplicity power guard: {int(falsification['replications'])} replications; resolution_sufficient={str(resolution).lower()}",
-        f"canonical deployment regression {junit['tests']} tests, {junit['failures']} failures, {junit['errors']} errors",
+        f"falsification multiplicity power guard resolved with {int(falsification['replications'])} replications",
+        "powered hypothesis state reconciled without interpreting non-rejection as proof of the null",
+        f"canonical result store reconciled through contest {int(result_store['canonical_max_after'])}",
+        f"3054 adjudication preflight status {preflight['readiness_status']}",
+        f"3054 full post-result sandbox cycle status {full_cycle['status']}",
+        "official evidence policy separates operational CAIXA API authority from terminal corroboration",
+        f"canonical regression {junit['tests']} tests, {junit['failures']} failures, {junit['errors']} errors",
     ],
     "regression": junit,
     "falsification_resolution": {
@@ -71,9 +93,34 @@ obj = {
         "holdout_integrity": falsification.get("holdout_integrity"),
         "predictive_weight_authorized": bool(falsification.get("predictive_weight_authorized")),
     },
+    "hypothesis_reconciliation": {
+        "status": hypothesis["status"],
+        "powered_experiment_id": hypothesis["experiment_record"]["experiment_id"],
+        "holm_rejections": hypothesis["holm_rejections"],
+        "predictive_weight_authorized": hypothesis["guardrails"]["predictive_weight_authorized"],
+        "terminal_6of6_proven": hypothesis["guardrails"]["terminal_6of6_proven"],
+    },
     "monte_carlo": {
         "final_replications": int(monte["final_replications"]),
         "predictive_weight_authorized": bool(monte.get("predictive_weight_authorized")),
+    },
+    "canonical_result_store": {
+        "contest_max": int(result_store["canonical_max_after"]),
+        "append_count": int(result_store["append_count"]),
+        "ready_for_next_contest": bool(result_store["result_store_ready_for_next_contest"]),
+        "freeze_unchanged": bool(result_store["freeze_3054_unchanged"]),
+    },
+    "prospective_3054": {
+        "preflight_status": preflight["readiness_status"],
+        "candidate_count": int(preflight["probability_ledger"]["candidate_count"]),
+        "all_60_probabilities_retained": bool(preflight["probability_ledger"]["all_candidates_have_60_probabilities"]),
+        "adjudicated": bool(preflight["sequence_before_result"]["adjudicated"]),
+        "sandbox_duplicate_adjudication_rejected": bool(preflight["sandbox_rehearsal"]["duplicate_adjudication_rejected"]),
+        "full_cycle_sandbox_status": full_cycle["status"],
+        "full_cycle_sequence_valid": bool(full_cycle["sequence"]["valid"]),
+        "full_cycle_learning_last_contest": int(full_cycle["learning"]["last_contest"]),
+        "official_result_ingested": False,
+        "terminal_6of6_proven": False,
     },
     "critical_hashes": {
         "freeze_3054": sha("SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"),
@@ -83,16 +130,24 @@ obj = {
         "prospective_probability_ledger": sha("SMART_PROBABILITY_PROSPECTIVE_LEDGER.json"),
         "monte_carlo_1000": sha("SMART_MONTE_CARLO_CONVERGENCE_1000.json"),
         "falsification_powered": sha("SMART_FALSIFICATION_REPORT_POWERED.json"),
-        "current_junit": sha("SMART_AUDIT_JUNIT_CURRENT.xml"),
+        "hypothesis_reconciliation": sha("SMART_HYPOTHESIS_STATE_RECONCILIATION.json"),
+        "canonical_result_store_reconciliation": sha("SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json"),
+        "adjudication_preflight_3054": sha("SMART_3054_ADJUDICATION_PREFLIGHT.json"),
+        "full_cycle_sandbox_3054": sha("SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json"),
+        "current_junit": sha(JUNIT),
     },
-    "freeze_3054_top6": sorted(int(x) for x in freeze["champion"]["top6"]),
+    "freeze_3054_top6": sorted(int(value) for value in freeze["champion"]["top6"]),
     "current_blockers": blockers,
     "acquisition_decision": "NO_ADDITIONAL_SOFTWARE_ACQUISITION_REQUIRED_NOW",
-    "next_gate": "official 3054 result -> immutable adjudication -> scoring/calibration -> learning -> next freeze; no retroactive changes",
+    "next_gate": (
+        "official 3054 CAIXA result -> validated operational evidence -> immutable adjudication -> causal replay learning -> "
+        "sequential proof -> source corroboration/independent audit -> terminal-rule evaluation; no retroactive changes"
+    ),
 }
 
 (ROOT / "SMART_EXECUTION_CHECKPOINT_20260904.json").write_text(
-    json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    json.dumps(obj, ensure_ascii=False, indent=2) + "\n",
+    encoding="utf-8",
 )
 print(json.dumps({
     "checkpoint": True,
@@ -101,4 +156,6 @@ print(json.dumps({
     "blockers": len(blockers),
     "regression": junit,
     "falsification_resolution_sufficient": resolution,
-}))
+    "preflight_3054": obj["prospective_3054"]["preflight_status"],
+    "full_cycle_sandbox_3054": obj["prospective_3054"]["full_cycle_sandbox_status"],
+}, ensure_ascii=False))

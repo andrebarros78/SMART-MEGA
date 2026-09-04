@@ -1,0 +1,93 @@
+{
+  "schema": "SMART_3054_FULL_CYCLE_SANDBOX_V1",
+  "created_at_utc": "2026-09-04T22:13:28.284069+00:00",
+  "target_contest": 3054,
+  "cutoff_contest": 3053,
+  "status": "PASS",
+  "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+  "synthetic_result": [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6
+  ],
+  "synthetic_result_authority": "NONE_SANDBOX_ONLY",
+  "adjudication": {
+    "champion_hits": 0,
+    "challenger_hits": 0,
+    "e_value_after": 1.0
+  },
+  "learning": {
+    "agent_start_index": 1000,
+    "last_contest": 3054,
+    "data_sha256": "82a60e60c49a3b4608f90fe529c4903bb6de6da453123271077660cf3c70aafd",
+    "replay_rows": 2054,
+    "learning_event_status": "LEARNING_RECORDED"
+  },
+  "sequence": {
+    "schema": "SMART_SEQUENTIAL_PROSPECTIVE_PROOF_1",
+    "target_contest": 3054,
+    "event_count": 12,
+    "freeze_count": 2,
+    "supersede_count": 1,
+    "adjudicated": true,
+    "derived_event_count": 6,
+    "learning_recorded": true,
+    "proof_recorded": true,
+    "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "sequence_sha256": "0237e08ba5b24bd5b5de8e46a85b039ceb7fa864fdc30b6b443e9f250c8cc482",
+    "valid": true
+  },
+  "target_event_types": [
+    "FREEZE",
+    "FREEZE",
+    "SUPERSEDE",
+    "ADJUDICATION",
+    "ATTRIBUTION",
+    "MARGINAL_UTILITY",
+    "INTERACTIONS",
+    "MULTI_CHALLENGERS",
+    "META_GOVERNOR",
+    "RANK_SCORE_CALIBRATION",
+    "LEARNING_UPDATE",
+    "SEQUENTIAL_PROOF"
+  ],
+  "duplicate_guards": {
+    "learning_rejected": true,
+    "learning_error": "learning update already recorded",
+    "proof_rejected": true,
+    "proof_error": "sequential proof already recorded"
+  },
+  "canonical_hashes_before": {
+    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa",
+    "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json": "a339ff610dedd6c3f31a22df919f2cb64ccf993ca5ab529c45bdc9c4aa52b439",
+    "Mega-Sena.xlsx": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+  },
+  "canonical_hashes_after": {
+    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa",
+    "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json": "a339ff610dedd6c3f31a22df919f2cb64ccf993ca5ab529c45bdc9c4aa52b439",
+    "Mega-Sena.xlsx": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+  },
+  "checks": {
+    "preflight_pass": true,
+    "synthetic_official_payload_validated": true,
+    "synthetic_dataset_ends_at_3054": true,
+    "adjudication_completed": true,
+    "learning_state_trained_through_3054": true,
+    "learning_event_recorded": true,
+    "sequential_proof_recorded": true,
+    "full_sequence_valid": true,
+    "duplicate_learning_rejected": true,
+    "duplicate_proof_rejected": true,
+    "canonical_protected_artifacts_unchanged": true
+  },
+  "official_result_ingested": false,
+  "canonical_learning_executed": false,
+  "terminal_6of6_proven": false
+}

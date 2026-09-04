@@ -1,0 +1,187 @@
+{
+  "schema": "SMART_3054_ADJUDICATION_PREFLIGHT_V1",
+  "created_at_utc": "2026-09-04T22:08:12.003223+00:00",
+  "target_contest": 3054,
+  "cutoff_contest": 3053,
+  "readiness_status": "PASS",
+  "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+  "sequence_before_result": {
+    "schema": "SMART_SEQUENTIAL_PROSPECTIVE_PROOF_1",
+    "target_contest": 3054,
+    "event_count": 3,
+    "freeze_count": 2,
+    "supersede_count": 1,
+    "adjudicated": false,
+    "derived_event_count": 0,
+    "learning_recorded": false,
+    "proof_recorded": false,
+    "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "sequence_sha256": "e32028e0ae83523e9b1f86b78da5c44ff6005b65470e6db4562cb15d33b76f4d",
+    "valid": true
+  },
+  "probability_ledger": {
+    "ledger_schema": "SMART_PROSPECTIVE_LEDGER_V1",
+    "registration_schema": "SMART_PROSPECTIVE_REGISTRATION_V1",
+    "entry_sha256": "14e4c259becf9cbaf46b9a98c345d9dcff76448caee6187c48668c4b66844ba7",
+    "candidate_count": 5,
+    "all_candidates_have_60_probabilities": true,
+    "all_probability_sums_equal_six": true,
+    "main_freeze_file_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "registration_status": "REGISTERED_PROSPECTIVE_AWAITING_RESULT",
+    "summaries": [
+      {
+        "candidate_id": "frontier_cooccurrence_graph",
+        "family": "hypergraph_link",
+        "probability_count": 60,
+        "probability_sum": 6.0,
+        "top6": [
+          10,
+          5,
+          6,
+          11,
+          37,
+          33
+        ]
+      },
+      {
+        "candidate_id": "frontier_gap_hazard",
+        "family": "recurrence_hazard",
+        "probability_count": 60,
+        "probability_sum": 5.999999999999998,
+        "top6": [
+          2,
+          4,
+          6,
+          18,
+          22,
+          23
+        ]
+      },
+      {
+        "candidate_id": "frontier_recent_lift",
+        "family": "bayesian_change",
+        "probability_count": 60,
+        "probability_sum": 6.0,
+        "top6": [
+          58,
+          30,
+          42,
+          21,
+          11,
+          27
+        ]
+      },
+      {
+        "candidate_id": "frontier_transition_markov",
+        "family": "conditional_transition",
+        "probability_count": 60,
+        "probability_sum": 6.000000000000001,
+        "top6": [
+          28,
+          53,
+          51,
+          34,
+          10,
+          11
+        ]
+      },
+      {
+        "candidate_id": "frontier_weekday_bayes",
+        "family": "procedural_calendar",
+        "probability_count": 60,
+        "probability_sum": 6.000000000000001,
+        "top6": [
+          42,
+          53,
+          16,
+          54,
+          5,
+          30
+        ]
+      }
+    ]
+  },
+  "canonical_result_store": {
+    "rows": 3053,
+    "contest_min": 1,
+    "contest_max": 3053,
+    "target_absent": true,
+    "contiguous_through_cutoff": true,
+    "sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+  },
+  "sandbox_rehearsal": {
+    "synthetic_result": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6
+    ],
+    "adjudication_created": true,
+    "sequence_valid": true,
+    "sequence": {
+      "schema": "SMART_SEQUENTIAL_PROSPECTIVE_PROOF_1",
+      "target_contest": 3054,
+      "event_count": 10,
+      "freeze_count": 2,
+      "supersede_count": 1,
+      "adjudicated": true,
+      "derived_event_count": 6,
+      "learning_recorded": false,
+      "proof_recorded": false,
+      "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+      "sequence_sha256": "e21799fe9d2285168d6a7bf485321e5447ae9264a554062019decb854edf4427",
+      "valid": true
+    },
+    "derived_event_types": [
+      "ATTRIBUTION",
+      "INTERACTIONS",
+      "MARGINAL_UTILITY",
+      "META_GOVERNOR",
+      "MULTI_CHALLENGERS",
+      "RANK_SCORE_CALIBRATION"
+    ],
+    "missing_derived_event_types": [],
+    "duplicate_adjudication_rejected": true,
+    "duplicate_error": "contest already adjudicated; append-only ledger refuses duplicate adjudication",
+    "champion_hits": 0,
+    "challenger_hits": 0,
+    "canonical_ledger_used": false,
+    "synthetic_result_has_predictive_authority": false
+  },
+  "canonical_hashes_before": {
+    "signal_ledger": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "freeze_3054": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "probability_ledger": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa",
+    "prospective_authority": "a339ff610dedd6c3f31a22df919f2cb64ccf993ca5ab529c45bdc9c4aa52b439",
+    "canonical_result_store": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+  },
+  "canonical_hashes_after": {
+    "signal_ledger": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "freeze_3054": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "probability_ledger": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa",
+    "prospective_authority": "a339ff610dedd6c3f31a22df919f2cb64ccf993ca5ab529c45bdc9c4aa52b439",
+    "canonical_result_store": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+  },
+  "checks": {
+    "active_freeze_exact": true,
+    "pre_result_sequence_valid": true,
+    "not_yet_adjudicated": true,
+    "no_post_result_events_before_result": true,
+    "probability_ledger_complete": true,
+    "probability_mass_valid": true,
+    "prospective_authority_unadjudicated": true,
+    "canonical_result_store_through_3053": true,
+    "canonical_result_store_target_absent": true,
+    "sandbox_adjudication_valid": true,
+    "sandbox_derived_events_complete": true,
+    "duplicate_adjudication_rejected": true,
+    "canonical_artifacts_unchanged_by_sandbox": true
+  },
+  "official_result_ingested": false,
+  "canonical_adjudication_executed": false,
+  "predictive_weight_authorized": false,
+  "terminal_6of6_proven": false,
+  "next_external_hinge": "official contest 3054 result from accepted official sources"
+}
