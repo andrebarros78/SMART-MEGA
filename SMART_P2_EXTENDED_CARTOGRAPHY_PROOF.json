@@ -1,0 +1,28 @@
+{
+  "schema": "SMART_P2_EXTENDED_CARTOGRAPHY_PROOF_V1",
+  "created_brasilia": "2026-09-04T09:53:58-03:00",
+  "cutoff_contest": 3053,
+  "data_file": "Mega-Sena_through_3053_v2.xlsx",
+  "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "atlas_sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045",
+  "capabilities": [
+    "networkx==3.6.1",
+    "statsmodels==0.15.0",
+    "ruptures==1.1.10"
+  ],
+  "focused_tests": "3 passed",
+  "full_regression": "436 passed in 98.28s",
+  "freeze_3054_unchanged": true,
+  "scientific_findings": {
+    "lag1_binary_mutual_information_mean_bits": 0.00026142155007487873,
+    "ljung_box_sum_pvalues": {
+      "5": 0.283383489664279,
+      "10": 0.48134045631231714,
+      "20": 0.6225296518760144
+    },
+    "network_density": 0.14632768361581922,
+    "regime_breakpoints": []
+  },
+  "predictive_weight_authorized": false,
+  "scientific_status": "DIAGNOSTIC_ONLY_REQUIRES_NULL_HOLDOUT_PROSPECTIVE_VALIDATION"
+}

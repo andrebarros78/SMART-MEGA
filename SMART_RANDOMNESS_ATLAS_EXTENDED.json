@@ -1,0 +1,39 @@
+{
+  "schema": "SMART_RANDOMNESS_ATLAS_EXTENDED_V1",
+  "contest_min": 1,
+  "contest_max": 3053,
+  "n_draws": 3053,
+  "temporal_memory": {
+    "lag1_binary_mutual_information_mean_bits": 0.00026142155007487873,
+    "lag1_binary_mutual_information_max_bits": 0.001797768830242468,
+    "ljung_box_sum_pvalues": {
+      "5": 0.283383489664279,
+      "10": 0.48134045631231714,
+      "20": 0.6225296518760144
+    }
+  },
+  "network": {
+    "edge_threshold": 31.111905161771276,
+    "edges": 259,
+    "density": 0.14632768361581922,
+    "average_clustering": 0.21420099236275708,
+    "degree_mean": 8.633333333333333,
+    "degree_cv": 0.5805101507978363
+  },
+  "regime_detection": {
+    "method": "ruptures.Binseg(l2)",
+    "penalty": 16.047759985469757,
+    "min_size": 30,
+    "breakpoints_index": [],
+    "count": 0,
+    "diagnostic_only": true
+  },
+  "falsification": {
+    "future_information_used": false,
+    "causal_claim": false,
+    "predictive_weight_authorized": false,
+    "promotion_requires_holdout_and_prospective_evidence": true
+  },
+  "data_file": "Mega-Sena_through_3053_v2.xlsx",
+  "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60"
+}
