@@ -1,27 +1,47 @@
 {
-  "schema": "SMART_EXECUTION_CHECKPOINT_20260904_V1",
-  "created_brasilia": "2026-09-04T14:54:42.433479-03:00",
+  "schema": "SMART_EXECUTION_CHECKPOINT_20260904_V2",
+  "created_brasilia": "2026-09-04T18:56:13.305232-03:00",
   "cutoff_contest": 3053,
   "target_contest": 3054,
   "mission_state": "MISSION_ACTIVE",
   "terminal_6of6_proven": false,
   "completed": [
     "terminal authority repaired; historical engineering MISSION_PROVEN artifacts demoted",
-    "P1/P2 manifest-atlas-proof cryptographic binding repaired at 100 replications",
+    "P1/P2 Monte Carlo cartography promoted to 1000 final replications with convergence diagnostics",
     "model registry rebound exactly to immutable 3054 freeze",
     "prospective evidence authority reconciled to SMART_SIGNAL_LEDGER",
     "five frontier families rejected for predictive promotion on causal historical holdout",
     "probability audit retains uniform baseline for all five frontier candidates",
     "3054 full probability vectors registered prospectively with zero production authority",
-    "Monte Carlo power guard prevents underpowered Holm interpretation",
-    "full regression 461 passed, zero failures"
+    "falsification multiplicity power guard: 200 replications; resolution_sufficient=true",
+    "canonical deployment regression 482 tests, 0 failures, 0 errors"
   ],
+  "regression": {
+    "tests": 482,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "falsification_resolution": {
+    "replications": 200,
+    "minimum_replications_for_resolution": 199,
+    "resolution_sufficient": true,
+    "holdout_integrity": "RETROSPECTIVE_TIME_SPLIT_NOT_PRISTINE",
+    "predictive_weight_authorized": false
+  },
+  "monte_carlo": {
+    "final_replications": 1000,
+    "predictive_weight_authorized": false
+  },
   "critical_hashes": {
     "freeze_3054": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-    "p1p2_proof": "8bc29487295a90bdd41294c8babb32100563910bed9c617038e41d658b2258d3",
+    "p1p2_proof": "5b1d8288564f8975cecf60def39639ef5faf6da2d8c5f03e3cb9856d00b6d177",
     "mission_status": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b",
     "probability_audit": "1101d560ad6d5619ae9acde2174ceb8c5a598d8d4b99e1d0cb9bf380606fc363",
-    "prospective_probability_ledger": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa"
+    "prospective_probability_ledger": "df2a7dfde85648538f61e28ad7bbec7fe877a1f6f58d5f2d0f498276631522aa",
+    "monte_carlo_1000": "03b64a554e7105218edeaa7d1a171836e922543341187d2a488c58fe5b54029d",
+    "falsification_powered": "0435554cb026c42af52be0fed02c7ea0bea1f65046e38aa64730c3567392e79b",
+    "current_junit": "193e2db6c6c183d54ed8ee17df4ee4f757909a56bc7c9217f610c25ae4674e3f"
   },
   "freeze_3054_top6": [
     10,
@@ -33,8 +53,7 @@
   ],
   "current_blockers": [
     "no prospectively proven advantage over declared baselines",
-    "terminal exact 6/6 has not occurred/proven",
-    "P4/P5 100-replication falsification is power-limited and must not support a null claim"
+    "terminal exact 6/6 has not occurred/proven"
   ],
   "acquisition_decision": "NO_ADDITIONAL_SOFTWARE_ACQUISITION_REQUIRED_NOW",
   "next_gate": "official 3054 result -> immutable adjudication -> scoring/calibration -> learning -> next freeze; no retroactive changes"

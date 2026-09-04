@@ -57,7 +57,10 @@ SHA-256: `622b22f62de733f937680362ba02c182df0377f7005e00a4129326fbf7313055`
 
 ## Regra de continuidade
 
+A autoridade canÃ´nica do estado da missÃ£o Ã© `SMART_MISSION_STATUS.json`.
+
 A engenharia desta implantaÃ§Ã£o estÃ¡ comprovada, mas isso **nÃ£o** satisfaz o critÃ©rio cientÃ­fico terminal 6/6. O prÃ³ximo gate empÃ­rico soberano permanece a adjudicaÃ§Ã£o prospectiva do concurso 3054 contra a freeze jÃ¡ registrada. Pesquisa shadow pode continuar, sem modificar retroativamente a previsÃ£o 3054 e sem promover sinais sem nova evidÃªncia vÃ¡lida.
 
-**Estado terminal:** `terminal_6of6_proven = false`
-**MissÃ£o:** `MISSION_ACTIVE`
+Estado terminal: `MISSION_ACTIVE`
+
+NÃ£o declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou enquanto faltar a evidÃªncia prospectiva exigida pelo contrato terminal.
