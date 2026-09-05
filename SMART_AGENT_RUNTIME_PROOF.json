@@ -1,0 +1,298 @@
+{
+  "schema": "SMART_AGENT_RUNTIME_V1",
+  "status": "PASS",
+  "checks": {
+    "all_9_agents_executed": true,
+    "all_41_capabilities_owned": true,
+    "all_native_targets_verified": true,
+    "all_declared_handoffs_acknowledged": true,
+    "all_agents_have_runtime_evidence": true,
+    "mission_governor_reads_canonical_status": true,
+    "no_agent_predictive_or_freeze_authority": true
+  },
+  "executions": {
+    "quarantine_curator": {
+      "name": "quarantine_curator",
+      "status": "PASS",
+      "capabilities": [
+        "bridging-online-offline-rl",
+        "growth-experimenter",
+        "kaggle-learner",
+        "visiontrim-unified-vision-token"
+      ],
+      "native_targets": [],
+      "artifacts": [
+        {
+          "path": ".external_skills_acquired/ACQUISITION_MANIFEST.json",
+          "sha256": "a5031f77f74fe3b55cffedfbd125a07f7f14563969a40daf620a45fbacb9048c"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        "quarantine_curator->research_scout:f76db4cf58460113"
+      ],
+      "verdict": "PASS"
+    },
+    "research_scout": {
+      "name": "research_scout",
+      "status": "PASS",
+      "capabilities": [
+        "dianoia",
+        "thinktank-me-multi-expert-framework-middle",
+        "ml-engineer",
+        "pymc"
+      ],
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "consumed_handoffs": [
+        "quarantine_curator->research_scout:f76db4cf58460113"
+      ],
+      "produced_handoffs": [
+        "research_scout->falsification_auditor:aa82413a5d4c0da9"
+      ],
+      "verdict": "PASS"
+    },
+    "data_guardian": {
+      "name": "data_guardian",
+      "status": "PASS",
+      "capabilities": [
+        "openai-analyze-data-quality",
+        "openai-validate-data",
+        "pandera-data-contracts",
+        "data-analysis"
+      ],
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_DATA_QUALITY_3052.json",
+          "sha256": "049abfb30c5901ae963efb1f92c213e406fb31ab0f9c5dbdc182935500b3b01d"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        "data_guardian->null_model_cartographer:b1058ef498bc6010",
+        "data_guardian->falsification_auditor:b1058ef498bc6010"
+      ],
+      "verdict": "PASS"
+    },
+    "null_model_cartographer": {
+      "name": "null_model_cartographer",
+      "status": "PASS",
+      "capabilities": [
+        "aeon",
+        "regime-detection",
+        "time-series-forecasting",
+        "networkx",
+        "statsmodels",
+        "ruptures"
+      ],
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        },
+        {
+          "path": "SMART_P1_P2_CARTOGRAPHY_PROOF.json",
+          "sha256": "5b1d8288564f8975cecf60def39639ef5faf6da2d8c5f03e3cb9856d00b6d177"
+        },
+        {
+          "path": "SMART_P2_EXTENDED_CARTOGRAPHY_PROOF.json",
+          "sha256": "33da4bc4de4bbf428a460e0cdf6e8734b9bf0986bf13736be66d3e181e4771c9"
+        }
+      ],
+      "consumed_handoffs": [
+        "data_guardian->falsification_auditor:b1058ef498bc6010",
+        "data_guardian->null_model_cartographer:b1058ef498bc6010"
+      ],
+      "produced_handoffs": [
+        "null_model_cartographer->falsification_auditor:82b1857ed9907dd8"
+      ],
+      "verdict": "PASS"
+    },
+    "falsification_auditor": {
+      "name": "falsification_auditor",
+      "status": "PASS",
+      "capabilities": [
+        "experiment-design",
+        "simulation",
+        "statistical-analysis",
+        "multiple-testing-fdr-statsmodels",
+        "bayesian-workflow",
+        "machine-learning-model-validation",
+        "mlflow"
+      ],
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "3067930e84bcdb445675c71bd5ae0e46b2f2456aa5e41d86fcb256632eabdb02"
+        }
+      ],
+      "consumed_handoffs": [
+        "data_guardian->falsification_auditor:b1058ef498bc6010",
+        "data_guardian->null_model_cartographer:b1058ef498bc6010",
+        "null_model_cartographer->falsification_auditor:82b1857ed9907dd8",
+        "research_scout->falsification_auditor:aa82413a5d4c0da9"
+      ],
+      "produced_handoffs": [
+        "falsification_auditor->learning_calibration_governor:503504d3151384ec",
+        "falsification_auditor->mission_governor:503504d3151384ec"
+      ],
+      "verdict": "PASS"
+    },
+    "learning_calibration_governor": {
+      "name": "learning_calibration_governor",
+      "status": "PASS",
+      "capabilities": [
+        "evo-memory",
+        "model-drift-management",
+        "hyperparameter-tuning-optuna",
+        "conformal-risk-control-mapie",
+        "live-evo-online-evolution-agentic",
+        "benchmarking-uncertainty-calibration-long-form",
+        "superforecasting",
+        "extremizing-forecasts"
+      ],
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "consumed_handoffs": [
+        "falsification_auditor->learning_calibration_governor:503504d3151384ec",
+        "falsification_auditor->mission_governor:503504d3151384ec"
+      ],
+      "produced_handoffs": [
+        "learning_calibration_governor->mission_governor:4ccd48c40157d5d5"
+      ],
+      "verdict": "PASS"
+    },
+    "robustness_red_team": {
+      "name": "robustness_red_team",
+      "status": "PASS",
+      "capabilities": [
+        "property-based-testing-hypothesis",
+        "test-gap-analysis",
+        "mutmut-mutation"
+      ],
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_AUDIT_JUNIT_CURRENT.xml",
+          "sha256": "76a93634b241c9d30654a8f4096e370da07687fbe0a2f88b14ef531a19ebf2e5"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        "robustness_red_team->mission_governor:bb4fe3963aa2c668"
+      ],
+      "verdict": "PASS"
+    },
+    "combinatorial_solver": {
+      "name": "combinatorial_solver",
+      "status": "PASS",
+      "capabilities": [
+        "combinatorialist",
+        "operations-research-algorithm-developer",
+        "google-or-tools",
+        "z3-formal-verification",
+        "nisan-et-al-2007-algorithmic-game-theory"
+      ],
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "artifacts": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "379559bf70b23a416f8da73da57390bcaf4ffdc1a305e6df08e6cc3f136a3d18"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        "combinatorial_solver->mission_governor:daa4b473d93d143e"
+      ],
+      "verdict": "PASS"
+    },
+    "mission_governor": {
+      "name": "mission_governor",
+      "status": "PASS",
+      "capabilities": [],
+      "native_targets": [],
+      "artifacts": [
+        {
+          "path": "SMART_MISSION_STATUS.json",
+          "sha256": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b"
+        }
+      ],
+      "consumed_handoffs": [
+        "combinatorial_solver->mission_governor:daa4b473d93d143e",
+        "falsification_auditor->learning_calibration_governor:503504d3151384ec",
+        "falsification_auditor->mission_governor:503504d3151384ec",
+        "learning_calibration_governor->mission_governor:4ccd48c40157d5d5",
+        "robustness_red_team->mission_governor:bb4fe3963aa2c668"
+      ],
+      "produced_handoffs": [],
+      "verdict": "MISSION_ACTIVE"
+    }
+  },
+  "unacknowledged_handoffs": [],
+  "capability_count": 41,
+  "agent_count": 9,
+  "declarative_orchestration_sha256": "2eecf34f30aa5e96329cf746467188e6aff368de52d871b430faf49612b3650a",
+  "runtime_sha256": "659c8341069b07e62ebc396e19c57a5a685447a22edecef03639e05524302729"
+}
