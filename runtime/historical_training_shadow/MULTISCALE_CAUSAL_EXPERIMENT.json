@@ -1,0 +1,166 @@
+{
+  "schema": "SMART_MULTISCALE_CAUSAL_EXPERIMENT_V2",
+  "source": "SMART_CAUSAL_REPLAY_1001_3053.json",
+  "design": "70pct chronological calibration, 30pct untouched evaluation; calibration q20/q80 thresholds; one-sided permutation; Holm across valid comparisons",
+  "calibration_n": 1437,
+  "evaluation_n": 616,
+  "evaluation_contest_min": 2438,
+  "evaluation_contest_max": 3053,
+  "invalid_due_to_support_shift": [
+    {
+      "metric": "long_mid_ratio",
+      "tail": "low",
+      "threshold": 0.1225248311951616,
+      "n_selected": 0,
+      "reason": "CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT"
+    },
+    {
+      "metric": "long_mid_ratio",
+      "tail": "high",
+      "threshold": 0.27191253111047403,
+      "n_selected": 616,
+      "reason": "CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT"
+    },
+    {
+      "metric": "long_share",
+      "tail": "low",
+      "threshold": 0.07152881599831137,
+      "n_selected": 0,
+      "reason": "CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT"
+    },
+    {
+      "metric": "long_share",
+      "tail": "high",
+      "threshold": 0.24097205565427404,
+      "n_selected": 616,
+      "reason": "CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT"
+    },
+    {
+      "metric": "mid_share",
+      "tail": "high",
+      "threshold": 0.46132952676064987,
+      "n_selected": 0,
+      "reason": "CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT"
+    }
+  ],
+  "comparisons": [
+    {
+      "metric": "mid_share",
+      "tail": "low",
+      "threshold": 0.2015882219916153,
+      "n_selected": 586,
+      "n_other": 30,
+      "mean_selected": 0.6518771331058021,
+      "mean_other": 0.6666666666666666,
+      "diff": -0.014789533560864543,
+      "p_raw": 0.6080783843231353,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "weight_hhi",
+      "tail": "low",
+      "threshold": 0.1571263923732713,
+      "n_selected": 4,
+      "n_other": 612,
+      "mean_selected": 0.5,
+      "mean_other": 0.6535947712418301,
+      "diff": -0.15359477124183007,
+      "p_raw": 0.7646470705858828,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "weight_hhi",
+      "tail": "high",
+      "threshold": 0.2033396281125146,
+      "n_selected": 293,
+      "n_other": 323,
+      "mean_selected": 0.6484641638225256,
+      "mean_other": 0.6563467492260062,
+      "diff": -0.007882585403480635,
+      "p_raw": 0.5790841831633673,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "family_divergence",
+      "tail": "low",
+      "threshold": 0.11424407354380861,
+      "n_selected": 173,
+      "n_other": 443,
+      "mean_selected": 0.6011560693641619,
+      "mean_other": 0.672686230248307,
+      "diff": -0.0715301608841451,
+      "p_raw": 0.8652269546090782,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "family_divergence",
+      "tail": "high",
+      "threshold": 0.1420669979952856,
+      "n_selected": 37,
+      "n_other": 579,
+      "mean_selected": 0.5675675675675675,
+      "mean_other": 0.6580310880829016,
+      "diff": -0.09046352051533402,
+      "p_raw": 0.8102379524095181,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "meta_span",
+      "tail": "low",
+      "threshold": 0.029661917115737138,
+      "n_selected": 29,
+      "n_other": 587,
+      "mean_selected": 0.7241379310344828,
+      "mean_other": 0.6490630323679727,
+      "diff": 0.07507489866651007,
+      "p_raw": 0.32993401319736054,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "meta_span",
+      "tail": "high",
+      "threshold": 0.042659739257203656,
+      "n_selected": 216,
+      "n_other": 400,
+      "mean_selected": 0.6203703703703703,
+      "mean_other": 0.67,
+      "diff": -0.04962962962962969,
+      "p_raw": 0.7946410717856429,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "scale_balance",
+      "tail": "low",
+      "threshold": -0.24140550076322617,
+      "n_selected": 589,
+      "n_other": 27,
+      "mean_selected": 0.6553480475382003,
+      "mean_other": 0.5925925925925926,
+      "diff": 0.06275545494560775,
+      "p_raw": 0.39212157568486306,
+      "p_holm": 1.0,
+      "reject_005": false
+    },
+    {
+      "metric": "scale_balance",
+      "tail": "high",
+      "threshold": -0.0902127505060729,
+      "n_selected": 14,
+      "n_other": 602,
+      "mean_selected": 0.6428571428571429,
+      "mean_other": 0.6528239202657807,
+      "diff": -0.009966777408637828,
+      "p_raw": 0.5844831033793242,
+      "p_holm": 1.0,
+      "reject_005": false
+    }
+  ],
+  "holm_rejections": []
+}

@@ -1,0 +1,41 @@
+﻿{
+  "schema": "SMART_HISTORICAL_TRAINING_MISSION_V1",
+  "status": "READY_FOR_DATA",
+  "objective": "Reprocessar cronologicamente o historico da Mega-Sena com a arquitetura atual, permitindo que agentes e capacidades atuais avaliem, aprendam e recalibrem apenas com informacao disponivel ate cada concurso, buscando melhoria prospectiva comprovavel sem vazamento futuro.",
+  "scientific_goal": "Detectar apenas sinais com utilidade preditiva reproduzivel acima dos universos nulos e converter somente evidencia validada em pesos dinamicos.",
+  "success_rule": "Melhoria historica isolada nao basta. A versao reconstruida so pode ser promovida se superar a baseline atual em validacao fora da calibracao e sem regressao material.",
+  "training_mode": "CAUSAL_CHRONOLOGICAL_SHADOW_REPLAY",
+  "production_mutation_allowed": false,
+  "future_leakage_allowed": false,
+  "post_result_tuning_same_contest_allowed": false,
+  "agents": {
+    "data_guardian": "validar integridade, ordem, duplicidade, faixa, completude, hash e cutoff",
+    "null_model_cartographer": "medir estrutura temporal, regimes e desvios contra universos nulos",
+    "falsification_auditor": "rejeitar coincidencia, controlar multiplicidade e exigir evidencia fora da calibracao",
+    "learning_calibration_governor": "atualizar pesos de forma limitada apenas depois de revelar o resultado real",
+    "robustness_red_team": "testar leakage, invariantes, regressao e falso aprendizado",
+    "combinatorial_solver": "usar apenas scores congelados e restricoes explicitas",
+    "research_scout": "propor hipoteses shadow sem autoridade direta sobre pesos",
+    "mission_governor": "impedir promocao sem evidencia e manter a regra terminal do projeto"
+  },
+  "cycle_per_contest": [
+    "freeze_pre_contest_state",
+    "analyze_only_past_information",
+    "produce_prediction_and_signal_attribution",
+    "reveal_official_result",
+    "score_prediction_vs_result",
+    "attribute_correct_and_incorrect_signal_contributions",
+    "bounded_recalibration",
+    "non_regression_check",
+    "advance_to_next_contest"
+  ],
+  "promotion_gate": [
+    "data_quality_pass",
+    "no_future_leakage",
+    "chronological_replay_pass",
+    "out_of_sample_improvement",
+    "calibration_not_degraded",
+    "robustness_not_degraded",
+    "baseline_comparison_pass"
+  ]
+}

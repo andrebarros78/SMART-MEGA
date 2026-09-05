@@ -1,0 +1,56 @@
+{
+  "schema": "SMART_SHADOW_REJECTION_LEDGER_V1",
+  "created_brasilia": "2026-09-05T02:24:00-03:00",
+  "mission_state": "MISSION_ACTIVE",
+  "production_mutated": false,
+  "freeze_3054_mutated": false,
+  "rejections": [
+    {
+      "hypothesis": "multiscale_weight_convergence_predicts_high_performance",
+      "decision": "REJECT",
+      "reason": "no comparison survived Holm in untouched chronological evaluation; several calibration thresholds shifted outside evaluation support"
+    },
+    {
+      "hypothesis": "multiscale_rank_agreement_predicts_high_performance",
+      "decision": "REJECT",
+      "reason": "rank-correlation/Jaccard/consensus comparisons did not survive Holm out of calibration"
+    },
+    {
+      "hypothesis": "recent_best_expert_switching_improves_ensemble",
+      "decision": "REJECT",
+      "reason": "selected trailing-50 policy scored 387 hits versus 402 for ensemble on contests 2438-3053"
+    },
+    {
+      "hypothesis": "historical_hot_windows_demonstrate_predictive_regime",
+      "decision": "REJECT",
+      "reason": "rolling scan global max z about 3.02 but look-elsewhere Monte Carlo p about 0.537"
+    },
+    {
+      "hypothesis": "global_historical_excess_is_sufficient_evidence",
+      "decision": "REJECT",
+      "reason": "1273 versus 1231.8 expected; z about 1.293; one-sided p about 0.098"
+    },
+    {
+      "hypothesis": "procedural_venue_is_currently_actionable_predictive_signal",
+      "decision": "REJECT_FOR_PROMOTION",
+      "reason": "untouched evaluation contains only one recurrent venue; time/venue confounding unresolved; extracted location cleanliness about 50.6 percent"
+    },
+    {
+      "hypothesis": "recent_physical_case_or_seal_metadata_is_same_contest_actionable",
+      "decision": "REJECT_FOR_PROMOTION",
+      "reason": "broadcast evidence is observed after betting closes; recent valid transmissions all show CJ60A so no physical-case variation"
+    },
+    {
+      "hypothesis": "lower_single_expert_cap_improves_robustness",
+      "decision": "REJECT",
+      "reason": "cap 0.30 selected on calibration improved validation by 2 hits but lost 10 hits on later holdout and 5 globally versus cap 0.42 baseline"
+    }
+  ],
+  "non_regression": {
+    "tests": "37 passed in 18.39s",
+    "SMART_SIGNAL_STATE_sha256": "3050323B613B6BF5C07E9CE20E59370AB5C5E0B3F030A370A819AACEF3734DF4",
+    "SMART_SIGNAL_STATE_3054_V2_sha256": "2F7A0B0420F287807938A7BB84C388C0DF131380B45EB29EDAA289B3396BB02B",
+    "SMART_3054_FREEZE_sha256": "503DC4E99DB017A4C6954709E40EA707878FAF1601D9EE690D1EA409D452A816"
+  },
+  "policy": "rejected hypotheses remain zero-authority unless materially new independent evidence justifies a preregistered retest"
+}

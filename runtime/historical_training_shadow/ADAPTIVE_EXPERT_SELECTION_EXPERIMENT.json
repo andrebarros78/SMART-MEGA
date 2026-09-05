@@ -1,0 +1,42 @@
+{
+  "schema": "SMART_ADAPTIVE_EXPERT_SELECTION_V1",
+  "policy": "select expert with highest trailing mean hits; selection uses only prior contests",
+  "calibration_n": 1437,
+  "evaluation_n": 616,
+  "evaluation_contest_min": 2438,
+  "evaluation_contest_max": 3053,
+  "candidate_windows": [
+    25,
+    50,
+    100,
+    250
+  ],
+  "calibration_total_hits_by_window": {
+    "25": 825,
+    "50": 842,
+    "100": 839,
+    "250": 842
+  },
+  "selected_window": 50,
+  "evaluation_selected_total_hits": 387,
+  "evaluation_ensemble_total_hits": 402,
+  "evaluation_uniform_expected_hits": 369.59999999999997,
+  "paired_total_gain_vs_ensemble": -15,
+  "paired_mean_gain_vs_ensemble": -0.024350649350649352,
+  "paired_signflip_p_one_sided": 0.8184090795460227,
+  "selection_counts": {
+    "freq25": 48,
+    "freq50": 91,
+    "freq100": 11,
+    "freq250": 12,
+    "freq500": 94,
+    "freq1000": 150,
+    "freq_global": 127,
+    "ewma10": 26,
+    "ewma25": 30,
+    "ewma50": 0,
+    "ewma100": 22,
+    "ewma250": 5
+  },
+  "passes_005_vs_ensemble": false
+}

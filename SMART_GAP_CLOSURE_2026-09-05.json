@@ -1,0 +1,56 @@
+{
+  "schema": "SMART_GAP_CLOSURE_V1",
+  "created_brasilia": "2026-09-05T06:39:00-03:00",
+  "mission_state": "MISSION_ACTIVE",
+  "terminal_6of6_proven": false,
+  "closures": {
+    "runtime_reproducibility": {
+      "status": "CLOSED_ENGINEERING",
+      "evidence": "SMART_RUNTIME_GUARD_V1 PASS on canonical .venv Python 3.11.9 with numpy/pandas/pytest/river available"
+    },
+    "context_detector_dead_activation": {
+      "status": "CLOSED_ENGINEERING_NOT_PREDICTIVE",
+      "change": "ADWIN drift event now participates in regime activation/detection in addition to fixed L1 threshold",
+      "calibration_id": "SMART_CONTEXT_CAL_20260905_D",
+      "historical_detections": 1,
+      "replay_total_hits": 1273,
+      "baseline_total_hits": 1273,
+      "holdout_regression": false,
+      "predictive_weight_authorized": false
+    },
+    "rank_calibration": {
+      "status": "CORRECTLY_NEUTRALIZED",
+      "reason": "strength 0.5 improved calibration/validation Brier but degraded later holdout Brier; non-regression gate rejects activation"
+    },
+    "marginal_utility_weight_effect": {
+      "status": "CORRECTLY_DISABLED",
+      "reason": "lambda 4 selected on calibration regressed validation by 1 hit; bounded activation rejected"
+    },
+    "interaction_weight_effect": {
+      "status": "SHADOW_ONLY",
+      "reason": "interaction evidence remains diagnostic until independent non-regressive validation exists"
+    },
+    "meta_policy_switching": {
+      "status": "CORRECTLY_LOCKED",
+      "reason": "no alternate policy has proven superiority over quality_dynamic; switching remains prospective-promotion-only"
+    },
+    "procedural_caixa": {
+      "status": "BLOCKED_FOR_PREDICTIVE_PROMOTION",
+      "reason": "coverage useful for mechanism study but clean recurrent venue contrast and actionable physical variation before bet close are insufficient"
+    },
+    "terminal_evidence": {
+      "status": "OPEN_EXTERNAL_FUTURE_EVIDENCE",
+      "reason": "canonical rule requires a Top-6 frozen before an official future result with 6 hits and full causal traceability"
+    }
+  },
+  "non_regression": {
+    "full_test_suite": "538 passed in 280.07s",
+    "historical_replay_total_hits": 1273,
+    "historical_uniform_expected_hits": 1231.8,
+    "production_unchanged": true,
+    "SMART_SIGNAL_STATE_sha256": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4",
+    "SMART_SIGNAL_STATE_3054_V2_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "SMART_3054_FREEZE_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
+  },
+  "scientific_boundary": "Engineering gaps may be closed by tests and non-regression; predictive gaps are not declared closed without out-of-calibration and prospective evidence."
+}

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 from collections import deque
 from dataclasses import dataclass, field
@@ -16,7 +16,7 @@ CONTEXT_COOLDOWN = 25
 
 # Calibrated on the canonical synthetic calibration set and validated on 120
 # disjoint seeds per IID/gradual/abrupt scenario before production adoption.
-CALIBRATION_ID = 'SMART_CONTEXT_CAL_20260831_C'
+CALIBRATION_ID = 'SMART_CONTEXT_CAL_20260905_D'
 
 
 def _zero_counts() -> np.ndarray:
@@ -76,7 +76,7 @@ class ContextRegimeEngine:
         score = self._score()
         self.last_score = score
         self.score_detector.update(score)
-        if len(self.recent_rows) == TOTAL_WINDOW and score >= REGIME_L1_THRESHOLD and self.cooldown == 0:
+        if len(self.recent_rows) == TOTAL_WINDOW and (score >= REGIME_L1_THRESHOLD or bool(self.score_detector.drift_detected)) and self.cooldown == 0:
             self.detection_count += 1
             self.last_detection_step = self.observations
             self.cooldown = CONTEXT_COOLDOWN
@@ -90,7 +90,7 @@ class ContextRegimeEngine:
 
     @property
     def active(self) -> bool:
-        return bool(len(self.recent_rows) == TOTAL_WINDOW and (self.last_score >= REGIME_L1_THRESHOLD or self.cooldown > 0))
+        return bool(len(self.recent_rows) == TOTAL_WINDOW and (self.last_score >= REGIME_L1_THRESHOLD or bool(self.score_detector.drift_detected) or self.cooldown > 0))
 
     def factor_for_signal(self, name: str) -> float:
         if not self.active:

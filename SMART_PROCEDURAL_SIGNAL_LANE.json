@@ -1,0 +1,68 @@
+{
+  "schema": "SMART_PROCEDURAL_SIGNAL_LANE_V2",
+  "status": "SHADOW_ONLY",
+  "objective": "Capturar variaveis operacionais/procedurais com dois cutoffs temporais distintos: estudar causalmente o mecanismo fisico antes da primeira bola e permitir influencia operacional somente para informacao comprovadamente disponivel antes do fechamento das apostas.",
+  "production_influence": false,
+  "future_leakage_allowed": false,
+  "same_contest_post_result_features_allowed": false,
+  "cutoff_policy": {
+    "SCIENTIFIC_FIRST_BALL": "informacao observada antes da primeira bola pode ser usada apenas para estudo causal do mecanismo fisico",
+    "ACTIONABLE_BET_CLOSE": "somente informacao disponivel antes do fechamento das apostas pode influenciar previsao/aposta do mesmo concurso",
+    "default_bet_close_rule": "01 hora antes do horario oficial do sorteio, conforme cronograma CAIXA, salvo regra oficial especifica do concurso",
+    "broadcast_only_pre_draw_metadata_same_contest_weight_allowed": false
+  },
+  "official_basis": {
+    "source": "CAIXA Regras dos Sorteios e cronogramas mensais",
+    "facts": [
+      "locais de sorteio podem variar conforme cronograma e situacoes excepcionais",
+      "dinamica e disponibilidade de equipamentos podem variar",
+      "Mega-Sena utiliza um globo com bolas 01 a 60",
+      "transmissoes mostram procedimentos previos como abertura de maletas, conferencia e carregamento dos globos",
+      "cronogramas informam que as apostas das demais modalidades encerram uma hora antes do sorteio"
+    ]
+  },
+  "fields": {
+    "actionable_before_bet_close": [
+      "contest",
+      "scheduled_datetime",
+      "draw_location_if_published_before_bet_close",
+      "exceptional_location_if_published_before_bet_close",
+      "schedule_class",
+      "official_pre_draw_notice",
+      "source_url",
+      "source_publication_timestamp",
+      "evidence_sha256"
+    ],
+    "scientific_only_before_first_ball": [
+      "actual_pre_draw_timestamp",
+      "ball_case_identifier",
+      "opening_seal_identifier",
+      "equipment_identifier",
+      "pre_draw_manual_ball_release",
+      "pre_draw_intervention_flag",
+      "auditor_count",
+      "source_video_url",
+      "source_evidence_timestamp"
+    ]
+  },
+  "forbidden_as_same_contest_predictors": [
+    "any_feature_first_observed_after_bet_close",
+    "drawn_numbers",
+    "post_draw_closing_seal",
+    "events_observed_after_first_ball_ejection",
+    "winner_information",
+    "prize_distribution",
+    "post_result_commentary"
+  ],
+  "promotion_gates": [
+    "field_integrity_pass",
+    "actionable_cutoff_timestamp_proven",
+    "minimum_oos_sample_met",
+    "novelty_vs_existing_number_only_signals",
+    "holdout_improvement",
+    "multiplicity_control",
+    "calibration_not_degraded",
+    "robustness_not_degraded"
+  ],
+  "mission_state": "MISSION_ACTIVE"
+}

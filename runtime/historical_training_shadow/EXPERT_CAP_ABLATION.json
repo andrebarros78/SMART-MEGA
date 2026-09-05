@@ -1,0 +1,65 @@
+{
+  "schema": "SMART_EXPERT_CAP_ABLATION_V1",
+  "design": "causal replay for each cap; cap selected only by contests 1001-2200; validation 2201-2700; diagnostic holdout 2701-3053",
+  "caps": [
+    0.25,
+    0.3,
+    0.35,
+    0.42
+  ],
+  "results": [
+    {
+      "cap": 0.25,
+      "calibration_hits_1001_2200": 722,
+      "validation_hits_2201_2700": 314,
+      "holdout_hits_2701_3053": 211,
+      "global_hits": 1247,
+      "final_max_weight": 0.25
+    },
+    {
+      "cap": 0.3,
+      "calibration_hits_1001_2200": 732,
+      "validation_hits_2201_2700": 319,
+      "holdout_hits_2701_3053": 217,
+      "global_hits": 1268,
+      "final_max_weight": 0.3
+    },
+    {
+      "cap": 0.35,
+      "calibration_hits_1001_2200": 729,
+      "validation_hits_2201_2700": 317,
+      "holdout_hits_2701_3053": 223,
+      "global_hits": 1269,
+      "final_max_weight": 0.35000000000000003
+    },
+    {
+      "cap": 0.42,
+      "calibration_hits_1001_2200": 729,
+      "validation_hits_2201_2700": 317,
+      "holdout_hits_2701_3053": 227,
+      "global_hits": 1273,
+      "final_max_weight": 0.3755627303015501
+    }
+  ],
+  "selected_by_calibration": {
+    "cap": 0.3,
+    "calibration_hits_1001_2200": 732,
+    "validation_hits_2201_2700": 319,
+    "holdout_hits_2701_3053": 217,
+    "global_hits": 1268,
+    "final_max_weight": 0.3
+  },
+  "baseline_cap_042": {
+    "cap": 0.42,
+    "calibration_hits_1001_2200": 729,
+    "validation_hits_2201_2700": 317,
+    "holdout_hits_2701_3053": 227,
+    "global_hits": 1273,
+    "final_max_weight": 0.3755627303015501
+  },
+  "selected_validation_delta_vs_baseline": 2,
+  "selected_holdout_delta_vs_baseline": -10,
+  "selected_global_delta_vs_baseline": -5,
+  "predictive_weight_authorized": false,
+  "note": "historical diagnostic only; no production mutation"
+}

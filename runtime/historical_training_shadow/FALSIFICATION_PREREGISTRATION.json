@@ -1,0 +1,65 @@
+{
+  "schema": "SMART_P4_P5_PREREGISTRATION_V1",
+  "objective": "falsify four diagnostic structure hypotheses against declared null universes",
+  "data_file": "Mega-Sena_uploaded_2026-09-05.xlsx",
+  "data_sha256": "49b5e2282565264efad78d5f2027e0f5b8cc8e2a40c57ec7ec2c12018890f6f1",
+  "code_sha256": "1f86297e644fba2e796570f57e1185fbefd8217bd5593ce27eb74819450faec7",
+  "contest_min": 1,
+  "cutoff_contest": 3053,
+  "calibration_end_contest": 2137,
+  "evaluation_start_contest": 2138,
+  "evaluation_end_contest": 3053,
+  "holdout_fraction": 0.3,
+  "holdout_integrity": "RETROSPECTIVE_TIME_SPLIT_NOT_PRISTINE",
+  "replications": 200,
+  "seed": 20260904,
+  "alpha_familywise": 0.05,
+  "multiplicity": "Holm correction across every hypothesis-null comparison",
+  "tail": "greater; add-one empirical Monte Carlo p-value",
+  "hypotheses": {
+    "H_MARGINAL_001": {
+      "metric": "marginal_std",
+      "direction": "greater",
+      "nulls": [
+        "U0"
+      ],
+      "claim": "marginal dispersion exceeds uniform 6-of-60 sampling variation"
+    },
+    "H_MEMORY_001": {
+      "metric": "lag1_binary_mutual_information_mean_bits",
+      "direction": "greater",
+      "nulls": [
+        "U1",
+        "U3",
+        "U4"
+      ],
+      "claim": "lag-1 inclusion dependence exceeds temporal and fixed-marginal surrogates"
+    },
+    "H_GRAPH_001": {
+      "metric": "network_average_clustering",
+      "direction": "greater",
+      "nulls": [
+        "U0",
+        "U4"
+      ],
+      "claim": "cooccurrence clustering exceeds iid and fixed-marginal surrogates"
+    },
+    "H_REGIME_001": {
+      "metric": "regime_max_cusum",
+      "direction": "greater",
+      "nulls": [
+        "U0",
+        "U1",
+        "U3",
+        "U5"
+      ],
+      "claim": "the causal feature stream has a change-point score beyond declared nulls"
+    }
+  },
+  "minimum_replications_for_holm_resolution": 199,
+  "resolution_sufficient": true,
+  "promotion_authority": false,
+  "terminal_6of6_claim": false,
+  "design_sha256": "b4cb5424699ea9e648c43a094ebb93cfe4263add06c82277cad0239dd2c9e95e",
+  "registered_at_utc": "2026-09-05T04:04:49.239443+00:00"
+}
