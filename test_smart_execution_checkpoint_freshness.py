@@ -1,4 +1,5 @@
 import json
+import os
 import subprocess
 import sys
 import xml.etree.ElementTree as ET
@@ -7,9 +8,12 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent
 
 
-def test_checkpoint_is_derived_from_current_evidence():
-    subprocess.run([sys.executable, str(ROOT / 'smart_execution_checkpoint.py')], cwd=ROOT, check=True, capture_output=True, text=True)
-    cp = json.loads((ROOT / 'SMART_EXECUTION_CHECKPOINT_20260904.json').read_text(encoding='utf-8'))
+def test_checkpoint_is_derived_from_current_evidence(tmp_path):
+    output = tmp_path / "checkpoint.json"
+    env = dict(os.environ)
+    env["SMART_CHECKPOINT_OUTPUT"] = str(output)
+    subprocess.run([sys.executable, str(ROOT / 'smart_execution_checkpoint.py')], cwd=ROOT, check=True, capture_output=True, text=True, env=env)
+    cp = json.loads(output.read_text(encoding='utf-8'))
     mc = json.loads((ROOT / 'SMART_MONTE_CARLO_CONVERGENCE_1000.json').read_text(encoding='utf-8'))
     fp = json.loads((ROOT / 'SMART_FALSIFICATION_REPORT_POWERED.json').read_text(encoding='utf-8'))
     assert cp['schema'] == 'SMART_EXECUTION_CHECKPOINT_20260904_V3'

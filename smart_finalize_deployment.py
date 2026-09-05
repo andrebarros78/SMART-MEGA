@@ -60,7 +60,7 @@ def junit_summary(path: Path) -> dict[str, Any]:
 
 
 def build(root: Path) -> dict[str, Any]:
-    consolidation = consolidation_module.write(root)
+    consolidation = consolidation_module.build(root)
     mission = read(root / "SMART_MISSION_STATUS.json")
     orchestration = read(root / "SMART_AGENT_SKILL_ORCHESTRATION.json")
     p1p2 = read(root / "SMART_P1_P2_CARTOGRAPHY_PROOF.json")
@@ -338,6 +338,7 @@ Compatibilidade textual legada: NÃ£o declarar `MISSION_PROVEN` sem cumprir a r
 
 
 def write(root: Path) -> dict[str, Any]:
+    consolidation_module.write(root)
     proof = build(root)
     if proof["deployment_status"] != "PASS":
         raise RuntimeError({"deployment_checks": proof["checks"]})
