@@ -17,6 +17,8 @@ PROFILE_MIN_PROJECTION_ALERTS = 2
 PROFILE_CONSENSUS_HORIZON = 128
 PROFILE_BURN_IN = 75
 PROFILE_SEED = 20260828
+PROFILE_DRIFT_HEALTH = 0.70
+PERFORMANCE_DRIFT_HEALTH = 0.50
 
 
 def _build_projections() -> np.ndarray:
@@ -115,8 +117,13 @@ class SignalQualityState:
         learned_utility = math.exp(max(-2.0, min(2.0, 0.8 * recent_excess)))
         stability = 1.0 / (1.0 + recent_std)
         perf_score = 1.0 / (1.0 + math.exp(-2.0 * recent_excess))
-        drift_active = self.performance_drift_cooldown > 0
-        drift_health = 0.5 if drift_active else 1.0
+        performance_drift_active = self.performance_drift_cooldown > 0
+        profile_drift_active = self.profile_drift_cooldown > 0
+        drift_active = performance_drift_active or profile_drift_active
+        drift_health = min(
+            PERFORMANCE_DRIFT_HEALTH if performance_drift_active else 1.0,
+            PROFILE_DRIFT_HEALTH if profile_drift_active else 1.0,
+        )
         quality = max(0.05, min(1.0, 0.45 * stability + 0.35 * perf_score + 0.20 * drift_health))
         sample_conf = 1.0 - math.exp(-self.n / 100.0)
         confidence = max(0.10, min(1.0, 0.15 + 0.85 * sample_conf * stability))
@@ -147,6 +154,9 @@ class SignalQualityState:
             'last_profile_drift_step': self.last_profile_drift_step,
             'profile_active_projection_alerts': sum(x > 0 for x in self.profile_alert_cooldowns),
             'drift_active': drift_active,
+            'performance_drift_active': performance_drift_active,
+            'profile_drift_active': profile_drift_active,
+            'drift_health': drift_health,
             'adwin_width': int(self.detector.width),
             'adwin_estimation': float(self.detector.estimation),
             'profile_adwin_min_width': min(widths) if widths else 0,
@@ -154,7 +164,7 @@ class SignalQualityState:
             'profile_adwin_estimations': estimations,
             'profile_projection_values': list(self.last_profile_projection_values),
             'profile_projection_seed': PROFILE_SEED,
-            'profile_drift_penalty_enabled': False,
+            'profile_drift_penalty_enabled': True,
             'utility': learned_utility,
             'quality': quality,
             'confidence': confidence,

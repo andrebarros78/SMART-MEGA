@@ -6,6 +6,8 @@ import xml.etree.ElementTree as ET
 from pathlib import Path
 from typing import Any, Iterable
 
+from smart_material_deficiency_registry import load_registry as load_material_deficiency_registry
+
 SCHEMA = 'SMART_GLOBAL_INTEGRITY_PROOF_1'
 POLICY_SCHEMA = 'SMART_GLOBAL_INTEGRITY_POLICY_1'
 GATE_SCHEMA = 'SMART_3052_IMPLEMENTATION_GATE_1'
@@ -13,6 +15,7 @@ P14_SCHEMA = 'SMART_INDEPENDENT_AUDIT_1'
 DEFAULT_PROOF_PATH = Path('SMART_GLOBAL_INTEGRITY_PROOF.json')
 DEFAULT_P14_PATH = Path('SMART_P14_INDEPENDENT_AUDIT_CURRENT.json')
 DEFAULT_RED_TEAM_PATH = Path('SMART_P09_RED_TEAM_LATEST.json')
+DEFAULT_DEFICIENCY_REGISTRY_PATH = Path('SMART_MATERIAL_DEFICIENCY_REGISTRY.json')
 
 EXPECTED_GATE_IDS = (
     'P01_COUNTERFACTUAL_ATTRIBUTION', 'P02_MARGINAL_SIGNAL_UTILITY',
@@ -32,7 +35,7 @@ REQUIRED_GATE_GOVERNANCE = (
 REQUIRED_P14_CHECKS = (
     'coverage_lines_and_branches', 'hash_integrity', 'deterministic_replay',
     'future_leakage_absent', 'full_champion_comparison',
-    'promotion_lineage_recomputed', 'independence_no_forbidden_dependencies',
+    'promotion_lineage_recomputed', 'independence_no_forbidden_dependencies', 'independent_freeze_decision_oracle',
 )
 REQUIRED_P14_COVERAGE_SOURCES = (
     'smart_independent_audit.py', 'smart_champion_challenger.py',
@@ -45,6 +48,9 @@ REQUIRED_GLOBAL_COVERAGE_SOURCES = (
     'smart_continuous_red_team.py', 'smart_global_integrity.py',
     'smart_champion_challenger.py', 'adjudicate_signal_challenger.py',
     'smart_v2_production.py', 'smart_portfolio_optimizer.py', 'smart_portfolio_pipeline.py',
+    'smart_agent_skill_orchestration.py', 'smart_agent_runtime.py', 'smart_agent_skill_functional_gate.py',
+    'smart_learning_activation_gate.py', 'smart_learning_activation_authority.py',
+    'smart_data_quality_gate.py', 'smart_independent_oracle.py', 'smart_material_deficiency_registry.py',
 )
 CRITICAL_SOURCE_FILES = (
     'smart_v2_engine.py', 'smart_v2_production.py', 'freeze_next_research.py',
@@ -55,9 +61,12 @@ CRITICAL_SOURCE_FILES = (
     'smart_bounded_online_learning.py', 'smart_signal_expansion_governance.py',
     'smart_sequential_prospective_proof.py', 'smart_promotion_gate.py',
     'smart_independent_audit.py', 'smart_evidence_only_promotion.py',
-    'smart_signal_agent.py', 'smart_champion_challenger.py', 'adjudicate_signal_challenger.py',
+    'smart_signal_agent.py', 'smart_data_quality_gate.py', 'smart_champion_challenger.py', 'adjudicate_signal_challenger.py',
     'smart_continuous_red_team.py', 'smart_global_integrity.py',
     'smart_portfolio_optimizer.py', 'smart_portfolio_pipeline.py',
+    'smart_agent_skill_orchestration.py', 'smart_agent_runtime.py', 'smart_agent_skill_functional_gate.py',
+    'smart_learning_activation_gate.py', 'smart_learning_activation_authority.py', 'smart_independent_oracle.py',
+    'smart_material_deficiency_registry.py', 'smart_continuity_consolidator.py', 'smart_finalize_deployment.py',
 )
 
 
@@ -91,6 +100,7 @@ def policy_snapshot() -> dict[str, Any]:
         'current_red_team_required': True,
         'current_independent_audit_required': True,
         'zero_material_deficiencies_required': True,
+        'material_deficiency_registry_required': True,
         'exact_current_coverage_set_required': list(REQUIRED_GLOBAL_COVERAGE_SOURCES),
         'full_regression_junit_required': True,
         'proof_self_hash_required': True,
@@ -230,7 +240,12 @@ def validate_p14_report(root: Path, path: Path = DEFAULT_P14_PATH) -> dict[str, 
         raise ValueError('current independent audit self-hash invalid')
     if report.get('promotion_authority') is not False or report.get('independent_of_promotion_decision') is not True:
         raise ValueError('current independent audit authority/independence flags invalid')
-    if report.get('material_deficiencies') != []:
+    deficiency_registry = load_material_deficiency_registry(root=root)
+    if report.get('material_deficiency_registry') != deficiency_registry:
+        raise ValueError('current independent audit material deficiency registry is stale')
+    if report.get('material_deficiencies') != deficiency_registry['open_deficiencies']:
+        raise ValueError('current independent audit material deficiency list mismatch')
+    if deficiency_registry['open_count'] != 0:
         raise ValueError('current independent audit has material deficiencies')
     checks = report.get('checks')
     if not isinstance(checks, dict) or set(checks) != set(REQUIRED_P14_CHECKS) or any(checks.get(k) is not True for k in REQUIRED_P14_CHECKS):
@@ -259,7 +274,10 @@ def validate_p14_report(root: Path, path: Path = DEFAULT_P14_PATH) -> dict[str, 
     replay = report.get('deterministic_replay')
     if not isinstance(replay, dict) or replay.get('status') != 'PASS' or replay.get('deterministic') is not True or replay.get('causal_cutoff_verified') is not True:
         raise ValueError('current independent audit deterministic replay invalid')
-    return {'status': 'PASS', 'file': p.name, 'file_sha256': sha256_file(p), 'report_sha256': observed, 'material_deficiencies': []}
+    oracle = replay.get('independent_decision_oracle')
+    if not isinstance(oracle, dict) or oracle.get('verified') is not True or oracle.get('production_engine_imported') is not False:
+        raise ValueError('current independent audit decision oracle invalid')
+    return {'status': 'PASS', 'file': p.name, 'file_sha256': sha256_file(p), 'report_sha256': observed, 'material_deficiency_registry': deficiency_registry, 'material_deficiencies': list(deficiency_registry['open_deficiencies'])}
 
 
 def build_global_integrity_proof(root: Path, gate: dict[str, Any], junit_path: Path,
@@ -270,6 +288,9 @@ def build_global_integrity_proof(root: Path, gate: dict[str, Any], junit_path: P
     from smart_continuous_red_team import verify_latest_report
     red = verify_latest_report(root / DEFAULT_RED_TEAM_PATH, root)
     p14 = validate_p14_report(root)
+    deficiency_registry = load_material_deficiency_registry(root=root)
+    if deficiency_registry['open_count'] != 0:
+        raise ValueError('global integrity blocked by material deficiencies')
     coverages = [coverage_summary(root, report, source) for report, source in coverage_specs]
     _validate_coverage_set(coverages)
     junit = junit_summary(junit_path)
@@ -283,8 +304,9 @@ def build_global_integrity_proof(root: Path, gate: dict[str, Any], junit_path: P
         'coverage': coverages,
         'red_team': {**red, 'file': DEFAULT_RED_TEAM_PATH.name, 'file_sha256': sha256_file(root / DEFAULT_RED_TEAM_PATH)},
         'independent_audit': p14,
+        'material_deficiency_registry': deficiency_registry,
         'full_regression': {'junit_file': Path(junit_path).name, 'junit_sha256': sha256_file(junit_path), **junit},
-        'material_deficiencies': [],
+        'material_deficiencies': list(deficiency_registry['open_deficiencies']),
     }
     proof['sha256'] = sha256_json(proof)
     return proof
@@ -304,6 +326,11 @@ def verify_global_integrity(root: Path, gate_path: Path, proof_path: Path = DEFA
         raise ValueError('global integrity proof self-hash invalid')
     if proof.get('gate_state_sha256') != gate_state_sha256(gate):
         raise ValueError('global integrity gate state changed after proof')
+    deficiency_registry = load_material_deficiency_registry(root=root)
+    if deficiency_registry['open_count'] != 0:
+        raise ValueError('global integrity material deficiency registry has open items')
+    if proof.get('material_deficiency_registry') != deficiency_registry or proof.get('material_deficiencies') != deficiency_registry['open_deficiencies']:
+        raise ValueError('global integrity material deficiency registry is stale')
     if proof.get('critical_source_hashes') != current_source_hashes(root):
         raise ValueError('global integrity critical source hashes are stale')
     coverage_rows = proof.get('coverage')
@@ -333,4 +360,4 @@ def verify_global_integrity(root: Path, gate_path: Path, proof_path: Path = DEFA
         raise ValueError('gate does not bind the current global integrity proof')
     return {'status': 'PASS', 'proof_file': proof_path.name, 'proof_file_sha256': sha256_file(proof_path),
             'critical_source_hashes_current': True, 'coverage_current': True, 'red_team_current': True,
-            'independent_audit_current': True, 'full_regression_current': True, 'material_deficiencies': []}
+            'independent_audit_current': True, 'full_regression_current': True, 'material_deficiency_registry_current': True, 'material_deficiencies': list(deficiency_registry['open_deficiencies'])}

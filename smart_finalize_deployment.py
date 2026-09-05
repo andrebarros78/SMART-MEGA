@@ -9,6 +9,8 @@ from typing import Any
 
 import smart_continuity_consolidator as consolidation_module
 import smart_hypothesis_state_reconciler as hypothesis_reconciler
+import smart_agent_skill_functional_gate as agent_skill_gate
+import smart_agent_skill_orchestration as agent_skill_orchestration
 
 SCHEMA = "SMART_IMPLEMENTATION_PROOF_20260904_V2"
 JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
@@ -62,7 +64,8 @@ def junit_summary(path: Path) -> dict[str, Any]:
 def build(root: Path) -> dict[str, Any]:
     consolidation = consolidation_module.build(root)
     mission = read(root / "SMART_MISSION_STATUS.json")
-    orchestration = read(root / "SMART_AGENT_SKILL_ORCHESTRATION.json")
+    orchestration = agent_skill_orchestration.build_orchestration(root)
+    functional_integration = agent_skill_gate.evaluate(root)
     p1p2 = read(root / "SMART_P1_P2_CARTOGRAPHY_PROOF.json")
     convergence = read(root / "SMART_MONTE_CARLO_CONVERGENCE_1000.json")
     powered = read(root / "SMART_FALSIFICATION_REPORT_POWERED.json")
@@ -90,7 +93,10 @@ def build(root: Path) -> dict[str, Any]:
         "final_regression_pass": junit["status"] == "PASS",
         "freeze_3054_immutable": sha(freeze) == consolidation_module.FREEZE_EXPECTED_SHA256,
         "dataset_3053_bound": sha(data) == consolidation_module.DATA_EXPECTED_SHA256,
-        "agent_skill_orchestration_pass": orchestration.get("integration_status") == "PASS",
+        "agent_skill_structural_orchestration_pass": orchestration.get("integration_status") == "PASS"
+        and orchestration.get("integration_scope") == "STRUCTURAL_ORCHESTRATION_ONLY",
+        "agent_skill_functional_integration_pass": functional_integration.get("status") == "PASS"
+        and all(functional_integration.get("checks", {}).values()),
         "all_agents_non_authoritative": bool(agents) and all(
             not bool(agent.get("terminal_authority"))
             and not bool(agent.get("predictive_weight_authorized"))
@@ -168,7 +174,10 @@ def build(root: Path) -> dict[str, Any]:
         "agent_skill_orchestration": {
             "unique_capabilities_total": orchestration["inventory"]["unique_capabilities_total"],
             "agent_count": len(agents),
-            "status": orchestration["integration_status"],
+            "structural_status": orchestration["integration_status"],
+            "structural_scope": orchestration.get("integration_scope"),
+            "functional_status": functional_integration.get("status"),
+            "functional_proof_sha256": functional_integration.get("sha256"),
             "artifact_sha256": sha(root / "SMART_AGENT_SKILL_ORCHESTRATION.json"),
         },
         "powered_falsification": {

@@ -28,12 +28,12 @@ def current_policy(draws,start=1000,eta=math.log(2)):
     ranking=(e.NUMBERS[order]).tolist(); return {'top6':top,'ranking60':ranking,'aggregate_scores':{str(i+1):float(agg[i]) for i in range(60)},'expert_weights':eff,'family_weights':fw}
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--data',default='Mega-Sena_through_3050.xlsx'); ap.add_argument('--target',type=int,default=3051); ap.add_argument('--out',default='SMART_3051_RESEARCH_FREEZE.json'); ap.add_argument('--start',type=int,default=1000); a=ap.parse_args()
+    ap=argparse.ArgumentParser(); ap.add_argument('--data',required=True); ap.add_argument('--target',type=int,required=True); ap.add_argument('--out',default=None); ap.add_argument('--start',type=int,default=1000); a=ap.parse_args()
     data=Path(a.data); draws,contests=e.load_draws(data)
     if int(contests[-1])>=a.target: raise SystemExit('target already present in data; refusing retrospective freeze')
     if int(contests[-1])!=a.target-1: raise SystemExit('data must end immediately before target contest')
     pol=current_policy(draws,a.start)
     obj={'schema':'SMART_RESEARCH_FREEZE_1','target_contest':a.target,'frozen_utc':datetime.now(timezone.utc).isoformat(),'frozen_before_result':True,'research_only':True,'operational_cards':False,'production_predictive_weight':0.0,
       'data_file':str(data),'data_sha256':sha256(data),'engine_file':'smart_v2_engine.py','engine_sha256':sha256(Path('smart_v2_engine.py')),'start_index':a.start,'eta':math.log(2),'tie_break':'score desc, number asc',**pol}
-    out=Path(a.out); out.write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding='utf-8'); print(json.dumps({'target':a.target,'top6':pol['top6'],'data_sha256':obj['data_sha256'],'engine_sha256':obj['engine_sha256'],'freeze_file_sha256':sha256(out)},ensure_ascii=False,indent=2))
+    out=Path(a.out or f'SMART_{a.target}_RESEARCH_FREEZE.json'); out.write_text(json.dumps(obj,ensure_ascii=False,indent=2),encoding='utf-8'); print(json.dumps({'target':a.target,'top6':pol['top6'],'data_sha256':obj['data_sha256'],'engine_sha256':obj['engine_sha256'],'freeze_file_sha256':sha256(out)},ensure_ascii=False,indent=2))
 if __name__=='__main__': main()

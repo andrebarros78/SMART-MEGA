@@ -6,7 +6,7 @@ from yt_dlp import YoutubeDL
 from smart_procedural_caption_extract import extract_caption
 OFFICIAL='UCPbhr02AfVb2nd5pm12BxTw'
 SRC=Path('runtime/procedural_sources/MEGA_PROCEDURAL_CRONOGRAM_DATASET.json')
-OUTDIR=Path('runtime/procedural_sources/youtube_captions'); OUTDIR.mkdir(parents=True,exist_ok=True)
+OUTDIR=Path('runtime/procedural_sources/youtube_captions')
 OUT=Path('runtime/procedural_sources/YOUTUBE_PROCEDURAL_RECENT.json')
 def find_official(contest,date_iso):
  y,m,d=date_iso.split('-'); q=f'ytsearch6:Loterias CAIXA {d}/{m}/{y}'
@@ -21,6 +21,7 @@ def caption_url(video_url):
   if c.get('ext')=='json3': return c.get('url')
  return None
 def main():
+ OUTDIR.mkdir(parents=True, exist_ok=True)
  d=json.loads(SRC.read_text(encoding='utf-8')); rows=[r for r in d['rows'] if r['evidence_status'].startswith('VERIFIED')][-15:]; out=[]
  for r in rows:
   contest=int(r['contest']); date=r['draw_date']; print('SEARCH',contest,date,flush=True)

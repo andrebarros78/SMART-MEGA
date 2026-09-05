@@ -138,10 +138,12 @@ def test_freeze_hashes_every_behavioral_challenger_component():
     assert "'independent_audit_policy': independent_audit_snapshot" in text
 
 
-def test_profile_drift_is_telemetry_only_and_context_engine_controls_regime_factor():
+def test_profile_drift_is_causally_observed_and_penalizes_signal_context():
     quality = (ROOT / 'smart_signal_quality.py').read_text(encoding='utf-8-sig')
     agent = (ROOT / 'smart_signal_agent.py').read_text(encoding='utf-8-sig')
-    assert "'profile_drift_penalty_enabled': False" in quality
+    assert "'profile_drift_penalty_enabled': True" in quality
+    assert 'profile_drift_active = self.profile_drift_cooldown > 0' in quality
+    assert 'self._observe_signal_profiles(sc)' in agent
     assert "m['regime_context'] = self.context_engine.factor_for_signal(n)" in agent
     assert "m['context'] = float(m['context']) * float(m['regime_context'])" in agent
 

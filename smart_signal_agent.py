@@ -45,6 +45,7 @@ from smart_multi_challengers import build_multi_challengers
 from smart_meta_governor import MetaGovernor
 
 from smart_bounded_online_learning import BoundedOnlineLearningGuard
+from smart_learning_activation_gate import ActivationDecision
 
 
 
@@ -190,7 +191,7 @@ def _apply_governor_decision(base_top6: list[int], governor: dict[str, Any]) -> 
 
 class SmartSignalAgent:
 
-    def __init__(self, start: int = 1000, eta: float = math.log(2), redundancy_threshold: float = DEFAULT_CORRELATION_THRESHOLD, meta_strength: float = DEFAULT_META_STRENGTH, calibration_strength: float = DEFAULT_CALIBRATION_STRENGTH, marginal_strength: float = 0.0, allow_meta_alternate_selection: bool = False):
+    def __init__(self, start: int = 1000, eta: float = math.log(2), redundancy_threshold: float = DEFAULT_CORRELATION_THRESHOLD, meta_strength: float = DEFAULT_META_STRENGTH, calibration_strength: float = DEFAULT_CALIBRATION_STRENGTH, marginal_strength: float = 0.0, allow_meta_alternate_selection: bool = False, activation_decision: ActivationDecision | None = None, shadow_research_override: bool = False):
 
         self.start = int(start)
 
@@ -206,6 +207,22 @@ class SmartSignalAgent:
         if not math.isfinite(self.marginal_strength) or not 0.0 <= self.marginal_strength <= 1.0:
             raise ValueError('marginal_strength must be in [0,1]')
         self.allow_meta_alternate_selection = bool(allow_meta_alternate_selection)
+        self.shadow_research_override = bool(shadow_research_override)
+        self.activation_decision = activation_decision
+        requested_activation = self.marginal_strength > 0.0 or self.allow_meta_alternate_selection
+        gate_authorized = bool(
+            activation_decision is not None
+            and activation_decision.status == 'ELIGIBLE_FOR_BOUNDED_PROMOTION'
+            and activation_decision.predictive_weight_authorized
+        )
+        if requested_activation and not (gate_authorized or self.shadow_research_override):
+            raise ValueError('decision-changing mechanisms require activation-gate authorization or explicit shadow_research_override')
+        self.production_activation_authorized = bool(requested_activation and gate_authorized and not self.shadow_research_override)
+        self.activation_mode = (
+            'PRODUCTION_GATE_AUTHORIZED' if self.production_activation_authorized
+            else 'SHADOW_RESEARCH_OVERRIDE' if requested_activation and self.shadow_research_override
+            else 'FAIL_CLOSED_DEFAULT'
+        )
 
         self._reset_states()
 
@@ -238,6 +255,11 @@ class SmartSignalAgent:
         self.meta_governor = MetaGovernor(allow_alternate_selection=self.allow_meta_alternate_selection)
 
 
+
+    def _observe_signal_profiles(self, sc: dict[str, np.ndarray]) -> dict[str, int]:
+        if set(sc) != set(self.states):
+            raise ValueError('signal profile ids must match agent state')
+        return {name: int(self.states[name].update_profile(values)) for name, values in sc.items()}
 
     @staticmethod
 
@@ -350,10 +372,16 @@ class SmartSignalAgent:
             utility_base = {n: 1.0 / len(sc) for n in sc}
 
         metrics = {}
+        forecast_horizon = int(target_contest) - int(cutoff_contest)
+        if forecast_horizon < 1:
+            raise ValueError('target contest must be after cutoff contest')
+        freshness = float(max(0.05, math.exp(-0.25 * max(0, forecast_horizon - 1))))
 
         for n in sc:
 
-            m = self.states[n].metrics(penalties[n], freshness=1.0)
+            m = self.states[n].metrics(penalties[n], freshness=freshness)
+            m['forecast_horizon_contests'] = forecast_horizon
+            m['freshness_source'] = 'causal_score_age_from_cutoff_to_target'
 
             m['recent_performance_utility'] = m['utility']
 
@@ -529,6 +557,7 @@ class SmartSignalAgent:
         for t in range(self.start, len(draws)):
 
             sc = {n: pre[n][t] for n in names}
+            profile_alerts_before_result = self._observe_signal_profiles(sc)
 
             champion_penalties, utility_base, family_scores, _ = self._champion_policy_components(sc, elog, flog)
 
@@ -583,6 +612,7 @@ class SmartSignalAgent:
                          'expert_hits': expert_hits, 'family_hits': family_hits,
 
                          'weights_before_result': pred.weights,
+                         'profile_alerts_before_result': profile_alerts_before_result,
 
                          'meta_strength_before_result': self.meta_strength,
 
@@ -655,6 +685,7 @@ class SmartSignalAgent:
             raise ValueError('target must be strictly after cutoff contest')
 
         sc = {n: self._pre[n][len(draws)] for n in SIGNAL_NAMES}
+        self._observe_signal_profiles(sc)
 
         champion_penalties, utility_base, _, _ = self._champion_policy_components(sc, self._elog, self._flog)
 
@@ -689,7 +720,19 @@ class SmartSignalAgent:
                 'signal_interactions': self.interaction_tracker.metrics(),
 
                 'contextual_meta_weights': {'strength': self.meta_strength, 'weight_effect_enabled': bool(self.meta_strength > 0.0)},
-                'marginal_utility_weighting': {'strength': self.marginal_strength, 'weight_effect_enabled': bool(self.marginal_strength > 0.0)},
+                'marginal_utility_weighting': {
+                    'strength': self.marginal_strength,
+                    'weight_effect_enabled': bool(self.marginal_strength > 0.0),
+                    'activation_mode': self.activation_mode,
+                    'production_activation_authorized': self.production_activation_authorized,
+                    'activation_gate_status': None if self.activation_decision is None else self.activation_decision.status,
+                },
+                'meta_governor_activation': {
+                    'allow_alternate_selection': self.allow_meta_alternate_selection,
+                    'activation_mode': self.activation_mode,
+                    'production_activation_authorized': self.production_activation_authorized,
+                    'activation_gate_status': None if self.activation_decision is None else self.activation_decision.status,
+                },
 
                 'rank_score_calibration': self.rank_calibrator.state(),
 

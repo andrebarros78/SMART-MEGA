@@ -395,12 +395,12 @@ def write_program_artifacts(data_path, manifest_path, atlas_path, replications=D
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--data", default="Mega-Sena_through_3053_v2.xlsx")
+    ap.add_argument("--data", required=True)
     ap.add_argument("--manifest", default="SMART_NULL_UNIVERSE_MANIFEST.json")
     ap.add_argument("--atlas", default="SMART_RANDOMNESS_ATLAS.json")
     ap.add_argument("--replications", type=int, default=DEFAULT_REPLICATIONS)
     ap.add_argument("--seed", type=int, default=DEFAULT_SEED)
-    ap.add_argument("--expected-max-contest", type=int, default=3053)
+    ap.add_argument("--expected-max-contest", type=int, required=True)
     a = ap.parse_args()
     m, r = write_program_artifacts(a.data, a.manifest, a.atlas, a.replications, a.seed, a.expected_max_contest)
     print(json.dumps({"manifest": m["schema"], "atlas": r["schema"], "cutoff": r["contest_max"], "replications": r["replications"]}))

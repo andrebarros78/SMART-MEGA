@@ -232,7 +232,7 @@ def run_backtest(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", default="Mega-Sena_through_3052.xlsx")
+    parser.add_argument("--data", required=True, help="Explicit causal dataset path; no temporal default allowed")
     parser.add_argument("--eval-from", type=int, default=2751)
     parser.add_argument("--eval-through", type=int, default=None)
     parser.add_argument("--out", default="SMART_PORTFOLIO_BACKTEST_2751_3052.json")

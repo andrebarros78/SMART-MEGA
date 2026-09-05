@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import json
 import math
@@ -132,7 +132,8 @@ def test_champion_helpers_source_ledger_active_pairing(tmp_path, monkeypatch):
     nd=make_excel(tmp_path/'nodate.xlsx', draws(5,3), include_date=False)
     assert cc.source_cutoff_timestamp(nd) is None
     monkeypatch.setattr(cc.pd, 'read_excel', lambda *a, **k: (_ for _ in ()).throw(RuntimeError('x')))
-    assert cc.source_cutoff_timestamp(nd) is None
+    with pytest.raises(RuntimeError, match='x'):
+        cc.source_cutoff_timestamp(nd)
     monkeypatch.undo()
     lp=tmp_path/'newledger.json'; L=cc.load_ledger(lp); assert L['events']==[]
     lp.write_text(json.dumps({'schema':'bad','events':[]}),encoding='utf-8')
@@ -180,18 +181,18 @@ def test_champion_freeze_errors_idempotence_supersede_and_context_hash(tmp_path)
     L=json.loads(ledger.read_text(encoding='utf-8'))
     L['events'][0]['hashes']['context_regime']='changed'
     ledger.write_text(json.dumps(L),encoding='utf-8')
-    third=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10)
+    third=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10,allow_pre_result_supersede=True)
     assert third['status']=='FROZEN_SUPERSEDING_PRIOR'
     L=json.loads(ledger.read_text(encoding='utf-8'))
     L['events'].append({'event_type':'ADJUDICATION','target_contest':46})
     ledger.write_text(json.dumps(L),encoding='utf-8')
-    with pytest.raises(ValueError, match='adjudication must reference active freeze hash'):
+    with pytest.raises(ValueError, match='target already adjudicated'):
         cc.freeze_champion_challenger(data,46,out,ledger,state,start=10)
 
 
 def test_champion_main(monkeypatch, capsys):
     monkeypatch.setattr(cc, 'freeze_champion_challenger', lambda *a, **k: {'status':'OK'})
-    monkeypatch.setattr(sys,'argv',['smart_champion_challenger.py','--target','1'])
+    monkeypatch.setattr(sys,'argv',['smart_champion_challenger.py','--data','x.xlsx','--target','1'])
     cc.main(); assert 'OK' in capsys.readouterr().out
 
 
@@ -247,7 +248,7 @@ def test_freeze_research_hash_policy_guards_and_main(tmp_path, monkeypatch, caps
 def test_engine_main_via_stub(monkeypatch, capsys):
     fake={'walk_forward':{'x':1},'placebo':{'x':2},'monte_carlo_null':{'x':3}}
     monkeypatch.setattr(e,'audit',lambda *a, **k: fake)
-    monkeypatch.setattr(sys,'argv',['smart_v2_engine.py'])
+    monkeypatch.setattr(sys,'argv',['smart_v2_engine.py','--data','dummy.xlsx'])
     e.main(); assert 'walk_forward' in capsys.readouterr().out
 
 
@@ -406,7 +407,7 @@ def test_append_attribution_for_legacy_adjudication_and_guards(tmp_path):
     led2 = json.loads(lp2.read_text(encoding='utf-8'))
     led2['events'].append({'event_type':'ADJUDICATION','target_contest':72,'freeze_sha256':'bad','actual_numbers':[1,2,3,4,5,6]})
     cc.write_ledger(lp2, led2)
-    with pytest.raises(ValueError, match='adjudication must reference active freeze hash'):
+    with pytest.raises(ValueError, match='active freeze hash|active frozen prediction'):
         adj.append_attribution_for_existing(lp2, 72)
 
 

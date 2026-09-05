@@ -1,5 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass, asdict
+import math
 
 @dataclass(frozen=True)
 class ActivationDecision:
@@ -12,7 +13,7 @@ class ActivationDecision:
 def evaluate(*, calibration_gain: float, validation_gain: float, holdout_gain: float, global_gain: float,
              preregistered: bool, prospective_evidence: bool, leakage_free: bool) -> ActivationDecision:
     vals=[calibration_gain,validation_gain,holdout_gain,global_gain]
-    if not all(float(x)==float(x) for x in vals):
+    if not all(math.isfinite(float(x)) for x in vals):
         raise ValueError('gains must be finite')
     if not leakage_free:
         return ActivationDecision('REJECT',False,False,'future leakage or causal-integrity failure')

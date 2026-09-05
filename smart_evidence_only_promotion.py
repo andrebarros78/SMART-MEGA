@@ -21,6 +21,7 @@ REQUIRED_AUDIT_CHECKS = (
     'full_champion_comparison',
     'promotion_lineage_recomputed',
     'independence_no_forbidden_dependencies',
+    'independent_freeze_decision_oracle',
 )
 
 
@@ -257,6 +258,9 @@ def _audit_evidence(audit: dict[str, Any] | None, p13: dict[str, Any]) -> tuple[
             blockers.append('independent_audit_replay_not_deterministic')
         if replay.get('causal_cutoff_verified') is not True:
             blockers.append('independent_audit_replay_causal_cutoff_not_verified')
+        oracle = replay.get('independent_decision_oracle')
+        if not isinstance(oracle, dict) or oracle.get('verified') is not True or oracle.get('production_engine_imported') is not False:
+            blockers.append('independent_audit_decision_oracle_not_verified')
 
     coverage = audit.get('coverage')
     if not isinstance(coverage, dict) or coverage.get('status') != 'PASS':

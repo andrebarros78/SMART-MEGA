@@ -9,6 +9,8 @@ FREEZE_SHA="503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
 def test_agent_skill_orchestration_accounts_for_all_acquired_capabilities():
     doc=aso.build_orchestration(ROOT)
     assert doc["integration_status"] == "PASS"
+    assert doc["integration_scope"] == "STRUCTURAL_ORCHESTRATION_ONLY"
+    assert doc["functional_runtime_proof_required_for_full_integration"] is True
     assert doc["inventory"]["unique_capabilities_total"] >= 30
     assert doc["diagnostics"]["missing_from_lanes"] == []
     assert doc["diagnostics"]["unknown_in_lanes"] == []
@@ -32,7 +34,9 @@ def test_agents_and_skills_have_no_predictive_freeze_or_terminal_authority():
 
 def test_orchestration_is_bound_to_immutable_3054_freeze():
     doc=aso.build_orchestration(ROOT)
-    assert doc["evidence_hashes"]["freeze_3054_sha256"] == FREEZE_SHA
+    assert doc["evidence_hashes"]["active_freeze_sha256"] == FREEZE_SHA
+    assert doc["active_context"]["target_contest"] == 3054
+    assert doc["active_context"]["cutoff_contest"] == 3053
 
 
 def test_quarantine_policy_remains_source_only():

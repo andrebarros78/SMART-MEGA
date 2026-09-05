@@ -39,6 +39,9 @@ def test_behavioral_hash_set_includes_all_late_governance_layers():
         'smart_promotion_gate.py',
         'smart_independent_audit.py',
         'smart_evidence_only_promotion.py',
+        'smart_agent_skill_orchestration.py',
+        'smart_agent_runtime.py',
+        'smart_agent_skill_functional_gate.py',
     }
     assert required.issubset(set(rt.BEHAVIORAL_FILES))
 

@@ -7,6 +7,9 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import smart_agent_skill_functional_gate as agent_skill_gate
+import smart_agent_skill_orchestration as agent_skill_orchestration
+
 FREEZE_EXPECTED_SHA256="503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
 DATA_EXPECTED_SHA256="287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60"
 
@@ -27,7 +30,8 @@ def build(root: Path) -> dict[str,Any]:
     freeze=root/'SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json'
     data=root/'Mega-Sena_through_3053_v2.xlsx'
     mission=read_json(root/'SMART_MISSION_STATUS.json')
-    orchestration=read_json(root/'SMART_AGENT_SKILL_ORCHESTRATION.json')
+    orchestration=agent_skill_orchestration.build_orchestration(root)
+    functional_integration=agent_skill_gate.evaluate(root)
     powered=read_json(root/'SMART_FALSIFICATION_REPORT_POWERED.json')
     atlas1000_path=root/'SMART_RANDOMNESS_ATLAS_1000.json'
     atlas1000=read_json(atlas1000_path) if atlas1000_path.exists() else None
@@ -40,7 +44,8 @@ def build(root: Path) -> dict[str,Any]:
     checks={
         'freeze_3054_immutable': freeze_sha==FREEZE_EXPECTED_SHA256,
         'dataset_3053_bound': data_sha==DATA_EXPECTED_SHA256,
-        'agent_skill_integration_pass': orchestration['integration_status']=='PASS',
+        'agent_skill_structural_orchestration_pass': orchestration['integration_status']=='PASS' and orchestration.get('integration_scope')=='STRUCTURAL_ORCHESTRATION_ONLY',
+        'agent_skill_functional_integration_pass': functional_integration.get('status')=='PASS' and all(functional_integration.get('checks',{}).values()),
         'agent_skill_no_terminal_authority': orchestration['terminal_6of6_proven'] is False,
         'powered_falsification_resolution_sufficient': powered['multiplicity']['resolution_sufficient'] is True,
         'powered_falsification_no_predictive_weight': powered['predictive_weight_authorized'] is False,
@@ -95,7 +100,10 @@ def build(root: Path) -> dict[str,Any]:
         },
         'agent_skill_integration':{
             'artifact':'SMART_AGENT_SKILL_ORCHESTRATION.json',
-            'status':orchestration['integration_status'],
+            'structural_status':orchestration['integration_status'],
+            'structural_scope':orchestration.get('integration_scope'),
+            'functional_status':functional_integration.get('status'),
+            'functional_proof_sha256':functional_integration.get('sha256'),
             'unique_capabilities_total':orchestration['inventory']['unique_capabilities_total'],
             'external_code_auto_execute':orchestration['policy']['external_code_auto_execute'],
             'predictive_authority':'NONE_DIRECT',

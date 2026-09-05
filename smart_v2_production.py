@@ -162,7 +162,7 @@ def decide(audit: dict[str, Any], ledger: dict[str, Any] | None = None) -> dict[
 def main() -> None:
     parser = argparse.ArgumentParser()
     parser.add_argument('--audit', default='SMART_V2_AUDIT_V3.json')
-    parser.add_argument('--data', default='Mega-Sena.xlsx')
+    parser.add_argument('--data', required=True, help='Explicit causal dataset path; no implicit dataset default')
     parser.add_argument('--ledger', default='SMART_PROSPECTIVE_LEDGER.json')
     parser.add_argument('--out', default='SMART_V2_PRODUCTION_STATE.json')
     args = parser.parse_args()

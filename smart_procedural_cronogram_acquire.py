@@ -8,7 +8,6 @@ import requests
 BASE='https://www.caixa.gov.br/Downloads/caixa-loterias/'
 MONTHS={1:'Janeiro',2:'Fevereiro',3:'Marco',4:'Abril',5:'Maio',6:'Junho',7:'Julho',8:'Agosto',9:'Setembro',10:'Outubro',11:'Novembro',12:'Dezembro'}
 OUT=Path('runtime/procedural_sources/cronogramas_caixa')
-OUT.mkdir(parents=True,exist_ok=True)
 
 def sha256_bytes(b:bytes)->str:
     return hashlib.sha256(b).hexdigest()
@@ -23,6 +22,7 @@ def variants(year:int,month:int):
     return list(dict.fromkeys(stems))
 
 def main():
+    OUT.mkdir(parents=True, exist_ok=True)
     sess=requests.Session(); sess.headers['User-Agent']='SMART-MEGA/1.0 scientific archival acquisition'
     manifest=[]
     for year in range(2019,2027):

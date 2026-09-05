@@ -18,19 +18,37 @@ def sha256(path:Path)->str:
     return h.hexdigest()
 
 
+def _strict_integral(value, label: str) -> int:
+    if isinstance(value, (bool, np.bool_)) or pd.isna(value):
+        raise ValueError(f'{label} ausente ou nao inteiro')
+    if isinstance(value, (int, np.integer)):
+        return int(value)
+    if isinstance(value, (float, np.floating)):
+        x=float(value)
+        if not math.isfinite(x) or not x.is_integer():
+            raise ValueError(f'{label} nao inteiro')
+        return int(x)
+    raise ValueError(f'{label} deve ser numerico inteiro')
+
+
 def load_draws(path:Path):
     df=pd.read_excel(path); cols=[f'Bola{i}' for i in range(1,7)]
-    if not all(c in df.columns for c in cols): raise ValueError('colunas Bola1..Bola6 ausentes')
+    required=['Concurso',*cols]
+    if not all(c in df.columns for c in required):
+        raise ValueError('colunas Concurso e Bola1..Bola6 ausentes')
     draws=[]; contests=[]
-    for _,r in df.iterrows():
+    for row_index,r in df.iterrows():
         try:
-            vals=sorted(int(r[c]) for c in cols); contest=int(r['Concurso'])
-        except Exception as exc:
+            vals=sorted(_strict_integral(r[c], f'linha {row_index} {c}') for c in cols)
+            contest=_strict_integral(r['Concurso'], f'linha {row_index} Concurso')
+        except ValueError as exc:
             raise ValueError('linha com dado ausente ou nao inteiro') from exc
         if len(set(vals))!=6 or vals[0]<1 or vals[-1]>60: raise ValueError('sorteio invalido')
         draws.append(vals); contests.append(contest)
+    if not contests: raise ValueError('dataset vazio')
     if len(set(contests))!=len(contests): raise ValueError('concurso duplicado')
     if any(b<=a for a,b in zip(contests,contests[1:])): raise ValueError('concursos fora de ordem')
+    if any(b!=a+1 for a,b in zip(contests,contests[1:])): raise ValueError('lacuna na sequencia de concursos')
     return np.asarray(draws,int),np.asarray(contests,int)
 
 
@@ -158,6 +176,6 @@ def audit(data:Path,out:Path,start=1000,mc_trials=50):
 
 
 def main():
-    ap=argparse.ArgumentParser(); ap.add_argument('--data',default='Mega-Sena.xlsx'); ap.add_argument('--out',default='SMART_V2_AUDIT.json'); ap.add_argument('--start',type=int,default=1000); ap.add_argument('--mc-trials',type=int,default=50)
+    ap=argparse.ArgumentParser(); ap.add_argument('--data', required=True, help='Explicit causal dataset path; no implicit dataset default'); ap.add_argument('--out',default='SMART_V2_AUDIT.json'); ap.add_argument('--start',type=int,default=1000); ap.add_argument('--mc-trials',type=int,default=50)
     a=ap.parse_args(); r=audit(Path(a.data),Path(a.out),a.start,a.mc_trials); print(json.dumps({'walk_forward':r['walk_forward'],'placebo':r['placebo'],'monte_carlo_null':r['monte_carlo_null']},ensure_ascii=False,indent=2))
 if __name__=='__main__': main()

@@ -8,6 +8,7 @@ import pytest
 
 import smart_continuous_red_team as rt
 import smart_global_integrity as gi
+import smart_material_deficiency_registry as mdr
 
 
 def _gate() -> dict:
@@ -73,17 +74,23 @@ def _p14_obj() -> dict:
                 'lineage_recomputed_independently': True, 'lineage_pairs_recomputed': True,
             },
         },
-        'deterministic_replay': {'status': 'PASS', 'deterministic': True, 'causal_cutoff_verified': True},
+        'deterministic_replay': {'status': 'PASS', 'deterministic': True, 'causal_cutoff_verified': True,
+                                 'independent_decision_oracle': {'status':'PASS','verified':True,'production_engine_imported':False}},
     }
     obj['sha256'] = gi.sha256_json(obj)
     return obj
 
 
 def _write_p14(root: Path, mutator=None) -> Path:
+    registry_path = root / mdr.DEFAULT_PATH
+    if not registry_path.exists():
+        mdr.write_registry(registry_path, mdr.build_registry([]))
     obj = _p14_obj()
+    obj['material_deficiency_registry'] = mdr.load_registry(root=root)
+    obj['material_deficiencies'] = list(obj['material_deficiency_registry']['open_deficiencies'])
     if mutator is not None:
         mutator(obj)
-        obj['sha256'] = gi.sha256_json({k: v for k, v in obj.items() if k != 'sha256'})
+    obj['sha256'] = gi.sha256_json({k: v for k, v in obj.items() if k != 'sha256'})
     p = root / gi.DEFAULT_P14_PATH
     p.write_text(json.dumps(obj), encoding='utf-8')
     return p
@@ -190,7 +197,7 @@ def test_p14_validation_accepts_only_complete_independent_report(tmp_path: Path)
     cases = [
         (lambda o: o.update(status='FAIL'), 'not PASS'),
         (lambda o: o.update(promotion_authority=True), 'authority'),
-        (lambda o: o.update(material_deficiencies=['x']), 'material deficiencies'),
+        (lambda o: o.update(material_deficiencies=['x']), 'material deficien'),
         (lambda o: o.update(checks={}), 'checks'),
         (lambda o: o['independence'].update(independent=False), 'independence'),
         (lambda o: o['coverage'].update(bindings=o['coverage']['bindings'][:-1]), 'coverage sources'),

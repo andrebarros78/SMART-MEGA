@@ -35,6 +35,7 @@ class DataQualityReport:
     invalid_draw_count: int
     non_integer_value_count: int
     future_contest_count: int
+    missing_contest_count: int
     checks: dict[str, bool]
 
     def to_dict(self) -> dict[str, Any]:
@@ -64,8 +65,14 @@ def audit_draw_file(path: str | Path, expected_max_contest: int | None = None) -
         draw_non_integral = (draw_numeric % 1 != 0)
         non_integer += int(contest_non_integral.sum() + draw_non_integral.sum().sum())
 
-    contests = contest_numeric.dropna().astype(int).tolist()
-    out_of_order = sum(1 for a, b in zip(contests, contests[1:]) if b <= a)
+    contest_values = contest_numeric.tolist()
+    contest_integral = all(
+        not pd.isna(v) and float(v).is_integer()
+        for v in contest_values
+    )
+    contests = [int(v) for v in contest_values if not pd.isna(v) and float(v).is_integer()]
+    out_of_order = sum(1 for a, b in zip(contests, contests[1:]) if b <= a) if contest_integral else 0
+    missing_contests = sum(max(0, b - a - 1) for a, b in zip(contests, contests[1:])) if contest_integral else 0
 
     invalid_draws = 0
     if len(draw_numeric) > 0:
@@ -89,7 +96,8 @@ def audit_draw_file(path: str | Path, expected_max_contest: int | None = None) -
         "required_columns": required_present,
         "no_nulls": null_count == 0,
         "unique_contests": duplicate_contests == 0,
-        "strictly_increasing_contests": out_of_order == 0,
+        "strictly_increasing_contests": contest_integral and out_of_order == 0,
+        "contiguous_contests": contest_integral and out_of_order == 0 and missing_contests == 0,
         "integer_values": non_integer == 0,
         "valid_six_unique_numbers_1_to_60": invalid_draws == 0,
         "cutoff_respected": future_count == 0,
@@ -110,6 +118,7 @@ def audit_draw_file(path: str | Path, expected_max_contest: int | None = None) -
         invalid_draw_count=int(invalid_draws),
         non_integer_value_count=int(non_integer),
         future_contest_count=future_count,
+        missing_contest_count=int(missing_contests),
         checks=checks,
     )
 

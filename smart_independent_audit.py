@@ -27,6 +27,8 @@ import smart_v2_engine as engine
 import freeze_next_research as champion_engine
 
 from smart_signal_agent import SmartSignalAgent
+from smart_independent_oracle import validate_frozen_decision, validate_prediction_snapshot
+from smart_material_deficiency_registry import load_registry as load_material_deficiency_registry
 
 
 
@@ -53,7 +55,7 @@ PROMOTION_LINEAGE_COMPONENTS = (
 
     'rank_score_calibration', 'multi_challengers', 'meta_governor',
 
-    'bounded_online_learning', 'signal_interactions', 'signal_expansion_governance',
+    'bounded_online_learning', 'signal_interactions', 'signal_expansion_governance', 'learning_activation_gate', 'learning_activation_authority', 'data_quality_gate',
 
 )
 
@@ -456,6 +458,10 @@ def policy_snapshot() -> dict[str, Any]:
         'promotion_lineage_recomputation_required': True,
 
         'independence_static_import_scan_required': True,
+        'independent_decision_oracle_required': True,
+        'material_deficiency_registry_required': True,
+        'deterministic_replay_uses_production_implementation': True,
+        'deterministic_replay_is_not_independent_oracle': True,
 
         'forbidden_upward_dependencies': [
 
@@ -521,6 +527,27 @@ def audit_independence(root: Path) -> dict[str, Any]:
 
         raise ValueError(f'independent audit has forbidden upward dependency: {forbidden_found}')
 
+    runtime_oracle_source = Path(__file__).with_name('smart_independent_oracle.py').resolve()
+    project_oracle_source = (root / 'smart_independent_oracle.py').resolve()
+    if project_oracle_source.is_file():
+        if sha256_file(project_oracle_source) != sha256_file(runtime_oracle_source):
+            raise ValueError('independent decision oracle project/runtime source mismatch')
+        oracle_source = project_oracle_source
+    else:
+        oracle_source = runtime_oracle_source
+    if not oracle_source.is_file():
+        raise ValueError('independent decision oracle source missing')
+    oracle_tree = ast.parse(oracle_source.read_text(encoding='utf-8-sig'), filename=str(oracle_source))
+    oracle_imports: set[str] = set()
+    for node in ast.walk(oracle_tree):
+        if isinstance(node, ast.Import):
+            oracle_imports.update(alias.name for alias in node.names)
+        elif isinstance(node, ast.ImportFrom) and node.module:
+            oracle_imports.add(node.module)
+    project_imports = sorted(name for name in oracle_imports if name == 'smart' or name.startswith('smart_'))
+    if project_imports:
+        raise ValueError(f'independent decision oracle imports project implementation: {project_imports}')
+
     return {
 
         'status': 'PASS', 'source_file': source.name, 'source_sha256': sha256_file(source),
@@ -528,6 +555,11 @@ def audit_independence(root: Path) -> dict[str, Any]:
         'forbidden_dependencies': sorted(forbidden), 'forbidden_dependencies_found': forbidden_found,
 
         'static_import_scan': True, 'independent': True,
+        'independent_oracle_file': oracle_source.name,
+        'independent_oracle_sha256': sha256_file(oracle_source),
+        'independent_oracle_project_imports': project_imports,
+        'independent_oracle_has_no_project_imports': True,
+        'deterministic_replay_classification': 'SAME_IMPLEMENTATION_DETERMINISM_ONLY',
 
     }
 
@@ -928,6 +960,7 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
             raise ValueError('frozen artifact hash mismatch')
 
         frozen = _load_json(freeze_file)
+        oracle = validate_frozen_decision(frozen)
 
         if int(frozen.get('target_contest', -1)) != target:
 
@@ -1104,6 +1137,7 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
             'future_leakage_detected': False,
 
             'promotion_lineage_sha256': promotion_lineage_sha256,
+            'independent_decision_oracle': oracle,
 
         })
 
@@ -1187,6 +1221,11 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
 
     }
 
+    oracle_applicable = [r for r in rows if r['independent_decision_oracle'].get('status') != 'LEGACY_NOT_APPLICABLE']
+    oracle_verified = [r for r in oracle_applicable if r['independent_decision_oracle'].get('verified') is True]
+    if len(oracle_verified) != len(oracle_applicable):
+        raise ValueError('independent decision oracle did not verify every applicable frozen prediction')
+
     return {
 
         'status': 'PASS',
@@ -1210,6 +1249,9 @@ def audit_prospective_ledger(root: Path, ledger_path: Path) -> dict[str, Any]:
         'full_champion_comparison': comparison,
 
         'promotion_lineage_comparison': lineage_comparison,
+        'independent_oracle_applicable_pairs': len(oracle_applicable),
+        'independent_oracle_verified_pairs': len(oracle_verified),
+        'independent_oracle_scope_complete': len(oracle_verified) == len(oracle_applicable),
 
         'pairs': rows,
 
@@ -1301,6 +1343,10 @@ def audit_deterministic_replay(root: Path, data_path: Path, target: int, start: 
 
         raise ValueError('Challenger replay violates causal target/cutoff')
 
+    oracle = validate_prediction_snapshot(pred_a.as_dict())
+    if oracle.get('verified') is not True:
+        raise ValueError('independent decision oracle could not verify replay prediction')
+
 
 
     return {
@@ -1324,6 +1370,7 @@ def audit_deterministic_replay(root: Path, data_path: Path, target: int, start: 
         'champion_top6': [int(x) for x in champion_a['top6']],
 
         'challenger_top6': [int(x) for x in pred_a.top6],
+        'independent_decision_oracle': oracle,
 
         'deterministic': True,
 
@@ -1351,11 +1398,14 @@ def run_independent_audit(root: Path, ledger_path: Path, coverage_bindings: Iter
 
     replay = audit_deterministic_replay(root, replay_data, replay_target, start=start)
 
+    deficiency_registry = load_material_deficiency_registry(root=root)
+    material_deficiencies = list(deficiency_registry['open_deficiencies'])
+
     report = {
 
         'schema': SCHEMA,
 
-        'status': 'PASS',
+        'status': 'PASS' if not material_deficiencies else 'FAIL',
 
         'policy': policy,
 
@@ -1382,6 +1432,7 @@ def run_independent_audit(root: Path, ledger_path: Path, coverage_bindings: Iter
             'promotion_lineage_recomputed': True,
 
             'independence_no_forbidden_dependencies': True,
+            'independent_freeze_decision_oracle': bool(replay.get('independent_decision_oracle', {}).get('verified') is True),
 
         },
 
@@ -1389,7 +1440,9 @@ def run_independent_audit(root: Path, ledger_path: Path, coverage_bindings: Iter
 
         'independent_of_promotion_decision': True,
 
-        'material_deficiencies': [],
+        'material_deficiency_registry': deficiency_registry,
+
+        'material_deficiencies': material_deficiencies,
 
     }
 

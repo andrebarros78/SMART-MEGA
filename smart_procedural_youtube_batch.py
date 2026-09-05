@@ -5,7 +5,7 @@ from yt_dlp import YoutubeDL
 from smart_procedural_caption_extract import extract_caption
 OFFICIAL='UCPbhr02AfVb2nd5pm12BxTw'
 SRC=Path('runtime/procedural_sources/MEGA_PROCEDURAL_CRONOGRAM_DATASET.json')
-CAP=Path('runtime/procedural_sources/youtube_captions'); CAP.mkdir(parents=True,exist_ok=True)
+CAP=Path('runtime/procedural_sources/youtube_captions')
 def find_official(contest,date_iso):
  y,m,d=date_iso.split('-'); q=f'ytsearch6:Loterias CAIXA {d}/{m}/{y}'
  with YoutubeDL({'quiet':True,'extract_flat':True,'skip_download':True}) as ydl: info=ydl.extract_info(q,download=False)
@@ -20,6 +20,7 @@ def acquire_caption(hit):
  if r.returncode!=0 or not cp.exists(): raise RuntimeError('caption acquisition failed')
  return cp
 def main():
+ CAP.mkdir(parents=True, exist_ok=True)
  ap=argparse.ArgumentParser(); ap.add_argument('--offset',type=int,default=0); ap.add_argument('--count',type=int,default=15); a=ap.parse_args()
  d=json.loads(SRC.read_text(encoding='utf-8')); allrows=[r for r in d['rows'] if r['evidence_status'].startswith('VERIFIED')]
  end=max(0,len(allrows)-a.offset); start=max(0,end-a.count); rows=allrows[start:end]; out=[]

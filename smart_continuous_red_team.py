@@ -38,10 +38,18 @@ BEHAVIORAL_FILES = (
     'smart_sequential_prospective_proof.py',
     'smart_promotion_gate.py',
     'smart_independent_audit.py',
+    'smart_independent_oracle.py',
     'smart_evidence_only_promotion.py',
     'smart_global_integrity.py',
     'smart_signal_agent.py',
+    'smart_data_quality_gate.py',
+    'smart_learning_activation_gate.py',
+    'smart_learning_activation_authority.py',
+    'smart_material_deficiency_registry.py',
     'smart_champion_challenger.py',
+    'smart_agent_skill_orchestration.py',
+    'smart_agent_runtime.py',
+    'smart_agent_skill_functional_gate.py',
     'adjudicate_signal_challenger.py',
 )
 EXPECTED_SCENARIOS = (

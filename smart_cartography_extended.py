@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import json, hashlib
 from pathlib import Path
 import numpy as np

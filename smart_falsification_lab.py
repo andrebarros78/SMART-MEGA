@@ -453,13 +453,13 @@ def write_artifacts(
 
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--data", default="Mega-Sena_through_3053_v2.xlsx")
+    parser.add_argument("--data", required=True)
     parser.add_argument("--preregistration", default="SMART_P4_P5_PREREGISTRATION.json")
     parser.add_argument("--report", default="SMART_FALSIFICATION_REPORT_V2.json")
     parser.add_argument("--replications", type=int, default=DEFAULT_REPLICATIONS)
     parser.add_argument("--seed", type=int, default=DEFAULT_SEED)
     parser.add_argument("--holdout-fraction", type=float, default=DEFAULT_HOLDOUT_FRACTION)
-    parser.add_argument("--expected-max-contest", type=int, default=3053)
+    parser.add_argument("--expected-max-contest", type=int, required=True)
     args = parser.parse_args()
     _, report = write_artifacts(
         args.data,

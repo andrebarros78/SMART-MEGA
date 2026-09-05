@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import copy
 import hashlib
@@ -10,6 +10,7 @@ import pandas as pd
 import pytest
 
 import smart_independent_audit as ia
+import smart_material_deficiency_registry as mdr
 
 
 def _sha(path: Path) -> str:
@@ -55,6 +56,9 @@ def _coverage_binding(tmp_path: Path, source_name='unit.py') -> Path:
 
 
 def _pair_fixture(tmp_path: Path, target: int = 11):
+    registry_path = tmp_path / mdr.DEFAULT_PATH
+    if not registry_path.exists():
+        mdr.write_registry(registry_path, mdr.build_registry([]))
     pre = tmp_path / 'pre.xlsx'
     result = tmp_path / 'result.xlsx'
     _dataset(target - 1).to_excel(pre, index=False)

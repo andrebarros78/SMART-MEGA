@@ -13,6 +13,8 @@ import river
 import smart_v2_engine as e
 import freeze_next_research as champion_engine
 from smart_signal_agent import SmartSignalAgent, write_state, SIGNAL_NAMES, AGENT_SCHEMA
+from smart_data_quality_gate import enforce_draw_quality
+from smart_learning_activation_authority import DEFAULT_PATH as ACTIVATION_AUTHORITY_PATH, load_activation_authority
 from smart_signal_expansion_governance import REGISTRY_PATH, load_registry
 from smart_portfolio_pipeline import build_portfolio_package
 from smart_promotion_gate import (
@@ -34,7 +36,7 @@ PROMOTION_LINEAGE_COMPONENTS = (
     'engine', 'champion_engine', 'signal_agent', 'signal_quality', 'signal_weights', 'context_regime',
     'redundancy_consensus', 'marginal_utility', 'contextual_meta_weights',
     'rank_score_calibration', 'multi_challengers', 'meta_governor',
-    'bounded_online_learning', 'signal_interactions', 'signal_expansion_governance',
+    'bounded_online_learning', 'signal_interactions', 'signal_expansion_governance', 'learning_activation_gate', 'learning_activation_authority', 'data_quality_gate',
 )
 
 
@@ -89,14 +91,13 @@ def archive_state_snapshot(state_path: Path, state_hash: str) -> Path:
 
 
 def source_cutoff_timestamp(data: Path) -> str | None:
-    try:
-        df = pd.read_excel(data)
-        if 'Data do Sorteio' not in df.columns or len(df) == 0:
-            return None
-        dt = pd.to_datetime(df.iloc[-1]['Data do Sorteio'], dayfirst=True, errors='coerce')
-        return None if pd.isna(dt) else dt.isoformat()
-    except Exception:
+    df = pd.read_excel(data)
+    if 'Data do Sorteio' not in df.columns or len(df) == 0:
         return None
+    dt = pd.to_datetime(df.iloc[-1]['Data do Sorteio'], dayfirst=True, errors='coerce')
+    if pd.isna(dt):
+        raise ValueError('invalid cutoff draw date')
+    return dt.isoformat()
 
 
 def load_ledger(path: Path) -> dict[str, Any]:
@@ -296,19 +297,20 @@ def _next_version_path(out: Path) -> Path:
 
 
 def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,
-                               start: int = 1000) -> dict[str, Any]:
+                               start: int = 1000, allow_pre_result_supersede: bool = False) -> dict[str, Any]:
     implementation_gate = require_pre_3052_gate(target)
+    ledger = load_ledger(ledger_path)
+    if any(ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == int(target)
+           for ev in ledger.get('events', [])):
+        raise ValueError('target already adjudicated; pre-result supersede is closed')
+    active = active_freeze(ledger, target)
+
     draws, contests = e.load_draws(data)
     if int(contests[-1]) >= int(target):
         raise ValueError('target already present in data; refusing retrospective freeze')
     if int(contests[-1]) != int(target) - 1:
         raise ValueError('data must end immediately before target contest')
-
-    ledger = load_ledger(ledger_path)
-    active = active_freeze(ledger, target)
-    if any(ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == int(target)
-           for ev in ledger.get('events', [])):
-        raise ValueError('target already adjudicated; pre-result supersede is closed')
+    data_quality = enforce_draw_quality(data, expected_max_contest=int(target) - 1)
 
     component_hashes = {
         'engine': sha256(Path('smart_v2_engine.py')),
@@ -326,6 +328,11 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'bounded_online_learning': sha256(Path('smart_bounded_online_learning.py')),
         'signal_interactions': sha256(Path('smart_signal_interactions.py')),
         'signal_expansion_governance': sha256(Path('smart_signal_expansion_governance.py')),
+        'learning_activation_gate': sha256(Path('smart_learning_activation_gate.py')),
+        'learning_activation_authority': sha256(Path('smart_learning_activation_authority.py')),
+        'data_quality_gate': sha256(Path('smart_data_quality_gate.py')),
+        'independent_oracle': sha256(Path('smart_independent_oracle.py')),
+        'material_deficiency_registry': sha256(Path('smart_material_deficiency_registry.py')),
         'sequential_prospective_proof': sha256(Path('smart_sequential_prospective_proof.py')),
         'promotion_gate': sha256(Path('smart_promotion_gate.py')),
         'independent_audit': sha256(Path('smart_independent_audit.py')),
@@ -346,25 +353,35 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     from smart_global_integrity import policy_snapshot as global_integrity_policy_snapshot
     global_integrity_snapshot = global_integrity_policy_snapshot()
     global_integrity_ref = None if implementation_gate is None else implementation_gate.get('global_integrity')
+    recover_missing_identical_artifact = False
     if active:
         same_components = all(str(active.get('hashes', {}).get(k)) == str(v)
                               for k, v in component_hashes.items())
         same_registry = str(active.get('snapshot', {}).get('signal_expansion_governance', {}).get('sha256')) == str(expansion_snapshot.get('sha256'))
         same_start = int(active.get('start_index', -1)) == int(start)
         same_river = str(active.get('river_version', '')) == str(river.__version__)
-        if same_components and same_registry and same_start and same_river and str(active.get('data_sha256')) == data_hash:
+        identical_contract = same_components and same_registry and same_start and same_river and str(active.get('data_sha256')) == data_hash
+        if identical_contract:
             fp = Path(active['freeze_file'])
             if fp.exists() and sha256(fp) == active.get('freeze_sha256'):
                 return {'status': 'ALREADY_FROZEN_IDENTICAL_EVENT_PRESERVED', 'target_contest': int(target),
                         'freeze_file': str(fp), 'freeze_sha256': active['freeze_sha256'],
                         'promotion': promotion_status(ledger)}
-
+            recover_missing_identical_artifact = not fp.exists()
+        if not allow_pre_result_supersede and not recover_missing_identical_artifact:
+            raise ValueError('active freeze differs from current architecture; explicit pre-result supersede authorization required')
     freeze_time = datetime.now(timezone.utc).isoformat()
     source_ts = source_cutoff_timestamp(data)
     signal_ts = source_ts or freeze_time
     signal_ts_kind = 'source_draw_datetime' if source_ts else 'signal_generation_utc_source_draw_datetime_unavailable'
     champion = champion_engine.current_policy(draws, start=start)
-    agent = SmartSignalAgent(start=start)
+    activation = load_activation_authority(ACTIVATION_AUTHORITY_PATH, target_contest=int(target), root=Path('.'))
+    agent = SmartSignalAgent(
+        start=start,
+        marginal_strength=activation.marginal_strength,
+        allow_meta_alternate_selection=activation.allow_meta_alternate_selection,
+        activation_decision=activation.decision,
+    )
     promotion_lineage = {
         'schema': PROMOTION_LINEAGE_SCHEMA,
         'start_index': int(start),
@@ -402,6 +419,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'production_switch_performed': False, 'champion_remains_active': True,
         'data_file': str(data), 'data_sha256': data_hash, 'start_index': int(start), 'river_version': river.__version__,
         'engine_sha256': component_hashes['engine'], 'champion_engine_sha256': component_hashes['champion_engine'],
+        'data_quality': data_quality.to_dict(),
         'signal_agent_sha256': component_hashes['signal_agent'], 'signal_quality_sha256': component_hashes['signal_quality'],
         'signal_weights_sha256': component_hashes['signal_weights'], 'context_regime_sha256': component_hashes['context_regime'],
         'redundancy_consensus_sha256': component_hashes['redundancy_consensus'],
@@ -413,6 +431,12 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'bounded_online_learning_sha256': component_hashes['bounded_online_learning'],
         'signal_interactions_sha256': component_hashes['signal_interactions'],
         'signal_expansion_governance_sha256': component_hashes['signal_expansion_governance'],
+        'learning_activation_gate_sha256': component_hashes['learning_activation_gate'],
+        'learning_activation_authority_sha256': component_hashes['learning_activation_authority'],
+        'learning_activation_authority': activation.authority,
+        'data_quality_gate_sha256': component_hashes['data_quality_gate'],
+        'independent_oracle_sha256': component_hashes['independent_oracle'],
+        'material_deficiency_registry_sha256': component_hashes['material_deficiency_registry'],
         'sequential_prospective_proof_sha256': component_hashes['sequential_prospective_proof'],
         'promotion_gate_sha256': component_hashes['promotion_gate'],
         'independent_audit_sha256': component_hashes['independent_audit'],
@@ -476,7 +500,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
                      'evidence_only_promotion_policy': freeze_obj['evidence_only_promotion_policy'],
                      'global_integrity_policy': freeze_obj['global_integrity_policy'],
                      'global_integrity_proof': global_integrity_ref,
-                     'promotion_lineage': promotion_lineage},
+                     'promotion_lineage': promotion_lineage,
+                     'learning_activation_authority': activation.authority},
         'hashes': {**component_hashes, 'state': state_hash},
     }
     ledger['events'].append(new_event)
@@ -484,7 +509,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         ledger['events'].append({
             'event_type': 'SUPERSEDE', 'target_contest': int(target), 'created_utc': freeze_time,
             'old_freeze_sha256': active['freeze_sha256'], 'new_freeze_sha256': freeze_hash,
-            'reason': 'pre-result architecture correction; prior artifact preserved; no result used',
+            'reason': ('pre-result recovery of missing identical freeze artifact; prior ledger event preserved; no result used' if recover_missing_identical_artifact else 'pre-result architecture correction; prior artifact preserved; no result used'),
             'frozen_before_result': True, 'retroactive_rewrite': False,
         })
     ledger_hash = write_ledger(ledger_path, ledger)
@@ -501,14 +526,16 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument('--data', default='Mega-Sena_through_3050.xlsx')
-    ap.add_argument('--target', type=int, default=3051)
-    ap.add_argument('--out', default='SMART_3051_CHAMPION_CHALLENGER_FREEZE.json')
+    ap.add_argument('--data', required=True, help='causal dataset ending at target-1')
+    ap.add_argument('--target', type=int, required=True)
+    ap.add_argument('--out', default=None, help='defaults to SMART_<target>_CHAMPION_CHALLENGER_FREEZE.json')
     ap.add_argument('--ledger', default='SMART_SIGNAL_LEDGER.json')
     ap.add_argument('--state', default='SMART_SIGNAL_STATE.json')
     ap.add_argument('--start', type=int, default=1000)
+    ap.add_argument('--allow-pre-result-supersede', action='store_true', help='explicitly authorize a new pre-result freeze version')
     a = ap.parse_args()
-    print(json.dumps(freeze_champion_challenger(Path(a.data), a.target, Path(a.out), Path(a.ledger), Path(a.state), a.start),
+    out = Path(a.out or f'SMART_{a.target}_CHAMPION_CHALLENGER_FREEZE.json')
+    print(json.dumps(freeze_champion_challenger(Path(a.data), a.target, out, Path(a.ledger), Path(a.state), a.start, a.allow_pre_result_supersede),
                      ensure_ascii=False, indent=2))
 
 

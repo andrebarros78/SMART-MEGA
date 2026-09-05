@@ -220,6 +220,93 @@ def _validate_native_targets(root: Path) -> dict[str, bool]:
     return {target: (root / target).exists() for target in targets}
 
 
+def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
+    value = str(relative).strip()
+    if not value:
+        raise ValueError(f"{label} path is empty")
+    candidate = (root / value).resolve()
+    resolved_root = root.resolve()
+    try:
+        candidate.relative_to(resolved_root)
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes project root: {value}") from exc
+    return candidate
+
+
+def _resolve_active_context(root: Path) -> dict[str, Any]:
+    from smart_champion_challenger import active_freeze, load_ledger
+
+    ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    ledger = load_ledger(ledger_path)
+    freeze_targets = sorted({
+        int(ev.get("target_contest", -1))
+        for ev in ledger.get("events", [])
+        if isinstance(ev, dict) and ev.get("event_type") == "FREEZE" and int(ev.get("target_contest", -1)) >= 0
+    }, reverse=True)
+    adjudicated = {
+        int(ev.get("target_contest", -1))
+        for ev in ledger.get("events", [])
+        if isinstance(ev, dict) and ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) >= 0
+    }
+    pending = [target for target in freeze_targets if target not in adjudicated]
+    if len(pending) > 1:
+        raise ValueError(f"SMART signal ledger has ambiguous pending freezes: {pending}")
+    candidates = pending or freeze_targets
+    if not candidates:
+        raise ValueError("SMART signal ledger has no freeze to resolve")
+    target = int(candidates[0])
+    freeze_event = active_freeze(ledger, target)
+    if freeze_event is None:
+        raise ValueError(f"SMART signal ledger has no active freeze for contest {target}")
+    freeze_file = str(freeze_event.get("freeze_file", ""))
+    if not freeze_file:
+        raise ValueError("active freeze event does not declare freeze_file")
+    freeze_path = _resolve_project_file(root, freeze_file, label="active freeze")
+    if not freeze_path.is_file():
+        raise ValueError(f"active freeze artifact missing: {freeze_file}")
+    freeze_sha = _sha256(freeze_path)
+    declared_freeze_sha = str(freeze_event.get("freeze_sha256", "")).lower()
+    if len(declared_freeze_sha) != 64 or freeze_sha.lower() != declared_freeze_sha:
+        raise ValueError("active freeze artifact hash mismatch")
+    frozen = _read_json(freeze_path)
+    cutoff = int(frozen.get("cutoff_contest", freeze_event.get("cutoff_contest", -1)))
+    if cutoff != target - 1:
+        raise ValueError(f"active freeze cutoff mismatch: target={target} cutoff={cutoff}")
+    data_file = str(frozen.get("data_file", ""))
+    data_path = _resolve_project_file(root, data_file, label="active data")
+    if not data_path.is_file():
+        raise ValueError(f"active freeze data artifact missing: {data_file}")
+    data_sha = _sha256(data_path)
+    declared_data_sha = str(frozen.get("data_sha256", freeze_event.get("data_sha256", ""))).lower()
+    if len(declared_data_sha) != 64 or data_sha.lower() != declared_data_sha:
+        raise ValueError("active freeze data hash mismatch")
+    event_data_sha = str(freeze_event.get("data_sha256", declared_data_sha)).lower()
+    if event_data_sha and event_data_sha != data_sha.lower():
+        raise ValueError("active freeze ledger/data hash mismatch")
+    raw_state_file = frozen.get("signal_state_file")
+    state_file = str(raw_state_file) if raw_state_file not in (None, "") else None
+    state_path = _resolve_project_file(root, state_file, label="active state") if state_file is not None else None
+    if state_path is not None and not state_path.is_file():
+        raise ValueError(f"active freeze state artifact missing: {state_file}")
+    state_sha = _sha256(state_path) if state_path else None
+    declared_state_sha = frozen.get("signal_state_sha256")
+    if state_path is not None and declared_state_sha is not None and str(declared_state_sha).lower() != str(state_sha).lower():
+        raise ValueError("active freeze state hash mismatch")
+    return {
+        "target_contest": target,
+        "cutoff_contest": cutoff,
+        "freeze_file": freeze_file,
+        "freeze_sha256": freeze_sha,
+        "data_file": data_file,
+        "data_sha256": data_sha,
+        "signal_state_file": state_file,
+        "signal_state_sha256": state_sha,
+        "ledger_file": ledger_path.name,
+        "ledger_sha256": _sha256(ledger_path),
+        "pending_target": target in pending,
+    }
+
+
 def build_orchestration(root: str | Path) -> dict[str, Any]:
     root = Path(root)
     source_manifest_path = root / ".external_skills_acquired" / "ACQUISITION_MANIFEST.json"
@@ -227,7 +314,7 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
     v3_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V3.json"
     v4_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V4.json"
     mission_path = root / "SMART_MISSION_STATUS.json"
-    freeze_path = root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
+    active_context = _resolve_active_context(root)
 
     source_manifest = _read_json(source_manifest_path)
     v2 = _read_json(v2_path)
@@ -256,8 +343,11 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
         "no_duplicate_lane_assignment": not duplicates,
         "all_native_targets_exist": all(target_checks.values()),
         "external_source_auto_execution_disabled": source_manifest.get("policy", "").startswith("Third-party skill sources are quarantined"),
-        "global_mission_remains_authoritative": mission.get("status") == "MISSION_ACTIVE" and mission.get("terminal_6of6_proven") is False,
-        "freeze_3054_present": freeze_path.is_file(),
+        "global_mission_status_consistent": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"}
+        and ((mission.get("status") == "MISSION_PROVEN") == bool(mission.get("terminal_6of6_proven"))),
+        "active_freeze_present": (root / active_context["freeze_file"]).is_file(),
+        "active_freeze_cutoff_is_target_minus_one": int(active_context["cutoff_contest"]) == int(active_context["target_contest"]) - 1,
+        "active_data_present": (root / active_context["data_file"]).is_file(),
     }
 
     lane_documents: dict[str, Any] = {}
@@ -275,6 +365,8 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "project": "SMART-MEGA",
         "integration_status": "PASS" if all(checks.values()) else "FAIL",
+        "integration_scope": "STRUCTURAL_ORCHESTRATION_ONLY",
+        "functional_runtime_proof_required_for_full_integration": True,
         "global_mission_state": mission.get("status"),
         "terminal_6of6_proven": bool(mission.get("terminal_6of6_proven")),
         "policy": {
@@ -307,6 +399,7 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
             for name, agent in AGENTS.items()
         },
         "checks": checks,
+        "active_context": active_context,
         "diagnostics": {
             "missing_from_lanes": missing_from_lanes,
             "unknown_in_lanes": unknown_in_lanes,
@@ -319,7 +412,10 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
             "capability_v3_sha256": _sha256(v3_path),
             "capability_v4_sha256": _sha256(v4_path),
             "mission_status_sha256": _sha256(mission_path),
-            "freeze_3054_sha256": _sha256(freeze_path),
+            "active_freeze_sha256": active_context["freeze_sha256"],
+            "active_data_sha256": active_context["data_sha256"],
+            "active_signal_state_sha256": active_context["signal_state_sha256"],
+            "signal_ledger_sha256": active_context["ledger_sha256"],
         },
     }
     canonical = json.dumps(document, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
@@ -336,15 +432,22 @@ def write_orchestration(root: str | Path, output: str = "SMART_AGENT_SKILL_ORCHE
     return document
 
 
-if __name__ == "__main__":
+def main(argv: list[str] | None = None) -> None:
     import sys
 
-    project_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
+    args = sys.argv[1:] if argv is None else list(argv)
+    project_root = Path(args[0]) if args else Path(__file__).resolve().parent
     result = write_orchestration(project_root)
     print(json.dumps({
         "integration_status": result["integration_status"],
         "unique_capabilities_total": result["inventory"]["unique_capabilities_total"],
         "global_mission_state": result["global_mission_state"],
         "terminal_6of6_proven": result["terminal_6of6_proven"],
-        "freeze_3054_sha256": result["evidence_hashes"]["freeze_3054_sha256"],
+        "active_target_contest": result["active_context"]["target_contest"],
+        "active_cutoff_contest": result["active_context"]["cutoff_contest"],
+        "active_freeze_sha256": result["evidence_hashes"]["active_freeze_sha256"],
     }, ensure_ascii=False))
+
+
+if __name__ == "__main__":  # pragma: no cover
+    main()
