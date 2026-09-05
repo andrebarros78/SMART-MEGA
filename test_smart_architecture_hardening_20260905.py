@@ -328,6 +328,12 @@ def test_deployment_and_continuity_require_functional_agent_skill_gate():
         assert 'functional_integration' in source
     assert 'agent_skill_functional_integration_pass' in continuity
     assert 'agent_skill_functional_integration_pass' in deployment
+    for source in (continuity,deployment):
+        assert 'total_integration_gate_pass' in source
+        assert 'SMART_TOTAL_INTEGRATION_PROOF.json' in source
+        assert 'wmcp_execution_proof_pass' in source
+        assert 'SMART_WMCP_EXECUTION_PROOF_20260905.json' in source
+    assert 'total_integration_gate.write(root)' in deployment
 
 
 def test_orchestration_mission_consistency_allows_legitimate_terminal_state(monkeypatch):

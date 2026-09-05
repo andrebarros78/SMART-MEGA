@@ -9,6 +9,8 @@ from typing import Any
 
 import smart_agent_skill_functional_gate as agent_skill_gate
 import smart_agent_skill_orchestration as agent_skill_orchestration
+import smart_total_integration_gate as total_integration_gate
+from smart_agent_runtime import sha256_json
 
 FREEZE_EXPECTED_SHA256="503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
 DATA_EXPECTED_SHA256="287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60"
@@ -26,12 +28,33 @@ def git(root: Path,*args: str) -> str:
     return subprocess.check_output(['git',*args],cwd=root,text=True,encoding='utf-8',errors='replace').strip()
 
 
+def _total_integration_valid(doc: dict[str,Any]) -> bool:
+    unsigned=dict(doc)
+    declared=unsigned.pop('sha256',None)
+    gates=doc.get('gates',{})
+    return (
+        declared==sha256_json(unsigned)
+        and doc.get('status')=='PASS'
+        and doc.get('health')=='HEALTHY'
+        and len(gates)==8
+        and all(isinstance(g,dict) and g and all(v is True for v in g.values()) for g in gates.values())
+    )
+
+
+def _wmcp_execution_valid(doc: dict[str,Any]) -> bool:
+    unsigned=dict(doc)
+    declared=unsigned.pop('sha256',None)
+    return declared==sha256_json(unsigned) and doc.get('status')=='PASS' and bool(doc.get('checks')) and all(v is True for v in doc.get('checks',{}).values())
+
+
 def build(root: Path) -> dict[str,Any]:
     freeze=root/'SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json'
     data=root/'Mega-Sena_through_3053_v2.xlsx'
     mission=read_json(root/'SMART_MISSION_STATUS.json')
     orchestration=agent_skill_orchestration.build_orchestration(root)
     functional_integration=agent_skill_gate.evaluate(root)
+    total_integration=read_json(root/'SMART_TOTAL_INTEGRATION_PROOF.json')
+    wmcp_execution=read_json(root/'SMART_WMCP_EXECUTION_PROOF_20260905.json')
     powered=read_json(root/'SMART_FALSIFICATION_REPORT_POWERED.json')
     atlas1000_path=root/'SMART_RANDOMNESS_ATLAS_1000.json'
     atlas1000=read_json(atlas1000_path) if atlas1000_path.exists() else None
@@ -46,6 +69,8 @@ def build(root: Path) -> dict[str,Any]:
         'dataset_3053_bound': data_sha==DATA_EXPECTED_SHA256,
         'agent_skill_structural_orchestration_pass': orchestration['integration_status']=='PASS' and orchestration.get('integration_scope')=='STRUCTURAL_ORCHESTRATION_ONLY',
         'agent_skill_functional_integration_pass': functional_integration.get('status')=='PASS' and all(functional_integration.get('checks',{}).values()),
+        'total_integration_gate_pass': _total_integration_valid(total_integration),
+        'wmcp_execution_proof_pass': _wmcp_execution_valid(wmcp_execution),
         'agent_skill_no_terminal_authority': orchestration['terminal_6of6_proven'] is False,
         'powered_falsification_resolution_sufficient': powered['multiplicity']['resolution_sufficient'] is True,
         'powered_falsification_no_predictive_weight': powered['predictive_weight_authorized'] is False,
@@ -108,6 +133,20 @@ def build(root: Path) -> dict[str,Any]:
             'external_code_auto_execute':orchestration['policy']['external_code_auto_execute'],
             'predictive_authority':'NONE_DIRECT',
         },
+        'wmcp_execution':{
+            'artifact':'SMART_WMCP_EXECUTION_PROOF_20260905.json',
+            'status':wmcp_execution.get('status'),
+            'sha256':wmcp_execution.get('sha256'),
+            'command_state':wmcp_execution.get('e2e',{}).get('command_state'),
+            'exit_code':wmcp_execution.get('e2e',{}).get('exit_code'),
+        },
+        'total_integration':{
+            'artifact':'SMART_TOTAL_INTEGRATION_PROOF.json',
+            'status':total_integration.get('status'),
+            'health':total_integration.get('health'),
+            'sha256':total_integration.get('sha256'),
+            'gate_count':len(total_integration.get('gates',{})),
+        },
         'powered_falsification':{
             'artifact':'SMART_FALSIFICATION_REPORT_POWERED.json',
             'replications':powered['replications'],
@@ -149,7 +188,9 @@ def build(root: Path) -> dict[str,Any]:
     }
 
 
-def write(root: Path) -> dict[str,Any]:
+def write(root: Path, *, refresh_total_gate: bool=True) -> dict[str,Any]:
+    if refresh_total_gate:
+        total_integration_gate.write(root)
     doc=build(root)
     out=root/'SMART_CHAT_CONSOLIDATION_20260904.json'
     out.write_text(json.dumps(doc,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')

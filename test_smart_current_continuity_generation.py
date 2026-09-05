@@ -10,6 +10,12 @@ FREEZE_SHA = "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
 def test_finalizer_build_includes_current_governance_and_3054_readiness():
     proof = finalizer.build(ROOT)
     assert proof["deployment_status"] == "PASS"
+    assert proof["checks"]["total_integration_gate_pass"] is True
+    assert proof["total_integration"]["status"] == "PASS"
+    assert proof["total_integration"]["health"] == "HEALTHY"
+    assert proof["checks"]["wmcp_execution_proof_pass"] is True
+    assert proof["wmcp_execution"]["command_state"] == "completed"
+    assert proof["wmcp_execution"]["exit_code"] == 0
     assert proof["freeze_3054"]["sha256"] == FREEZE_SHA
     assert proof["hypothesis_state"]["registry_schema"] == "SMART_HYPOTHESIS_REGISTRY_V4"
     assert proof["hypothesis_state"]["null_proof_claim"] is False

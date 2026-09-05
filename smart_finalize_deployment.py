@@ -11,6 +11,7 @@ import smart_continuity_consolidator as consolidation_module
 import smart_hypothesis_state_reconciler as hypothesis_reconciler
 import smart_agent_skill_functional_gate as agent_skill_gate
 import smart_agent_skill_orchestration as agent_skill_orchestration
+import smart_total_integration_gate as total_integration_gate
 
 SCHEMA = "SMART_IMPLEMENTATION_PROOF_20260904_V2"
 JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
@@ -66,6 +67,8 @@ def build(root: Path) -> dict[str, Any]:
     mission = read(root / "SMART_MISSION_STATUS.json")
     orchestration = agent_skill_orchestration.build_orchestration(root)
     functional_integration = agent_skill_gate.evaluate(root)
+    total_integration = read(root / "SMART_TOTAL_INTEGRATION_PROOF.json")
+    wmcp_execution = read(root / "SMART_WMCP_EXECUTION_PROOF_20260905.json")
     p1p2 = read(root / "SMART_P1_P2_CARTOGRAPHY_PROOF.json")
     convergence = read(root / "SMART_MONTE_CARLO_CONVERGENCE_1000.json")
     powered = read(root / "SMART_FALSIFICATION_REPORT_POWERED.json")
@@ -97,6 +100,8 @@ def build(root: Path) -> dict[str, Any]:
         and orchestration.get("integration_scope") == "STRUCTURAL_ORCHESTRATION_ONLY",
         "agent_skill_functional_integration_pass": functional_integration.get("status") == "PASS"
         and all(functional_integration.get("checks", {}).values()),
+        "total_integration_gate_pass": consolidation_module._total_integration_valid(total_integration),
+        "wmcp_execution_proof_pass": consolidation_module._wmcp_execution_valid(wmcp_execution),
         "all_agents_non_authoritative": bool(agents) and all(
             not bool(agent.get("terminal_authority"))
             and not bool(agent.get("predictive_weight_authorized"))
@@ -179,6 +184,20 @@ def build(root: Path) -> dict[str, Any]:
             "functional_status": functional_integration.get("status"),
             "functional_proof_sha256": functional_integration.get("sha256"),
             "artifact_sha256": sha(root / "SMART_AGENT_SKILL_ORCHESTRATION.json"),
+        },
+        "wmcp_execution": {
+            "artifact": "SMART_WMCP_EXECUTION_PROOF_20260905.json",
+            "status": wmcp_execution.get("status"),
+            "sha256": wmcp_execution.get("sha256"),
+            "command_state": wmcp_execution.get("e2e", {}).get("command_state"),
+            "exit_code": wmcp_execution.get("e2e", {}).get("exit_code"),
+        },
+        "total_integration": {
+            "artifact": "SMART_TOTAL_INTEGRATION_PROOF.json",
+            "status": total_integration.get("status"),
+            "health": total_integration.get("health"),
+            "sha256": total_integration.get("sha256"),
+            "gate_count": len(total_integration.get("gates", {})),
         },
         "powered_falsification": {
             "replications": powered["replications"],
@@ -347,7 +366,8 @@ Compatibilidade textual legada: NÃ£o declarar `MISSION_PROVEN` sem cumprir a r
 
 
 def write(root: Path) -> dict[str, Any]:
-    consolidation_module.write(root)
+    total_integration_gate.write(root)
+    consolidation_module.write(root, refresh_total_gate=False)
     proof = build(root)
     if proof["deployment_status"] != "PASS":
         raise RuntimeError({"deployment_checks": proof["checks"]})

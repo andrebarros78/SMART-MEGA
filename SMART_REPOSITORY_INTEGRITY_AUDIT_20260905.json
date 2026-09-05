@@ -1,0 +1,83 @@
+{
+  "schema": "SMART_REPOSITORY_INTEGRITY_AUDIT_V2",
+  "generated_at_utc": "2026-09-05T20:25:44.653186+00:00",
+  "scope": {
+    "active_runtime": "native active project files",
+    "external_source": "counted but excluded from execution/static blocker claims because policy is SOURCE_ONLY_QUARANTINE",
+    "historical_evidence": "counted but excluded from active runtime duplication/blocker claims"
+  },
+  "excluded_from_active_top_level": [
+    ".external_capabilities_acquired_v2",
+    ".external_capabilities_acquired_v3",
+    ".external_skills_acquired",
+    ".git",
+    ".pytest_cache",
+    ".ruff_cache",
+    ".tmp",
+    ".venv",
+    "SMART_STATE_ARCHIVE",
+    "_BACKUPS",
+    "__pycache__",
+    "archive",
+    "artifacts",
+    "backup",
+    "backups",
+    "evidence"
+  ],
+  "counts": {
+    "active_native_production_python": 102,
+    "external_source_files": 146,
+    "historical_evidence_files": 364
+  },
+  "active_zero_files": [],
+  "active_syntax_errors": [],
+  "active_production_blockers": [],
+  "active_intentional_duplicate_groups": [
+    {
+      "files": [
+        "SMART_COVERAGE_P14_EVIDENCE_ONLY.json",
+        "SMART_COVERAGE_P14_PROMOTION.json"
+      ],
+      "reason": "same evidence-only P14 decision exposed under evidence and promotion artifact names; payload explicitly blocks predictive promotion"
+    },
+    {
+      "files": [
+        "SMART_NULL_UNIVERSE_MANIFEST.json",
+        "SMART_NULL_UNIVERSE_MANIFEST_1000.json"
+      ],
+      "reason": "1000-run manifest is deliberately promoted to canonical alias by smart_promote_cartography_1000.py"
+    },
+    {
+      "files": [
+        "SMART_RANDOMNESS_ATLAS.json",
+        "SMART_RANDOMNESS_ATLAS_1000.json"
+      ],
+      "reason": "1000-run atlas is deliberately promoted to canonical alias by smart_promote_cartography_1000.py"
+    },
+    {
+      "files": [
+        "SMART_EXPERIMENT_REGISTRY/mlruns/e67316bc2a944790aa30739f97149c82/artifacts/preregistration.json",
+        "SMART_EXPERIMENT_REGISTRY/preregistrations/portfolio-optimizer-pre3053-v3.json"
+      ],
+      "reason": "experiment evidence mirrored across registry/result locations"
+    },
+    {
+      "files": [
+        "SMART_EXPERIMENT_REGISTRY/mlruns/e67316bc2a944790aa30739f97149c82/artifacts/result.json",
+        "SMART_EXPERIMENT_REGISTRY/results/portfolio-optimizer-pre3053-v3.json"
+      ],
+      "reason": "experiment evidence mirrored across registry/result locations"
+    }
+  ],
+  "active_unexplained_duplicate_groups": [],
+  "checks": {
+    "active_zero_files_zero": true,
+    "active_python_syntax_errors_zero": true,
+    "active_production_blockers_zero": true,
+    "active_unexplained_duplicate_groups_zero": true,
+    "external_source_excluded_from_execution_scope": true,
+    "historical_evidence_separated_from_runtime_scope": true
+  },
+  "status": "PASS",
+  "sha256": "8e913fffbaeb493298720aa2df79e04d9fe962cdd3241de42783c35f7f96dafa"
+}

@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import ast,json,re,subprocess,sys
 from concurrent.futures import ThreadPoolExecutor
 from pathlib import Path
@@ -19,7 +19,7 @@ def audit_files(root:Path):
  for p in sorted(root.glob('smart_*.py')):
   if p.name.startswith('test_'): continue
   s=p.read_text(encoding='utf-8-sig')
-  text += [{'file':p.name,'line':i} for i,l in enumerate(s.splitlines(),1) if BLOCK.search(l)]
+  text += [{'file':p.name,'line':i} for i,l in enumerate(s.splitlines(),1) if BLOCK.search(l) and not (p.name=='smart_total_integration_gate.py' and l.lstrip().startswith('BLOCK='))]
   try: tree=ast.parse(s)
   except SyntaxError as e: syntax.append({'file':p.name,'line':e.lineno}); continue
   passes += [{'file':p.name,'line':n.lineno} for n in ast.walk(tree) if isinstance(n,ast.Pass)]

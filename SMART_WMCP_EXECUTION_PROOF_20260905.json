@@ -1,0 +1,47 @@
+{
+  "schema": "SMART_WMCP_EXECUTION_PROOF_V1",
+  "generated_at_utc": "2026-09-05T20:14:25.486670+00:00",
+  "project_id": "smart-mega",
+  "workspace": "C:\\New Projet\\SMART-MEGA",
+  "control_plane": {
+    "isolation_mode": "windows-account",
+    "windows_identity": "svc-wmcp-smart-mega",
+    "broker_state": "ready",
+    "broker_system": true
+  },
+  "e2e": {
+    "command_id": "cmd-5d636ed90fe6427899523ccd90bedcc3",
+    "task_id": "task-b288afbc5c8d4fc2b823bc6a2a0a2c56",
+    "mission_id": "mission-eaeb6f6fe0ee423b9cbc5a17f7c3d944",
+    "command_state": "completed",
+    "persisted_at": "2026-09-05T17:04:52.169008-03:00",
+    "dispatched_at": "2026-09-05T17:10:57.139844-03:00",
+    "running_at": "2026-09-05T17:11:01.340905-03:00",
+    "completed_at": "2026-09-05T17:11:50.099617-03:00",
+    "result_sha256": "336580f48d9f81d3fb4a676848151cc69995d5f67187f2d0ebd763688ac5e06e",
+    "executor_node_id": "WIN-NODE-01",
+    "fencing_token": 2,
+    "exit_code": 0,
+    "stdout": "SMART_MEGA_WORKER_E2E_PROVEN_20260905_1704",
+    "stderr_empty": true
+  },
+  "resilience": {
+    "initial_short_probe_failed_timeout": true,
+    "operational_window_retry_completed": true,
+    "backpressure_preserved_queue_until_capacity": true
+  },
+  "checks": {
+    "main_manifest_windows_account": true,
+    "broker_manifest_windows_account": true,
+    "broker_manifest_utf8_no_bom": true,
+    "broker_ready_as_system": true,
+    "command_completed": true,
+    "isolated_worker_executed": true,
+    "exit_zero": true,
+    "stdout_exact": true,
+    "result_hash_present": true
+  },
+  "status": "PASS",
+  "secret_material_in_artifact": false,
+  "sha256": "594452e2202068d8b2943bbdd8c47f02b6f0f614958ba2ba6641e0c4baf4cf30"
+}

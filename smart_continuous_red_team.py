@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -51,6 +51,7 @@ BEHAVIORAL_FILES = (
     'smart_agent_runtime.py',
     'smart_agent_skill_functional_gate.py',
     'smart_skill_runtime.py',
+    'smart_total_integration_gate.py',
     'adjudicate_signal_challenger.py',
 )
 EXPECTED_SCENARIOS = (
