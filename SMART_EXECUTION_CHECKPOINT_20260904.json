@@ -1,6 +1,6 @@
 {
   "schema": "SMART_EXECUTION_CHECKPOINT_20260904_V3",
-  "created_brasilia": "2026-09-04T19:57:48.754637-03:00",
+  "created_brasilia": "2026-09-04T22:51:54.207524-03:00",
   "cutoff_contest": 3053,
   "target_contest": 3054,
   "mission_state": "MISSION_ACTIVE",
@@ -17,11 +17,13 @@
     "canonical result store reconciled through contest 3053",
     "3054 adjudication preflight status PASS",
     "3054 full post-result sandbox cycle status PASS",
+    "independent audit current PASS over 3 real adjudications",
+    "3054 terminal executor end-to-end sandbox status PASS with idempotent repeat",
     "official evidence policy separates operational CAIXA API authority from terminal corroboration",
-    "canonical regression 507 tests, 0 failures, 0 errors"
+    "canonical regression 516 tests, 0 failures, 0 errors"
   ],
   "regression": {
-    "tests": 507,
+    "tests": 516,
     "failures": 0,
     "errors": 0,
     "skipped": 0
@@ -60,7 +62,12 @@
     "full_cycle_sequence_valid": true,
     "full_cycle_learning_last_contest": 3054,
     "official_result_ingested": false,
-    "terminal_6of6_proven": false
+    "terminal_6of6_proven": false,
+    "terminal_executor_sandbox_status": "PASS",
+    "terminal_executor_repeat_idempotent": true,
+    "terminal_executor_non_6of6_guards_pass": true,
+    "independent_audit_pair_count": 3,
+    "prospective_authority_pair_count": 3
   },
   "critical_hashes": {
     "freeze_3054": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
@@ -74,7 +81,11 @@
     "canonical_result_store_reconciliation": "ac7492f171723b3bce1a566eb384084baa7bf3bd1ce612b82d70cf6142527c77",
     "adjudication_preflight_3054": "82a743be3807d7694993db1020663270b567d01f0553052831dad8613e79e1f2",
     "full_cycle_sandbox_3054": "49cf69ed833732310edeb30bf5ebd8b4515d710d6a7b8f453fca596a90cd0914",
-    "current_junit": "b117427bd73487c4e53cc4a17bb655e91b6c1663fa9e80d53a6d7418605dd24e"
+    "terminal_executor_sandbox_3054": "33549fbf4cfca83e8e3d23848ab93c9eaf522046029be3c9cd63eacd76a3453d",
+    "terminal_executor_source": "8bda51681410fd22dee9f7400f7161b5dc52865c969a0718e5ba6fed6cc3c946",
+    "independent_audit_current": "dd791054c30d8b6202d62d5c36175c47abe2aa9f8dda5ec3aa6f98f0106cfdd4",
+    "prospective_evidence_authority": "0945a9a39bc3202d90474e4c3edc690f85f5aeac46eb7020da8bdbdbe120a316",
+    "current_junit": "47fc6888777cb301026b2fc02d370e86f8d90d07999c53c124c8c184e7cbec55"
   },
   "freeze_3054_top6": [
     10,

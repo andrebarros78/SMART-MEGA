@@ -50,6 +50,9 @@ hypothesis = load_json("SMART_HYPOTHESIS_STATE_RECONCILIATION.json")
 result_store = load_json("SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json")
 preflight = load_json("SMART_3054_ADJUDICATION_PREFLIGHT.json")
 full_cycle = load_json("SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json")
+terminal_sandbox = load_json("SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json")
+independent = load_json("SMART_P14_INDEPENDENT_AUDIT_CURRENT.json")
+authority = load_json("SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json")
 mission = load_json("SMART_MISSION_STATUS.json")
 junit = junit_totals(JUNIT)
 resolution = bool(falsification.get("multiplicity", {}).get("resolution_sufficient"))
@@ -82,6 +85,8 @@ obj = {
         f"canonical result store reconciled through contest {int(result_store['canonical_max_after'])}",
         f"3054 adjudication preflight status {preflight['readiness_status']}",
         f"3054 full post-result sandbox cycle status {full_cycle['status']}",
+        f"independent audit current PASS over {int(independent['prospective_ledger']['pair_count'])} real adjudications",
+        f"3054 terminal executor end-to-end sandbox status {terminal_sandbox['status']} with idempotent repeat",
         "official evidence policy separates operational CAIXA API authority from terminal corroboration",
         f"canonical regression {junit['tests']} tests, {junit['failures']} failures, {junit['errors']} errors",
     ],
@@ -121,6 +126,11 @@ obj = {
         "full_cycle_learning_last_contest": int(full_cycle["learning"]["last_contest"]),
         "official_result_ingested": False,
         "terminal_6of6_proven": False,
+        "terminal_executor_sandbox_status": terminal_sandbox["status"],
+        "terminal_executor_repeat_idempotent": bool(terminal_sandbox["repeated_execution_idempotent"]),
+        "terminal_executor_non_6of6_guards_pass": bool(terminal_sandbox["all_non_6of6_terminal_guards_pass"]),
+        "independent_audit_pair_count": int(independent["prospective_ledger"]["pair_count"]),
+        "prospective_authority_pair_count": int(authority["independent_audit"]["pair_count"]),
     },
     "critical_hashes": {
         "freeze_3054": sha("SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"),
@@ -134,6 +144,10 @@ obj = {
         "canonical_result_store_reconciliation": sha("SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json"),
         "adjudication_preflight_3054": sha("SMART_3054_ADJUDICATION_PREFLIGHT.json"),
         "full_cycle_sandbox_3054": sha("SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json"),
+        "terminal_executor_sandbox_3054": sha("SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json"),
+        "terminal_executor_source": sha("smart_3054_terminal_executor.py"),
+        "independent_audit_current": sha("SMART_P14_INDEPENDENT_AUDIT_CURRENT.json"),
+        "prospective_evidence_authority": sha("SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json"),
         "current_junit": sha(JUNIT),
     },
     "freeze_3054_top6": sorted(int(value) for value in freeze["champion"]["top6"]),

@@ -71,6 +71,9 @@ def build(root: Path) -> dict[str, Any]:
     result_store = read(root / "SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json")
     preflight = read(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json")
     full_cycle = read(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json")
+    terminal_sandbox = read(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json")
+    independent = read(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json")
+    authority = read(root / "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json")
     junit = junit_summary(root / JUNIT)
 
     freeze = root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
@@ -125,6 +128,21 @@ def build(root: Path) -> dict[str, Any]:
         and full_cycle.get("learning", {}).get("last_contest") == 3054
         and full_cycle.get("checks", {}).get("canonical_protected_artifacts_unchanged") is True,
         "official_evidence_policy_present": (root / "smart_official_evidence_consensus.py").is_file(),
+        "independent_audit_current_three_pairs": independent.get("status") == "PASS"
+        and independent.get("prospective_ledger", {}).get("pair_count") == 3
+        and independent.get("prospective_ledger", {}).get("no_future_leakage") is True
+        and independent.get("deterministic_replay", {}).get("target_contest") == 3054
+        and independent.get("deterministic_replay", {}).get("cutoff_contest") == 3053,
+        "prospective_authority_current": authority.get("independent_audit", {}).get("status") == "PASS"
+        and authority.get("independent_audit", {}).get("pair_count") == 3
+        and authority.get("targets", {}).get("3054", {}).get("adjudicated") is False,
+        "terminal_executor_sandbox_pass": terminal_sandbox.get("status") == "PASS"
+        and terminal_sandbox.get("sandbox_only") is True
+        and terminal_sandbox.get("repeated_execution_idempotent") is True
+        and terminal_sandbox.get("all_non_6of6_terminal_guards_pass") is True
+        and terminal_sandbox.get("terminal_eligible") is False
+        and terminal_sandbox.get("mission_state_after_repeat") == "MISSION_ACTIVE"
+        and terminal_sandbox.get("executor_sha256") == sha(root / "smart_3054_terminal_executor.py"),
         "chat_consolidation_pass": consolidation.get("consolidation_status") == "PASS",
         "mission_not_false_proven": mission.get("status") == "MISSION_ACTIVE"
         and mission.get("terminal_6of6_proven") is False,
@@ -136,7 +154,7 @@ def build(root: Path) -> dict[str, Any]:
         "scope": (
             "unified continuity; agent/skill orchestration; powered falsification; 1000-replication cartography; "
             "hypothesis-state reconciliation; canonical result-store repair; 3054 adjudication preflight; "
-            "full post-result sandbox cycle; official-evidence corroboration policy"
+            "full post-result sandbox cycle; terminal executor end-to-end sandbox; current independent audit; official-evidence corroboration policy"
         ),
         "deployment_status": "PASS" if all(checks.values()) else "FAIL",
         "workspace": str(root),
@@ -199,6 +217,18 @@ def build(root: Path) -> dict[str, Any]:
             "preflight_sha256": sha(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json"),
             "full_cycle_sha256": sha(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json"),
         },
+        "terminal_executor_3054": {
+            "module": "smart_3054_terminal_executor.py",
+            "module_sha256": sha(root / "smart_3054_terminal_executor.py"),
+            "sandbox_status": terminal_sandbox["status"],
+            "sandbox_repeat_idempotent": terminal_sandbox["repeated_execution_idempotent"],
+            "sandbox_audited_pair_count": terminal_sandbox["audited_pair_count"],
+            "all_non_6of6_terminal_guards_pass": terminal_sandbox["all_non_6of6_terminal_guards_pass"],
+            "current_independent_audit_pair_count": independent["prospective_ledger"]["pair_count"],
+            "current_independent_audit_status": independent["status"],
+            "prospective_authority_pair_count": authority["independent_audit"]["pair_count"],
+            "artifact_sha256": sha(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json"),
+        },
         "official_evidence_policy": {
             "module": "smart_official_evidence_consensus.py",
             "operational_primary": "CAIXA contest API",
@@ -224,6 +254,7 @@ def render_continuity(proof: dict[str, Any]) -> str:
     h = proof["hypothesis_state"]
     r = proof["canonical_result_store"]
     p = proof["prospective_3054_readiness"]
+    t = proof["terminal_executor_3054"]
     return f"""# SMART-MEGA — CONTINUIDADE CANÔNICA
 
 **Atualização:** {proof['generated_at_utc']}

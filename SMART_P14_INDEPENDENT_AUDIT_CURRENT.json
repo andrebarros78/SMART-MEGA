@@ -110,15 +110,15 @@
   "prospective_ledger": {
     "status": "PASS",
     "ledger_file": "SMART_SIGNAL_LEDGER.json",
-    "ledger_sha256": "0a64e3aba55bf9ed17aab4163988f5e645e0c124bf820646845256f7e75f3c54",
-    "pair_count": 2,
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "pair_count": 3,
     "no_future_leakage": true,
     "hash_integrity": true,
     "supersede_chain_integrity": true,
     "legacy_result_continuity_used": true,
     "e_process_recomputed": true,
     "full_champion_comparison": {
-      "adjudicated_contests": 2,
+      "adjudicated_contests": 3,
       "champion_hits": 2,
       "challenger_hits": 2,
       "advantage_hits": 0,
@@ -126,15 +126,15 @@
       "all_pairs_recomputed": true
     },
     "promotion_lineage_comparison": {
-      "candidate_fingerprint": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486",
+      "candidate_fingerprint": "12bebc223810be09a7b90c7f674c1d4c59b8b7136845e7d8248a4c7a11355c22",
       "adjudicated_contests": 1,
-      "champion_hits": 1,
-      "challenger_hits": 1,
+      "champion_hits": 0,
+      "challenger_hits": 0,
       "advantage_hits": 0,
       "cumulative_regret": 0,
       "e_value": 1.0,
       "unversioned_causal_pairs_ignored": 1,
-      "discarded_prior_version_pairs": 0,
+      "discarded_prior_version_pairs": 1,
       "lineage_recomputed_independently": true,
       "lineage_pairs_recomputed": true
     },
@@ -260,33 +260,80 @@
         "legacy_result_continuity": null,
         "future_leakage_detected": false,
         "promotion_lineage_sha256": "461f3b8f998cd86daa2d6bf8eb1213e9626ae89e4efbac046790b8e13d3a3486"
+      },
+      {
+        "target_contest": 3053,
+        "freeze_sha256": "e8773cf0d5f29bab5c0dfb3a3352130ee36dafe13b6c6db6747412789c9a8781",
+        "cutoff_contest": 3052,
+        "actual_numbers": [
+          1,
+          13,
+          25,
+          35,
+          39,
+          51
+        ],
+        "champion_top6": [
+          11,
+          27,
+          30,
+          10,
+          38,
+          46
+        ],
+        "challenger_top6": [
+          11,
+          30,
+          27,
+          10,
+          38,
+          16
+        ],
+        "champion_hits": 0,
+        "challenger_hits": 0,
+        "difference_hits": 0,
+        "e_value_after_recomputed": 1.0,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "IMMUTABLE_HASH_ARCHIVE",
+          "archive_file": "7410564d72f484eadafdd045d3f4911144b99643fde6b1efe58a1cbf5c535320.json",
+          "archive_sha256": "7410564d72f484eadafdd045d3f4911144b99643fde6b1efe58a1cbf5c535320",
+          "legacy_scope_only": false
+        },
+        "result_data_hash_verified": true,
+        "result_binary_hash_exact": true,
+        "legacy_result_continuity": null,
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": "12bebc223810be09a7b90c7f674c1d4c59b8b7136845e7d8248a4c7a11355c22"
       }
     ]
   },
   "deterministic_replay": {
     "status": "PASS",
-    "data_file": "Mega-Sena_through_3051.xlsx",
-    "data_sha256": "fd9d6c30d12b5ec1512becfead1974b1987a61d74716b0fae60037ff00bdaa13",
-    "target_contest": 3052,
-    "cutoff_contest": 3051,
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
     "start_index": 1000,
-    "champion_replay_sha256": "20e8e05a034146ee8dbb7a0e88fc5b4f5fd54e497ff1ae3ca2139de1689f1679",
-    "challenger_replay_sha256": "769bdff6be5ae11f677b13a4ddd014a371655742d2f46ac643761da09d73427e",
+    "champion_replay_sha256": "ddb9c03f1f77f613ac63f7e3aba3e51a5114bef298a90af581d70c61c6c423b6",
+    "challenger_replay_sha256": "89ab67b1ecafa93e1c1f14b0c941f9aa2305b8da668306ec8aba348aae64bf90",
     "champion_top6": [
       11,
-      27,
-      10,
-      38,
       30,
-      46
+      27,
+      35,
+      10,
+      38
     ],
     "challenger_top6": [
       11,
-      27,
-      10,
-      38,
       30,
-      53
+      27,
+      35,
+      10,
+      38
     ],
     "deterministic": true,
     "causal_cutoff_verified": true
@@ -303,5 +350,5 @@
   "promotion_authority": false,
   "independent_of_promotion_decision": true,
   "material_deficiencies": [],
-  "sha256": "69d8c0190d1d1ffdb8e81d3a83576c3f2ff6987ac15b30d7d24740187c246ed7"
+  "sha256": "d9d5d39495f0fb2d967e79440c95d6369892b1b629a2be012b89d6c8269aaca2"
 }

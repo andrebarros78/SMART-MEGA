@@ -18,6 +18,9 @@ def test_finalizer_build_includes_current_governance_and_3054_readiness():
     assert proof["prospective_3054_readiness"]["preflight_status"] == "PASS"
     assert proof["prospective_3054_readiness"]["full_cycle_sandbox_status"] == "PASS"
     assert proof["official_evidence_policy"]["secondary_stale_or_unavailable_never_counts_as_consensus"] is True
+    assert proof["terminal_executor_3054"]["sandbox_status"] == "PASS"
+    assert proof["terminal_executor_3054"]["sandbox_repeat_idempotent"] is True
+    assert proof["terminal_executor_3054"]["current_independent_audit_pair_count"] == 3
     assert proof["terminal_6of6_proven"] is False
 
 
@@ -42,4 +45,8 @@ def test_checkpoint_v3_records_new_proofs_without_false_terminal_claim():
     assert checkpoint["prospective_3054"]["preflight_status"] == "PASS"
     assert checkpoint["prospective_3054"]["full_cycle_sandbox_status"] == "PASS"
     assert checkpoint["prospective_3054"]["official_result_ingested"] is False
+    assert checkpoint["prospective_3054"]["terminal_executor_sandbox_status"] == "PASS"
+    assert checkpoint["prospective_3054"]["terminal_executor_repeat_idempotent"] is True
+    assert checkpoint["prospective_3054"]["independent_audit_pair_count"] == 3
+    assert checkpoint["prospective_3054"]["prospective_authority_pair_count"] == 3
     assert checkpoint["terminal_6of6_proven"] is False
