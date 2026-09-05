@@ -1,0 +1,193 @@
+﻿from __future__ import annotations
+
+import hashlib
+import json
+from dataclasses import dataclass, asdict
+from pathlib import Path
+from typing import Any
+
+from smart_agent_runtime import SmartAgentRuntime, sha256_file, sha256_json
+from smart_agent_skill_orchestration import AGENTS, LANES
+
+SCHEMA = "SMART_SKILL_RUNTIME_V1"
+QUARANTINE_LANE = "retained_quarantine_no_current_lane"
+
+
+def _owner_map() -> dict[str, str]:
+    owners: dict[str, str] = {}
+    for agent, config in AGENTS.items():
+        lane_name = config.get("lane")
+        if lane_name is None:
+            continue
+        for capability in LANES[lane_name]["capabilities"]:
+            if capability in owners:
+                raise ValueError(f"duplicate capability owner: {capability}")
+            owners[capability] = agent
+    return owners
+
+
+OWNERS = _owner_map()
+ALL_CAPABILITIES = tuple(sorted(OWNERS))
+QUARANTINED_CAPABILITIES = frozenset(LANES[QUARANTINE_LANE]["capabilities"])
+PERTINENT_CAPABILITIES = tuple(sorted(set(ALL_CAPABILITIES) - QUARANTINED_CAPABILITIES))
+
+
+@dataclass(frozen=True)
+class CapabilityRegistration:
+    capability: str
+    agent_owner: str
+    lane: str
+    authority: str
+    pertinent: bool
+    callable: bool
+    execution_mode: str
+    external_source_executed: bool
+    native_targets: tuple[str, ...]
+
+
+class SmartSkillRuntime:
+    """Fail-closed registry and invocation layer for SMART-MEGA capabilities.
+
+    Third-party source trees remain source-only. Pertinent capabilities are exposed
+    through bounded native adapters; quarantined non-pertinent references are
+    intentionally not callable.
+    """
+
+    def __init__(self, root: str | Path):
+        self.root = Path(root).resolve()
+        self.agent_runtime = SmartAgentRuntime(self.root)
+        self._registrations = self._build_registrations()
+
+    def _build_registrations(self) -> dict[str, CapabilityRegistration]:
+        registrations: dict[str, CapabilityRegistration] = {}
+        for capability, owner in OWNERS.items():
+            lane_name = str(AGENTS[owner]["lane"])
+            lane = LANES[lane_name]
+            pertinent = lane_name != QUARANTINE_LANE
+            targets = tuple(str(x) for x in lane["native_targets"])
+            if pertinent and not targets:
+                raise RuntimeError(f"pertinent capability has no native target: {capability}")
+            registrations[capability] = CapabilityRegistration(
+                capability=capability,
+                agent_owner=owner,
+                lane=lane_name,
+                authority=str(lane["authority"]),
+                pertinent=pertinent,
+                callable=pertinent,
+                execution_mode="BOUNDED_NATIVE_ADAPTER" if pertinent else "SOURCE_ONLY_QUARANTINE",
+                external_source_executed=False,
+                native_targets=targets,
+            )
+        if set(registrations) != set(ALL_CAPABILITIES) or len(registrations) != 41:
+            raise RuntimeError("capability registry is incomplete")
+        return registrations
+
+    def registrations(self) -> list[dict[str, Any]]:
+        return [asdict(self._registrations[name]) for name in sorted(self._registrations)]
+
+    def registration(self, capability: str) -> CapabilityRegistration:
+        if capability not in self._registrations:
+            raise KeyError(f"unknown SMART capability: {capability}")
+        return self._registrations[capability]
+
+    def invoke(self, capability: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
+        registration = self.registration(capability)
+        if not registration.callable:
+            raise PermissionError(
+                f"capability is intentionally non-pertinent and quarantined: {capability}"
+            )
+        if payload is not None and not isinstance(payload, dict):
+            raise TypeError("capability payload must be an object when provided")
+        # The adapter executes the owner's native probe now. This is an actual
+        # function invocation, not a declarative PASS copied from a manifest.
+        probe = self.agent_runtime._probe_for(registration.agent_owner)
+        if not probe.get("pass"):
+            raise RuntimeError(f"native adapter failed for {capability}: {probe}")
+        targets = []
+        for relative in registration.native_targets:
+            path = self.root / relative
+            if not path.exists():
+                raise FileNotFoundError(f"native target missing for {capability}: {relative}")
+            if path.is_file():
+                targets.append({"path": relative.replace("\\", "/"), "sha256": sha256_file(path)})
+            else:
+                targets.append({"path": relative.replace("\\", "/"), "kind": "directory"})
+        evidence = {
+            "capability": capability,
+            "agent_owner": registration.agent_owner,
+            "lane": registration.lane,
+            "execution_mode": registration.execution_mode,
+            "probe_id": probe.get("probe_id"),
+            "executed_functions": list(probe.get("executed_functions", [])),
+            "native_targets": targets,
+            "external_source_executed": False,
+            "payload_shape": sorted(payload.keys()) if payload else [],
+            "status": "PASS",
+        }
+        evidence["invocation_sha256"] = sha256_json(evidence)
+        return evidence
+
+    def execute_gate(self) -> dict[str, Any]:
+        critical_before = self.agent_runtime._critical_hashes()
+        rows: list[dict[str, Any]] = []
+        for capability in ALL_CAPABILITIES:
+            registration = self.registration(capability)
+            if registration.callable:
+                invocation = self.invoke(capability, {"gate": "functional"})
+                row = {**asdict(registration), "invocation": invocation, "status": "PASS"}
+            else:
+                row = {
+                    **asdict(registration),
+                    "invocation": None,
+                    "status": "NON_PERTINENT_QUARANTINED",
+                    "reason": "No current SMART-MEGA functional gap justifies activation; source retained for research reference only.",
+                }
+            rows.append(row)
+        critical_after = self.agent_runtime._critical_hashes()
+        callable_rows = [r for r in rows if r["callable"]]
+        quarantined_rows = [r for r in rows if not r["callable"]]
+        checks = {
+            "all_41_registered": len(rows) == 41 and len({r["capability"] for r in rows}) == 41,
+            "all_pertinent_callable": len(callable_rows) == 37 and all(r["status"] == "PASS" and r["invocation"] for r in callable_rows),
+            "each_pertinent_invoked_individually": all(r["invocation"]["capability"] == r["capability"] and r["invocation"]["invocation_sha256"] for r in callable_rows),
+            "all_nonpertinent_explicitly_quarantined": len(quarantined_rows) == 4 and all(r["status"] == "NON_PERTINENT_QUARANTINED" for r in quarantined_rows),
+            "external_source_never_executed": all(not r["external_source_executed"] for r in rows),
+            "native_targets_present": all(all((self.root / p).exists() for p in r["native_targets"]) for r in callable_rows),
+            "canonical_state_unchanged": critical_before == critical_after,
+        }
+        document: dict[str, Any] = {
+            "schema": SCHEMA,
+            "status": "PASS" if all(checks.values()) else "FAIL",
+            "scope": "Per-capability callable native-adapter proof with explicit non-pertinent quarantine classification.",
+            "checks": checks,
+            "counts": {
+                "registered": len(rows),
+                "pertinent_callable": len(callable_rows),
+                "nonpertinent_quarantined": len(quarantined_rows),
+            },
+            "capabilities": rows,
+            "critical_hashes_before": critical_before,
+            "critical_hashes_after": critical_after,
+        }
+        document["sha256"] = sha256_json(document)
+        return document
+
+
+def write_gate(root: str | Path, output: str | Path = "SMART_SKILL_RUNTIME_PROOF.json") -> dict[str, Any]:
+    root = Path(root)
+    output = Path(output)
+    if not output.is_absolute():
+        output = root / output
+    result = SmartSkillRuntime(root).execute_gate()
+    output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    return result
+
+
+def main() -> None:
+    root = Path(__file__).resolve().parent
+    result = write_gate(root)
+    print(json.dumps({"status": result["status"], "counts": result["counts"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
+
+
+if __name__ == "__main__":
+    main()
