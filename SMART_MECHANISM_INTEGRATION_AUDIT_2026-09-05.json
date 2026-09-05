@@ -1,0 +1,78 @@
+{
+  "schema": "SMART_MECHANISM_FUNCTIONAL_INTEGRATION_AUDIT_V1",
+  "generated_utc": "2026-09-05T11:20:33.768244+00:00",
+  "definition": "Integrated means a mechanism has a causal, testable path to a decision-relevant variable when its evidence gate authorizes activation; file presence or telemetry alone is insufficient.",
+  "previous_integration_claim": "STRUCTURAL_PRESENCE_ONLY_INSUFFICIENT",
+  "functional_integration_status": "PASS",
+  "mechanisms": {
+    "context_regime": {
+      "path": "context detector -> regime factor -> signal context -> dynamic weights -> aggregate rank",
+      "decision_path": true,
+      "default_effect": "ACTIVE_BOUNDED"
+    },
+    "contextual_meta_weights": {
+      "path": "stability/recent/redundancy/interaction/regime -> meta factor -> context -> dynamic weights",
+      "decision_path": true,
+      "default_effect": "ACTIVE_BOUNDED"
+    },
+    "bounded_online_learning": {
+      "path": "post-result expert/family hits -> guarded Hedge state -> next-contest utility base -> dynamic weights",
+      "decision_path": true,
+      "default_effect": "ACTIVE_BOUNDED"
+    },
+    "redundancy_consensus": {
+      "path": "signal similarity -> penalty -> dynamic weights",
+      "decision_path": true,
+      "default_effect": "ACTIVE_BOUNDED"
+    },
+    "signal_interactions": {
+      "path": "pair tracker -> contextual meta interaction feature -> meta factor -> dynamic weights",
+      "decision_path": true,
+      "default_effect": "INDIRECT_ACTIVE_THROUGH_META",
+      "direct_weight_effect": "NOT_PROMOTED"
+    },
+    "marginal_utility": {
+      "path": "causal prior marginal utility -> bounded marginal factor -> signal context -> dynamic weights",
+      "decision_path": true,
+      "default_effect": "FAIL_CLOSED_STRENGTH_0",
+      "activation_requires_evidence": true
+    },
+    "multi_challengers": {
+      "path": "alternative policies -> meta governor",
+      "decision_path": true,
+      "default_effect": "SHADOW_UNTIL_GOVERNOR_AUTHORIZATION"
+    },
+    "meta_governor": {
+      "path": "policy evidence -> selected policy -> selected_top6 -> final top6",
+      "decision_path": true,
+      "default_effect": "FAIL_CLOSED_ANCHOR",
+      "activation_requires_evidence": true
+    },
+    "rank_score_calibration": {
+      "path": "ranking -> causal rank probability calibration -> probability output/scoring",
+      "decision_path": false,
+      "role": "CALIBRATION_ONLY_BY_DESIGN",
+      "note": "monotone rank calibration is not a reranker and should not be counted as a Top-6 actuator"
+    },
+    "procedural_signal_lane": {
+      "decision_path": false,
+      "role": "QUARANTINED_RESEARCH",
+      "reason": "predictive promotion blocked by coverage/actionability evidence gate"
+    }
+  },
+  "proof_tests": [
+    "test_marginal_utility_has_real_gated_path_to_weights",
+    "test_meta_governor_has_real_gated_path_to_final_top6",
+    "test_default_integration_remains_fail_closed"
+  ],
+  "v3_status": "SUPERSEDED_FOR_ARCHITECTURE_COMPLETENESS",
+  "v3_sha256": "9919c71a7802aed9697e08e453b634897d35913bdb6a94a0bc5770d5cfc2c240",
+  "v3_reason": "Generated before functional decision-integration audit and fixes; preserved immutable for traceability but must not represent the fully integrated architecture.",
+  "next_valid_prediction_version": "V4_AFTER_FULL_REGRESSION_PASS",
+  "result_3054_used": false,
+  "full_regression": {
+    "status": "PASS",
+    "tests_passed": 541,
+    "duration_seconds": 283.64
+  }
+}

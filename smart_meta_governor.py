@@ -134,8 +134,8 @@ class MetaGovernor:
             'selection_causal': True,
             'selection_uses_current_result': False,
             'selection_scope': 'P07_CHALLENGERS_ONLY',
-            'production_authority': False,
-            'champion_remains_active': True,
+            'production_authority': bool(alternate_authorized),
+            'champion_remains_active': bool(not alternate_authorized),
             'retroactive_selection_prohibited': True,
         }
         payload['sha256'] = sha256_json(payload)
