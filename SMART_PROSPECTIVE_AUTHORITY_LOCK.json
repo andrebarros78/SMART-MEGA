@@ -1,0 +1,53 @@
+{
+  "schema": "SMART_PROSPECTIVE_AUTHORITY_LOCK_1",
+  "status": "LOCKED_UNRESOLVED_PROSPECTIVE",
+  "created_utc": "2026-09-06T10:59:26.418243+00:00",
+  "project": "SMART-MEGA",
+  "experiment_authority": {
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
+    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "freeze_top6": [
+      10,
+      11,
+      27,
+      30,
+      35,
+      38
+    ],
+    "frozen_utc": "2026-09-04T01:30:08.581499+00:00",
+    "frozen_before_result": true,
+    "causal_cutoff": true,
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "signal_state_file": "SMART_SIGNAL_STATE_3054_V2.json",
+    "signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "canonical_result_store_max": 3053,
+    "result_adjudicated": false,
+    "authority_kind": "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE",
+    "eligible_for_scientific_adjudication": true,
+    "eligible_to_prove_post_freeze_engineering_version": false,
+    "immutable_until_adjudication": true
+  },
+  "current_engineering_policy": {
+    "role_for_locked_target": "PARALLEL_PRE_CURRENT_ENGINEERING_ATTEMPT_ONLY",
+    "may_mutate_locked_freeze": false,
+    "may_claim_generation_of_locked_freeze": false,
+    "may_learn_from_locked_target_before_adjudication": false,
+    "may_generate_independent_current_epoch_prediction_same_target_before_result": true,
+    "parallel_attempts_must_be_counted_separately": true,
+    "first_possible_authoritative_target": 3054
+  },
+  "rules": {
+    "engineering_changes_do_not_invalidate_unresolved_freeze": true,
+    "freeze_origin_is_not_reassigned": true,
+    "post_freeze_code_cannot_retroactively_claim_prediction": true,
+    "parallel_current_prediction_does_not_replace_locked_prediction": true,
+    "all_registered_attempts_must_be_counted": true,
+    "only_adjudication_closes_locked_target": true
+  },
+  "sha256": "4bb8a2e2304356e493df18522d746b25c9b69e404647927cc9e2e67429672e16"
+}

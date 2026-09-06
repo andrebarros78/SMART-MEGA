@@ -233,10 +233,37 @@ def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
     return candidate
 
 
+def _resolve_state_paths(root: Path) -> dict[str, Path]:
+    epoch_path = root / "SMART_ACTIVE_EPOCH.json"
+    if not epoch_path.is_file():
+        return {
+            "ledger": root / "SMART_SIGNAL_LEDGER.json",
+            "state": root / "SMART_SIGNAL_STATE.json",
+            "activation_authority": root / "SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+            "expansion_registry": root / "SMART_SIGNAL_EXPANSION_REGISTRY.json",
+        }
+    epoch = _read_json(epoch_path)
+    paths = epoch.get("state_paths")
+    if not isinstance(paths, dict):
+        raise ValueError("SMART active epoch state_paths missing")
+    required = ("ledger", "state", "activation_authority", "expansion_registry")
+    if any(not isinstance(paths.get(key), str) or not paths.get(key) for key in required):
+        raise ValueError("SMART active epoch state_paths incomplete")
+    return {key: _resolve_project_file(root, paths[key], label=f"active epoch {key}") for key in required}
+
+
+def _project_relative(root: Path, path: Path) -> str:
+    try:
+        return str(path.resolve().relative_to(root.resolve())).replace("\\", "/")
+    except ValueError as exc:
+        raise ValueError(f"state path escapes project root: {path}") from exc
+
+
 def _resolve_active_context(root: Path) -> dict[str, Any]:
     from smart_champion_challenger import active_freeze, load_ledger
 
-    ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    state_paths = _resolve_state_paths(root)
+    ledger_path = state_paths["ledger"]
     ledger = load_ledger(ledger_path)
     freeze_targets = sorted({
         int(ev.get("target_contest", -1))
@@ -301,20 +328,93 @@ def _resolve_active_context(root: Path) -> dict[str, Any]:
         "data_sha256": data_sha,
         "signal_state_file": state_file,
         "signal_state_sha256": state_sha,
-        "ledger_file": ledger_path.name,
+        "ledger_file": _project_relative(root, ledger_path),
         "ledger_sha256": _sha256(ledger_path),
         "pending_target": target in pending,
+        "phase": "POST_FREEZE",
     }
 
 
-def build_orchestration(root: str | Path) -> dict[str, Any]:
+def _resolve_pre_freeze_context(root: Path) -> dict[str, Any]:
+    import pandas as pd
+
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    active = _read_json(active_path) if active_path.is_file() else None
+    if isinstance(active, dict) and str(active.get("status", "")).upper() in {"RESET_READY", "FROZEN"}:
+        raw_data = active.get("data_file")
+        if not isinstance(raw_data, str) or not raw_data:
+            raise ValueError("active epoch pre-freeze data_file missing")
+        data_path = _resolve_project_file(root, raw_data, label="active epoch immutable data")
+        if not data_path.is_file():
+            raise ValueError("active epoch immutable data is missing")
+        observed = _sha256(data_path)
+        if observed != active.get("data_sha256"):
+            raise ValueError("active epoch immutable data hash mismatch")
+    else:
+        data_path = root / "Mega-Sena.xlsx"
+        if not data_path.is_file():
+            raise ValueError("canonical Mega-Sena.xlsx is missing")
+        observed = _sha256(data_path)
+    frame = pd.read_excel(data_path)
+    if "Concurso" not in frame.columns:
+        raise ValueError("canonical data has no Concurso column")
+    contests = pd.to_numeric(frame["Concurso"], errors="raise").astype(int)
+    if contests.empty:
+        raise ValueError("canonical data has no contests")
+    cutoff = int(contests.max())
+    target = cutoff + 1
+    if isinstance(active, dict):
+        if int(active.get("cutoff_contest", cutoff)) != cutoff or int(active.get("target_contest", target)) != target:
+            raise ValueError("active epoch target/cutoff differs from immutable data snapshot")
+    state_paths = _resolve_state_paths(root)
+    ledger_path = state_paths["ledger"]
+    return {
+        "target_contest": target,
+        "cutoff_contest": cutoff,
+        "freeze_file": None,
+        "freeze_sha256": None,
+        "data_file": _project_relative(root, data_path),
+        "data_sha256": observed,
+        "signal_state_file": None,
+        "signal_state_sha256": None,
+        "ledger_file": _project_relative(root, ledger_path),
+        "ledger_sha256": _sha256(ledger_path) if ledger_path.is_file() else None,
+        "pending_target": False,
+        "phase": "PRE_FREEZE",
+    }
+
+
+def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
+    root = Path(root)
+    requested = str(phase).upper()
+    if requested in {"PRE_FREEZE", "POST_FREEZE"}:
+        return requested
+    if requested != "AUTO":
+        raise ValueError("phase must be AUTO, PRE_FREEZE or POST_FREEZE")
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    if active_path.is_file():
+        try:
+            active = _read_json(active_path)
+        except Exception as exc:
+            raise ValueError("active epoch cannot be parsed for phase resolution") from exc
+        status = str(active.get("status", "")).upper()
+        if status == "RESET_READY":
+            return "PRE_FREEZE"
+        if status == "FROZEN":
+            return "POST_FREEZE"
+        raise ValueError(f"active epoch status has no runtime phase: {status}")
+    return "POST_FREEZE"
+
+
+def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     root = Path(root)
     source_manifest_path = root / ".external_skills_acquired" / "ACQUISITION_MANIFEST.json"
     v2_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V2.json"
     v3_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V3.json"
     v4_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V4.json"
     mission_path = root / "SMART_MISSION_STATUS.json"
-    active_context = _resolve_active_context(root)
+    phase = resolve_runtime_phase(root, phase)
+    active_context = _resolve_pre_freeze_context(root) if phase == "PRE_FREEZE" else _resolve_active_context(root)
 
     source_manifest = _read_json(source_manifest_path)
     v2 = _read_json(v2_path)
@@ -345,10 +445,18 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
         "external_source_auto_execution_disabled": source_manifest.get("policy", "").startswith("Third-party skill sources are quarantined"),
         "global_mission_status_consistent": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"}
         and ((mission.get("status") == "MISSION_PROVEN") == bool(mission.get("terminal_6of6_proven"))),
-        "active_freeze_present": (root / active_context["freeze_file"]).is_file(),
-        "active_freeze_cutoff_is_target_minus_one": int(active_context["cutoff_contest"]) == int(active_context["target_contest"]) - 1,
         "active_data_present": (root / active_context["data_file"]).is_file(),
+        "context_cutoff_is_target_minus_one": int(active_context["cutoff_contest"]) == int(active_context["target_contest"]) - 1,
     }
+    if phase == "PRE_FREEZE":
+        checks.update({
+            "pre_freeze_has_no_freeze_authority": active_context.get("freeze_file") is None and active_context.get("freeze_sha256") is None,
+            "pre_freeze_has_no_learned_state_authority": active_context.get("signal_state_file") is None and active_context.get("signal_state_sha256") is None,
+        })
+    else:
+        checks.update({
+            "active_freeze_present": (root / str(active_context["freeze_file"])).is_file(),
+        })
 
     lane_documents: dict[str, Any] = {}
     for lane_name, lane in LANES.items():
@@ -364,6 +472,7 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
         "schema": SCHEMA,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
         "project": "SMART-MEGA",
+        "phase": phase,
         "integration_status": "PASS" if all(checks.values()) else "FAIL",
         "integration_scope": "STRUCTURAL_ORCHESTRATION_ONLY",
         "functional_runtime_proof_required_for_full_integration": True,
@@ -423,9 +532,9 @@ def build_orchestration(root: str | Path) -> dict[str, Any]:
     return document
 
 
-def write_orchestration(root: str | Path, output: str = "SMART_AGENT_SKILL_ORCHESTRATION.json") -> dict[str, Any]:
+def write_orchestration(root: str | Path, output: str = "SMART_AGENT_SKILL_ORCHESTRATION.json", phase: str = "AUTO") -> dict[str, Any]:
     root = Path(root)
-    document = build_orchestration(root)
+    document = build_orchestration(root) if str(phase).upper() == "AUTO" else build_orchestration(root, phase=phase)
     if document["integration_status"] != "PASS":
         raise RuntimeError(f"agent/skill integration failed: {document['diagnostics']}")
     (root / output).write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
@@ -433,13 +542,17 @@ def write_orchestration(root: str | Path, output: str = "SMART_AGENT_SKILL_ORCHE
 
 
 def main(argv: list[str] | None = None) -> None:
-    import sys
+    import argparse
 
-    args = sys.argv[1:] if argv is None else list(argv)
-    project_root = Path(args[0]) if args else Path(__file__).resolve().parent
-    result = write_orchestration(project_root)
+    parser = argparse.ArgumentParser()
+    parser.add_argument("root", nargs="?", default=str(Path(__file__).resolve().parent))
+    parser.add_argument("--phase", choices=["PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
+    parser.add_argument("--output", default="SMART_AGENT_SKILL_ORCHESTRATION.json")
+    args = parser.parse_args(argv)
+    result = write_orchestration(Path(args.root)) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_SKILL_ORCHESTRATION.json" else write_orchestration(Path(args.root), args.output, phase=args.phase)
     print(json.dumps({
         "integration_status": result["integration_status"],
+        "phase": result.get("phase", "POST_FREEZE"),
         "unique_capabilities_total": result["inventory"]["unique_capabilities_total"],
         "global_mission_state": result["global_mission_state"],
         "terminal_6of6_proven": result["terminal_6of6_proven"],
@@ -450,4 +563,5 @@ def main(argv: list[str] | None = None) -> None:
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    import sys
+    main(sys.argv[1:])

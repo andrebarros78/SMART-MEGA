@@ -3,9 +3,6 @@ from pathlib import Path
 import smart_agent_skill_orchestration as aso
 
 ROOT=Path(__file__).resolve().parent
-FREEZE_SHA="503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
-
-
 def test_agent_skill_orchestration_accounts_for_all_acquired_capabilities():
     doc=aso.build_orchestration(ROOT)
     assert doc["integration_status"] == "PASS"
@@ -32,11 +29,17 @@ def test_agents_and_skills_have_no_predictive_freeze_or_terminal_authority():
         assert lane["external_code_auto_execute"] is False
 
 
-def test_orchestration_is_bound_to_immutable_3054_freeze():
+def test_orchestration_respects_active_epoch_lifecycle():
     doc=aso.build_orchestration(ROOT)
-    assert doc["evidence_hashes"]["active_freeze_sha256"] == FREEZE_SHA
     assert doc["active_context"]["target_contest"] == 3054
     assert doc["active_context"]["cutoff_contest"] == 3053
+    if doc["phase"] == "PRE_FREEZE":
+        assert doc["evidence_hashes"]["active_freeze_sha256"] is None
+        assert doc["active_context"]["freeze_file"] is None
+        assert doc["checks"]["pre_freeze_has_no_freeze_authority"] is True
+    else:
+        assert len(doc["evidence_hashes"]["active_freeze_sha256"]) == 64
+        assert doc["checks"]["active_freeze_present"] is True
 
 
 def test_quarantine_policy_remains_source_only():

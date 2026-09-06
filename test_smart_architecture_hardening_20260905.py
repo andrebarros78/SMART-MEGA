@@ -24,13 +24,16 @@ def test_agent_runtime_v2_executes_native_probes_and_preserves_canonical_hashes(
 
 def test_functional_gate_binds_every_capability_to_a_passed_probe_without_external_execution():
     doc = evaluate(ROOT)
-    assert doc['schema'] == 'SMART_AGENT_SKILL_FUNCTIONAL_GATE_V2'
+    assert doc['schema'] == 'SMART_AGENT_SKILL_FUNCTIONAL_GATE_V3'
     assert doc['status'] == 'PASS'
     assert len(doc['matrix']) == 41
     for row in doc['matrix']:
         assert row['probe_pass'] is True
         assert row['executed_functions']
         assert row['external_skill_source_executed'] is False
+        assert row['direct_named_skill_execution'] is False
+        if row['pertinent']:
+            assert row['semantic_binding_kind'] == 'METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE'
         assert row['realization'] in {
             'SOURCE_ONLY_QUARANTINE_CURATED',
             'METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE',

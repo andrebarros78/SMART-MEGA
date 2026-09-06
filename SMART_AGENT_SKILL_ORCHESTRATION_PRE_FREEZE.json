@@ -1,0 +1,493 @@
+{
+  "schema": "SMART_AGENT_SKILL_ORCHESTRATION_V1",
+  "generated_at_utc": "2026-09-06T00:57:03.867572+00:00",
+  "project": "SMART-MEGA",
+  "phase": "PRE_FREEZE",
+  "integration_status": "PASS",
+  "integration_scope": "STRUCTURAL_ORCHESTRATION_ONLY",
+  "functional_runtime_proof_required_for_full_integration": true,
+  "global_mission_state": "MISSION_ACTIVE",
+  "terminal_6of6_proven": false,
+  "policy": {
+    "external_skill_sources": "SOURCE_ONLY_QUARANTINE",
+    "external_code_auto_execute": false,
+    "principles_may_be_distilled_into_native_code": true,
+    "predictive_weight_requires_native_evidence_gate": true,
+    "freeze_mutation_by_agent_or_skill": false,
+    "terminal_mission_authority_by_agent_or_skill": false,
+    "best_supported_native_implementation_wins_after_non_regression": true
+  },
+  "inventory": {
+    "source_only_skills": [
+      "aeon",
+      "bayesian-workflow",
+      "benchmarking-uncertainty-calibration-long-form",
+      "bridging-online-offline-rl",
+      "data-analysis",
+      "dianoia",
+      "extremizing-forecasts",
+      "growth-experimenter",
+      "kaggle-learner",
+      "live-evo-online-evolution-agentic",
+      "machine-learning-model-validation",
+      "ml-engineer",
+      "model-drift-management",
+      "nisan-et-al-2007-algorithmic-game-theory",
+      "pymc",
+      "regime-detection",
+      "statistical-analysis",
+      "superforecasting",
+      "thinktank-me-multi-expert-framework-middle",
+      "time-series-forecasting",
+      "visiontrim-unified-vision-token"
+    ],
+    "v2_capabilities": [
+      "combinatorialist",
+      "evo-memory",
+      "experiment-design",
+      "google-or-tools",
+      "mlflow",
+      "openai-analyze-data-quality",
+      "openai-validate-data",
+      "operations-research-algorithm-developer",
+      "simulation"
+    ],
+    "v3_capabilities": [
+      "property-based-testing-hypothesis",
+      "test-gap-analysis",
+      "mutmut-mutation",
+      "hyperparameter-tuning-optuna",
+      "conformal-risk-control-mapie",
+      "pandera-data-contracts",
+      "multiple-testing-fdr-statsmodels",
+      "z3-formal-verification"
+    ],
+    "native_scientific_libraries": [
+      "networkx",
+      "statsmodels",
+      "ruptures"
+    ],
+    "unique_capabilities_total": 41
+  },
+  "lanes": {
+    "data_quality_and_contracts": {
+      "capabilities": [
+        "openai-analyze-data-quality",
+        "openai-validate-data",
+        "pandera-data-contracts",
+        "data-analysis"
+      ],
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "role": "validate source integrity, cutoff discipline, schemas and evidence bundles",
+      "authority": "GATE_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "experiment_design_and_falsification": {
+      "capabilities": [
+        "experiment-design",
+        "simulation",
+        "statistical-analysis",
+        "multiple-testing-fdr-statsmodels",
+        "bayesian-workflow",
+        "machine-learning-model-validation",
+        "mlflow"
+      ],
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "role": "preregistration, null simulation, multiplicity, calibration and out-of-sample evidence",
+      "authority": "RESEARCH_AND_GATE_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "time_series_regime_and_structure": {
+      "capabilities": [
+        "aeon",
+        "regime-detection",
+        "time-series-forecasting",
+        "networkx",
+        "statsmodels",
+        "ruptures"
+      ],
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "role": "diagnostic temporal, network, regime and nonlinear structure measurement",
+      "authority": "DIAGNOSTIC_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "combinatorial_and_formal": {
+      "capabilities": [
+        "combinatorialist",
+        "operations-research-algorithm-developer",
+        "google-or-tools",
+        "z3-formal-verification",
+        "nisan-et-al-2007-algorithmic-game-theory"
+      ],
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "role": "constrained optimization, invariant reasoning and structural verification",
+      "authority": "ENGINEERING_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "testing_and_robustness": {
+      "capabilities": [
+        "property-based-testing-hypothesis",
+        "test-gap-analysis",
+        "mutmut-mutation"
+      ],
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "role": "test generation principles, gap discovery and mutation-resistance methodology",
+      "authority": "TEST_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "learning_calibration_and_drift": {
+      "capabilities": [
+        "evo-memory",
+        "model-drift-management",
+        "hyperparameter-tuning-optuna",
+        "conformal-risk-control-mapie",
+        "live-evo-online-evolution-agentic",
+        "benchmarking-uncertainty-calibration-long-form",
+        "superforecasting",
+        "extremizing-forecasts"
+      ],
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "role": "bounded adaptation, calibration, drift awareness and experiment memory",
+      "authority": "SHADOW_UNTIL_EVIDENCE",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "multi_expert_research": {
+      "capabilities": [
+        "dianoia",
+        "thinktank-me-multi-expert-framework-middle",
+        "ml-engineer",
+        "pymc"
+      ],
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "role": "hypothesis generation and methodology review; never direct scoring authority",
+      "authority": "RESEARCH_ONLY",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    },
+    "retained_quarantine_no_current_lane": {
+      "capabilities": [
+        "bridging-online-offline-rl",
+        "growth-experimenter",
+        "kaggle-learner",
+        "visiontrim-unified-vision-token"
+      ],
+      "native_targets": [],
+      "role": "retained as source references; no current SMART-MEGA capability gap justifies activation",
+      "authority": "QUARANTINED_INACTIVE",
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "terminal_mission_authority": false,
+      "external_code_auto_execute": false
+    }
+  },
+  "agents": {
+    "data_guardian": {
+      "lane": "data_quality_and_contracts",
+      "consumes": [
+        "raw draw data",
+        "dataset contracts",
+        "cutoff declaration"
+      ],
+      "produces": [
+        "quality gate",
+        "dataset hash binding",
+        "leakage/cutoff verdict"
+      ],
+      "handoff_to": [
+        "null_model_cartographer",
+        "falsification_auditor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "null_model_cartographer": {
+      "lane": "time_series_regime_and_structure",
+      "consumes": [
+        "quality-approved dataset",
+        "null-universe policy"
+      ],
+      "produces": [
+        "U0-U6 diagnostics",
+        "randomness atlas",
+        "regime/network/temporal measurements"
+      ],
+      "handoff_to": [
+        "falsification_auditor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "falsification_auditor": {
+      "lane": "experiment_design_and_falsification",
+      "consumes": [
+        "preregistered hypotheses",
+        "diagnostics",
+        "null universes"
+      ],
+      "produces": [
+        "multiplicity-corrected evidence",
+        "power-resolution verdict",
+        "promotion denial/eligibility evidence"
+      ],
+      "handoff_to": [
+        "learning_calibration_governor",
+        "mission_governor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "learning_calibration_governor": {
+      "lane": "learning_calibration_and_drift",
+      "consumes": [
+        "prediction-result comparisons",
+        "falsification evidence",
+        "drift telemetry"
+      ],
+      "produces": [
+        "bounded weight decisions",
+        "negative learning",
+        "non-regression decisions"
+      ],
+      "handoff_to": [
+        "mission_governor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "robustness_red_team": {
+      "lane": "testing_and_robustness",
+      "consumes": [
+        "native code",
+        "contracts",
+        "known failure modes"
+      ],
+      "produces": [
+        "regression tests",
+        "invariant checks",
+        "failure evidence"
+      ],
+      "handoff_to": [
+        "mission_governor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "combinatorial_solver": {
+      "lane": "combinatorial_and_formal",
+      "consumes": [
+        "frozen scores",
+        "explicit constraints"
+      ],
+      "produces": [
+        "solver-backed engineering solutions",
+        "optimality/invariant evidence"
+      ],
+      "handoff_to": [
+        "mission_governor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "research_scout": {
+      "lane": "multi_expert_research",
+      "consumes": [
+        "open hypotheses",
+        "negative results",
+        "capability gaps"
+      ],
+      "produces": [
+        "shadow hypotheses",
+        "methodology proposals",
+        "no-direct-weight research artifacts"
+      ],
+      "handoff_to": [
+        "falsification_auditor"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "quarantine_curator": {
+      "lane": "retained_quarantine_no_current_lane",
+      "consumes": [
+        "third-party source references"
+      ],
+      "produces": [
+        "inventory and security classification only"
+      ],
+      "handoff_to": [
+        "research_scout"
+      ],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": false,
+      "terminal_resolution_condition": null
+    },
+    "mission_governor": {
+      "lane": null,
+      "consumes": [
+        "all native evidence gates",
+        "prospective freeze",
+        "official adjudication"
+      ],
+      "produces": [
+        "MISSION_ACTIVE or MISSION_PROVEN according to SMART_MISSION_STATUS terminal rule"
+      ],
+      "handoff_to": [],
+      "predictive_weight_authorized": false,
+      "freeze_mutation_authorized": false,
+      "external_code_auto_execute": false,
+      "terminal_authority": false,
+      "terminal_resolver": true,
+      "terminal_resolution_condition": "read-only enforcement of SMART_MISSION_STATUS terminal rule"
+    }
+  },
+  "checks": {
+    "source_skills_manifest_complete": true,
+    "v2_capabilities_complete": true,
+    "v3_capabilities_complete": true,
+    "v4_native_libraries_complete": true,
+    "all_acquired_capabilities_accounted_for": true,
+    "no_unknown_lane_capabilities": true,
+    "no_duplicate_lane_assignment": true,
+    "all_native_targets_exist": true,
+    "external_source_auto_execution_disabled": true,
+    "global_mission_status_consistent": true,
+    "active_data_present": true,
+    "context_cutoff_is_target_minus_one": true,
+    "pre_freeze_has_no_freeze_authority": true,
+    "pre_freeze_has_no_learned_state_authority": true
+  },
+  "active_context": {
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
+    "freeze_file": null,
+    "freeze_sha256": null,
+    "data_file": "Mega-Sena.xlsx",
+    "data_sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+    "signal_state_file": null,
+    "signal_state_sha256": null,
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "pending_target": false,
+    "phase": "PRE_FREEZE"
+  },
+  "diagnostics": {
+    "missing_from_lanes": [],
+    "unknown_in_lanes": [],
+    "duplicate_lane_assignment": [],
+    "native_target_checks": {
+      "SMART_DATA_CONTRACT.md": true,
+      "SMART_EXPERIMENT_LEDGER.json": true,
+      "SMART_EXPERIMENT_REGISTRY": true,
+      "SMART_HYPOTHESIS_REGISTRY.json": true,
+      "smart_bounded_online_learning.py": true,
+      "smart_cartography_extended.py": true,
+      "smart_contextual_meta_weights.py": true,
+      "smart_data_quality_gate.py": true,
+      "smart_experiment_lab.py": true,
+      "smart_falsification_lab.py": true,
+      "smart_falsification_power_audit.py": true,
+      "smart_meta_governor.py": true,
+      "smart_portfolio_optimizer.py": true,
+      "smart_portfolio_pipeline.py": true,
+      "smart_probability_audit.py": true,
+      "smart_randomness_cartography.py": true,
+      "smart_rank_score_calibration.py": true,
+      "smart_validation_gate.py": true,
+      "test_smart_architecture_alignment.py": true,
+      "test_smart_continuous_red_team.py": true,
+      "test_smart_global_integrity.py": true
+    }
+  },
+  "evidence_hashes": {
+    "source_manifest_sha256": "a5031f77f74fe3b55cffedfbd125a07f7f14563969a40daf620a45fbacb9048c",
+    "capability_v2_sha256": "82be4b7272b9a783e52c10c47a48d2f3c4457adbfcc5c675696ac81a648d0c25",
+    "capability_v3_sha256": "15934168f6ead60571129b7419a8c1d9b8b034d6dfc41b615a1ad64c47ade837",
+    "capability_v4_sha256": "cd50f6675c68e16239672bec568b3a81092bf42ec02ed94689f121baeb7a3cb0",
+    "mission_status_sha256": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b",
+    "active_freeze_sha256": null,
+    "active_data_sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+    "active_signal_state_sha256": null,
+    "signal_ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e"
+  },
+  "orchestration_sha256": "3dff2b431a1e07c352d77d4a055df06f56160c0a751579322266e64a550b43ec"
+}

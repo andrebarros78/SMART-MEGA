@@ -12,9 +12,12 @@ from typing import Any
 import pandas as pd
 import requests
 
+from smart_http_guard import read_limited_bytes
+
 API_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{contest}"
 BALL_COLUMNS = tuple(f"Bola{i}" for i in range(1, 7))
 SCHEMA = "SMART_OFFICIAL_RESULT_INGEST_1"
+OFFICIAL_JSON_MAX_BYTES = 2 * 1024 * 1024
 
 
 def sha256_file(path: Path) -> str:
@@ -65,13 +68,15 @@ def validate_official_payload(payload: Any, target: int) -> dict[str, Any]:
 
 def fetch_official_payload(target: int, timeout: float = 20.0) -> tuple[dict[str, Any], str]:
     url = API_URL.format(contest=int(target))
-    response = requests.get(
+    response = requests.get(  # nosec B113 - explicit bounded timeout and bounded streamed read
         url,
         headers={"Accept": "application/json", "User-Agent": "SMART-MEGA/official-ingest"},
         timeout=float(timeout),
+        stream=True,
     )
     response.raise_for_status()
-    payload = response.json()
+    raw = read_limited_bytes(response, max_bytes=OFFICIAL_JSON_MAX_BYTES)
+    payload = json.loads(raw.decode("utf-8-sig"))
     validate_official_payload(payload, target)
     return payload, url
 

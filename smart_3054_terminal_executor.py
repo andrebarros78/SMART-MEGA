@@ -25,7 +25,7 @@ from smart_v2_engine import load_draws
 SCHEMA = "SMART_3054_TERMINAL_EXECUTOR_V1"
 TARGET = 3054
 CUTOFF = 3053
-EXPECTED_FREEZE_SHA256 = preflight.EXPECTED_FREEZE_SHA256
+EXPECTED_FREEZE_SHA256: str | None = None
 PRE_RESULT_DATA = "Mega-Sena_through_3053_v2.xlsx"
 RESULT_DATA = "Mega-Sena_through_3054_official.xlsx"
 INGEST_PROOF = "SMART_OFFICIAL_RESULT_INGEST_3054.json"
@@ -72,6 +72,39 @@ def _atomic_write_json(path: Path, document: dict[str, Any]) -> None:
     finally:
         if temp.exists():
             temp.unlink()
+
+
+def _runtime_binding(root: Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    # Unit-test/legacy compatibility is explicit only; production authority is the active epoch.
+    if isinstance(EXPECTED_FREEZE_SHA256, str) and len(EXPECTED_FREEZE_SHA256) == 64:
+        return {
+            "mode": "EXPLICIT_LEGACY_TEST_OVERRIDE",
+            "freeze": root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+            "freeze_sha256": EXPECTED_FREEZE_SHA256,
+            "ledger": root / "SMART_SIGNAL_LEDGER.json",
+            "state": root / "SMART_SIGNAL_STATE_3054_V2.json",
+            "data": root / PRE_RESULT_DATA,
+            "learned": root / LEARNED_STATE,
+        }
+    paths = preflight._current_paths(root)
+    current = paths["current"]
+    if current.get("status") != "FROZEN" or current.get("freeze_authority_present") is not True:
+        raise ValueError("terminal executor requires the FROZEN active epoch")
+    if int(current.get("target_contest", -1)) != TARGET or int(current.get("cutoff_contest", -1)) != CUTOFF:
+        raise ValueError("terminal executor active epoch target/cutoff mismatch")
+    freeze_sha = str(current.get("freeze_sha256", ""))
+    if len(freeze_sha) != 64:
+        raise ValueError("terminal executor active freeze hash missing")
+    return {
+        "mode": "ACTIVE_EPOCH",
+        "freeze": paths["freeze"],
+        "freeze_sha256": freeze_sha,
+        "ledger": paths["ledger"],
+        "state": paths["state"],
+        "data": paths["data"],
+        "learned": paths["ledger"].parent / LEARNED_STATE,
+    }
 
 
 def _contest_max(path: Path) -> int:
@@ -182,14 +215,17 @@ def _ensure_ingest(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
         if int(contests[-1]) != TARGET:
             raise ValueError("existing official ingest output does not end at target")
         return proof
-    source = root / "Mega-Sena.xlsx"
+    binding = _runtime_binding(root)
+    source = binding["data"]
     if _contest_max(source) != CUTOFF:
-        raise ValueError("canonical result store must end at 3053 before first 3054 ingest")
+        raise ValueError("active pre-result dataset must end at cutoff before first target ingest")
     return official_ingest.ingest(source, output, proof_path, TARGET, payload)
 
 
 def _ensure_adjudication(root: Path, actual_numbers: list[int]) -> dict[str, Any]:
-    ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    binding = _runtime_binding(root)
+    ledger_path = binding["ledger"]
+    expected_freeze_sha256 = binding["freeze_sha256"]
     ledger = champion_challenger.load_ledger(ledger_path)
     existing = _target_events(ledger, "ADJUDICATION")
     if len(existing) > 1:
@@ -198,8 +234,8 @@ def _ensure_adjudication(root: Path, actual_numbers: list[int]) -> dict[str, Any
         event = existing[0]
         if sorted(int(x) for x in event.get("actual_numbers", [])) != sorted(actual_numbers):
             raise ValueError("existing 3054 adjudication conflicts with official result")
-        if event.get("freeze_sha256") != EXPECTED_FREEZE_SHA256:
-            raise ValueError("existing 3054 adjudication references wrong freeze")
+        if event.get("freeze_sha256") != expected_freeze_sha256:
+            raise ValueError("existing adjudication references a freeze outside the active epoch")
         return {
             "status": "ALREADY_ADJUDICATED_EVENT_PRESERVED",
             "target_contest": TARGET,
@@ -229,19 +265,22 @@ def _agent_from_prestate(prestate: dict[str, Any]) -> SmartSignalAgent:
 
 
 def _ensure_learned_state(root: Path) -> dict[str, Any]:
+    binding = _runtime_binding(root)
     through = root / RESULT_DATA
-    learned_path = root / LEARNED_STATE
+    learned_path = binding["learned"]
+    prestate_path = binding["state"]
+    pre_result_data = binding["data"]
     data_sha = sha256_file(through)
     if learned_path.exists():
         state = _read_json(learned_path)
         if int(state.get("last_contest", -1)) != TARGET or state.get("data_sha256") != data_sha:
-            raise ValueError("existing learned state is not bound to official 3054 data")
+            raise ValueError("existing learned state is not bound to official target data")
         return state
-    prestate = _read_json(root / "SMART_SIGNAL_STATE_3054_V2.json")
+    prestate = _read_json(prestate_path)
     if int(prestate.get("last_contest", -1)) != CUTOFF:
-        raise ValueError("3054 prestate does not end at cutoff")
-    if prestate.get("data_sha256") != sha256_file(root / PRE_RESULT_DATA):
-        raise ValueError("3054 prestate data hash mismatch")
+        raise ValueError("active epoch prestate does not end at cutoff")
+    if prestate.get("data_sha256") != sha256_file(pre_result_data):
+        raise ValueError("active epoch prestate data hash mismatch")
     draws, contests = load_draws(through)
     if int(contests[-1]) != TARGET:
         raise ValueError("official result data does not end at target")
@@ -258,57 +297,52 @@ def _ensure_learned_state(root: Path) -> dict[str, Any]:
         "learning_after_adjudication": True,
         "official_result_learning": True,
         "retroactive_rewrite": False,
+        "source_prestate_sha256": sha256_file(prestate_path),
+        "source_freeze_sha256": binding["freeze_sha256"],
+        "authority_mode": binding["mode"],
     })
     _atomic_write_json(learned_path, state)
     return state
 
 
 def _ensure_learning_and_sequence(root: Path) -> dict[str, Any]:
-    ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    binding = _runtime_binding(root)
+    ledger_path = binding["ledger"]
+    learned_path = binding["learned"]
     ledger = champion_challenger.load_ledger(ledger_path)
     learning = _target_events(ledger, sequential.LEARNING_EVENT)
     proofs = _target_events(ledger, sequential.PROOF_EVENT)
     if len(learning) > 1 or len(proofs) > 1:
-        raise ValueError("duplicate 3054 learning/proof events are forbidden")
+        raise ValueError("duplicate target learning/proof events are forbidden")
     if not learning:
-        sequential.append_learning_update(ledger_path, TARGET, root / LEARNED_STATE, root / RESULT_DATA)
+        sequential.append_learning_update(ledger_path, TARGET, learned_path, root / RESULT_DATA)
     ledger = champion_challenger.load_ledger(ledger_path)
     proofs = _target_events(ledger, sequential.PROOF_EVENT)
     if not proofs:
         sequential.append_sequence_proof(ledger_path, TARGET)
     ledger = champion_challenger.load_ledger(ledger_path)
     validation = sequential.validate_target_sequence(
-        ledger,
-        TARGET,
-        require_learning=True,
-        require_proof=True,
-        verify_files=True,
-        root=root,
+        ledger, TARGET, require_learning=True, require_proof=True, verify_files=True, root=root
     )
     if validation.get("valid") is not True:
-        raise RuntimeError("3054 sequential proof validation failed")
+        raise RuntimeError("target sequential proof validation failed")
     return validation
 
 
 def _run_independent_audit(root: Path) -> dict[str, Any]:
+    binding = _runtime_binding(root)
     bindings = [root / name for name in COVERAGE_BINDINGS]
     cwd = Path.cwd()
     try:
         os.chdir(root)
         report = independent_audit.run_independent_audit(
-            root,
-            root / "SMART_SIGNAL_LEDGER.json",
-            bindings,
-            root / PRE_RESULT_DATA,
-            TARGET,
-            start=1000,
+            root, binding["ledger"], bindings, binding["data"], TARGET, start=1000
         )
     finally:
         os.chdir(cwd)
     if report.get("status") != "PASS":
         raise RuntimeError("independent audit did not pass")
     _atomic_write_json(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json", report)
-    prospective_authority.write_authority(root)
     return report
 
 
@@ -391,8 +425,12 @@ def evaluate_terminal_rule(
     freeze_path = Path(str(freeze_event["freeze_file"]))
     if not freeze_path.is_absolute():
         freeze_path = root / freeze_path
-    if not freeze_path.is_file() or sha256_file(freeze_path) != EXPECTED_FREEZE_SHA256:
-        raise ValueError("active 3054 freeze artifact hash mismatch")
+    binding = _runtime_binding(root)
+    expected_freeze_sha256 = binding["freeze_sha256"]
+    if not freeze_path.is_file() or sha256_file(freeze_path) != expected_freeze_sha256:
+        raise ValueError("active target freeze artifact hash mismatch")
+    if binding["mode"] == "ACTIVE_EPOCH" and freeze_path.resolve() != Path(binding["freeze"]).resolve():
+        raise ValueError("ledger freeze path differs from active epoch authority")
     freeze = _read_json(freeze_path)
     adjudications = _target_events(ledger, "ADJUDICATION")
     if len(adjudications) != 1:
@@ -405,7 +443,7 @@ def evaluate_terminal_rule(
     prospective = audit.get("prospective_ledger", {})
     primary = consensus.get("primary", {})
     checks = {
-        "freeze_hash_immutable": freeze_event.get("freeze_sha256") == EXPECTED_FREEZE_SHA256,
+        "freeze_hash_immutable": freeze_event.get("freeze_sha256") == expected_freeze_sha256,
         "freeze_before_result": freeze_event.get("frozen_before_result") is True and freeze.get("frozen_before_result") is True,
         "causal_cutoff_3053": int(freeze_event.get("cutoff_contest", -1)) == CUTOFF and int(freeze.get("cutoff_contest", -1)) == CUTOFF,
         "single_active_production_top6": freeze.get("champion_remains_active") is True and freeze.get("production_switch_performed") is False,
@@ -453,14 +491,15 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
         return mission
     if mission.get("status") != "MISSION_ACTIVE":
         raise ValueError("unexpected mission state before terminal promotion")
+    binding = _runtime_binding(root)
     proof = {
         "schema": "SMART_TERMINAL_6OF6_PROOF_1",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "target_contest": TARGET,
         "terminal_rule": mission.get("terminal_rule"),
         "evaluation": evaluation,
-        "freeze_sha256": EXPECTED_FREEZE_SHA256,
-        "signal_ledger_sha256": sha256_file(root / "SMART_SIGNAL_LEDGER.json"),
+        "freeze_sha256": binding["freeze_sha256"],
+        "signal_ledger_sha256": sha256_file(binding["ledger"]),
         "official_evidence_sha256": sha256_file(root / CONSENSUS_FILE),
         "independent_audit_sha256": sha256_file(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json"),
         "sequence_sha256": sequence.get("sequence_sha256"),
@@ -491,11 +530,11 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
 
 
 def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
-    root = Path(root)
-    freeze_path = root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
-    if sha256_file(freeze_path) != EXPECTED_FREEZE_SHA256:
-        raise ValueError("3054 freeze hash differs from immutable authority")
-    ledger = champion_challenger.load_ledger(root / "SMART_SIGNAL_LEDGER.json")
+    root = Path(root).resolve()
+    binding = _runtime_binding(root)
+    if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
+        raise ValueError("active epoch freeze hash differs from immutable authority")
+    ledger = champion_challenger.load_ledger(binding["ledger"])
     adjudications = _target_events(ledger, "ADJUDICATION")
     existing = _load_existing_official_evidence(root)
     if not adjudications:
@@ -548,11 +587,11 @@ def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensu
 
 
 def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
-    root = Path(root)
-    freeze_path = root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
-    if sha256_file(freeze_path) != EXPECTED_FREEZE_SHA256:
-        raise ValueError("3054 freeze hash differs from immutable authority")
-    ledger = champion_challenger.load_ledger(root / "SMART_SIGNAL_LEDGER.json")
+    root = Path(root).resolve()
+    binding = _runtime_binding(root)
+    if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
+        raise ValueError("active epoch freeze hash differs from immutable authority")
+    ledger = champion_challenger.load_ledger(binding["ledger"])
     adjudications = _target_events(ledger, "ADJUDICATION")
     if len(adjudications) > 1:
         raise ValueError("multiple 3054 adjudications are forbidden")
@@ -589,7 +628,7 @@ def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consen
     sequence_validation = _ensure_learning_and_sequence(root)
     audit = _run_independent_audit(root)
     result_store = _advance_canonical_result_store(root)
-    ledger = champion_challenger.load_ledger(root / "SMART_SIGNAL_LEDGER.json")
+    ledger = champion_challenger.load_ledger(binding["ledger"])
     consensus = _read_json(root / CONSENSUS_FILE)
     evaluation = evaluate_terminal_rule(root, ledger, consensus, audit, sequence_validation)
 

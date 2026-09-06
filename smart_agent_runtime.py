@@ -8,7 +8,7 @@ from typing import Any, Callable
 
 import numpy as np
 
-from smart_agent_skill_orchestration import AGENTS, LANES, build_orchestration
+from smart_agent_skill_orchestration import AGENTS, LANES, build_orchestration, resolve_runtime_phase
 
 SCHEMA = "SMART_AGENT_RUNTIME_V2"
 ORDER = [
@@ -33,7 +33,7 @@ ARTIFACT_HINTS = {
     "null_model_cartographer": ["SMART_RANDOMNESS_ATLAS_1000.json", "SMART_RANDOMNESS_ATLAS_EXTENDED.json"],
     "falsification_auditor": ["SMART_FALSIFICATION_REPORT.json", "SMART_FALSIFICATION_POWER_AUDIT.json"],
     "learning_calibration_governor": ["SMART_EXPERIMENT_LEDGER.json"],
-    "robustness_red_team": ["SMART_AUDIT_JUNIT_CURRENT.xml"],
+    "robustness_red_team": ["SMART_P09_RED_TEAM_LATEST.json", "smart_continuous_red_team.py"],
     "combinatorial_solver": ["smart_portfolio_optimizer.py", "smart_portfolio_pipeline.py"],
     "mission_governor": ["SMART_MISSION_STATUS.json"],
 }
@@ -73,9 +73,10 @@ class AgentExecution:
 
 
 class SmartAgentRuntime:
-    def __init__(self, root: str | Path):
+    def __init__(self, root: str | Path, phase: str = "AUTO"):
         self.root = Path(root)
-        self.orchestration = build_orchestration(self.root)
+        self.phase = resolve_runtime_phase(self.root, phase)
+        self.orchestration = build_orchestration(self.root, phase=self.phase)
         self.active_context = dict(self.orchestration["active_context"])
 
     def capabilities_for(self, name: str) -> list[str]:
@@ -99,10 +100,12 @@ class SmartAgentRuntime:
 
     def _critical_files(self) -> list[str]:
         files = list(BASE_CRITICAL_CANONICAL_FILES)
-        for key in ("freeze_file", "data_file", "signal_state_file"):
+        for key in ("freeze_file", "data_file", "signal_state_file", "ledger_file"):
             value = self.active_context.get(key)
             if value:
                 files.append(str(value))
+        if (self.root / "SMART_ACTIVE_EPOCH.json").is_file():
+            files.append("SMART_ACTIVE_EPOCH.json")
         return sorted(set(files))
 
     def _critical_hashes(self) -> dict[str, str | None]:
@@ -243,25 +246,31 @@ class SmartAgentRuntime:
             "no_agent_predictive_or_freeze_authority": all(not self.orchestration["agents"][n]["predictive_weight_authorized"] and not self.orchestration["agents"][n]["freeze_mutation_authorized"] for n in ORDER),
             "critical_canonical_files_unchanged": hashes_before == hashes_after,
         }
-        doc: dict[str, Any] = {"schema": SCHEMA, "status": "PASS" if all(checks.values()) else "FAIL", "claim_scope": "Native modules are actually executed by deterministic read-only/synthetic probes. External skill source code remains quarantined and is not executed.", "checks": checks, "executions": executions, "unacknowledged_handoffs": unacknowledged, "capability_count": len(owned), "agent_count": len(executions), "critical_hashes_before": hashes_before, "critical_hashes_after": hashes_after, "declarative_orchestration_sha256": self.orchestration["orchestration_sha256"]}
+        doc: dict[str, Any] = {"schema": SCHEMA, "phase": self.phase, "status": "PASS" if all(checks.values()) else "FAIL", "claim_scope": "The nine named agents are deterministic SMART role executors validated by read-only/synthetic native probes; they are not autonomous AI/LLM agents. External skill source code remains quarantined and is not executed.", "checks": checks, "executions": executions, "unacknowledged_handoffs": unacknowledged, "capability_count": len(owned), "agent_count": len(executions), "critical_hashes_before": hashes_before, "critical_hashes_after": hashes_after, "declarative_orchestration_sha256": self.orchestration["orchestration_sha256"]}
         doc["runtime_sha256"] = sha256_json(doc)
         return doc
 
 
-def write_runtime(root: str | Path, output: str | Path = "SMART_AGENT_RUNTIME_PROOF.json") -> dict[str, Any]:
+def write_runtime(root: str | Path, output: str | Path = "SMART_AGENT_RUNTIME_PROOF.json", phase: str = "AUTO") -> dict[str, Any]:
     root_path = Path(root)
     output_path = Path(output)
     if not output_path.is_absolute():
         output_path = root_path / output_path
-    document = SmartAgentRuntime(root_path).run()
+    document = SmartAgentRuntime(root_path).run() if str(phase).upper() == "AUTO" else SmartAgentRuntime(root_path, phase=phase).run()
     output_path.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return document
 
 
-def main() -> None:
-    result = write_runtime(Path(__file__).resolve().parent)
-    print(json.dumps({"status": result["status"], "agents": result["agent_count"], "capabilities": result["capability_count"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--phase", choices=["PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
+    parser.add_argument("--output", default="SMART_AGENT_RUNTIME_PROOF.json")
+    args = parser.parse_args([] if argv is None else argv)
+    result = write_runtime(Path(__file__).resolve().parent) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_RUNTIME_PROOF.json" else write_runtime(Path(__file__).resolve().parent, args.output, phase=args.phase)
+    print(json.dumps({"status": result["status"], "phase": result.get("phase", "POST_FREEZE"), "agents": result["agent_count"], "capabilities": result["capability_count"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
 
 
 if __name__ == "__main__":  # pragma: no cover
-    main()
+    import sys
+    main(sys.argv[1:])

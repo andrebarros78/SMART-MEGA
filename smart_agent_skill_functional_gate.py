@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 from pathlib import Path
@@ -7,7 +7,7 @@ from typing import Any
 from smart_agent_runtime import SCHEMA as RUNTIME_SCHEMA, SmartAgentRuntime, sha256_json
 from smart_skill_runtime import SmartSkillRuntime
 
-SCHEMA = 'SMART_AGENT_SKILL_FUNCTIONAL_GATE_V2'
+SCHEMA = 'SMART_AGENT_SKILL_FUNCTIONAL_GATE_V3'
 
 
 def _origin(capability: str, inventory: dict[str, list[str]]) -> str:
@@ -22,12 +22,12 @@ def _origin(capability: str, inventory: dict[str, list[str]]) -> str:
     raise ValueError(f'unknown capability origin: {capability}')
 
 
-def evaluate(root: str | Path) -> dict[str, Any]:
+def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     root = Path(root)
-    agent_runtime = SmartAgentRuntime(root)
+    agent_runtime = SmartAgentRuntime(root) if str(phase).upper() == "AUTO" else SmartAgentRuntime(root, phase=phase)
     runtime = agent_runtime.run()
     inventory = agent_runtime.orchestration['inventory']
-    skill_gate = SmartSkillRuntime(root).execute_gate()
+    skill_gate = SmartSkillRuntime(root).execute_gate() if str(phase).upper() == "AUTO" else SmartSkillRuntime(root, phase=phase).execute_gate()
     skill_by_name = {row['capability']: row for row in skill_gate['capabilities']}
     matrix = []
     for agent_name, execution in runtime['executions'].items():
@@ -55,7 +55,9 @@ def evaluate(root: str | Path) -> dict[str, Any]:
                 'pertinent': bool(skill_row['pertinent']),
                 'callable': bool(skill_row['callable']),
                 'execution_mode': skill_row['execution_mode'],
-                'individual_invocation': skill_row.get('invocation'),
+                'alias_invocation': skill_row.get('invocation'),
+                'direct_named_skill_execution': False,
+                'semantic_binding_kind': skill_row.get('semantic_binding_kind'),
                 'external_skill_source_executed': False,
                 'status': 'PASS' if (
                     probe.get('pass')
@@ -73,10 +75,11 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         'every_capability_has_owner': all(row['agent_owner'] for row in matrix),
         'every_capability_bound_to_passed_native_probe': all(row['probe_id'] and row['executed_functions'] and row['probe_pass'] for row in matrix),
         'every_capability_has_runtime_evidence': all(row['runtime_evidence'] for row in matrix),
-        'all_pertinent_capabilities_individually_callable': len(pertinent) == 37 and all(row['callable'] and row['individual_invocation'] and row['individual_invocation']['status'] == 'PASS' for row in pertinent),
+        'all_pertinent_methodology_aliases_resolve_to_native_probes': len(pertinent) == 37 and all(row['callable'] and row['alias_invocation'] and row['alias_invocation']['status'] == 'PASS' and row['semantic_binding_kind'] == 'METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE' for row in pertinent),
         'nonpertinent_capabilities_explicitly_quarantined': len(quarantined) == 4 and all(not row['callable'] and row['execution_mode'] == 'SOURCE_ONLY_QUARANTINE' for row in quarantined),
         'quarantined_capabilities_have_curator_handoff': all(row['pertinent'] or row['handoff_outputs'] for row in matrix),
         'external_skill_source_code_never_executed': all(not row['external_skill_source_executed'] for row in matrix),
+        'no_direct_named_skill_execution_claimed': all(not row['direct_named_skill_execution'] for row in matrix),
         'handoffs_complete': runtime['unacknowledged_handoffs'] == [],
         'runtime_checks_all_true': all(runtime['checks'].values()),
         'skill_runtime_gate_pass': skill_gate['status'] == 'PASS' and all(skill_gate['checks'].values()),
@@ -84,8 +87,9 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     }
     doc = {
         'schema': SCHEMA,
+        'phase': agent_runtime.phase,
         'status': 'PASS' if all(checks.values()) else 'FAIL',
-        'claim_scope': 'All pertinent capabilities are invoked individually through bounded native adapters. Non-pertinent third-party source references remain explicitly quarantined and uncallable; external source code is never executed.',
+        'claim_scope': 'All pertinent capability names resolve individually to bounded native role probes as methodology aliases. This is not direct execution of the named third-party skills/libraries. Non-pertinent sources remain quarantined and external source code is never executed.',
         'checks': checks,
         'matrix': matrix,
         'skill_runtime_proof': skill_gate,
@@ -95,20 +99,26 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     return doc
 
 
-def write(root: str | Path, out: str | Path = 'SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json') -> dict[str, Any]:
+def write(root: str | Path, out: str | Path = 'SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json', phase: str = 'AUTO') -> dict[str, Any]:
     root = Path(root)
     out = Path(out)
     if not out.is_absolute():
         out = root / out
-    doc = evaluate(root)
+    doc = evaluate(root) if str(phase).upper() == 'AUTO' else evaluate(root, phase=phase)
     out.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     return doc
 
 
-def main() -> None:
-    d = write(Path(__file__).resolve().parent)
-    print(json.dumps({'status': d['status'], 'checks': d['checks'], 'matrix_rows': len(d['matrix'])}, ensure_ascii=False, indent=2))
+def main(argv: list[str] | None = None) -> None:
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--phase', choices=['PRE_FREEZE', 'POST_FREEZE'], default='POST_FREEZE')
+    parser.add_argument('--output', default='SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json')
+    args = parser.parse_args([] if argv is None else argv)
+    d = write(Path(__file__).resolve().parent) if args.phase == 'POST_FREEZE' and args.output == 'SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json' else write(Path(__file__).resolve().parent, args.output, phase=args.phase)
+    print(json.dumps({'status': d['status'], 'phase': d.get('phase', 'POST_FREEZE'), 'checks': d['checks'], 'matrix_rows': len(d['matrix'])}, ensure_ascii=False, indent=2))
 
 
 if __name__ == '__main__':
-    main()
+    import sys
+    main(sys.argv[1:])

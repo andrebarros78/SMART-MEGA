@@ -1,8 +1,24 @@
 from __future__ import annotations
-import importlib, json, platform, sys
+import importlib, importlib.metadata, json, platform, re, sys
 from pathlib import Path
 
-REQUIRED_MODULES=('numpy','pandas','pytest','river')
+REQUIRED_MODULES=('numpy','pandas','pytest','river','pypdf','yt_dlp')
+
+def _norm(name: str) -> str:
+    return re.sub(r'[-_.]+','-',name).lower()
+
+def _declared_pins(path: Path) -> dict[str,str]:
+    pins={}
+    if not path.exists():
+        return pins
+    for raw in path.read_text(encoding='utf-8-sig').splitlines():
+        line=raw.strip()
+        if not line or line.startswith('#'):
+            continue
+        m=re.fullmatch(r'([A-Za-z0-9_.-]+)==([^;\s]+)',line)
+        if m:
+            pins[_norm(m.group(1))]=m.group(2)
+    return pins
 
 def audit(root: str|Path='.') -> dict:
     root=Path(root).resolve()
@@ -14,12 +30,35 @@ def audit(root: str|Path='.') -> dict:
         except Exception as exc:
             modules[name]={'ok':False,'error':type(exc).__name__}
     current=Path(sys.executable).resolve()
+    external_project_paths=[]
+    new_project_root=Path(r'C:\New Projet').resolve()
+    for raw in sys.path:
+        if not raw:
+            continue
+        try: candidate=Path(raw).resolve()
+        except OSError: continue
+        if candidate==root or root in candidate.parents:
+            continue
+        if candidate==new_project_root or new_project_root in candidate.parents:
+            external_project_paths.append(str(candidate))
+    req_pins=_declared_pins(root/'requirements.txt')
+    lock_pins=_declared_pins(root/'requirements.lock.txt')
+    installed={_norm(d.metadata['Name']):d.version for d in importlib.metadata.distributions() if d.metadata.get('Name')}
+    unpinned=[]
+    for raw in (root/'requirements.txt').read_text(encoding='utf-8-sig').splitlines():
+        line=raw.strip()
+        if line and not line.startswith('#') and '==' not in line:
+            unpinned.append(line)
+    direct_lock_mismatch={name:{'required':ver,'locked':lock_pins.get(name),'installed':installed.get(name)} for name,ver in req_pins.items() if lock_pins.get(name)!=ver or installed.get(name)!=ver}
     checks={
         'canonical_python_exists':canonical.exists(),
         'running_canonical_python':current==canonical,
         'required_modules_available':all(x['ok'] for x in modules.values()),
+        'no_external_project_path_in_sys_path':not external_project_paths,
+        'direct_requirements_fully_pinned':not unpinned,
+        'direct_requirements_match_lock_and_environment':not direct_lock_mismatch,
     }
-    return {'schema':'SMART_RUNTIME_GUARD_V1','project_root':str(root),'canonical_python':str(canonical),'current_python':str(current),'python_version':platform.python_version(),'modules':modules,'checks':checks,'status':'PASS' if all(checks.values()) else 'FAIL'}
+    return {'schema':'SMART_RUNTIME_GUARD_V2','project_root':str(root),'canonical_python':str(canonical),'current_python':str(current),'python_version':platform.python_version(),'modules':modules,'external_project_paths':external_project_paths,'unpinned_requirements':unpinned,'direct_lock_mismatch':direct_lock_mismatch,'checks':checks,'status':'PASS' if all(checks.values()) else 'FAIL'}
 
 if __name__=='__main__':
     report=audit(Path(__file__).resolve().parent)

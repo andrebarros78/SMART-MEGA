@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -42,6 +42,8 @@ class CapabilityRegistration:
     callable: bool
     execution_mode: str
     external_source_executed: bool
+    direct_named_skill_execution: bool
+    semantic_binding_kind: str
     native_targets: tuple[str, ...]
 
 
@@ -53,9 +55,10 @@ class SmartSkillRuntime:
     intentionally not callable.
     """
 
-    def __init__(self, root: str | Path):
+    def __init__(self, root: str | Path, phase: str = "AUTO"):
         self.root = Path(root).resolve()
-        self.agent_runtime = SmartAgentRuntime(self.root)
+        self.agent_runtime = SmartAgentRuntime(self.root) if str(phase).upper() == "AUTO" else SmartAgentRuntime(self.root, phase=phase)
+        self.phase = self.agent_runtime.phase
         self._registrations = self._build_registrations()
 
     def _build_registrations(self) -> dict[str, CapabilityRegistration]:
@@ -76,6 +79,8 @@ class SmartSkillRuntime:
                 callable=pertinent,
                 execution_mode="BOUNDED_NATIVE_ADAPTER" if pertinent else "SOURCE_ONLY_QUARANTINE",
                 external_source_executed=False,
+                direct_named_skill_execution=False,
+                semantic_binding_kind="METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE" if pertinent else "SOURCE_REFERENCE_ONLY",
                 native_targets=targets,
             )
         if set(registrations) != set(ALL_CAPABILITIES) or len(registrations) != 41:
@@ -121,6 +126,8 @@ class SmartSkillRuntime:
             "executed_functions": list(probe.get("executed_functions", [])),
             "native_targets": targets,
             "external_source_executed": False,
+            "direct_named_skill_execution": False,
+            "semantic_binding_kind": registration.semantic_binding_kind,
             "payload_shape": sorted(payload.keys()) if payload else [],
             "status": "PASS",
         }
@@ -152,13 +159,17 @@ class SmartSkillRuntime:
             "each_pertinent_invoked_individually": all(r["invocation"]["capability"] == r["capability"] and r["invocation"]["invocation_sha256"] for r in callable_rows),
             "all_nonpertinent_explicitly_quarantined": len(quarantined_rows) == 4 and all(r["status"] == "NON_PERTINENT_QUARANTINED" for r in quarantined_rows),
             "external_source_never_executed": all(not r["external_source_executed"] for r in rows),
+            "no_direct_named_skill_execution_is_claimed": all(not r["direct_named_skill_execution"] for r in rows),
+            "pertinent_bindings_are_explicit_native_aliases": all(r["semantic_binding_kind"] == "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE" for r in callable_rows),
             "native_targets_present": all(all((self.root / p).exists() for p in r["native_targets"]) for r in callable_rows),
             "canonical_state_unchanged": critical_before == critical_after,
         }
         document: dict[str, Any] = {
             "schema": SCHEMA,
+            "phase": self.phase,
             "status": "PASS" if all(checks.values()) else "FAIL",
-            "scope": "Per-capability callable native-adapter proof with explicit non-pertinent quarantine classification.",
+            "scope": "Per-capability methodology-alias resolution to bounded native role probes; this does NOT prove direct execution of the named third-party skill/library.",
+            "claim_boundary": "A registered capability name is a methodology/reference binding. Direct named external-skill execution is false unless separately evidenced.",
             "checks": checks,
             "counts": {
                 "registered": len(rows),
@@ -173,12 +184,12 @@ class SmartSkillRuntime:
         return document
 
 
-def write_gate(root: str | Path, output: str | Path = "SMART_SKILL_RUNTIME_PROOF.json") -> dict[str, Any]:
+def write_gate(root: str | Path, output: str | Path = "SMART_SKILL_RUNTIME_PROOF.json", phase: str = "AUTO") -> dict[str, Any]:
     root = Path(root)
     output = Path(output)
     if not output.is_absolute():
         output = root / output
-    result = SmartSkillRuntime(root).execute_gate()
+    result = SmartSkillRuntime(root).execute_gate() if str(phase).upper() == "AUTO" else SmartSkillRuntime(root, phase=phase).execute_gate()
     output.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return result
 

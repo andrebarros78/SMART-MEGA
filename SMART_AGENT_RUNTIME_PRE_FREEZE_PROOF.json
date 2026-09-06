@@ -1,0 +1,594 @@
+{
+  "schema": "SMART_AGENT_RUNTIME_V2",
+  "phase": "PRE_FREEZE",
+  "status": "PASS",
+  "claim_scope": "Native modules are actually executed by deterministic read-only/synthetic probes. External skill source code remains quarantined and is not executed.",
+  "checks": {
+    "all_9_agents_native_probed": true,
+    "all_41_capabilities_owned": true,
+    "all_native_targets_verified": true,
+    "all_declared_handoffs_acknowledged": true,
+    "all_agents_have_runtime_evidence": true,
+    "all_agents_have_executed_function_evidence": true,
+    "mission_governor_reads_canonical_status": true,
+    "no_agent_predictive_or_freeze_authority": true,
+    "critical_canonical_files_unchanged": true
+  },
+  "executions": {
+    "quarantine_curator": {
+      "name": "quarantine_curator",
+      "status": "PASS",
+      "capabilities": [
+        "bridging-online-offline-rl",
+        "growth-experimenter",
+        "kaggle-learner",
+        "visiontrim-unified-vision-token"
+      ],
+      "native_targets": [],
+      "artifacts": [
+        {
+          "path": ".external_skills_acquired/ACQUISITION_MANIFEST.json",
+          "sha256": "a5031f77f74fe3b55cffedfbd125a07f7f14563969a40daf620a45fbacb9048c"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:14c17f40a14c5553",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "14c17f40a14c55534c6b75a6b2da1e3ac1a168ad7cf31da49ea2d0a11b090c71",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "probe_id": "quarantine_manifest_integrity",
+      "probe_result": {
+        "probe_id": "quarantine_manifest_integrity",
+        "executed_functions": [
+          "json.loads",
+          "Path.is_dir"
+        ],
+        "items": 21,
+        "invalid_items": [],
+        "external_code_executed": false,
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "research_scout": {
+      "name": "research_scout",
+      "status": "PASS",
+      "capabilities": [
+        "dianoia",
+        "thinktank-me-multi-expert-framework-middle",
+        "ml-engineer",
+        "pymc"
+      ],
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "consumed_handoffs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:14c17f40a14c5553",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "14c17f40a14c55534c6b75a6b2da1e3ac1a168ad7cf31da49ea2d0a11b090c71",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:5bd8b10bce7fee28",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "5bd8b10bce7fee28d123bb694ef0d07686a0bb1c7fe3d7fcb274307cf8935a43",
+          "probe_id": "research_registry_read_validation"
+        }
+      ],
+      "probe_id": "research_registry_read_validation",
+      "probe_result": {
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "documents": [
+          "SMART_HYPOTHESIS_REGISTRY.json",
+          "SMART_EXPERIMENT_LEDGER.json"
+        ],
+        "hashes": [
+          "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a",
+          "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        ],
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "data_guardian": {
+      "name": "data_guardian",
+      "status": "PASS",
+      "capabilities": [
+        "openai-analyze-data-quality",
+        "openai-validate-data",
+        "pandera-data-contracts",
+        "data-analysis"
+      ],
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "artifacts": [
+        {
+          "path": "Mega-Sena.xlsx",
+          "sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "probe_id": "canonical_draw_quality_audit",
+      "probe_result": {
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "data_file": "Mega-Sena.xlsx",
+        "target_contest": 3054,
+        "status": "PASS",
+        "rows": 3053,
+        "contest_max": 3053,
+        "checks": {
+          "required_columns": true,
+          "no_nulls": true,
+          "unique_contests": true,
+          "strictly_increasing_contests": true,
+          "contiguous_contests": true,
+          "integer_values": true,
+          "valid_six_unique_numbers_1_to_60": true,
+          "cutoff_respected": true
+        },
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "null_model_cartographer": {
+      "name": "null_model_cartographer",
+      "status": "PASS",
+      "capabilities": [
+        "aeon",
+        "regime-detection",
+        "time-series-forecasting",
+        "networkx",
+        "statsmodels",
+        "ruptures"
+      ],
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "consumed_handoffs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:0037c145dbc1597f",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "0037c145dbc1597f9c293990e7e60c5086212b8579fcfeff81bc612e860b3374",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "probe_result": {
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "descriptor_count": 14,
+        "regime_method": "ruptures.Binseg(l2)",
+        "regime_diagnostic_only": true,
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "falsification_auditor": {
+      "name": "falsification_auditor",
+      "status": "PASS",
+      "capabilities": [
+        "experiment-design",
+        "simulation",
+        "statistical-analysis",
+        "multiple-testing-fdr-statsmodels",
+        "bayesian-workflow",
+        "machine-learning-model-validation",
+        "mlflow"
+      ],
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "3067930e84bcdb445675c71bd5ae0e46b2f2456aa5e41d86fcb256632eabdb02"
+        }
+      ],
+      "consumed_handoffs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:5bd8b10bce7fee28",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "5bd8b10bce7fee28d123bb694ef0d07686a0bb1c7fe3d7fcb274307cf8935a43",
+          "probe_id": "research_registry_read_validation"
+        },
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:3d25914aebacd9bd",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "3d25914aebacd9bd1207ffee7ea79f01af2620b81103c0fdaac3c22d3174e808",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:0037c145dbc1597f",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "0037c145dbc1597f9c293990e7e60c5086212b8579fcfeff81bc612e860b3374",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "probe_result": {
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "cusum": 1.064642860778754,
+        "holm_adjusted": [
+          0.03,
+          0.4,
+          0.5
+        ],
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "learning_calibration_governor": {
+      "name": "learning_calibration_governor",
+      "status": "PASS",
+      "capabilities": [
+        "evo-memory",
+        "model-drift-management",
+        "hyperparameter-tuning-optuna",
+        "conformal-risk-control-mapie",
+        "live-evo-online-evolution-agentic",
+        "benchmarking-uncertainty-calibration-long-form",
+        "superforecasting",
+        "extremizing-forecasts"
+      ],
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "consumed_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:664a7a8f4ca764d8",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "664a7a8f4ca764d81f999d1fdb1a490b82e1d7009e7101ffbc688fee6934b4ef",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "probe_result": {
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "weights_changed": true,
+        "update_after_result_only": true,
+        "probability_sum": 5.999999999999995,
+        "brier_delta": 0.0,
+        "calibration_mode": "SHRUNK_ISOTONIC",
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "robustness_red_team": {
+      "name": "robustness_red_team",
+      "status": "PASS",
+      "capabilities": [
+        "property-based-testing-hypothesis",
+        "test-gap-analysis",
+        "mutmut-mutation"
+      ],
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "artifacts": [
+        {
+          "path": "SMART_P09_RED_TEAM_LATEST.json",
+          "sha256": "1e3d3098a26130f8fd6ec220e32602a3e6ba196b9d81fa64d6226999537168b2"
+        },
+        {
+          "path": "smart_continuous_red_team.py",
+          "sha256": "158a64d9163cd60afaf596520ee963d03e8e9a864cd8884e50c7b1ff2524a01b"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "robustness_red_team->mission_governor:e032e6812a7cc6ed",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "e032e6812a7cc6edd040fe3f93e7b5f66147dc0488ff9c6e7697f42ddc6ffc63",
+          "probe_id": "red_team_safety_execution"
+        }
+      ],
+      "probe_id": "red_team_safety_execution",
+      "probe_result": {
+        "probe_id": "red_team_safety_execution",
+        "executed_functions": [
+          "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+          "smart_continuous_red_team.scenario_false_signal_and_recovery"
+        ],
+        "corrupt_input_pass": true,
+        "false_signal_recovery_pass": true,
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "combinatorial_solver": {
+      "name": "combinatorial_solver",
+      "status": "PASS",
+      "capabilities": [
+        "combinatorialist",
+        "operations-research-algorithm-developer",
+        "google-or-tools",
+        "z3-formal-verification",
+        "nisan-et-al-2007-algorithmic-game-theory"
+      ],
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "artifacts": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "379559bf70b23a416f8da73da57390bcaf4ffdc1a305e6df08e6cc3f136a3d18"
+        }
+      ],
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:80e46e3620e08fa0",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "80e46e3620e08fa0710e9f712f28a9ccd23539e18a7f3e5b39cc35b17b541d69",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "probe_result": {
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "solver_status": "OPTIMAL",
+        "games": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            7,
+            8
+          ]
+        ],
+        "pairwise_overlap": 4,
+        "pass": true
+      },
+      "verdict": "PASS"
+    },
+    "mission_governor": {
+      "name": "mission_governor",
+      "status": "PASS",
+      "capabilities": [],
+      "native_targets": [],
+      "artifacts": [
+        {
+          "path": "SMART_MISSION_STATUS.json",
+          "sha256": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b"
+        }
+      ],
+      "consumed_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:0caadde67e05f1dc",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "0caadde67e05f1dc7fe1e2138731a953a0ef2fe4a1cf41783654522b97eff4d9",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:664a7a8f4ca764d8",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "664a7a8f4ca764d81f999d1fdb1a490b82e1d7009e7101ffbc688fee6934b4ef",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        },
+        {
+          "handoff_id": "robustness_red_team->mission_governor:e032e6812a7cc6ed",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "e032e6812a7cc6edd040fe3f93e7b5f66147dc0488ff9c6e7697f42ddc6ffc63",
+          "probe_id": "red_team_safety_execution"
+        },
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:80e46e3620e08fa0",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "80e46e3620e08fa0710e9f712f28a9ccd23539e18a7f3e5b39cc35b17b541d69",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "produced_handoffs": [],
+      "probe_id": "canonical_mission_status_resolution",
+      "probe_result": {
+        "probe_id": "canonical_mission_status_resolution",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "mission_status": "MISSION_ACTIVE",
+        "terminal_6of6_proven": false,
+        "pass": true
+      },
+      "verdict": "MISSION_ACTIVE"
+    }
+  },
+  "unacknowledged_handoffs": [],
+  "capability_count": 41,
+  "agent_count": 9,
+  "critical_hashes_before": {
+    "Mega-Sena.xlsx": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4"
+  },
+  "critical_hashes_after": {
+    "Mega-Sena.xlsx": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4"
+  },
+  "declarative_orchestration_sha256": "ff842aab08871043e3787f4f683d7e66a3ed4c75f4898ad0023daa12b1b2bc81",
+  "runtime_sha256": "6ed9540a06768536796aebd9b09a8f143fc72e3fc2b2d8982c82e5736574a0d0"
+}

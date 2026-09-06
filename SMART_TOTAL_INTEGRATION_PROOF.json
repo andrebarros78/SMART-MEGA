@@ -1,19 +1,20 @@
 {
-  "schema": "SMART_TOTAL_INTEGRATION_GATE_V1",
+  "schema": "SMART_TOTAL_INTEGRATION_GATE_V2",
+  "phase": "POST_FREEZE",
   "status": "PASS",
   "health": "HEALTHY",
   "service_model": "BATCH_EXECUTION_WITH_PERSISTENT_CANONICAL_ARTIFACTS",
   "gates": {
-    "G1_AGENTS": {
+    "G1_ROLE_EXECUTORS": {
       "discovered": true,
-      "integrated": true,
-      "operational": true
+      "handoffs_integrated": true,
+      "native_probes_verified": true
     },
-    "G2_SKILLS": {
+    "G2_CAPABILITY_BINDINGS": {
       "discovered": true,
       "registered": true,
-      "callable": true,
-      "integrated": true
+      "native_alias_resolvable": true,
+      "binding_gate_pass": true
     },
     "G3_FILES": {
       "present": true,
@@ -27,10 +28,10 @@
       "health": true
     },
     "G5_INTEGRATION": {
-      "agent_agent": true,
-      "agent_skill": true,
-      "agent_data": true,
-      "agent_tool": true
+      "role_handoffs": true,
+      "capability_alias_to_native_probe": true,
+      "role_data": true,
+      "role_native_targets": true
     },
     "G6_E2E": {
       "end_to_end": true
@@ -45,13 +46,21 @@
     "G8_SECURITY_STATE": {
       "canonical_unchanged": true,
       "security": true
+    },
+    "G9_SEMANTIC_TRUTH": {
+      "agents_not_misrepresented_as_llm": true,
+      "skills_not_misrepresented_as_direct_execution": true,
+      "external_sources_remain_quarantined": true
     }
   },
   "agent_inventory": [
     {
       "name": "quarantine_curator",
       "responsibility": "retained as source references; no current SMART-MEGA capability gap justifies activation",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -70,13 +79,16 @@
       "calls": [
         "research_scout"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "quarantine_manifest_integrity"
     },
     {
       "name": "research_scout",
       "responsibility": "hypothesis generation and methodology review; never direct scoring authority",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -102,13 +114,16 @@
       "calls": [
         "falsification_auditor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "research_registry_read_validation"
     },
     {
       "name": "data_guardian",
       "responsibility": "validate source integrity, cutoff discipline, schemas and evidence bundles",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -136,13 +151,16 @@
         "null_model_cartographer",
         "falsification_auditor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "canonical_draw_quality_audit"
     },
     {
       "name": "null_model_cartographer",
       "responsibility": "diagnostic temporal, network, regime and nonlinear structure measurement",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -169,13 +187,16 @@
       "calls": [
         "falsification_auditor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "synthetic_cartography_execution"
     },
     {
       "name": "falsification_auditor",
       "responsibility": "preregistration, null simulation, multiplicity, calibration and out-of-sample evidence",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -207,13 +228,16 @@
         "learning_calibration_governor",
         "mission_governor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "synthetic_falsification_execution"
     },
     {
       "name": "learning_calibration_governor",
       "responsibility": "bounded adaptation, calibration, drift awareness and experiment memory",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -246,13 +270,16 @@
       "calls": [
         "mission_governor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "bounded_learning_and_calibration_execution"
     },
     {
       "name": "robustness_red_team",
       "responsibility": "test generation principles, gap discovery and mutation-resistance methodology",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -278,13 +305,16 @@
       "calls": [
         "mission_governor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "red_team_safety_execution"
     },
     {
       "name": "combinatorial_solver",
       "responsibility": "constrained optimization, invariant reasoning and structural verification",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [
@@ -310,13 +340,16 @@
       "calls": [
         "mission_governor"
       ],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "or_tools_portfolio_execution"
     },
     {
       "name": "mission_governor",
       "responsibility": "mission governance",
-      "runtime": "NATIVE_DETERMINISTIC_AGENT",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
       "model": null,
       "prompt": null,
       "skills": [],
@@ -330,7 +363,7 @@
         "MISSION_ACTIVE or MISSION_PROVEN according to SMART_MISSION_STATUS terminal rule"
       ],
       "calls": [],
-      "state": "OPERACIONAL",
+      "state": "ROLE_PROBE_VERIFIED",
       "last_test": "canonical_mission_status_resolution"
     }
   ],
@@ -341,7 +374,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "bayesian-workflow",
@@ -349,7 +384,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "benchmarking-uncertainty-calibration-long-form",
@@ -357,7 +394,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "bridging-online-offline-rl",
@@ -365,7 +404,9 @@
       "pertinent": false,
       "callable": false,
       "mode": "SOURCE_ONLY_QUARANTINE",
-      "state": "CONFIGURADO_MAS_NAO_UTILIZADO"
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY"
     },
     {
       "name": "combinatorialist",
@@ -373,7 +414,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "conformal-risk-control-mapie",
@@ -381,7 +424,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "data-analysis",
@@ -389,7 +434,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "dianoia",
@@ -397,7 +444,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "evo-memory",
@@ -405,7 +454,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "experiment-design",
@@ -413,7 +464,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "extremizing-forecasts",
@@ -421,7 +474,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "google-or-tools",
@@ -429,7 +484,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "growth-experimenter",
@@ -437,7 +494,9 @@
       "pertinent": false,
       "callable": false,
       "mode": "SOURCE_ONLY_QUARANTINE",
-      "state": "CONFIGURADO_MAS_NAO_UTILIZADO"
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY"
     },
     {
       "name": "hyperparameter-tuning-optuna",
@@ -445,7 +504,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "kaggle-learner",
@@ -453,7 +514,9 @@
       "pertinent": false,
       "callable": false,
       "mode": "SOURCE_ONLY_QUARANTINE",
-      "state": "CONFIGURADO_MAS_NAO_UTILIZADO"
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY"
     },
     {
       "name": "live-evo-online-evolution-agentic",
@@ -461,7 +524,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "machine-learning-model-validation",
@@ -469,7 +534,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "ml-engineer",
@@ -477,7 +544,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "mlflow",
@@ -485,7 +554,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "model-drift-management",
@@ -493,7 +564,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "multiple-testing-fdr-statsmodels",
@@ -501,7 +574,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "mutmut-mutation",
@@ -509,7 +584,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "networkx",
@@ -517,7 +594,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "nisan-et-al-2007-algorithmic-game-theory",
@@ -525,7 +604,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "openai-analyze-data-quality",
@@ -533,7 +614,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "openai-validate-data",
@@ -541,7 +624,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "operations-research-algorithm-developer",
@@ -549,7 +634,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "pandera-data-contracts",
@@ -557,7 +644,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "property-based-testing-hypothesis",
@@ -565,7 +654,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "pymc",
@@ -573,7 +664,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "regime-detection",
@@ -581,7 +674,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "ruptures",
@@ -589,7 +684,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "simulation",
@@ -597,7 +694,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "statistical-analysis",
@@ -605,7 +704,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "statsmodels",
@@ -613,7 +714,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "superforecasting",
@@ -621,7 +724,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "test-gap-analysis",
@@ -629,7 +734,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "thinktank-me-multi-expert-framework-middle",
@@ -637,7 +744,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "time-series-forecasting",
@@ -645,7 +754,9 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     },
     {
       "name": "visiontrim-unified-vision-token",
@@ -653,7 +764,9 @@
       "pertinent": false,
       "callable": false,
       "mode": "SOURCE_ONLY_QUARANTINE",
-      "state": "CONFIGURADO_MAS_NAO_UTILIZADO"
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY"
     },
     {
       "name": "z3-formal-verification",
@@ -661,11 +774,13 @@
       "pertinent": true,
       "callable": true,
       "mode": "BOUNDED_NATIVE_ADAPTER",
-      "state": "OPERACIONAL"
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
     }
   ],
   "file_audit": {
-    "required": 30,
+    "required": 31,
     "missing": [],
     "empty": [],
     "blockers": [],
@@ -703,11 +818,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "db78431014484acc72eddc2452692a68d96a5071bff85d3b48b7c459a930460c"
+      "invocation_sha256": "df7ebdd365e7fe97bb86aaef7ae4db424c97575de18b9f12a95e27e5fd8caf8d"
     },
     {
       "capability": "statsmodels",
@@ -730,11 +847,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "0b62c45986ffa69fb89213a3b266a35aaf547e9a31fcc4a74407f54b4d5f0d2c"
+      "invocation_sha256": "f635ef5c5acd84502f8c94ee5f6dd6d5628beef6727116a1b01d14f2dbd0d597"
     },
     {
       "capability": "statistical-analysis",
@@ -765,11 +884,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "1211ff176c160f78183a10c2494e862cad6a3b7858c704561b4f8f24685ce097"
+      "invocation_sha256": "7e30914a3db203fb1787a299bf7f4246104ea8a74a757bf8c9a97ac28714d735"
     },
     {
       "capability": "superforecasting",
@@ -805,11 +926,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "e9cd9b662d19c2628a357b6d42028a4be6d3759c4eabb191e696d3b24d390187"
+      "invocation_sha256": "9384f1307e35e5334e1436046bf577355ff5bb392720bfe989b97a4e09ec7aed"
     },
     {
       "capability": "property-based-testing-hypothesis",
@@ -836,11 +959,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "21bc9939f802d1f412de6b66279be5cb118ca0d1dc5f2690487c9bf1ff525250"
+      "invocation_sha256": "e56fc0021a2f65a823bbf806362eba8fd5d91fe8b410a1604e3d5f4f70ed8883"
     },
     {
       "capability": "google-or-tools",
@@ -866,11 +991,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "a0814ccdd61794051f7769df0b11d44018dc8f7330e9505a64dbc5abfba61e5c"
+      "invocation_sha256": "63b9f2ca6a36595c83bf440bf6b632cd56a3bf5512bd3b02ce439ed58fdfa006"
     },
     {
       "capability": "pymc",
@@ -892,11 +1019,13 @@
         }
       ],
       "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
       "payload_shape": [
         "e2e"
       ],
       "status": "PASS",
-      "invocation_sha256": "a80d93a8426af1d39c480abc42fda7c76e580d02a086598f627edc79483b344b"
+      "invocation_sha256": "6e5ee74d7586e6ac825fdcf78abd44066a1fb85ff9fb20039f687f9d693a7595"
     }
   ],
   "concurrency": {
@@ -921,6 +1050,6 @@
   },
   "recovery_pass": true,
   "scientific_mission_status": "MISSION_ACTIVE",
-  "claim_boundary": "Engineering integration proof only; scientific prospective terminal rule remains independent.",
-  "sha256": "a79087c1dc78d7ae8a83dbed90ce77ad06f3c99581376e39df8487c6db9d91d4"
+  "claim_boundary": "Engineering integration proof only. The nine named agents are deterministic SMART role executors, not autonomous AI/LLM agents. Capability names are methodology aliases to native role probes unless separately evidenced; they are not direct execution of third-party skills. Scientific prospective terminal rule remains independent.",
+  "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
 }

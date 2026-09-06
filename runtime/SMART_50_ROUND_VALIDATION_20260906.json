@@ -1,0 +1,2536 @@
+{
+  "schema": "SMART_50_ROUND_VALIDATION_1",
+  "started_utc": "2026-09-06T09:48:24.962294+00:00",
+  "completed_utc": "2026-09-06T10:07:59.200412+00:00",
+  "rounds_requested": 50,
+  "rounds_executed": 50,
+  "rounds_passed": 50,
+  "rounds_failed": 0,
+  "success_rate": 1.0,
+  "production_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+  "production_target": 3054,
+  "production_cutoff": 3053,
+  "production_result_used": false,
+  "heavy_gate_checkpoints": [
+    {
+      "round": 1,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 36.60640479999711,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    },
+    {
+      "round": 10,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 36.34667339999578,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    },
+    {
+      "round": 20,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 40.0728219000157,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    },
+    {
+      "round": 30,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 36.53525179999997,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    },
+    {
+      "round": 40,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 25.856760199996643,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    },
+    {
+      "round": 50,
+      "status": "PASS",
+      "health": "HEALTHY",
+      "seconds": 27.77543430001242,
+      "sha256": "5d2f007f2cc518e1eb22d950c202122e10acc953d8062b3242bace2e49326fa9"
+    }
+  ],
+  "efficiency": {
+    "round_total_p50_s": 19.861116399988532,
+    "round_total_p95_s": 56.85033777497592,
+    "round_total_p99_s": 60.820539933007375,
+    "round_total_mean_s": 23.484480456001474,
+    "production_p50_s": 17.393986899987794,
+    "production_p95_s": 20.09355659001012,
+    "production_p99_s": 20.678276633013155,
+    "agent_runtime_p50_s": 1.626490049995482,
+    "agent_runtime_p95_s": 2.357712559995707,
+    "agent_runtime_p99_s": 2.6461457869972214
+  },
+  "failures": [],
+  "rounds": [
+    {
+      "round": 1,
+      "started_utc": "2026-09-06T09:48:24.962294+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.5793926999904215,
+        "architecture": 0.24593859998276457,
+        "production": 17.033801799989305,
+        "agent_runtime": 2.5063783999939915,
+        "heavy_gate": 36.60640479999711
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 56.97191629995359,
+      "pass": true
+    },
+    {
+      "round": 2,
+      "started_utc": "2026-09-06T09:49:21.933818+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16864620000706054,
+        "architecture": 0.3572991999972146,
+        "production": 17.440778099989984,
+        "agent_runtime": 1.6682197000191081
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.634943200013367,
+      "pass": true
+    },
+    {
+      "round": 3,
+      "started_utc": "2026-09-06T09:49:41.569291+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1761285999964457,
+        "architecture": 0.2723233999859076,
+        "production": 15.896955600008368,
+        "agent_runtime": 1.7529310999962036
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.098338699986925,
+      "pass": true
+    },
+    {
+      "round": 4,
+      "started_utc": "2026-09-06T09:49:59.668309+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1746273999742698,
+        "architecture": 0.3325401000038255,
+        "production": 15.22808209998766,
+        "agent_runtime": 2.1934333000099286
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.928682899975684,
+      "pass": true
+    },
+    {
+      "round": 5,
+      "started_utc": "2026-09-06T09:50:17.597067+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16262440002174117,
+        "architecture": 0.24395770000410266,
+        "production": 14.576030500000343,
+        "agent_runtime": 1.4864129000052344
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 16.46902550003142,
+      "pass": true
+    },
+    {
+      "round": 6,
+      "started_utc": "2026-09-06T09:50:34.066721+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.13620010000886396,
+        "architecture": 0.24345539999194443,
+        "production": 16.60459780000383,
+        "agent_runtime": 1.4782880000129808
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.46254130001762,
+      "pass": true
+    },
+    {
+      "round": 7,
+      "started_utc": "2026-09-06T09:50:52.529366+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.18097810001927428,
+        "architecture": 0.3202684000134468,
+        "production": 17.063593700004276,
+        "agent_runtime": 1.4048867000092287
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.969726900046226,
+      "pass": true
+    },
+    {
+      "round": 8,
+      "started_utc": "2026-09-06T09:51:11.499726+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.15861240000231192,
+        "architecture": 0.2742467999923974,
+        "production": 17.139311100007035,
+        "agent_runtime": 1.628878799994709
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.201049099996453,
+      "pass": true
+    },
+    {
+      "round": 9,
+      "started_utc": "2026-09-06T09:51:30.699817+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16288930000155233,
+        "architecture": 0.24602030002279207,
+        "production": 16.971185100002913,
+        "agent_runtime": 2.2917053000128362
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.671800000040093,
+      "pass": true
+    },
+    {
+      "round": 10,
+      "started_utc": "2026-09-06T09:51:50.372574+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.23266989999683574,
+        "architecture": 0.38800209999317303,
+        "production": 17.953770899999654,
+        "agent_runtime": 1.780625500017777,
+        "heavy_gate": 36.34667339999578
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 56.70174180000322,
+      "pass": true
+    },
+    {
+      "round": 11,
+      "started_utc": "2026-09-06T09:52:47.075020+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.17733619999489747,
+        "architecture": 0.3871392000000924,
+        "production": 18.3231025999994,
+        "agent_runtime": 1.8206548000162002
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.70823280001059,
+      "pass": true
+    },
+    {
+      "round": 12,
+      "started_utc": "2026-09-06T09:53:07.783991+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.17283639998640865,
+        "architecture": 0.2690392999793403,
+        "production": 17.59540079999715,
+        "agent_runtime": 1.5653136000037193
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.60259009996662,
+      "pass": true
+    },
+    {
+      "round": 13,
+      "started_utc": "2026-09-06T09:53:27.386885+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1770204000058584,
+        "architecture": 0.2949592999939341,
+        "production": 17.67971930000931,
+        "agent_runtime": 1.5882494999968912
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.739948500005994,
+      "pass": true
+    },
+    {
+      "round": 14,
+      "started_utc": "2026-09-06T09:53:47.126748+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.2111010999942664,
+        "architecture": 0.358722700009821,
+        "production": 18.37719639998977,
+        "agent_runtime": 1.6611798999947496
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.608200099988608,
+      "pass": true
+    },
+    {
+      "round": 15,
+      "started_utc": "2026-09-06T09:54:07.735670+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1912468000082299,
+        "architecture": 0.39135399999213405,
+        "production": 19.007041700009722,
+        "agent_runtime": 1.6573640999849886
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 21.247006599995075,
+      "pass": true
+    },
+    {
+      "round": 16,
+      "started_utc": "2026-09-06T09:54:28.982891+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1745441000093706,
+        "architecture": 0.3084163000166882,
+        "production": 18.196781200007536,
+        "agent_runtime": 1.6487046999973245
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.32844630003092,
+      "pass": true
+    },
+    {
+      "round": 17,
+      "started_utc": "2026-09-06T09:54:49.310820+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.18731720000505447,
+        "architecture": 0.34482159998151474,
+        "production": 18.453026900009718,
+        "agent_runtime": 1.83191499998793
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.817080699984217,
+      "pass": true
+    },
+    {
+      "round": 18,
+      "started_utc": "2026-09-06T09:55:10.127868+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.19766370000434108,
+        "architecture": 0.25464080000529066,
+        "production": 17.751751300005708,
+        "agent_runtime": 1.8416505999921355
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.045706400007475,
+      "pass": true
+    },
+    {
+      "round": 19,
+      "started_utc": "2026-09-06T09:55:30.173380+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.14289109999663197,
+        "architecture": 0.28463869998813607,
+        "production": 19.343098299985286,
+        "agent_runtime": 2.7804321000003256
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.55106019997038,
+      "pass": true
+    },
+    {
+      "round": 20,
+      "started_utc": "2026-09-06T09:55:52.724668+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.2036445999983698,
+        "architecture": 0.33540079998783767,
+        "production": 20.805523900024127,
+        "agent_runtime": 2.111446499999147,
+        "heavy_gate": 40.0728219000157
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 63.52883770002518,
+      "pass": true
+    },
+    {
+      "round": 21,
+      "started_utc": "2026-09-06T09:56:56.254997+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.21841040000435896,
+        "architecture": 0.6109385999734513,
+        "production": 19.49447030000738,
+        "agent_runtime": 1.8778690000181086
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.201688300003298,
+      "pass": true
+    },
+    {
+      "round": 22,
+      "started_utc": "2026-09-06T09:57:18.456264+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1541323999990709,
+        "architecture": 0.3204955999972299,
+        "production": 19.55579920002492,
+        "agent_runtime": 1.6425733999931253
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 21.673000600014348,
+      "pass": true
+    },
+    {
+      "round": 23,
+      "started_utc": "2026-09-06T09:57:40.129284+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1792188000108581,
+        "architecture": 0.28260500001488253,
+        "production": 19.831053800007794,
+        "agent_runtime": 2.3372265999787487
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.630104200012283,
+      "pass": true
+    },
+    {
+      "round": 24,
+      "started_utc": "2026-09-06T09:58:02.760351+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1775709000066854,
+        "architecture": 0.28741750001790933,
+        "production": 19.27291209998657,
+        "agent_runtime": 1.6134243000124115
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 21.351324800023576,
+      "pass": true
+    },
+    {
+      "round": 25,
+      "started_utc": "2026-09-06T09:58:24.111687+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.19008369999937713,
+        "architecture": 0.37490809999872,
+        "production": 19.5279501999903,
+        "agent_runtime": 1.6292738000047393
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 21.722215799993137,
+      "pass": true
+    },
+    {
+      "round": 26,
+      "started_utc": "2026-09-06T09:58:45.834776+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1967030999949202,
+        "architecture": 0.28510649999952875,
+        "production": 20.308331600012025,
+        "agent_runtime": 1.7973092999891378
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.58745049999561,
+      "pass": true
+    },
+    {
+      "round": 27,
+      "started_utc": "2026-09-06T09:59:08.421841+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.48310250000213273,
+        "architecture": 0.335204100003466,
+        "production": 19.472764600010123,
+        "agent_runtime": 2.374473800009582
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.665545000025304,
+      "pass": true
+    },
+    {
+      "round": 28,
+      "started_utc": "2026-09-06T09:59:31.087544+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.18132389997481368,
+        "architecture": 0.2853661999979522,
+        "production": 19.746930900000734,
+        "agent_runtime": 1.7817113999917638
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 21.995332399965264,
+      "pass": true
+    },
+    {
+      "round": 29,
+      "started_utc": "2026-09-06T09:59:53.084001+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.17413160001160577,
+        "architecture": 0.3074680000136141,
+        "production": 20.545835600001737,
+        "agent_runtime": 1.615152999991551
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 22.64258820001851,
+      "pass": true
+    },
+    {
+      "round": 30,
+      "started_utc": "2026-09-06T10:00:15.725809+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.2259959999937564,
+        "architecture": 0.5784875999961514,
+        "production": 18.865902499994263,
+        "agent_runtime": 1.7960615000047255,
+        "heavy_gate": 36.53525179999997
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 58.001699399988865,
+      "pass": true
+    },
+    {
+      "round": 31,
+      "started_utc": "2026-09-06T10:01:13.729125+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.18801610000082292,
+        "architecture": 0.33051159998285584,
+        "production": 17.93820350000169,
+        "agent_runtime": 1.4253914000000805
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.88212259998545,
+      "pass": true
+    },
+    {
+      "round": 32,
+      "started_utc": "2026-09-06T10:01:33.611870+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1532759999972768,
+        "architecture": 0.3486755999911111,
+        "production": 18.261704299977282,
+        "agent_runtime": 1.8553175999841187
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.61897349994979,
+      "pass": true
+    },
+    {
+      "round": 33,
+      "started_utc": "2026-09-06T10:01:54.231406+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.2278447000135202,
+        "architecture": 0.3113692000042647,
+        "production": 18.034497599990573,
+        "agent_runtime": 1.624101299996255
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 20.197812800004613,
+      "pass": true
+    },
+    {
+      "round": 34,
+      "started_utc": "2026-09-06T10:02:14.429490+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.24645690000033937,
+        "architecture": 0.5874864000070374,
+        "production": 17.347195699985605,
+        "agent_runtime": 1.658971199998632
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 19.840110199991614,
+      "pass": true
+    },
+    {
+      "round": 35,
+      "started_utc": "2026-09-06T10:02:34.269264+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.17279139999300241,
+        "architecture": 0.3190809999941848,
+        "production": 16.960732899984578,
+        "agent_runtime": 1.4159145999874454
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.86851989995921,
+      "pass": true
+    },
+    {
+      "round": 36,
+      "started_utc": "2026-09-06T10:02:53.139042+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1592806999979075,
+        "architecture": 0.2828501000185497,
+        "production": 15.85853299999144,
+        "agent_runtime": 1.0332349999807775
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.333898799988674,
+      "pass": true
+    },
+    {
+      "round": 37,
+      "started_utc": "2026-09-06T10:03:10.472011+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.149496400001226,
+        "architecture": 0.2725261000159662,
+        "production": 13.342740399995819,
+        "agent_runtime": 1.2185819000005722
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 14.983344800013583,
+      "pass": true
+    },
+    {
+      "round": 38,
+      "started_utc": "2026-09-06T10:03:25.456499+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.12274239998077974,
+        "architecture": 0.20966200000839308,
+        "production": 13.517766400007531,
+        "agent_runtime": 1.271391999995103
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 15.121562799991807,
+      "pass": true
+    },
+    {
+      "round": 39,
+      "started_utc": "2026-09-06T10:03:40.577894+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.14354129999992438,
+        "architecture": 0.21449509999365546,
+        "production": 13.906996100005927,
+        "agent_runtime": 1.0536401999997906
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 15.318672699999297,
+      "pass": true
+    },
+    {
+      "round": 40,
+      "started_utc": "2026-09-06T10:03:55.896230+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.124437599995872,
+        "architecture": 0.214036399993347,
+        "production": 13.799075899994932,
+        "agent_runtime": 1.1447282000153791,
+        "heavy_gate": 25.856760199996643
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 41.13903829999617,
+      "pass": true
+    },
+    {
+      "round": 41,
+      "started_utc": "2026-09-06T10:04:37.036091+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.18236339997383766,
+        "architecture": 0.2364928999741096,
+        "production": 14.474236200010637,
+        "agent_runtime": 1.3644994999922346
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 16.25759199995082,
+      "pass": true
+    },
+    {
+      "round": 42,
+      "started_utc": "2026-09-06T10:04:53.293935+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.13568460001260974,
+        "architecture": 0.24038309999741614,
+        "production": 16.252057800011244,
+        "agent_runtime": 1.4253410999954212
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.05346660001669,
+      "pass": true
+    },
+    {
+      "round": 43,
+      "started_utc": "2026-09-06T10:05:11.347485+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16215550000197254,
+        "architecture": 0.2558863000012934,
+        "production": 16.61053269999684,
+        "agent_runtime": 1.3538824999995995
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 18.382456999999704,
+      "pass": true
+    },
+    {
+      "round": 44,
+      "started_utc": "2026-09-06T10:05:29.729978+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.15224460000172257,
+        "architecture": 0.2629562999936752,
+        "production": 15.72208629999659,
+        "agent_runtime": 1.5260920000146143
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.663379200006602,
+      "pass": true
+    },
+    {
+      "round": 45,
+      "started_utc": "2026-09-06T10:05:47.393949+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.15792270001838915,
+        "architecture": 0.2372050000121817,
+        "production": 15.825254099996528,
+        "agent_runtime": 1.3698173000011593
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.590199100028258,
+      "pass": true
+    },
+    {
+      "round": 46,
+      "started_utc": "2026-09-06T10:06:04.984596+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16099820000818,
+        "architecture": 0.26431050000246614,
+        "production": 15.542688099987572,
+        "agent_runtime": 1.3995099999883678
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.367506799986586,
+      "pass": true
+    },
+    {
+      "round": 47,
+      "started_utc": "2026-09-06T10:06:22.351865+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1546882000111509,
+        "architecture": 0.23323359998175874,
+        "production": 15.453610199998366,
+        "agent_runtime": 1.3824589000141714
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.223990900005447,
+      "pass": true
+    },
+    {
+      "round": 48,
+      "started_utc": "2026-09-06T10:06:39.575558+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.1539292000234127,
+        "architecture": 0.22007559999474324,
+        "production": 15.580332100013038,
+        "agent_runtime": 1.5889105999958701
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.543247500027064,
+      "pass": true
+    },
+    {
+      "round": 49,
+      "started_utc": "2026-09-06T10:06:57.119054+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true
+      },
+      "timings_s": {
+        "system": 0.16280940000433475,
+        "architecture": 0.2557618000137154,
+        "production": 15.399068200000329,
+        "agent_runtime": 1.423105800000485
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 17.240745200018864,
+      "pass": true
+    },
+    {
+      "round": 50,
+      "started_utc": "2026-09-06T10:07:14.360045+00:00",
+      "checks": {
+        "system": true,
+        "architecture": true,
+        "production": true,
+        "agent_runtime": true,
+        "heavy_gate": true
+      },
+      "timings_s": {
+        "system": 0.1694267000129912,
+        "architecture": 0.2728085000126157,
+        "production": 15.324955600022804,
+        "agent_runtime": 1.2969327000027988,
+        "heavy_gate": 27.77543430001242
+      },
+      "architecture_files": 92,
+      "architecture_errors": [],
+      "production": {
+        "pass": true,
+        "checks": {
+          "epoch_frozen": true,
+          "target_3054_cutoff_3053": true,
+          "result_not_used": true,
+          "carry_forward_mode": true,
+          "engineering_shadow": true,
+          "next_authoritative_3055": true,
+          "freeze_hash_exact": true,
+          "top6_exact": true,
+          "lock_exact": true,
+          "lock_forbids_mutation": true,
+          "lock_forbids_retroclaim": true,
+          "ledger_active_freeze_exact": true,
+          "preflight_pass": true,
+          "preflight_carry_forward": true
+        },
+        "preflight_status": "PASS",
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "top6": [
+          10,
+          11,
+          27,
+          30,
+          35,
+          38
+        ]
+      },
+      "total_s": 44.83955780006363,
+      "pass": true
+    }
+  ],
+  "status": "PASS"
+}

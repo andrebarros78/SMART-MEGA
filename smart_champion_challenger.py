@@ -297,7 +297,9 @@ def _next_version_path(out: Path) -> Path:
 
 
 def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,
-                               start: int = 1000, allow_pre_result_supersede: bool = False) -> dict[str, Any]:
+                               start: int = 1000, allow_pre_result_supersede: bool = False,
+                               activation_authority_path: Path = ACTIVATION_AUTHORITY_PATH,
+                               expansion_registry_path: Path = REGISTRY_PATH) -> dict[str, Any]:
     implementation_gate = require_pre_3052_gate(target)
     ledger = load_ledger(ledger_path)
     if any(ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == int(target)
@@ -342,9 +344,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'portfolio_pipeline': sha256(Path('smart_portfolio_pipeline.py')),
     }
     data_hash = sha256(data)
-    expansion_governance = load_registry(REGISTRY_PATH, tuple(SIGNAL_NAMES))
+    expansion_governance = load_registry(expansion_registry_path, tuple(SIGNAL_NAMES))
     expansion_snapshot = expansion_governance.snapshot()
-    expansion_registry_hash = sha256(REGISTRY_PATH) if REGISTRY_PATH.exists() else None
+    expansion_registry_hash = sha256(expansion_registry_path) if expansion_registry_path.exists() else None
     from smart_sequential_prospective_proof import freeze_snapshot as sequential_freeze_snapshot
     sequential_snapshot = sequential_freeze_snapshot()
     from smart_independent_audit import policy_snapshot as independent_audit_policy_snapshot
@@ -375,7 +377,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     signal_ts = source_ts or freeze_time
     signal_ts_kind = 'source_draw_datetime' if source_ts else 'signal_generation_utc_source_draw_datetime_unavailable'
     champion = champion_engine.current_policy(draws, start=start)
-    activation = load_activation_authority(ACTIVATION_AUTHORITY_PATH, target_contest=int(target), root=Path('.'))
+    activation = load_activation_authority(activation_authority_path, target_contest=int(target), root=Path('.'))
     agent = SmartSignalAgent(
         start=start,
         marginal_strength=activation.marginal_strength,
@@ -446,7 +448,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'portfolio_pipeline_sha256': component_hashes['portfolio_pipeline'],
         'portfolio_policy': {'enabled': True, 'post_scoring_only': True, 'generated_from_frozen_champion_scores': True},
         'global_integrity_proof': global_integrity_ref,
-        'signal_expansion_registry_file': str(REGISTRY_PATH),
+        'signal_expansion_registry_file': str(expansion_registry_path),
         'signal_expansion_registry_sha256': expansion_registry_hash,
         'signal_expansion_governance': expansion_snapshot,
         'sequential_prospective_proof': sequential_snapshot,

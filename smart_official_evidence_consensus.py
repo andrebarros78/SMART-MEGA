@@ -9,10 +9,12 @@ from typing import Any
 import pandas as pd
 import requests
 
-from smart_official_result_ingest import API_URL, BALL_COLUMNS, validate_official_payload
+from smart_http_guard import read_limited_bytes
+from smart_official_result_ingest import API_URL, BALL_COLUMNS, OFFICIAL_JSON_MAX_BYTES, validate_official_payload
 
 DOWNLOAD_URL = "https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Mega-Sena"
 SCHEMA = "SMART_OFFICIAL_EVIDENCE_CONSENSUS_V1"
+OFFICIAL_XLSX_MAX_BYTES = 32 * 1024 * 1024
 
 
 @dataclass(frozen=True)
@@ -121,23 +123,27 @@ def corroborate(
 
 
 def fetch_secondary_download(timeout: float = 25.0) -> pd.DataFrame:
-    response = requests.get(
+    response = requests.get(  # nosec B113 - explicit bounded timeout and bounded streamed read
         DOWNLOAD_URL,
         headers={"Accept": "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", "User-Agent": "SMART-MEGA/official-corroboration"},
         timeout=float(timeout),
+        stream=True,
     )
     response.raise_for_status()
-    return pd.read_excel(io.BytesIO(response.content))
+    raw = read_limited_bytes(response, max_bytes=OFFICIAL_XLSX_MAX_BYTES)
+    return pd.read_excel(io.BytesIO(raw))
 
 
 def fetch_consensus(target: int, timeout: float = 25.0) -> tuple[dict[str, Any], dict[str, Any]]:
-    primary_response = requests.get(
+    primary_response = requests.get(  # nosec B113 - explicit bounded timeout and bounded streamed read
         API_URL.format(contest=int(target)),
         headers={"Accept": "application/json", "User-Agent": "SMART-MEGA/official-corroboration"},
         timeout=float(timeout),
+        stream=True,
     )
     primary_response.raise_for_status()
-    primary_payload = primary_response.json()
+    primary_raw = read_limited_bytes(primary_response, max_bytes=OFFICIAL_JSON_MAX_BYTES)
+    primary_payload = json.loads(primary_raw.decode("utf-8-sig"))
     try:
         secondary = fetch_secondary_download(timeout=timeout)
     except Exception as exc:

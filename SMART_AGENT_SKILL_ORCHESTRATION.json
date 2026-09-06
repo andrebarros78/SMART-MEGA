@@ -1,8 +1,10 @@
 {
   "schema": "SMART_AGENT_SKILL_ORCHESTRATION_V1",
-  "generated_at_utc": "2026-09-04T20:02:40.627482+00:00",
+  "generated_at_utc": "2026-09-06T00:47:27.139267+00:00",
   "project": "SMART-MEGA",
   "integration_status": "PASS",
+  "integration_scope": "STRUCTURAL_ORCHESTRATION_ONLY",
+  "functional_runtime_proof_required_for_full_integration": true,
   "global_mission_state": "MISSION_ACTIVE",
   "terminal_6of6_proven": false,
   "policy": {
@@ -427,8 +429,23 @@
     "no_duplicate_lane_assignment": true,
     "all_native_targets_exist": true,
     "external_source_auto_execution_disabled": true,
-    "global_mission_remains_authoritative": true,
-    "freeze_3054_present": true
+    "global_mission_status_consistent": true,
+    "active_freeze_present": true,
+    "active_freeze_cutoff_is_target_minus_one": true,
+    "active_data_present": true
+  },
+  "active_context": {
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
+    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "signal_state_file": "SMART_SIGNAL_STATE_3054_V2.json",
+    "signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "pending_target": true
   },
   "diagnostics": {
     "missing_from_lanes": [],
@@ -464,7 +481,10 @@
     "capability_v3_sha256": "15934168f6ead60571129b7419a8c1d9b8b034d6dfc41b615a1ad64c47ade837",
     "capability_v4_sha256": "cd50f6675c68e16239672bec568b3a81092bf42ec02ed94689f121baeb7a3cb0",
     "mission_status_sha256": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b",
-    "freeze_3054_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
+    "active_freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "active_data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "active_signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "signal_ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e"
   },
-  "orchestration_sha256": "f502aa43914986f8cdd57f7d48db8413cdde29020042fd384ba01001beef47d7"
+  "orchestration_sha256": "646e424e601a20aab4960ec9302d3b9e9bb7c72995ef5f679b86dc9dba808319"
 }

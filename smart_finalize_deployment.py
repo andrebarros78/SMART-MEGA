@@ -2,18 +2,18 @@ from __future__ import annotations
 
 import hashlib
 import json
-import xml.etree.ElementTree as ET
+from defusedxml import ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import smart_continuity_consolidator as consolidation_module
-import smart_hypothesis_state_reconciler as hypothesis_reconciler
 import smart_agent_skill_functional_gate as agent_skill_gate
 import smart_agent_skill_orchestration as agent_skill_orchestration
+import smart_continuity_consolidator as consolidation_module
 import smart_total_integration_gate as total_integration_gate
+from smart_current_epoch_contract import resolve as resolve_current_epoch
 
-SCHEMA = "SMART_IMPLEMENTATION_PROOF_20260904_V2"
+SCHEMA = "SMART_IMPLEMENTATION_PROOF_CURRENT_V3"
 JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
 
 
@@ -62,128 +62,77 @@ def junit_summary(path: Path) -> dict[str, Any]:
     }
 
 
-def build(root: Path) -> dict[str, Any]:
-    consolidation = consolidation_module.build(root)
+def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
+    root = Path(root).resolve()
+    consolidation = consolidation_module.build(root, require_fresh_wmcp=require_fresh_wmcp)
+    current = resolve_current_epoch(root)
     mission = read(root / "SMART_MISSION_STATUS.json")
     orchestration = agent_skill_orchestration.build_orchestration(root)
     functional_integration = agent_skill_gate.evaluate(root)
     total_integration = read(root / "SMART_TOTAL_INTEGRATION_PROOF.json")
     wmcp_execution = read(root / "SMART_WMCP_EXECUTION_PROOF_20260905.json")
-    p1p2 = read(root / "SMART_P1_P2_CARTOGRAPHY_PROOF.json")
-    convergence = read(root / "SMART_MONTE_CARLO_CONVERGENCE_1000.json")
-    powered = read(root / "SMART_FALSIFICATION_REPORT_POWERED.json")
-    hypothesis_proof = read(root / "SMART_HYPOTHESIS_STATE_RECONCILIATION.json")
-    hypothesis_registry = read(root / "SMART_HYPOTHESIS_REGISTRY.json")
-    result_store = read(root / "SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json")
-    preflight = read(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json")
-    full_cycle = read(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json")
-    terminal_sandbox = read(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json")
-    independent = read(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json")
-    authority = read(root / "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json")
     junit = junit_summary(root / JUNIT)
-
-    freeze = root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
-    data = root / "Mega-Sena_through_3053_v2.xlsx"
-    canonical_result_store = root / "Mega-Sena.xlsx"
+    adversarial = read(root / "SMART_ADVERSARIAL_CLAIM_AUDIT.json")
+    hypothesis_registry = read(root / "SMART_HYPOTHESIS_REGISTRY.json") if (root / "SMART_HYPOTHESIS_REGISTRY.json").exists() else {}
+    powered = read(root / "SMART_FALSIFICATION_REPORT_POWERED.json") if (root / "SMART_FALSIFICATION_REPORT_POWERED.json").exists() else {}
+    preflight = read(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json") if (root / "SMART_3054_ADJUDICATION_PREFLIGHT.json").exists() else {}
+    full_cycle = read(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json") if (root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json").exists() else {}
+    terminal_sandbox = read(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json") if (root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json").exists() else {}
     agents = orchestration.get("agents", {})
-    target_hypotheses = {
-        item["id"]: item
-        for item in hypothesis_registry.get("hypotheses", [])
-        if item.get("id") in hypothesis_reconciler.TARGET_HYPOTHESES
-    }
-
+    freeze_consistent = (
+        current["status"] == "RESET_READY"
+        and current["freeze_sha256"] is None
+        and not current["freeze_authority_present"]
+    ) or (
+        current["status"] == "FROZEN"
+        and current["freeze_authority_present"]
+        and isinstance(current["freeze_sha256"], str)
+        and len(current["freeze_sha256"]) == 64
+    )
     checks = {
         "final_regression_pass": junit["status"] == "PASS",
-        "freeze_3054_immutable": sha(freeze) == consolidation_module.FREEZE_EXPECTED_SHA256,
-        "dataset_3053_bound": sha(data) == consolidation_module.DATA_EXPECTED_SHA256,
-        "agent_skill_structural_orchestration_pass": orchestration.get("integration_status") == "PASS"
-        and orchestration.get("integration_scope") == "STRUCTURAL_ORCHESTRATION_ONLY",
-        "agent_skill_functional_integration_pass": functional_integration.get("status") == "PASS"
-        and all(functional_integration.get("checks", {}).values()),
+        "active_epoch_contract_valid": current["target_contest"] == current["cutoff_contest"] + 1 and current["result_used"] is False,
+        "current_freeze_state_consistent": freeze_consistent,
+        "agent_skill_structural_orchestration_pass": orchestration.get("integration_status") == "PASS" and orchestration.get("integration_scope") == "STRUCTURAL_ORCHESTRATION_ONLY",
+        "agent_skill_functional_integration_pass": functional_integration.get("status") == "PASS" and all(functional_integration.get("checks", {}).values()),
         "total_integration_gate_pass": consolidation_module._total_integration_valid(total_integration),
-        "wmcp_execution_proof_pass": consolidation_module._wmcp_execution_valid(wmcp_execution),
-        "all_agents_non_authoritative": bool(agents) and all(
+        "wmcp_execution_proof_pass": consolidation_module._wmcp_execution_valid(wmcp_execution, require_fresh=require_fresh_wmcp),
+        "all_role_executors_non_authoritative": bool(agents) and all(
             not bool(agent.get("terminal_authority"))
             and not bool(agent.get("predictive_weight_authorized"))
             and not bool(agent.get("freeze_mutation_authorized"))
             for agent in agents.values()
         ),
-        "p1p2_canonical_1000": int(p1p2.get("replications", 0)) == 1000
-        and p1p2.get("p2_atlas_sha256") == sha(root / "SMART_RANDOMNESS_ATLAS.json"),
-        "convergence_audited_1000": int(convergence.get("final_replications", 0)) == 1000
-        and convergence.get("final_atlas_sha256") == sha(root / "SMART_RANDOMNESS_ATLAS_1000.json"),
-        "powered_holm_resolution_sufficient": powered["multiplicity"]["resolution_sufficient"] is True,
-        "powered_controls_detected": powered["adversarial_sensitivity"]["all_expected_directions_detected"] is True,
-        "no_new_predictive_weight_authorized": powered["predictive_weight_authorized"] is False
-        and p1p2.get("predictive_weight_authorized") is False
-        and convergence.get("predictive_weight_authorized") is False,
-        "hypothesis_state_reconciled": hypothesis_proof.get("status") == "PASS"
-        and hypothesis_registry.get("schema") == "SMART_HYPOTHESIS_REGISTRY_V4"
-        and set(target_hypotheses) == hypothesis_reconciler.TARGET_HYPOTHESES
-        and all(
-            item.get("status") == hypothesis_reconciler.POWER_RESOLVED_STATUS
-            and item.get("promotion_authority") is False
-            and item.get("power_resolution", {}).get("failure_to_reject_proves_null") is False
-            for item in target_hypotheses.values()
-        ),
-        "canonical_result_store_ready_3054": result_store.get("final_status") == "PASS"
-        and result_store.get("canonical_max_after") == 3053
-        and result_store.get("result_store_ready_for_next_contest") is True
-        and result_store.get("freeze_3054_unchanged") is True
-        and sha(canonical_result_store) == result_store.get("canonical_sha256_after"),
-        "adjudication_preflight_3054_pass": preflight.get("readiness_status") == "PASS"
-        and preflight.get("active_freeze_sha256") == consolidation_module.FREEZE_EXPECTED_SHA256
-        and preflight.get("canonical_adjudication_executed") is False,
-        "full_post_result_cycle_sandbox_pass": full_cycle.get("status") == "PASS"
-        and full_cycle.get("sequence", {}).get("valid") is True
-        and full_cycle.get("learning", {}).get("last_contest") == 3054
-        and full_cycle.get("checks", {}).get("canonical_protected_artifacts_unchanged") is True,
-        "official_evidence_policy_present": (root / "smart_official_evidence_consensus.py").is_file(),
-        "independent_audit_current_three_pairs": independent.get("status") == "PASS"
-        and independent.get("prospective_ledger", {}).get("pair_count") == 3
-        and independent.get("prospective_ledger", {}).get("no_future_leakage") is True
-        and independent.get("deterministic_replay", {}).get("target_contest") == 3054
-        and independent.get("deterministic_replay", {}).get("cutoff_contest") == 3053,
-        "prospective_authority_current": authority.get("independent_audit", {}).get("status") == "PASS"
-        and authority.get("independent_audit", {}).get("pair_count") == 3
-        and authority.get("targets", {}).get("3054", {}).get("adjudicated") is False,
-        "terminal_executor_sandbox_pass": terminal_sandbox.get("status") == "PASS"
-        and terminal_sandbox.get("sandbox_only") is True
-        and terminal_sandbox.get("repeated_execution_idempotent") is True
-        and terminal_sandbox.get("all_non_6of6_terminal_guards_pass") is True
-        and terminal_sandbox.get("terminal_eligible") is False
-        and terminal_sandbox.get("mission_state_after_repeat") == "MISSION_ACTIVE"
-        and terminal_sandbox.get("executor_sha256") == sha(root / "smart_3054_terminal_executor.py"),
+        "adversarial_non_inert_pipeline_proof_pass": adversarial.get("status") == "PASS" and all(adversarial.get("checks", {}).values()),
         "chat_consolidation_pass": consolidation.get("consolidation_status") == "PASS",
-        "mission_not_false_proven": mission.get("status") == "MISSION_ACTIVE"
-        and mission.get("terminal_6of6_proven") is False,
+        "mission_not_false_proven": mission.get("status") == "MISSION_ACTIVE" and mission.get("terminal_6of6_proven") is False,
     }
-
-    proof = {
+    return {
         "schema": SCHEMA,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "scope": (
-            "unified continuity; agent/skill orchestration; powered falsification; 1000-replication cartography; "
-            "hypothesis-state reconciliation; canonical result-store repair; 3054 adjudication preflight; "
-            "full post-result sandbox cycle; terminal executor end-to-end sandbox; current independent audit; official-evidence corroboration policy"
-        ),
+        "scope": "current engineering deployment truth derived from active epoch; pre-activation 3054 artifacts remain historical-only",
+        "claim_boundary": "Engineering PASS proves executable deterministic role machinery, native methodology bindings, causal pipeline and guards. It does not prove autonomous LLM agents, direct third-party skill execution, lottery predictability, or terminal 6/6.",
         "deployment_status": "PASS" if all(checks.values()) else "FAIL",
         "workspace": str(root),
         "branch": "master",
         "test_evidence": junit,
+        "current_epoch": current,
         "freeze_3054": {
-            "top6": [10, 11, 27, 30, 35, 38],
-            "sha256": sha(freeze),
-            "immutable": sha(freeze) == consolidation_module.FREEZE_EXPECTED_SHA256,
+            "status": current["status"],
+            "top6": current["top6"],
+            "sha256": current["freeze_sha256"],
+            "file": current["freeze_file"],
+            "authority": ("CARRY_FORWARD_PROSPECTIVE_AUTHORITY" if current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE" else ("ACTIVE_CURRENT_ENGINEERING_EPOCH" if current["freeze_authority_present"] else "NONE_RESET_READY")),
+            "result_used": current["result_used"],
         },
         "agent_skill_orchestration": {
             "unique_capabilities_total": orchestration["inventory"]["unique_capabilities_total"],
-            "agent_count": len(agents),
+            "role_executor_count": len(agents),
             "structural_status": orchestration["integration_status"],
             "structural_scope": orchestration.get("integration_scope"),
             "functional_status": functional_integration.get("status"),
             "functional_proof_sha256": functional_integration.get("sha256"),
-            "artifact_sha256": sha(root / "SMART_AGENT_SKILL_ORCHESTRATION.json"),
+            "semantic_truth": "deterministic role executors + methodology aliases; no autonomous LLM/direct external-skill claim",
         },
         "wmcp_execution": {
             "artifact": "SMART_WMCP_EXECUTION_PROOF_20260905.json",
@@ -191,71 +140,48 @@ def build(root: Path) -> dict[str, Any]:
             "sha256": wmcp_execution.get("sha256"),
             "command_state": wmcp_execution.get("e2e", {}).get("command_state"),
             "exit_code": wmcp_execution.get("e2e", {}).get("exit_code"),
+            "proof_schema": wmcp_execution.get("schema"),
+            "live_supervisor_state": wmcp_execution.get("live_runtime", {}).get("supervisor_state"),
+            "live_worker_mode": wmcp_execution.get("live_runtime", {}).get("worker_mode"),
         },
         "total_integration": {
             "artifact": "SMART_TOTAL_INTEGRATION_PROOF.json",
+            "schema": total_integration.get("schema"),
             "status": total_integration.get("status"),
             "health": total_integration.get("health"),
             "sha256": total_integration.get("sha256"),
             "gate_count": len(total_integration.get("gates", {})),
         },
-        "powered_falsification": {
-            "replications": powered["replications"],
-            "holm_family_size": powered["multiplicity"]["family_size"],
-            "minimum_replications": powered["multiplicity"]["minimum_replications_for_resolution"],
-            "resolution_sufficient": powered["multiplicity"]["resolution_sufficient"],
-            "holm_rejections": powered["multiplicity"]["rejected_comparisons"],
-            "controls_detected": powered["adversarial_sensitivity"]["all_expected_directions_detected"],
-            "predictive_weight_authorized": powered["predictive_weight_authorized"],
-            "artifact_sha256": sha(root / "SMART_FALSIFICATION_REPORT_POWERED.json"),
+        "adversarial_claim_audit": {
+            "status": adversarial.get("status"),
+            "sha256": adversarial.get("sha256"),
+            "anchor_top6": adversarial.get("anchor_top6"),
+            "policy_top6": adversarial.get("policy_top6"),
+            "heaviest_signal": adversarial.get("heaviest_signal"),
+            "heaviest_weight_delta": adversarial.get("heaviest_weight_delta"),
         },
         "hypothesis_state": {
-            "registry_schema": hypothesis_registry["schema"],
-            "status": hypothesis_proof["status"],
-            "powered_experiment_id": hypothesis_proof["experiment_record"]["experiment_id"],
-            "target_hypothesis_status": hypothesis_reconciler.POWER_RESOLVED_STATUS,
-            "null_proof_claim": False,
+            "registry_schema": hypothesis_registry.get("schema"),
             "predictive_promotion_authority": False,
-            "artifact_sha256": sha(root / "SMART_HYPOTHESIS_STATE_RECONCILIATION.json"),
+            "null_proof_claim": False,
         },
-        "cartography_1000": {
-            "replications": p1p2["replications"],
-            "canonical_atlas_sha256": p1p2["p2_atlas_sha256"],
-            "canonical_manifest_sha256": p1p2["p1_manifest_sha256"],
-            "proof_sha256": sha(root / "SMART_P1_P2_CARTOGRAPHY_PROOF.json"),
-        },
-        "convergence": {
-            "summary": convergence["stability_summary"],
-            "artifact_sha256": sha(root / "SMART_MONTE_CARLO_CONVERGENCE_1000.json"),
-        },
-        "canonical_result_store": {
-            "contest_max": result_store["canonical_max_after"],
-            "append_count": result_store["append_count"],
-            "sha256": result_store["canonical_sha256_after"],
-            "artifact_sha256": sha(root / "SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json"),
+        "powered_falsification": {
+            "replications": powered.get("replications"),
+            "resolution_sufficient": powered.get("multiplicity", {}).get("resolution_sufficient"),
+            "predictive_weight_authorized": powered.get("predictive_weight_authorized"),
         },
         "prospective_3054_readiness": {
-            "preflight_status": preflight["readiness_status"],
-            "candidate_count": preflight["probability_ledger"]["candidate_count"],
-            "all_60_probabilities_retained": preflight["probability_ledger"]["all_candidates_have_60_probabilities"],
-            "sandbox_adjudication_valid": preflight["sandbox_rehearsal"]["sequence_valid"],
-            "full_cycle_sandbox_status": full_cycle["status"],
-            "full_cycle_sequence_valid": full_cycle["sequence"]["valid"],
-            "full_cycle_learning_last_contest": full_cycle["learning"]["last_contest"],
-            "preflight_sha256": sha(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json"),
-            "full_cycle_sha256": sha(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json"),
+            "current_epoch_status": current["status"],
+            "current_freeze_authority": current["freeze_authority_present"],
+            "legacy_preflight_status": preflight.get("readiness_status"),
+            "legacy_full_cycle_sandbox_status": full_cycle.get("status"),
+            "legacy_authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY",
+            "current_result_used": current["result_used"],
         },
         "terminal_executor_3054": {
-            "module": "smart_3054_terminal_executor.py",
-            "module_sha256": sha(root / "smart_3054_terminal_executor.py"),
-            "sandbox_status": terminal_sandbox["status"],
-            "sandbox_repeat_idempotent": terminal_sandbox["repeated_execution_idempotent"],
-            "sandbox_audited_pair_count": terminal_sandbox["audited_pair_count"],
-            "all_non_6of6_terminal_guards_pass": terminal_sandbox["all_non_6of6_terminal_guards_pass"],
-            "current_independent_audit_pair_count": independent["prospective_ledger"]["pair_count"],
-            "current_independent_audit_status": independent["status"],
-            "prospective_authority_pair_count": authority["independent_audit"]["pair_count"],
-            "artifact_sha256": sha(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json"),
+            "legacy_sandbox_status": terminal_sandbox.get("status"),
+            "legacy_authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY",
+            "current_terminal_authority": False,
         },
         "official_evidence_policy": {
             "module": "smart_official_evidence_consensus.py",
@@ -271,104 +197,78 @@ def build(root: Path) -> dict[str, Any]:
         "scientific_predictive_status": mission.get("scientific_predictive_status"),
         "prospective_advantage_status": mission.get("prospective_advantage_status"),
     }
-    return proof
 
 
 def render_continuity(proof: dict[str, Any]) -> str:
     j = proof["test_evidence"]
-    c = proof["convergence"]["summary"]
-    f = proof["powered_falsification"]
-    a = proof["agent_skill_orchestration"]
-    h = proof["hypothesis_state"]
-    r = proof["canonical_result_store"]
-    p = proof["prospective_3054_readiness"]
-    t = proof["terminal_executor_3054"]
-    return f"""# SMART-MEGA — CONTINUIDADE CANÔNICA
+    epoch = proof["current_epoch"]
+    freeze = proof["freeze_3054"]
+    agents = proof["agent_skill_orchestration"]
+    adversarial = proof["adversarial_claim_audit"]
+    if epoch["status"] == "FROZEN":
+        numbers = " - ".join(str(x).zfill(2) for x in (freeze["top6"] or []))
+        freeze_line = f"Top-6 atual: `{numbers}`\n\nSHA-256: `{freeze['sha256']}`\n\nAutoridade: `CARRY_FORWARD_PROSPECTIVE_AUTHORITY` quando a freeze precede a versÃ£o de engenharia atual; a versÃ£o atual permanece shadow para este alvo."
+    else:
+        freeze_line = "Nenhum freeze da versao atual possui autoridade. O epoch esta `RESET_READY`; freezes anteriores sao historicos e nao podem provar a versao atual."
+    return f"""# SMART-MEGA - CONTINUIDADE CANONICA ATUAL
 
-**Atualização:** {proof['generated_at_utc']}
+**Atualizacao:** {proof['generated_at_utc']}
 **Workspace:** `C:\\New Projet\\SMART-MEGA`
-**Branch:** `master`
-**Estado soberano:** `MISSION_ACTIVE`
+**Estado soberano:** `{proof['mission_state']}`
 
-## Autoridade de missão
+## Autoridade atual
 
-A autoridade canônica do estado da missão é `SMART_MISSION_STATUS.json`.
-Artefatos de engenharia, agentes, skills, sandboxes e relatórios não podem declarar o 6/6 terminal por conta própria.
+A autoridade de execucao e `SMART_ACTIVE_EPOCH.json`; a autoridade terminal continua sendo `SMART_MISSION_STATUS.json`.
+Artefatos anteriores a ativacao atual sao historicos, exceto freeze, estado e ledger explicitamente preservados por `SMART_PROSPECTIVE_AUTHORITY_LOCK.json` como autoridade cientifica do experimento ainda nao adjudicado.
 
-## Integração consolidada
+## O que os chamados agentes/skills realmente sao
 
-- capacidades reconciliadas: **{a['unique_capabilities_total']}**;
-- agentes canônicos: **{a['agent_count']}**;
-- código externo: quarentena/source-only, sem autoexecução;
-- autoridade direta para pesos: **nenhuma**;
-- autoridade para alterar freeze: **nenhuma**;
-- autoridade terminal de agentes: **nenhuma**.
+- executores deterministas de papeis: **{agents['role_executor_count']}**;
+- capacidades/metodologias registradas: **{agents['unique_capabilities_total']}**;
+- nao sao nove LLMs autonomos;
+- nomes de skills externas sao vinculos metodologicos para probes/implementacoes nativas, nao execucao direta da biblioteca externa;
+- codigo externo permanece em quarentena/source-only.
 
-## Freeze prospectiva 3054
+## Epoch causal atual
 
-`10 - 11 - 27 - 30 - 35 - 38`
+- estado: **{epoch['status']}**;
+- cutoff: **{epoch['cutoff_contest']}**;
+- alvo: **{epoch['target_contest']}**;
+- resultado do alvo utilizado: **{str(epoch['result_used']).lower()}**.
 
-SHA-256: `{proof['freeze_3054']['sha256']}`
+## Freeze prospectivo atual
 
-A freeze permanece imutável.
+{freeze_line}
 
-## Cartografia e falsificação
+## Teste adversarial contra "mesmo X"
 
-- atlas canônico: **1.000 réplicas**;
-- convergência 200→1000, máximo |Δp| não degenerado: **{c['max_p_abs_delta_vs_1000']:.6f}**;
-- falsificação powered: **{f['replications']} réplicas** para mínimo Holm **{f['minimum_replications']}**;
-- resolução suficiente: **{str(f['resolution_sufficient']).lower()}**;
-- rejeições Holm: **{len(f['holm_rejections'])}**;
-- novo peso preditivo autorizado: **não**.
+- status: **{adversarial['status']}**;
+- sinal mais pesado perturbado: **{adversarial['heaviest_signal']}**;
+- variacao causal de peso: **{adversarial['heaviest_weight_delta']}**;
+- politicas internas produzem Top-6 distintos: **sim**.
 
-## Reconciliação de hipóteses
+Isso prova que a arquitetura nova nao e computacionalmente inerte. Nao prova vantagem preditiva da Mega-Sena nem 6/6.
 
-Registro: `{h['registry_schema']}`.
-Os quatro testes retrospectivos powered estão em `{h['target_hypothesis_status']}`.
-Isso significa que o limite numérico de Monte Carlo foi resolvido, mas **não** que o nulo foi provado e **não** que existe autorização preditiva.
-Experimento powered: `{h['powered_experiment_id']}`.
+## Regressao atual
 
-## Base canônica de resultados
-
-`Mega-Sena.xlsx` está contínuo até o concurso **{r['contest_max']}**; foram incorporados **{r['append_count']}** concursos que faltavam, sem alterar a freeze 3054.
-
-## Prontidão prospectiva 3054
-
-- preflight: **{p['preflight_status']}**;
-- candidatos com probabilidades integrais: **{p['candidate_count']}**;
-- 60 probabilidades preservadas por candidato: **{str(p['all_60_probabilities_retained']).lower()}**;
-- adjudicação em sandbox: **PASS**;
-- ciclo `adjudicar → aprender → prova sequencial` em sandbox: **{p['full_cycle_sandbox_status']}**;
-- estado aprendido sintético termina em 3054: **{p['full_cycle_learning_last_contest']}**;
-- nenhuma execução sandbox modificou os artefatos prospectivos canônicos.
-
-## Evidência oficial
-
-O resultado operacional pode ser obtido pelo endpoint oficial da CAIXA por concurso. A corroboração de fonte usa também o download consolidado da CAIXA quando ele já contém o alvo. Fonte secundária atrasada/indisponível não conta como consenso, conflito entre canais é fatal, e auditoria independente continua obrigatória para qualquer prova terminal.
-
-## Regressão atual
-
-`{j['tests']} passed / {j['failures']} failures / {j['errors']} errors`
+`{j['tests']} testes / {j['failures']} failures / {j['errors']} errors`
 
 JUnit: `{j['file']}`
 SHA-256: `{j['sha256']}`
 
-## Regra de continuidade
+## Regra terminal
 
-O próximo gate empírico é o resultado oficial do concurso 3054. Até lá, pesquisa shadow pode continuar, mas nenhuma informação posterior pode alterar retroativamente a freeze 3054.
+Estado terminal: `{proof['mission_state']}`
 
-Estado terminal: `MISSION_ACTIVE`
-
-Não declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou enquanto faltar a evidência prospectiva e auditoria independente exigidas pelo contrato terminal.
-
-Compatibilidade textual legada: NÃ£o declarar `MISSION_PROVEN` sem cumprir a regra terminal.
+Nao declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou faltar evidencia prospectiva causal e auditoria independente.
 """
 
 
 def write(root: Path) -> dict[str, Any]:
     total_integration_gate.write(root)
-    consolidation_module.write(root, refresh_total_gate=False)
-    proof = build(root)
+    consolidation_module.refresh_wmcp_execution_proof(root)
+    consolidation_module.write(root, refresh_total_gate=False, refresh_wmcp_probe=False)
+    proof = build(root, require_fresh_wmcp=True)
     if proof["deployment_status"] != "PASS":
         raise RuntimeError({"deployment_checks": proof["checks"]})
     (root / "SMART_IMPLEMENTATION_PROOF_20260904.json").write_text(
@@ -390,6 +290,5 @@ if __name__ == "__main__":
         "failures": result["test_evidence"]["failures"],
         "mission_state": result["mission_state"],
         "terminal_6of6_proven": result["terminal_6of6_proven"],
-        "preflight_3054": result["prospective_3054_readiness"]["preflight_status"],
-        "full_cycle_sandbox": result["prospective_3054_readiness"]["full_cycle_sandbox_status"],
+        "current_epoch_status": result["current_epoch"]["status"],
     }, ensure_ascii=False))

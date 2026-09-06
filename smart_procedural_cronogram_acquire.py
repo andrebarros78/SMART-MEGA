@@ -4,10 +4,12 @@ import hashlib, json, time
 from pathlib import Path
 from urllib.parse import quote
 import requests
+from smart_http_guard import read_limited_bytes
 
 BASE='https://www.caixa.gov.br/Downloads/caixa-loterias/'
 MONTHS={1:'Janeiro',2:'Fevereiro',3:'Marco',4:'Abril',5:'Maio',6:'Junho',7:'Julho',8:'Agosto',9:'Setembro',10:'Outubro',11:'Novembro',12:'Dezembro'}
 OUT=Path('runtime/procedural_sources/cronogramas_caixa')
+PDF_MAX_BYTES=32*1024*1024
 
 def sha256_bytes(b:bytes)->str:
     return hashlib.sha256(b).hexdigest()
@@ -32,11 +34,12 @@ def main():
             for stem in variants(year,month):
                 url=BASE+quote(stem,safe='/:._-')
                 try:
-                    r=sess.get(url,timeout=10)
-                    attempts.append({'url':url,'status':r.status_code,'bytes':len(r.content)})
-                    if r.status_code==200 and r.content.startswith(b'%PDF') and len(r.content)>1000:
-                        path=OUT/f'{year}-{month:02d}.pdf'; path.write_bytes(r.content)
-                        found={'year':year,'month':month,'status':'FOUND','url':url,'file':str(path),'bytes':len(r.content),'sha256':sha256_bytes(r.content)}
+                    r=sess.get(url,timeout=10,stream=True)
+                    body=read_limited_bytes(r,max_bytes=PDF_MAX_BYTES)
+                    attempts.append({'url':url,'status':r.status_code,'bytes':len(body)})
+                    if r.status_code==200 and body.startswith(b'%PDF') and len(body)>1000:
+                        path=OUT/f'{year}-{month:02d}.pdf'; path.write_bytes(body)
+                        found={'year':year,'month':month,'status':'FOUND','url':url,'file':str(path),'bytes':len(body),'sha256':sha256_bytes(body)}
                         break
                 except Exception as exc:
                     attempts.append({'url':url,'error':type(exc).__name__})

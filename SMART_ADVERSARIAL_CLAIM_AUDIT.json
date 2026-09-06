@@ -1,0 +1,153 @@
+{
+  "schema": "SMART_ADVERSARIAL_CLAIM_AUDIT_1",
+  "generated_utc": "2026-09-06T01:52:09.523428+00:00",
+  "status": "PASS",
+  "target_contest": 3054,
+  "cutoff_contest": 3053,
+  "data_file": "Mega-Sena.xlsx",
+  "data_sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+  "checks": {
+    "causal_cutoff_exact": true,
+    "dynamic_weights_nonuniform": true,
+    "multiple_policy_outputs_exist": true,
+    "signal_weight_responds_to_quality_degradation": true,
+    "meta_governor_blocks_unpromoted_alternate": true,
+    "current_result_not_used": true
+  },
+  "anchor_top6": [
+    11,
+    30,
+    27,
+    35,
+    10,
+    38
+  ],
+  "policy_top6": {
+    "quality_dynamic": [
+      11,
+      30,
+      27,
+      35,
+      10,
+      38
+    ],
+    "diversity_max": [
+      30,
+      11,
+      16,
+      58,
+      6,
+      35
+    ],
+    "low_redundancy": [
+      11,
+      30,
+      35,
+      27,
+      38,
+      10
+    ],
+    "regime_context": [
+      11,
+      30,
+      27,
+      35,
+      10,
+      38
+    ],
+    "conservative": [
+      11,
+      30,
+      16,
+      27,
+      35,
+      58
+    ]
+  },
+  "distinct_top6_sets": 3,
+  "weights": {
+    "freq25": 0.03409447283783795,
+    "freq50": 0.058819470715240706,
+    "freq100": 0.05591574331950535,
+    "freq250": 0.03838402264700306,
+    "freq500": 0.06121570378612382,
+    "freq1000": 0.38841919041297646,
+    "freq_global": 0.06315139628131278,
+    "ewma10": 0.057737296103885914,
+    "ewma25": 0.030533866522047516,
+    "ewma50": 0.029060174907102884,
+    "ewma100": 0.02822716336770221,
+    "ewma250": 0.1544414990992615
+  },
+  "weight_range": 0.36019202704527425,
+  "heaviest_signal": "freq1000",
+  "heaviest_weight_before": 0.38841919041297646,
+  "heaviest_weight_after_forced_quality_degradation": 0.004166666666674177,
+  "heaviest_weight_delta": 0.38425252374630225,
+  "meta_governor": {
+    "schema": "SMART_META_GOVERNOR_1",
+    "observations_before_result": 2053,
+    "eta": 0.11552453009332421,
+    "prior_mix": 0.2,
+    "policy_weights_before_result": {
+      "quality_dynamic": 0.32431394694495086,
+      "diversity_max": 0.04628250999595882,
+      "low_redundancy": 0.1295532816336563,
+      "regime_context": 0.44208063974137524,
+      "conservative": 0.05776962168405882
+    },
+    "anchor_policy": "quality_dynamic",
+    "allow_alternate_selection": false,
+    "alternate_activation_mode": "EXPLICIT_PROSPECTIVE_PROMOTION_REQUIRED",
+    "hedge_candidate_policy": "regime_context",
+    "alternate_authorized": false,
+    "alternate_evidence": {
+      "observations": 2053,
+      "log_weight_lead_vs_anchor": 0.34657359027997536,
+      "cumulative_hit_lead_vs_anchor": 3,
+      "min_observations": 20,
+      "min_log_weight_lead": 0.6931471805599453,
+      "min_cumulative_hit_lead": 1,
+      "blockers": [
+        "explicit_prospective_promotion_required",
+        "insufficient_log_weight_lead"
+      ]
+    },
+    "selected_policy": "quality_dynamic",
+    "selected_top6": [
+      11,
+      30,
+      27,
+      35,
+      10,
+      38
+    ],
+    "selected_policy_sha256": "96818153b22bb9eb0c8fb03a036479deecb1b4e8431fec05ce559507967e5bb0",
+    "selection_causal": true,
+    "selection_uses_current_result": false,
+    "selection_scope": "P07_CHALLENGERS_ONLY",
+    "production_authority": false,
+    "champion_remains_active": true,
+    "retroactive_selection_prohibited": true,
+    "sha256": "cdbe89b9b02d173e00f06a84b90c3ab4c27d792fb0bc1f3935895f6ed832af43",
+    "decision_top6_applied": [
+      11,
+      30,
+      27,
+      35,
+      10,
+      38
+    ],
+    "decision_source": "quality_dynamic_anchor"
+  },
+  "walk_forward_mean_hits": 0.6186069167072576,
+  "walk_forward_excess_hits": 38.200000000000045,
+  "claim": "The current SMART predictive pipeline is not output-inert: actual policies produce multiple Top-6 sets and signal weights causally respond to quality degradation. This does not prove lottery predictability or 6/6.",
+  "component_hashes": {
+    "smart_signal_agent.py": "68586766612219936d8d8ee505cf8d0fbcc8fef191a3c2c2075dac8dea8cc692",
+    "smart_signal_weights.py": "c8fe83045e9db20b8ec077dd0cfa3007a0d01d42a254e106337b4000969a4681",
+    "smart_multi_challengers.py": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+    "smart_meta_governor.py": "4eb8041090a93d592ed269084c19e1a134d247663d2c50545e6501d1f052b6bc"
+  },
+  "sha256": "fcc1f3541a092c7a3c2f86735bb604abc60d14ecf4f53668d776f8f6cee0284d"
+}

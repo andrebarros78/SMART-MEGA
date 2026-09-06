@@ -1,6 +1,6 @@
 # SMART-MEGA — CONTINUIDADE CANÔNICA
 
-**Atualização:** 2026-09-05T19:30:38.496904+00:00
+**Atualização:** 2026-09-05T23:55:06.268563+00:00
 **Workspace:** `C:\New Projet\SMART-MEGA`
 **Branch:** `master`
 **Estado soberano:** `MISSION_ACTIVE`
@@ -63,10 +63,10 @@ O resultado operacional pode ser obtido pelo endpoint oficial da CAIXA por concu
 
 ## Regressão atual
 
-`587 passed / 0 failures / 0 errors`
+`605 passed / 0 failures / 0 errors`
 
 JUnit: `SMART_AUDIT_JUNIT_CURRENT.xml`
-SHA-256: `8e35275095d31c48b7d4b36ad406bc8accf41476a47ae37e99c3126ae58d04d6`
+SHA-256: `adc011791da94bf1a444d7551ab33432db1cfc29a45f6b9c9c7d5637f01a3b69`
 
 ## Regra de continuidade
 

@@ -25,6 +25,8 @@ def test_every_pertinent_capability_is_individually_callable():
         assert result["capability"] == capability
         assert result["executed_functions"]
         assert result["external_source_executed"] is False
+        assert result["direct_named_skill_execution"] is False
+        assert result["semantic_binding_kind"] == "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE"
         assert len(result["invocation_sha256"]) == 64
 
 
