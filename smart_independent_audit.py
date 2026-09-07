@@ -1313,7 +1313,7 @@ def audit_deterministic_replay(root: Path, data_path: Path, target: int, start: 
 
         draws, contests, target_contest=int(target), cutoff_timestamp=fixed_ts,
 
-        cutoff_timestamp_kind='independent_audit_fixed_cutoff'
+        cutoff_timestamp_kind='independent_audit_fixed_cutoff', champion_top6=champion_a['top6']
 
     )
 
@@ -1323,7 +1323,7 @@ def audit_deterministic_replay(root: Path, data_path: Path, target: int, start: 
 
         draws, contests, target_contest=int(target), cutoff_timestamp=fixed_ts,
 
-        cutoff_timestamp_kind='independent_audit_fixed_cutoff'
+        cutoff_timestamp_kind='independent_audit_fixed_cutoff', champion_top6=champion_a['top6']
 
     )
 

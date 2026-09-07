@@ -140,6 +140,27 @@ def _compare_map(observed: dict[str, Any], expected: dict[str, float], label: st
             raise ValueError(f'{label} mismatch at {key}')
 
 
+def _contrastive_guard_independent(primary_top6: list[int], ranking60: list[int], champion_top6: list[int], minimum_novelty: int = 1) -> list[int]:
+    primary = [int(x) for x in primary_top6]
+    ranking = [int(x) for x in ranking60]
+    champion = [int(x) for x in champion_top6]
+    if len(primary) != 6 or len(set(primary)) != 6 or len(champion) != 6 or len(set(champion)) != 6:
+        raise ValueError('oracle diversity guard top6 invalid')
+    if len(ranking) != 60 or len(set(ranking)) != 60:
+        raise ValueError('oracle diversity guard ranking invalid')
+    champion_set = set(champion)
+    if len(set(primary) - champion_set) >= int(minimum_novelty):
+        return primary
+    final = list(primary)
+    # ranking is a 60-item permutation while Champion contains only six numbers,
+    # therefore at least one contrastive replacement is mathematically guaranteed.
+    replacement = next(n for n in ranking if n not in champion_set and n not in final[:-1])
+    final[-1] = int(replacement)
+    if len(set(final) - champion_set) < int(minimum_novelty):
+        raise ValueError('oracle diversity guard minimum novelty failed')
+    return final
+
+
 def validate_prediction_snapshot(prediction: dict[str, Any]) -> dict[str, Any]:
     if not isinstance(prediction, dict):
         raise ValueError('oracle prediction must be object')
@@ -191,6 +212,30 @@ def validate_prediction_snapshot(prediction: dict[str, Any]) -> dict[str, Any]:
             raise ValueError('oracle meta governor selected_top6 invalid')
         expected_final = [int(x) for x in selected]
         decision_mode = 'authorized_meta_governor'
+    guard = prediction.get('challenger_diversity_guard')
+    if isinstance(guard, dict) and guard.get('active') is True:
+        if (
+            guard.get('result_used') is not False
+            or guard.get('promotion_authority') is not False
+            or guard.get('shadow_only') is not True
+            or guard.get('decision_effect') is not False
+            or guard.get('applied') is not False
+        ):
+            raise ValueError('oracle diversity guard authority semantics invalid')
+        champion = guard.get('champion_top6')
+        minimum_novelty = guard.get('minimum_novelty', 1)
+        if not isinstance(champion, list) or isinstance(minimum_novelty, bool):
+            raise ValueError('oracle diversity guard payload invalid')
+        shadow = _contrastive_guard_independent(expected_final, ranking, champion, int(minimum_novelty))
+        if [int(x) for x in guard.get('primary_top6', [])] != expected_final:
+            raise ValueError('oracle diversity guard primary mismatch')
+        if [int(x) for x in guard.get('final_top6', [])] != expected_final:
+            raise ValueError('oracle diversity guard final mismatch')
+        if [int(x) for x in guard.get('shadow_top6', [])] != shadow:
+            raise ValueError('oracle diversity guard shadow mismatch')
+        generated = shadow != expected_final
+        if guard.get('shadow_candidate_generated') is not generated:
+            raise ValueError('oracle diversity guard generated flag mismatch')
     stored_top6 = prediction['top6']
     if not isinstance(stored_top6, list) or [int(x) for x in stored_top6] != expected_final:
         raise ValueError('oracle final top6 mismatch')

@@ -44,7 +44,9 @@ from smart_multi_challengers import build_multi_challengers
 
 from smart_meta_governor import MetaGovernor
 
-from smart_bounded_online_learning import BoundedOnlineLearningGuard
+from smart_bounded_online_learning import (
+    BoundedOnlineLearningGuard, DEFAULT_MAX_ABS_STEP, DEFAULT_WARMUP_MAX_ABS_STEP,
+)
 from smart_learning_activation_gate import ActivationDecision
 
 
@@ -52,6 +54,11 @@ from smart_learning_activation_gate import ActivationDecision
 AGENT_SCHEMA = 'SMART_SIGNAL_AGENT_9'
 
 SIGNAL_NAMES = tuple([f'freq{w}' for w in e.FREQ_WINDOWS] + ['freq_global'] + [f'ewma{s}' for s in e.EWMA_SPANS])
+
+DIVERSITY_HARDENING_ACTIVATION_TARGET = 3056
+HARDENED_REDUNDANCY_THRESHOLD = 0.85
+HARDENED_ONLINE_MAX_ABS_STEP = 0.75
+MIN_CHALLENGER_NOVELTY = 1
 
 
 
@@ -119,6 +126,8 @@ class SignalPrediction:
 
     bounded_online_learning: dict[str, Any]
 
+    challenger_diversity_guard: dict[str, Any]
+
 
 
     def as_dict(self) -> dict[str, Any]:
@@ -171,6 +180,8 @@ class SignalPrediction:
 
             'bounded_online_learning': self.bounded_online_learning,
 
+            'challenger_diversity_guard': self.challenger_diversity_guard,
+
             'utility_source': 'SMART champion two-level Hedge before redundancy penalty',
 
         }
@@ -189,6 +200,67 @@ def _apply_governor_decision(base_top6: list[int], governor: dict[str, Any]) -> 
     return base, 'quality_dynamic_anchor'
 
 
+def _strict_top6(values: Any, label: str) -> list[int]:
+    if not isinstance(values, (list, tuple)):
+        raise ValueError(f'{label} must be a sequence')
+    out = [int(x) for x in values]
+    if len(out) != 6 or len(set(out)) != 6 or min(out) < 1 or max(out) > 60:
+        raise ValueError(f'{label} must contain six unique numbers in 1..60')
+    return out
+
+
+def _contrastive_diversity_guard(primary_top6: list[int], ranking60: list[int], champion_top6: list[int] | None,
+                                  target_contest: int) -> dict[str, Any]:
+    primary = _strict_top6(primary_top6, 'primary challenger top6')
+    ranking = [int(x) for x in ranking60]
+    if len(ranking) != 60 or len(set(ranking)) != 60 or min(ranking) < 1 or max(ranking) > 60:
+        raise ValueError('ranking60 must be a permutation of 1..60')
+    target = int(target_contest)
+    active = bool(target >= DIVERSITY_HARDENING_ACTIVATION_TARGET and champion_top6 is not None)
+    if not active:
+        return {
+            'schema': 'SMART_CHALLENGER_DIVERSITY_GUARD_2',
+            'active': False, 'applied': False, 'shadow_only': True,
+            'target_contest': target, 'activation_target': DIVERSITY_HARDENING_ACTIVATION_TARGET,
+            'minimum_novelty': MIN_CHALLENGER_NOVELTY,
+            'primary_top6': primary, 'final_top6': primary, 'shadow_top6': primary,
+            'novelty_before': None, 'shadow_novelty_after': None,
+            'champion_top6': None if champion_top6 is None else _strict_top6(champion_top6, 'champion top6'),
+            'shadow_candidate_generated': False, 'decision_effect': False,
+            'result_used': False, 'promotion_authority': False,
+            'purpose': 'shadow-only contrast candidate; prospective evidence required before decision effect',
+        }
+    champion = _strict_top6(champion_top6, 'champion top6')
+    champion_set = set(champion)
+    novelty_before = len(set(primary) - champion_set)
+    shadow = list(primary)
+    removed = None
+    added = None
+    generated = False
+    if novelty_before < MIN_CHALLENGER_NOVELTY:
+        removed = shadow[-1]
+        replacement = next(n for n in ranking if n not in champion_set and n not in shadow[:-1])
+        shadow[-1] = int(replacement)
+        added = int(replacement)
+        generated = True
+    shadow_novelty_after = len(set(shadow) - champion_set)
+    if shadow_novelty_after < MIN_CHALLENGER_NOVELTY:
+        raise RuntimeError('challenger shadow diversity candidate failed minimum novelty')
+    return {
+        'schema': 'SMART_CHALLENGER_DIVERSITY_GUARD_2',
+        'active': True, 'applied': False, 'shadow_only': True,
+        'target_contest': target, 'activation_target': DIVERSITY_HARDENING_ACTIVATION_TARGET,
+        'minimum_novelty': MIN_CHALLENGER_NOVELTY,
+        'primary_top6': primary, 'final_top6': primary, 'shadow_top6': shadow,
+        'champion_top6': champion,
+        'novelty_before': int(novelty_before), 'shadow_novelty_after': int(shadow_novelty_after),
+        'removed_number': removed, 'added_number': added,
+        'shadow_candidate_generated': generated, 'decision_effect': False,
+        'result_used': False, 'promotion_authority': False,
+        'purpose': 'shadow-only contrast candidate; prospective evidence required before decision effect',
+    }
+
+
 class SmartSignalAgent:
 
     def __init__(self, start: int = 1000, eta: float = math.log(2), redundancy_threshold: float = DEFAULT_CORRELATION_THRESHOLD, meta_strength: float = DEFAULT_META_STRENGTH, calibration_strength: float = DEFAULT_CALIBRATION_STRENGTH, marginal_strength: float = 0.0, allow_meta_alternate_selection: bool = False, activation_decision: ActivationDecision | None = None, shadow_research_override: bool = False):
@@ -197,7 +269,13 @@ class SmartSignalAgent:
 
         self.eta = float(eta)
 
+        self.base_redundancy_threshold = float(redundancy_threshold)
+
         self.redundancy_threshold = float(redundancy_threshold)
+
+        self.online_max_abs_step = float(DEFAULT_MAX_ABS_STEP)
+
+        self.architecture_profile = 'LEGACY_COMPATIBLE'
 
         self.meta_strength = float(meta_strength)
 
@@ -248,12 +326,32 @@ class SmartSignalAgent:
 
         self.rank_calibrator = RankScoreCalibrator(strength=self.calibration_strength)
 
-        self.expert_learning_guard = BoundedOnlineLearningGuard(eta=self.eta, prior_observations=self.start)
+        warmup_cap = min(float(DEFAULT_WARMUP_MAX_ABS_STEP), float(self.online_max_abs_step))
 
-        self.family_learning_guard = BoundedOnlineLearningGuard(eta=self.eta, prior_observations=self.start)
+        self.expert_learning_guard = BoundedOnlineLearningGuard(
+            eta=self.eta, prior_observations=self.start,
+            max_abs_step=self.online_max_abs_step, warmup_max_abs_step=warmup_cap,
+        )
+
+        self.family_learning_guard = BoundedOnlineLearningGuard(
+            eta=self.eta, prior_observations=self.start,
+            max_abs_step=self.online_max_abs_step, warmup_max_abs_step=warmup_cap,
+        )
 
         self.meta_governor = MetaGovernor(allow_alternate_selection=self.allow_meta_alternate_selection)
 
+
+
+    def _configure_target_profile(self, target_contest: int) -> None:
+        target = int(target_contest)
+        if target >= DIVERSITY_HARDENING_ACTIVATION_TARGET:
+            self.architecture_profile = 'DIVERSITY_HARDENED_V1'
+            self.redundancy_threshold = min(float(self.base_redundancy_threshold), HARDENED_REDUNDANCY_THRESHOLD)
+            self.online_max_abs_step = HARDENED_ONLINE_MAX_ABS_STEP
+        else:
+            self.architecture_profile = 'LEGACY_COMPATIBLE'
+            self.redundancy_threshold = float(self.base_redundancy_threshold)
+            self.online_max_abs_step = float(DEFAULT_MAX_ABS_STEP)
 
 
     def _observe_signal_profiles(self, sc: dict[str, np.ndarray]) -> dict[str, int]:
@@ -359,7 +457,7 @@ class SmartSignalAgent:
 
                              redundancy_audit: dict[str, Any] | None = None,
 
-                             audit_detail: bool = True) -> SignalPrediction:
+                             audit_detail: bool = True, champion_top6: list[int] | None = None) -> SignalPrediction:
 
         if penalties is None:
 
@@ -459,6 +557,10 @@ class SmartSignalAgent:
         governor = self.meta_governor.select(multi)
         base_top6 = list(top6)
         top6, decision_source = _apply_governor_decision(base_top6, governor)
+        diversity_guard = _contrastive_diversity_guard(top6, ranking60, champion_top6, target_contest)
+        # The contrastive candidate is intentionally shadow-only. Historical
+        # non-regression screening rejected forced decision use; only future
+        # prospective evidence may authorize a decision-changing mechanism.
         governor['decision_top6_applied'] = list(top6)
         governor['decision_source'] = decision_source
 
@@ -491,6 +593,8 @@ class SmartSignalAgent:
                                      'family':self.family_learning_guard.state(),
 
                                      'update_after_result_only':True},
+
+            challenger_diversity_guard=diversity_guard,
 
         )
 
@@ -674,15 +778,19 @@ class SmartSignalAgent:
 
                      cutoff_timestamp: str | None = None,
 
-                     cutoff_timestamp_kind: str = 'unknown') -> tuple[SignalPrediction, dict[str, Any]]:
+                     cutoff_timestamp_kind: str = 'unknown',
 
-        backtest = self.replay_history(draws, contests)
+                     champion_top6: list[int] | None = None) -> tuple[SignalPrediction, dict[str, Any]]:
 
         target = int(target_contest if target_contest is not None else int(contests[-1]) + 1)
 
         if target <= int(contests[-1]):
 
             raise ValueError('target must be strictly after cutoff contest')
+
+        self._configure_target_profile(target)
+
+        backtest = self.replay_history(draws, contests)
 
         sc = {n: self._pre[n][len(draws)] for n in SIGNAL_NAMES}
         self._observe_signal_profiles(sc)
@@ -693,7 +801,9 @@ class SmartSignalAgent:
 
         prediction = self._predict_from_scores(sc, int(contests[-1]), target, cutoff_timestamp,
 
-                                               cutoff_timestamp_kind, utility_base, p03_penalties, p03_audit)
+                                               cutoff_timestamp_kind, utility_base, p03_penalties, p03_audit,
+
+                                               champion_top6=champion_top6)
 
         return prediction, backtest
 
@@ -708,6 +818,12 @@ class SmartSignalAgent:
                 'data_sha256': data_sha256, 'river_version_required': '0.26.1',
 
                 'redundancy_consensus_threshold': self.redundancy_threshold,
+
+                'architecture_profile': self.architecture_profile,
+
+                'diversity_hardening_activation_target': DIVERSITY_HARDENING_ACTIVATION_TARGET,
+
+                'online_learning_max_abs_step': self.online_max_abs_step,
 
                 'rebuild_policy': 'deterministic causal replay from canonical Mega-Sena history',
 

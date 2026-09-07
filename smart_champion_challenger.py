@@ -417,7 +417,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     ).hexdigest()
     challenger_pred, challenger_backtest = agent.predict_next(draws, contests, target_contest=target,
                                                                cutoff_timestamp=signal_ts,
-                                                               cutoff_timestamp_kind=signal_ts_kind)
+                                                               cutoff_timestamp_kind=signal_ts_kind,
+                                                               champion_top6=champion['top6'])
 
     if enforce_temporal_guard:
         temporal_guard = assert_pre_draw_window(schedule_authority)
@@ -477,7 +478,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'signal_state_archive_file': str(state_archive_path),
         'signal_state_archive_sha256': state_hash,
         'champion': champion, 'challenger': challenger_pred.as_dict(),
-        'governed_challenger_top6': challenger_pred.meta_governor['selected_top6'],
+        'governed_challenger_top6': challenger_pred.top6,
         'governed_challenger_policy': challenger_pred.meta_governor['selected_policy'],
         'challenger_historical_walk_forward_summary': {k: v for k, v in challenger_backtest.items() if k != 'rows'},
         'promotion_policy': policy_snapshot(),
@@ -517,6 +518,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
                      'multi_challengers': freeze_obj['challenger']['multi_challengers'],
                      'meta_governor': freeze_obj['challenger']['meta_governor'],
                      'bounded_online_learning': freeze_obj['challenger']['bounded_online_learning'],
+                     'challenger_diversity_guard': freeze_obj['challenger']['challenger_diversity_guard'],
                      'signal_expansion_governance': expansion_snapshot,
                      'sequential_prospective_proof': sequential_snapshot,
                      'promotion_policy': freeze_obj['promotion_policy'],
