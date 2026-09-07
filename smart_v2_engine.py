@@ -128,14 +128,14 @@ def walk_forward(draws,contests,start=1000,eta=math.log(2),pre=None,allowed=None
             adjusted={n:ew[n]*pen[n] for n in fn}; z=sum(adjusted.values()); adjusted={n:v/z for n,v in adjusted.items()}
             for n in fn: eff[n]=fw[f]*adjusted[n]
             fam_scores[f]=sum(adjusted[n]*sc[n] for n in fn)
-        agg=sum(eff[n]*sc[n] for n in names); top,_=rank_top6(agg); actual=set(draws[t]); hits=len(set(top)&actual)
+        agg=sum(eff[n]*sc[n] for n in names); top,order=rank_top6(agg); actual=set(draws[t]); hits=len(set(top)&actual)
         indiv={}
         for n in names:
             etop,_=rank_top6(sc[n]); h=len(set(etop)&actual); indiv[n]=h; elog[n]+=eta*(h-UNIFORM_EXPECTED_HITS)
         fam_hits={}
         for f in fams:
             ftop,_=rank_top6(fam_scores[f]); h=len(set(ftop)&actual); fam_hits[f]=h; flog[f]+=eta*(h-UNIFORM_EXPECTED_HITS)
-        rows.append({'contest':int(contests[t]),'top6':top,'hits':hits,'expert_hits':indiv,'family_hits':fam_hits,'weights':eff,'family_weights':fw})
+        rows.append({'contest':int(contests[t]),'top6':top,'ranking60':NUMBERS[order].tolist(),'aggregate_scores':{str(int(NUMBERS[i])):float(agg[i]) for i in range(len(NUMBERS))},'hits':hits,'expert_hits':indiv,'family_hits':fam_hits,'weights':eff,'family_weights':fw})
     total=sum(r['hits'] for r in rows); exp=len(rows)*UNIFORM_EXPECTED_HITS
     # return final effective policy summary from last row
     lastw=rows[-1]['weights'] if rows else {}; lastfw=rows[-1]['family_weights'] if rows else {}

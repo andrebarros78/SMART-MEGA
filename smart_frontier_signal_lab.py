@@ -288,6 +288,8 @@ def run_historical(data_path: Path, start_index: int = 1000) -> tuple[dict[str, 
                     "delta_hits": int(hits - int(champion_row["hits"])),
                     "novelty": float(1.0 - len(top6 & champion_top6) / 6.0),
                     "brier": brier(probabilities, draws[t]),
+                    "probabilities": {str(i + 1): float(probabilities[i]) for i in range(60)},
+                    "probability_sum": float(probabilities.sum()),
                 })
         state.update(draws[t], int(dates.iloc[t].weekday()))
 

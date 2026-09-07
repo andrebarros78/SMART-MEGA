@@ -1,0 +1,28 @@
+﻿{
+  "schema": "SMART_B7_SCOPE_MATRIX_1",
+  "scope": "SMART-MEGA-B7",
+  "version": "7.0.0",
+  "objective": "parallel prospective predictive-evidence system with fail-closed promotion and no-regression fallback",
+  "capabilities": [
+    {"id":"baseline_uniform","status":"PROVEN","evidence":"canonical mode UNIFORM_BASELINE_NO_REGRESSION when validation confidence is insufficient"},
+    {"id":"dynamic_signal_weighting","status":"PROVEN","evidence":"two-level dynamic weights with expert/family caps and redundancy penalty"},
+    {"id":"walk_forward_causality","status":"PROVEN","evidence":"prediction at contest t uses state through t-1; causal cutoff tests"},
+    {"id":"protected_partitions","status":"PROVEN","evidence":"calibration/validation/holdout split; strength selection validation-only"},
+    {"id":"proper_scoring","status":"PROVEN","evidence":"Brier, binary log loss, ECE, bootstrap confidence intervals"},
+    {"id":"full_probability_retention","status":"PROVEN","evidence":"60 probabilities retained per evaluated row and prospective freeze"},
+    {"id":"multiple_testing_control","status":"PROVEN","evidence":"Holm correction in frontier/falsification paths"},
+    {"id":"champion_challenger","status":"PROVEN","evidence":"canonical and shadow challenger isolated; material promotion blocked"},
+    {"id":"prospective_freeze","status":"PROVEN","evidence":"target 3055 freeze before result with result_used=false and schedule authority"},
+    {"id":"freeze_verification","status":"PROVEN","evidence":"operator verifies embedded/reference/source hashes and probability contracts"},
+    {"id":"runtime_isolation","status":"PROVEN","evidence":"smart_python.cmd clears PYTHONPATH and uses -E"},
+    {"id":"positive_predictive_edge","status":"NOT_PRESENT","evidence":"not established; canonical intentionally neutralized"}
+  ],
+  "not_applicable_controls": [
+    {"control":"server authentication/authorization","reason":"B7 core is local CLI; no server interface is exposed"},
+    {"control":"rate limiting","reason":"no inbound network service"},
+    {"control":"network segmentation/TLS server","reason":"no listening service in B7 core"},
+    {"control":"database migrations/DB restore","reason":"B7 core has no mandatory operational database; canonical state is file/hash based"},
+    {"control":"multitenancy isolation","reason":"single local project workspace"},
+    {"control":"worker/service restart","reason":"no persistent worker/service; fresh-process restart is the applicable recovery model"}
+  ]
+}

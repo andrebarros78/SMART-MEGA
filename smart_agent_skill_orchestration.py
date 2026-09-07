@@ -224,13 +224,30 @@ def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
     value = str(relative).strip()
     if not value:
         raise ValueError(f"{label} path is empty")
-    candidate = (root / value).resolve()
     resolved_root = root.resolve()
+    raw = Path(value)
+    candidate = raw.resolve() if raw.is_absolute() else (resolved_root / raw).resolve()
     try:
         candidate.relative_to(resolved_root)
+        return candidate
     except ValueError as exc:
+        # Worktree portability for legacy artifacts that persisted an absolute
+        # project path. Rebase only known project-local anchors and only when
+        # an equivalent artifact really exists inside the current root.
+        if raw.is_absolute():
+            parts = list(raw.parts)
+            for anchor in ("runtime", "archive", "backup", "SMART_EXPERIMENT_REGISTRY", "SMART_STATE_ARCHIVE"):
+                if anchor not in parts:
+                    continue
+                idx = parts.index(anchor)
+                rebased = (resolved_root / Path(*parts[idx:])).resolve()
+                try:
+                    rebased.relative_to(resolved_root)
+                except ValueError:
+                    continue
+                if rebased.exists():
+                    return rebased
         raise ValueError(f"{label} escapes project root: {value}") from exc
-    return candidate
 
 
 def _resolve_state_paths(root: Path) -> dict[str, Path]:
