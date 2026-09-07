@@ -110,7 +110,7 @@ def test_full_freeze_adjudicate_learn_prove_cycle_and_freeze_contains_p12(tmp_pa
     pre=tmp_path/'pre.xlsx'; through=tmp_path/'through.xlsx'; freeze=tmp_path/'freeze.json'
     ledger=tmp_path/'ledger.json'; prestate=tmp_path/'prestate.json'; learned=tmp_path/'learned.json'
     cutoff.to_excel(pre,index=False); full.to_excel(through,index=False)
-    fr=cc.freeze_champion_challenger(pre,target,freeze,ledger,prestate,start=30)
+    fr=cc.freeze_champion_challenger(pre,target,freeze,ledger,prestate,start=30, enforce_temporal_guard=False)
     assert fr['status']=='FROZEN'
     obj=json.loads(freeze.read_text()); L=json.loads(ledger.read_text()); fe=L['events'][0]
     assert len(obj['sequential_prospective_proof_sha256'])==64

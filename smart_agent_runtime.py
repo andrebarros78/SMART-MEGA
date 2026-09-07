@@ -99,12 +99,16 @@ class SmartAgentRuntime:
         return records
 
     def _critical_files(self) -> list[str]:
-        files = list(BASE_CRITICAL_CANONICAL_FILES)
+        # BUILD certifies the product without depending on an operational epoch.
+        # Older/unit-created instances may intentionally bypass __init__; preserve
+        # the historical AUTO behavior instead of raising AttributeError.
+        phase = getattr(self, "phase", "AUTO")
+        files = [] if phase == "BUILD" else list(BASE_CRITICAL_CANONICAL_FILES)
         for key in ("freeze_file", "data_file", "signal_state_file", "ledger_file"):
             value = self.active_context.get(key)
             if value:
                 files.append(str(value))
-        if (self.root / "SMART_ACTIVE_EPOCH.json").is_file():
+        if phase != "BUILD" and (self.root / "SMART_ACTIVE_EPOCH.json").is_file():
             files.append("SMART_ACTIVE_EPOCH.json")
         return sorted(set(files))
 
@@ -264,7 +268,7 @@ def write_runtime(root: str | Path, output: str | Path = "SMART_AGENT_RUNTIME_PR
 def main(argv: list[str] | None = None) -> None:
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument("--phase", choices=["PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
+    parser.add_argument("--phase", choices=["BUILD", "PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
     parser.add_argument("--output", default="SMART_AGENT_RUNTIME_PROOF.json")
     args = parser.parse_args([] if argv is None else argv)
     result = write_runtime(Path(__file__).resolve().parent) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_RUNTIME_PROOF.json" else write_runtime(Path(__file__).resolve().parent, args.output, phase=args.phase)

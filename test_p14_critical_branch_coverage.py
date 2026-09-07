@@ -117,7 +117,7 @@ def test_p14_orchestrator_freeze_closed_after_adjudication(monkeypatch, tmp_path
     ]})
     monkeypatch.setattr(cc, 'active_freeze', lambda ledger, target: None)
     with pytest.raises(ValueError, match='already adjudicated'):
-        cc.freeze_champion_challenger(tmp_path/'x.xlsx', 11, tmp_path/'f.json', tmp_path/'l.json', tmp_path/'s.json')
+        cc.freeze_champion_challenger(tmp_path/'x.xlsx', 11, tmp_path/'f.json', tmp_path/'l.json', tmp_path/'s.json', enforce_temporal_guard=False)
 
 
 def test_p15_remaining_p13_gate_and_integrity_fail_closed_branches():

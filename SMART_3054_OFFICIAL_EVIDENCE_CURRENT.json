@@ -1,0 +1,34 @@
+{
+  "schema": "SMART_OFFICIAL_EVIDENCE_CONSENSUS_V1",
+  "target_contest": 3054,
+  "primary": {
+    "channel": "CAIXA_CONTEST_API",
+    "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3054",
+    "numbers": [
+      8,
+      17,
+      24,
+      43,
+      47,
+      58
+    ],
+    "draw_date": "06/09/2026",
+    "validated": true
+  },
+  "secondary": {
+    "channel": "CAIXA_CONSOLIDATED_RESULTS_DOWNLOAD",
+    "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Mega-Sena",
+    "status": "STALE_BEFORE_TARGET",
+    "max_contest": 2964,
+    "numbers": null,
+    "draw_date_text": null
+  },
+  "secondary_error": null,
+  "status": "PRIMARY_CAIXA_API_VALID_SECONDARY_DOWNLOAD_STALE",
+  "operational_adjudication_authorized": true,
+  "dual_channel_corroborated": false,
+  "terminal_source_corroboration_authorized": false,
+  "independent_audit_still_required_for_terminal_6of6": true,
+  "predictive_weight_authorized": false,
+  "terminal_6of6_proven": false
+}

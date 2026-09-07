@@ -16,6 +16,7 @@ import adjudicate_signal_challenger as adjudicator
 import smart_sequential_prospective_proof as sequential
 from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_learning_epoch_reset import verify_active_epoch, resolve_locked_prospective_registration
+from smart_prospective_authority_lock import adjudicated_lock_evidence
 from smart_v2_engine import load_draws
 
 SCHEMA = "SMART_3054_ADJUDICATION_PREFLIGHT_V2"
@@ -67,45 +68,118 @@ def _resolve(root: Path, value: str) -> Path:
 def _current_paths(root: Path) -> dict[str, Any]:
     root = root.resolve()
     current = resolve_current_epoch(root)
-    if current["status"] != "FROZEN" or current["freeze_authority_present"] is not True:
-        raise ValueError("3054 preflight requires a FROZEN active epoch")
     if current["target_contest"] != TARGET or current["cutoff_contest"] != CUTOFF:
         raise ValueError("active epoch is not the 3054/3053 prospective target")
     if current["result_used"] is not False:
-        raise ValueError("active epoch freeze authority is not pre-result")
+        raise ValueError("active epoch authority is not pre-result")
     active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
-    state_paths = active.get("state_paths", {})
-    prospective = active.get("prospective_registration")
-    if not isinstance(prospective, dict) and current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
-        prospective = resolve_locked_prospective_registration(root, TARGET, CUTOFF, str(current["freeze_sha256"]))
-    if not isinstance(prospective, dict):
-        raise ValueError("active epoch lacks prospective probability registration")
-    required = ("ledger", "state")
-    if any(not isinstance(state_paths.get(key), str) for key in required):
-        raise ValueError("active epoch state paths incomplete")
-    if not isinstance(prospective.get("probability_ledger_file"), str):
-        raise ValueError("active epoch probability ledger path missing")
-    ledger_path = _resolve(root, state_paths["ledger"])
-    state_path = _resolve(root, state_paths["state"])
-    freeze_path = _resolve(root, str(current["freeze_file"]))
-    data_path = _resolve(root, str(current["data_file"]))
-    probability_path = _resolve(root, prospective["probability_ledger_file"])
-    current_generated = current.get("current_engineering_generation_authority") is True
-    proof_path = ledger_path.parent / "FULL_PROCESS_PROOF.json" if current_generated else None
-    generation_proof_mode = "CURRENT_ENGINEERING_FULL_PROCESS" if current_generated else "CARRY_FORWARD_AUTHORITY_LOCK"
-    return {
-        "current": current,
-        "active": active,
-        "ledger": ledger_path,
-        "state": state_path,
-        "freeze": freeze_path,
-        "data": data_path,
-        "probability": probability_path,
-        "full_process_proof": proof_path,
-        "prospective": prospective,
-        "generation_proof_mode": generation_proof_mode,
-    }
 
+    if current["status"] == "FROZEN" and current["freeze_authority_present"] is True:
+        state_paths = active.get("state_paths", {})
+        prospective = active.get("prospective_registration")
+        if not isinstance(prospective, dict) and current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
+            prospective = resolve_locked_prospective_registration(root, TARGET, CUTOFF, str(current["freeze_sha256"]))
+        if not isinstance(prospective, dict):
+            raise ValueError("active epoch lacks prospective probability registration")
+        required = ("ledger", "state")
+        if any(not isinstance(state_paths.get(key), str) for key in required):
+            raise ValueError("active epoch state paths incomplete")
+        if not isinstance(prospective.get("probability_ledger_file"), str):
+            raise ValueError("active epoch probability ledger path missing")
+        ledger_path = _resolve(root, state_paths["ledger"])
+        state_path = _resolve(root, state_paths["state"])
+        freeze_path = _resolve(root, str(current["freeze_file"]))
+        data_path = _resolve(root, str(current["data_file"]))
+        probability_path = _resolve(root, prospective["probability_ledger_file"])
+        current_generated = current.get("current_engineering_generation_authority") is True
+        proof_path = ledger_path.parent / "FULL_PROCESS_PROOF.json" if current_generated else None
+        generation_proof_mode = "CURRENT_ENGINEERING_FULL_PROCESS" if current_generated else "CARRY_FORWARD_AUTHORITY_LOCK"
+        return {
+            "current": current,
+            "active": active,
+            "ledger": ledger_path,
+            "state": state_path,
+            "freeze": freeze_path,
+            "data": data_path,
+            "probability": probability_path,
+            "full_process_proof": proof_path,
+            "prospective": prospective,
+            "generation_proof_mode": generation_proof_mode,
+            "adjudication_authority_mode": "ACTIVE_EPOCH_FROZEN",
+            "authority_freeze_sha256": str(current["freeze_sha256"]),
+            "scientific_adjudication_authority": current.get("scientific_adjudication_authority") is True,
+            "current_engineering_generation_authority": current_generated,
+        }
+
+    # A temporal recovery may revoke only the current-engineering freeze while an
+    # older, causally valid attempt remains immutably locked for adjudication.
+    if current["status"] == "RESET_READY":
+        locked = current.get("parallel_locked_experiment")
+        if not isinstance(locked, dict):
+            raise ValueError("3054 preflight requires a FROZEN active epoch or a preserved locked prospective authority")
+        if int(locked.get("target_contest", -1)) != TARGET or int(locked.get("cutoff_contest", -1)) != CUTOFF:
+            raise ValueError("preserved prospective authority target/cutoff mismatch")
+        if locked.get("eligible_for_scientific_adjudication") is not True:
+            raise ValueError("preserved prospective authority is not eligible for scientific adjudication")
+        if locked.get("eligible_to_prove_post_freeze_engineering_version") is not False:
+            raise ValueError("preserved prospective authority could falsely credit current engineering")
+        freeze_sha = str(locked.get("freeze_sha256", ""))
+        if len(freeze_sha) != 64:
+            raise ValueError("preserved prospective authority freeze hash missing")
+        prospective = resolve_locked_prospective_registration(root, TARGET, CUTOFF, freeze_sha)
+        ledger_path = _resolve(root, str(locked["ledger_file"]))
+        state_path = _resolve(root, str(locked["signal_state_file"]))
+        freeze_path = _resolve(root, str(locked["freeze_file"]))
+        data_path = _resolve(root, str(locked["data_file"]))
+        probability_path = _resolve(root, prospective["probability_ledger_file"])
+        immutable_hashes = {
+            freeze_path: freeze_sha,
+            data_path: str(locked["data_sha256"]),
+            state_path: str(locked["signal_state_sha256"]),
+        }
+        for path, expected in immutable_hashes.items():
+            if not path.is_file() or sha256_file(path) != expected:
+                raise ValueError(f"preserved prospective authority immutable dependency mismatch: {path.name}")
+
+        already_adjudicated = bool(current.get("parallel_experiment_adjudicated"))
+        adjudication_evidence = None
+        if already_adjudicated:
+            lock_file = active.get("prospective_authority_lock_file")
+            lock_sha = active.get("prospective_authority_lock_sha256")
+            if not isinstance(lock_file, str) or not isinstance(lock_sha, str):
+                raise ValueError("adjudicated preserved authority lock reference missing")
+            adjudication_evidence = adjudicated_lock_evidence(root / lock_file, root=root)
+            if adjudication_evidence["lock_sha256"] != lock_sha:
+                raise ValueError("adjudicated preserved authority lock hash mismatch")
+            if adjudication_evidence["freeze_sha256"] != freeze_sha:
+                raise ValueError("adjudicated preserved authority freeze mismatch")
+            if int(adjudication_evidence["target_contest"]) != TARGET:
+                raise ValueError("adjudicated preserved authority target mismatch")
+            if not ledger_path.is_file():
+                raise ValueError("adjudicated append-only signal ledger missing")
+        else:
+            if not ledger_path.is_file() or sha256_file(ledger_path) != str(locked["ledger_sha256"]):
+                raise ValueError("preserved prospective authority dependency mismatch: SMART_SIGNAL_LEDGER.json")
+        return {
+            "current": current,
+            "active": active,
+            "ledger": ledger_path,
+            "state": state_path,
+            "freeze": freeze_path,
+            "data": data_path,
+            "probability": probability_path,
+            "full_process_proof": None,
+            "prospective": prospective,
+            "generation_proof_mode": "CARRY_FORWARD_AUTHORITY_LOCK",
+            "adjudication_authority_mode": ("PARALLEL_LOCKED_PROSPECTIVE_ADJUDICATED" if already_adjudicated else "PARALLEL_LOCKED_PROSPECTIVE"),
+            "authority_freeze_sha256": freeze_sha,
+            "scientific_adjudication_authority": True,
+            "current_engineering_generation_authority": False,
+            "adjudication_already_executed": already_adjudicated,
+            "adjudication_evidence": adjudication_evidence,
+        }
+
+    raise ValueError("3054 preflight requires a FROZEN active epoch or a preserved locked prospective authority")
 
 def _validate_probability_ledger(path: Path, expected_freeze_sha256: str) -> dict[str, Any]:
     document = read_json(path)
@@ -295,7 +369,7 @@ def build_preflight(root: str | Path) -> dict[str, Any]:
     root = Path(root).resolve()
     paths = _current_paths(root)
     current = paths["current"]
-    expected_freeze_sha256 = current["freeze_sha256"]
+    expected_freeze_sha256 = paths["authority_freeze_sha256"]
     freeze_path = paths["freeze"]
     ledger_path = paths["ledger"]
     probability_path = paths["probability"]
@@ -350,13 +424,13 @@ def build_preflight(root: str | Path) -> dict[str, Any]:
         generation_authority = {
             "mode": paths["generation_proof_mode"],
             "valid": (
-                current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE"
-                and current.get("current_engineering_generation_authority") is False
-                and current.get("scientific_adjudication_authority") is True
+                paths["scientific_adjudication_authority"] is True
+                and paths["current_engineering_generation_authority"] is False
                 and paths["prospective"].get("prediction_content_mutated") is False
+                and paths["adjudication_authority_mode"] in {"ACTIVE_EPOCH_FROZEN", "PARALLEL_LOCKED_PROSPECTIVE"}
             ),
-            "proof_file": current.get("freeze_file"),
-            "proof_sha256": current.get("freeze_sha256"),
+            "proof_file": str(paths["freeze"].relative_to(root)).replace("\\", "/"),
+            "proof_sha256": expected_freeze_sha256,
             "current_engineering_generated_locked_freeze": False,
         }
     if generation_authority["valid"] is not True:
@@ -371,7 +445,7 @@ def build_preflight(root: str | Path) -> dict[str, Any]:
         raise RuntimeError("sandbox preflight mutated canonical prospective artifacts")
 
     checks = {
-        "active_epoch_frozen": current["status"] == "FROZEN" and current["freeze_authority_present"] is True,
+        "prospective_adjudication_authority_resolved": paths["scientific_adjudication_authority"] is True,
         "active_freeze_exact": sequence_before["active_freeze_sha256"] == expected_freeze_sha256,
         "pre_result_sequence_valid": bool(sequence_before["valid"]),
         "not_yet_adjudicated": sequence_before["adjudicated"] is False,
@@ -380,7 +454,7 @@ def build_preflight(root: str | Path) -> dict[str, Any]:
         "probability_mass_valid": probability["all_probability_sums_equal_six"],
         "probability_ledger_bound_to_active_freeze": probability["main_freeze_file_sha256"] == expected_freeze_sha256,
         "generation_authority_valid": generation_authority["valid"] is True,
-        "no_retroactive_generation_claim": generation_authority["current_engineering_generated_locked_freeze"] is current.get("current_engineering_generation_authority"),
+        "no_retroactive_generation_claim": generation_authority["current_engineering_generated_locked_freeze"] is paths["current_engineering_generation_authority"],
         "canonical_result_store_through_3053": result_store["contest_max"] == CUTOFF,
         "canonical_result_store_target_absent": result_store["target_absent"],
         "sandbox_adjudication_valid": sandbox["sequence_valid"],
@@ -397,6 +471,7 @@ def build_preflight(root: str | Path) -> dict[str, Any]:
         "readiness_status": status,
         "active_epoch_id": current["epoch_id"],
         "active_freeze_sha256": expected_freeze_sha256,
+        "adjudication_authority_mode": paths["adjudication_authority_mode"],
         "target_schedule": paths["prospective"].get("schedule_authority"),
         "sequence_before_result": sequence_before,
         "probability_ledger": probability,

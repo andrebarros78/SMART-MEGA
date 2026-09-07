@@ -65,6 +65,39 @@
       "evidence": [
         "test_smart_architecture_corrections_20260905.py::test_freshness_is_derived_from_forecast_horizon"
       ]
+    },
+    {
+      "id": "D008_EXPERT_CAP_ZERO_MASS_OSCILLATION",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Expert-cap redistribution could oscillate or return a normalized expert above the configured cap when another valid expert carried zero mass; the independent oracle mirrored the defect.",
+      "evidence": [
+        "test_smart_mission_coverage_closure_20260906.py::test_expert_cap_zero_mass_pathology_is_bounded_in_production_and_oracle"
+      ]
+    },
+    {
+      "id": "D009_POST_DRAW_FREEZE_FALSE_PROSPECTIVE",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Operational freeze paths could label an artifact frozen_before_result without comparing wall-clock time against the authoritative scheduled draw datetime.",
+      "evidence": [
+        "test_smart_temporal_freeze_guard_20260906.py::test_temporal_guard_accepts_only_a_safely_future_draw",
+        "test_smart_temporal_freeze_guard_20260906.py::test_temporal_guard_rejects_post_draw_and_safety_margin",
+        "test_smart_temporal_freeze_guard_20260906.py::test_production_freeze_defaults_fail_closed_and_pipeline_binds_schedule",
+        "test_smart_temporal_freeze_guard_20260906.py::test_freeze_artifact_records_authoritative_temporal_evidence"
+      ]
+    },
+    {
+      "id": "D009_RETROSPECTIVE_FREEZE_AUTHORITY",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Canonical full-process freeze could claim frozen_before_result after the official scheduled draw because the target schedule timestamp was resolved but not enforced before freeze authority creation.",
+      "evidence": [
+        "test_smart_procedural_actionability_gate.py::test_freeze_window_exact_draw_time_rejected",
+        "test_smart_procedural_actionability_gate.py::test_freeze_window_after_draw_rejected",
+        "test_smart_full_process_temporal_guard.py::test_full_process_blocks_after_deadline_before_any_freeze",
+        "SMART_TEMPORAL_AUTHORITY_REVOCATION_3054.json"
+      ]
     }
   ],
   "rules": {
@@ -76,5 +109,5 @@
     "missing_registry_fails_closed": true,
     "self_hash_required": true
   },
-  "sha256": "3f05ae12e1ab4a95695a65cf40c8dc5a30b2d25408bfd48539594bacd43f2c8c"
+  "sha256": "4ffceeaf0bb90412fe3a13626628ba9284962236cc51dd9bec7ba33b0d09e3a2"
 }

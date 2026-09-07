@@ -61,5 +61,5 @@ def write(root:str|Path,out:str|Path='SMART_TOTAL_INTEGRATION_PROOF.json',phase:
  root=Path(root); out=Path(out); out=out if out.is_absolute() else root/out; d=evaluate(root,phase=phase); out.write_text(json.dumps(d,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); return d
 if __name__=='__main__':
  import argparse
- parser=argparse.ArgumentParser(); parser.add_argument('--phase',choices=['PRE_FREEZE','POST_FREEZE'],default='POST_FREEZE'); parser.add_argument('--output',default='SMART_TOTAL_INTEGRATION_PROOF.json'); args=parser.parse_args()
+ parser=argparse.ArgumentParser(); parser.add_argument('--phase',choices=['BUILD','PRE_FREEZE','POST_FREEZE'],default='POST_FREEZE'); parser.add_argument('--output',default='SMART_TOTAL_INTEGRATION_PROOF.json'); args=parser.parse_args()
  d=write(Path(__file__).resolve().parent,args.output,phase=args.phase); print(json.dumps({'status':d['status'],'phase':d['phase'],'health':d['health'],'gates':d['gates'],'scientific_mission_status':d['scientific_mission_status']},ensure_ascii=False,indent=2))

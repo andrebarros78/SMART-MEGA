@@ -1,11 +1,12 @@
 import inspect
 import json
+from datetime import datetime, timezone
 
 import pytest
 from pathlib import Path
 
 from smart_champion_challenger import freeze_champion_challenger
-from smart_engineering_activation import SCHEMA as ACTIVATION_SCHEMA, _sha256_json as activation_sha, _code_fingerprint, verify_activation
+from smart_engineering_activation import SCHEMA as ACTIVATION_SCHEMA, _sha256_json as activation_sha, _code_fingerprint, _target_draw_has_passed, verify_activation
 from smart_learning_epoch_reset import reset_learning_epoch, verify_active_epoch
 from smart_regression_evidence import sha256_file
 
@@ -101,3 +102,11 @@ def test_pre_freeze_activation_can_preserve_parallel_old_experiment_without_impo
     verified = verify_activation(path)
     assert verified["current_freeze_authority"] is None
     assert verified["parallel_locked_experiment"]["target_contest"] == 101
+
+
+def test_target_draw_time_predicate_is_timezone_aware_and_fail_closed_after_deadline():
+    schedule = {"scheduled_datetime": "2026-09-06T11:00:00-03:00"}
+    before = datetime(2026, 9, 6, 13, 59, 59, tzinfo=timezone.utc)
+    at_deadline = datetime(2026, 9, 6, 14, 0, 0, tzinfo=timezone.utc)
+    assert _target_draw_has_passed(schedule, now_utc=before) is False
+    assert _target_draw_has_passed(schedule, now_utc=at_deadline) is True

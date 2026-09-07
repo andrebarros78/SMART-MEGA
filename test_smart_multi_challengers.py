@@ -238,7 +238,7 @@ def test_freeze_persists_all_five_multi_challengers_and_component_hash(tmp_path:
         rows.append(row)
     data=tmp_path/'mega.xlsx'; pd.DataFrame(rows).to_excel(data,index=False)
     out=tmp_path/'freeze.json'; ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
-    r=cc.freeze_champion_challenger(data,121,out,ledger,state,start=40)
+    r=cc.freeze_champion_challenger(data,121,out,ledger,state,start=40, enforce_temporal_guard=False)
     assert r['status']=='FROZEN'
     obj=json.loads(out.read_text(encoding='utf-8'))
     frozen=obj['challenger']['multi_challengers']

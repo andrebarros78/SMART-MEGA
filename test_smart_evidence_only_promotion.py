@@ -634,7 +634,7 @@ def test_future_freeze_hashes_and_snapshots_p15_policy(tmp_path: Path):
 
     _dataset(40).to_excel(data, index=False)
 
-    result = cc.freeze_champion_challenger(data, 41, out, ledger, state, start=20)
+    result = cc.freeze_champion_challenger(data, 41, out, ledger, state, start=20, enforce_temporal_guard=False)
 
     assert result['status'] == 'FROZEN'
 

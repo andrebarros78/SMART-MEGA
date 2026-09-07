@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import hashlib
 import json
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -163,6 +164,109 @@ def verify_lock(path: str | Path, *, root: str | Path | None = None) -> dict[str
         auth = obj.get("experiment_authority", {})
         if live is None or any(live.get(k) != auth.get(k) for k in live):
             raise ValueError("prospective authority lock no longer matches live unresolved authority")
+    return obj
+
+
+CLOSURE_SCHEMA = "SMART_PROSPECTIVE_AUTHORITY_CLOSURE_1"
+
+
+def adjudicated_lock_evidence(path: str | Path, *, root: str | Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    path = Path(path)
+    if not path.is_absolute():
+        path = root / path
+    lock = verify_lock(path, root=None)
+    auth = lock["experiment_authority"]
+    target = int(auth["target_contest"])
+    freeze_sha = str(auth["freeze_sha256"])
+    ledger_path = root / str(auth.get("ledger_file") or "SMART_SIGNAL_LEDGER.json")
+    ledger = load_ledger(ledger_path)
+    matches = [
+        ev for ev in ledger.get("events", [])
+        if ev.get("event_type") == "ADJUDICATION"
+        and int(ev.get("target_contest", -1)) == target
+        and str(ev.get("freeze_sha256", "")) == freeze_sha
+    ]
+    if len(matches) != 1:
+        raise ValueError(f"expected exactly one adjudication for locked target/freeze, found {len(matches)}")
+    ev = matches[0]
+    actual = sorted(map(int, ev.get("actual_numbers", [])))
+    if len(actual) != 6 or len(set(actual)) != 6 or any(not 1 <= n <= 60 for n in actual):
+        raise ValueError("locked target adjudication actual_numbers invalid")
+    freeze_path = root / str(auth["freeze_file"])
+    data_path = root / str(auth["data_file"])
+    state_path = root / str(auth["signal_state_file"])
+    if not freeze_path.is_file() or sha256_file(freeze_path) != freeze_sha:
+        raise ValueError("locked freeze changed after adjudication")
+    if not data_path.is_file() or sha256_file(data_path) != auth["data_sha256"]:
+        raise ValueError("locked data changed after adjudication")
+    if not state_path.is_file() or sha256_file(state_path) != auth["signal_state_sha256"]:
+        raise ValueError("locked signal state changed after adjudication")
+    return {
+        "target_contest": target,
+        "cutoff_contest": int(auth["cutoff_contest"]),
+        "freeze_file": str(auth["freeze_file"]),
+        "freeze_sha256": freeze_sha,
+        "lock_sha256": str(lock["sha256"]),
+        "adjudication_created_utc": ev.get("created_utc"),
+        "actual_numbers": actual,
+        "champion_hits": int(ev.get("champion_hits", -1)),
+        "challenger_hits": int(ev.get("challenger_hits", -1)),
+        "ledger_file": str(auth.get("ledger_file") or "SMART_SIGNAL_LEDGER.json"),
+        "ledger_sha256_current": sha256_file(ledger_path),
+    }
+
+
+def close_adjudicated_lock(root: str | Path = ".", path: str | Path = DEFAULT_PATH) -> dict[str, Any] | None:
+    root = Path(root).resolve()
+    path = Path(path)
+    if not path.is_absolute():
+        path = root / path
+    if not path.is_file():
+        return None
+    evidence = adjudicated_lock_evidence(path, root=root)
+    lock = verify_lock(path, root=None)
+    archive = root / "SMART_STATE_ARCHIVE" / f"prospective_authority_lock_{lock['sha256']}.json"
+    archive.parent.mkdir(parents=True, exist_ok=True)
+    if not archive.exists():
+        shutil.copy2(path, archive)
+    if sha256_file(archive) != lock["sha256"]:
+        raise RuntimeError("prospective authority lock archive hash mismatch")
+    closure_path = root / f"SMART_PROSPECTIVE_AUTHORITY_CLOSURE_{evidence['target_contest']}.json"
+    closure: dict[str, Any] = {
+        "schema": CLOSURE_SCHEMA,
+        "status": "ADJUDICATED_CLOSED",
+        "closed_utc": datetime.now(timezone.utc).isoformat(),
+        "project": "SMART-MEGA",
+        **evidence,
+        "archived_lock_file": str(archive.relative_to(root)).replace("\\", "/"),
+        "archived_lock_sha256": sha256_file(archive),
+        "live_unresolved_lock_removed": True,
+        "retroactive_rewrite": False,
+    }
+    closure["sha256"] = _sha256_json(closure)
+    closure_path.write_text(json.dumps(closure, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    path.unlink()
+    return closure
+
+
+def verify_closure(path: str | Path, *, root: str | Path | None = None) -> dict[str, Any]:
+    path = Path(path)
+    obj = _read_json(path)
+    if obj.get("schema") != CLOSURE_SCHEMA or obj.get("status") != "ADJUDICATED_CLOSED":
+        raise ValueError("invalid prospective authority closure schema/status")
+    observed = obj.get("sha256")
+    canonical = dict(obj)
+    canonical.pop("sha256", None)
+    if observed != _sha256_json(canonical):
+        raise ValueError("prospective authority closure self-hash invalid")
+    if obj.get("live_unresolved_lock_removed") is not True or obj.get("retroactive_rewrite") is not False:
+        raise ValueError("prospective authority closure semantics invalid")
+    if root is not None:
+        project_root = Path(root).resolve()
+        archive = project_root / str(obj["archived_lock_file"])
+        if not archive.is_file() or sha256_file(archive) != obj["archived_lock_sha256"]:
+            raise ValueError("prospective authority closure archive mismatch")
     return obj
 
 

@@ -22,23 +22,31 @@ def test_current_epoch_contract_is_causal_and_not_legacy_inferred():
 
 def test_legacy_locked_attempt_is_never_misattributed_to_current_engineering():
     d = resolve(ROOT)
-    if d["authority_mode"] == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
+    mode = d["authority_mode"]
+    if mode == "POST_ADJUDICATION_ROLLOVER_PENDING":
+        assert d["status"] == "RESET_READY"
+        assert d["target_contest"] == 3054
+        assert d["current_engineering_role"] == "NON_AUTHORITATIVE_RECOVERY_STAGING"
+        assert d["first_possible_authoritative_target_for_current_engineering"] == 3055
+        assert d["freeze_authority_present"] is False
+        assert d["scientific_adjudication_authority"] is False
+        assert d["current_engineering_generation_authority"] is False
+        assert d["parallel_experiment_adjudicated"] is True
+        assert d["rollover_required"] is True
+        assert d["parallel_locked_experiment"]["freeze_sha256"] == LEGACY_FREEZE
+        return
+    if mode == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
         assert d["status"] == "FROZEN"
         assert d["freeze_sha256"] == LEGACY_FREEZE
         assert d["scientific_adjudication_authority"] is True
         assert d["current_engineering_generation_authority"] is False
         assert d["freeze_origin"] == "PRE_CURRENT_ENGINEERING_ACTIVATION"
         return
-    assert d["authority_mode"] == "NEW_ENGINEERING_EPOCH"
-    assert d["target_contest"] == 3054
+    assert mode == "NEW_ENGINEERING_EPOCH"
+    assert d["target_contest"] >= 3055
     assert d["current_engineering_role"] == "AUTHORITATIVE_CURRENT_EPOCH"
-    assert d["first_possible_authoritative_target_for_current_engineering"] == 3054
-    assert d["parallel_locked_experiment"] is not None
-    assert d["parallel_locked_experiment"]["freeze_sha256"] == LEGACY_FREEZE
-    assert d["parallel_attempts_must_be_counted_separately"] is True
-    if d["status"] == "RESET_READY":
-        assert d["freeze_authority_present"] is False
-    else:
-        assert d["status"] == "FROZEN"
-        assert d["current_engineering_generation_authority"] is True
+    assert d["first_possible_authoritative_target_for_current_engineering"] == d["target_contest"]
+    assert d["parallel_locked_experiment"] is None
+    if d["status"] == "FROZEN":
+        assert d["freeze_sha256"] != LEGACY_FREEZE
         assert d["freeze_origin"] != "PRE_CURRENT_ENGINEERING_ACTIVATION"

@@ -1,16 +1,22 @@
 from __future__ import annotations
 
 import hashlib
+import json
 import re
-from datetime import datetime
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+from zoneinfo import ZoneInfo
 
 import pandas as pd
 from pypdf import PdfReader
 
 SCHEMA = "SMART_TARGET_SCHEDULE_AUTHORITY_3"
 DEFAULT_ARCHIVE = Path("runtime/procedural_sources/cronogramas_caixa")
+DEFAULT_TIME_POLICY = Path("SMART_MEGA_SENA_DRAW_TIME_POLICY.json")
+TIME_POLICY_SCHEMA = "SMART_MEGA_SENA_DRAW_TIME_POLICY_1"
+TEMPORAL_GUARD_SCHEMA = "SMART_PRE_DRAW_TEMPORAL_GUARD_1"
+MIN_OPERATIONAL_FREEZE_LEAD_SECONDS = 60
 _DATE_LINE = re.compile(r"^\s*(\d{2}/\d{2}/\d{4})\s+([^\r\n]+)$")
 
 
@@ -20,6 +26,86 @@ def sha256_file(path: Path) -> str:
         for chunk in iter(lambda: handle.read(1024 * 1024), b""):
             h.update(chunk)
     return h.hexdigest()
+
+
+def _sha256_json(value: Any) -> str:
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def load_draw_time_policy(root: str | Path, path: str | Path = DEFAULT_TIME_POLICY) -> tuple[dict[str, Any], Path]:
+    root = Path(root).resolve()
+    resolved = Path(path)
+    if not resolved.is_absolute():
+        resolved = (root / resolved).resolve()
+    if not resolved.is_file():
+        raise FileNotFoundError(f"Mega-Sena draw-time policy missing: {resolved}")
+    obj = json.loads(resolved.read_text(encoding="utf-8"))
+    if not isinstance(obj, dict) or obj.get("schema") != TIME_POLICY_SCHEMA or obj.get("status") != "ACTIVE":
+        raise ValueError("Mega-Sena draw-time policy schema/status invalid")
+    observed = obj.get("sha256")
+    canonical = dict(obj); canonical.pop("sha256", None)
+    if not isinstance(observed, str) or len(observed) != 64 or observed.lower() != _sha256_json(canonical):
+        raise ValueError("Mega-Sena draw-time policy self-hash invalid")
+    if obj.get("self_hash_required") is not True or obj.get("fail_closed_on_missing_weekday") is not True:
+        raise ValueError("Mega-Sena draw-time policy fail-closed flags invalid")
+    timezone_name = obj.get("timezone")
+    if not isinstance(timezone_name, str):
+        raise ValueError("Mega-Sena draw-time policy timezone missing")
+    ZoneInfo(timezone_name)
+    times = obj.get("weekday_times")
+    if not isinstance(times, dict) or not times:
+        raise ValueError("Mega-Sena draw-time policy weekday_times missing")
+    effective = obj.get("effective_from")
+    try:
+        datetime.strptime(str(effective), "%Y-%m-%d")
+    except ValueError as exc:
+        raise ValueError("Mega-Sena draw-time policy effective_from invalid") from exc
+    return obj, resolved
+
+
+def assert_pre_draw_window(
+    schedule: dict[str, Any],
+    *,
+    now: datetime | None = None,
+    minimum_lead_seconds: int = MIN_OPERATIONAL_FREEZE_LEAD_SECONDS,
+) -> dict[str, Any]:
+    if not isinstance(schedule, dict) or schedule.get("schema") != SCHEMA:
+        raise ValueError("target schedule authority invalid for temporal guard")
+    scheduled_raw = schedule.get("scheduled_datetime")
+    if not isinstance(scheduled_raw, str):
+        raise ValueError("target schedule lacks scheduled_datetime")
+    try:
+        scheduled = datetime.fromisoformat(scheduled_raw)
+    except ValueError as exc:
+        raise ValueError("target scheduled_datetime invalid") from exc
+    if scheduled.tzinfo is None or scheduled.utcoffset() is None:
+        raise ValueError("target scheduled_datetime must be timezone-aware")
+    if isinstance(minimum_lead_seconds, bool) or not isinstance(minimum_lead_seconds, int) or minimum_lead_seconds < 0:
+        raise ValueError("minimum freeze lead seconds must be a non-negative integer")
+    observed = datetime.now(timezone.utc) if now is None else now
+    if observed.tzinfo is None or observed.utcoffset() is None:
+        raise ValueError("temporal guard now must be timezone-aware")
+    observed_utc = observed.astimezone(timezone.utc)
+    scheduled_utc = scheduled.astimezone(timezone.utc)
+    seconds_until_draw = (scheduled_utc - observed_utc).total_seconds()
+    if seconds_until_draw <= float(minimum_lead_seconds):
+        raise ValueError(
+            f"prospective freeze window closed or inside safety margin: "
+            f"target={schedule.get('target_contest')} scheduled={scheduled.isoformat()} "
+            f"seconds_until_draw={seconds_until_draw:.3f} required_lead={minimum_lead_seconds}"
+        )
+    return {
+        "schema": TEMPORAL_GUARD_SCHEMA,
+        "status": "PASS",
+        "target_contest": int(schedule["target_contest"]),
+        "checked_at_utc": observed_utc.isoformat(),
+        "scheduled_datetime": scheduled.isoformat(),
+        "seconds_until_draw": seconds_until_draw,
+        "minimum_lead_seconds": int(minimum_lead_seconds),
+        "before_scheduled_draw": True,
+        "result_used": False,
+    }
 
 
 def extract_target_from_text(text: str, target_contest: int) -> dict[str, str]:
@@ -62,6 +148,7 @@ def resolve_target_schedule(
     root: str | Path,
     target_contest: int,
     archive: str | Path = DEFAULT_ARCHIVE,
+    time_policy: str | Path = DEFAULT_TIME_POLICY,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
     archive_path = Path(archive)
@@ -109,6 +196,17 @@ def resolve_target_schedule(
         ]
         raise ValueError(f"conflicting nearest CAIXA cronogram occurrences for target {target_contest}: {details}")
 
+    policy, policy_path = load_draw_time_policy(root, time_policy)
+    effective_from = datetime.strptime(str(policy["effective_from"]), "%Y-%m-%d")
+    if nearest_date < effective_from:
+        raise ValueError("target predates current Mega-Sena draw-time policy")
+    weekday_key = str(nearest_date.weekday())
+    time_text = policy["weekday_times"].get(weekday_key)
+    if not isinstance(time_text, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", time_text):
+        raise ValueError(f"Mega-Sena draw time unavailable for weekday={weekday_key}")
+    hour, minute = (int(x) for x in time_text.split(":"))
+    scheduled = nearest_date.replace(hour=hour, minute=minute, second=0, microsecond=0, tzinfo=ZoneInfo(policy["timezone"]))
+
     pdf, row = nearest[0]
     sources = [
         {
@@ -125,6 +223,11 @@ def resolve_target_schedule(
         "previous_contest_date": previous_date.strftime("%d/%m/%Y"),
         "target_date": row["target_date"],
         "weekday": row["weekday"],
+        "scheduled_datetime": scheduled.isoformat(),
+        "scheduled_timezone": policy["timezone"],
+        "draw_time_policy_file": str(policy_path.relative_to(root)).replace("\\", "/"),
+        "draw_time_policy_sha256": sha256_file(policy_path),
+        "draw_time_policy_authority": policy["authority"],
         "source_file": sources[0]["file"],
         "source_sha256": sources[0]["sha256"],
         "source_line": row["source_line"],
@@ -138,4 +241,4 @@ def resolve_target_schedule(
     }
 
 
-__all__ = ["SCHEMA", "DEFAULT_ARCHIVE", "extract_target_from_text", "resolve_target_schedule", "sha256_file"]
+__all__ = ["SCHEMA", "DEFAULT_ARCHIVE", "DEFAULT_TIME_POLICY", "TIME_POLICY_SCHEMA", "TEMPORAL_GUARD_SCHEMA", "MIN_OPERATIONAL_FREEZE_LEAD_SECONDS", "assert_pre_draw_window", "extract_target_from_text", "load_draw_time_policy", "resolve_target_schedule", "sha256_file"]

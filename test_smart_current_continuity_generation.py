@@ -1,62 +1,81 @@
-import json
-from pathlib import Path
+﻿from pathlib import Path
 
+import pytest
+
+import smart_agent_skill_orchestration as orchestration
 import smart_finalize_deployment as finalizer
+import smart_operator as operator
+import smart_product_certification as certification
 
 ROOT = Path(__file__).resolve().parent
-LEGACY_FREEZE_SHA = "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816"
 
 
-def test_finalizer_build_uses_current_epoch_not_legacy_freeze_as_authority():
-    proof = finalizer.build(ROOT)
-    assert proof["deployment_status"] == "PASS"
-    assert proof["checks"]["total_integration_gate_pass"] is True
-    assert proof["total_integration"]["status"] == "PASS"
-    assert proof["total_integration"]["health"] == "HEALTHY"
-    assert proof["total_integration"]["schema"] == "SMART_TOTAL_INTEGRATION_GATE_V2"
-    assert proof["checks"]["wmcp_execution_proof_pass"] is True
-    assert proof["wmcp_execution"]["command_state"] == "completed"
-    assert proof["wmcp_execution"]["exit_code"] == 0
-    assert proof["wmcp_execution"]["proof_schema"] == "SMART_WMCP_EXECUTION_PROOF_V2"
-    assert proof["wmcp_execution"]["live_supervisor_state"] == "ready"
-    assert proof["wmcp_execution"]["live_worker_mode"] in {"LIVE", "DEMAND_DRAINED"}
-    assert proof["current_epoch"]["target_contest"] == 3054
-    assert proof["current_epoch"]["cutoff_contest"] == 3053
-    assert proof["current_epoch"]["result_used"] is False
-    if proof["current_epoch"]["status"] == "RESET_READY":
-        assert proof["freeze_3054"]["authority"] == "NONE_RESET_READY"
-        assert proof["freeze_3054"]["sha256"] is None
-    else:
-        assert proof["current_epoch"]["status"] == "FROZEN"
-        assert proof["freeze_3054"]["authority"] == "CARRY_FORWARD_PROSPECTIVE_AUTHORITY"
-        assert len(proof["freeze_3054"]["sha256"]) == 64
-    assert proof["agent_skill_orchestration"]["role_executor_count"] == 9
-    assert proof["adversarial_claim_audit"]["status"] == "PASS"
-    assert proof["prospective_3054_readiness"]["legacy_authority"] == "PRE_FULL_ACTIVATION_HISTORICAL_ONLY"
-    assert proof["terminal_executor_3054"]["current_terminal_authority"] is False
-    assert proof["terminal_6of6_proven"] is False
+def test_product_completion_is_independent_of_active_operation():
+    proof = finalizer._operation_observation(ROOT)
+    assert proof["construction_authority"] is False
+    source = (ROOT / "smart_product_certification.py").read_text(encoding="utf-8")
+    assert "resolve_current_epoch" not in source
+    assert 'phase="BUILD"' in source
 
 
-def test_rendered_continuity_cannot_restore_legacy_authority_or_inflate_agent_claims():
-    proof = finalizer.build(ROOT)
-    text = finalizer.render_continuity(proof)
-    assert "SMART_MISSION_STATUS.json" in text
+def test_build_orchestration_is_non_operational_and_has_no_freeze_authority(monkeypatch):
+    real_read = orchestration._read_json
+    def guarded(path):
+        if path.name == "SMART_ACTIVE_EPOCH.json":
+            raise AssertionError("BUILD must not read SMART_ACTIVE_EPOCH.json")
+        return real_read(path)
+    monkeypatch.setattr(orchestration, "_read_json", guarded)
+    doc = orchestration.build_orchestration(ROOT, phase="BUILD")
+    assert doc["integration_status"] == "PASS"
+    assert doc["phase"] == "BUILD"
+    ctx = doc["active_context"]
+    assert ctx["context_role"] == "NON_OPERATIONAL_CONSTRUCTION_PROBE"
+    assert ctx["operator_target_selected"] is False
+    assert ctx["freeze_file"] is None
+    assert ctx["signal_state_file"] is None
+
+
+def test_operator_selects_arbitrary_target_when_prior_history_is_complete():
+    assert operator.validate_target_sequence([8998, 8999, 9000], 9001) == {
+        "target_contest": 9001,
+        "cutoff_contest": 9000,
+        "history_max": 9000,
+    }
+    with pytest.raises(ValueError, match="requires canonical history through contest 9001"):
+        operator.validate_target_sequence([8998, 8999, 9000], 9002)
+
+
+def test_operator_contract_keeps_freeze_and_adjudication_out_of_construction_gate():
+    c = operator.contract()
+    assert c["product_completion_independent_of_operation"] is True
+    assert c["operator_selects_target"] is True
+    assert c["freeze_is_operational_not_construction_gate"] is True
+    assert c["adjudication_is_operational_not_construction_gate"] is True
+    assert c["scientific_terminal_claim_independent_of_product_completion"] is True
+
+
+def test_product_certification_contract_is_construction_only():
+    assert certification.SCHEMA == "SMART_PRODUCT_CERTIFICATION_V1"
+    source = (ROOT / "smart_product_certification.py").read_text(encoding="utf-8")
+    assert "No contest, freeze, generated combination or adjudication is required" in source
+    assert 'phase="BUILD"' in source
+
+
+def test_rendered_continuity_explicitly_separates_construction_operation_and_science():
+    synthetic = {
+        "generated_at_utc": "2026-09-07T00:00:00+00:00",
+        "construction_status": "CONSTRUCTION_PROVEN",
+        "mission_state": "MISSION_ACTIVE",
+        "product_certification": {
+            "status": "CONSTRUCTION_PROVEN",
+            "regression": {"tests": 1, "failures": 0, "errors": 0},
+            "checks": {"build_runtime_pass": True, "build_total_integration_pass": True, "zero_open_material_deficiencies": True},
+        },
+        "operation_observation": {"status": "NO_ACTIVE_OPERATION"},
+        "checks": {"wmcp_execution_proof_pass": True},
+    }
+    text = finalizer.render_continuity(synthetic)
+    assert "Nenhum concurso" in text
     assert "SMART_ACTIVE_EPOCH.json" in text
-    assert "CARRY_FORWARD_PROSPECTIVE_AUTHORITY" in text
-    assert "nao sao nove LLMs autonomos" in text
-    assert "nao execucao direta" in text
-    assert "mesmo X" in text
-    assert f"Estado terminal: `{proof['mission_state']}`" in text
-    assert "Nao declarar `MISSION_PROVEN`" in text
-
-
-def test_checkpoint_v3_is_explicitly_historical_and_has_no_current_authority():
-    checkpoint = json.loads((ROOT / "SMART_EXECUTION_CHECKPOINT_20260904.json").read_text(encoding="utf-8-sig"))
-    assert checkpoint["schema"] == "SMART_EXECUTION_CHECKPOINT_20260904_V3"
-    assert checkpoint["critical_hashes"]["freeze_3054"] == LEGACY_FREEZE_SHA
-    current = finalizer.resolve_current_epoch(ROOT)
-    if current["status"] == "FROZEN":
-        assert current["freeze_sha256"] != "" and len(current["freeze_sha256"]) == 64
-    else:
-        assert current["freeze_sha256"] is None
-    assert checkpoint["terminal_6of6_proven"] is False
+    assert "nao possui autoridade sobre a conclusao da construcao" in text
+    assert "MISSION_ACTIVE` cientifico nao significa produto inacabado" in text

@@ -108,7 +108,7 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     out = tmp_path / 'freeze.json'
     ledger = tmp_path / 'ledger.json'
     state = tmp_path / 'state.json'
-    result = freeze_champion_challenger(data, 121, out, ledger, state, start=30)
+    result = freeze_champion_challenger(data, 121, out, ledger, state, start=30, enforce_temporal_guard=False)
     assert result['status'] == 'FROZEN'
     obj = json.loads(out.read_text(encoding='utf-8'))
     assert obj['champion_remains_active'] is True

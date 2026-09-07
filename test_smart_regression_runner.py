@@ -98,9 +98,21 @@ def test_candidate_and_current_are_distinct_contracts():
     assert runner.CANDIDATE != runner.CURRENT
     assert runner.CANDIDATE.endswith("_CANDIDATE.xml")
     assert runner.CURRENT.endswith("_CURRENT.xml")
+
+
 def test_runner_rejects_concurrent_second_instance(tmp_path):
     with runner._RegressionLock(tmp_path):
         result = runner.run_regression(tmp_path)
     assert result["status"] == "FAIL"
     assert result["reason"] == "REGRESSION_ALREADY_RUNNING"
     assert result["promoted"] is False
+
+
+def test_pytest_runtime_utilities_are_not_collected():
+    root = Path(__file__).resolve().parent
+    config = (root / "pytest.ini").read_text(encoding="utf-8-sig")
+    line = next(line for line in config.splitlines() if line.strip().startswith("norecursedirs"))
+    excluded = set(line.split("=", 1)[1].split())
+    assert "runtime" in excluded
+    risky = [p.name for p in (root / "runtime").glob("*.py") if p.name.startswith("test_") or p.name.endswith("_test.py")]
+    assert all("runtime" in excluded for _ in risky)

@@ -1,0 +1,123 @@
+{
+  "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+  "status": "FROZEN",
+  "project": "SMART-MEGA",
+  "epoch_id": "full-b4f551934eba0a39-01",
+  "created_utc": "2026-09-06T14:56:45.036651+00:00",
+  "engineering_activation_file": "SMART_FULL_ACTIVATION_EPOCH.json",
+  "engineering_activation_sha256": "b4f551934eba0a39e912705de764d00312e0a4e8888843072a645f6bc6415d38",
+  "state_paths": {
+    "ledger": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_LEDGER.json",
+    "state": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_STATE.json",
+    "activation_authority": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+    "expansion_registry": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+    "freeze": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_3054_CHAMPION_CHALLENGER_FREEZE.json"
+  },
+  "data_file": "runtime/learning_epochs/full-b4f551934eba0a39-01/Mega-Sena_cutoff_3053.xlsx",
+  "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "canonical_source_file": "runtime/learning_epochs/full-3e8a759590613fdc-01/Mega-Sena_cutoff_3053.xlsx",
+  "canonical_source_sha256_at_reset": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "immutable_history_snapshot": true,
+  "cutoff_contest": 3053,
+  "target_contest": 3054,
+  "authority_mode": "NEW_ENGINEERING_EPOCH",
+  "current_engineering_role": "AUTHORITATIVE_CURRENT_EPOCH",
+  "first_possible_authoritative_target_for_current_engineering": 3054,
+  "parallel_locked_experiment": {
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
+    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "freeze_top6": [
+      10,
+      11,
+      27,
+      30,
+      35,
+      38
+    ],
+    "frozen_utc": "2026-09-04T01:30:08.581499+00:00",
+    "frozen_before_result": true,
+    "causal_cutoff": true,
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "signal_state_file": "SMART_SIGNAL_STATE_3054_V2.json",
+    "signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "canonical_result_store_max": 3053,
+    "result_adjudicated": false,
+    "authority_kind": "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE",
+    "eligible_for_scientific_adjudication": true,
+    "eligible_to_prove_post_freeze_engineering_version": false,
+    "immutable_until_adjudication": true
+  },
+  "parallel_attempts_must_be_counted_separately": true,
+  "prospective_authority_lock_file": "SMART_PROSPECTIVE_AUTHORITY_LOCK.json",
+  "prospective_authority_lock_sha256": "f7494971d3b381a3532a2deb08c93500e0332722820c447754d60f7ea672ead5",
+  "result_used": false,
+  "freeze_authority": {
+    "file": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_3054_CHAMPION_CHALLENGER_FREEZE.json",
+    "sha256": "2020b3b644eb03f0f16415995e683f60154b943e60caebb29d04a12a180c39dd",
+    "target_contest": 3054,
+    "cutoff_contest": 3053
+  },
+  "learning_state_authority": {
+    "file": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_STATE.json",
+    "sha256": "c0b93554fb97dad29921736031bc07f0331e7417e21bf321af3d0f5b6d7d3ebe",
+    "rebuilt_from_zero": true
+  },
+  "supersedes_active_epoch_sha256": "5771a32bb81cca557d689c3d3d833ce5851293a88677fd9fa04de29a788e26da",
+  "frozen_utc": "2026-09-06T14:58:33.985737+00:00",
+  "prospective_registration": {
+    "target_date": "06/09/2026",
+    "schedule_authority": {
+      "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+      "target_contest": 3054,
+      "previous_contest": 3053,
+      "previous_contest_date": "03/09/2026",
+      "target_date": "06/09/2026",
+      "weekday": "domingo",
+      "scheduled_datetime": "2026-09-06T11:00:00-03:00",
+      "scheduled_timezone": "America/Sao_Paulo",
+      "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+      "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+      "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+      "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+      "source_sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+      "source_line": "06/09/2026 domingo 06098-4 7111 2438 3054 1291 387",
+      "source_count": 1,
+      "sources": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+          "sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+          "source_line": "06/09/2026 domingo 06098-4 7111 2438 3054 1291 387"
+        }
+      ],
+      "rejected_occurrences_before_cutoff": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2024-03.pdf",
+          "target_date": "15/03/2024",
+          "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+        }
+      ],
+      "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+      "schedule_consensus": true,
+      "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+      "result_used": false
+    },
+    "frontier_report_file": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_FRONTIER_HISTORICAL.json",
+    "frontier_report_sha256": "41a7617d8909526a92cb08d8376cebecdabf1f819d75767e96e41c23eaf505c1",
+    "frontier_freeze_file": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_3054_FRONTIER_SHADOW_FREEZE.json",
+    "frontier_freeze_sha256": "6c61e6e8a92434409516c0367d81841d1d729b319a330fae083e5779ed68b07d",
+    "probability_ledger_file": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
+    "probability_ledger_sha256": "d79130f3584e4e48ba8651f1d3411a8ade2c14ff44bcfe9c0b79b25649a2ba71",
+    "probability_entry_sha256": "228297c79ed7a75c392fef92915618995d6612836c8f683c22c436483c42af80",
+    "candidate_count": 5,
+    "all_60_probabilities_retained": true,
+    "result_used": false,
+    "production_authority": false
+  },
+  "ledger_sha256": "966eb49f0580e60f8a0251a613e268cff918cfb68e306b5608a14d6f87956a08",
+  "sha256": "2dcf2c911aa2f653b07bc48de8f5146a87dd3c3c42e61ad9ac035f22dfc97ad2"
+}

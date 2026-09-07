@@ -93,7 +93,7 @@ def test_future_freeze_hashes_and_snapshots_p10(tmp_path: Path):
         row.update({f'Bola{j}':int(d[j-1]) for j in range(1,7)}); rows.append(row)
     data=tmp_path/'m.xlsx'; pd.DataFrame(rows).to_excel(data,index=False)
     out=tmp_path/'f.json'; ledger=tmp_path/'l.json'; state=tmp_path/'s.json'
-    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35)
+    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35, enforce_temporal_guard=False)
     assert res['status']=='FROZEN'
     obj=json.loads(out.read_text(encoding='utf-8'))
     assert len(obj['bounded_online_learning_sha256'])==64

@@ -433,7 +433,7 @@ def test_p14_future_freeze_hashes_and_snapshots_independent_audit(tmp_path: Path
     cwd=Path.cwd()
     try:
         # Component hashes are resolved from the canonical project working directory.
-        result=cc.freeze_champion_challenger(data,36,out,ledger,state,start=20)
+        result=cc.freeze_champion_challenger(data,36,out,ledger,state,start=20, enforce_temporal_guard=False)
     finally:
         assert Path.cwd()==cwd
     assert result['status']=='FROZEN'

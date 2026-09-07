@@ -364,7 +364,7 @@ def test_freeze_contains_meta_governor_hash_and_snapshot(tmp_path: Path):
 
     out=tmp_path/'f.json'; ledger=tmp_path/'l.json'; state=tmp_path/'s.json'
 
-    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35)
+    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35, enforce_temporal_guard=False)
 
     assert res['status']=='FROZEN'
 

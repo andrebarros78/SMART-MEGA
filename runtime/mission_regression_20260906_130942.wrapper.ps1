@@ -1,0 +1,5 @@
+﻿Set-Location -LiteralPath 'C:\New Projet\SMART-MEGA'
+& '.\.venv\Scripts\python.exe' -E 'smart_regression_runner.py' 1>> 'runtime\mission_regression_20260906_130942.out.log' 2>> 'runtime\mission_regression_20260906_130942.err.log'
+$rc=$LASTEXITCODE
+@{exit_code=$rc; finished=(Get-Date).ToString('o')} | ConvertTo-Json | Set-Content -Encoding UTF8 'runtime\mission_regression_20260906_130942.exit.json'
+exit $rc

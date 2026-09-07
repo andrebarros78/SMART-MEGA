@@ -21,6 +21,7 @@ import smart_sequential_prospective_proof as sequential
 import smart_champion_challenger as champion_challenger
 from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
+from smart_prospective_authority_lock import verify_lock
 
 SCHEMA = "SMART_3054_TERMINAL_EXECUTOR_V1"
 TARGET = 3054
@@ -74,9 +75,64 @@ def _atomic_write_json(path: Path, document: dict[str, Any]) -> None:
             temp.unlink()
 
 
+def _preserved_lock_binding(root: Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    lock_path = root / "SMART_PROSPECTIVE_AUTHORITY_LOCK.json"
+    lock = verify_lock(lock_path)
+    auth = lock.get("experiment_authority", {})
+    if int(auth.get("target_contest", -1)) != TARGET or int(auth.get("cutoff_contest", -1)) != CUTOFF:
+        raise ValueError("preserved prospective lock target/cutoff mismatch")
+    if auth.get("eligible_for_scientific_adjudication") is not True:
+        raise ValueError("preserved prospective lock lacks scientific adjudication authority")
+    if auth.get("eligible_to_prove_post_freeze_engineering_version") is not False:
+        raise ValueError("preserved prospective lock could falsely credit post-freeze engineering")
+    if auth.get("immutable_until_adjudication") is not True:
+        raise ValueError("preserved prospective lock is not immutable until adjudication")
+
+    freeze = root / str(auth.get("freeze_file", ""))
+    data = root / str(auth.get("data_file", ""))
+    state = root / str(auth.get("signal_state_file", ""))
+    ledger_path = root / str(auth.get("ledger_file", ""))
+    for path, expected in (
+        (freeze, str(auth.get("freeze_sha256", ""))),
+        (data, str(auth.get("data_sha256", ""))),
+        (state, str(auth.get("signal_state_sha256", ""))),
+    ):
+        if not path.is_file() or sha256_file(path) != expected:
+            raise ValueError(f"preserved prospective lock dependency mismatch: {path.name}")
+    if not ledger_path.is_file():
+        raise ValueError("preserved prospective signal ledger missing")
+    ledger = champion_challenger.load_ledger(ledger_path)
+    active = champion_challenger.active_freeze(ledger, TARGET)
+    if active is None or active.get("freeze_sha256") != auth.get("freeze_sha256"):
+        raise ValueError("preserved prospective lock no longer resolves to the active frozen attempt")
+    adjudications = _target_events(ledger, "ADJUDICATION")
+    if len(adjudications) > 1:
+        raise ValueError("multiple 3054 adjudications are forbidden")
+    if not adjudications:
+        if sha256_file(ledger_path) != auth.get("ledger_sha256"):
+            raise ValueError("unadjudicated preserved signal ledger hash changed")
+    else:
+        adjudication = adjudications[0]
+        if adjudication.get("freeze_sha256") != auth.get("freeze_sha256"):
+            raise ValueError("stored adjudication is not bound to the preserved freeze")
+        actual = [int(x) for x in adjudication.get("actual_numbers", [])]
+        if len(actual) != 6 or len(set(actual)) != 6 or any(x < 1 or x > 60 for x in actual):
+            raise ValueError("stored adjudication actual numbers are invalid")
+
+    return {
+        "mode": "LOCKED_PROSPECTIVE_AUTHORITY",
+        "freeze": freeze,
+        "freeze_sha256": str(auth["freeze_sha256"]),
+        "ledger": ledger_path,
+        "state": state,
+        "data": data,
+        "learned": root / LEARNED_STATE,
+    }
+
+
 def _runtime_binding(root: Path) -> dict[str, Any]:
     root = Path(root).resolve()
-    # Unit-test/legacy compatibility is explicit only; production authority is the active epoch.
     if isinstance(EXPECTED_FREEZE_SHA256, str) and len(EXPECTED_FREEZE_SHA256) == 64:
         return {
             "mode": "EXPLICIT_LEGACY_TEST_OVERRIDE",
@@ -87,25 +143,28 @@ def _runtime_binding(root: Path) -> dict[str, Any]:
             "data": root / PRE_RESULT_DATA,
             "learned": root / LEARNED_STATE,
         }
-    paths = preflight._current_paths(root)
-    current = paths["current"]
-    if current.get("status") != "FROZEN" or current.get("freeze_authority_present") is not True:
-        raise ValueError("terminal executor requires the FROZEN active epoch")
-    if int(current.get("target_contest", -1)) != TARGET or int(current.get("cutoff_contest", -1)) != CUTOFF:
-        raise ValueError("terminal executor active epoch target/cutoff mismatch")
-    freeze_sha = str(current.get("freeze_sha256", ""))
+    try:
+        paths = preflight._current_paths(root)
+    except Exception:
+        ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+        if ledger_path.is_file():
+            ledger = champion_challenger.load_ledger(ledger_path)
+            if len(_target_events(ledger, "ADJUDICATION")) == 1:
+                return _preserved_lock_binding(root)
+        raise
+    freeze_sha = str(paths.get("authority_freeze_sha256", ""))
     if len(freeze_sha) != 64:
-        raise ValueError("terminal executor active freeze hash missing")
+        raise ValueError("terminal executor freeze authority hash missing")
+    mode = "ACTIVE_EPOCH" if paths.get("adjudication_authority_mode") == "ACTIVE_EPOCH_FROZEN" else "LOCKED_PROSPECTIVE_AUTHORITY"
     return {
-        "mode": "ACTIVE_EPOCH",
+        "mode": mode,
         "freeze": paths["freeze"],
         "freeze_sha256": freeze_sha,
         "ledger": paths["ledger"],
         "state": paths["state"],
         "data": paths["data"],
-        "learned": paths["ledger"].parent / LEARNED_STATE,
+        "learned": paths["ledger"].parent / LEARNED_STATE if mode == "ACTIVE_EPOCH" else root / LEARNED_STATE,
     }
-
 
 def _contest_max(path: Path) -> int:
     frame = pd.read_excel(path, usecols=["Concurso"])

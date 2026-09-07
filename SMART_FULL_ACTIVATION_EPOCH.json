@@ -2,7 +2,7 @@
   "schema": "SMART_ENGINEERING_ACTIVATION_2",
   "status": "FULL_ENGINEERING_ACTIVATION",
   "project": "SMART-MEGA",
-  "activated_utc": "2026-09-06T11:00:28.045830+00:00",
+  "activated_utc": "2026-09-06T22:53:57.303526+00:00",
   "phase": "PRE_FREEZE",
   "version_scope": "CURRENT_ENGINEERING_VERSION_CLOSED_FOR_FEATURE_ADDITION",
   "learning_epoch_required": true,
@@ -11,53 +11,55 @@
   "current_learning_state_authority": null,
   "current_engineering_freeze_generation_authority": "ELIGIBLE_AFTER_FREEZE_GENERATION",
   "pre_activation_outputs_may_not_prove_current_version": true,
-  "locked_experiment_may_be_scientifically_adjudicated": true,
-  "parallel_locked_experiment": {
-    "target_contest": 3054,
-    "cutoff_contest": 3053,
-    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
-    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-    "freeze_top6": [
-      10,
-      11,
-      27,
-      30,
-      35,
-      38
+  "locked_experiment_may_be_scientifically_adjudicated": false,
+  "parallel_locked_experiment": null,
+  "parallel_attempts_must_be_counted_separately": false,
+  "first_possible_authoritative_target_for_current_engineering": 3055,
+  "target_schedule": {
+    "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+    "target_contest": 3055,
+    "previous_contest": 3054,
+    "previous_contest_date": "06/09/2026",
+    "target_date": "08/09/2026",
+    "weekday": "terça-feira",
+    "scheduled_datetime": "2026-09-08T21:00:00-03:00",
+    "scheduled_timezone": "America/Sao_Paulo",
+    "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+    "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+    "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+    "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+    "source_sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+    "source_line": "08/09/2026 terça-feira 1269 7112 2439 3055 1292",
+    "source_count": 1,
+    "sources": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+        "sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+        "source_line": "08/09/2026 terça-feira 1269 7112 2439 3055 1292"
+      }
     ],
-    "frozen_utc": "2026-09-04T01:30:08.581499+00:00",
-    "frozen_before_result": true,
-    "causal_cutoff": true,
-    "data_file": "Mega-Sena_through_3053_v2.xlsx",
-    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
-    "signal_state_file": "SMART_SIGNAL_STATE_3054_V2.json",
-    "signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
-    "ledger_file": "SMART_SIGNAL_LEDGER.json",
-    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
-    "canonical_result_store_max": 3053,
-    "result_adjudicated": false,
-    "authority_kind": "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE",
-    "eligible_for_scientific_adjudication": true,
-    "eligible_to_prove_post_freeze_engineering_version": false,
-    "immutable_until_adjudication": true
+    "rejected_occurrences_before_cutoff": [],
+    "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+    "schedule_consensus": true,
+    "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+    "result_used": false
   },
-  "parallel_attempts_must_be_counted_separately": true,
-  "first_possible_authoritative_target_for_current_engineering": 3054,
-  "supersedes_activation_sha256": "0ae32ada531b5a24968db20d719b72513aa529119793ea606f33bbc0c4d0055d",
+  "target_draw_time_passed_at_activation": false,
+  "supersedes_activation_sha256": "a94943b236b307bb3373d5734269aa06e61c41c44522508b15855a8b5b9e58a3",
   "regression": {
-    "tests": 627,
+    "tests": 676,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "2742cb8f2a08cea67ef6a19faefd8f2109e759e62dfc5b3965ec8337130301e9"
+    "sha256": "03b50fff5a2fe388dd8e9ae1c46d10ad33b2063b8ae3c6e7aad07342c2e5f3a1"
   },
   "code_fingerprint": {
-    "file_count": 185,
+    "file_count": 191,
     "files": [
       {
         "path": "pytest.ini",
-        "sha256": "f2cb6284415cdb962859d277d64cc2006cb8bb411470be99aea050b3336613d1"
+        "sha256": "41ee9392c77b8b31df808f6962ac3a29594c39c2086eefe071c5fd75bfc52e2d"
       },
       {
         "path": "requirements.lock.txt",
@@ -69,7 +71,7 @@
       },
       {
         "path": "smart_3054_adjudication_preflight.py",
-        "sha256": "02bee2c302e07eb9a7077add3714df865c1f18ea4a1afdae56c6e50dc2e57fac"
+        "sha256": "37f50f14e3d609da928f86a712b7c0032a1032d583d05043f299a8db21a8c9bb"
       },
       {
         "path": "smart_3054_full_cycle_sandbox.py",
@@ -77,7 +79,7 @@
       },
       {
         "path": "smart_3054_terminal_executor.py",
-        "sha256": "303d0a968e7399318931403ad5fff05875743d156b7ffbebcaf8b0a3181c584d"
+        "sha256": "cca21992a924876bcf76543b656b9e35d1234009c1c30dbd11a0b93167cf6a57"
       },
       {
         "path": "smart_50_round_simulation.py",
@@ -85,7 +87,7 @@
       },
       {
         "path": "smart_adversarial_claim_audit.py",
-        "sha256": "b4d5785f703753e875839e90956f937c1c6c21a9876fc7b61e95abbc9541c90e"
+        "sha256": "eecb8b97596a136e001d44132e600765855c9110716d0a2983abbdecb3234016"
       },
       {
         "path": "smart_agent_runtime.py",
@@ -97,7 +99,7 @@
       },
       {
         "path": "smart_agent_skill_orchestration.py",
-        "sha256": "9788059df230c5b765400edfe231de459cb9c493e6bce60679802a4cf0809c6d"
+        "sha256": "4dea7537731df57d44e463c563462d52b05d620a877045625a2a7c31012e7672"
       },
       {
         "path": "smart_bounded_online_learning.py",
@@ -116,8 +118,12 @@
         "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
       },
       {
+        "path": "smart_causal_shadow_runner.py",
+        "sha256": "d75f4adf9b33666e70ce81a3bbe3a36ca4974459a76f1c49946adb0527a29b8f"
+      },
+      {
         "path": "smart_champion_challenger.py",
-        "sha256": "527387003fdf7e9bcb624671647744e9c4cb348bf79af285d961c7f1c880bd8b"
+        "sha256": "b8da46a29c799beb3d6034b23d07c9e6a62363262ee251cd47db8ecb26878c0f"
       },
       {
         "path": "smart_context_calibration_confirm.py",
@@ -145,7 +151,7 @@
       },
       {
         "path": "smart_current_epoch_contract.py",
-        "sha256": "11920170cce210a58b40b3f712397f48a14920d9120b79728d514a0a5ab5498a"
+        "sha256": "7254d277ff5aca54e541520f9b348ef8c40fcf30797a27f62acfd27ea011ce37"
       },
       {
         "path": "SMART_DATA_CONTRACT.md",
@@ -157,7 +163,7 @@
       },
       {
         "path": "smart_engineering_activation.py",
-        "sha256": "2fb0bfc7bd525fd114c436fc371004e56ba1198fe4e66238dae7a0c9c20ba1f2"
+        "sha256": "0daf74ddba505d8bc8d8e89974d8d841ba78b2a4a1b49c09b74456d0d5d84d0a"
       },
       {
         "path": "smart_evidence_only_promotion.py",
@@ -189,7 +195,7 @@
       },
       {
         "path": "smart_finalize_deployment.py",
-        "sha256": "3b25ec16bf751be7ad5bd04bfc0a722b9115a57be3fa7905a47c7b096372234e"
+        "sha256": "078eb6ccecba5741262653650801cbba117c4fe02061b539db028843107c256f"
       },
       {
         "path": "smart_frontier_adjudicator.py",
@@ -201,7 +207,7 @@
       },
       {
         "path": "smart_full_process_pipeline.py",
-        "sha256": "190f2559a5d32ca470338791f6a86afd9e65693186e90aaab262af1db87c4bf1"
+        "sha256": "2102e98069873fc5419fc358ee60730321c4625a58354c0e9b61b0f312882627"
       },
       {
         "path": "smart_global_integrity.py",
@@ -225,7 +231,7 @@
       },
       {
         "path": "smart_independent_oracle.py",
-        "sha256": "03d5032ccbad148eeebd31d8b6382ca81908fd863760a944fcf8dba1665a54b3"
+        "sha256": "dea71d3222b127e0ffd164e0cb80798d3727f3fb15643ac9c6e976d851a7b276"
       },
       {
         "path": "smart_learning_activation_authority.py",
@@ -289,7 +295,7 @@
       },
       {
         "path": "smart_procedural_actionability_gate.py",
-        "sha256": "1f43aa44b77409100810a30047a85ab4261bb003223e9188b9858c5ae155eb3e"
+        "sha256": "16bd718fb5fe52148f08d2583da24db3040be27d4cc3f66a57bd8cb6a7971c0d"
       },
       {
         "path": "smart_procedural_caption_extract.py",
@@ -333,7 +339,7 @@
       },
       {
         "path": "smart_prospective_authority_lock.py",
-        "sha256": "2783936219c3eebaf9b762ba27fb0c406593305c7f53dafb23ca53cfd990f071"
+        "sha256": "91195ed8975d9c0f3c4254177a2c5a5a91ed805d324804ab28ad1d47a23ccb35"
       },
       {
         "path": "smart_prospective_cycle.py",
@@ -413,7 +419,7 @@
       },
       {
         "path": "smart_signal_weights.py",
-        "sha256": "c8fe83045e9db20b8ec077dd0cfa3007a0d01d42a254e106337b4000969a4681"
+        "sha256": "13fbd0fe70f80e5f3552707a3c019b3aa6e3780f6190322791c499847a2b8426"
       },
       {
         "path": "smart_skill_runtime.py",
@@ -421,7 +427,7 @@
       },
       {
         "path": "smart_target_schedule.py",
-        "sha256": "168e9420553b4ca81741f67683faecaf3274fd2c2299b35f39e595a9d9a2ebea"
+        "sha256": "c5a2bb2845735e6ca97175e5a358631e50c681d1d6edc22e5fccac4e953001aa"
       },
       {
         "path": "smart_test_helpers.py",
@@ -461,7 +467,7 @@
       },
       {
         "path": "test_p14_critical_branch_coverage.py",
-        "sha256": "711bf8fc25804ef2c16b68a86db78f9703854ff495f77c67d9069667131db11b"
+        "sha256": "2823cea70ed98a9868319b6a7d00724b3b9d9c5377420c401aa0884b6e943b71"
       },
       {
         "path": "test_p15_contract_strictness.py",
@@ -477,11 +483,11 @@
       },
       {
         "path": "test_smart_3054_adjudication_preflight.py",
-        "sha256": "8a58aa70c71305ab619c90bf946b2eba62f9fe078c7815c4f3a5ac6bf9ab1caf"
+        "sha256": "7ec73d8439a14fabf986b8edfde69a1aca73874c3da2da6fd5f30985453c4f2c"
       },
       {
         "path": "test_smart_3054_full_cycle_sandbox.py",
-        "sha256": "388b636e742084a1b466d1aa249107bc45447e2ab439b89561ec5bfbcf7d3903"
+        "sha256": "78f96dfaaa6802fcd64eaf8e63ef6759dbdda14e4bbf70793850ff6f9efae805"
       },
       {
         "path": "test_smart_3054_terminal_executor.py",
@@ -501,7 +507,7 @@
       },
       {
         "path": "test_smart_agent_skill_orchestration.py",
-        "sha256": "d141f106b47d0bfed4d9e2793b3346ae9a8343cafa8b31df8261ae9dacfcbf9e"
+        "sha256": "c397643e99c287b9d2f3a44c514cbf05cfdeb10af0309f88d579e2cfa241a484"
       },
       {
         "path": "test_smart_architecture_alignment.py",
@@ -513,19 +519,23 @@
       },
       {
         "path": "test_smart_architecture_hardening_20260905.py",
-        "sha256": "f77bb5354a7c50d1edbf8d31fda2d2a6af5fcb2d370cbec41fc8976719792e4a"
+        "sha256": "a4c815c335acc8a7d7d5d80aaa5b8bb28bbbdd9b2515dd9dff6cbda6de0771aa"
       },
       {
         "path": "test_smart_bounded_online_learning.py",
-        "sha256": "4b254bd4d812148b18ad9789709c39beb980334e6ccc602118190a924969d5c4"
+        "sha256": "67208e187e4b527511cfa96068b72decdd0b679ce9b9875bff5bf621d3e41de3"
       },
       {
         "path": "test_smart_canonical_result_store_reconcile.py",
-        "sha256": "485c533277c054f1179bd298fbc02b19c23bf32516558dddd273ebbfec0ce87c"
+        "sha256": "dc56d8c89534cc9f3cd1fe5e2beda9b1e8a56d1f75c4001d09a3c7724c8aa0f6"
       },
       {
         "path": "test_smart_cartography_extended.py",
         "sha256": "5a47f9e6c45bd67e03792ec941a2689fac8bd8240bf4753ed9093c2c8b89d162"
+      },
+      {
+        "path": "test_smart_causal_shadow_runner.py",
+        "sha256": "a944a9d25789eebded98b27c300ce2e17ef5e71403fb22afdfc131128b1d472e"
       },
       {
         "path": "test_smart_context_regime_adwin.py",
@@ -549,7 +559,7 @@
       },
       {
         "path": "test_smart_coverage_governance.py",
-        "sha256": "f4207e332342f12c99003b09b77ebf777f727c77dbaabc48ac067b15654a5062"
+        "sha256": "3a05129f4016f17dbcba34c2ea7d8a13cc33278bd32acdf1935ec2a7b9204d03"
       },
       {
         "path": "test_smart_current_continuity_generation.py",
@@ -557,7 +567,7 @@
       },
       {
         "path": "test_smart_current_epoch_contract.py",
-        "sha256": "31030da9f0956423358e8f554cac899e62e26e475dfa5852f918d6104d75a0b4"
+        "sha256": "75ccd0ef0a7826244c68adb302bb50519d51a507cd709450e66eb10fe05681c6"
       },
       {
         "path": "test_smart_data_quality_gate.py",
@@ -565,7 +575,7 @@
       },
       {
         "path": "test_smart_evidence_only_promotion.py",
-        "sha256": "a1535098bc9b15b953ae57df69dfac4994857772c8e20446ba3e804d65d24e2b"
+        "sha256": "348683cfc0cb1ca43cdc7821f1910b47164631acf3a1657a47218319ea2d43ed"
       },
       {
         "path": "test_smart_execution_checkpoint_freshness.py",
@@ -597,7 +607,11 @@
       },
       {
         "path": "test_smart_full_activation_epoch.py",
-        "sha256": "79e5219e2923dd9b0a3affe993659868209dca9e049b777d447abfcf2b2404f9"
+        "sha256": "cc6d317295a4ad95978104d8b29c592e8b13b366ddcc496b46cbccf217ce661b"
+      },
+      {
+        "path": "test_smart_full_process_temporal_guard.py",
+        "sha256": "aa4993cc2b092e3cfa8511986d7124118f12d805fdd992bd9625e030b0e9180d"
       },
       {
         "path": "test_smart_global_integrity.py",
@@ -621,11 +635,11 @@
       },
       {
         "path": "test_smart_independent_audit.py",
-        "sha256": "865d81cd6d7dc6a3e75acb678862cc520644dc8570ffca27dea87ab959ab63c1"
+        "sha256": "fffa5f239bfad19a0c99958f12be3888d0dc498498a8a7782d2133aaf798a32b"
       },
       {
         "path": "test_smart_learning_activation_authority.py",
-        "sha256": "d0a59e9532eb13f28cb3c1f3e7ddd0a61b8d2f8a53a90fcf7a76aec82cc4beaf"
+        "sha256": "992048880274d6e6a3bc82a997acfed436327dfe8ef4fcab55b39cbc157a55e3"
       },
       {
         "path": "test_smart_learning_activation_gate.py",
@@ -641,7 +655,11 @@
       },
       {
         "path": "test_smart_meta_governor.py",
-        "sha256": "08ef1fb1959fb808c7ab2038105cc53278c50106274f5149ffa2a90561b67eab"
+        "sha256": "e8f6b4077e8ddd9646c5d969012e1708ffbe4322067c8437e2211344534975b0"
+      },
+      {
+        "path": "test_smart_mission_coverage_closure_20260906.py",
+        "sha256": "a528ac7e54d84879328f738ba4c0305f9b2d6608112e23127fbf43a492787ded"
       },
       {
         "path": "test_smart_mission_status_governance.py",
@@ -653,7 +671,7 @@
       },
       {
         "path": "test_smart_multi_challengers.py",
-        "sha256": "8737a9674d912702dd99abea7d9a805074ac410247769bf1a9e7eaae8c4413f6"
+        "sha256": "edea4b1a8d7dea3d91e68259c151c26c6319d8d548fe2b0162be2ad5c1f96f0f"
       },
       {
         "path": "test_smart_official_dataset_reconcile.py",
@@ -666,6 +684,10 @@
       {
         "path": "test_smart_official_result_ingest.py",
         "sha256": "2e802af3c027346a8cf6af56ec76eee45873ac5bc90f4f60953d3d57c9ba17b2"
+      },
+      {
+        "path": "test_smart_orchestration_guard_coverage_20260906.py",
+        "sha256": "a792b1d649a1eca134ab811bfd0d991cdcf59598f3e490d0e332241122938ace"
       },
       {
         "path": "test_smart_portfolio_optimizer.py",
@@ -689,7 +711,7 @@
       },
       {
         "path": "test_smart_procedural_actionability_gate.py",
-        "sha256": "512897914fc205830bf6f130c4ba8f61215765e39fbfb1b518c5f23a1006b7db"
+        "sha256": "b1089f1767880fbe8dff6ee4de1c194b7dfdbf1c563a26254a0ad3cbb668df43"
       },
       {
         "path": "test_smart_procedural_caption_extract.py",
@@ -705,11 +727,11 @@
       },
       {
         "path": "test_smart_promotion_gate.py",
-        "sha256": "6fac435c20a942fa00504948b6b018826e7dcfc0274235a40739f8f4f3a5459b"
+        "sha256": "4ebb39b74c8095622b1a2810145651afa1fbec09df7b8a5c1f28b3da67f8dca8"
       },
       {
         "path": "test_smart_prospective_authority_lock.py",
-        "sha256": "d1833d5c98e341c6efdb057d4504cbcf032c518f31d4de06798fb00150307470"
+        "sha256": "74d48712bc55f49bd11529039b30f5d8631b196175a439a1ebf5d4a50ee38870"
       },
       {
         "path": "test_smart_prospective_authority_module.py",
@@ -733,7 +755,7 @@
       },
       {
         "path": "test_smart_regression_runner.py",
-        "sha256": "c3a5cdca64c76f9556cc299c0e9c489e6f6c34028d8602ca2c9adeb949222ecb"
+        "sha256": "b4b381e6bee5abafb52c64e5dba7c98c8a725307adce704ff5210873870b7034"
       },
       {
         "path": "test_smart_runtime_guard.py",
@@ -741,11 +763,11 @@
       },
       {
         "path": "test_smart_sequential_prospective_proof.py",
-        "sha256": "6295f9594fd288aef0f523af8f7769338c038cbe16187ebfd5459f8b09e065fe"
+        "sha256": "623a16a551fd96b5a0b28a93ab4228f99e3c488952215682c5bae7d5b7289b1b"
       },
       {
         "path": "test_smart_signal_agent.py",
-        "sha256": "47b43cf9b0a6d1931efbbb86d92784a1345ca798a96daf69ee0344a5e6aff498"
+        "sha256": "0aa79f53e4c48dc480282585a92479d40db13ae787071d05fa1a7d65f07c49e9"
       },
       {
         "path": "test_smart_signal_attribution.py",
@@ -753,7 +775,7 @@
       },
       {
         "path": "test_smart_signal_expansion_governance.py",
-        "sha256": "e1fb0df0882ff986d70ceaf8b8c9643bd2f1d1dacf0af465dbccbd67c3a65721"
+        "sha256": "38cae7594a320d39889ce574e3174ccd4fcbb89c1e46fc2bd3f6df5c3b4e2464"
       },
       {
         "path": "test_smart_signal_interactions.py",
@@ -776,6 +798,10 @@
         "sha256": "3281556aaaf4f6554e7bd66623625676f5e515241ea8fcbe4f3b5e72a654ce24"
       },
       {
+        "path": "test_smart_temporal_freeze_guard_20260906.py",
+        "sha256": "a71c05dccb356998cc3c619ff648c5412333d6c712da0f87385e366d2677c9ad"
+      },
+      {
         "path": "test_smart_total_integration_gate.py",
         "sha256": "ab97cefd0f94b0bc736969daef51ddc229044694abfa50d1153a58e0f1ab38c1"
       },
@@ -796,19 +822,19 @@
         "sha256": "9acb2446732f41dcb13fa37ae213b9d4877df1889472c9bdd33c5e4d2d8db6ec"
       }
     ],
-    "sha256": "4ad9faf351b17f3f116cc00a78c4ddad2352edccd77726a2f6e4d6cb670af4fc"
+    "sha256": "a559223f6b041de4316671f645733c99d7a28ee00ba102fad9c1f895db687975"
   },
   "engineering_pre_freeze_context": {
-    "target_contest": 3054,
-    "cutoff_contest": 3053,
+    "target_contest": 3055,
+    "cutoff_contest": 3054,
     "freeze_file": null,
     "freeze_sha256": null,
-    "data_file": "Mega-Sena_through_3053_v2.xlsx",
-    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "data_file": "Mega-Sena.xlsx",
+    "data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
     "signal_state_file": null,
     "signal_state_sha256": null,
     "ledger_file": "SMART_SIGNAL_LEDGER.json",
-    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "ledger_sha256": "9cb42cdfa44f7c2111649acd49e96491fda15d009acee07038830497118fe004",
     "pending_target": false,
     "phase": "PRE_FREEZE"
   },
@@ -858,10 +884,7 @@
     },
     "status": "PASS"
   },
-  "prospective_authority_lock": {
-    "file": "SMART_PROSPECTIVE_AUTHORITY_LOCK.json",
-    "sha256": "4bb8a2e2304356e493df18522d746b25c9b69e404647927cc9e2e67429672e16"
-  },
+  "prospective_authority_lock": null,
   "legacy_pre_activation_artifacts": [
     {
       "path": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.json",
@@ -873,7 +896,7 @@
       "path": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
       "present": true,
       "sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-      "authority": "PARALLEL_PRE_CURRENT_ENGINEERING_PROSPECTIVE_AUTHORITY"
+      "authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY"
     },
     {
       "path": "SMART_3054_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
@@ -890,8 +913,8 @@
     {
       "path": "SMART_SIGNAL_LEDGER.json",
       "present": true,
-      "sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
-      "authority": "PARALLEL_PRE_CURRENT_ENGINEERING_SEQUENCE_LEDGER"
+      "sha256": "9cb42cdfa44f7c2111649acd49e96491fda15d009acee07038830497118fe004",
+      "authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY"
     },
     {
       "path": "SMART_SIGNAL_STATE.json",
@@ -903,7 +926,7 @@
       "path": "SMART_SIGNAL_STATE_3054_V2.json",
       "present": true,
       "sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
-      "authority": "PARALLEL_PRE_CURRENT_ENGINEERING_STATE"
+      "authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY"
     },
     {
       "path": "SMART_SIGNAL_EXPANSION_REGISTRY.json",
@@ -932,15 +955,9 @@
     "pre_freeze_orchestration_pass": true,
     "causal_target_is_cutoff_plus_one": true,
     "scientific_terminal_not_falsely_declared": true,
-    "unresolved_prospective_freeze_preserved": true,
-    "unresolved_signal_state_preserved": true,
-    "locked_prediction_preserved_as_parallel_attempt": true,
-    "current_engineering_parallel_attempt_allowed": true,
-    "parallel_attempts_counted_separately": true,
-    "no_retroactive_generation_authority_transfer": true,
-    "scientific_adjudication_authority_retained": true,
-    "current_pre_freeze_context_has_no_imported_freeze": true,
-    "current_pre_freeze_context_has_no_imported_state": true
+    "target_draw_time_authority_consistent": true,
+    "no_prior_freeze_authority": true,
+    "no_prior_learned_state_authority": true
   },
-  "sha256": "3e8a759590613fdceda9c42cf55fdb436030259b98ff2dc48e11f895b015e340"
+  "sha256": "3e84b0a27223fefd83ad97fb11e1a8ec89c9e49a6d7972ebe495b09bcb190e5c"
 }

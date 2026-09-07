@@ -1,0 +1,62 @@
+{
+  "schema": "SMART_LEARNING_EPOCH_RESET_PROOF_2",
+  "status": "PASS",
+  "mode": "NEW_ENGINEERING_EPOCH",
+  "epoch_id": "full-b4f551934eba0a39-01",
+  "created_utc": "2026-09-06T14:56:45.040153+00:00",
+  "engineering_activation_sha256": "b4f551934eba0a39e912705de764d00312e0a4e8888843072a645f6bc6415d38",
+  "active_epoch_sha256": "6af748c94f6e16240d9cb82edebd922ecd64228d28c44a9ff1647300470ca9a4",
+  "fresh_ledger_sha256": "f6fc9ed67c8d7345059ae87065a0285cadbc9f34ed7a1991d35432baf5b1d352",
+  "immutable_history_snapshot_file": "runtime/learning_epochs/full-b4f551934eba0a39-01/Mega-Sena_cutoff_3053.xlsx",
+  "immutable_history_snapshot_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+  "state_paths": {
+    "ledger": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_LEDGER.json",
+    "state": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_STATE.json",
+    "activation_authority": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+    "expansion_registry": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+    "freeze": "runtime/learning_epochs/full-b4f551934eba0a39-01/SMART_3054_CHAMPION_CHALLENGER_FREEZE.json"
+  },
+  "parallel_locked_experiment": {
+    "target_contest": 3054,
+    "cutoff_contest": 3053,
+    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "freeze_top6": [
+      10,
+      11,
+      27,
+      30,
+      35,
+      38
+    ],
+    "frozen_utc": "2026-09-04T01:30:08.581499+00:00",
+    "frozen_before_result": true,
+    "causal_cutoff": true,
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "signal_state_file": "SMART_SIGNAL_STATE_3054_V2.json",
+    "signal_state_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
+    "canonical_result_store_max": 3053,
+    "result_adjudicated": false,
+    "authority_kind": "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE",
+    "eligible_for_scientific_adjudication": true,
+    "eligible_to_prove_post_freeze_engineering_version": false,
+    "immutable_until_adjudication": true
+  },
+  "parallel_attempts_must_be_counted_separately": true,
+  "checks": {
+    "engineering_activation_verified": true,
+    "fresh_ledger_has_zero_events": true,
+    "learned_state_absent": true,
+    "learning_activation_authority_absent": true,
+    "signal_expansion_registry_absent": true,
+    "prior_freeze_authority_absent": true,
+    "prior_learning_state_authority_absent": true,
+    "canonical_history_preserved": true,
+    "immutable_epoch_history_snapshot_created": true,
+    "parallel_locked_attempt_preserved": true
+  },
+  "sha256": "edc5eca6b223ba75811480195e205ec132f4b52b95c47ac3f87231f0761f5652"
+}

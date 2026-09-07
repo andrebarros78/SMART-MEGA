@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import json
 import math
@@ -170,24 +170,24 @@ def test_champion_freeze_errors_idempotence_supersede_and_context_hash(tmp_path)
     ds=draws(8,45); data=make_excel(tmp_path/'mega.xlsx',ds)
     out=tmp_path/'freeze.json'; ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
     with pytest.raises(ValueError, match='already present'):
-        cc.freeze_champion_challenger(data,45,out,ledger,state,start=10)
+        cc.freeze_champion_challenger(data,45,out,ledger,state,start=10, enforce_temporal_guard=False)
     with pytest.raises(ValueError, match='immediately before'):
-        cc.freeze_champion_challenger(data,47,out,ledger,state,start=10)
-    first=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10)
+        cc.freeze_champion_challenger(data,47,out,ledger,state,start=10, enforce_temporal_guard=False)
+    first=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10, enforce_temporal_guard=False)
     obj=json.loads(Path(first['freeze_file']).read_text(encoding='utf-8'))
     assert len(obj['context_regime_sha256'])==64
-    second=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10)
+    second=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10, enforce_temporal_guard=False)
     assert second['status']=='ALREADY_FROZEN_IDENTICAL_EVENT_PRESERVED'
     L=json.loads(ledger.read_text(encoding='utf-8'))
     L['events'][0]['hashes']['context_regime']='changed'
     ledger.write_text(json.dumps(L),encoding='utf-8')
-    third=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10,allow_pre_result_supersede=True)
+    third=cc.freeze_champion_challenger(data,46,out,ledger,state,start=10,allow_pre_result_supersede=True, enforce_temporal_guard=False)
     assert third['status']=='FROZEN_SUPERSEDING_PRIOR'
     L=json.loads(ledger.read_text(encoding='utf-8'))
     L['events'].append({'event_type':'ADJUDICATION','target_contest':46})
     ledger.write_text(json.dumps(L),encoding='utf-8')
     with pytest.raises(ValueError, match='target already adjudicated'):
-        cc.freeze_champion_challenger(data,46,out,ledger,state,start=10)
+        cc.freeze_champion_challenger(data,46,out,ledger,state,start=10, enforce_temporal_guard=False)
 
 
 def test_champion_main(monkeypatch, capsys):
@@ -258,6 +258,10 @@ def test_real_entrypoint_guards_via_runpy(tmp_path, monkeypatch, capsys):
     ds = draws(1234, 30)
     data = make_excel(tmp_path/'cli_mega.xlsx', ds)
     out = tmp_path/'cli_freeze.json'; led = tmp_path/'cli_ledger.json'; state = tmp_path/'cli_state.json'
+    import smart_target_schedule as sts
+    synthetic_schedule = {"schema": sts.SCHEMA, "target_contest": 31, "scheduled_datetime": "2099-01-01T00:00:00+00:00"}
+    monkeypatch.setattr(sts, "resolve_target_schedule", lambda *args, **kwargs: synthetic_schedule)
+    monkeypatch.setattr(sts, "assert_pre_draw_window", lambda schedule, **kwargs: {"schema": sts.TEMPORAL_GUARD_SCHEMA, "status": "PASS", "target_contest": 31, "before_scheduled_draw": True, "result_used": False})
     monkeypatch.setattr(sys, 'argv', ['smart_champion_challenger.py','--data',str(data),'--target','31','--out',str(out),'--ledger',str(led),'--state',str(state),'--start','10'])
     runpy.run_path(str(Path(cc.__file__)), run_name='__main__')
     assert out.exists() and led.exists()
@@ -301,11 +305,11 @@ def test_identical_active_freeze_with_missing_artifact_is_rebuilt(tmp_path):
     ledger = tmp_path / 'ledger.json'
     state = tmp_path / 'state.json'
 
-    first = cc.freeze_champion_challenger(data, 81, out, ledger, state, start=20)
+    first = cc.freeze_champion_challenger(data, 81, out, ledger, state, start=20, enforce_temporal_guard=False)
     assert first['status'] == 'FROZEN'
     old_hash = first['freeze_sha256']
     out.unlink()
-    second = cc.freeze_champion_challenger(data, 81, out, ledger, state, start=20)
+    second = cc.freeze_champion_challenger(data, 81, out, ledger, state, start=20, enforce_temporal_guard=False)
     assert second['status'] == 'FROZEN_SUPERSEDING_PRIOR'
     assert out.exists()
     led = json.loads(ledger.read_text(encoding='utf-8'))
@@ -430,4 +434,3 @@ def test_append_attribution_rejects_duplicate_attribution_events(tmp_path):
     cc.write_ledger(lp, led)
     with pytest.raises(ValueError, match='at most one attribution'):
         adj.append_attribution_for_existing(lp,74)
-

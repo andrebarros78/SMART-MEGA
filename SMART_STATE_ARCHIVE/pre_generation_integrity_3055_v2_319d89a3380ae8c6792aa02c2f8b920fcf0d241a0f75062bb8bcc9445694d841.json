@@ -1,0 +1,140 @@
+{
+  "schema": "SMART_PRE_GENERATION_INTEGRITY_3055_V2",
+  "status": "PASS",
+  "target_contest": 3055,
+  "cutoff_contest": 3054,
+  "active_epoch_id": "full-3e84b0a27223fefd-01",
+  "active_epoch_sha256": "713b9dd7afbd1f1caf86517b655d027c043f4f2534e73815a52c68e514e90b7e",
+  "data_file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/Mega-Sena_cutoff_3054.xlsx",
+  "data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+  "ledger_file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/SMART_SIGNAL_LEDGER.json",
+  "freeze_file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+  "checks": {
+    "regression_676_green": true,
+    "code_fingerprint_still_fresh": true,
+    "active_epoch_verified": true,
+    "active_context_exact_3055_3054": true,
+    "new_engineering_epoch_authority": true,
+    "result_not_used": true,
+    "no_freeze_authority": true,
+    "freeze_file_absent": true,
+    "current_epoch_ledger_pristine": true,
+    "no_parallel_legacy_experiment": true,
+    "data_quality_pass": true,
+    "total_integration_pass": true,
+    "runtime_guard_pass": true,
+    "orchestration_pass": true,
+    "orchestration_context_exact": true,
+    "historical_prospective_ledger_pass": true,
+    "current_3055_replay_pass": true,
+    "current_3055_independent_oracle_verified": true,
+    "auditor_independence_pass": true,
+    "coverage_bindings_pass": true,
+    "material_deficiencies_zero": true,
+    "scientific_terminal_not_falsely_declared": true
+  },
+  "regression": {
+    "tests": 676,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "sha256": "03b50fff5a2fe388dd8e9ae1c46d10ad33b2063b8ae3c6e7aad07342c2e5f3a1"
+  },
+  "code_fingerprint_sha256": "a559223f6b041de4316671f645733c99d7a28ee00ba102fad9c1f895db687975",
+  "data_quality": {
+    "schema": "SMART_DRAW_DATA_QUALITY_V1",
+    "status": "PASS",
+    "file": "Mega-Sena_cutoff_3054.xlsx",
+    "file_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+    "row_count": 3054,
+    "contest_min": 1,
+    "contest_max": 3054,
+    "required_columns_present": true,
+    "null_cell_count": 0,
+    "duplicate_contest_count": 0,
+    "out_of_order_count": 0,
+    "invalid_draw_count": 0,
+    "non_integer_value_count": 0,
+    "future_contest_count": 0,
+    "missing_contest_count": 0,
+    "checks": {
+      "required_columns": true,
+      "no_nulls": true,
+      "unique_contests": true,
+      "strictly_increasing_contests": true,
+      "contiguous_contests": true,
+      "integer_values": true,
+      "valid_six_unique_numbers_1_to_60": true,
+      "cutoff_respected": true
+    }
+  },
+  "total_integration_sha256": "d75e1a070f116a06fa4b2d87a0a3b0ff3cbe6d2ec884986f23df52b0e5c479e3",
+  "runtime_guard": {
+    "schema": "SMART_RUNTIME_GUARD_V2",
+    "project_root": "C:\\New Projet\\SMART-MEGA",
+    "canonical_python": "C:\\New Projet\\SMART-MEGA\\.venv\\Scripts\\python.exe",
+    "current_python": "C:\\New Projet\\SMART-MEGA\\.venv\\Scripts\\python.exe",
+    "python_version": "3.11.9",
+    "modules": {
+      "numpy": {
+        "ok": true,
+        "version": "2.4.6"
+      },
+      "pandas": {
+        "ok": true,
+        "version": "3.0.5"
+      },
+      "pytest": {
+        "ok": true,
+        "version": "9.1.1"
+      },
+      "river": {
+        "ok": true,
+        "version": "0.26.1"
+      },
+      "pypdf": {
+        "ok": true,
+        "version": "6.17.0"
+      },
+      "yt_dlp": {
+        "ok": true,
+        "version": null
+      }
+    },
+    "external_project_paths": [],
+    "unpinned_requirements": [],
+    "direct_lock_mismatch": {},
+    "checks": {
+      "canonical_python_exists": true,
+      "running_canonical_python": true,
+      "required_modules_available": true,
+      "no_external_project_path_in_sys_path": true,
+      "direct_requirements_fully_pinned": true,
+      "direct_requirements_match_lock_and_environment": true
+    },
+    "status": "PASS"
+  },
+  "orchestration_sha256": null,
+  "historical_ledger_audit_status": "PASS",
+  "current_replay_status": "PASS",
+  "current_replay_oracle_verified": true,
+  "auditor_independence_status": "PASS",
+  "coverage_status": "PASS",
+  "material_deficiency_registry": {
+    "schema": "SMART_MATERIAL_DEFICIENCY_REGISTRY_1",
+    "status": "PASS",
+    "file": "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+    "file_sha256": "ac65b376be09a9705cdb462ac33995d19eec0f86b08b5bf4be6ae759723acc79",
+    "registry_sha256": "4ffceeaf0bb90412fe3a13626628ba9284962236cc51dd9bec7ba33b0d09e3a2",
+    "entry_count": 10,
+    "open_count": 0,
+    "open_deficiencies": [],
+    "open_entries": [],
+    "all_entries_validated": true
+  },
+  "generation_authorized": true,
+  "freeze_created": false,
+  "numbers_generated": false,
+  "sha256": "7e0a20a124905431d22e4827920861921d0a82963e05b4f501300d9bb7dc3b41"
+}

@@ -14,10 +14,13 @@ def sha256_file(p: Path) -> str:
         for chunk in iter(lambda:f.read(1024*1024),b''): h.update(chunk)
     return h.hexdigest()
 
-def run(root: str|Path='.', data_name='Mega-Sena.xlsx', target=3054) -> dict:
+def run(root: str|Path='.', data_name='Mega-Sena.xlsx', target: int|None=None) -> dict:
     root=Path(root).resolve(); data=root/data_name
     draws, contests=e.load_draws(data)
-    if int(contests[-1]) != target-1: raise ValueError('causal cutoff mismatch')
+    cutoff=int(contests[-1])
+    if target is None: target=cutoff+1
+    target=int(target)
+    if cutoff != target-1: raise ValueError('causal cutoff mismatch')
     agent=SmartSignalAgent(start=1000)
     pred, back=agent.predict_next(draws, contests, target_contest=target)
     policies=pred.multi_challengers['policies']

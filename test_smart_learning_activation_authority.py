@@ -1,4 +1,4 @@
-﻿import json
+import json
 from pathlib import Path
 
 import numpy as np
@@ -60,12 +60,12 @@ def test_pre_result_freeze_supersede_requires_explicit_authorization(tmp_path, m
     monkeypatch.chdir(ROOT)
     data=tmp_path/'pre.xlsx'; _dataset().to_excel(data,index=False)
     out=tmp_path/'freeze.json'; ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
-    first=cc.freeze_champion_challenger(data,36,out,ledger,state,start=20)
+    first=cc.freeze_champion_challenger(data,36,out,ledger,state,start=20, enforce_temporal_guard=False)
     assert first['status']=='FROZEN'
     first_hash=first['freeze_sha256']
     with pytest.raises(ValueError,match='explicit pre-result supersede authorization'):
-        cc.freeze_champion_challenger(data,36,out,ledger,state,start=21)
-    second=cc.freeze_champion_challenger(data,36,out,ledger,state,start=21,allow_pre_result_supersede=True)
+        cc.freeze_champion_challenger(data,36,out,ledger,state,start=21, enforce_temporal_guard=False)
+    second=cc.freeze_champion_challenger(data,36,out,ledger,state,start=21,allow_pre_result_supersede=True, enforce_temporal_guard=False)
     assert second['status']=='FROZEN_SUPERSEDING_PRIOR'
     assert second['freeze_sha256'] != first_hash
     events=json.loads(ledger.read_text(encoding='utf-8'))['events']

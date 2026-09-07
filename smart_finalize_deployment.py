@@ -1,294 +1,159 @@
 from __future__ import annotations
 
-import hashlib
 import json
-from defusedxml import ElementTree as ET
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-import smart_agent_skill_functional_gate as agent_skill_gate
-import smart_agent_skill_orchestration as agent_skill_orchestration
 import smart_continuity_consolidator as consolidation_module
-import smart_total_integration_gate as total_integration_gate
 from smart_current_epoch_contract import resolve as resolve_current_epoch
+from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, build as build_product_certification, verify_product_certification, write as write_product_certification
 
-SCHEMA = "SMART_IMPLEMENTATION_PROOF_CURRENT_V3"
-JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
-
-
-def sha(path: Path) -> str:
-    h = hashlib.sha256()
-    with path.open("rb") as handle:
-        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+SCHEMA = "SMART_IMPLEMENTATION_PROOF_CURRENT_V4"
 
 
-def read(path: Path) -> dict[str, Any]:
+def _read(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
 
-def junit_summary(path: Path) -> dict[str, Any]:
-    root = ET.parse(path).getroot()
-    suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
-    if root.tag == "testsuites" and root.attrib.get("tests") is not None:
-        tests = int(root.attrib.get("tests", 0))
-        failures = int(root.attrib.get("failures", 0))
-        errors = int(root.attrib.get("errors", 0))
-        skipped = int(root.attrib.get("skipped", 0))
-        duration = float(root.attrib.get("time", 0.0))
-        if tests == 0:
-            tests = sum(int(item.attrib.get("tests", 0)) for item in suites)
-            failures = sum(int(item.attrib.get("failures", 0)) for item in suites)
-            errors = sum(int(item.attrib.get("errors", 0)) for item in suites)
-            skipped = sum(int(item.attrib.get("skipped", 0)) for item in suites)
-            duration = sum(float(item.attrib.get("time", 0.0)) for item in suites)
-    else:
-        tests = sum(int(item.attrib.get("tests", 0)) for item in suites)
-        failures = sum(int(item.attrib.get("failures", 0)) for item in suites)
-        errors = sum(int(item.attrib.get("errors", 0)) for item in suites)
-        skipped = sum(int(item.attrib.get("skipped", 0)) for item in suites)
-        duration = sum(float(item.attrib.get("time", 0.0)) for item in suites)
-    return {
-        "tests": tests,
-        "failures": failures,
-        "errors": errors,
-        "skipped": skipped,
-        "time_seconds": duration,
-        "status": "PASS" if failures == 0 and errors == 0 else "FAIL",
-        "sha256": sha(path),
-        "file": path.name,
-    }
+def _operation_observation(root: Path) -> dict[str, Any]:
+    active = root / "SMART_ACTIVE_EPOCH.json"
+    if not active.is_file():
+        return {"present": False, "status": "NO_ACTIVE_OPERATION", "construction_authority": False}
+    try:
+        current = resolve_current_epoch(root)
+        return {
+            "present": True,
+            "status": current.get("status"),
+            "target_contest": current.get("target_contest"),
+            "cutoff_contest": current.get("cutoff_contest"),
+            "freeze_authority_present": current.get("freeze_authority_present"),
+            "result_used": current.get("result_used"),
+            "construction_authority": False,
+            "note": "Operational state is observed for continuity only and never gates product construction.",
+        }
+    except Exception as exc:
+        return {
+            "present": True,
+            "status": "OPERATION_STATE_INVALID",
+            "error": f"{type(exc).__name__}: {exc}",
+            "construction_authority": False,
+            "note": "Invalid operational state blocks that operation, not product construction certification.",
+        }
 
 
 def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
     root = Path(root).resolve()
-    consolidation = consolidation_module.build(root, require_fresh_wmcp=require_fresh_wmcp)
-    current = resolve_current_epoch(root)
-    mission = read(root / "SMART_MISSION_STATUS.json")
-    orchestration = agent_skill_orchestration.build_orchestration(root)
-    functional_integration = agent_skill_gate.evaluate(root)
-    total_integration = read(root / "SMART_TOTAL_INTEGRATION_PROOF.json")
-    wmcp_execution = read(root / "SMART_WMCP_EXECUTION_PROOF_20260905.json")
-    junit = junit_summary(root / JUNIT)
-    adversarial = read(root / "SMART_ADVERSARIAL_CLAIM_AUDIT.json")
-    hypothesis_registry = read(root / "SMART_HYPOTHESIS_REGISTRY.json") if (root / "SMART_HYPOTHESIS_REGISTRY.json").exists() else {}
-    powered = read(root / "SMART_FALSIFICATION_REPORT_POWERED.json") if (root / "SMART_FALSIFICATION_REPORT_POWERED.json").exists() else {}
-    preflight = read(root / "SMART_3054_ADJUDICATION_PREFLIGHT.json") if (root / "SMART_3054_ADJUDICATION_PREFLIGHT.json").exists() else {}
-    full_cycle = read(root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json") if (root / "SMART_3054_FULL_CYCLE_SANDBOX_PROOF.json").exists() else {}
-    terminal_sandbox = read(root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json") if (root / "SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json").exists() else {}
-    agents = orchestration.get("agents", {})
-    freeze_consistent = (
-        current["status"] == "RESET_READY"
-        and current["freeze_sha256"] is None
-        and not current["freeze_authority_present"]
-    ) or (
-        current["status"] == "FROZEN"
-        and current["freeze_authority_present"]
-        and isinstance(current["freeze_sha256"], str)
-        and len(current["freeze_sha256"]) == 64
-    )
-    checks = {
-        "final_regression_pass": junit["status"] == "PASS",
-        "active_epoch_contract_valid": current["target_contest"] == current["cutoff_contest"] + 1 and current["result_used"] is False,
-        "current_freeze_state_consistent": freeze_consistent,
-        "agent_skill_structural_orchestration_pass": orchestration.get("integration_status") == "PASS" and orchestration.get("integration_scope") == "STRUCTURAL_ORCHESTRATION_ONLY",
-        "agent_skill_functional_integration_pass": functional_integration.get("status") == "PASS" and all(functional_integration.get("checks", {}).values()),
-        "total_integration_gate_pass": consolidation_module._total_integration_valid(total_integration),
-        "wmcp_execution_proof_pass": consolidation_module._wmcp_execution_valid(wmcp_execution, require_fresh=require_fresh_wmcp),
-        "all_role_executors_non_authoritative": bool(agents) and all(
-            not bool(agent.get("terminal_authority"))
-            and not bool(agent.get("predictive_weight_authorized"))
-            and not bool(agent.get("freeze_mutation_authorized"))
-            for agent in agents.values()
-        ),
-        "adversarial_non_inert_pipeline_proof_pass": adversarial.get("status") == "PASS" and all(adversarial.get("checks", {}).values()),
-        "chat_consolidation_pass": consolidation.get("consolidation_status") == "PASS",
-        "mission_not_false_proven": mission.get("status") == "MISSION_ACTIVE" and mission.get("terminal_6of6_proven") is False,
-    }
+    product = build_product_certification(root)
+    mission = _read(root / "SMART_MISSION_STATUS.json")
+    operation = _operation_observation(root)
+    wmcp_path = root / "SMART_WMCP_EXECUTION_PROOF_20260905.json"
+    wmcp = _read(wmcp_path) if wmcp_path.is_file() else {}
+    wmcp_ok = consolidation_module._wmcp_execution_valid(wmcp, require_fresh=require_fresh_wmcp) if wmcp else False
+    checks = dict(product.get("checks", {}))
+    checks.update({
+        "product_construction_proven": product.get("status") == "CONSTRUCTION_PROVEN",
+        "wmcp_execution_proof_pass": wmcp_ok,
+        "operation_state_excluded_from_construction_authority": operation.get("construction_authority") is False,
+        "scientific_mission_separate_from_product_completion": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"},
+    })
     return {
         "schema": SCHEMA,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "scope": "current engineering deployment truth derived from active epoch; pre-activation 3054 artifacts remain historical-only",
-        "claim_boundary": "Engineering PASS proves executable deterministic role machinery, native methodology bindings, causal pipeline and guards. It does not prove autonomous LLM agents, direct third-party skill execution, lottery predictability, or terminal 6/6.",
         "deployment_status": "PASS" if all(checks.values()) else "FAIL",
+        "construction_status": "CONSTRUCTION_PROVEN" if all(checks.values()) else "CONSTRUCTION_BLOCKED",
         "workspace": str(root),
-        "branch": "master",
-        "test_evidence": junit,
-        "current_epoch": current,
-        "freeze_3054": {
-            "status": current["status"],
-            "top6": current["top6"],
-            "sha256": current["freeze_sha256"],
-            "file": current["freeze_file"],
-            "authority": ("CARRY_FORWARD_PROSPECTIVE_AUTHORITY" if current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE" else ("ACTIVE_CURRENT_ENGINEERING_EPOCH" if current["freeze_authority_present"] else "NONE_RESET_READY")),
-            "result_used": current["result_used"],
+        "scope": "SMART-MEGA product construction and operational readiness. Contest selection, freeze and adjudication are operator actions and are not construction gates.",
+        "product_certification": product,
+        "operator_interface": {
+            "module": "smart_operator.py",
+            "commands": ["status", "prepare --target N", "freeze --target N", "adjudicate --target N --result-data FILE"],
+            "operator_selects_target": True,
+            "freeze_is_construction_gate": False,
+            "adjudication_is_construction_gate": False,
         },
-        "agent_skill_orchestration": {
-            "unique_capabilities_total": orchestration["inventory"]["unique_capabilities_total"],
-            "role_executor_count": len(agents),
-            "structural_status": orchestration["integration_status"],
-            "structural_scope": orchestration.get("integration_scope"),
-            "functional_status": functional_integration.get("status"),
-            "functional_proof_sha256": functional_integration.get("sha256"),
-            "semantic_truth": "deterministic role executors + methodology aliases; no autonomous LLM/direct external-skill claim",
-        },
+        "operation_observation": operation,
         "wmcp_execution": {
-            "artifact": "SMART_WMCP_EXECUTION_PROOF_20260905.json",
-            "status": wmcp_execution.get("status"),
-            "sha256": wmcp_execution.get("sha256"),
-            "command_state": wmcp_execution.get("e2e", {}).get("command_state"),
-            "exit_code": wmcp_execution.get("e2e", {}).get("exit_code"),
-            "proof_schema": wmcp_execution.get("schema"),
-            "live_supervisor_state": wmcp_execution.get("live_runtime", {}).get("supervisor_state"),
-            "live_worker_mode": wmcp_execution.get("live_runtime", {}).get("worker_mode"),
-        },
-        "total_integration": {
-            "artifact": "SMART_TOTAL_INTEGRATION_PROOF.json",
-            "schema": total_integration.get("schema"),
-            "status": total_integration.get("status"),
-            "health": total_integration.get("health"),
-            "sha256": total_integration.get("sha256"),
-            "gate_count": len(total_integration.get("gates", {})),
-        },
-        "adversarial_claim_audit": {
-            "status": adversarial.get("status"),
-            "sha256": adversarial.get("sha256"),
-            "anchor_top6": adversarial.get("anchor_top6"),
-            "policy_top6": adversarial.get("policy_top6"),
-            "heaviest_signal": adversarial.get("heaviest_signal"),
-            "heaviest_weight_delta": adversarial.get("heaviest_weight_delta"),
-        },
-        "hypothesis_state": {
-            "registry_schema": hypothesis_registry.get("schema"),
-            "predictive_promotion_authority": False,
-            "null_proof_claim": False,
-        },
-        "powered_falsification": {
-            "replications": powered.get("replications"),
-            "resolution_sufficient": powered.get("multiplicity", {}).get("resolution_sufficient"),
-            "predictive_weight_authorized": powered.get("predictive_weight_authorized"),
-        },
-        "prospective_3054_readiness": {
-            "current_epoch_status": current["status"],
-            "current_freeze_authority": current["freeze_authority_present"],
-            "legacy_preflight_status": preflight.get("readiness_status"),
-            "legacy_full_cycle_sandbox_status": full_cycle.get("status"),
-            "legacy_authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY",
-            "current_result_used": current["result_used"],
-        },
-        "terminal_executor_3054": {
-            "legacy_sandbox_status": terminal_sandbox.get("status"),
-            "legacy_authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY",
-            "current_terminal_authority": False,
-        },
-        "official_evidence_policy": {
-            "module": "smart_official_evidence_consensus.py",
-            "operational_primary": "CAIXA contest API",
-            "secondary": "CAIXA consolidated results download",
-            "secondary_stale_or_unavailable_never_counts_as_consensus": True,
-            "channel_conflict_is_fatal": True,
-            "independent_audit_still_required_for_terminal_6of6": True,
+            "artifact": wmcp_path.name,
+            "status": wmcp.get("status"),
+            "sha256": wmcp.get("sha256"),
+            "valid": wmcp_ok,
+            "live_supervisor_state": wmcp.get("live_runtime", {}).get("supervisor_state"),
+            "live_worker_mode": wmcp.get("live_runtime", {}).get("worker_mode"),
         },
         "checks": checks,
-        "mission_state": mission["status"],
-        "terminal_6of6_proven": mission["terminal_6of6_proven"],
+        "mission_state": mission.get("status"),
+        "terminal_6of6_proven": bool(mission.get("terminal_6of6_proven")),
         "scientific_predictive_status": mission.get("scientific_predictive_status"),
-        "prospective_advantage_status": mission.get("prospective_advantage_status"),
+        "scientific_mission_controls_product_completion": False,
     }
 
 
 def render_continuity(proof: dict[str, Any]) -> str:
-    j = proof["test_evidence"]
-    epoch = proof["current_epoch"]
-    freeze = proof["freeze_3054"]
-    agents = proof["agent_skill_orchestration"]
-    adversarial = proof["adversarial_claim_audit"]
-    if epoch["status"] == "FROZEN":
-        numbers = " - ".join(str(x).zfill(2) for x in (freeze["top6"] or []))
-        freeze_line = f"Top-6 atual: `{numbers}`\n\nSHA-256: `{freeze['sha256']}`\n\nAutoridade: `CARRY_FORWARD_PROSPECTIVE_AUTHORITY` quando a freeze precede a versÃ£o de engenharia atual; a versÃ£o atual permanece shadow para este alvo."
-    else:
-        freeze_line = "Nenhum freeze da versao atual possui autoridade. O epoch esta `RESET_READY`; freezes anteriores sao historicos e nao podem provar a versao atual."
+    product = proof["product_certification"]
+    operation = proof["operation_observation"]
     return f"""# SMART-MEGA - CONTINUIDADE CANONICA ATUAL
 
 **Atualizacao:** {proof['generated_at_utc']}
 **Workspace:** `C:\\New Projet\\SMART-MEGA`
-**Estado soberano:** `{proof['mission_state']}`
+**Construcao:** `{proof['construction_status']}`
+**Missao cientifica:** `{proof['mission_state']}`
 
-## Autoridade atual
+## Separacao obrigatoria
 
-A autoridade de execucao e `SMART_ACTIVE_EPOCH.json`; a autoridade terminal continua sendo `SMART_MISSION_STATUS.json`.
-Artefatos anteriores a ativacao atual sao historicos, exceto freeze, estado e ledger explicitamente preservados por `SMART_PROSPECTIVE_AUTHORITY_LOCK.json` como autoridade cientifica do experimento ainda nao adjudicado.
+A construcao do produto e certificada por `SMART_PRODUCT_CERTIFICATION.json` em fase `BUILD`.
+Nenhum concurso, sequencia de dezenas, freeze ou adjudicacao e requisito para finalizar o software.
+`SMART_ACTIVE_EPOCH.json` representa apenas uma operacao escolhida pelo operador e nao possui autoridade sobre a conclusao da construcao.
 
-## O que os chamados agentes/skills realmente sao
+## Operacao
 
-- executores deterministas de papeis: **{agents['role_executor_count']}**;
-- capacidades/metodologias registradas: **{agents['unique_capabilities_total']}**;
-- nao sao nove LLMs autonomos;
-- nomes de skills externas sao vinculos metodologicos para probes/implementacoes nativas, nao execucao direta da biblioteca externa;
-- codigo externo permanece em quarentena/source-only.
+O operador escolhe explicitamente o alvo:
 
-## Epoch causal atual
+- `python smart_operator.py prepare --target N`
+- `python smart_operator.py freeze --target N`
+- `python smart_operator.py adjudicate --target N --result-data ARQUIVO`
 
-- estado: **{epoch['status']}**;
-- cutoff: **{epoch['cutoff_contest']}**;
-- alvo: **{epoch['target_contest']}**;
-- resultado do alvo utilizado: **{str(epoch['result_used']).lower()}**.
+O alvo pode ser qualquer concurso futuro suportado pela base causal. Para operar N, a base oficial precisa estar completa ate N-1.
 
-## Freeze prospectivo atual
+Estado operacional observado: `{operation.get('status')}`.
+Esse estado nao e gate de construcao.
 
-{freeze_line}
+## Prova de construcao
 
-## Teste adversarial contra "mesmo X"
+- status: **{product['status']}**;
+- regressao: **{product['regression']['tests']} testes / {product['regression']['failures']} failures / {product['regression']['errors']} errors**;
+- runtime BUILD: **{'PASS' if product['checks']['build_runtime_pass'] else 'FAIL'}**;
+- integracao total BUILD: **{'PASS' if product['checks']['build_total_integration_pass'] else 'FAIL'}**;
+- zero deficiencias materiais abertas: **{str(product['checks']['zero_open_material_deficiencies']).lower()}**;
+- WMCP/execucao real: **{'PASS' if proof['checks']['wmcp_execution_proof_pass'] else 'FAIL'}**.
 
-- status: **{adversarial['status']}**;
-- sinal mais pesado perturbado: **{adversarial['heaviest_signal']}**;
-- variacao causal de peso: **{adversarial['heaviest_weight_delta']}**;
-- politicas internas produzem Top-6 distintos: **sim**.
+## Limite cientifico
 
-Isso prova que a arquitetura nova nao e computacionalmente inerte. Nao prova vantagem preditiva da Mega-Sena nem 6/6.
-
-## Regressao atual
-
-`{j['tests']} testes / {j['failures']} failures / {j['errors']} errors`
-
-JUnit: `{j['file']}`
-SHA-256: `{j['sha256']}`
-
-## Regra terminal
-
-Estado terminal: `{proof['mission_state']}`
-
-Nao declarar `MISSION_PROVEN` enquanto `SMART_MISSION_STATUS.json` mantiver `terminal_6of6_proven = false` ou faltar evidencia prospectiva causal e auditoria independente.
+`SMART_MISSION_STATUS.json` continua sendo a autoridade da hipotese cientifica e do eventual 6/6 prospectivo.
+Isso e separado da conclusao do software. `MISSION_ACTIVE` cientifico nao significa produto inacabado.
 """
 
 
 def write(root: Path) -> dict[str, Any]:
-    total_integration_gate.write(root)
+    root = Path(root).resolve()
     consolidation_module.refresh_wmcp_execution_proof(root)
-    consolidation_module.write(root, refresh_total_gate=False, refresh_wmcp_probe=False)
+    product = write_product_certification(root)
     proof = build(root, require_fresh_wmcp=True)
-    if proof["deployment_status"] != "PASS":
+    if proof["deployment_status"] != "PASS" or product["status"] != "CONSTRUCTION_PROVEN":
         raise RuntimeError({"deployment_checks": proof["checks"]})
-    (root / "SMART_IMPLEMENTATION_PROOF_20260904.json").write_text(
-        json.dumps(proof, ensure_ascii=False, indent=2) + "\n",
-        encoding="utf-8",
-    )
+    (root / "SMART_IMPLEMENTATION_PROOF_20260904.json").write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "SMART_CONTINUITY.md").write_text(render_continuity(proof), encoding="utf-8")
     return proof
 
 
 if __name__ == "__main__":
     import sys
-
     project_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
     result = write(project_root)
     print(json.dumps({
         "deployment_status": result["deployment_status"],
-        "tests": result["test_evidence"]["tests"],
-        "failures": result["test_evidence"]["failures"],
+        "construction_status": result["construction_status"],
         "mission_state": result["mission_state"],
         "terminal_6of6_proven": result["terminal_6of6_proven"],
-        "current_epoch_status": result["current_epoch"]["status"],
+        "active_operation_status": result["operation_observation"]["status"],
     }, ensure_ascii=False))

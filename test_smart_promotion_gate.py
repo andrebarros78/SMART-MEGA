@@ -324,7 +324,7 @@ def test_freeze_preserves_promotion_gate_hash_and_policy_in_file_and_ledger(tmp_
 
     _dataset(65, 1313).to_excel(data, index=False)
 
-    out = cc.freeze_champion_challenger(data, 66, freeze, ledger, state, start=30)
+    out = cc.freeze_champion_challenger(data, 66, freeze, ledger, state, start=30, enforce_temporal_guard=False)
 
     assert out['status'] == 'FROZEN'
 

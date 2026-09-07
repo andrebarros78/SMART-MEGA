@@ -25,5 +25,9 @@ def test_checkpoint_is_derived_from_current_evidence(tmp_path):
     root = ET.parse(ROOT / 'SMART_AUDIT_JUNIT_CURRENT.xml').getroot()
     suites = [root] if root.tag == 'testsuite' else list(root.findall('testsuite'))
     assert cp['regression']['tests'] == sum(int(s.attrib.get('tests', 0)) for s in suites)
-    assert cp['regression']['failures'] == 0
-    assert cp['regression']['errors'] == 0
+    # This test runs before pytest writes the JUnit for the current suite. It must
+    # verify faithful derivation from the evidence available at execution time,
+    # not assume that the previous JUnit was green. Product certification separately
+    # requires the completed, fresh JUnit to have zero failures/errors.
+    assert cp['regression']['failures'] == sum(int(s.attrib.get('failures', 0)) for s in suites)
+    assert cp['regression']['errors'] == sum(int(s.attrib.get('errors', 0)) for s in suites)

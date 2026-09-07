@@ -31,8 +31,8 @@ def test_agents_and_skills_have_no_predictive_freeze_or_terminal_authority():
 
 def test_orchestration_respects_active_epoch_lifecycle():
     doc=aso.build_orchestration(ROOT)
-    assert doc["active_context"]["target_contest"] == 3054
-    assert doc["active_context"]["cutoff_contest"] == 3053
+    assert doc["active_context"]["target_contest"] == doc["active_context"]["cutoff_contest"] + 1
+    assert doc["active_context"]["cutoff_contest"] >= 3054
     if doc["phase"] == "PRE_FREEZE":
         assert doc["evidence_hashes"]["active_freeze_sha256"] is None
         assert doc["active_context"]["freeze_file"] is None

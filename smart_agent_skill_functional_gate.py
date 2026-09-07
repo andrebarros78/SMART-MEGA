@@ -112,7 +112,7 @@ def write(root: str | Path, out: str | Path = 'SMART_AGENT_SKILL_FUNCTIONAL_INTE
 def main(argv: list[str] | None = None) -> None:
     import argparse
     parser = argparse.ArgumentParser()
-    parser.add_argument('--phase', choices=['PRE_FREEZE', 'POST_FREEZE'], default='POST_FREEZE')
+    parser.add_argument('--phase', choices=['BUILD', 'PRE_FREEZE', 'POST_FREEZE'], default='POST_FREEZE')
     parser.add_argument('--output', default='SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json')
     args = parser.parse_args([] if argv is None else argv)
     d = write(Path(__file__).resolve().parent) if args.phase == 'POST_FREEZE' and args.output == 'SMART_AGENT_SKILL_FUNCTIONAL_INTEGRATION_PROOF.json' else write(Path(__file__).resolve().parent, args.output, phase=args.phase)

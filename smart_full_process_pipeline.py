@@ -13,7 +13,8 @@ from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
 from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch, write_active_epoch
 from smart_prospective_cycle import register as register_prospective_cycle
-from smart_target_schedule import resolve_target_schedule
+from smart_procedural_actionability_gate import evaluate_freeze_window
+from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
 
 SCHEMA = "SMART_FULL_PROCESS_PROOF_2"
@@ -97,9 +98,19 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     active = verify_active_epoch(active_path)
     if active.get("status") != "RESET_READY":
         raise ValueError("full process requires RESET_READY active epoch")
-    activation = verify_activation(root / str(active["engineering_activation_file"]), root=root, require_current_code=True)
-    if active.get("engineering_activation_sha256") != activation.get("sha256"):
-        raise ValueError("active epoch is not bound to current engineering activation")
+    if active.get("operator_selected_target") is True:
+        from smart_product_certification import verify_product_certification
+        cert_file = active.get("product_certification_file")
+        if not isinstance(cert_file, str) or not cert_file:
+            raise ValueError("operator-selected epoch missing product certification file")
+        activation = verify_product_certification(root / cert_file, root=root, require_current_code=True)
+        if active.get("product_certification_sha256") != activation.get("sha256"):
+            raise ValueError("operator-selected epoch is not bound to current product certification")
+        activation = {**activation, "activated_utc": activation["generated_utc"], "authority_kind": "PRODUCT_CERTIFICATION"}
+    else:
+        activation = verify_activation(root / str(active["engineering_activation_file"]), root=root, require_current_code=True)
+        if active.get("engineering_activation_sha256") != activation.get("sha256"):
+            raise ValueError("active epoch is not bound to current engineering activation")
 
     paths = active["state_paths"]
     ledger_path = _resolve(root, paths["ledger"])
@@ -118,6 +129,10 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     target = int(active["target_contest"])
     cutoff = int(active["cutoff_contest"])
     schedule = resolve_target_schedule(root, target)
+    freeze_window = evaluate_freeze_window(
+        scheduled_datetime=str(schedule["scheduled_datetime"]),
+        observed_at=datetime.now(timezone.utc).isoformat(),
+    )
     pre_checks = {
         "epoch_reset_ready": active["status"] == "RESET_READY",
         "fresh_ledger_zero_events": ledger_before.get("events") == [],
@@ -131,6 +146,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
         "causal_cutoff_exact": int(contests[-1]) == cutoff == target - 1,
         "target_result_absent": int(contests[-1]) < target,
         "official_schedule_result_unused": schedule.get("result_used") is False,
+        "freeze_window_open": freeze_window.freeze_authority_allowed,
     }
     if not all(pre_checks.values()):
         raise RuntimeError(f"full process preconditions failed: {pre_checks}")
@@ -154,6 +170,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
             allow_pre_result_supersede=False,
             activation_authority_path=activation_authority_path,
             expansion_registry_path=expansion_registry_path,
+            schedule_authority=schedule,
         )
         actual_freeze_path = Path(freeze_result["freeze_file"])
         if not actual_freeze_path.is_absolute():
@@ -260,10 +277,12 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
         "epoch_id": active_frozen["epoch_id"],
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "engineering_activation_sha256": activation["sha256"],
+        "construction_authority_kind": activation.get("authority_kind", "ENGINEERING_ACTIVATION"),
         "active_epoch_sha256": active_frozen["sha256"],
         "target_contest": target,
         "cutoff_contest": cutoff,
         "target_schedule": schedule,
+        "freeze_window": freeze_window.to_dict(),
         "data_file": active["data_file"],
         "data_sha256": active["data_sha256"],
         "reset_ledger_sha256": reset_ledger_sha,

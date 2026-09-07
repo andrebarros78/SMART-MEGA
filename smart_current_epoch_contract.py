@@ -6,7 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from smart_learning_epoch_reset import verify_active_epoch
-from smart_prospective_authority_lock import verify_lock
+from smart_prospective_authority_lock import adjudicated_lock_evidence, verify_lock
 
 SCHEMA = "SMART_CURRENT_EPOCH_CONTRACT_2"
 
@@ -38,7 +38,21 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
         lock_sha = active.get("prospective_authority_lock_sha256")
         if not isinstance(lock_file, str) or not isinstance(lock_sha, str):
             raise ValueError("parallel locked experiment authority lock missing")
-        lock = verify_lock(root / lock_file, root=root)
+        parallel_experiment_adjudicated = False
+        try:
+            lock = verify_lock(root / lock_file, root=root)
+        except ValueError as exc:
+            if "no longer matches live unresolved authority" not in str(exc):
+                raise
+            evidence = adjudicated_lock_evidence(root / lock_file, root=root)
+            if evidence["lock_sha256"] != lock_sha:
+                raise ValueError("adjudicated parallel authority lock hash mismatch")
+            if evidence["freeze_sha256"] != parallel_locked_experiment.get("freeze_sha256"):
+                raise ValueError("adjudicated parallel freeze differs from active epoch")
+            if int(evidence["target_contest"]) != int(active["target_contest"]):
+                raise ValueError("adjudicated parallel target differs from active target")
+            parallel_experiment_adjudicated = True
+            lock = verify_lock(root / lock_file, root=None)
         if lock.get("sha256") != lock_sha:
             raise ValueError("parallel authority lock hash mismatch")
         auth = lock["experiment_authority"]
@@ -48,6 +62,7 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
             raise ValueError("parallel locked experiment target differs from active target")
         if not parallel_attempts_must_be_counted_separately:
             raise ValueError("parallel locked experiment requires separate-attempt accounting")
+    parallel_experiment_adjudicated = locals().get("parallel_experiment_adjudicated", False)
     freeze_authority = active.get("freeze_authority")
     freeze_file = None
     freeze_sha = None
@@ -99,7 +114,7 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
         "epoch_id": active["epoch_id"],
         "status": status,
         "active_epoch_sha256": active["sha256"],
-        "authority_mode": active.get("authority_mode", "LEGACY_UNSPECIFIED"),
+        "authority_mode": ("POST_ADJUDICATION_ROLLOVER_PENDING" if parallel_experiment_adjudicated else active.get("authority_mode", "LEGACY_UNSPECIFIED")),
         "current_engineering_role": active.get("current_engineering_role", "AUTHORITATIVE_CURRENT_EPOCH"),
         "first_possible_authoritative_target_for_current_engineering": active.get("first_possible_authoritative_target_for_current_engineering", active["target_contest"]),
         "data_file": active["data_file"],
@@ -116,6 +131,8 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
         "current_engineering_generation_authority": current_engineering_generation_authority,
         "parallel_locked_experiment": parallel_locked_experiment,
         "parallel_attempts_must_be_counted_separately": parallel_attempts_must_be_counted_separately,
+        "parallel_experiment_adjudicated": parallel_experiment_adjudicated,
+        "rollover_required": parallel_experiment_adjudicated,
         "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
         "terminal_authority": False,
     }

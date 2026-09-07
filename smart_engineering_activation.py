@@ -12,6 +12,7 @@ from smart_prospective_authority_lock import DEFAULT_PATH as AUTHORITY_LOCK_PATH
 from smart_regression_evidence import junit_summary, sha256_file
 from smart_runtime_guard import audit as runtime_audit
 from smart_total_integration_gate import write as write_total_integration
+from smart_target_schedule import resolve_target_schedule
 
 SCHEMA = "SMART_ENGINEERING_ACTIVATION_2"
 DEFAULT_PATH = Path("SMART_FULL_ACTIVATION_EPOCH.json")
@@ -55,6 +56,19 @@ def _all_gate_values_true(total: dict[str, Any]) -> bool:
         isinstance(group, dict) and group and all(value is True for value in group.values())
         for group in gates.values()
     )
+
+
+def _target_draw_has_passed(schedule: dict[str, Any], *, now_utc: datetime | None = None) -> bool:
+    raw = schedule.get("scheduled_datetime")
+    if not isinstance(raw, str):
+        raise ValueError("target schedule missing scheduled_datetime")
+    scheduled = datetime.fromisoformat(raw)
+    if scheduled.tzinfo is None:
+        raise ValueError("target schedule must be timezone-aware")
+    now = datetime.now(timezone.utc) if now_utc is None else now_utc
+    if now.tzinfo is None:
+        raise ValueError("activation clock must be timezone-aware")
+    return now.astimezone(timezone.utc) >= scheduled.astimezone(timezone.utc)
 
 
 def _archive_existing(root: Path, path: Path) -> str | None:
@@ -112,6 +126,13 @@ def verify_activation(
             raise ValueError("engineering activation authority-lock hash mismatch")
         if obj.get("current_engineering_role") != "SHADOW_ONLY_FOR_LOCKED_TARGET":
             raise ValueError("locked engineering activation must remain shadow-only for locked target")
+        auth = lock["experiment_authority"]
+        if obj.get("target_draw_time_passed_at_activation") is not True:
+            raise ValueError("locked shadow activation must be caused by a passed target draw time")
+        if int(obj.get("first_possible_authoritative_target_for_current_engineering", -1)) != int(auth["target_contest"]) + 1:
+            raise ValueError("locked shadow activation next authoritative target is invalid")
+        if obj.get("current_engineering_freeze_generation_authority") != "BLOCKED_TARGET_DRAW_TIME_PASSED":
+            raise ValueError("locked shadow activation must block same-target freeze generation")
     if require_current_code:
         project_root = Path(root).resolve() if root is not None else p.resolve().parent
         recorded = obj.get("code_fingerprint")
@@ -142,9 +163,6 @@ def activate(
     regression_fresh = junit_path.stat().st_mtime >= latest_code_mtime
 
     lock = build_lock(root)
-    # An unresolved older prediction is preserved as a separate experiment. It does not
-    # prevent the current engineering version from registering its own pre-result attempt.
-    phase = "PRE_FREEZE"
     if lock is not None:
         lock = write_lock(root)
         if lock is None:
@@ -154,6 +172,14 @@ def activate(
     runtime = runtime_audit(root)
     orchestration = build_orchestration(root, phase="PRE_FREEZE")
     context = orchestration["active_context"]
+    target_schedule = resolve_target_schedule(root, int(context["target_contest"]))
+    target_draw_passed = _target_draw_has_passed(target_schedule)
+    if target_draw_passed and lock is None:
+        raise RuntimeError("engineering activation blocked: target draw time already passed and no locked prospective attempt exists to adjudicate")
+    phase = "PROSPECTIVE_LOCKED_SHADOW" if target_draw_passed and lock is not None else "PRE_FREEZE"
+    current_engineering_role = "SHADOW_ONLY_FOR_LOCKED_TARGET" if phase == "PROSPECTIVE_LOCKED_SHADOW" else "AUTHORITATIVE_PRE_FREEZE_CANDIDATE"
+    first_possible_target = int(context["target_contest"]) + (1 if phase == "PROSPECTIVE_LOCKED_SHADOW" else 0)
+    freeze_generation_authority = "BLOCKED_TARGET_DRAW_TIME_PASSED" if phase == "PROSPECTIVE_LOCKED_SHADOW" else "ELIGIBLE_AFTER_FREEZE_GENERATION"
     checks = {
         "full_regression_green": regression["status"] == "PASS" and regression["failures"] == 0 and regression["errors"] == 0,
         "full_regression_fresh_for_current_code": regression_fresh,
@@ -162,6 +188,7 @@ def activate(
         "pre_freeze_orchestration_pass": orchestration.get("integration_status") == "PASS",
         "causal_target_is_cutoff_plus_one": int(context["target_contest"]) == int(context["cutoff_contest"]) + 1,
         "scientific_terminal_not_falsely_declared": orchestration.get("global_mission_state") == "MISSION_ACTIVE" and orchestration.get("terminal_6of6_proven") is False,
+        "target_draw_time_authority_consistent": (phase == "PROSPECTIVE_LOCKED_SHADOW") == bool(target_draw_passed),
     }
     if lock is None:
         checks.update({
@@ -176,7 +203,8 @@ def activate(
             "unresolved_prospective_freeze_preserved": freeze_path.is_file() and sha256_file(freeze_path) == auth["freeze_sha256"],
             "unresolved_signal_state_preserved": state_path.is_file() and sha256_file(state_path) == auth["signal_state_sha256"],
             "locked_prediction_preserved_as_parallel_attempt": lock["current_engineering_policy"]["role_for_locked_target"] == "PARALLEL_PRE_CURRENT_ENGINEERING_ATTEMPT_ONLY",
-            "current_engineering_parallel_attempt_allowed": lock["current_engineering_policy"]["may_generate_independent_current_epoch_prediction_same_target_before_result"] is True,
+            "parallel_attempt_policy_pre_result_capable": lock["current_engineering_policy"]["may_generate_independent_current_epoch_prediction_same_target_before_result"] is True,
+            "effective_parallel_attempt_authority_respects_draw_time": (not target_draw_passed) if phase == "PRE_FREEZE" else target_draw_passed,
             "parallel_attempts_counted_separately": lock["current_engineering_policy"]["parallel_attempts_must_be_counted_separately"] is True,
             "no_retroactive_generation_authority_transfer": lock["current_engineering_policy"]["may_claim_generation_of_locked_freeze"] is False,
             "scientific_adjudication_authority_retained": auth["eligible_for_scientific_adjudication"] is True,
@@ -219,15 +247,17 @@ def activate(
         "phase": phase,
         "version_scope": "CURRENT_ENGINEERING_VERSION_CLOSED_FOR_FEATURE_ADDITION",
         "learning_epoch_required": True,
-        "current_engineering_role": "AUTHORITATIVE_PRE_FREEZE_CANDIDATE",
+        "current_engineering_role": current_engineering_role,
         "current_freeze_authority": None,
         "current_learning_state_authority": None,
-        "current_engineering_freeze_generation_authority": "ELIGIBLE_AFTER_FREEZE_GENERATION",
+        "current_engineering_freeze_generation_authority": freeze_generation_authority,
         "pre_activation_outputs_may_not_prove_current_version": True,
         "locked_experiment_may_be_scientifically_adjudicated": bool(lock),
         "parallel_locked_experiment": (lock["experiment_authority"] if lock else None),
         "parallel_attempts_must_be_counted_separately": bool(lock),
-        "first_possible_authoritative_target_for_current_engineering": context["target_contest"],
+        "first_possible_authoritative_target_for_current_engineering": first_possible_target,
+        "target_schedule": target_schedule,
+        "target_draw_time_passed_at_activation": target_draw_passed,
         "supersedes_activation_sha256": previous_sha,
         "regression": regression,
         "code_fingerprint": code,

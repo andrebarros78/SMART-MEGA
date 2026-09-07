@@ -340,7 +340,23 @@ def _resolve_pre_freeze_context(root: Path) -> dict[str, Any]:
 
     active_path = root / "SMART_ACTIVE_EPOCH.json"
     active = _read_json(active_path) if active_path.is_file() else None
-    if isinstance(active, dict) and str(active.get("status", "")).upper() in {"RESET_READY", "FROZEN"}:
+    rollover_from_adjudicated_parallel = False
+    if isinstance(active, dict) and isinstance(active.get("parallel_locked_experiment"), dict):
+        parallel = active["parallel_locked_experiment"]
+        ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+        if ledger_path.is_file():
+            ledger = _read_json(ledger_path)
+            matches = [
+                ev for ev in ledger.get("events", [])
+                if isinstance(ev, dict)
+                and ev.get("event_type") == "ADJUDICATION"
+                and int(ev.get("target_contest", -1)) == int(parallel.get("target_contest", -2))
+                and str(ev.get("freeze_sha256", "")) == str(parallel.get("freeze_sha256", ""))
+            ]
+            if len(matches) > 1:
+                raise ValueError("parallel locked experiment has duplicate adjudications")
+            rollover_from_adjudicated_parallel = len(matches) == 1
+    if isinstance(active, dict) and str(active.get("status", "")).upper() in {"RESET_READY", "FROZEN"} and not rollover_from_adjudicated_parallel:
         raw_data = active.get("data_file")
         if not isinstance(raw_data, str) or not raw_data:
             raise ValueError("active epoch pre-freeze data_file missing")
@@ -363,11 +379,14 @@ def _resolve_pre_freeze_context(root: Path) -> dict[str, Any]:
         raise ValueError("canonical data has no contests")
     cutoff = int(contests.max())
     target = cutoff + 1
-    if isinstance(active, dict):
+    if isinstance(active, dict) and not rollover_from_adjudicated_parallel:
         if int(active.get("cutoff_contest", cutoff)) != cutoff or int(active.get("target_contest", target)) != target:
             raise ValueError("active epoch target/cutoff differs from immutable data snapshot")
-    state_paths = _resolve_state_paths(root)
-    ledger_path = state_paths["ledger"]
+    if rollover_from_adjudicated_parallel:
+        ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    else:
+        state_paths = _resolve_state_paths(root)
+        ledger_path = state_paths["ledger"]
     return {
         "target_contest": target,
         "cutoff_contest": cutoff,
@@ -384,13 +403,44 @@ def _resolve_pre_freeze_context(root: Path) -> dict[str, Any]:
     }
 
 
+def _resolve_build_context(root: Path) -> dict[str, Any]:
+    """Construction-only context. Never creates or requires operational target authority."""
+    import pandas as pd
+    data_path = root / "Mega-Sena.xlsx"
+    if not data_path.is_file():
+        raise ValueError("canonical Mega-Sena.xlsx is missing")
+    observed = _sha256(data_path)
+    frame = pd.read_excel(data_path)
+    if "Concurso" not in frame.columns:
+        raise ValueError("canonical data has no Concurso column")
+    contests = pd.to_numeric(frame["Concurso"], errors="raise").astype(int)
+    if contests.empty:
+        raise ValueError("canonical data has no contests")
+    cutoff = int(contests.max())
+    return {
+        "target_contest": cutoff + 1,
+        "cutoff_contest": cutoff,
+        "freeze_file": None,
+        "freeze_sha256": None,
+        "data_file": _project_relative(root, data_path),
+        "data_sha256": observed,
+        "signal_state_file": None,
+        "signal_state_sha256": None,
+        "ledger_file": None,
+        "ledger_sha256": None,
+        "pending_target": False,
+        "phase": "BUILD",
+        "context_role": "NON_OPERATIONAL_CONSTRUCTION_PROBE",
+        "operator_target_selected": False,
+    }
+
 def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
     root = Path(root)
     requested = str(phase).upper()
-    if requested in {"PRE_FREEZE", "POST_FREEZE"}:
+    if requested in {"BUILD", "PRE_FREEZE", "POST_FREEZE"}:
         return requested
     if requested != "AUTO":
-        raise ValueError("phase must be AUTO, PRE_FREEZE or POST_FREEZE")
+        raise ValueError("phase must be AUTO, BUILD, PRE_FREEZE or POST_FREEZE")
     active_path = root / "SMART_ACTIVE_EPOCH.json"
     if active_path.is_file():
         try:
@@ -414,7 +464,7 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
     v4_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V4.json"
     mission_path = root / "SMART_MISSION_STATUS.json"
     phase = resolve_runtime_phase(root, phase)
-    active_context = _resolve_pre_freeze_context(root) if phase == "PRE_FREEZE" else _resolve_active_context(root)
+    active_context = (_resolve_build_context(root) if phase == "BUILD" else (_resolve_pre_freeze_context(root) if phase == "PRE_FREEZE" else _resolve_active_context(root)))
 
     source_manifest = _read_json(source_manifest_path)
     v2 = _read_json(v2_path)
@@ -448,7 +498,13 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
         "active_data_present": (root / active_context["data_file"]).is_file(),
         "context_cutoff_is_target_minus_one": int(active_context["cutoff_contest"]) == int(active_context["target_contest"]) - 1,
     }
-    if phase == "PRE_FREEZE":
+    if phase == "BUILD":
+        checks.update({
+            "build_context_is_non_operational": active_context.get("context_role") == "NON_OPERATIONAL_CONSTRUCTION_PROBE" and active_context.get("operator_target_selected") is False,
+            "build_requires_no_freeze_authority": active_context.get("freeze_file") is None and active_context.get("freeze_sha256") is None,
+            "build_requires_no_learning_state_authority": active_context.get("signal_state_file") is None and active_context.get("signal_state_sha256") is None,
+        })
+    elif phase == "PRE_FREEZE":
         checks.update({
             "pre_freeze_has_no_freeze_authority": active_context.get("freeze_file") is None and active_context.get("freeze_sha256") is None,
             "pre_freeze_has_no_learned_state_authority": active_context.get("signal_state_file") is None and active_context.get("signal_state_sha256") is None,
@@ -546,7 +602,7 @@ def main(argv: list[str] | None = None) -> None:
 
     parser = argparse.ArgumentParser()
     parser.add_argument("root", nargs="?", default=str(Path(__file__).resolve().parent))
-    parser.add_argument("--phase", choices=["PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
+    parser.add_argument("--phase", choices=["BUILD", "PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
     parser.add_argument("--output", default="SMART_AGENT_SKILL_ORCHESTRATION.json")
     args = parser.parse_args(argv)
     result = write_orchestration(Path(args.root)) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_SKILL_ORCHESTRATION.json" else write_orchestration(Path(args.root), args.output, phase=args.phase)

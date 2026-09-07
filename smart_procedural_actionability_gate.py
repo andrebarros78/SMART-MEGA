@@ -36,4 +36,28 @@ def evaluate(*,scheduled_datetime:str,bet_close_datetime:str,evidence_timestamp:
         return GateResult('PASS_SCIENTIFIC_ONLY',scope,True,actionable,False,'mechanism evidence cannot influence same contest weight')
     return GateResult('PASS_ACTIONABLE',scope,True,True,True,'evidence available before bet close')
 
-__all__=['ACTIONABLE','SCIENTIFIC','GateResult','evaluate']
+@dataclass(frozen=True)
+class FreezeWindowResult:
+    status:str
+    scheduled_datetime:str
+    observed_at:str
+    before_draw:bool
+    freeze_authority_allowed:bool
+    reason:str
+    def to_dict(self): return asdict(self)
+
+def evaluate_freeze_window(*,scheduled_datetime:str,observed_at:str)->FreezeWindowResult:
+    draw=_dt(scheduled_datetime)
+    observed=_dt(observed_at)
+    allowed=observed < draw
+    if not allowed:
+        return FreezeWindowResult(
+            'REJECT', scheduled_datetime, observed_at, False, False,
+            'freeze authority requires observed_at strictly before scheduled draw'
+        )
+    return FreezeWindowResult(
+        'PASS', scheduled_datetime, observed_at, True, True,
+        'freeze authority is inside the pre-draw window'
+    )
+
+__all__=['ACTIONABLE','SCIENTIFIC','GateResult','FreezeWindowResult','evaluate','evaluate_freeze_window']

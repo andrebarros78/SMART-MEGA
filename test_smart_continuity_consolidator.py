@@ -23,7 +23,7 @@ def test_chat_continuity_consolidation_is_canonical_and_complete():
             assert doc["prospective_freeze"]["authority"] == "CARRY_FORWARD_PROSPECTIVE_AUTHORITY"
             assert current["current_engineering_generation_authority"] is False
         else:
-            assert doc["prospective_freeze"]["authority"] == "ACTIVE_EPOCH"
+            assert doc["prospective_freeze"]["authority"] == "ACTIVE_CURRENT_ENGINEERING_EPOCH"
             assert current["current_engineering_generation_authority"] is True
     assert doc["powered_falsification"]["resolution_sufficient"] is True
     assert doc["checks"]["total_integration_gate_pass"] is True

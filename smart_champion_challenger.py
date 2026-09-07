@@ -17,6 +17,7 @@ from smart_data_quality_gate import enforce_draw_quality
 from smart_learning_activation_authority import DEFAULT_PATH as ACTIVATION_AUTHORITY_PATH, load_activation_authority
 from smart_signal_expansion_governance import REGISTRY_PATH, load_registry
 from smart_portfolio_pipeline import build_portfolio_package
+from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_promotion_gate import (
     BASE_MIN_PROSPECTIVE_CONTESTS, MIN_E_VALUE, assess_promotion_records, policy_snapshot
 )
@@ -299,7 +300,21 @@ def _next_version_path(out: Path) -> Path:
 def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,
                                start: int = 1000, allow_pre_result_supersede: bool = False,
                                activation_authority_path: Path = ACTIVATION_AUTHORITY_PATH,
-                               expansion_registry_path: Path = REGISTRY_PATH) -> dict[str, Any]:
+                               expansion_registry_path: Path = REGISTRY_PATH,
+                               enforce_temporal_guard: bool = True,
+                               schedule_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+    if enforce_temporal_guard:
+        schedule_authority = schedule_authority or resolve_target_schedule(Path('.'), int(target))
+        temporal_guard = assert_pre_draw_window(schedule_authority)
+    else:
+        temporal_guard = {
+            'schema': 'SMART_PRE_DRAW_TEMPORAL_GUARD_1',
+            'status': 'TEST_ONLY_BYPASS',
+            'target_contest': int(target),
+            'before_scheduled_draw': True,
+            'authoritative': False,
+            'result_used': False,
+        }
     implementation_gate = require_pre_3052_gate(target)
     ledger = load_ledger(ledger_path)
     if any(ev.get('event_type') == 'ADJUDICATION' and int(ev.get('target_contest', -1)) == int(target)
@@ -372,9 +387,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
             recover_missing_identical_artifact = not fp.exists()
         if not allow_pre_result_supersede and not recover_missing_identical_artifact:
             raise ValueError('active freeze differs from current architecture; explicit pre-result supersede authorization required')
-    freeze_time = datetime.now(timezone.utc).isoformat()
+    generation_started_utc = datetime.now(timezone.utc).isoformat()
     source_ts = source_cutoff_timestamp(data)
-    signal_ts = source_ts or freeze_time
+    signal_ts = source_ts or generation_started_utc
     signal_ts_kind = 'source_draw_datetime' if source_ts else 'signal_generation_utc_source_draw_datetime_unavailable'
     champion = champion_engine.current_policy(draws, start=start)
     activation = load_activation_authority(activation_authority_path, target_contest=int(target), root=Path('.'))
@@ -404,6 +419,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
                                                                cutoff_timestamp=signal_ts,
                                                                cutoff_timestamp_kind=signal_ts_kind)
 
+    if enforce_temporal_guard:
+        temporal_guard = assert_pre_draw_window(schedule_authority)
+    freeze_time = datetime.now(timezone.utc).isoformat()
     state = agent.state_document(data_sha256=data_hash)
     state.update({'cutoff_contest': int(contests[-1]), 'target_contest': int(target), 'generated_utc': freeze_time,
                   'source_cutoff_timestamp': source_ts, 'signal_cutoff_timestamp': signal_ts,
@@ -418,6 +436,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'cutoff_contest': int(contests[-1]), 'source_cutoff_timestamp': source_ts,
         'signal_cutoff_timestamp': signal_ts, 'signal_cutoff_timestamp_kind': signal_ts_kind,
         'frozen_utc': freeze_time, 'frozen_before_result': True, 'causal_cutoff': True,
+        'target_schedule': schedule_authority if enforce_temporal_guard else None,
+        'temporal_guard': temporal_guard, 'temporal_guard_enforced': bool(enforce_temporal_guard),
         'production_switch_performed': False, 'champion_remains_active': True,
         'data_file': str(data), 'data_sha256': data_hash, 'start_index': int(start), 'river_version': river.__version__,
         'engine_sha256': component_hashes['engine'], 'champion_engine_sha256': component_hashes['champion_engine'],
@@ -475,6 +495,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     new_event = {
         'event_type': 'FREEZE', 'target_contest': int(target), 'cutoff_contest': int(contests[-1]),
         'created_utc': freeze_time, 'frozen_before_result': True, 'causal_cutoff': True,
+        'scheduled_datetime': (schedule_authority.get('scheduled_datetime') if enforce_temporal_guard else None),
+        'temporal_guard': temporal_guard, 'temporal_guard_enforced': bool(enforce_temporal_guard),
         'start_index': int(start), 'river_version': str(river.__version__),
         'promotion_lineage': promotion_lineage,
         'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash, 'data_sha256': data_hash,
@@ -523,7 +545,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
             'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
             'portfolio_status': portfolio_package['status'],
             'ledger_sha256': ledger_hash,
-            'state_sha256': state_hash, 'promotion': promotion_status(ledger)}
+            'state_sha256': state_hash, 'temporal_guard': temporal_guard, 'promotion': promotion_status(ledger)}
 
 
 def main():

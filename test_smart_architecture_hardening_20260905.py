@@ -198,8 +198,9 @@ def test_orchestration_write_failure_and_main_branches(tmp_path, monkeypatch, ca
 def test_agent_layer_resolves_active_context_without_fixed_contest_literals():
     import smart_agent_skill_orchestration as aso
     doc = aso.build_orchestration(ROOT)
-    assert doc['active_context']['target_contest'] == 3054
-    assert doc['active_context']['cutoff_contest'] == 3053
+    assert doc['active_context']['target_contest'] == doc['active_context']['cutoff_contest'] + 1
+    assert doc['active_context']['target_contest'] == 3055
+    assert doc['active_context']['cutoff_contest'] == 3054
     source = (ROOT / 'smart_agent_skill_orchestration.py').read_text(encoding='utf-8')
     runtime_source = (ROOT / 'smart_agent_runtime.py').read_text(encoding='utf-8')
     assert 'SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json' not in source
@@ -323,20 +324,21 @@ def test_active_context_rejects_data_hash_tamper(tmp_path, monkeypatch):
         aso._resolve_active_context(tmp_path)
 
 
-def test_deployment_and_continuity_require_functional_agent_skill_gate():
+def test_deployment_and_continuity_require_product_build_certification():
     continuity=(ROOT/'smart_continuity_consolidator.py').read_text(encoding='utf-8')
     deployment=(ROOT/'smart_finalize_deployment.py').read_text(encoding='utf-8')
-    for source in (continuity,deployment):
-        assert 'agent_skill_gate.evaluate(root)' in source
-        assert 'functional_integration' in source
+    certification=(ROOT/'smart_product_certification.py').read_text(encoding='utf-8')
+    assert 'build_product_certification' in deployment
+    assert 'write_product_certification' in deployment
+    assert 'phase="BUILD"' in certification
+    assert 'functional_evaluate(root, phase="BUILD")' in certification
+    assert 'total_integration_evaluate(root, phase="BUILD")' in certification
+    assert 'wmcp_execution_proof_pass' in deployment
+    assert 'SMART_WMCP_EXECUTION_PROOF_20260905.json' in deployment
+    assert 'operator_interface' in deployment
+    assert 'freeze_is_construction_gate' in deployment
+    assert 'smart_operator.py' in deployment
     assert 'agent_skill_functional_integration_pass' in continuity
-    assert 'agent_skill_functional_integration_pass' in deployment
-    for source in (continuity,deployment):
-        assert 'total_integration_gate_pass' in source
-        assert 'SMART_TOTAL_INTEGRATION_PROOF.json' in source
-        assert 'wmcp_execution_proof_pass' in source
-        assert 'SMART_WMCP_EXECUTION_PROOF_20260905.json' in source
-    assert 'total_integration_gate.write(root)' in deployment
 
 
 def test_orchestration_mission_consistency_allows_legitimate_terminal_state(monkeypatch):

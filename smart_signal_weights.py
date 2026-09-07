@@ -35,48 +35,35 @@ def _normalize(weights: dict[str, float]) -> dict[str, float]:
 
 
 def _expert_cap(weights: dict[str, float], cap: float = FINAL_EXPERT_CAP) -> dict[str, float]:
-
     out = _normalize(dict(weights))
     if not out:
         raise ValueError('weights cannot be empty')
-    # A cap below 1/N is mathematically infeasible for normalized weights and
-    # previously caused a non-terminating redistribution loop on small helper
-    # ensembles. Preserve the configured cap whenever feasible; otherwise use
-    # the tightest feasible cap, 1/N.
     cap = max(float(cap), 1.0 / len(out))
-
-    while True:
-
-        over = [k for k, v in out.items() if v > cap + 1e-15]
-
+    base = dict(out)
+    result = {k: 0.0 for k in base}
+    free = list(base)
+    remaining = 1.0
+    while free:
+        free_mass = sum(base[k] for k in free)
+        if free_mass <= 0.0:
+            share = remaining / len(free)
+            for k in free:
+                result[k] = share
+            free = []
+            continue
+        proposed = {k: remaining * base[k] / free_mass for k in free}
+        over = [k for k, value in proposed.items() if value > cap + 1e-15]
         if not over:
-
-            break
-
-        locked_mass = cap * len(over)
-
-        free = [k for k in out if k not in over]
-
-        free_mass = sum(out[k] for k in free)
-
+            for k, value in proposed.items():
+                result[k] = value
+            free = []
+            continue
         for k in over:
-
-            out[k] = cap
-
-        if not free or free_mass <= 0:
-
-            break
-
-        scale = (1.0 - locked_mass) / free_mass
-
-        for k in free:
-
-            out[k] *= scale
-
-    return _normalize(out)
-
-
-
+            result[k] = cap
+        remaining -= cap * len(over)
+        locked = set(over)
+        free = [k for k in free if k not in locked]
+    return _normalize(result)
 
 
 def _family_cap(weights: dict[str, float], families: dict[str, str], cap: float = FAMILY_CAP) -> dict[str, float]:
@@ -180,8 +167,3 @@ def dynamic_weights(metrics: dict[str, dict], families: dict[str, str]) -> tuple
         components[name]['final_weight'] = normalized[name]
 
     return normalized, components
-
-
-
-
-
