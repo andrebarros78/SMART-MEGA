@@ -1,69 +1,98 @@
 {
-  "schema": "SMART_CHAT_CONSOLIDATION_20260904_V1",
-  "generated_at_utc": "2026-09-05T23:54:49.359881+00:00",
-  "purpose": "merge the two 04/09/2026 continuity threads into one canonical execution state and continue from repository reality",
+  "schema": "SMART_CURRENT_CONTINUITY_V2",
+  "generated_at_utc": "2026-09-07T20:58:30.483909+00:00",
+  "purpose": "canonical continuity derived from the active learning epoch; legacy freeze/data are historical evidence only",
   "workspace": "C:\\New Projet\\SMART-MEGA",
   "branch": "master",
-  "head": "0a19704e5068dc63695121c8285de07a641f42e6",
-  "head_short": "0a19704",
-  "source_threads": {
-    "thread_1": {
-      "reported_regression": "436 passed / 0 failed",
-      "reported_state": "MISSION_ACTIVE",
-      "reported_monte_carlo": "1000-replication work described as active",
-      "authority": "historical continuity input only"
-    },
-    "thread_2": {
-      "reported_regression": "461 passed / 0 failed",
-      "reported_state": "MISSION_ACTIVE",
-      "reported_monte_carlo": "1000 brute-force attempt stopped due cost; optimization required",
-      "reported_pending": "falsification-lab retest after NameError correction",
-      "authority": "later continuity input, still subordinate to repository evidence"
-    }
+  "head": "a47c657584b55fe39d184b48ef1bfb53da218231",
+  "head_short": "a47c657",
+  "current_epoch": {
+    "schema": "SMART_CURRENT_EPOCH_CONTRACT_2",
+    "epoch_id": "full-3e84b0a27223fefd-01",
+    "status": "FROZEN",
+    "active_epoch_sha256": "c7d35e47b9acbd4e218ac9dea3983f686db717a8183f449945289768ad59fc32",
+    "authority_mode": "NEW_ENGINEERING_EPOCH",
+    "current_engineering_role": "AUTHORITATIVE_CURRENT_EPOCH",
+    "first_possible_authoritative_target_for_current_engineering": 3055,
+    "data_file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/Mega-Sena_cutoff_3054.xlsx",
+    "data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+    "cutoff_contest": 3054,
+    "target_contest": 3055,
+    "result_used": false,
+    "freeze_authority_present": true,
+    "freeze_file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+    "freeze_sha256": "d4c5aadee3462ba70ea0edc6950f5015633324313feb5ecee83acca7fc664ab1",
+    "top6": [
+      11,
+      30,
+      27,
+      43,
+      10,
+      35
+    ],
+    "freeze_origin": "CURRENT_ENGINEERING_EPOCH",
+    "scientific_adjudication_authority": true,
+    "current_engineering_generation_authority": true,
+    "parallel_locked_experiment": null,
+    "parallel_attempts_must_be_counted_separately": false,
+    "parallel_experiment_adjudicated": false,
+    "rollover_required": false,
+    "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
+    "terminal_authority": false
   },
-  "conflicts_resolved": [
-    "repository HEAD and current tests supersede both historical test counts",
-    "commit 2edb996 already resolved the pending falsification-power test before this consolidation",
-    "no Python writer was active when this mission resumed, so the earlier active-process warning was stale",
-    "freeze authority remains the immutable v2 artifact, never a derived registry"
-  ],
   "canonical_data": {
-    "file": "Mega-Sena_through_3053_v2.xlsx",
-    "cutoff": 3053,
-    "sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60"
+    "file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/Mega-Sena_cutoff_3054.xlsx",
+    "cutoff": 3054,
+    "sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+    "authority": "ACTIVE_EPOCH"
   },
   "prospective_freeze": {
-    "file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
-    "target_contest": 3054,
+    "status": "FROZEN",
+    "file": "runtime/learning_epochs/full-3e84b0a27223fefd-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+    "target_contest": 3055,
+    "cutoff_contest": 3054,
     "top6": [
-      10,
       11,
-      27,
       30,
-      35,
-      38
+      27,
+      43,
+      10,
+      35
     ],
-    "sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-    "immutable": true
+    "sha256": "d4c5aadee3462ba70ea0edc6950f5015633324313feb5ecee83acca7fc664ab1",
+    "authority": "ACTIVE_CURRENT_ENGINEERING_EPOCH",
+    "result_used": false
+  },
+  "legacy_pre_activation": {
+    "freeze_file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+    "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "freeze_expected_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+    "data_file": "Mega-Sena_through_3053_v2.xlsx",
+    "data_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "data_expected_sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
+    "authority": "PRE_FULL_ACTIVATION_HISTORICAL_ONLY",
+    "scientific_attempt_preserved": false
   },
   "agent_skill_integration": {
     "artifact": "SMART_AGENT_SKILL_ORCHESTRATION.json",
     "structural_status": "PASS",
     "structural_scope": "STRUCTURAL_ORCHESTRATION_ONLY",
     "functional_status": "PASS",
-    "functional_proof_sha256": "5ae19176055528c11194cafd6f55a869cc5875739606a1b933e392656e80a3d1",
+    "functional_proof_sha256": "f5b233316773aa048f1c17f2eb793f9fe585b53b9a036eebedec6b3ce5aa7c55",
     "unique_capabilities_total": 41,
+    "role_executor_count": 9,
+    "claim_boundary": "deterministic role executors and methodology aliases; not autonomous LLM agents or direct third-party skill execution",
     "external_code_auto_execute": false,
     "predictive_authority": "NONE_DIRECT"
   },
   "wmcp_execution": {
     "artifact": "SMART_WMCP_EXECUTION_PROOF_20260905.json",
     "status": "PASS",
-    "sha256": "da98136dbcdd09aba798ed080bde73d4f3aa4acf13494507cc26531aad3cbcd3",
+    "sha256": "333a189819315934d6a88d9b121ec35b25f8f1cdc026a89973aa9571abf67d6e",
     "command_state": "completed",
     "exit_code": 0,
     "proof_schema": "SMART_WMCP_EXECUTION_PROOF_V2",
-    "generated_at_utc": "2026-09-05T23:54:42.501296+00:00",
+    "generated_at_utc": "2026-09-07T20:58:24.327419+00:00",
     "live_supervisor_state": "ready",
     "live_worker_mode": "DEMAND_DRAINED"
   },
@@ -71,8 +100,66 @@
     "artifact": "SMART_TOTAL_INTEGRATION_PROOF.json",
     "status": "PASS",
     "health": "HEALTHY",
-    "sha256": "a79087c1dc78d7ae8a83dbed90ce77ad06f3c99581376e39df8487c6db9d91d4",
-    "gate_count": 8
+    "schema": "SMART_TOTAL_INTEGRATION_GATE_V2",
+    "sha256": "c9599ac02ec227fafbdbab36c09778039fd4f75fec7326ef9ab0eb68d9c3fe19",
+    "gate_count": 9
+  },
+  "adversarial_claim_audit": {
+    "artifact": "SMART_ADVERSARIAL_CLAIM_AUDIT.json",
+    "status": "PASS",
+    "sha256": "fcc1f3541a092c7a3c2f86735bb604abc60d14ecf4f53668d776f8f6cee0284d",
+    "anchor_top6": [
+      11,
+      30,
+      27,
+      35,
+      10,
+      38
+    ],
+    "policy_top6": {
+      "quality_dynamic": [
+        11,
+        30,
+        27,
+        35,
+        10,
+        38
+      ],
+      "diversity_max": [
+        30,
+        11,
+        16,
+        58,
+        6,
+        35
+      ],
+      "low_redundancy": [
+        11,
+        30,
+        35,
+        27,
+        38,
+        10
+      ],
+      "regime_context": [
+        11,
+        30,
+        27,
+        35,
+        10,
+        38
+      ],
+      "conservative": [
+        11,
+        30,
+        16,
+        27,
+        35,
+        58
+      ]
+    },
+    "heaviest_signal": "freq1000",
+    "heaviest_weight_delta": 0.38425252374630225
   },
   "powered_falsification": {
     "artifact": "SMART_FALSIFICATION_REPORT_POWERED.json",
@@ -84,15 +171,6 @@
     "all_adversarial_expected_directions_detected": true,
     "predictive_weight_authorized": false,
     "scientific_conclusion": "RETROSPECTIVE_DIAGNOSTIC_ONLY: Monte Carlo resolution is sufficient for the declared Holm family, but the split is not pristine and cannot authorize prediction."
-  },
-  "monte_carlo_optimization": {
-    "baseline_5_replications_seconds": 14.122,
-    "optimized_stage1_5_replications_seconds": 6.308,
-    "optimized_stage2_5_replications_seconds": 4.367,
-    "optimized_20_replications_seconds": 12.371,
-    "baseline_to_stage2_speedup": 3.234,
-    "baseline_to_stage2_reduction_percent": 69.08,
-    "invariants": "U4 exact marginals; U5 prepared-fit equivalence; fast-stat projection equivalence; deterministic seeds covered by tests"
   },
   "monte_carlo_convergence": {
     "artifact": "SMART_MONTE_CARLO_CONVERGENCE_1000.json",
@@ -117,22 +195,25 @@
     "manifest_sha256": "dc1b8343700f728216f990aab37ec4d487113857d18a3f233f9d169436bdc4de"
   },
   "checks": {
-    "freeze_3054_immutable": true,
-    "dataset_3053_bound": true,
+    "active_epoch_contract_valid": true,
+    "canonical_data_bound_to_active_epoch": true,
+    "current_freeze_state_consistent": true,
+    "carry_forward_freeze_hash_preserved": true,
+    "carry_forward_dataset_hash_preserved": true,
     "agent_skill_structural_orchestration_pass": true,
     "agent_skill_functional_integration_pass": true,
     "total_integration_gate_pass": true,
     "wmcp_execution_proof_pass": true,
-    "agent_skill_no_terminal_authority": true,
+    "role_executors_have_no_terminal_authority": true,
     "powered_falsification_resolution_sufficient": true,
     "powered_falsification_no_predictive_weight": true,
     "powered_controls_detected": true,
+    "adversarial_non_inert_pipeline_proof_pass": true,
     "mission_active_not_false_proven": true,
     "atlas_1000_complete": true,
     "manifest_1000_complete": true,
     "canonical_p1p2_promoted_to_1000": true,
-    "convergence_audit_bound_to_1000": true,
-    "all_agents_bounded": true
+    "convergence_audit_bound_to_1000": true
   },
   "consolidation_status": "PASS",
   "mission_state": "MISSION_ACTIVE",
