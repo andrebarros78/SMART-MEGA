@@ -160,6 +160,11 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     files_before = _files_under(epoch_dir)
     ledger_bytes = ledger_path.read_bytes()
     try:
+        from smart_signal_agent import SIGNAL_NAMES
+        from smart_signal_expansion_governance import load_registry, write_registry
+        if not expansion_registry_path.exists():
+            expansion_governance = load_registry(expansion_registry_path, tuple(SIGNAL_NAMES))
+            write_registry(expansion_registry_path, expansion_governance)
         freeze_result = freeze_champion_challenger(
             data_path,
             target,
