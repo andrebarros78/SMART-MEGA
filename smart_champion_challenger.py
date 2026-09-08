@@ -297,6 +297,14 @@ def _next_version_path(out: Path) -> Path:
     raise RuntimeError('unable to allocate versioned freeze filename')
 
 
+def _persist_project_path(path: Path, root: Path = Path('.')) -> str:
+    p = Path(path)
+    try:
+        return p.resolve().relative_to(Path(root).resolve()).as_posix()
+    except ValueError:
+        return str(p)
+
+
 def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: Path, state_path: Path,
                                start: int = 1000, allow_pre_result_supersede: bool = False,
                                activation_authority_path: Path = ACTIVATION_AUTHORITY_PATH,
@@ -440,7 +448,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'target_schedule': schedule_authority if enforce_temporal_guard else None,
         'temporal_guard': temporal_guard, 'temporal_guard_enforced': bool(enforce_temporal_guard),
         'production_switch_performed': False, 'champion_remains_active': True,
-        'data_file': str(data), 'data_sha256': data_hash, 'start_index': int(start), 'river_version': river.__version__,
+        'data_file': _persist_project_path(data), 'data_sha256': data_hash, 'start_index': int(start), 'river_version': river.__version__,
         'engine_sha256': component_hashes['engine'], 'champion_engine_sha256': component_hashes['champion_engine'],
         'data_quality': data_quality.to_dict(),
         'signal_agent_sha256': component_hashes['signal_agent'], 'signal_quality_sha256': component_hashes['signal_quality'],
@@ -469,13 +477,13 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'portfolio_pipeline_sha256': component_hashes['portfolio_pipeline'],
         'portfolio_policy': {'enabled': True, 'post_scoring_only': True, 'generated_from_frozen_champion_scores': True},
         'global_integrity_proof': global_integrity_ref,
-        'signal_expansion_registry_file': str(expansion_registry_path),
+        'signal_expansion_registry_file': _persist_project_path(expansion_registry_path),
         'signal_expansion_registry_sha256': expansion_registry_hash,
         'signal_expansion_governance': expansion_snapshot,
         'sequential_prospective_proof': sequential_snapshot,
-        'signal_state_file': str(state_path),
+        'signal_state_file': _persist_project_path(state_path),
         'signal_state_sha256': state_hash,
-        'signal_state_archive_file': str(state_archive_path),
+        'signal_state_archive_file': _persist_project_path(state_archive_path),
         'signal_state_archive_sha256': state_hash,
         'champion': champion, 'challenger': challenger_pred.as_dict(),
         'governed_challenger_top6': challenger_pred.top6,
@@ -500,9 +508,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'temporal_guard': temporal_guard, 'temporal_guard_enforced': bool(enforce_temporal_guard),
         'start_index': int(start), 'river_version': str(river.__version__),
         'promotion_lineage': promotion_lineage,
-        'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash, 'data_sha256': data_hash,
-        'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
-        'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
+        'freeze_file': _persist_project_path(actual_out), 'freeze_sha256': freeze_hash, 'data_sha256': data_hash,
+        'state_archive_file': _persist_project_path(state_archive_path), 'state_archive_sha256': state_hash,
+        'portfolio_file': _persist_project_path(portfolio_out), 'portfolio_sha256': portfolio_hash,
         'portfolio_status': portfolio_package['status'],
         'portfolio_games': portfolio_package['portfolio']['games'],
         'portfolio_metrics': portfolio_package['portfolio']['metrics'],
@@ -543,8 +551,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
             'champion_top6': champion['top6'], 'challenger_top6': freeze_obj['challenger']['top6'],
             'governed_challenger_top6': freeze_obj['governed_challenger_top6'], 'governed_challenger_policy': freeze_obj['governed_challenger_policy'],
             'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash,
-            'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
-            'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
+            'state_archive_file': _persist_project_path(state_archive_path), 'state_archive_sha256': state_hash,
+            'portfolio_file': _persist_project_path(portfolio_out), 'portfolio_sha256': portfolio_hash,
             'portfolio_status': portfolio_package['status'],
             'ledger_sha256': ledger_hash,
             'state_sha256': state_hash, 'temporal_guard': temporal_guard, 'promotion': promotion_status(ledger)}

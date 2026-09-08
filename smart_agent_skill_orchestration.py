@@ -220,16 +220,35 @@ def _validate_native_targets(root: Path) -> dict[str, bool]:
     return {target: (root / target).exists() for target in targets}
 
 
+LEGACY_PROJECT_ROOTS = (Path(r"C:\New Projet\SMART-MEGA"),)
+
+
 def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
     value = str(relative).strip()
     if not value:
         raise ValueError(f"{label} path is empty")
-    candidate = (root / value).resolve()
     resolved_root = root.resolve()
+    raw = Path(value)
+    candidate = raw.resolve() if raw.is_absolute() else (resolved_root / raw).resolve()
     try:
         candidate.relative_to(resolved_root)
-    except ValueError as exc:
-        raise ValueError(f"{label} escapes project root: {value}") from exc
+    except ValueError:
+        # v6.3.1 persisted project-local runtime paths as absolute paths.
+        # Rebind only paths proven to be descendants of an explicitly trusted
+        # historical project root; arbitrary absolute paths remain fail-closed.
+        if raw.is_absolute():
+            for legacy_root in LEGACY_PROJECT_ROOTS:
+                try:
+                    suffix = candidate.relative_to(legacy_root.resolve())
+                except ValueError:
+                    continue
+                rebound = (resolved_root / suffix).resolve()
+                try:
+                    rebound.relative_to(resolved_root)
+                except ValueError as exc:
+                    raise ValueError(f"{label} escapes project root: {value}") from exc
+                return rebound
+        raise ValueError(f"{label} escapes project root: {value}")
     return candidate
 
 
@@ -458,7 +477,7 @@ def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
 
 def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     root = Path(root)
-    source_manifest_path = root / ".external_skills_acquired" / "ACQUISITION_MANIFEST.json"
+    source_manifest_path = root / "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"
     v2_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V2.json"
     v3_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V3.json"
     v4_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V4.json"
@@ -492,7 +511,9 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
         "no_unknown_lane_capabilities": not unknown_in_lanes,
         "no_duplicate_lane_assignment": not duplicates,
         "all_native_targets_exist": all(target_checks.values()),
-        "external_source_auto_execution_disabled": source_manifest.get("policy", "").startswith("Third-party skill sources are quarantined"),
+        "external_source_auto_execution_disabled": source_manifest.get("policy", "").startswith("Third-party skill sources are quarantined")
+        and source_manifest.get("external_code_auto_execute") is False
+        and source_manifest.get("source_payload_required_at_runtime") is False,
         "global_mission_status_consistent": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"}
         and ((mission.get("status") == "MISSION_PROVEN") == bool(mission.get("terminal_6of6_proven"))),
         "active_data_present": (root / active_context["data_file"]).is_file(),

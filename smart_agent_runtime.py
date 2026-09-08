@@ -27,7 +27,7 @@ BASE_CRITICAL_CANONICAL_FILES = [
     "SMART_SIGNAL_LEDGER.json",
 ]
 ARTIFACT_HINTS = {
-    "quarantine_curator": [".external_skills_acquired/ACQUISITION_MANIFEST.json"],
+    "quarantine_curator": ["SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"],
     "research_scout": ["SMART_HYPOTHESIS_REGISTRY.json", "SMART_EXPERIMENT_LEDGER.json"],
     "data_guardian": ["SMART_DATA_CONTRACT.md"],
     "null_model_cartographer": ["SMART_RANDOMNESS_ATLAS_1000.json", "SMART_RANDOMNESS_ATLAS_EXTENDED.json"],
@@ -116,15 +116,26 @@ class SmartAgentRuntime:
         return {r: sha256_file(self.root / r) if (self.root / r).is_file() else None for r in self._critical_files()}
 
     def _probe_quarantine_curator(self) -> dict[str, Any]:
-        p = self.root / ".external_skills_acquired" / "ACQUISITION_MANIFEST.json"
+        p = self.root / "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"
         manifest = json.loads(p.read_text(encoding="utf-8-sig"))
         items = manifest.get("items", [])
         bad = []
         for item in items:
-            local = Path(item.get("local_path", ""))
-            if item.get("status") != "ACQUIRED_VERIFIED" or item.get("execution_policy") != "SOURCE_ONLY_QUARANTINE" or not local.is_dir():
+            if item.get("status") != "ACQUIRED_VERIFIED" or item.get("execution_policy") != "SOURCE_ONLY_QUARANTINE":
                 bad.append(item.get("name"))
-        return {"probe_id": "quarantine_manifest_integrity", "executed_functions": ["json.loads", "Path.is_dir"], "items": len(items), "invalid_items": bad, "external_code_executed": False, "pass": len(items) == 21 and not bad}
+        payload_required = manifest.get("source_payload_required_at_runtime")
+        auto_execute = manifest.get("external_code_auto_execute")
+        optional_payload_present = (self.root / ".external_skills_acquired").is_dir()
+        return {
+            "probe_id": "quarantine_manifest_integrity",
+            "executed_functions": ["json.loads"],
+            "items": len(items),
+            "invalid_items": bad,
+            "source_payload_required_at_runtime": payload_required,
+            "optional_source_payload_present": optional_payload_present,
+            "external_code_executed": False,
+            "pass": len(items) == 21 and not bad and payload_required is False and auto_execute is False,
+        }
 
     def _probe_research_scout(self) -> dict[str, Any]:
         paths = [self.root / "SMART_HYPOTHESIS_REGISTRY.json", self.root / "SMART_EXPERIMENT_LEDGER.json"]

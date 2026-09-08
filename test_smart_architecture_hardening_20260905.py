@@ -119,14 +119,19 @@ def test_agent_runtime_fail_closed_branches_and_output_paths(tmp_path, monkeypat
     # artifact missing branch
     monkeypatch.setitem(ar.ARTIFACT_HINTS, 'quarantine_curator', ['definitely_missing.file'])
     assert rt.artifact_records('quarantine_curator') == []
-    monkeypatch.setitem(ar.ARTIFACT_HINTS, 'quarantine_curator', ['.external_skills_acquired/ACQUISITION_MANIFEST.json'])
+    monkeypatch.setitem(ar.ARTIFACT_HINTS, 'quarantine_curator', ['SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json'])
 
-    # invalid quarantine item branch
-    original_is_dir = Path.is_dir
-    monkeypatch.setattr(Path, 'is_dir', lambda self: False if self.name == 'aeon' else original_is_dir(self))
-    bad = rt._probe_quarantine_curator()
+    # invalid tracked quarantine manifest branch; source payload is intentionally not a runtime dependency
+    import json as _json
+    bad_root = tmp_path / 'bad-quarantine-manifest'
+    bad_root.mkdir()
+    manifest = _json.loads((ROOT / 'SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json').read_text(encoding='utf-8'))
+    manifest['items'][0]['status'] = 'INVALID'
+    (bad_root / 'SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json').write_text(_json.dumps(manifest), encoding='utf-8')
+    bad_rt = object.__new__(ar.SmartAgentRuntime)
+    bad_rt.root = bad_root
+    bad = bad_rt._probe_quarantine_curator()
     assert bad['pass'] is False and 'aeon' in bad['invalid_items']
-    monkeypatch.setattr(Path, 'is_dir', original_is_dir)
 
     # failed native probe branch
     monkeypatch.setattr(rt, '_probe_quarantine_curator', lambda: {'probe_id':'x','executed_functions':['x'],'pass':False})
