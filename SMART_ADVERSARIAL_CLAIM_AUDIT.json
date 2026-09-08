@@ -1,11 +1,11 @@
 {
   "schema": "SMART_ADVERSARIAL_CLAIM_AUDIT_1",
-  "generated_utc": "2026-09-06T01:52:09.523428+00:00",
+  "generated_utc": "2026-09-08T03:55:14.218835+00:00",
   "status": "PASS",
-  "target_contest": 3054,
-  "cutoff_contest": 3053,
+  "target_contest": 3055,
+  "cutoff_contest": 3054,
   "data_file": "Mega-Sena.xlsx",
-  "data_sha256": "accd80ec9b71e34b89b5d2705074985b380705a4b3d021ee05c02fbdceeed3aa",
+  "data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
   "checks": {
     "causal_cutoff_exact": true,
     "dynamic_weights_nonuniform": true,
@@ -18,83 +18,83 @@
     11,
     30,
     27,
-    35,
+    43,
     10,
-    38
+    35
   ],
   "policy_top6": {
     "quality_dynamic": [
       11,
       30,
       27,
-      35,
+      43,
       10,
-      38
+      35
     ],
     "diversity_max": [
+      58,
       30,
+      43,
       11,
       16,
-      58,
-      6,
-      35
+      17
     ],
     "low_redundancy": [
       11,
-      30,
-      35,
       27,
-      38,
-      10
+      10,
+      30,
+      43,
+      38
     ],
     "regime_context": [
       11,
       30,
       27,
-      35,
+      43,
       10,
-      38
+      35
     ],
     "conservative": [
       11,
       30,
+      58,
+      43,
       16,
-      27,
-      35,
-      58
+      27
     ]
   },
-  "distinct_top6_sets": 3,
+  "distinct_top6_sets": 4,
   "weights": {
-    "freq25": 0.03409447283783795,
-    "freq50": 0.058819470715240706,
-    "freq100": 0.05591574331950535,
-    "freq250": 0.03838402264700306,
-    "freq500": 0.06121570378612382,
-    "freq1000": 0.38841919041297646,
-    "freq_global": 0.06315139628131278,
-    "ewma10": 0.057737296103885914,
-    "ewma25": 0.030533866522047516,
-    "ewma50": 0.029060174907102884,
-    "ewma100": 0.02822716336770221,
-    "ewma250": 0.1544414990992615
+    "freq25": 0.03464083889096124,
+    "freq50": 0.04113762322480523,
+    "freq100": 0.05971412825209849,
+    "freq250": 0.0416735956390401,
+    "freq500": 0.06743066564228224,
+    "freq1000": 0.38622368094106446,
+    "freq_global": 0.06917946740974817,
+    "ewma10": 0.04211649361819435,
+    "ewma25": 0.031087063676134577,
+    "ewma50": 0.030441233140787644,
+    "ewma100": 0.02946032542771161,
+    "ewma250": 0.16689488413717193
   },
-  "weight_range": 0.36019202704527425,
+  "weight_range": 0.35676335551335286,
   "heaviest_signal": "freq1000",
-  "heaviest_weight_before": 0.38841919041297646,
-  "heaviest_weight_after_forced_quality_degradation": 0.004166666666674177,
-  "heaviest_weight_delta": 0.38425252374630225,
+  "heaviest_weight_before": 0.38622368094106446,
+  "heaviest_weight_after_forced_quality_degradation": 0.004166666666675189,
+  "heaviest_weight_delta": 0.38205701427438926,
   "meta_governor": {
     "schema": "SMART_META_GOVERNOR_1",
-    "observations_before_result": 2053,
+    "observations_before_result": 2054,
     "eta": 0.11552453009332421,
     "prior_mix": 0.2,
     "policy_weights_before_result": {
-      "quality_dynamic": 0.32431394694495086,
-      "diversity_max": 0.04628250999595882,
-      "low_redundancy": 0.1295532816336563,
-      "regime_context": 0.44208063974137524,
-      "conservative": 0.05776962168405882
+      "quality_dynamic": 0.3564562570745149,
+      "diversity_max": 0.047849109302843626,
+      "low_redundancy": 0.05569821860568733,
+      "regime_context": 0.48753673065260694,
+      "conservative": 0.052459684364347295
     },
     "anchor_policy": "quality_dynamic",
     "allow_alternate_selection": false,
@@ -102,7 +102,7 @@
     "hedge_candidate_policy": "regime_context",
     "alternate_authorized": false,
     "alternate_evidence": {
-      "observations": 2053,
+      "observations": 2054,
       "log_weight_lead_vs_anchor": 0.34657359027997536,
       "cumulative_hit_lead_vs_anchor": 3,
       "min_observations": 20,
@@ -118,36 +118,36 @@
       11,
       30,
       27,
-      35,
+      43,
       10,
-      38
+      35
     ],
-    "selected_policy_sha256": "96818153b22bb9eb0c8fb03a036479deecb1b4e8431fec05ce559507967e5bb0",
+    "selected_policy_sha256": "483dd8395c8a45338218b7b5fecf3400b196133cb63b8de3574274afac3b19d1",
     "selection_causal": true,
     "selection_uses_current_result": false,
     "selection_scope": "P07_CHALLENGERS_ONLY",
     "production_authority": false,
     "champion_remains_active": true,
     "retroactive_selection_prohibited": true,
-    "sha256": "cdbe89b9b02d173e00f06a84b90c3ab4c27d792fb0bc1f3935895f6ed832af43",
+    "sha256": "45b81de0f8e08ded3075c634595660f7899d64c0caa6b04b6bd0bcfdfea3dbc0",
     "decision_top6_applied": [
       11,
       30,
       27,
-      35,
+      43,
       10,
-      38
+      35
     ],
     "decision_source": "quality_dynamic_anchor"
   },
-  "walk_forward_mean_hits": 0.6186069167072576,
-  "walk_forward_excess_hits": 38.200000000000045,
+  "walk_forward_mean_hits": 0.6183057448880234,
+  "walk_forward_excess_hits": 37.600000000000136,
   "claim": "The current SMART predictive pipeline is not output-inert: actual policies produce multiple Top-6 sets and signal weights causally respond to quality degradation. This does not prove lottery predictability or 6/6.",
   "component_hashes": {
-    "smart_signal_agent.py": "68586766612219936d8d8ee505cf8d0fbcc8fef191a3c2c2075dac8dea8cc692",
-    "smart_signal_weights.py": "c8fe83045e9db20b8ec077dd0cfa3007a0d01d42a254e106337b4000969a4681",
-    "smart_multi_challengers.py": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8",
+    "smart_signal_agent.py": "ce4c1c0c8e16715e3c6236abc3518c47de141648b848e1ff2d061b0c5e7ce925",
+    "smart_signal_weights.py": "bdc6baf1110f7d75dc665feb159663211e038c778eaf0c2593125ff945168d4e",
+    "smart_multi_challengers.py": "36150b033c3589db13d2fae954c8c40f3a749783f7e3f2efdc6ebc6ead676b8b",
     "smart_meta_governor.py": "4eb8041090a93d592ed269084c19e1a134d247663d2c50545e6501d1f052b6bc"
   },
-  "sha256": "fcc1f3541a092c7a3c2f86735bb604abc60d14ecf4f53668d776f8f6cee0284d"
+  "sha256": "af0c4b5e3cb5a13314af8b3a391af742347f566bc6af81b79c017cdeb2ff0744"
 }

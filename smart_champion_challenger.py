@@ -91,6 +91,22 @@ def archive_state_snapshot(state_path: Path, state_hash: str) -> Path:
     return archive_path
 
 
+
+def archive_registry_snapshot(registry_path: Path, registry_hash: str) -> Path:
+    registry_path = Path(registry_path)
+    archive_dir = registry_path.parent / 'SMART_REGISTRY_ARCHIVE'
+    archive_dir.mkdir(parents=True, exist_ok=True)
+    archive_path = archive_dir / f'{registry_hash}.json'
+    if archive_path.exists():
+        if sha256(archive_path) != registry_hash:
+            raise ValueError('immutable registry archive hash collision/mismatch')
+    else:
+        archive_path.write_bytes(registry_path.read_bytes())
+        if sha256(archive_path) != registry_hash:
+            archive_path.unlink(missing_ok=True)
+            raise ValueError('immutable registry archive write verification failed')
+    return archive_path
+
 def source_cutoff_timestamp(data: Path) -> str | None:
     df = pd.read_excel(data)
     if 'Data do Sorteio' not in df.columns or len(df) == 0:
@@ -362,6 +378,10 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
     expansion_governance = load_registry(expansion_registry_path, tuple(SIGNAL_NAMES))
     expansion_snapshot = expansion_governance.snapshot()
     expansion_registry_hash = sha256(expansion_registry_path) if expansion_registry_path.exists() else None
+    expansion_registry_archive_path = (
+        archive_registry_snapshot(expansion_registry_path, expansion_registry_hash)
+        if expansion_registry_hash is not None else None
+    )
     from smart_sequential_prospective_proof import freeze_snapshot as sequential_freeze_snapshot
     sequential_snapshot = sequential_freeze_snapshot()
     from smart_independent_audit import policy_snapshot as independent_audit_policy_snapshot
@@ -471,6 +491,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'global_integrity_proof': global_integrity_ref,
         'signal_expansion_registry_file': str(expansion_registry_path),
         'signal_expansion_registry_sha256': expansion_registry_hash,
+        'signal_expansion_registry_archive_file': (str(expansion_registry_archive_path) if expansion_registry_archive_path else None),
+        'signal_expansion_registry_archive_sha256': expansion_registry_hash,
         'signal_expansion_governance': expansion_snapshot,
         'sequential_prospective_proof': sequential_snapshot,
         'signal_state_file': str(state_path),
@@ -502,6 +524,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'promotion_lineage': promotion_lineage,
         'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash, 'data_sha256': data_hash,
         'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
+        'signal_expansion_registry_archive_file': (str(expansion_registry_archive_path) if expansion_registry_archive_path else None),
+        'signal_expansion_registry_archive_sha256': expansion_registry_hash,
         'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
         'portfolio_status': portfolio_package['status'],
         'portfolio_games': portfolio_package['portfolio']['games'],
@@ -544,6 +568,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
             'governed_challenger_top6': freeze_obj['governed_challenger_top6'], 'governed_challenger_policy': freeze_obj['governed_challenger_policy'],
             'freeze_file': str(actual_out), 'freeze_sha256': freeze_hash,
             'state_archive_file': str(state_archive_path), 'state_archive_sha256': state_hash,
+            'signal_expansion_registry_archive_file': (str(expansion_registry_archive_path) if expansion_registry_archive_path else None),
+            'signal_expansion_registry_archive_sha256': expansion_registry_hash,
             'portfolio_file': str(portfolio_out), 'portfolio_sha256': portfolio_hash,
             'portfolio_status': portfolio_package['status'],
             'ledger_sha256': ledger_hash,

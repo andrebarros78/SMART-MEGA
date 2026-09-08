@@ -352,6 +352,13 @@ class SmartSignalAgent:
             self.architecture_profile = 'LEGACY_COMPATIBLE'
             self.redundancy_threshold = float(self.base_redundancy_threshold)
             self.online_max_abs_step = float(DEFAULT_MAX_ABS_STEP)
+        # Keep the executable learning guards synchronized with the target profile.
+        # Previously only this scalar changed, while the already-constructed guards
+        # retained DEFAULT_MAX_ABS_STEP, making the 3056 hardening observational only.
+        warmup_cap = min(float(DEFAULT_WARMUP_MAX_ABS_STEP), float(self.online_max_abs_step))
+        for guard in (self.expert_learning_guard, self.family_learning_guard):
+            guard.max_abs_step = float(self.online_max_abs_step)
+            guard.warmup_max_abs_step = float(warmup_cap)
 
 
     def _observe_signal_profiles(self, sc: dict[str, np.ndarray]) -> dict[str, int]:

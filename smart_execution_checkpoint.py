@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent
-JUNIT = "SMART_AUDIT_JUNIT_CURRENT.xml"
+JUNIT = os.environ.get("SMART_CHECKPOINT_JUNIT", "SMART_AUDIT_JUNIT_CURRENT.xml")
 OUTPUT = Path(os.environ.get("SMART_CHECKPOINT_OUTPUT", str(ROOT / "SMART_EXECUTION_CHECKPOINT_20260904.json")))
 
 

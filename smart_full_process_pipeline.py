@@ -249,6 +249,16 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     post_gate = write_total_integration(root, post_gate_path, phase="POST_FREEZE")
 
     challenger = freeze_obj.get("challenger", {})
+    registry_archive_value = freeze_obj.get("signal_expansion_registry_archive_file")
+    registry_archive_hash = freeze_obj.get("signal_expansion_registry_archive_sha256")
+    registry_archive_path = _resolve(root, registry_archive_value) if isinstance(registry_archive_value, str) and registry_archive_value else None
+    registry_archive_preserved = (
+        registry_archive_path is not None
+        and registry_archive_path.is_file()
+        and isinstance(registry_archive_hash, str)
+        and sha256_file(registry_archive_path) == registry_archive_hash
+        and freeze_obj.get("signal_expansion_registry_sha256") == registry_archive_hash
+    )
     activation_time = datetime.fromisoformat(str(activation["activated_utc"]).replace("Z", "+00:00"))
     freeze_time = datetime.fromisoformat(str(freeze_obj["frozen_utc"]).replace("Z", "+00:00"))
     trace_checks = {
@@ -266,6 +276,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
         "all_41_capabilities_accounted_after_freeze": post_runtime.get("capability_count") == 41,
         "fresh_epoch_did_not_import_old_activation_authority": freeze_obj.get("learning_activation_authority", {}).get("status") == "FAIL_CLOSED_INACTIVE",
         "fresh_epoch_started_without_old_signal_expansion_registry": freeze_obj.get("signal_expansion_governance", {}).get("candidate_count") == 0,
+        "immutable_signal_expansion_registry_archive_preserved": registry_archive_preserved,
         "frontier_candidates_registered_shadow_only_after_main_freeze": frontier_freeze.get("status") == "FROZEN_SHADOW_ONLY" and frontier_freeze.get("production_authority") is False and float(frontier_freeze.get("material_weight", -1)) == 0.0,
         "prospective_probability_registration_bound_to_current_freeze": probability_registration.get("main_freeze_file_sha256") == freeze_result["freeze_sha256"],
         "prospective_probability_registration_result_unused": probability_registration.get("result_used") is False and probability_registration.get("result_available_at_registration") is False,

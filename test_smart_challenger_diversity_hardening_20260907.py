@@ -62,6 +62,10 @@ def test_target_profile_hardens_redundancy_and_online_shock_only_from_3056():
     assert hardened.architecture_profile == 'DIVERSITY_HARDENED_V1'
     assert hardened.redundancy_threshold == HARDENED_REDUNDANCY_THRESHOLD
     assert hardened.online_max_abs_step == HARDENED_ONLINE_MAX_ABS_STEP
+    assert hardened.expert_learning_guard.max_abs_step == HARDENED_ONLINE_MAX_ABS_STEP
+    assert hardened.family_learning_guard.max_abs_step == HARDENED_ONLINE_MAX_ABS_STEP
+    assert hardened.expert_learning_guard.warmup_max_abs_step <= HARDENED_ONLINE_MAX_ABS_STEP
+    assert hardened.family_learning_guard.warmup_max_abs_step <= HARDENED_ONLINE_MAX_ABS_STEP
 
 
 def test_future_prediction_is_contrastive_and_independent_oracle_verifies_it():
