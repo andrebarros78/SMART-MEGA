@@ -1,0 +1,52 @@
+{
+  "schema": "SMART_SCOPE_SEAL_R3_SOURCE_PROOF_1",
+  "release": "SMART-MEGA-v6.3.1-PORTABLE-SCOPE-SEAL-R3",
+  "base_commit": "15aebb7c3a45ea5139d71f3aa947e61397a2a912",
+  "branch": "seal/v6.3.1-r3-scope-seal",
+  "objective": "terminal engineering scope seal for portable SMART-MEGA v6.3.1 without predictive-logic change",
+  "candidate_gates": {
+    "full_regression": {
+      "tests": 716,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "seconds": 333.74
+    },
+    "scope_targeted": {
+      "tests": 6,
+      "failures": 0
+    },
+    "critical_after_cleanup": {
+      "tests": 26,
+      "failures": 0
+    }
+  },
+  "cleanup": {
+    "removed_unreferenced_runtime_executables": 62,
+    "removed_historical_regression_log": true,
+    "archive_classification": "NOT_RUNTIME"
+  },
+  "security": {
+    "secret_named_files": 0,
+    "real_secret_candidates": 0,
+    "credential_url_fixture_only": true,
+    "pip_audit_known_vulnerabilities": 0
+  },
+  "supply_chain": {
+    "dependency_lock_components": 75,
+    "lock_sha256": "2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa",
+    "sbom_sha256": "5e608ba9380aaba8340b86b77438e0a54260e1e602f6b6862ebb4ee119b138ef",
+    "wheelhouse_files": 75,
+    "wheelhouse_manifest_sha256": "904955cb7ebfee62a7ebfcdda06c0aae3bcb8ce59c0016169c97d759068f97de",
+    "sbom_file_sha256": "4396e340538167fe51449e2aad864a9d2ca0221307ea684abe05a7396d8f02a5",
+    "sbom_self_sha256": "b53d0f12aa142b995ec5e2d66018f6ddb1062a2d428c62a76ab7c8643b9740f2",
+    "all_licenses_identified": true,
+    "wheelhouse_zip_sha256": "a2f17e27e0ba5ee7f1d6fc736ba43e97171fe3831cddd84d7fb358cd99591b97"
+  },
+  "scientific_boundary": {
+    "status": "MISSION_ACTIVE",
+    "terminal_6of6_proven": false
+  },
+  "created_at_utc": "2026-09-09T16:38:00+00:00",
+  "sha256": "09ba4fd2d856c33f9662183190a17ca9630a6cf401780d4c73f048492d0b5697"
+}

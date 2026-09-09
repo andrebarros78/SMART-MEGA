@@ -54,8 +54,19 @@ def _source_identity(root: Path) -> dict[str, Any]:
             'base_commit':None,
         }
     except (subprocess.CalledProcessError, FileNotFoundError):
-        proof_path=root/'release_evidence'/'R2_ENGINEERING_PROOF.json'
-        if not proof_path.is_file():
+        proof_specs=(
+            ('R3_SCOPE_SEAL_SOURCE_PROOF.json','SMART-MEGA-v6.3.1-PORTABLE-SCOPE-SEAL-R3'),
+            ('R2_ENGINEERING_PROOF.json','SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2'),
+        )
+        proof_path=None
+        expected_release=None
+        for filename, release_id in proof_specs:
+            candidate=root/'release_evidence'/filename
+            if candidate.is_file():
+                proof_path=candidate
+                expected_release=release_id
+                break
+        if proof_path is None:
             raise RuntimeError('source identity unavailable: neither Git metadata nor portable release proof is present')
         proof=read_json(proof_path)
         unsigned=dict(proof)
@@ -64,7 +75,7 @@ def _source_identity(root: Path) -> dict[str, Any]:
             raise ValueError('portable release proof self-hash invalid')
         release=proof.get('release')
         base_commit=proof.get('base_commit')
-        if release!='SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2':
+        if release!=expected_release:
             raise ValueError('portable release proof release identifier invalid')
         if not isinstance(base_commit,str) or len(base_commit)!=40:
             raise ValueError('portable release proof base commit invalid')
