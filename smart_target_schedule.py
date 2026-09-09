@@ -13,6 +13,8 @@ from pypdf import PdfReader
 
 SCHEMA = "SMART_TARGET_SCHEDULE_AUTHORITY_3"
 DEFAULT_ARCHIVE = Path("runtime/procedural_sources/cronogramas_caixa")
+PORTABLE_ARCHIVE = Path("portable_evidence/cronogramas_caixa")
+PORTABLE_ARCHIVE_MANIFEST = Path("SMART_PORTABLE_CAIXA_CRONOGRAM_ARCHIVE_MANIFEST.json")
 DEFAULT_TIME_POLICY = Path("SMART_MEGA_SENA_DRAW_TIME_POLICY.json")
 TIME_POLICY_SCHEMA = "SMART_MEGA_SENA_DRAW_TIME_POLICY_1"
 TEMPORAL_GUARD_SCHEMA = "SMART_PRE_DRAW_TEMPORAL_GUARD_1"
@@ -32,6 +34,52 @@ def _sha256_json(value: Any) -> str:
     raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return hashlib.sha256(raw).hexdigest()
 
+
+
+def _validate_portable_archive(root: Path, archive_path: Path) -> None:
+    manifest_path = (root / PORTABLE_ARCHIVE_MANIFEST).resolve()
+    if not manifest_path.is_file():
+        raise FileNotFoundError(f"portable CAIXA cronogram manifest missing: {manifest_path}")
+    try:
+        doc = json.loads(manifest_path.read_text(encoding="utf-8"))
+    except (OSError, json.JSONDecodeError) as exc:
+        raise ValueError("portable CAIXA cronogram manifest unreadable") from exc
+    if not isinstance(doc, dict) or doc.get("schema") != "SMART_PORTABLE_CAIXA_CRONOGRAM_ARCHIVE_1":
+        raise ValueError("portable CAIXA cronogram manifest schema invalid")
+    observed = doc.get("sha256")
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    if not isinstance(observed, str) or len(observed) != 64 or observed.lower() != _sha256_json(canonical):
+        raise ValueError("portable CAIXA cronogram manifest self-hash invalid")
+    items = doc.get("items")
+    declared_count = doc.get("file_count")
+    if isinstance(declared_count, bool) or not isinstance(declared_count, int) or declared_count <= 0:
+        raise ValueError("portable CAIXA cronogram manifest file_count invalid")
+    if not isinstance(items, list) or len(items) != declared_count:
+        raise ValueError("portable CAIXA cronogram manifest item count mismatch")
+    declared: dict[str, tuple[int, str]] = {}
+    for item in items:
+        if not isinstance(item, dict):
+            raise ValueError("portable CAIXA cronogram manifest item invalid")
+        name = item.get("file")
+        size = item.get("bytes")
+        digest = item.get("sha256")
+        if not isinstance(name, str) or not re.fullmatch(r"\d{4}-\d{2}\.pdf", name):
+            raise ValueError("portable CAIXA cronogram manifest filename invalid")
+        if name in declared:
+            raise ValueError("portable CAIXA cronogram manifest duplicate filename")
+        if isinstance(size, bool) or not isinstance(size, int) or size <= 0:
+            raise ValueError("portable CAIXA cronogram manifest size invalid")
+        if not isinstance(digest, str) or not re.fullmatch(r"[0-9a-fA-F]{64}", digest):
+            raise ValueError("portable CAIXA cronogram manifest sha256 invalid")
+        declared[name] = (size, digest.lower())
+    actual_names = {f.name for f in archive_path.glob("*.pdf") if f.is_file()}
+    if actual_names != set(declared):
+        raise ValueError("portable CAIXA cronogram archive file set differs from manifest")
+    for name, (size, digest) in declared.items():
+        pdf = archive_path / name
+        if not pdf.is_file() or pdf.stat().st_size != size or sha256_file(pdf).lower() != digest:
+            raise ValueError(f"portable CAIXA cronogram evidence integrity failure: {name}")
 
 def load_draw_time_policy(root: str | Path, path: str | Path = DEFAULT_TIME_POLICY) -> tuple[dict[str, Any], Path]:
     root = Path(root).resolve()
@@ -151,11 +199,20 @@ def resolve_target_schedule(
     time_policy: str | Path = DEFAULT_TIME_POLICY,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
-    archive_path = Path(archive)
+    requested_archive = Path(archive)
+    archive_path = requested_archive
     if not archive_path.is_absolute():
         archive_path = (root / archive_path).resolve()
+    portable_fallback = False
+    if not archive_path.is_dir() and requested_archive == DEFAULT_ARCHIVE:
+        portable_archive = (root / PORTABLE_ARCHIVE).resolve()
+        if portable_archive.is_dir():
+            archive_path = portable_archive
+            portable_fallback = True
     if not archive_path.is_dir():
         raise FileNotFoundError(f"CAIXA cronogram archive missing: {archive_path}")
+    if portable_fallback:
+        _validate_portable_archive(root, archive_path)
 
     previous_date = _previous_contest_date(root, int(target_contest))
     candidates: list[tuple[Path, dict[str, str], datetime]] = []
@@ -241,4 +298,4 @@ def resolve_target_schedule(
     }
 
 
-__all__ = ["SCHEMA", "DEFAULT_ARCHIVE", "DEFAULT_TIME_POLICY", "TIME_POLICY_SCHEMA", "TEMPORAL_GUARD_SCHEMA", "MIN_OPERATIONAL_FREEZE_LEAD_SECONDS", "assert_pre_draw_window", "extract_target_from_text", "load_draw_time_policy", "resolve_target_schedule", "sha256_file"]
+__all__ = ["SCHEMA", "DEFAULT_ARCHIVE", "PORTABLE_ARCHIVE", "PORTABLE_ARCHIVE_MANIFEST", "DEFAULT_TIME_POLICY", "TIME_POLICY_SCHEMA", "TEMPORAL_GUARD_SCHEMA", "MIN_OPERATIONAL_FREEZE_LEAD_SECONDS", "assert_pre_draw_window", "extract_target_from_text", "load_draw_time_policy", "resolve_target_schedule", "sha256_file"]

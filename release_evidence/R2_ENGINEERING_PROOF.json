@@ -1,0 +1,53 @@
+{
+  "schema": "SMART_PORTABLE_RESTORE_R2_ENGINEERING_PROOF_1",
+  "generated_at_utc": "2026-09-09T13:35:47.5600989Z",
+  "base_commit": "bc36d72d823101168ff438835df91549e14328bd",
+  "release": "SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2",
+  "scope": "PORTABLE_RESTORE_ENGINEERING_MAINTENANCE",
+  "predictive_scoring_behavior_changed": false,
+  "prospective_scientific_terminal_claim": false,
+  "candidate_gates": {
+    "full_regression": {
+      "status": "PASS",
+      "tests": 706,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "junit_file": "release_evidence/R2_FULL_REGRESSION.xml",
+      "sha256": "792b3f0b5fabd7c2107675da12fb8765b3740f0669989c1f27045c47e5617c3d"
+    },
+    "runtime_guard": {
+      "status": "PASS",
+      "file": "release_evidence/R2_RUNTIME_GUARD.json",
+      "sha256": "e7dfe76a6ed6e806f0585ad8730a1a230cbfb72d6aef785d98e42426a4b63603"
+    },
+    "pip_check": "PASS",
+    "ortools_functional": {
+      "status": "PASS",
+      "solver": "SCIP 10.0.0",
+      "objective": 3
+    },
+    "total_integration": {
+      "status": "PASS",
+      "health": "HEALTHY",
+      "gates": 9,
+      "file": "release_evidence/R2_TOTAL_INTEGRATION.json",
+      "sha256": "fe429a1c4bc7fbfbac4b5fa3b47e66df8ddf595b9349a15c9e44c4406d6516d1"
+    },
+    "portable_caixa_archive": {
+      "status": "PASS",
+      "file_count": 60,
+      "manifest": "SMART_PORTABLE_CAIXA_CRONOGRAM_ARCHIVE_MANIFEST.json",
+      "manifest_file_sha256": "d6dd452af66241c50463a3871623f47506ec957686af3d521ec185e4397b9535"
+    },
+    "launcher": {
+      "status": "PASS",
+      "file": "smart_python.cmd",
+      "sha256": "3e423029627946a1b4536e052d6709d3c514a2206421a405488b33951c8e33a4",
+      "hostile_python_environment_scrubbed": true,
+      "missing_venv_fail_closed": true
+    }
+  },
+  "scientific_boundary": "SMART_MISSION_STATUS remains MISSION_ACTIVE until prospective terminal evidence satisfies the project scientific rule.",
+  "sha256": "53998ee4d8b3f6239222976ce0e864c4e2da8c90c571a7d65cb3ea2aea4e24e3"
+}

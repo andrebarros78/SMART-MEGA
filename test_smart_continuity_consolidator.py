@@ -62,4 +62,5 @@ def test_wmcp_v2_rejects_forged_noncanonical_roots_even_with_valid_self_hash():
     forged["live_runtime"]["observed_at_utc"] = forged["generated_at_utc"]
     forged.pop("sha256", None)
     forged["sha256"] = cc.sha256_json(forged)
+    assert cc._wmcp_execution_valid(forged, require_fresh=False) is False
     assert cc._wmcp_execution_valid(forged, require_fresh=True) is False

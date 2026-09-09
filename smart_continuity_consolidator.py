@@ -315,6 +315,33 @@ def _canonical_wmcp_live_binding_valid(doc: dict[str,Any]) -> bool:
     return current_runtime_ok
 
 
+def _canonical_wmcp_artifact_binding_valid(doc: dict[str,Any]) -> bool:
+    """Validate immutable/canonical WMCP bindings without consulting live runtime state."""
+    live=doc.get('live_runtime',{})
+    e2e=doc.get('e2e',{})
+    if not isinstance(live,dict) or not isinstance(e2e,dict):
+        return False
+    if live.get('wmcp_root')!=str(CANONICAL_WMCP_ROOT) or live.get('broker_root')!=str(CANONICAL_WMCP_BROKER_ROOT):
+        return False
+    if doc.get('project_id')!='smart-mega':
+        return False
+    task_id=e2e.get('task_id')
+    if not isinstance(task_id,str) or not task_id:
+        return False
+    for value in (
+        live.get('main_manifest_sha256'),
+        live.get('broker_manifest_sha256'),
+        e2e.get('result_sha256'),
+    ):
+        if not isinstance(value,str) or len(value)!=64:
+            return False
+        try:
+            int(value,16)
+        except ValueError:
+            return False
+    return True
+
+
 def _wmcp_execution_valid(
     doc: dict[str,Any],
     *,
@@ -340,7 +367,7 @@ def _wmcp_execution_valid(
     )
     if not base_valid:
         return False
-    if not _canonical_wmcp_live_binding_valid(doc):
+    if not _canonical_wmcp_artifact_binding_valid(doc):
         return False
     if not require_fresh:
         return True
