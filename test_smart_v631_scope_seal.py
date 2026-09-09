@@ -101,3 +101,30 @@ def test_scope_seal_tampered_r3_proof_fails_closed_even_if_r2_exists(tmp_path):
     r3.write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="self-hash invalid"):
         cc._source_identity(tmp_path)
+
+def test_scope_seal_r3_proof_and_secret_scan_are_self_hashed():
+    import hashlib, json
+    def canon(obj):
+        return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    for rel in ("release_evidence/R3_SCOPE_SEAL_SOURCE_PROOF.json", "release_evidence/R3_SECRET_SCAN.json"):
+        doc=json.loads((ROOT/rel).read_text(encoding="utf-8-sig"))
+        declared=doc.pop("sha256")
+        assert declared == hashlib.sha256(canon(doc)).hexdigest()
+    sec=json.loads((ROOT/"release_evidence/R3_SECRET_SCAN.json").read_text(encoding="utf-8-sig"))
+    assert sec["secret_named_files"] == []
+    assert sec["real_secret_candidates"] == []
+
+
+def test_scope_seal_r3_wheelhouse_manifest_and_pip_audit_are_bound():
+    import hashlib, json
+    proof=json.loads((ROOT/"release_evidence/R3_SCOPE_SEAL_SOURCE_PROOF.json").read_text(encoding="utf-8-sig"))
+    wh_path=ROOT/"release_evidence/R3_WHEELHOUSE_MANIFEST.json"
+    audit_path=ROOT/"release_evidence/R3_PIP_AUDIT.json"
+    assert hashlib.sha256(wh_path.read_bytes()).hexdigest() == proof["supply_chain"]["wheelhouse_manifest_file_sha256"]
+    assert hashlib.sha256(audit_path.read_bytes()).hexdigest() == proof["security"]["pip_audit_report_sha256"]
+    wh=json.loads(wh_path.read_text(encoding="utf-8-sig")); declared=wh.pop("self_sha256")
+    raw=json.dumps(wh,ensure_ascii=False,separators=(",", ":")).encode("utf-8")
+    assert declared == hashlib.sha256(raw).hexdigest()
+    assert wh["wheel_count"] == 75 and len(wh["wheels"]) == 75
+    audit=json.loads(audit_path.read_text(encoding="utf-8-sig"))
+    assert sum(len(d.get("vulns") or []) for d in audit.get("dependencies",[])) == 0
