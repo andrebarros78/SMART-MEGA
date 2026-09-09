@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -36,7 +36,47 @@ def read_json(path: Path) -> dict[str,Any]:
 
 
 def git(root: Path,*args: str) -> str:
-    return subprocess.check_output(['git',*args],cwd=root,text=True,encoding='utf-8',errors='replace').strip()
+    return subprocess.check_output(['git',*args],cwd=root,text=True,encoding='utf-8',errors='replace',stderr=subprocess.DEVNULL).strip()
+
+
+def _source_identity(root: Path) -> dict[str, Any]:
+    try:
+        branch=git(root,'branch','--show-current')
+        head=git(root,'rev-parse','HEAD')
+        short=git(root,'rev-parse','--short','HEAD')
+        return {
+            'source':'GIT',
+            'branch':branch,
+            'head':head,
+            'head_short':short,
+            'release':None,
+            'release_proof_sha256':None,
+            'base_commit':None,
+        }
+    except (subprocess.CalledProcessError, FileNotFoundError):
+        proof_path=root/'release_evidence'/'R2_ENGINEERING_PROOF.json'
+        if not proof_path.is_file():
+            raise RuntimeError('source identity unavailable: neither Git metadata nor portable release proof is present')
+        proof=read_json(proof_path)
+        unsigned=dict(proof)
+        declared=unsigned.pop('sha256',None)
+        if declared!=sha256_json(unsigned):
+            raise ValueError('portable release proof self-hash invalid')
+        release=proof.get('release')
+        base_commit=proof.get('base_commit')
+        if release!='SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2':
+            raise ValueError('portable release proof release identifier invalid')
+        if not isinstance(base_commit,str) or len(base_commit)!=40:
+            raise ValueError('portable release proof base commit invalid')
+        return {
+            'source':'PORTABLE_RELEASE_PROOF',
+            'branch':None,
+            'head':None,
+            'head_short':None,
+            'release':release,
+            'release_proof_sha256':sha(proof_path),
+            'base_commit':base_commit,
+        }
 
 
 def _total_integration_valid(doc: dict[str,Any]) -> bool:
@@ -430,14 +470,16 @@ def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
         'canonical_p1p2_promoted_to_1000': int(p1p2.get('replications',0))==1000 and p1p2.get('p2_atlas_sha256')==sha(root/'SMART_RANDOMNESS_ATLAS.json'),
         'convergence_audit_bound_to_1000': int(convergence.get('final_replications',0))==1000 and convergence.get('final_atlas_sha256')==sha(atlas1000_path),
     }
+    source_identity=_source_identity(root)
     return {
         'schema':'SMART_CURRENT_CONTINUITY_V2',
         'generated_at_utc':datetime.now(timezone.utc).isoformat(),
         'purpose':'canonical continuity derived from the active learning epoch; legacy freeze/data are historical evidence only',
         'workspace':str(root),
-        'branch':git(root,'branch','--show-current'),
-        'head':git(root,'rev-parse','HEAD'),
-        'head_short':git(root,'rev-parse','--short','HEAD'),
+        'branch':source_identity['branch'],
+        'head':source_identity['head'],
+        'head_short':source_identity['head_short'],
+        'source_identity':source_identity,
         'current_epoch':current,
         'canonical_data':{
             'file':current['data_file'],'cutoff':current['cutoff_contest'],'sha256':current['data_sha256'],'authority':'ACTIVE_EPOCH'

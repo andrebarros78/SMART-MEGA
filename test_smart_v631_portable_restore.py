@@ -240,3 +240,26 @@ def test_smart_python_launcher_fails_closed_when_venv_is_missing(tmp_path):
     )
     assert proc.returncode == 2
     assert 'portable runtime missing' in proc.stderr
+
+
+def test_continuity_source_identity_uses_release_proof_without_git(tmp_path):
+    import json
+    import shutil
+    import smart_continuity_consolidator as cc
+    root = Path(__file__).resolve().parent
+    proof_dir = tmp_path / 'release_evidence'
+    proof_dir.mkdir()
+    shutil.copy2(root / 'release_evidence' / 'R2_ENGINEERING_PROOF.json', proof_dir / 'R2_ENGINEERING_PROOF.json')
+    identity = cc._source_identity(tmp_path)
+    assert identity['source'] == 'PORTABLE_RELEASE_PROOF'
+    assert identity['release'] == 'SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2'
+    assert identity['head'] is None
+    assert identity['branch'] is None
+    assert len(identity['release_proof_sha256']) == 64
+
+
+def test_continuity_source_identity_fails_closed_without_git_or_release_proof(tmp_path):
+    import pytest
+    import smart_continuity_consolidator as cc
+    with pytest.raises(RuntimeError, match='source identity unavailable'):
+        cc._source_identity(tmp_path)

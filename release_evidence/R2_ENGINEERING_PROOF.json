@@ -2,6 +2,7 @@
   "schema": "SMART_PORTABLE_RESTORE_R2_ENGINEERING_PROOF_1",
   "generated_at_utc": "2026-09-09T13:35:47.5600989Z",
   "base_commit": "bc36d72d823101168ff438835df91549e14328bd",
+  "maintenance_parent_commit": "51b22032ac443e0da7f6b6357ea46f530815d373",
   "release": "SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2",
   "scope": "PORTABLE_RESTORE_ENGINEERING_MAINTENANCE",
   "predictive_scoring_behavior_changed": false,
@@ -9,12 +10,12 @@
   "candidate_gates": {
     "full_regression": {
       "status": "PASS",
-      "tests": 706,
+      "tests": 708,
       "failures": 0,
       "errors": 0,
       "skipped": 0,
       "junit_file": "release_evidence/R2_FULL_REGRESSION.xml",
-      "sha256": "792b3f0b5fabd7c2107675da12fb8765b3740f0669989c1f27045c47e5617c3d"
+      "sha256": "0bcc4ebe3819df0ce6229ab816b46bea57043904e0e7d815ce399bce8cbebdfd"
     },
     "runtime_guard": {
       "status": "PASS",
@@ -46,8 +47,14 @@
       "sha256": "3e423029627946a1b4536e052d6709d3c514a2206421a405488b33951c8e33a4",
       "hostile_python_environment_scrubbed": true,
       "missing_venv_fail_closed": true
+    },
+    "portable_no_git_identity": {
+      "status": "PASS",
+      "strategy": "SELF_HASHED_R2_RELEASE_PROOF",
+      "git_metadata_required": false,
+      "missing_git_and_proof_fail_closed": true
     }
   },
   "scientific_boundary": "SMART_MISSION_STATUS remains MISSION_ACTIVE until prospective terminal evidence satisfies the project scientific rule.",
-  "sha256": "53998ee4d8b3f6239222976ce0e864c4e2da8c90c571a7d65cb3ea2aea4e24e3"
+  "sha256": "6c4dfee7ef8ebfb4a8e3c7dd5db234b528cba2a1364c536bd7bbaf12c69b40eb"
 }

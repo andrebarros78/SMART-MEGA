@@ -40,3 +40,4 @@ Evidence is retained under `release_evidence/` and is hash-bound by `R2_ENGINEER
 ## Scientific boundary
 
 Engineering portability closure is not evidence that Mega-Sena is predictable and does not satisfy the project's prospective scientific terminal rule. `SMART_MISSION_STATUS.json` remains `MISSION_ACTIVE` until a future pre-result frozen Top-6 and the other scientific requirements are satisfied prospectively.
+- Make continuity consolidation portable when Git metadata is intentionally absent: source identity falls back to the self-hashed R2 release proof and fails closed if neither Git nor valid release proof exists.
