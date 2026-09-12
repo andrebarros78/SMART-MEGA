@@ -1,0 +1,134 @@
+{
+  "schema": "SMART_MATERIAL_DEFICIENCY_REGISTRY_1",
+  "entries": [
+    {
+      "id": "D001_FRACTIONAL_INPUT_COERCION",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Core draw loader silently truncated fractional contest/ball values.",
+      "evidence": [
+        "test_smart_architecture_corrections_20260905.py::test_loader_rejects_fractional_values"
+      ]
+    },
+    {
+      "id": "D002_CONTEST_SEQUENCE_GAPS",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Core loader and generic quality gate accepted missing contests in a sequential history.",
+      "evidence": [
+        "test_smart_architecture_corrections_20260905.py::test_loader_and_quality_gate_reject_contest_gap"
+      ]
+    },
+    {
+      "id": "D003_PROFILE_DRIFT_NON_ACTUATING",
+      "severity": "P1",
+      "status": "RESOLVED",
+      "summary": "Signal-profile drift was detected as telemetry but did not influence bounded quality/context weighting.",
+      "evidence": [
+        "test_smart_architecture_corrections_20260905.py::test_profile_drift_affects_context_and_is_observed_causally"
+      ]
+    },
+    {
+      "id": "D004_FALSE_INDEPENDENT_REPLAY",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Independent audit relied on production implementations for replay and lacked a separate decision oracle.",
+      "evidence": [
+        "test_smart_architecture_corrections_20260905.py::test_independent_oracle_has_no_project_import_and_recomputes_3054"
+      ]
+    },
+    {
+      "id": "D005_ACTIVATION_BRIDGE_MISSING",
+      "severity": "P1",
+      "status": "RESOLVED",
+      "summary": "Prospective activation evidence had no canonical fail-closed path into future freeze agent configuration.",
+      "evidence": [
+        "test_smart_learning_activation_authority.py::test_missing_authority_is_fail_closed",
+        "test_smart_learning_activation_authority.py::test_valid_authority_roundtrip_enables_only_requested_bounded_mechanisms"
+      ]
+    },
+    {
+      "id": "D006_MATERIAL_DEFICIENCIES_ASSUMED_EMPTY",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Audit/global-integrity reports could emit an empty material-deficiency list by construction instead of consulting a verified registry.",
+      "evidence": [
+        "test_smart_material_deficiency_registry.py::test_open_deficiency_is_reported_and_resolved_registry_is_clean",
+        "test_smart_material_deficiency_registry.py::test_registry_missing_tampered_and_invalid_entries_fail_closed"
+      ]
+    },
+    {
+      "id": "D007_FRESHNESS_CONSTANT",
+      "severity": "P2",
+      "status": "RESOLVED",
+      "summary": "Signal freshness was hard-coded rather than derived from causal forecast horizon.",
+      "evidence": [
+        "test_smart_architecture_corrections_20260905.py::test_freshness_is_derived_from_forecast_horizon"
+      ]
+    },
+    {
+      "id": "D008_EXPERT_CAP_ZERO_MASS_OSCILLATION",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Expert-cap redistribution could oscillate or return a normalized expert above the configured cap when another valid expert carried zero mass; the independent oracle mirrored the defect.",
+      "evidence": [
+        "test_smart_mission_coverage_closure_20260906.py::test_expert_cap_zero_mass_pathology_is_bounded_in_production_and_oracle"
+      ]
+    },
+    {
+      "id": "D009_POST_DRAW_FREEZE_FALSE_PROSPECTIVE",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Operational freeze paths could label an artifact frozen_before_result without comparing wall-clock time against the authoritative scheduled draw datetime.",
+      "evidence": [
+        "test_smart_temporal_freeze_guard_20260906.py::test_temporal_guard_accepts_only_a_safely_future_draw",
+        "test_smart_temporal_freeze_guard_20260906.py::test_temporal_guard_rejects_post_draw_and_safety_margin",
+        "test_smart_temporal_freeze_guard_20260906.py::test_production_freeze_defaults_fail_closed_and_pipeline_binds_schedule",
+        "test_smart_temporal_freeze_guard_20260906.py::test_freeze_artifact_records_authoritative_temporal_evidence"
+      ]
+    },
+    {
+      "id": "D009_RETROSPECTIVE_FREEZE_AUTHORITY",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Canonical full-process freeze could claim frozen_before_result after the official scheduled draw because the target schedule timestamp was resolved but not enforced before freeze authority creation.",
+      "evidence": [
+        "test_smart_procedural_actionability_gate.py::test_freeze_window_exact_draw_time_rejected",
+        "test_smart_procedural_actionability_gate.py::test_freeze_window_after_draw_rejected",
+        "test_smart_full_process_temporal_guard.py::test_full_process_blocks_after_deadline_before_any_freeze",
+        "SMART_TEMPORAL_AUTHORITY_REVOCATION_3054.json"
+      ]
+    },
+    {
+      "id": "D010_OFFICIAL_RECONCILE_EAGER_FETCHER_BINDING",
+      "severity": "P1",
+      "status": "RESOLVED",
+      "summary": "Official dataset reconcile bound the network fetcher at function definition time, so runtime substitution/monkeypatch in the CLI path was ignored and tests could perform an unintended live CAIXA request.",
+      "evidence": [
+        "test_smart_official_dataset_reconcile.py::test_reconcile_main_cli",
+        "SMART_B2_TARGETED_POSTFIX_JUNIT_20260909.xml",
+        "SMART_B2_POSTFIX_FULL_JUNIT_20260909.xml"
+      ]
+    },
+    {
+      "id": "D011_CONTINUITY_RENDER_WORKSPACE_HARD_REQUIREMENT",
+      "severity": "P1",
+      "status": "RESOLVED",
+      "summary": "Continuity rendering treated informational workspace metadata as mandatory and raised KeyError for otherwise valid construction/operation/science proof payloads.",
+      "evidence": [
+        "test_smart_current_continuity_generation.py::test_rendered_continuity_explicitly_separates_construction_operation_and_science",
+        "SMART_B2_D011_TARGETED_JUNIT_20260909.xml"
+      ]
+    }
+  ],
+  "rules": {
+    "open_statuses": [
+      "OPEN",
+      "REOPENED"
+    ],
+    "resolved_requires_evidence": true,
+    "missing_registry_fails_closed": true,
+    "self_hash_required": true
+  },
+  "sha256": "84d15a25fefbd982d67c52722b5528518400cb3e2f34e0c5b297b67930e60cf1"
+}

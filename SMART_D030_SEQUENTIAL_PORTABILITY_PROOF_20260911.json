@@ -1,0 +1,84 @@
+{
+  "schema": "SMART_D030_SEQUENTIAL_HISTORICAL_PATH_PORTABILITY_PROOF_1",
+  "status": "PASS",
+  "deficiency_id": "D030_SEQUENTIAL_HISTORICAL_HASH_BOUND_PATH_PORTABILITY",
+  "finding": "Historical 3054 learning evidence used a retired absolute project path although the exact SHA-256-bound artifacts are present in the canonical root.",
+  "resolution": "Sequential file verification now trusts current-root paths directly only by hash and resolves external historical absolute references only as filename hints to exactly one SHA-256 match inside the canonical root; missing, mismatch and ambiguity fail closed.",
+  "source": {
+    "file": "smart_sequential_prospective_proof.py",
+    "sha256": "f5e869a28d0de68ec885ee77cb0ad7fcc7f09f39aa5d869bac74c0bad4889931"
+  },
+  "tests": {
+    "file": "test_smart_sequential_prospective_proof.py",
+    "sha256": "f16b8b73b2299d3abe57c6bb6023b63fc91152e492c0b11a1a854b183f2d2c85",
+    "targeted_junit": "SMART_D030_TARGETED_JUNIT_20260911.xml",
+    "targeted_junit_sha256": "e6e9b12c7a2d91f2f0138d59faabd791bd88a8daf80ecf489ad2df51b77b925c",
+    "targeted_tests": 28,
+    "failures": 0,
+    "errors": 0
+  },
+  "historical_3054": {
+    "declared_state_file": "C:\\New Projet\\SMART-MEGA\\SMART_SIGNAL_STATE_3054_LEARNED.json",
+    "state_sha256": "ef35892abd2436a279ee27f0840a10969ea5f6e64081943080238f9f18239c88",
+    "canonical_state_file": "SMART_SIGNAL_STATE_3054_LEARNED.json",
+    "canonical_state_sha256": "ef35892abd2436a279ee27f0840a10969ea5f6e64081943080238f9f18239c88",
+    "canonical_data_file": "Mega-Sena_through_3054_official.xlsx",
+    "canonical_data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32"
+  },
+  "live_sequence_validation": {
+    "3051": {
+      "event_count": 10,
+      "freeze_count": 3,
+      "adjudicated": true,
+      "learning_recorded": false,
+      "proof_recorded": false,
+      "sequence_sha256": "8036442a87f1df78e1dddcb32532deaf1cf941d9aa2eda7eea3c1c8c9f4f5650"
+    },
+    "3052": {
+      "event_count": 8,
+      "freeze_count": 1,
+      "adjudicated": true,
+      "learning_recorded": false,
+      "proof_recorded": false,
+      "sequence_sha256": "82eff1d91f797e1dea7c1a7f0ee5ee3bb64491f2c03fbc821a602d745587e3ce"
+    },
+    "3053": {
+      "event_count": 12,
+      "freeze_count": 2,
+      "adjudicated": true,
+      "learning_recorded": true,
+      "proof_recorded": true,
+      "sequence_sha256": "8911d2f1aad5d625ae7f0c5a6b43f1db14caf6854710a32b5e8c59e2053b24d9"
+    },
+    "3054": {
+      "event_count": 12,
+      "freeze_count": 2,
+      "adjudicated": true,
+      "learning_recorded": true,
+      "proof_recorded": true,
+      "sequence_sha256": "d80978f299b8a873b4f8d66f370ddb665cde7e5101ad86f413cc4fe104fd61d0"
+    },
+    "3055": {
+      "event_count": 10,
+      "freeze_count": 1,
+      "adjudicated": true,
+      "learning_recorded": true,
+      "proof_recorded": true,
+      "sequence_sha256": "9aeedc0a19d42b7db0c2bfd452eb1db434d651ff6ac5db608e450e9a2cfbac24"
+    },
+    "3057": {
+      "event_count": 1,
+      "freeze_count": 1,
+      "adjudicated": false,
+      "learning_recorded": false,
+      "proof_recorded": false,
+      "sequence_sha256": "3870bae2aed7c1df72ecb2659bc3765e3b2020ade9d30eaefecf30399af70a82"
+    }
+  },
+  "active_epoch_file_sha256": "1b00ba79b6ee1aafecabb9ca29c318eed4a536e4f344a28122233982766e95b9",
+  "active_freeze_sha256": "66fb8927a9dada4821dea837f8ed9d1d85d46581c8dd0228e4172cfeded08ba0",
+  "retroactive_ledger_rewrite": false,
+  "retired_root_recreated": false,
+  "canonical_hash_bound_resolution": true,
+  "sha256": "4f407adbf4f427be189d424a7d0e43a0b4971bde34ce828710414e37b62ad96b"
+}

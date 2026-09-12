@@ -1,0 +1,22 @@
+from pathlib import Path
+import hashlib, json, shutil
+p=Path('test_smart_d015_critical_operational_coverage.py')
+raw=p.read_bytes(); before=hashlib.sha256(raw).hexdigest(); text=raw.decode('utf-8')
+old="""    base = tmp_path / 'b'\n    canonical, through, result, ledger, active = _fixture(base, monkeypatch)\n    df = pd.read_excel(through).copy(); df['Concurso'] = [2, 3, 4, 5]; df.to_excel(through, index=False)\n    ledger['events'][0]['actual_numbers'] = sorted(int(df.iloc[-1][f'Bola{i}']) for i in range(1, 7))\n    with pytest.raises(ValueError, match='exact through-dataset prefix'):\n        cha.advance_completed_epoch(base, active)\n"""
+new="""    base = tmp_path / 'b'\n    canonical, through, result, ledger, active = _fixture(base, monkeypatch)\n    df = pd.read_excel(canonical).iloc[1:].copy(); df.to_excel(canonical, index=False)\n    with pytest.raises(ValueError, match='exact through-dataset prefix'):\n        cha.advance_completed_epoch(base, active)\n"""
+if old not in text: raise SystemExit('PREFIX_CONTEXT_NOT_FOUND')
+text=text.replace(old,new,1)
+old2="""    with pytest.raises(RuntimeError, match='temporary canonical history verification failed'):\n        cha.advance_completed_epoch(base, active)\n\n    base = tmp_path / 'hash'\n"""
+new2="""    with pytest.raises(RuntimeError, match='temporary canonical history verification failed'):\n        cha.advance_completed_epoch(base, active)\n    monkeypatch.setattr(cha.shutil, 'copyfile', real_copyfile)\n\n    base = tmp_path / 'hash'\n"""
+if old2 not in text: raise SystemExit('COPYFILE_CONTEXT_NOT_FOUND')
+text=text.replace(old2,new2,1)
+old3="""    with pytest.raises(RuntimeError, match='advance hash mismatch'):\n        cha.advance_completed_epoch(base, active)\n\n    base = tmp_path / 'post'\n"""
+new3="""    with pytest.raises(RuntimeError, match='advance hash mismatch'):\n        cha.advance_completed_epoch(base, active)\n    monkeypatch.setattr(cha.os, 'replace', real_replace)\n\n    base = tmp_path / 'post'\n"""
+if old3 not in text: raise SystemExit('REPLACE_CONTEXT_NOT_FOUND')
+text=text.replace(old3,new3,1)
+backup=Path('SMART_STATE_ARCHIVE/b2-evolution-20260910')/(p.name+'.'+before+'.bak')
+backup.parent.mkdir(parents=True,exist_ok=True)
+if not backup.exists(): backup.write_bytes(raw)
+p.write_text(text,encoding='utf-8',newline='')
+after=hashlib.sha256(p.read_bytes()).hexdigest()
+print(json.dumps({'before_sha256':before,'after_sha256':after,'backup':backup.as_posix()}))

@@ -1,0 +1,111 @@
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import os
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any, Callable
+
+import pandas as pd
+
+from smart_official_result_ingest import BALL_COLUMNS, fetch_official_payload, sha256_file, validate_official_payload
+
+SCHEMA = "SMART_OFFICIAL_DATASET_RECONCILIATION_1"
+
+
+def _atomic_excel_write(frame: pd.DataFrame, output: Path) -> None:
+    output = Path(output)
+    if output.exists():
+        raise FileExistsError(f"refusing to overwrite reconciled dataset: {output}")
+    handle, temporary = tempfile.mkstemp(prefix=output.stem + ".", suffix=".tmp.xlsx", dir=output.parent)
+    os.close(handle)
+    temporary_path = Path(temporary)
+    try:
+        frame.to_excel(temporary_path, index=False)
+        os.replace(temporary_path, output)
+    finally:
+        if temporary_path.exists():
+            temporary_path.unlink()
+
+
+def reconcile(
+    source: Path,
+    output: Path,
+    proof: Path,
+    fetcher: Callable[[int], tuple[dict[str, Any], str]] = fetch_official_payload,
+) -> dict[str, Any]:
+    source = Path(source)
+    output = Path(output)
+    proof = Path(proof)
+    if not source.is_file():
+        raise ValueError("source dataset is missing")
+    if proof.exists():
+        raise FileExistsError(f"refusing to overwrite reconciliation proof: {proof}")
+    frame = pd.read_excel(source)
+    required = {"Concurso", "Data do Sorteio", *BALL_COLUMNS}
+    missing_columns = sorted(required - set(frame.columns))
+    if missing_columns:
+        raise ValueError(f"source dataset missing columns: {missing_columns}")
+    parsed_dates = pd.to_datetime(frame["Data do Sorteio"], format="mixed", dayfirst=True, errors="coerce")
+    frame["Data do Sorteio"] = frame["Data do Sorteio"].astype("object")
+    indexes = list(frame.index[parsed_dates.isna()])
+    if not indexes:
+        raise ValueError("source dataset has no missing draw dates")
+    repairs: list[dict[str, Any]] = []
+    for index in indexes:
+        contest = int(frame.at[index, "Concurso"])
+        payload, endpoint = fetcher(contest)
+        official = validate_official_payload(payload, contest)
+        stored = sorted(int(frame.at[index, column]) for column in BALL_COLUMNS)
+        if stored != official["numbers"]:
+            raise ValueError(f"official numbers differ for contest {contest}")
+        frame.at[index, "Data do Sorteio"] = official["draw_date"]
+        repairs.append({
+            "contest": contest,
+            "draw_date": official["draw_date_text"],
+            "numbers": official["numbers"],
+            "official_endpoint": endpoint,
+            "numbers_verified": True,
+        })
+    verified_dates = pd.to_datetime(frame["Data do Sorteio"], format="mixed", dayfirst=True, errors="coerce")
+    if verified_dates.isna().any():
+        raise RuntimeError("reconciled dataset still contains missing dates")
+    _atomic_excel_write(frame, output)
+    result = {
+        "schema": SCHEMA,
+        "created_utc": datetime.now(timezone.utc).isoformat(),
+        "source_file": source.name,
+        "source_sha256": sha256_file(source),
+        "output_file": output.name,
+        "output_sha256": sha256_file(output),
+        "row_count": int(len(frame)),
+        "repaired_count": len(repairs),
+        "repairs": repairs,
+        "remaining_missing_dates": 0,
+        "official_numbers_cross_checked": True,
+        "source_preserved": True,
+    }
+    canonical = json.dumps(result, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    result["sha256"] = hashlib.sha256(canonical).hexdigest()
+    proof.write_text(json.dumps(result, ensure_ascii=False, indent=2), encoding="utf-8")
+    return result
+
+
+def main() -> None:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--source", required=True)
+    parser.add_argument("--out", required=True)
+    parser.add_argument("--proof", required=True)
+    args = parser.parse_args()
+    print(json.dumps(
+        reconcile(Path(args.source), Path(args.out), Path(args.proof)),
+        ensure_ascii=False,
+        indent=2,
+    ))
+
+
+if __name__ == "__main__":
+    main()

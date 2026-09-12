@@ -83,6 +83,61 @@ def _is_hex64(value: Any) -> bool:
         return False
 
 
+def _resolve_verified_artifact(root: Path, value: str | Path, expected_sha256: str, label: str) -> Path:
+    """Resolve a hash-bound artifact without trusting retired absolute roots.
+
+    Absolute paths inside the current canonical root are accepted only when the
+    hash matches. Absolute paths outside it are treated as historical filename
+    hints: exactly one same-name file inside the canonical root must match the
+    recorded SHA-256. Relative paths must remain inside the canonical root.
+    """
+    root = Path(root).resolve()
+    if not _is_hex64(expected_sha256):
+        raise ValueError(f'{label} hash invalid')
+    declared = Path(value)
+    if declared.is_absolute():
+        resolved = declared.resolve()
+        try:
+            resolved.relative_to(root)
+            inside_root = True
+        except ValueError:
+            inside_root = False
+        if inside_root:
+            if not resolved.is_file():
+                raise ValueError(f'{label} missing')
+            if sha256_file(resolved) != expected_sha256:
+                raise ValueError(f'{label} hash mismatch')
+            return resolved
+
+        exact: list[Path] = []
+        for candidate in root.rglob(declared.name):
+            if not candidate.is_file():
+                continue
+            candidate = candidate.resolve()
+            try:
+                candidate.relative_to(root)
+            except ValueError as exc:
+                raise ValueError(f'{label} evidence candidate escapes project root') from exc
+            if sha256_file(candidate) == expected_sha256:
+                exact.append(candidate)
+        if len(exact) == 1:
+            return exact[0]
+        if len(exact) > 1:
+            raise ValueError(f'{label} hash-bound evidence ambiguous')
+        raise ValueError(f'{label} hash mismatch')
+
+    resolved = (root / declared).resolve()
+    try:
+        resolved.relative_to(root)
+    except ValueError as exc:
+        raise ValueError(f'{label} escapes project root') from exc
+    if not resolved.is_file():
+        raise ValueError(f'{label} missing')
+    if sha256_file(resolved) != expected_sha256:
+        raise ValueError(f'{label} hash mismatch')
+    return resolved
+
+
 def _validate_supersede_chain(events: list[tuple[int, dict[str, Any]]]) -> str:
     active_hash: str | None = None
     pending_new: str | None = None
@@ -188,11 +243,7 @@ def validate_target_sequence(ledger: dict[str, Any], target: int, *, require_lea
         if learn.get('learning_after_adjudication') is not True or learn.get('retroactive_rewrite') is not False:
             raise ValueError('learning governance flags invalid')
         if verify_files:
-            state_path = Path(learn['state_file'])
-            if not state_path.is_absolute():
-                state_path = Path(root) / state_path
-            if not state_path.is_file() or sha256_file(state_path) != learn.get('state_sha256'):
-                raise ValueError('learning state hash mismatch')
+            _resolve_verified_artifact(Path(root), learn['state_file'], learn.get('state_sha256'), 'learning state')
 
     if proofs:
         proof_i, proof = proofs[0]
@@ -206,11 +257,7 @@ def validate_target_sequence(ledger: dict[str, Any], target: int, *, require_lea
             raise ValueError('sequential proof chain mismatch')
 
     if verify_files:
-        fp = Path(active_fr['freeze_file'])
-        if not fp.is_absolute():
-            fp = Path(root) / fp
-        if not fp.is_file() or sha256_file(fp) != active_fr.get('freeze_sha256'):
-            raise ValueError('active freeze hash mismatch')
+        _resolve_verified_artifact(Path(root), active_fr['freeze_file'], active_fr.get('freeze_sha256'), 'active freeze')
 
     _, chain = _event_chain(events)
     return {

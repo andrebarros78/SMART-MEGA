@@ -1,0 +1,80 @@
+{
+  "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+  "status": "RESET_READY",
+  "project": "SMART-MEGA",
+  "epoch_id": "operator-3056-0ddfbaf01002-20260910T231925770484Z",
+  "created_utc": "2026-09-10T23:19:25.964690+00:00",
+  "product_certification_file": "SMART_PRODUCT_CERTIFICATION.json",
+  "product_certification_sha256": "0ddfbaf01002c71101b71ff78ff8a7796f49352f26869ac5f5aa91b6d885b764",
+  "operator_selected_target": true,
+  "state_paths": {
+    "ledger": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/SMART_SIGNAL_LEDGER.json",
+    "state": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/SMART_SIGNAL_STATE.json",
+    "activation_authority": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+    "expansion_registry": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+    "freeze": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/SMART_3056_CHAMPION_CHALLENGER_FREEZE.json"
+  },
+  "data_file": "runtime/learning_epochs/operator-3056-0ddfbaf01002-20260910T231925770484Z/Mega-Sena_cutoff_3055.xlsx",
+  "data_sha256": "8412636ea528c196c07f4a2f4f0ace1dd6a0bc13a1965fd49153b1f166a3e1f0",
+  "canonical_source_file": "Mega-Sena.xlsx",
+  "canonical_source_sha256_at_prepare": "8412636ea528c196c07f4a2f4f0ace1dd6a0bc13a1965fd49153b1f166a3e1f0",
+  "immutable_history_snapshot": true,
+  "cutoff_contest": 3055,
+  "target_contest": 3056,
+  "authority_mode": "OPERATOR_SELECTED_TARGET",
+  "current_engineering_role": "PRODUCT_CERTIFIED_OPERATION",
+  "first_possible_authoritative_target_for_current_engineering": 3056,
+  "target_schedule": {
+    "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+    "target_contest": 3056,
+    "previous_contest": 3055,
+    "previous_contest_date": "08/09/2026",
+    "target_date": "10/09/2026",
+    "weekday": "quinta-feira",
+    "scheduled_datetime": "2026-09-10T21:00:00-03:00",
+    "scheduled_timezone": "America/Sao_Paulo",
+    "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+    "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+    "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+    "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+    "source_sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+    "source_line": "10/09/2026 quinta-feira 7114 2440 3056 1294",
+    "source_count": 1,
+    "sources": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+        "sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+        "source_line": "10/09/2026 quinta-feira 7114 2440 3056 1294"
+      }
+    ],
+    "rejected_occurrences_before_cutoff": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2024-03.pdf",
+        "target_date": "18/03/2024",
+        "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+      }
+    ],
+    "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+    "schedule_consensus": true,
+    "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+    "result_used": false
+  },
+  "temporal_guard": {
+    "schema": "SMART_PRE_DRAW_TEMPORAL_GUARD_1",
+    "status": "PASS",
+    "target_contest": 3056,
+    "checked_at_utc": "2026-09-10T23:19:25.770387+00:00",
+    "scheduled_datetime": "2026-09-10T21:00:00-03:00",
+    "seconds_until_draw": 2434.229613,
+    "minimum_lead_seconds": 60,
+    "before_scheduled_draw": true,
+    "result_used": false
+  },
+  "result_used": false,
+  "freeze_authority": null,
+  "learning_state_authority": null,
+  "supersedes_active_epoch_sha256": null,
+  "canonical_ledger_seed_sha256": "8abb6e2bfac36a8cb5cff0dfd7ed11380339a629f22e5fa6824ce8a941cb057e",
+  "canonical_ledger_seed_event_count": 52,
+  "sha256": "be690a26e10a805d139dba09e9771f053ea73d5cbc2d6b462ba1edffbde908e0"
+}

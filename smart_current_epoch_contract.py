@@ -19,6 +19,132 @@ def _sha(path: Path) -> str:
     return h.hexdigest()
 
 
+
+RECOVERY_PROOF_SCHEMA = "SMART_FULL_PROCESS_RECOVERY_PROOF_1"
+
+
+def _sha_json(value: Any) -> str:
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _project_path(root: Path, value: str, *, label: str) -> Path:
+    raw = Path(value)
+    candidate = raw.resolve() if raw.is_absolute() else (root / raw).resolve()
+    try:
+        candidate.relative_to(root.resolve())
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes project root") from exc
+    return candidate
+
+
+def _read_self_hashed(path: Path, *, schema: str, label: str) -> dict[str, Any]:
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception as exc:
+        raise ValueError(f"{label} cannot be parsed") from exc
+    if not isinstance(obj, dict) or obj.get("schema") != schema or obj.get("status") != "PASS":
+        raise ValueError(f"{label} schema/status invalid")
+    observed = obj.get("sha256")
+    canonical = dict(obj)
+    canonical.pop("sha256", None)
+    if not isinstance(observed, str) or len(observed) != 64 or observed.lower() != _sha_json(canonical):
+        raise ValueError(f"{label} self-hash invalid")
+    return obj
+
+
+def _verify_ref(root: Path, ref: Any, *, label: str, expected_file: str | None = None,
+                expected_sha256: str | None = None) -> tuple[Path, str]:
+    if not isinstance(ref, dict) or not isinstance(ref.get("file"), str) or not isinstance(ref.get("sha256"), str):
+        raise ValueError(f"{label} reference invalid")
+    path = _project_path(root, ref["file"], label=label)
+    if not path.is_file():
+        raise ValueError(f"{label} file missing")
+    observed = _sha(path)
+    if observed.lower() != str(ref["sha256"]).lower():
+        raise ValueError(f"{label} file hash mismatch")
+    if expected_file is not None:
+        expected = _project_path(root, expected_file, label=f"{label} expected file")
+        if path != expected:
+            raise ValueError(f"{label} file binding mismatch")
+    if expected_sha256 is not None and observed.lower() != str(expected_sha256).lower():
+        raise ValueError(f"{label} expected hash mismatch")
+    return path, observed
+
+
+def validate_generation_proof(root: str | Path, active: dict[str, Any], freeze_doc: dict[str, Any],
+                              freeze_sha256: str) -> dict[str, Any]:
+    root = Path(root).resolve()
+    state_paths = active.get("state_paths")
+    if not isinstance(state_paths, dict) or not isinstance(state_paths.get("ledger"), str):
+        raise ValueError("FROZEN epoch state_paths/ledger missing")
+    epoch_dir = _project_path(root, state_paths["ledger"], label="active epoch ledger").parent
+    original = epoch_dir / "FULL_PROCESS_PROOF.json"
+    if original.is_file():
+        proof = _read_self_hashed(original, schema="SMART_FULL_PROCESS_PROOF_2", label="full-process proof")
+        checks = proof.get("trace_checks")
+        if proof.get("epoch_id") != active.get("epoch_id"):
+            raise ValueError("full-process proof epoch mismatch")
+        if int(proof.get("target_contest", -1)) != int(active["target_contest"]) or int(proof.get("cutoff_contest", -1)) != int(active["cutoff_contest"]):
+            raise ValueError("full-process proof target/cutoff mismatch")
+        if proof.get("freeze_sha256") != freeze_sha256:
+            raise ValueError("full-process proof freeze mismatch")
+        if proof.get("result_used") is not False or not isinstance(checks, dict) or not checks or not all(v is True for v in checks.values()):
+            raise ValueError("full-process proof is not a complete pre-result causal proof")
+        return {"valid": True, "mode": "ORIGINAL_FULL_PROCESS_PROOF", "file": str(original.relative_to(root)).replace("\\", "/"), "sha256": _sha(original)}
+
+    recovery = epoch_dir / "FULL_PROCESS_RECOVERY_PROOF.json"
+    if not recovery.is_file():
+        raise ValueError("FROZEN current-engineering epoch missing generation proof")
+    proof = _read_self_hashed(recovery, schema=RECOVERY_PROOF_SCHEMA, label="full-process recovery proof")
+    if proof.get("recovery_kind") != "POST_FREEZE_EVIDENCE_RECOVERY" or proof.get("recovery_reason") != "ORIGINAL_FULL_PROCESS_PROOF_MISSING":
+        raise ValueError("full-process recovery proof recovery semantics invalid")
+    if proof.get("prediction_content_mutated") is not False or proof.get("retroactive_rewrite") is not False or proof.get("result_used") is not False:
+        raise ValueError("full-process recovery proof violates pre-result immutability")
+    if proof.get("epoch_id") != active.get("epoch_id") or proof.get("active_epoch_sha256") != active.get("sha256"):
+        raise ValueError("full-process recovery proof epoch binding mismatch")
+    if int(proof.get("target_contest", -1)) != int(active["target_contest"]) or int(proof.get("cutoff_contest", -1)) != int(active["cutoff_contest"]):
+        raise ValueError("full-process recovery proof target/cutoff mismatch")
+    freeze_ref = active.get("freeze_authority") or {}
+    _verify_ref(root, proof.get("freeze"), label="recovery freeze", expected_file=str(freeze_ref.get("file", "")), expected_sha256=freeze_sha256)
+    _verify_ref(root, proof.get("immutable_data"), label="recovery immutable data", expected_file=str(active["data_file"]), expected_sha256=str(active["data_sha256"]))
+    state_ref = active.get("learning_state_authority") or {}
+    _verify_ref(root, proof.get("signal_state"), label="recovery signal state", expected_file=str(state_ref.get("file", "")), expected_sha256=str(state_ref.get("sha256", "")))
+    prospective = active.get("prospective_registration")
+    if not isinstance(prospective, dict) or prospective.get("result_used") is not False:
+        raise ValueError("full-process recovery proof prospective registration invalid")
+    for key, label in (("probability_ledger", "probability ledger"), ("frontier_report", "frontier report"), ("frontier_freeze", "frontier freeze")):
+        source_key = {"probability_ledger": "probability_ledger_file", "frontier_report": "frontier_report_file", "frontier_freeze": "frontier_freeze_file"}[key]
+        sha_key = source_key.replace("_file", "_sha256")
+        _verify_ref(root, proof.get(key), label=f"recovery {label}", expected_file=str(prospective[source_key]), expected_sha256=str(prospective[sha_key]))
+    for key, phase in (("pre_freeze_total_integration", "PRE_FREEZE"), ("post_freeze_total_integration", "POST_FREEZE")):
+        gate_path, _ = _verify_ref(root, proof.get(key), label=f"recovery {phase} integration")
+        gate = json.loads(gate_path.read_text(encoding="utf-8-sig"))
+        if gate.get("status") != "PASS" or gate.get("phase") != phase or proof[key].get("status") != "PASS" or proof[key].get("phase") != phase:
+            raise ValueError(f"recovery {phase} integration proof invalid")
+    cert_path, _ = _verify_ref(root, proof.get("product_certification_snapshot"), label="recovery product certification snapshot")
+    cert = json.loads(cert_path.read_text(encoding="utf-8-sig"))
+    cert_canonical = dict(cert); cert_observed = cert_canonical.pop("sha256", None)
+    if cert_observed != active.get("product_certification_sha256") or cert_observed != proof["product_certification_snapshot"].get("internal_sha256") or cert_observed != _sha_json(cert_canonical):
+        raise ValueError("recovery product certification semantic hash mismatch")
+    gi_ref = freeze_doc.get("global_integrity_proof") or {}
+    _verify_ref(root, proof.get("global_integrity_snapshot"), label="recovery global integrity snapshot", expected_sha256=str(gi_ref.get("sha256", "")))
+    ledger_path = _project_path(root, state_paths["ledger"], label="recovery ledger")
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8-sig"))
+    target = int(active["target_contest"])
+    if any(isinstance(ev, dict) and ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == target for ev in ledger.get("events", [])):
+        raise ValueError("full-process recovery proof cannot authorize an already-adjudicated target")
+    checks = proof.get("checks")
+    if not isinstance(checks, dict) or not checks:
+        raise ValueError("full-process recovery proof checks missing")
+    required_true = [k for k in checks if k not in {"prediction_content_mutated", "retroactive_rewrite", "result_used"}]
+    if not all(checks.get(k) is True for k in required_true):
+        raise ValueError("full-process recovery proof contains failed checks")
+    if checks.get("prediction_content_mutated") is not False or checks.get("retroactive_rewrite") is not False or checks.get("result_used") is not False:
+        raise ValueError("full-process recovery proof mutation/result checks invalid")
+    return {"valid": True, "mode": "RECOVERED_FULL_PROCESS_PROOF", "file": str(recovery.relative_to(root)).replace("\\", "/"), "sha256": _sha(recovery)}
+
+
 def resolve(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
     active_path = root / "SMART_ACTIVE_EPOCH.json"
@@ -107,8 +233,12 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
             auth = lock["experiment_authority"]
             if auth.get("freeze_sha256") != freeze_sha or int(auth.get("target_contest", -1)) != int(active["target_contest"]):
                 raise ValueError("carry-forward epoch differs from authority lock")
+        generation_proof = ({"valid": True, "mode": "CARRY_FORWARD_AUTHORITY_LOCK", "file": str(active.get("prospective_authority_lock_file")), "sha256": str(active.get("prospective_authority_lock_sha256"))}
+                            if current_engineering_generation_authority is False
+                            else validate_generation_proof(root, active, freeze_doc, str(freeze_sha)))
     else:
         raise ValueError(f"unsupported active epoch status: {status}")
+    generation_proof = locals().get("generation_proof")
     return {
         "schema": SCHEMA,
         "epoch_id": active["epoch_id"],
@@ -133,6 +263,10 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
         "parallel_attempts_must_be_counted_separately": parallel_attempts_must_be_counted_separately,
         "parallel_experiment_adjudicated": parallel_experiment_adjudicated,
         "rollover_required": parallel_experiment_adjudicated,
+        "generation_proof_valid": bool(generation_proof and generation_proof.get("valid") is True) if status == "FROZEN" else False,
+        "generation_proof_mode": generation_proof.get("mode") if generation_proof else None,
+        "generation_proof_file": generation_proof.get("file") if generation_proof else None,
+        "generation_proof_sha256": generation_proof.get("sha256") if generation_proof else None,
         "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
         "terminal_authority": False,
     }

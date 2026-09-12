@@ -116,3 +116,53 @@ def test_pytest_runtime_utilities_are_not_collected():
     assert "runtime" in excluded
     risky = [p.name for p in (root / "runtime").glob("*.py") if p.name.startswith("test_") or p.name.endswith("_test.py")]
     assert all("runtime" in excluded for _ in risky)
+
+
+def _write_canonical_authority(root: Path, legacy: Path) -> None:
+    (root / runner.CANONICAL_AUTHORITY).write_text(
+        __import__("json").dumps({
+            "canonical_root": str(root.resolve()),
+            "legacy_alias": str(legacy),
+            "legacy_alias_present": False,
+            "legacy_alias_type": "REMOVED",
+            "canonical_state": "CANONICAL_ONLY",
+        }),
+        encoding="utf-8",
+    )
+
+
+def test_runner_rejects_present_legacy_alias_before_regression(tmp_path, monkeypatch):
+    current = tmp_path / runner.CURRENT
+    current.write_text("stable", encoding="utf-8")
+    legacy = tmp_path / "legacy"; legacy.mkdir()
+    _write_canonical_authority(tmp_path, legacy)
+    called = {"value": False}
+    def fake_run(*args, **kwargs):
+        called["value"] = True
+        return _Completed(0)
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    result = runner.run_regression(tmp_path)
+    assert result["status"] == "FAIL"
+    assert result["reason"] == "CANONICAL_ENVIRONMENT_INVALID_BEFORE_REGRESSION"
+    assert result["promoted"] is False
+    assert called["value"] is False
+
+
+def test_runner_rejects_legacy_alias_recreation_during_regression(tmp_path, monkeypatch):
+    current = tmp_path / runner.CURRENT
+    current.write_text("stable", encoding="utf-8")
+    legacy = tmp_path / "legacy"
+    _write_canonical_authority(tmp_path, legacy)
+    before = evidence.sha256_file(current)
+    def fake_run(command, cwd, check, env):
+        _write_junit(tmp_path / runner.CANDIDATE, tests=23)
+        legacy.mkdir()
+        return _Completed(0)
+    monkeypatch.setattr(runner.subprocess, "run", fake_run)
+    result = runner.run_regression(tmp_path)
+    assert result["status"] == "FAIL"
+    assert result["reason"] == "CANONICAL_ENVIRONMENT_CHANGED_DURING_REGRESSION"
+    assert result["promoted"] is False
+    assert result["canonical_environment_before"]["legacy_alias_exists"] is False
+    assert result["canonical_environment_after"]["legacy_alias_exists"] is True
+    assert evidence.sha256_file(current) == before

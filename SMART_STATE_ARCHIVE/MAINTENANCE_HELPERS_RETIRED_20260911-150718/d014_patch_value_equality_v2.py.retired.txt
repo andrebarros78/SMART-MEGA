@@ -1,0 +1,28 @@
+from pathlib import Path
+import hashlib, json
+
+root = Path(__file__).resolve().parent
+p = root / 'smart_canonical_history_advance.py'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+text = p.read_text(encoding='utf-8')
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260909'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists():
+    bak.write_bytes(raw)
+
+if 'def _frames_value_equal(' not in text:
+    marker = 'def _numbers(frame: pd.DataFrame, target: int) -> list[int]:'
+    pos = text.find(marker)
+    if pos < 0:
+        raise SystemExit('NUMBERS_MARKER_NOT_FOUND')
+    helper = '''def _frames_value_equal(left: pd.DataFrame, right: pd.DataFrame) -> bool:\n    left = left.reset_index(drop=True)\n    right = right.reset_index(drop=True)\n    if left.shape != right.shape or list(left.columns) != list(right.columns):\n        return False\n    for column in left.columns:\n        a = left[column]\n        b = right[column]\n        if not ((a.eq(b)) | (a.isna() & b.isna())).all():\n            return False\n    return True\n\n\n'''
+    text = text[:pos] + helper + text[pos:]
+old_expr = 'canonical_frame.reset_index(drop=True).equals(through_frame.iloc[:-1].reset_index(drop=True))'
+if old_expr not in text:
+    raise SystemExit('PREFIX_EXPR_NOT_FOUND')
+text = text.replace(old_expr, '_frames_value_equal(canonical_frame, through_frame.iloc[:-1])', 1)
+p.write_text(text, encoding='utf-8')
+after = hashlib.sha256(p.read_bytes()).hexdigest()
+print(json.dumps({'before_sha256': before, 'after_sha256': after, 'backup': str(bak.relative_to(root)).replace('\\','/'), 'changed': before != after}, ensure_ascii=False))

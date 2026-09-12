@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from smart_mission_status import load_mission_status
+
 import hashlib
 import json
 from datetime import datetime, timezone
@@ -220,37 +222,20 @@ def _validate_native_targets(root: Path) -> dict[str, bool]:
     return {target: (root / target).exists() for target in targets}
 
 
-LEGACY_PROJECT_ROOTS = (Path(r"C:\New Projet\SMART-MEGA"),)
-
-
 def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
     value = str(relative).strip()
     if not value:
         raise ValueError(f"{label} path is empty")
     resolved_root = root.resolve()
     raw = Path(value)
-    candidate = raw.resolve() if raw.is_absolute() else (resolved_root / raw).resolve()
+    if raw.is_absolute():
+        raise ValueError(f"{label} absolute external paths are forbidden: {value}")
+    candidate = (resolved_root / raw).resolve()
     try:
         candidate.relative_to(resolved_root)
-    except ValueError:
-        # v6.3.1 persisted project-local runtime paths as absolute paths.
-        # Rebind only paths proven to be descendants of an explicitly trusted
-        # historical project root; arbitrary absolute paths remain fail-closed.
-        if raw.is_absolute():
-            for legacy_root in LEGACY_PROJECT_ROOTS:
-                try:
-                    suffix = candidate.relative_to(legacy_root.resolve())
-                except ValueError:
-                    continue
-                rebound = (resolved_root / suffix).resolve()
-                try:
-                    rebound.relative_to(resolved_root)
-                except ValueError as exc:
-                    raise ValueError(f"{label} escapes project root: {value}") from exc
-                return rebound
-        raise ValueError(f"{label} escapes project root: {value}")
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes project root: {value}") from exc
     return candidate
-
 
 def _resolve_state_paths(root: Path) -> dict[str, Path]:
     epoch_path = root / "SMART_ACTIVE_EPOCH.json"
@@ -489,7 +474,7 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
     v2 = _read_json(v2_path)
     v3 = _read_json(v3_path)
     v4 = _read_json(v4_path)
-    mission = _read_json(mission_path)
+    mission = load_mission_status(mission_path, root=root)
 
     source_skills = [item["name"] for item in source_manifest["items"]]
     v2_items = list(v2["items"])

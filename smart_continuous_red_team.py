@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import hashlib
 import json
@@ -45,6 +45,7 @@ BEHAVIORAL_FILES = (
     'smart_data_quality_gate.py',
     'smart_learning_activation_gate.py',
     'smart_learning_activation_authority.py',
+    'smart_ai_fine_tuning.py',
     'smart_material_deficiency_registry.py',
     'smart_champion_challenger.py',
     'smart_agent_skill_orchestration.py',
@@ -384,4 +385,5 @@ def main() -> None:
 
 if __name__=='__main__':
     main()
+
 

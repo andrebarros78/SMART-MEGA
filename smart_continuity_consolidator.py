@@ -1,4 +1,6 @@
-﻿from __future__ import annotations
+from __future__ import annotations
+
+from smart_mission_status import load_mission_status
 
 import hashlib
 import json
@@ -35,9 +37,111 @@ def read_json(path: Path) -> dict[str,Any]:
     return json.loads(path.read_text(encoding='utf-8-sig'))
 
 
-def git(root: Path,*args: str) -> str:
-    return subprocess.check_output(['git',*args],cwd=root,text=True,encoding='utf-8',errors='replace').strip()
+def _git_dir(root: Path) -> Path:
+    marker=(Path(root).resolve()/'.git')
+    if marker.is_dir():
+        return marker
+    if marker.is_file():
+        raw=marker.read_text(encoding='utf-8-sig').strip()
+        if not raw.lower().startswith('gitdir:'):
+            raise RuntimeError('invalid .git indirection')
+        target=Path(raw.split(':',1)[1].strip())
+        if not target.is_absolute():
+            target=(marker.parent/target).resolve()
+        return target
+    raise RuntimeError('git metadata unavailable')
 
+
+def _git_ref_oid(git_dir: Path, ref: str) -> str:
+    direct=git_dir/Path(ref)
+    if direct.is_file():
+        oid=direct.read_text(encoding='ascii',errors='strict').strip()
+        if len(oid)>=40 and all(ch in '0123456789abcdefABCDEF' for ch in oid):
+            return oid.lower()
+    packed=git_dir/'packed-refs'
+    if packed.is_file():
+        for line in packed.read_text(encoding='utf-8',errors='replace').splitlines():
+            if not line or line.startswith(('#','^')):
+                continue
+            parts=line.split(' ',1)
+            if len(parts)==2 and parts[1].strip()==ref:
+                oid=parts[0].strip()
+                if len(oid)>=40 and all(ch in '0123456789abcdefABCDEF' for ch in oid):
+                    return oid.lower()
+    raise RuntimeError(f'git ref unavailable: {ref}')
+
+
+def _git_head(root: Path) -> tuple[str | None,str]:
+    git_dir=_git_dir(root)
+    raw=(git_dir/'HEAD').read_text(encoding='utf-8-sig').strip()
+    if raw.startswith('ref:'):
+        ref=raw.split(':',1)[1].strip()
+        return ref,_git_ref_oid(git_dir,ref)
+    if len(raw)>=40 and all(ch in '0123456789abcdefABCDEF' for ch in raw):
+        return None,raw.lower()
+    raise RuntimeError('invalid git HEAD')
+
+
+def git(root: Path,*args: str) -> str:
+    ref,oid=_git_head(root)
+    if args==('branch','--show-current'):
+        return ref[len('refs/heads/'):] if ref and ref.startswith('refs/heads/') else ''
+    if args==('rev-parse','HEAD'):
+        return oid
+    if args==('rev-parse','--short','HEAD'):
+        return oid[:7]
+    raise ValueError(f'unsupported portable git query: {args!r}')
+
+
+def _source_identity(root: Path) -> dict[str, Any]:
+    try:
+        branch=git(root,'branch','--show-current')
+        head=git(root,'rev-parse','HEAD')
+        short=git(root,'rev-parse','--short','HEAD')
+        return {
+            'source':'GIT',
+            'branch':branch,
+            'head':head,
+            'head_short':short,
+            'release':None,
+            'release_proof_sha256':None,
+            'base_commit':None,
+        }
+    except (subprocess.CalledProcessError, FileNotFoundError, RuntimeError):
+        proof_specs=(
+            ('R3_SCOPE_SEAL_SOURCE_PROOF.json','SMART-MEGA-v6.3.1-PORTABLE-SCOPE-SEAL-R3'),
+            ('R2_ENGINEERING_PROOF.json','SMART-MEGA-v6.3.1-PORTABLE-RESTORE-R2'),
+        )
+        proof_path=None
+        expected_release=None
+        for filename, release_id in proof_specs:
+            candidate=root/'release_evidence'/filename
+            if candidate.is_file():
+                proof_path=candidate
+                expected_release=release_id
+                break
+        if proof_path is None:
+            raise RuntimeError('source identity unavailable: neither Git metadata nor portable release proof is present')
+        proof=read_json(proof_path)
+        unsigned=dict(proof)
+        declared=unsigned.pop('sha256',None)
+        if declared!=sha256_json(unsigned):
+            raise ValueError('portable release proof self-hash invalid')
+        release=proof.get('release')
+        base_commit=proof.get('base_commit')
+        if release!=expected_release:
+            raise ValueError('portable release proof release identifier invalid')
+        if not isinstance(base_commit,str) or len(base_commit)!=40:
+            raise ValueError('portable release proof base commit invalid')
+        return {
+            'source':'PORTABLE_RELEASE_PROOF',
+            'branch':None,
+            'head':None,
+            'head_short':None,
+            'release':release,
+            'release_proof_sha256':sha(proof_path),
+            'base_commit':base_commit,
+        }
 
 def _total_integration_valid(doc: dict[str,Any]) -> bool:
     unsigned=dict(doc)
@@ -272,7 +376,7 @@ foreach($p in $procs){
     return proof
 
 
-def _canonical_wmcp_live_binding_valid(doc: dict[str,Any]) -> bool:
+def _canonical_wmcp_live_binding_valid(doc: dict[str,Any], *, require_runtime_fresh: bool=True) -> bool:
     live=doc.get('live_runtime',{})
     e2e=doc.get('e2e',{})
     if not isinstance(live,dict) or not isinstance(e2e,dict):
@@ -295,6 +399,8 @@ def _canonical_wmcp_live_binding_valid(doc: dict[str,Any]) -> bool:
             return False
         if e2e.get('result_sha256')!=sha(result_path):
             return False
+        if not require_runtime_fresh:
+            return True
         heartbeat=read_json(heartbeat_path)
     except (OSError,ValueError,json.JSONDecodeError):
         return False
@@ -314,6 +420,32 @@ def _canonical_wmcp_live_binding_valid(doc: dict[str,Any]) -> bool:
     )
     return current_runtime_ok
 
+
+def _canonical_wmcp_artifact_binding_valid(doc: dict[str,Any]) -> bool:
+    """Validate immutable/canonical WMCP bindings without consulting live runtime state."""
+    live=doc.get('live_runtime',{})
+    e2e=doc.get('e2e',{})
+    if not isinstance(live,dict) or not isinstance(e2e,dict):
+        return False
+    if live.get('wmcp_root')!=str(CANONICAL_WMCP_ROOT) or live.get('broker_root')!=str(CANONICAL_WMCP_BROKER_ROOT):
+        return False
+    if doc.get('project_id')!='smart-mega':
+        return False
+    task_id=e2e.get('task_id')
+    if not isinstance(task_id,str) or not task_id:
+        return False
+    for value in (
+        live.get('main_manifest_sha256'),
+        live.get('broker_manifest_sha256'),
+        e2e.get('result_sha256'),
+    ):
+        if not isinstance(value,str) or len(value)!=64:
+            return False
+        try:
+            int(value,16)
+        except ValueError:
+            return False
+    return True
 
 def _wmcp_execution_valid(
     doc: dict[str,Any],
@@ -340,10 +472,12 @@ def _wmcp_execution_valid(
     )
     if not base_valid:
         return False
-    if not _canonical_wmcp_live_binding_valid(doc):
+    if not _canonical_wmcp_artifact_binding_valid(doc):
         return False
     if not require_fresh:
         return True
+    if not _canonical_wmcp_live_binding_valid(doc, require_runtime_fresh=True):
+        return False
     age=_age_seconds(doc.get('generated_at_utc'))
     observed_age=_age_seconds(live.get('observed_at_utc'))
     return (
@@ -351,14 +485,14 @@ def _wmcp_execution_valid(
         and observed_age is not None
         and 0.0 <= age <= max_age_seconds
         and 0.0 <= observed_age <= max_age_seconds
-        and _canonical_wmcp_live_binding_valid(doc)
+        and _canonical_wmcp_live_binding_valid(doc, require_runtime_fresh=True)
     )
 
 
 def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
     root=Path(root).resolve()
     current=resolve_current_epoch(root)
-    mission=read_json(root/'SMART_MISSION_STATUS.json')
+    mission=load_mission_status(root/'SMART_MISSION_STATUS.json', root=root)
     orchestration=agent_skill_orchestration.build_orchestration(root)
     functional_integration=agent_skill_gate.evaluate(root)
     total_integration=read_json(root/'SMART_TOTAL_INTEGRATION_PROOF.json')
@@ -403,14 +537,16 @@ def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
         'canonical_p1p2_promoted_to_1000': int(p1p2.get('replications',0))==1000 and p1p2.get('p2_atlas_sha256')==sha(root/'SMART_RANDOMNESS_ATLAS.json'),
         'convergence_audit_bound_to_1000': int(convergence.get('final_replications',0))==1000 and convergence.get('final_atlas_sha256')==sha(atlas1000_path),
     }
+    source_identity=_source_identity(root)
     return {
         'schema':'SMART_CURRENT_CONTINUITY_V2',
         'generated_at_utc':datetime.now(timezone.utc).isoformat(),
         'purpose':'canonical continuity derived from the active learning epoch; legacy freeze/data are historical evidence only',
         'workspace':str(root),
-        'branch':git(root,'branch','--show-current'),
-        'head':git(root,'rev-parse','HEAD'),
-        'head_short':git(root,'rev-parse','--short','HEAD'),
+        'branch':source_identity['branch'],
+        'head':source_identity['head'],
+        'head_short':source_identity['head_short'],
+        'source_identity':source_identity,
         'current_epoch':current,
         'canonical_data':{
             'file':current['data_file'],'cutoff':current['cutoff_contest'],'sha256':current['data_sha256'],'authority':'ACTIVE_EPOCH'

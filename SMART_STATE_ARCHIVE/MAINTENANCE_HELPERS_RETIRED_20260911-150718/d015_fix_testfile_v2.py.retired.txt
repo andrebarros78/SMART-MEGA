@@ -1,0 +1,19 @@
+from pathlib import Path
+import hashlib, json
+p=Path('test_smart_d015_critical_operational_coverage.py')
+raw=p.read_bytes(); before=hashlib.sha256(raw).hexdigest(); newline='\r\n' if b'\r\n' in raw else '\n'; text=p.read_text(encoding='utf-8')
+repls=[(
+"""    base = tmp_path / 'b'\n    canonical, through, result, ledger, active = _fixture(base, monkeypatch)\n    df = pd.read_excel(through).copy(); df['Concurso'] = [2, 3, 4, 5]; df.to_excel(through, index=False)\n    ledger['events'][0]['actual_numbers'] = sorted(int(df.iloc[-1][f'Bola{i}']) for i in range(1, 7))\n    with pytest.raises(ValueError, match='exact through-dataset prefix'):\n        cha.advance_completed_epoch(base, active)\n""",
+"""    base = tmp_path / 'b'\n    canonical, through, result, ledger, active = _fixture(base, monkeypatch)\n    df = pd.read_excel(canonical).iloc[1:].copy(); df.to_excel(canonical, index=False)\n    with pytest.raises(ValueError, match='exact through-dataset prefix'):\n        cha.advance_completed_epoch(base, active)\n"""),(
+"""    with pytest.raises(RuntimeError, match='temporary canonical history verification failed'):\n        cha.advance_completed_epoch(base, active)\n\n    base = tmp_path / 'hash'\n""",
+"""    with pytest.raises(RuntimeError, match='temporary canonical history verification failed'):\n        cha.advance_completed_epoch(base, active)\n    monkeypatch.setattr(cha.shutil, 'copyfile', real_copyfile)\n\n    base = tmp_path / 'hash'\n"""),(
+"""    with pytest.raises(RuntimeError, match='advance hash mismatch'):\n        cha.advance_completed_epoch(base, active)\n\n    base = tmp_path / 'post'\n""",
+"""    with pytest.raises(RuntimeError, match='advance hash mismatch'):\n        cha.advance_completed_epoch(base, active)\n    monkeypatch.setattr(cha.os, 'replace', real_replace)\n\n    base = tmp_path / 'post'\n""")]
+for old,new in repls:
+    if old not in text: raise SystemExit('PATCH_CONTEXT_NOT_FOUND')
+    text=text.replace(old,new,1)
+backup=Path('SMART_STATE_ARCHIVE/b2-evolution-20260910')/(p.name+'.'+before+'.bak'); backup.parent.mkdir(parents=True,exist_ok=True)
+if not backup.exists(): backup.write_bytes(raw)
+p.write_bytes(text.replace('\n',newline).encode('utf-8'))
+after=hashlib.sha256(p.read_bytes()).hexdigest()
+print(json.dumps({'before_sha256':before,'after_sha256':after,'backup':backup.as_posix(),'newline':'CRLF' if newline=='\r\n' else 'LF'}))

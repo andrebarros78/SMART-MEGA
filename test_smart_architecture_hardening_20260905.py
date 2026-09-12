@@ -72,6 +72,9 @@ def test_champion_cli_fails_closed_without_explicit_dataset(monkeypatch):
 
 
 def test_legacy_patch_repair_and_sandbox_entrypoints_are_not_top_level():
+    import hashlib
+    import json
+
     banned = {
         'extend_prospective_data.py', 'finalize_p13_gate.py', 'patch_data_integrity.py',
         'patch_false_positive.py', 'smart_governance_repair.py',
@@ -80,7 +83,16 @@ def test_legacy_patch_repair_and_sandbox_entrypoints_are_not_top_level():
     }
     assert not [name for name in banned if (ROOT / name).exists()]
     archive = ROOT / 'archive' / 'legacy_entrypoints_20260905'
-    assert all((archive / name).is_file() for name in banned)
+    retirement = json.loads((ROOT / 'SMART_B2_LEGACY_PATH_RETIREMENT_20260910.json').read_text(encoding='utf-8-sig'))
+    retired = {Path(row['source']).name: row for row in retirement['retired']}
+    for name in banned:
+        if (archive / name).is_file():
+            continue
+        row = retired.get(name)
+        assert row is not None, f'{name} absent from archive and retirement manifest'
+        historical = ROOT / row['archived_as']
+        assert historical.is_file(), f'{name} retirement artifact missing'
+        assert hashlib.sha256(historical.read_bytes()).hexdigest() == row['source_sha256']
 
 def test_importing_evidence_and_procedural_modules_has_no_write_side_effects(tmp_path, monkeypatch):
     import importlib
@@ -202,10 +214,12 @@ def test_orchestration_write_failure_and_main_branches(tmp_path, monkeypatch, ca
 
 def test_agent_layer_resolves_active_context_without_fixed_contest_literals():
     import smart_agent_skill_orchestration as aso
+    from smart_learning_epoch_reset import verify_active_epoch
     doc = aso.build_orchestration(ROOT)
+    active = verify_active_epoch(ROOT / 'SMART_ACTIVE_EPOCH.json')
     assert doc['active_context']['target_contest'] == doc['active_context']['cutoff_contest'] + 1
-    assert doc['active_context']['target_contest'] == 3055
-    assert doc['active_context']['cutoff_contest'] == 3054
+    assert doc['active_context']['target_contest'] == int(active['target_contest'])
+    assert doc['active_context']['cutoff_contest'] == int(active['cutoff_contest'])
     source = (ROOT / 'smart_agent_skill_orchestration.py').read_text(encoding='utf-8')
     runtime_source = (ROOT / 'smart_agent_runtime.py').read_text(encoding='utf-8')
     assert 'SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json' not in source
@@ -348,13 +362,12 @@ def test_deployment_and_continuity_require_product_build_certification():
 
 def test_orchestration_mission_consistency_allows_legitimate_terminal_state(monkeypatch):
     import smart_agent_skill_orchestration as aso
-    real_read=aso._read_json
-    def fake_read(path):
-        obj=real_read(path)
-        if path.name=='SMART_MISSION_STATUS.json':
-            obj=dict(obj); obj['status']='MISSION_PROVEN'; obj['terminal_6of6_proven']=True
+    real_read=aso.load_mission_status
+    def fake_read(path, *, root=None):
+        obj=real_read(path, root=root)
+        obj=dict(obj); obj['status']='MISSION_PROVEN'; obj['terminal_6of6_proven']=True
         return obj
-    monkeypatch.setattr(aso,'_read_json',fake_read)
+    monkeypatch.setattr(aso,'load_mission_status',fake_read)
     doc=aso.build_orchestration(ROOT)
     assert doc['checks']['global_mission_status_consistent'] is True
 

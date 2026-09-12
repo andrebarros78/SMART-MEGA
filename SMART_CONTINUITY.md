@@ -1,8 +1,9 @@
 # SMART-MEGA - CONTINUIDADE CANONICA ATUAL
 
-**Atualizacao:** 2026-09-07T17:39:33.595115+00:00
-**Workspace:** `C:\New Projet\SMART-MEGA`
+**Atualizacao:** 2026-09-12T03:12:03.537592+00:00
+**Workspace:** `C:\SMART-MEGA`
 **Construcao:** `CONSTRUCTION_PROVEN`
+**Implantacao/control plane:** `EXTERNAL_CONTROL_PLANE_REQUIRED`
 **Missao cientifica:** `MISSION_ACTIVE`
 
 ## Separacao obrigatoria
@@ -27,11 +28,13 @@ Esse estado nao e gate de construcao.
 ## Prova de construcao
 
 - status: **CONSTRUCTION_PROVEN**;
-- regressao: **691 testes / 0 failures / 0 errors**;
+- regressao: **834 testes / 0 failures / 0 errors**;
 - runtime BUILD: **PASS**;
 - integracao total BUILD: **PASS**;
 - zero deficiencias materiais abertas: **true**;
-- WMCP/execucao real: **PASS**.
+- modo do control plane: **EXTERNAL**;
+- WMCP/execucao real local: **FAIL**;
+- control plane externo, quando aplicavel, exige prova operacional separada e nao bloqueia a certificacao de construcao.
 
 ## Limite cientifico
 

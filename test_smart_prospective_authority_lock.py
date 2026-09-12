@@ -48,10 +48,13 @@ def test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering():
         assert current["current_engineering_generation_authority"] is False
         assert current["freeze_origin"] == "PRE_CURRENT_ENGINEERING_ACTIVATION"
         return
-    assert mode == "NEW_ENGINEERING_EPOCH"
+    assert mode in {"NEW_ENGINEERING_EPOCH", "OPERATOR_SELECTED_TARGET"}
     assert current["target_contest"] >= 3055
     assert current["parallel_locked_experiment"] is None
-    if current["status"] == "FROZEN":
+    if current["status"] == "RESET_READY":
+        assert current["freeze_authority_present"] is False
+        assert current["freeze_sha256"] is None
+    else:
         assert current["freeze_sha256"] != LEGACY_FREEZE
         assert current["freeze_origin"] != "PRE_CURRENT_ENGINEERING_ACTIVATION"
 

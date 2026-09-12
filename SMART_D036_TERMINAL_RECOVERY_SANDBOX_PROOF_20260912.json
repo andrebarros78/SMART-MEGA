@@ -1,0 +1,63 @@
+{
+  "schema": "SMART_D036_TERMINAL_RECOVERY_SANDBOX_PROOF_1",
+  "status": "PASS",
+  "created_at_utc": "2026-09-12T04:04:30.616289+00:00",
+  "scientific_terminal_authority": false,
+  "synthetic_result_only": true,
+  "canonical_state_mutated": false,
+  "target_contest": 3057,
+  "synthetic_actual_numbers": [
+    10,
+    11,
+    27,
+    30,
+    38,
+    43
+  ],
+  "canonical": {
+    "mission_status": "MISSION_ACTIVE",
+    "terminal_6of6_proven": false,
+    "active_epoch_status": "FROZEN",
+    "result_used": false,
+    "freeze_sha256": "66fb8927a9dada4821dea837f8ed9d1d85d46581c8dd0228e4172cfeded08ba0",
+    "signal_ledger_sha256": "db208bc57a76a41882a455a2c5dc2245b76f0b8fa487da9cdd34f18143184a90",
+    "canonical_history_sha256": "fa09f3749781efe38cc25b9f64071f8256a0ce9fe567b0f34b4e0234a6e18fad"
+  },
+  "uninterrupted_sandbox": {
+    "root": "C:\\ProgramData\\B2-Learning-Work\\audit-temp\\sb35",
+    "exit_code": 0,
+    "log_sha256": "e99b5fc2224eeb237af9a22ee9f89efaeb46965c7d67846752adbd10d94098d5",
+    "mission_status": "MISSION_PROVEN",
+    "terminal_proof_file": "runtime/learning_epochs/operator-3057-feab9f9be68c-20260911T124911210569Z/SMART_TERMINAL_6OF6_PROOF_3057.json",
+    "terminal_proof_sha256": "660d776c4806bc9092b0941fdc78a2622a2a5b0c50305bf36f50cb0a5e7af501"
+  },
+  "crash_restart_sandbox": {
+    "root": "C:\\ProgramData\\B2-Learning-Work\\audit-temp\\sb36",
+    "exit_code": 0,
+    "recovery_log_sha256": "b7d2517bc0a2aadb57b5bc859951afa180d702dd7961e3ac2612e1f6fe4dad51",
+    "mission_status": "MISSION_PROVEN",
+    "terminal_proof_file": "runtime/learning_epochs/operator-3057-feab9f9be68c-20260911T124911210569Z/SMART_TERMINAL_6OF6_PROOF_3057.json",
+    "terminal_proof_sha256": "7d936be3d67481e198cf70680276fd064f7606e04f42c309353ebe027a691bb6",
+    "event_order": [
+      {
+        "event_type": "FREEZE",
+        "created_utc": "2026-09-11T12:51:56.753145+00:00"
+      },
+      {
+        "event_type": "ADJUDICATION",
+        "created_utc": "2026-09-12T03:58:11.111714+00:00"
+      },
+      {
+        "event_type": "LEARNING_UPDATE",
+        "created_utc": null
+      },
+      {
+        "event_type": "SEQUENTIAL_PROOF",
+        "created_utc": null
+      }
+    ],
+    "unique_target_adjudication": true
+  },
+  "conclusion": "Generic active-epoch terminal path is reachable for exact synthetic 6/6 and survives a process restart after adjudication without granting post-result generation authority.",
+  "sha256": "4f7b53c6764ddc6a0c7e1a028311ddb96b7b6d0780114e952208095a89324513"
+}

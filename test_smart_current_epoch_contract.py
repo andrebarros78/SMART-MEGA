@@ -42,11 +42,15 @@ def test_legacy_locked_attempt_is_never_misattributed_to_current_engineering():
         assert d["current_engineering_generation_authority"] is False
         assert d["freeze_origin"] == "PRE_CURRENT_ENGINEERING_ACTIVATION"
         return
-    assert mode == "NEW_ENGINEERING_EPOCH"
+    assert mode in {"NEW_ENGINEERING_EPOCH", "OPERATOR_SELECTED_TARGET"}
     assert d["target_contest"] >= 3055
-    assert d["current_engineering_role"] == "AUTHORITATIVE_CURRENT_EPOCH"
+    expected_role = "PRODUCT_CERTIFIED_OPERATION" if mode == "OPERATOR_SELECTED_TARGET" else "AUTHORITATIVE_CURRENT_EPOCH"
+    assert d["current_engineering_role"] == expected_role
     assert d["first_possible_authoritative_target_for_current_engineering"] == d["target_contest"]
     assert d["parallel_locked_experiment"] is None
-    if d["status"] == "FROZEN":
+    if d["status"] == "RESET_READY":
+        assert d["freeze_authority_present"] is False
+        assert d["freeze_sha256"] is None
+    else:
         assert d["freeze_sha256"] != LEGACY_FREEZE
         assert d["freeze_origin"] != "PRE_CURRENT_ENGINEERING_ACTIVATION"

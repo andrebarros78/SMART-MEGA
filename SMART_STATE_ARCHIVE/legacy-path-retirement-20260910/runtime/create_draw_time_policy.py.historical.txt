@@ -1,0 +1,24 @@
+﻿from __future__ import annotations
+import hashlib,json
+from pathlib import Path
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+policy={
+  'schema':'SMART_MEGA_SENA_DRAW_TIME_POLICY_1',
+  'status':'ACTIVE',
+  'modality':'MEGA_SENA',
+  'timezone':'America/Sao_Paulo',
+  'effective_from':'2026-07-19',
+  'weekday_times':{'1':'21:00','3':'21:00','6':'11:00'},
+  'weekday_semantics':{'1':'TUESDAY','3':'THURSDAY','6':'SUNDAY'},
+  'authority':'CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES',
+  'source_evidence':[
+    {'title':'Regras dos Sorteios - Portal Loterias CAIXA','claim':'Mega-Sena: tercas e quintas a partir das 21h; domingos a partir das 11h','url':'https://loterias.caixa.gov.br/Paginas/regras-sorteios.aspx'},
+    {'title':'CAIXA Loterias amplia prazo para apostas e transfere sorteios de sabado para domingo','claim':'A partir de 19/07/2026, concursos regulares antes aos sabados passam aos domingos as 11h','url':'https://caixanoticias.caixa.gov.br/Paginas/Noticias/2026/07-JULHO/CAIXA-Loterias-amplia-prazo-para-apostas-e-transfere-sorteios-de-sabado-para-domingo.aspx'}
+  ],
+  'fail_closed_on_missing_weekday':True,
+  'self_hash_required':True,
+}
+raw=json.dumps(policy,ensure_ascii=False,sort_keys=True,separators=(',',':')).encode('utf-8')
+policy['sha256']=hashlib.sha256(raw).hexdigest()
+(ROOT/'SMART_MEGA_SENA_DRAW_TIME_POLICY.json').write_text(json.dumps(policy,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(policy['sha256'])

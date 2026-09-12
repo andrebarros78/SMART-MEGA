@@ -1,5 +1,8 @@
 from __future__ import annotations
 
+from smart_mission_status import load_mission_status
+
+import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,11 +13,120 @@ from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, build as build_product_certification, verify_product_certification, write as write_product_certification
 
 SCHEMA = "SMART_IMPLEMENTATION_PROOF_CURRENT_V4"
+ENGINEERING_CHAIN_SCHEMA = "SMART_ENGINEERING_CHAIN_RECERTIFICATION_PROOF_2"
+ENGINEERING_CHAIN_PATH = Path("SMART_CHAIN_RECERTIFICATION_20260911.json")
+
 
 
 def _read(path: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8-sig"))
 
+
+
+def _sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as handle:
+        for chunk in iter(lambda: handle.read(1024 * 1024), b""):
+            h.update(chunk)
+    return h.hexdigest()
+
+
+def _sha256_json(obj: Any) -> str:
+    raw = json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def validate_engineering_chain_terminal_boundary(chain: dict[str, Any], mission: dict[str, Any]) -> bool:
+    if chain.get("status") == "MISSION_PROVEN":
+        raise RuntimeError("engineering recertification cannot declare MISSION_PROVEN")
+    if chain.get("terminal_authority") is not False:
+        raise RuntimeError("engineering recertification terminal_authority must be false")
+    expected = {
+        "mission_state": mission.get("status"),
+        "terminal_6of6_proven": bool(mission.get("terminal_6of6_proven")),
+        "scientific_predictive_status": mission.get("scientific_predictive_status"),
+        "prospective_advantage_status": mission.get("prospective_advantage_status"),
+    }
+    for key, value in expected.items():
+        if chain.get(key) != value:
+            raise RuntimeError(f"engineering recertification mission boundary mismatch: {key}")
+    return True
+
+
+def write_engineering_chain_proof(root: Path, implementation: dict[str, Any]) -> dict[str, Any]:
+    root = Path(root).resolve()
+    mission_path = root / "SMART_MISSION_STATUS.json"
+    mission = load_mission_status(mission_path, root=root)
+    artifacts: dict[str, dict[str, Any]] = {}
+    for name in (
+        "SMART_AUDIT_JUNIT_CURRENT.xml",
+        "SMART_CANONICAL_ROOT.json",
+        "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+        "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+        "SMART_GLOBAL_INTEGRITY_PROOF.json",
+        "SMART_PRODUCT_CERTIFICATION.json",
+        "SMART_IMPLEMENTATION_PROOF_20260904.json",
+        "SMART_CONTINUITY.md",
+    ):
+        path = root / name
+        if not path.is_file():
+            raise RuntimeError(f"engineering chain artifact missing: {name}")
+        artifacts[name] = {"sha256": _sha256_file(path), "bytes": path.stat().st_size}
+    chain = {
+        "schema": ENGINEERING_CHAIN_SCHEMA,
+        "project": "SMART-MEGA",
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "scope": "Engineering recertification evidence only. Scientific 6/6 authority remains exclusively in SMART_MISSION_STATUS.json and prospective adjudication evidence.",
+        "status": "ENGINEERING_CHAIN_PROVEN",
+        "terminal_authority": False,
+        "construction_status": implementation.get("construction_status"),
+        "deployment_status": implementation.get("deployment_status"),
+        "mission_status_file": mission_path.name,
+        "mission_status_sha256": _sha256_file(mission_path),
+        "mission_state": mission.get("status"),
+        "terminal_6of6_proven": bool(mission.get("terminal_6of6_proven")),
+        "scientific_predictive_status": mission.get("scientific_predictive_status"),
+        "prospective_advantage_status": mission.get("prospective_advantage_status"),
+        "artifacts": artifacts,
+    }
+    if chain["construction_status"] != "CONSTRUCTION_PROVEN":
+        raise RuntimeError("engineering chain requires CONSTRUCTION_PROVEN")
+    validate_engineering_chain_terminal_boundary(chain, mission)
+    chain["sha256"] = _sha256_json(chain)
+    path = root / ENGINEERING_CHAIN_PATH
+    tmp = path.with_name(path.name + ".tmp-engineering-chain")
+    tmp.write_text(json.dumps(chain, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    tmp.replace(path)
+    return chain
+
+
+def verify_engineering_chain_proof(root: Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    path = root / ENGINEERING_CHAIN_PATH
+    if not path.is_file():
+        raise RuntimeError("engineering chain proof missing")
+    chain = _read(path)
+    if chain.get("schema") != ENGINEERING_CHAIN_SCHEMA or chain.get("status") != "ENGINEERING_CHAIN_PROVEN":
+        raise RuntimeError("engineering chain proof schema/status invalid")
+    observed = chain.get("sha256")
+    canonical = dict(chain); canonical.pop("sha256", None)
+    if not isinstance(observed, str) or observed != _sha256_json(canonical):
+        raise RuntimeError("engineering chain proof self-hash invalid")
+    mission_path = root / "SMART_MISSION_STATUS.json"
+    mission = load_mission_status(mission_path, root=root)
+    if chain.get("mission_status_file") != mission_path.name or chain.get("mission_status_sha256") != _sha256_file(mission_path):
+        raise RuntimeError("engineering chain mission authority is stale")
+    validate_engineering_chain_terminal_boundary(chain, mission)
+    if chain.get("construction_status") != "CONSTRUCTION_PROVEN":
+        raise RuntimeError("engineering chain construction status invalid")
+    artifacts = chain.get("artifacts")
+    if not isinstance(artifacts, dict) or not artifacts:
+        raise RuntimeError("engineering chain artifacts missing")
+    for name, binding in artifacts.items():
+        artifact = root / name
+        if not artifact.is_file() or not isinstance(binding, dict) or binding.get("sha256") != _sha256_file(artifact):
+            raise RuntimeError(f"engineering chain artifact stale: {name}")
+    return {"status": "PASS", "file": path.name, "file_sha256": _sha256_file(path), "proof_sha256": observed, "terminal_authority": False}
 
 def _operation_observation(root: Path) -> dict[str, Any]:
     active = root / "SMART_ACTIVE_EPOCH.json"
@@ -42,26 +154,56 @@ def _operation_observation(root: Path) -> dict[str, Any]:
         }
 
 
+def _control_plane_mode() -> str:
+    wmcp_local = consolidation_module.CANONICAL_WMCP_ROOT.is_dir()
+    broker_local = consolidation_module.CANONICAL_WMCP_BROKER_ROOT.is_dir()
+    if wmcp_local and broker_local:
+        return "LOCAL"
+    if not wmcp_local and not broker_local:
+        return "EXTERNAL"
+    return "INCONSISTENT"
+
+
 def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
     root = Path(root).resolve()
     product = build_product_certification(root)
-    mission = _read(root / "SMART_MISSION_STATUS.json")
+    mission = load_mission_status(root / "SMART_MISSION_STATUS.json", root=root)
     operation = _operation_observation(root)
     wmcp_path = root / "SMART_WMCP_EXECUTION_PROOF_20260905.json"
     wmcp = _read(wmcp_path) if wmcp_path.is_file() else {}
-    wmcp_ok = consolidation_module._wmcp_execution_valid(wmcp, require_fresh=require_fresh_wmcp) if wmcp else False
-    checks = dict(product.get("checks", {}))
-    checks.update({
+    control_plane_mode = _control_plane_mode()
+    wmcp_artifact_ok = consolidation_module._wmcp_execution_valid(wmcp, require_fresh=False) if wmcp else False
+    wmcp_operational_ok = (
+        consolidation_module._wmcp_execution_valid(wmcp, require_fresh=require_fresh_wmcp)
+        if wmcp and control_plane_mode == "LOCAL"
+        else False
+    )
+    construction_checks = dict(product.get("checks", {}))
+    construction_checks.update({
         "product_construction_proven": product.get("status") == "CONSTRUCTION_PROVEN",
-        "wmcp_execution_proof_pass": wmcp_ok,
         "operation_state_excluded_from_construction_authority": operation.get("construction_authority") is False,
         "scientific_mission_separate_from_product_completion": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"},
     })
+    construction_ok = all(construction_checks.values())
+    checks = dict(construction_checks)
+    checks.update({
+        "wmcp_execution_proof_pass": wmcp_operational_ok,
+        "wmcp_historical_artifact_valid": wmcp_artifact_ok,
+        "wmcp_control_plane_layout_consistent": control_plane_mode != "INCONSISTENT",
+    })
+    if not construction_ok:
+        deployment_status = "CONSTRUCTION_BLOCKED"
+    elif control_plane_mode == "EXTERNAL":
+        deployment_status = "EXTERNAL_CONTROL_PLANE_REQUIRED"
+    elif control_plane_mode == "INCONSISTENT":
+        deployment_status = "FAIL"
+    else:
+        deployment_status = "PASS" if wmcp_operational_ok else "FAIL"
     return {
         "schema": SCHEMA,
         "generated_at_utc": datetime.now(timezone.utc).isoformat(),
-        "deployment_status": "PASS" if all(checks.values()) else "FAIL",
-        "construction_status": "CONSTRUCTION_PROVEN" if all(checks.values()) else "CONSTRUCTION_BLOCKED",
+        "deployment_status": deployment_status,
+        "construction_status": "CONSTRUCTION_PROVEN" if construction_ok else "CONSTRUCTION_BLOCKED",
         "workspace": str(root),
         "scope": "SMART-MEGA product construction and operational readiness. Contest selection, freeze and adjudication are operator actions and are not construction gates.",
         "product_certification": product,
@@ -73,11 +215,19 @@ def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
             "adjudication_is_construction_gate": False,
         },
         "operation_observation": operation,
+        "control_plane": {
+            "mode": control_plane_mode,
+            "local_wmcp_root_present": consolidation_module.CANONICAL_WMCP_ROOT.is_dir(),
+            "local_broker_root_present": consolidation_module.CANONICAL_WMCP_BROKER_ROOT.is_dir(),
+            "construction_authority": False,
+            "external_requires_separate_operational_proof": control_plane_mode == "EXTERNAL",
+        },
         "wmcp_execution": {
             "artifact": wmcp_path.name,
             "status": wmcp.get("status"),
             "sha256": wmcp.get("sha256"),
-            "valid": wmcp_ok,
+            "historical_artifact_valid": wmcp_artifact_ok,
+            "valid": wmcp_operational_ok,
             "live_supervisor_state": wmcp.get("live_runtime", {}).get("supervisor_state"),
             "live_worker_mode": wmcp.get("live_runtime", {}).get("worker_mode"),
         },
@@ -88,15 +238,16 @@ def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
         "scientific_mission_controls_product_completion": False,
     }
 
-
 def render_continuity(proof: dict[str, Any]) -> str:
     product = proof["product_certification"]
     operation = proof["operation_observation"]
+    workspace = proof.get("workspace", "UNSPECIFIED")
     return f"""# SMART-MEGA - CONTINUIDADE CANONICA ATUAL
 
 **Atualizacao:** {proof['generated_at_utc']}
-**Workspace:** `C:\\New Projet\\SMART-MEGA`
+**Workspace:** `{workspace}`
 **Construcao:** `{proof['construction_status']}`
+**Implantacao/control plane:** `{proof.get('deployment_status', 'UNKNOWN')}`
 **Missao cientifica:** `{proof['mission_state']}`
 
 ## Separacao obrigatoria
@@ -125,7 +276,9 @@ Esse estado nao e gate de construcao.
 - runtime BUILD: **{'PASS' if product['checks']['build_runtime_pass'] else 'FAIL'}**;
 - integracao total BUILD: **{'PASS' if product['checks']['build_total_integration_pass'] else 'FAIL'}**;
 - zero deficiencias materiais abertas: **{str(product['checks']['zero_open_material_deficiencies']).lower()}**;
-- WMCP/execucao real: **{'PASS' if proof['checks']['wmcp_execution_proof_pass'] else 'FAIL'}**.
+- modo do control plane: **{proof.get('control_plane', {}).get('mode', 'UNSPECIFIED')}**;
+- WMCP/execucao real local: **{'PASS' if proof['checks']['wmcp_execution_proof_pass'] else 'FAIL'}**;
+- control plane externo, quando aplicavel, exige prova operacional separada e nao bloqueia a certificacao de construcao.
 
 ## Limite cientifico
 
@@ -136,13 +289,21 @@ Isso e separado da conclusao do software. `MISSION_ACTIVE` cientifico nao signif
 
 def write(root: Path) -> dict[str, Any]:
     root = Path(root).resolve()
-    consolidation_module.refresh_wmcp_execution_proof(root)
+    control_plane_mode = _control_plane_mode()
+    if control_plane_mode == "LOCAL":
+        consolidation_module.refresh_wmcp_execution_proof(root)
+    elif control_plane_mode == "INCONSISTENT":
+        raise RuntimeError("inconsistent local WMCP control-plane footprint")
     product = write_product_certification(root)
-    proof = build(root, require_fresh_wmcp=True)
-    if proof["deployment_status"] != "PASS" or product["status"] != "CONSTRUCTION_PROVEN":
+    proof = build(root, require_fresh_wmcp=(control_plane_mode == "LOCAL"))
+    if product["status"] != "CONSTRUCTION_PROVEN" or proof["construction_status"] != "CONSTRUCTION_PROVEN":
+        raise RuntimeError({"construction_checks": proof["checks"]})
+    if proof["deployment_status"] == "FAIL":
         raise RuntimeError({"deployment_checks": proof["checks"]})
     (root / "SMART_IMPLEMENTATION_PROOF_20260904.json").write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     (root / "SMART_CONTINUITY.md").write_text(render_continuity(proof), encoding="utf-8")
+    write_engineering_chain_proof(root, proof)
+    verify_engineering_chain_proof(root)
     return proof
 
 

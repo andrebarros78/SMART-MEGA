@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="1" failures="0" skipped="0" tests="29" time="33.994" timestamp="2026-09-11T19:27:11.897862-03:00" hostname="DESKTOP-4T6AS9K"><testcase classname="test_smart_mission_status_integrity" name="test_current_mission_status_is_self_hashed_and_valid" time="0.724" /><testcase classname="test_smart_mission_status_integrity" name="test_mission_status_tamper_fails_closed" time="0.031" /><testcase classname="test_smart_mission_status_integrity" name="test_active_mission_rejects_unclassified_terminal_claim" time="0.018" /><testcase classname="test_smart_mission_status_integrity" name="test_terminal_transition_accepts_bound_terminal_proof" time="0.022" /><testcase classname="test_smart_mission_status_integrity" name="test_critical_mission_consumers_use_validated_contract" time="0.021" /><testcase classname="test_smart_mission_status_governance" name="test_canonical_mission_status_prevents_false_terminal_proof" time="0.001" /><testcase classname="test_smart_mission_status_governance" name="test_continuity_contract_separates_scientific_mission_from_product_completion" time="0.001" /><testcase classname="test_smart_mission_status_governance" name="test_engineering_recertification_cannot_self_promote_to_mission_proven" time="0.002" /><testcase classname="test_smart_mission_status_governance" name="test_engineering_recertification_boundary_mirrors_canonical_mission_status" time="0.002" /><testcase classname="test_smart_mission_status_governance" name="test_canonical_mission_status_classifies_all_root_terminal_tokens" time="0.698" /><testcase classname="test_smart_current_continuity_generation" name="test_product_completion_is_independent_of_active_operation" time="0.085" /><testcase classname="test_smart_current_continuity_generation" name="test_build_orchestration_is_non_operational_and_has_no_freeze_authority" time="1.943" /><testcase classname="test_smart_current_continuity_generation" name="test_operator_selects_arbitrary_target_when_prior_history_is_complete" time="0.001" /><testcase classname="test_smart_current_continuity_generation" name="test_operator_contract_keeps_freeze_and_adjudication_out_of_construction_gate" time="0.001" /><testcase classname="test_smart_current_continuity_generation" name="test_product_certification_contract_is_construction_only" time="0.001" /><testcase classname="test_smart_current_continuity_generation" name="test_rendered_continuity_explicitly_separates_construction_operation_and_science" time="0.001" /><testcase classname="test_smart_current_continuity_generation" name="test_external_control_plane_does_not_block_construction_certification" time="0.011" /><testcase classname="test_smart_current_continuity_generation" name="test_local_control_plane_requires_fresh_wmcp_for_deployment_pass" time="0.010" /><testcase classname="test_smart_current_continuity_generation" name="test_inconsistent_local_control_plane_fails_closed_without_blocking_build_fact" time="0.010" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_agent_runtime_v2_executes_native_probes_and_preserves_canonical_hashes" time="3.433" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_functional_gate_binds_every_capability_to_a_passed_probe_without_external_execution" time="7.617" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_agent_skill_layer_is_behaviorally_hashed_by_continuous_red_team" time="0.001" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_operational_freeze_entrypoints_have_no_stale_3051_defaults" time="0.001" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_champion_cli_fails_closed_without_explicit_dataset" time="0.002" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_legacy_patch_repair_and_sandbox_entrypoints_are_not_top_level" time="0.003" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_importing_evidence_and_procedural_modules_has_no_write_side_effects" time="0.148" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_generic_scientific_clis_do_not_embed_stale_3053_input_defaults" time="0.001" /><testcase classname="test_smart_architecture_hardening_20260905" name="test_agent_runtime_fail_closed_branches_and_output_paths" time="6.463" /><testcase time="0.003" /><testcase classname="pytest" name="internal" time="0.000"><error message="internal error">Traceback (most recent call last):
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\main.py", line 330, in wrap_session
+    session.exitstatus = doit(config, session) or 0
+                         ~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\main.py", line 384, in _main
+    config.hook.pytest_runtestloop(session=session)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\logging.py", line 816, in pytest_runtestloop
+    return (yield)  # Run all the tests.
+            ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\terminal.py", line 708, in pytest_runtestloop
+    result = yield
+             ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\main.py", line 408, in pytest_runtestloop
+    item.config.hook.pytest_runtest_protocol(item=item, nextitem=nextitem)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\warnings.py", line 90, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\assertion\__init__.py", line 205, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\unittest.py", line 612, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 139, in _multicall
+    teardown.throw(exception)
+    ~~~~~~~~~~~~~~^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\faulthandler.py", line 102, in pytest_runtest_protocol
+    return (yield)
+            ^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\runner.py", line 118, in pytest_runtest_protocol
+    runtestprotocol(item, nextitem=nextitem)
+    ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\runner.py", line 139, in runtestprotocol
+    reports.append(call_and_report(item, "call", log))
+                   ~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\runner.py", line 256, in call_and_report
+    ihook.pytest_runtest_logreport(report=report)
+    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_hooks.py", line 512, in __call__
+    return self._hookexec(self.name, self._hookimpls.copy(), kwargs, firstresult)
+           ~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_manager.py", line 120, in _hookexec
+    return self._inner_hookexec(hook_name, methods, kwargs, firstresult)
+           ~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 167, in _multicall
+    raise exception
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\pluggy\_callers.py", line 121, in _multicall
+    res = hook_impl.function(*args)
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\terminal.py", line 699, in pytest_runtest_logreport
+    self.flush()
+    ~~~~~~~~~~^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\terminal.py", line 532, in flush
+    self._tw.flush()
+    ~~~~~~~~~~~~~~^^
+  File "C:\SMART-MEGA\.venv\Lib\site-packages\_pytest\_io\terminalwriter.py", line 187, in flush
+    self._file.flush()
+    ~~~~~~~~~~~~~~~~^^
+OSError: [Errno 22] Invalid argument</error></testcase></testsuite></testsuites>

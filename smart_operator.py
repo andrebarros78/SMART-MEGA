@@ -1,8 +1,11 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import argparse
+import hashlib
 import json
+import os
 import shutil
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Iterable
@@ -11,10 +14,14 @@ import pandas as pd
 
 from adjudicate_signal_challenger import adjudicate
 from smart_agent_runtime import sha256_file
-from smart_champion_challenger import load_ledger
+from smart_champion_challenger import active_freeze, load_ledger, reconcile_completed_epoch_ledger, seed_ledger_from_canonical
+from smart_canonical_history_advance import advance_completed_epoch
+from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import run_full_process
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
+from smart_official_result_ingest import ingest as ingest_official_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
+import smart_terminal_executor as terminal_executor
 
 SCHEMA = "SMART_OPERATOR_CONTRACT_V1"
 
@@ -33,8 +40,6 @@ def validate_target_sequence(contests: Iterable[int], target: int) -> dict[str, 
     cutoff = int(target) - 1
     if ordered[-1] != cutoff:
         raise ValueError(f"operator target requires canonical history through contest {cutoff}; observed max={ordered[-1]}")
-    if target in set(ordered):
-        raise ValueError("operator target result is already present in canonical history")
     return {"target_contest": int(target), "cutoff_contest": cutoff, "history_max": ordered[-1]}
 
 
@@ -57,12 +62,19 @@ def contract() -> dict[str, Any]:
         "product_completion_independent_of_operation": True,
         "operator_selects_target": True,
         "target_required_for_prepare_and_freeze": True,
-        "supported_actions": ["status", "prepare", "freeze", "adjudicate"],
+        "supported_actions": ["status", "prepare", "withdraw", "recover-missed", "freeze", "adjudicate", "terminal"],
+        "pre_freeze_withdrawal_preserves_failed_preparation": True,
+        "missed_unfrozen_recovery_is_non_predictive": True,
+        "missed_unfrozen_recovery_requires_post_draw_official_result": True,
         "freeze_is_operational_not_construction_gate": True,
         "adjudication_is_operational_not_construction_gate": True,
+        "generic_active_epoch_terminal_executor": True,
+        "terminal_action_revalidates_official_consensus_and_scientific_guards": True,
         "arbitrary_future_target_supported_when_history_is_complete_through_target_minus_one": True,
         "fail_closed_on_history_gap_or_target_result_present": True,
         "scientific_terminal_claim_independent_of_product_completion": True,
+        "all_attempts_preserved_across_epochs": True,
+        "supersede_requires_completed_epoch_or_explicit_withdrawal": True,
     }
 
 
@@ -83,13 +95,24 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
     root = Path(root).resolve()
     from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, verify_product_certification
     certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)
+    active_path = root / ACTIVE_PATH
+    reconciliation = None
+    result_store_reconciliation = None
+    if active_path.exists() and not supersede_existing:
+        raise FileExistsError("an operational epoch already exists; use --supersede only when the operator intentionally starts another target")
+    if active_path.exists():
+        previous_active = verify_active_epoch(active_path)
+        previous_ledger = root / previous_active["state_paths"]["ledger"]
+        previous_target = int(previous_active["target_contest"])
+        previous_events = load_ledger(previous_ledger).get("events", [])
+        if not any(ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == previous_target for ev in previous_events):
+            raise ValueError("cannot supersede an unresolved prospective attempt; use the explicit pre-result withdrawal/unfreeze path")
+        reconciliation = reconcile_completed_epoch_ledger(root / "SMART_SIGNAL_LEDGER.json", previous_ledger, previous_target, root=root)
+        result_store_reconciliation = advance_completed_epoch(root, previous_active)
     canonical = root / "Mega-Sena.xlsx"
     history = validate_target_against_history(canonical, int(target))
     schedule = resolve_target_schedule(root, int(target))
     temporal = assert_pre_draw_window(schedule)
-    active_path = root / ACTIVE_PATH
-    if active_path.exists() and not supersede_existing:
-        raise FileExistsError("an operational epoch already exists; use --supersede only when the operator intentionally starts another target")
     previous_sha = _archive_active(root, active_path) if active_path.exists() else None
     stamp = datetime.now(timezone.utc).strftime("%Y%m%dT%H%M%S%fZ")
     epoch_id = f"operator-{int(target)}-{certification['sha256'][:12]}-{stamp}"
@@ -100,8 +123,7 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
     if sha256_file(snapshot) != history["data_sha256"]:
         raise RuntimeError("operator immutable history snapshot hash mismatch")
     ledger_path = epoch_dir / "SMART_SIGNAL_LEDGER.json"
-    fresh = load_ledger(epoch_dir / "__missing__.json")
-    ledger_path.write_text(json.dumps(fresh, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    ledger_seed = seed_ledger_from_canonical(root / "SMART_SIGNAL_LEDGER.json", ledger_path)
     state_path = epoch_dir / "SMART_SIGNAL_STATE.json"
     activation_authority = epoch_dir / "SMART_LEARNING_ACTIVATION_AUTHORITY.json"
     expansion_registry = epoch_dir / "SMART_SIGNAL_EXPANSION_REGISTRY.json"
@@ -134,8 +156,182 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
         "freeze_authority": None,
         "learning_state_authority": None,
         "supersedes_active_epoch_sha256": previous_sha,
+        "canonical_ledger_seed_sha256": ledger_seed["sha256"],
+        "canonical_ledger_seed_event_count": ledger_seed["event_count"],
     })
-    return {"status": "READY_TO_FREEZE", "product_certification_sha256": certification["sha256"], "active_epoch": active, "history": history, "schedule": schedule}
+    return {"status": "READY_TO_FREEZE", "product_certification_sha256": certification["sha256"], "active_epoch": active, "history": history, "schedule": schedule, "prior_epoch_reconciliation": reconciliation, "canonical_result_store_reconciliation": result_store_reconciliation, "ledger_seed": ledger_seed}
+
+
+def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, Any]:
+    root = Path(root).resolve()
+    active_path = root / ACTIVE_PATH
+    active = verify_active_epoch(active_path)
+    if active.get("operator_selected_target") is not True:
+        raise ValueError("withdrawal is limited to operator-selected epochs")
+    if int(active["target_contest"]) != int(target):
+        raise ValueError("active operational epoch does not match withdrawal target")
+    paths = active["state_paths"]
+    ledger_path = root / paths["ledger"]
+    data_path = root / active["data_file"]
+    epoch_dir = ledger_path.parent
+    ledger = load_ledger(ledger_path)
+    events = ledger.get("events", [])
+    target_events = [ev for ev in events if isinstance(ev, dict) and int(ev.get("target_contest", -1)) == int(target)]
+    baseline_files = {ledger_path.resolve(), data_path.resolve()}
+    unexpected_epoch_files = [p for p in epoch_dir.rglob("*") if p.is_file() and p.resolve() not in baseline_files]
+    seed_sha = active.get("canonical_ledger_seed_sha256")
+    seed_count = active.get("canonical_ledger_seed_event_count")
+    canonical_ledger = root / "SMART_SIGNAL_LEDGER.json"
+    checks = {
+        "reset_ready": active.get("status") == "RESET_READY",
+        "freeze_authority_absent": active.get("freeze_authority") is None,
+        "target_events_absent": not target_events,
+        "no_generated_freeze_artifacts": not unexpected_epoch_files,
+        "immutable_data_hash_match": data_path.is_file() and sha256_file(data_path) == active.get("data_sha256"),
+        "seed_metadata_valid": isinstance(seed_sha, str) and len(seed_sha) == 64 and isinstance(seed_count, int) and not isinstance(seed_count, bool) and seed_count >= 0,
+        "seed_ledger_hash_match": ledger_path.is_file() and isinstance(seed_sha, str) and sha256_file(ledger_path) == seed_sha,
+        "seed_event_count_match": isinstance(events, list) and isinstance(seed_count, int) and len(events) == seed_count,
+        "canonical_ledger_unchanged_since_prepare": canonical_ledger.is_file() and isinstance(seed_sha, str) and sha256_file(canonical_ledger) == seed_sha,
+    }
+    if not all(checks.values()):
+        raise RuntimeError(f"pre-freeze withdrawal blocked: {checks}")
+    active_sha = sha256_file(active_path)
+    archived_sha = _archive_active(root, active_path)
+    if archived_sha != active_sha:
+        raise RuntimeError("pre-freeze withdrawal archive mismatch")
+    proof = {
+        "schema": "SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1",
+        "status": "WITHDRAWN_PRE_FREEZE",
+        "target_contest": int(target),
+        "epoch_id": active["epoch_id"],
+        "active_epoch_sha256": active_sha,
+        "ledger_sha256": sha256_file(ledger_path),
+        "data_sha256": sha256_file(data_path),
+        "preserved_epoch_dir": str(epoch_dir.relative_to(root)).replace("\\", "/"),
+        "withdrawn_utc": datetime.now(timezone.utc).isoformat(),
+        "reason": "PRE_FREEZE_TECHNICAL_CORRECTION",
+        "checks": checks,
+    }
+    active_path.unlink()
+    if active_path.exists():
+        raise RuntimeError("active epoch pointer removal failed")
+    proof["active_pointer_removed"] = True
+    canonical = json.dumps(proof, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    proof["sha256"] = hashlib.sha256(canonical).hexdigest()
+    proof_path = root / "SMART_STATE_ARCHIVE" / f"operator_pre_freeze_withdrawal_{active_sha}.json"
+    temporary = proof_path.with_suffix(".json.tmp")
+    temporary.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    temporary.replace(proof_path)
+    return {**proof, "proof_file": str(proof_path.relative_to(root)).replace("\\", "/")}
+
+
+def recover_missed_unfrozen_operation(root: str | Path, target: int, *, payload: dict[str, Any] | None = None, now_utc: datetime | None = None) -> dict[str, Any]:
+    root = Path(root).resolve()
+    active_path = root / ACTIVE_PATH
+    active = verify_active_epoch(active_path)
+    if active.get("operator_selected_target") is not True:
+        raise ValueError("missed-target recovery is limited to operator-selected epochs")
+    if int(active["target_contest"]) != int(target):
+        raise ValueError("active operational epoch does not match missed target")
+    if active.get("status") != "RESET_READY" or active.get("result_used") is not False or active.get("freeze_authority") is not None:
+        raise ValueError("missed-target recovery requires unresolved RESET_READY state without freeze authority")
+    schedule = active.get("target_schedule")
+    if not isinstance(schedule, dict) or not isinstance(schedule.get("scheduled_datetime"), str):
+        raise ValueError("missed-target recovery requires scheduled draw authority")
+    scheduled = datetime.fromisoformat(schedule["scheduled_datetime"])
+    if scheduled.tzinfo is None:
+        raise ValueError("scheduled draw authority must be timezone-aware")
+    observed_now = now_utc if now_utc is not None else datetime.now(timezone.utc)
+    if observed_now.tzinfo is None:
+        raise ValueError("missed-target recovery clock must be timezone-aware")
+    if observed_now.astimezone(timezone.utc) <= scheduled.astimezone(timezone.utc):
+        raise ValueError("missed-target recovery is forbidden before the scheduled draw")
+    paths = active["state_paths"]
+    ledger_path = root / paths["ledger"]
+    ledger = load_ledger(ledger_path)
+    if any(int(ev.get("target_contest", -1)) == int(target) for ev in ledger.get("events", [])):
+        raise ValueError("missed-target recovery refuses epochs containing target events")
+    freeze_path = root / paths["freeze"]
+    if freeze_path.exists():
+        raise ValueError("missed-target recovery refuses any freeze artifact")
+    snapshot = root / active["data_file"]
+    if not snapshot.is_file() or sha256_file(snapshot) != active.get("data_sha256"):
+        raise ValueError("missed-target recovery history snapshot integrity failed")
+    canonical = root / "Mega-Sena.xlsx"
+    canonical_before = sha256_file(canonical)
+    if canonical_before != active.get("canonical_source_sha256_at_prepare") or canonical_before != sha256_file(snapshot):
+        raise ValueError("canonical history changed after missed target preparation")
+    proof_path = root / f"SMART_MISSED_TARGET_RECOVERY_{int(target)}.json"
+    if proof_path.exists():
+        raise FileExistsError(f"refusing to overwrite missed-target recovery proof: {proof_path}")
+    epoch_dir = ledger_path.parent
+    through = epoch_dir / f"Mega-Sena_through_{int(target)}.xlsx"
+    official_proof = epoch_dir / f"SMART_OFFICIAL_RESULT_{int(target)}_MISSED_RECOVERY.json"
+    if through.exists() or official_proof.exists():
+        raise FileExistsError("missed-target recovery output already exists")
+    official = ingest_official_result(snapshot, through, official_proof, int(target), payload=payload)
+    if official.get("source_sha256") != active.get("data_sha256") or official.get("output_sha256") != sha256_file(through):
+        raise RuntimeError("missed-target official ingest integrity failed")
+    active_sha = sha256_file(active_path)
+    archived_sha = _archive_active(root, active_path)
+    if archived_sha != active_sha:
+        raise RuntimeError("missed-target active archive mismatch")
+    archive_path = root / "SMART_STATE_ARCHIVE" / f"operator_active_epoch_{active_sha}.json"
+    backup = root / "SMART_STATE_ARCHIVE" / f"Mega-Sena_before_missed_{int(target)}_{canonical_before}.xlsx"
+    backup.parent.mkdir(parents=True, exist_ok=True)
+    if not backup.exists():
+        shutil.copy2(canonical, backup)
+    if sha256_file(backup) != canonical_before:
+        raise RuntimeError("missed-target canonical backup hash mismatch")
+    handle, raw = tempfile.mkstemp(prefix=f"Mega-Sena.missed.{int(target)}.", suffix=".tmp.xlsx", dir=root)
+    os.close(handle)
+    temporary = Path(raw)
+    try:
+        shutil.copy2(through, temporary)
+        if sha256_file(temporary) != official["output_sha256"]:
+            raise RuntimeError("missed-target temporary canonical hash mismatch")
+        os.replace(temporary, canonical)
+    finally:
+        temporary.unlink(missing_ok=True)
+    if sha256_file(canonical) != official["output_sha256"]:
+        shutil.copy2(backup, canonical)
+        raise RuntimeError("missed-target canonical advance postcondition failed")
+    proof = {
+        "schema": "SMART_OPERATOR_MISSED_UNFROZEN_RECOVERY_1",
+        "status": "RECOVERED_NO_VALID_FREEZE",
+        "target_contest": int(target),
+        "epoch_id": active["epoch_id"],
+        "scheduled_datetime": schedule["scheduled_datetime"],
+        "recovered_utc": datetime.now(timezone.utc).isoformat(),
+        "official_result": official["actual_numbers"],
+        "official_result_proof": str(official_proof.relative_to(root)).replace("\\", "/"),
+        "official_result_proof_sha256": sha256_file(official_proof),
+        "canonical_sha256_before": canonical_before,
+        "canonical_sha256_after": sha256_file(canonical),
+        "canonical_backup": str(backup.relative_to(root)).replace("\\", "/"),
+        "active_epoch_archive": str(archive_path.relative_to(root)).replace("\\", "/"),
+        "active_epoch_sha256": active_sha,
+        "prediction_authority_created": False,
+        "prospective_attempt_counted": False,
+        "result_used_for_prediction": False,
+        "reason": "NO_VALID_PRE_DRAW_FREEZE",
+        "ready_for_next_target": int(target) + 1,
+    }
+    try:
+        active_path.unlink()
+        if active_path.exists():
+            raise RuntimeError("missed-target active pointer removal failed")
+        canonical_proof = json.dumps(proof, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        proof["sha256"] = hashlib.sha256(canonical_proof).hexdigest()
+        temporary_proof = proof_path.with_suffix(".json.tmp")
+        temporary_proof.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+        temporary_proof.replace(proof_path)
+    except Exception:
+        shutil.copy2(backup, canonical)
+        if not active_path.exists() and archive_path.is_file():
+            shutil.copy2(archive_path, active_path)
+        raise
+    return {**proof, "proof_file": proof_path.name}
 
 
 def freeze_operation(root: str | Path, target: int) -> dict[str, Any]:
@@ -151,8 +347,39 @@ def adjudicate_operation(root: str | Path, target: int, result_data: str | Path)
     active = verify_active_epoch(root / ACTIVE_PATH)
     if int(active["target_contest"]) != int(target):
         raise ValueError("active operational epoch does not match adjudication target")
+    current = resolve_current_epoch(root)
+    if current.get("status") != "FROZEN" or current.get("freeze_authority_present") is not True:
+        raise ValueError("adjudication requires a validated FROZEN current epoch")
+    if int(current.get("target_contest", -1)) != int(target):
+        raise ValueError("current epoch authority does not match adjudication target")
+    if current.get("generation_proof_valid") is not True:
+        raise ValueError("adjudication requires a valid generation proof")
     ledger_path = root / active["state_paths"]["ledger"]
+    ledger = load_ledger(ledger_path)
+    frozen_event = active_freeze(ledger, int(target))
+    if frozen_event is None or str(frozen_event.get("freeze_sha256")) != str(current.get("freeze_sha256")):
+        raise ValueError("active epoch freeze authority differs from signal ledger")
     return adjudicate(Path(result_data), int(target), ledger_path)
+
+
+
+def terminal_operation(
+    root: str | Path,
+    target: int,
+    *,
+    probe_only: bool = False,
+    allow_terminal_write: bool = True,
+) -> dict[str, Any]:
+    root = Path(root).resolve()
+    active = verify_active_epoch(root / ACTIVE_PATH)
+    if int(active.get("target_contest", -1)) != int(target):
+        raise ValueError("active operational epoch does not match terminal target")
+    # The terminal engine validates either a live pre-result generation authority or
+    # a post-adjudication recovery lineage bound to the same immutable freeze.
+    # Do not re-authorize prediction here after the result is known.
+    if probe_only:
+        return terminal_executor.probe(root, int(target))
+    return terminal_executor.execute(root, int(target), allow_terminal_write=allow_terminal_write)
 
 
 def status(root: str | Path) -> dict[str, Any]:
@@ -169,14 +396,20 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("status")
     p = sub.add_parser("prepare"); p.add_argument("--target", type=int, required=True); p.add_argument("--supersede", action="store_true")
+    w = sub.add_parser("withdraw"); w.add_argument("--target", type=int, required=True)
+    m = sub.add_parser("recover-missed"); m.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
+    t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
     args = parser.parse_args(argv)
     root = Path(__file__).resolve().parent
     if args.action == "status": out = status(root)
     elif args.action == "prepare": out = prepare_operation(root, args.target, supersede_existing=args.supersede)
+    elif args.action == "withdraw": out = withdraw_pre_freeze_operation(root, args.target)
+    elif args.action == "recover-missed": out = recover_missed_unfrozen_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
-    else: out = adjudicate_operation(root, args.target, args.result_data)
+    elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
+    else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
 if __name__ == "__main__":

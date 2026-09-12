@@ -1,0 +1,24 @@
+from pathlib import Path
+import hashlib, json
+
+root = Path(__file__).resolve().parent
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260909'
+bdir.mkdir(parents=True, exist_ok=True)
+changes = {}
+
+for name, old in [
+    ('smart_operator.py', '    if target in set(ordered):\n        raise ValueError("operator target result is already present in canonical history")\n'),
+    ('smart_canonical_history_advance.py', '    if canonical_seq[-1] not in {target - 1, target}:\n        raise ValueError("canonical history is not positioned at target-1 or target")\n'),
+]:
+    p = root / name
+    raw = p.read_bytes(); before = hashlib.sha256(raw).hexdigest()
+    text_raw = raw.decode('utf-8-sig'); newline = '\r\n' if '\r\n' in text_raw else '\n'; text = text_raw.replace('\r\n','\n')
+    if old not in text:
+        raise SystemExit(f'DEAD_BRANCH_CONTEXT_NOT_FOUND:{name}')
+    bak = bdir / f'{p.name}.{before}.bak'
+    if not bak.exists(): bak.write_bytes(raw)
+    text = text.replace(old, '', 1)
+    p.write_text(text.replace('\n', newline), encoding='utf-8', newline='')
+    after = hashlib.sha256(p.read_bytes()).hexdigest()
+    changes[name] = {'before': before, 'after': after, 'backup': str(bak.relative_to(root)).replace('\\','/')}
+print(json.dumps(changes, ensure_ascii=False))

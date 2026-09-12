@@ -1,0 +1,160 @@
+from __future__ import annotations
+
+import json
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+import smart_continuity_consolidator as consolidation_module
+from smart_current_epoch_contract import resolve as resolve_current_epoch
+from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, build as build_product_certification, verify_product_certification, write as write_product_certification
+
+SCHEMA = "SMART_IMPLEMENTATION_PROOF_CURRENT_V4"
+
+
+def _read(path: Path) -> dict[str, Any]:
+    return json.loads(path.read_text(encoding="utf-8-sig"))
+
+
+def _operation_observation(root: Path) -> dict[str, Any]:
+    active = root / "SMART_ACTIVE_EPOCH.json"
+    if not active.is_file():
+        return {"present": False, "status": "NO_ACTIVE_OPERATION", "construction_authority": False}
+    try:
+        current = resolve_current_epoch(root)
+        return {
+            "present": True,
+            "status": current.get("status"),
+            "target_contest": current.get("target_contest"),
+            "cutoff_contest": current.get("cutoff_contest"),
+            "freeze_authority_present": current.get("freeze_authority_present"),
+            "result_used": current.get("result_used"),
+            "construction_authority": False,
+            "note": "Operational state is observed for continuity only and never gates product construction.",
+        }
+    except Exception as exc:
+        return {
+            "present": True,
+            "status": "OPERATION_STATE_INVALID",
+            "error": f"{type(exc).__name__}: {exc}",
+            "construction_authority": False,
+            "note": "Invalid operational state blocks that operation, not product construction certification.",
+        }
+
+
+def build(root: Path, *, require_fresh_wmcp: bool = False) -> dict[str, Any]:
+    root = Path(root).resolve()
+    product = build_product_certification(root)
+    mission = _read(root / "SMART_MISSION_STATUS.json")
+    operation = _operation_observation(root)
+    wmcp_path = root / "SMART_WMCP_EXECUTION_PROOF_20260905.json"
+    wmcp = _read(wmcp_path) if wmcp_path.is_file() else {}
+    wmcp_ok = consolidation_module._wmcp_execution_valid(wmcp, require_fresh=require_fresh_wmcp) if wmcp else False
+    checks = dict(product.get("checks", {}))
+    checks.update({
+        "product_construction_proven": product.get("status") == "CONSTRUCTION_PROVEN",
+        "wmcp_execution_proof_pass": wmcp_ok,
+        "operation_state_excluded_from_construction_authority": operation.get("construction_authority") is False,
+        "scientific_mission_separate_from_product_completion": mission.get("status") in {"MISSION_ACTIVE", "MISSION_PROVEN"},
+    })
+    return {
+        "schema": SCHEMA,
+        "generated_at_utc": datetime.now(timezone.utc).isoformat(),
+        "deployment_status": "PASS" if all(checks.values()) else "FAIL",
+        "construction_status": "CONSTRUCTION_PROVEN" if all(checks.values()) else "CONSTRUCTION_BLOCKED",
+        "workspace": str(root),
+        "scope": "SMART-MEGA product construction and operational readiness. Contest selection, freeze and adjudication are operator actions and are not construction gates.",
+        "product_certification": product,
+        "operator_interface": {
+            "module": "smart_operator.py",
+            "commands": ["status", "prepare --target N", "freeze --target N", "adjudicate --target N --result-data FILE"],
+            "operator_selects_target": True,
+            "freeze_is_construction_gate": False,
+            "adjudication_is_construction_gate": False,
+        },
+        "operation_observation": operation,
+        "wmcp_execution": {
+            "artifact": wmcp_path.name,
+            "status": wmcp.get("status"),
+            "sha256": wmcp.get("sha256"),
+            "valid": wmcp_ok,
+            "live_supervisor_state": wmcp.get("live_runtime", {}).get("supervisor_state"),
+            "live_worker_mode": wmcp.get("live_runtime", {}).get("worker_mode"),
+        },
+        "checks": checks,
+        "mission_state": mission.get("status"),
+        "terminal_6of6_proven": bool(mission.get("terminal_6of6_proven")),
+        "scientific_predictive_status": mission.get("scientific_predictive_status"),
+        "scientific_mission_controls_product_completion": False,
+    }
+
+
+def render_continuity(proof: dict[str, Any]) -> str:
+    product = proof["product_certification"]
+    operation = proof["operation_observation"]
+    workspace = proof.get("workspace", "UNSPECIFIED")
+    return f"""# SMART-MEGA - CONTINUIDADE CANONICA ATUAL
+
+**Atualizacao:** {proof['generated_at_utc']}
+**Workspace:** `{workspace}`
+**Construcao:** `{proof['construction_status']}`
+**Missao cientifica:** `{proof['mission_state']}`
+
+## Separacao obrigatoria
+
+A construcao do produto e certificada por `SMART_PRODUCT_CERTIFICATION.json` em fase `BUILD`.
+Nenhum concurso, sequencia de dezenas, freeze ou adjudicacao e requisito para finalizar o software.
+`SMART_ACTIVE_EPOCH.json` representa apenas uma operacao escolhida pelo operador e nao possui autoridade sobre a conclusao da construcao.
+
+## Operacao
+
+O operador escolhe explicitamente o alvo:
+
+- `python smart_operator.py prepare --target N`
+- `python smart_operator.py freeze --target N`
+- `python smart_operator.py adjudicate --target N --result-data ARQUIVO`
+
+O alvo pode ser qualquer concurso futuro suportado pela base causal. Para operar N, a base oficial precisa estar completa ate N-1.
+
+Estado operacional observado: `{operation.get('status')}`.
+Esse estado nao e gate de construcao.
+
+## Prova de construcao
+
+- status: **{product['status']}**;
+- regressao: **{product['regression']['tests']} testes / {product['regression']['failures']} failures / {product['regression']['errors']} errors**;
+- runtime BUILD: **{'PASS' if product['checks']['build_runtime_pass'] else 'FAIL'}**;
+- integracao total BUILD: **{'PASS' if product['checks']['build_total_integration_pass'] else 'FAIL'}**;
+- zero deficiencias materiais abertas: **{str(product['checks']['zero_open_material_deficiencies']).lower()}**;
+- WMCP/execucao real: **{'PASS' if proof['checks']['wmcp_execution_proof_pass'] else 'FAIL'}**.
+
+## Limite cientifico
+
+`SMART_MISSION_STATUS.json` continua sendo a autoridade da hipotese cientifica e do eventual 6/6 prospectivo.
+Isso e separado da conclusao do software. `MISSION_ACTIVE` cientifico nao significa produto inacabado.
+"""
+
+
+def write(root: Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    consolidation_module.refresh_wmcp_execution_proof(root)
+    product = write_product_certification(root)
+    proof = build(root, require_fresh_wmcp=True)
+    if proof["deployment_status"] != "PASS" or product["status"] != "CONSTRUCTION_PROVEN":
+        raise RuntimeError({"deployment_checks": proof["checks"]})
+    (root / "SMART_IMPLEMENTATION_PROOF_20260904.json").write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    (root / "SMART_CONTINUITY.md").write_text(render_continuity(proof), encoding="utf-8")
+    return proof
+
+
+if __name__ == "__main__":
+    import sys
+    project_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
+    result = write(project_root)
+    print(json.dumps({
+        "deployment_status": result["deployment_status"],
+        "construction_status": result["construction_status"],
+        "mission_state": result["mission_state"],
+        "terminal_6of6_proven": result["terminal_6of6_proven"],
+        "active_operation_status": result["operation_observation"]["status"],
+    }, ensure_ascii=False))

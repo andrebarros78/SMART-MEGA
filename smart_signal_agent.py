@@ -512,11 +512,18 @@ class SmartSignalAgent:
 
         families = self._families(sc)
 
+        interaction_audit = self.interaction_tracker.metrics()
+
         meta_factors, meta_audit = contextual_meta_factors(
 
-            sc, metrics, families, self.context_engine.metrics(), self.interaction_tracker.metrics(), self.meta_strength
+            sc, metrics, families, self.context_engine.metrics(), interaction_audit, self.meta_strength
 
         )
+
+        interaction_audit = dict(interaction_audit)
+        interaction_audit['direct_weight_effect_enabled'] = False
+        interaction_audit['indirect_weight_effect_enabled'] = bool(self.meta_strength > 0.0)
+        interaction_audit['influence_path'] = 'contextual_meta_weights' if self.meta_strength > 0.0 else 'neutralized'
 
         for n in metrics:
 
@@ -582,7 +589,7 @@ class SmartSignalAgent:
 
             context_state=self.context_engine.metrics(), redundancy_consensus=redundancy_audit,
 
-            interaction_state=self.interaction_tracker.metrics(), contextual_meta_weights=meta_audit,
+            interaction_state=interaction_audit, contextual_meta_weights=meta_audit,
 
             rank_score_calibration=calibration_audit, multi_challengers=multi, meta_governor=governor,
 
@@ -854,7 +861,7 @@ class SmartSignalAgent:
 
                 'context_regime': self.context_engine.metrics(),
 
-                'multi_challengers': {'schema':'SMART_MULTI_CHALLENGERS_1','policy_count':5,'shadow_only':True,'selection_deferred_to_p08':False},
+                'multi_challengers': {'schema':'SMART_MULTI_CHALLENGERS_1','policy_count':5,'shadow_only':True,'direct_selection_authority':False,'eligible_for_governed_selection':True,'governed_decision_path':'P08_AUTOMATIC_CAUSAL_EVIDENCE_GUARD','selection_deferred_to_p08':True},
 
                 'meta_governor': self.meta_governor.state(),
 

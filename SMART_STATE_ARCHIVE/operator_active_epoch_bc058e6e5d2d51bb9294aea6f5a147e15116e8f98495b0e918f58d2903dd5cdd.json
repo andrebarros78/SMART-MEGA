@@ -1,0 +1,89 @@
+{
+  "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+  "status": "FROZEN",
+  "project": "SMART-MEGA",
+  "epoch_id": "full-fa9c4e1e1d9de089-01",
+  "created_utc": "2026-09-08T23:50:52.249801+00:00",
+  "engineering_activation_file": "SMART_FULL_ACTIVATION_EPOCH.json",
+  "engineering_activation_sha256": "fa9c4e1e1d9de0896fe53671559f7b4ce60ce455ca1515911d35958e7b16f3ad",
+  "state_paths": {
+    "ledger": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_SIGNAL_LEDGER.json",
+    "state": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_SIGNAL_STATE.json",
+    "activation_authority": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+    "expansion_registry": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+    "freeze": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json"
+  },
+  "data_file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/Mega-Sena_cutoff_3054.xlsx",
+  "data_sha256": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+  "canonical_source_file": "runtime/learning_epochs/full-ef21950abea0d8c5-01/Mega-Sena_cutoff_3054.xlsx",
+  "canonical_source_sha256_at_reset": "f91971b5ab1761b82591a8515d5df4daa728e22685f02f404a2f59776476db32",
+  "immutable_history_snapshot": true,
+  "cutoff_contest": 3054,
+  "target_contest": 3055,
+  "authority_mode": "NEW_ENGINEERING_EPOCH",
+  "current_engineering_role": "AUTHORITATIVE_CURRENT_EPOCH",
+  "first_possible_authoritative_target_for_current_engineering": 3055,
+  "parallel_locked_experiment": null,
+  "parallel_attempts_must_be_counted_separately": false,
+  "prospective_authority_lock_file": null,
+  "prospective_authority_lock_sha256": null,
+  "result_used": false,
+  "freeze_authority": {
+    "file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+    "sha256": "8dae686a9522e50b6433bacb41ddcb601e87f6da8e595acdced2d74df5cb6394",
+    "target_contest": 3055,
+    "cutoff_contest": 3054
+  },
+  "learning_state_authority": {
+    "file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_SIGNAL_STATE.json",
+    "sha256": "1159a9a64366faab412fe61e8f5beb371e20a78c63ec1505d9257ceb62d59ba1",
+    "rebuilt_from_zero": true
+  },
+  "supersedes_active_epoch_sha256": "f24bc058cacbbbdbb19d9cb535e6ef54fbd7d20e48735facca751959749778f0",
+  "frozen_utc": "2026-09-08T23:53:03.776277+00:00",
+  "prospective_registration": {
+    "target_date": "08/09/2026",
+    "schedule_authority": {
+      "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+      "target_contest": 3055,
+      "previous_contest": 3054,
+      "previous_contest_date": "06/09/2026",
+      "target_date": "08/09/2026",
+      "weekday": "terça-feira",
+      "scheduled_datetime": "2026-09-08T21:00:00-03:00",
+      "scheduled_timezone": "America/Sao_Paulo",
+      "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+      "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+      "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+      "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+      "source_sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+      "source_line": "08/09/2026 terça-feira 1269 7112 2439 3055 1292",
+      "source_count": 1,
+      "sources": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2026-09.pdf",
+          "sha256": "92ef0269069e62ba2fa3bb2bb8bd2a130b25f81b936cc2df310e631ddbfd21a8",
+          "source_line": "08/09/2026 terça-feira 1269 7112 2439 3055 1292"
+        }
+      ],
+      "rejected_occurrences_before_cutoff": [],
+      "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+      "schedule_consensus": true,
+      "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+      "result_used": false
+    },
+    "frontier_report_file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_FRONTIER_HISTORICAL.json",
+    "frontier_report_sha256": "411cec925fa0a3fdaa1c26440422cfd9a101b591e50e8c4c27b1e08cfbbd2385",
+    "frontier_freeze_file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_3055_FRONTIER_SHADOW_FREEZE.json",
+    "frontier_freeze_sha256": "49845456ac62416dc2330c21c0aecf64b95ecff13ee3157859ccd3abfa71fe6b",
+    "probability_ledger_file": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
+    "probability_ledger_sha256": "4219b9680dde6c6c431917fd9a73fdeba5eff75f2148c1e2fb32ecbd8d82131d",
+    "probability_entry_sha256": "bb8cd5edfbe29fdc76acc3d1c3aab29e4558eabc3362c9a5cab019fd953b83ee",
+    "candidate_count": 5,
+    "all_60_probabilities_retained": true,
+    "result_used": false,
+    "production_authority": false
+  },
+  "ledger_sha256": "cdd809f0aeddf164b4d0fab97a99c558eba7952eed724ab27af63cd686818322",
+  "sha256": "81801dc57ec44b10d70c8d6aa81cd9bf144ab3c1057e144d6d77de385a65534b"
+}

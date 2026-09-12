@@ -1,0 +1,141 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+from pathlib import Path
+from typing import Any
+
+SCHEMA = "SMART_MISSION_STATUS_V2"
+DEFAULT_PATH = Path("SMART_MISSION_STATUS.json")
+
+
+def sha256_file(path: str | Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def sha256_json(value: Any) -> str:
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _is_hex64(value: Any) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    try:
+        int(value, 16)
+        return True
+    except ValueError:
+        return False
+
+
+def _terminal_claims(root: Path) -> dict[str, dict[str, str]]:
+    observed: dict[str, dict[str, str]] = {}
+    for path in sorted(root.glob("*.json")):
+        if path.name == DEFAULT_PATH.name:
+            continue
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8-sig"))
+        except Exception:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        status = str(obj.get("status") or "")
+        if status.startswith("MISSION_PROVEN") or obj.get("terminal_authority") is True or obj.get("terminal_6of6_proven") is True:
+            observed[path.name] = {"status": status, "sha256": sha256_file(path)}
+    return observed
+
+
+def _validate_semantics(doc: dict[str, Any], *, root: Path | None = None) -> None:
+    if doc.get("schema") != SCHEMA:
+        raise ValueError("mission status schema invalid")
+    status = doc.get("status")
+    terminal = doc.get("terminal_6of6_proven")
+    if status not in {"MISSION_ACTIVE", "MISSION_PROVEN"} or not isinstance(terminal, bool):
+        raise ValueError("mission status state invalid")
+    if (status == "MISSION_PROVEN") != terminal:
+        raise ValueError("mission status terminal flag inconsistent")
+    if not isinstance(doc.get("scientific_predictive_status"), str) or not isinstance(doc.get("prospective_advantage_status"), str):
+        raise ValueError("mission scientific status fields invalid")
+    rows = doc.get("supersedes_terminal_authority_of")
+    rule = doc.get("terminal_authority_inventory_rule")
+    if not isinstance(rows, list) or not isinstance(rule, dict):
+        raise ValueError("mission terminal authority inventory missing")
+    if rule.get("unclassified_terminal_claims_fail_closed") is not True or rule.get("hash_binding_required") is not True:
+        raise ValueError("mission terminal authority inventory rules invalid")
+    classified: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("mission terminal authority row invalid")
+        name = row.get("file")
+        if not isinstance(name, str) or not name or name in classified:
+            raise ValueError("mission terminal authority file invalid/duplicate")
+        if row.get("authority") != "HISTORICAL_ENGINEERING_ONLY" or not _is_hex64(row.get("sha256")):
+            raise ValueError("mission historical authority classification invalid")
+        classified[name] = row
+    if root is None:
+        return
+    root = Path(root).resolve()
+    for name, row in classified.items():
+        path = root / name
+        if not path.is_file() or sha256_file(path) != str(row["sha256"]).lower():
+            raise ValueError(f"mission historical authority hash stale: {name}")
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8-sig"))
+        except Exception as exc:
+            raise ValueError(f"mission historical authority unreadable: {name}") from exc
+        if str(obj.get("status") or "") != str(row.get("observed_status") or ""):
+            raise ValueError(f"mission historical authority status stale: {name}")
+    observed = _terminal_claims(root)
+    if terminal is False:
+        if set(observed) != set(classified):
+            raise ValueError("unclassified or stale terminal claim exists while mission is active")
+    else:
+        proof_name = doc.get("terminal_proof_file")
+        proof_sha = doc.get("terminal_proof_sha256")
+        if not isinstance(proof_name, str) or not proof_name or not _is_hex64(proof_sha):
+            raise ValueError("terminal mission proof binding missing")
+        proof_path = root / proof_name
+        if not proof_path.is_file() or sha256_file(proof_path) != str(proof_sha).lower():
+            raise ValueError("terminal mission proof binding stale")
+        try:
+            proof = json.loads(proof_path.read_text(encoding="utf-8-sig"))
+        except Exception as exc:
+            raise ValueError("terminal mission proof unreadable") from exc
+        if proof.get("status") != "MISSION_PROVEN":
+            raise ValueError("terminal mission proof status invalid")
+        if proof_name not in observed:
+            raise ValueError("terminal mission proof not visible in terminal claim inventory")
+
+
+def validate_mission_status(doc: dict[str, Any], *, root: str | Path | None = None) -> dict[str, Any]:
+    if not isinstance(doc, dict):
+        raise ValueError("mission status object required")
+    observed = doc.get("sha256")
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    if not _is_hex64(observed) or str(observed).lower() != sha256_json(canonical):
+        raise ValueError("mission status self-hash invalid")
+    _validate_semantics(canonical, root=Path(root).resolve() if root is not None else None)
+    return doc
+
+
+def load_mission_status(path: str | Path = DEFAULT_PATH, *, root: str | Path | None = None) -> dict[str, Any]:
+    path = Path(path)
+    obj = json.loads(path.read_text(encoding="utf-8-sig"))
+    return validate_mission_status(obj, root=root if root is not None else path.parent)
+
+
+def write_mission_status(path: str | Path, doc: dict[str, Any], *, root: str | Path | None = None) -> dict[str, Any]:
+    path = Path(path)
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    _validate_semantics(canonical, root=Path(root).resolve() if root is not None else path.parent.resolve())
+    canonical["sha256"] = sha256_json(canonical)
+    tmp = path.with_name(path.name + ".tmp-mission-status")
+    tmp.write_text(json.dumps(canonical, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(tmp, path)
+    return load_mission_status(path, root=root if root is not None else path.parent)
+
+
+__all__ = ["SCHEMA", "DEFAULT_PATH", "sha256_file", "sha256_json", "validate_mission_status", "load_mission_status", "write_mission_status"]

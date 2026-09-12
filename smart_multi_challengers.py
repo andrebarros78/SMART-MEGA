@@ -208,6 +208,9 @@ def build_multi_challengers(scores: dict[str, Any], base_weights: dict[str, floa
         'total_policy_pairs': int(total_pairs),
         'quality_dynamic_is_primary_challenger': True,
         'shadow_only': True,
+        'direct_selection_authority': False,
+        'eligible_for_governed_selection': True,
+        'governed_decision_path': 'P08_AUTOMATIC_CAUSAL_EVIDENCE_GUARD',
         'selection_deferred_to_p08': True,
         'retroactive_selection_prohibited': True,
     }

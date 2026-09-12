@@ -1,0 +1,30 @@
+from pathlib import Path
+import hashlib, json, subprocess, sys
+from datetime import datetime, timezone
+
+root = Path(__file__).resolve().parent
+py = root / '.venv' / 'Scripts' / 'python.exe'
+proc = subprocess.run([str(py), '-m', 'pytest', '--collect-only', '-q'], cwd=root, capture_output=True, text=True, timeout=600)
+unexpected = sorted(p.name for p in root.glob('*_test.py') if not p.name.startswith('test_'))
+lines = [line.strip() for line in proc.stdout.splitlines() if line.strip()]
+summary = lines[-1] if lines else ''
+if proc.returncode != 0:
+    raise SystemExit('PYTEST_COLLECTION_FAILED:' + (proc.stderr[-500:] or proc.stdout[-500:]))
+if unexpected:
+    raise SystemExit('UNEXPECTED_PYTEST_HELPERS:' + repr(unexpected))
+if '755 tests collected' not in summary:
+    raise SystemExit('UNEXPECTED_COLLECTION_SUMMARY:' + summary)
+proof = {
+    'schema': 'SMART_D017_PYTEST_COLLECTION_PROOF_1',
+    'status': 'PASS',
+    'created_at_utc': datetime.now(timezone.utc).isoformat(),
+    'tests_collected': 755,
+    'collection_summary': summary,
+    'unexpected_non_test_prefixed_star_test_files': unexpected,
+    'applied_helper_removed_from_root': not (root / 'd016_patch_stale_result_store_test.py').exists(),
+}
+raw = json.dumps(proof, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+proof['sha256'] = hashlib.sha256(raw).hexdigest()
+out = root / 'SMART_B2_D017_PYTEST_COLLECTION_PROOF_20260910.json'
+out.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+print(json.dumps({'status': proof['status'], 'tests_collected': 755, 'unexpected': unexpected, 'proof_file': out.name, 'proof_file_sha256': hashlib.sha256(out.read_bytes()).hexdigest(), 'proof_sha256': proof['sha256']}, ensure_ascii=False))

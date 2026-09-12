@@ -37,7 +37,8 @@ def build_authority(root: str | Path) -> dict[str, Any]:
     legacy = _read_json(legacy_path)
     audit = _read_json(audit_path)
     summary: dict[str, Any] = {}
-    for target in range(3051, 3055):
+    targets = sorted({int(event["target_contest"]) for event in signal.get("events", []) if isinstance(event, dict) and event.get("target_contest") is not None})
+    for target in targets:
         events = events_for(signal, target)
         summary[str(target)] = {
             "event_types": [event.get("event_type") for event in events],

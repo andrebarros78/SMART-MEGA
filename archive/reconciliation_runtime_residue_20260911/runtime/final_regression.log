@@ -1,0 +1,53 @@
+........................................................................ [ 10%]
+........................................................................ [ 21%]
+..........................................................F............. [ 32%]
+........................................................................ [ 42%]
+........................................................................ [ 53%]
+........................................................................ [ 64%]
+........................................................................ [ 74%]
+.......F................................................................ [ 85%]
+........................................................................ [ 96%]
+.........................                                                [100%]
+================================== FAILURES ===================================
+__ test_legacy_locked_attempt_is_never_misattributed_to_current_engineering ___
+
+    def test_legacy_locked_attempt_is_never_misattributed_to_current_engineering():
+        d = resolve(ROOT)
+        if d["authority_mode"] == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
+            assert d["status"] == "FROZEN"
+            assert d["freeze_sha256"] == LEGACY_FREEZE
+            assert d["scientific_adjudication_authority"] is True
+            assert d["current_engineering_generation_authority"] is False
+            assert d["freeze_origin"] == "PRE_CURRENT_ENGINEERING_ACTIVATION"
+            return
+>       assert d["authority_mode"] == "NEW_ENGINEERING_EPOCH"
+E       AssertionError: assert 'TEMPORAL_REC...G_FAIL_CLOSED' == 'NEW_ENGINEERING_EPOCH'
+E         
+E         - NEW_ENGINEERING_EPOCH
+E         + TEMPORAL_RECOVERY_STAGING_FAIL_CLOSED
+
+test_smart_current_epoch_contract.py:32: AssertionError
+___ test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering ____
+
+    def test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering():
+        current = resolve(ROOT)
+        assert current["target_contest"] == 3054
+        assert current["result_used"] is False
+        if current["authority_mode"] == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
+            assert current["freeze_sha256"] == LEGACY_FREEZE
+            assert current["scientific_adjudication_authority"] is True
+            assert current["current_engineering_generation_authority"] is False
+            assert current["freeze_origin"] == "PRE_CURRENT_ENGINEERING_ACTIVATION"
+        else:
+>           assert current["authority_mode"] == "NEW_ENGINEERING_EPOCH"
+E           AssertionError: assert 'TEMPORAL_REC...G_FAIL_CLOSED' == 'NEW_ENGINEERING_EPOCH'
+E             
+E             - NEW_ENGINEERING_EPOCH
+E             + TEMPORAL_RECOVERY_STAGING_FAIL_CLOSED
+
+test_smart_prospective_authority_lock.py:39: AssertionError
+=========================== short test summary info ===========================
+FAILED test_smart_current_epoch_contract.py::test_legacy_locked_attempt_is_never_misattributed_to_current_engineering
+FAILED test_smart_prospective_authority_lock.py::test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering
+2 failed, 671 passed in 590.87s (0:09:50)
+{"schema": "SMART_REGRESSION_RUNNER_V3", "status": "FAIL", "reason": "CODE_CHANGED_DURING_REGRESSION", "pytest_returncode": 1, "candidate_present": true, "current_preserved": true, "current_sha256": "2f1cb802dd0ff062d3152a41a0e4a1be2b9673132f06871272e2b73419dfd26e", "code_fingerprint_before": {"file_count": 191, "sha256": "c9bce8d2ba28be0b68b7c6325c1bb30fee8305e79bf9abb6fef2942a91f388af"}, "code_fingerprint_after": {"file_count": 191, "sha256": "7a9add93d11d7e7a561c9e7531ae6e4b3dcda767740ee2361e45bd6a389fbfa4"}, "promoted": false}

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from smart_mission_status import load_mission_status
+
 import hashlib
 import json
 import os
@@ -57,7 +59,7 @@ def build_checkpoint() -> dict:
     terminal_sandbox = load_json("SMART_3054_TERMINAL_EXECUTOR_SANDBOX_PROOF.json")
     independent = load_json("SMART_P14_INDEPENDENT_AUDIT_CURRENT.json")
     authority = load_json("SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json")
-    mission = load_json("SMART_MISSION_STATUS.json")
+    mission = load_mission_status(ROOT / "SMART_MISSION_STATUS.json", root=ROOT)
     junit = junit_totals(JUNIT)
     resolution = bool(falsification.get("multiplicity", {}).get("resolution_sufficient"))
 

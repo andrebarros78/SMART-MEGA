@@ -1,0 +1,55 @@
+﻿from pathlib import Path
+import json
+import pytest
+
+import smart_finalize_deployment as finalizer
+
+ROOT = Path(__file__).resolve().parent
+
+
+def test_canonical_mission_status_prevents_false_terminal_proof():
+    status = json.loads((ROOT / 'SMART_MISSION_STATUS.json').read_text(encoding='utf-8'))
+    assert status['schema'] == 'SMART_MISSION_STATUS_V2'
+    assert status['status'] == 'MISSION_ACTIVE'
+    assert status['terminal_6of6_proven'] is False
+    assert status['scientific_predictive_status'] == 'UNPROVEN'
+    assert status['prospective_advantage_status'] == 'INSUFFICIENT_EVIDENCE'
+    demoted = {item['file']: item['authority'] for item in status['supersedes_terminal_authority_of']}
+    assert demoted['SMART_MISSION_PROVEN_6OF6.json'] == 'HISTORICAL_ENGINEERING_ONLY'
+
+
+def test_continuity_contract_separates_scientific_mission_from_product_completion():
+    source = (ROOT / 'smart_finalize_deployment.py').read_text(encoding='utf-8')
+    assert 'SMART_MISSION_STATUS.json' in source
+    assert 'scientific_mission_controls_product_completion' in source
+    assert 'MISSION_ACTIVE` cientifico nao significa produto inacabado' in source
+
+
+def test_engineering_recertification_cannot_self_promote_to_mission_proven():
+    mission = json.loads((ROOT / 'SMART_MISSION_STATUS.json').read_text(encoding='utf-8'))
+    invalid = {
+        'status': 'MISSION_PROVEN',
+        'terminal_authority': True,
+        'mission_state': mission['status'],
+        'terminal_6of6_proven': mission['terminal_6of6_proven'],
+        'scientific_predictive_status': mission['scientific_predictive_status'],
+        'prospective_advantage_status': mission['prospective_advantage_status'],
+    }
+    with pytest.raises(RuntimeError, match='cannot declare MISSION_PROVEN'):
+        finalizer.validate_engineering_chain_terminal_boundary(invalid, mission)
+
+
+def test_engineering_recertification_boundary_mirrors_canonical_mission_status():
+    mission = json.loads((ROOT / 'SMART_MISSION_STATUS.json').read_text(encoding='utf-8'))
+    valid = {
+        'status': 'ENGINEERING_CHAIN_PROVEN',
+        'terminal_authority': False,
+        'mission_state': mission['status'],
+        'terminal_6of6_proven': mission['terminal_6of6_proven'],
+        'scientific_predictive_status': mission['scientific_predictive_status'],
+        'prospective_advantage_status': mission['prospective_advantage_status'],
+    }
+    assert finalizer.validate_engineering_chain_terminal_boundary(valid, mission) is True
+    source = (ROOT / 'smart_finalize_deployment.py').read_text(encoding='utf-8')
+    assert 'write_engineering_chain_proof(root, proof)' in source
+    assert 'verify_engineering_chain_proof(root)' in source

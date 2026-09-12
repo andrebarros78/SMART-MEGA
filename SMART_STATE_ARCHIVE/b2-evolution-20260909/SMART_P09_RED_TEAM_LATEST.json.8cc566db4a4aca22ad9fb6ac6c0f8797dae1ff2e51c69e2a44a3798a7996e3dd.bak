@@ -1,0 +1,316 @@
+{
+  "schema": "SMART_CONTINUOUS_RED_TEAM_1",
+  "status": "PASS",
+  "all_checks_pass": true,
+  "checks": {
+    "iid": true,
+    "gradual_drift": true,
+    "abrupt_shift": true,
+    "false_signal_recovery": true,
+    "missing_corrupt_data": true,
+    "redundancy_false_consensus": true,
+    "online_anti_ranking": true,
+    "recurring_regimes": true,
+    "regime_recovery": true,
+    "full_stack_smoke": true
+  },
+  "failed": [],
+  "base_seed": 20260830,
+  "behavioral_hashes": {
+    "smart_v2_engine.py": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+    "smart_v2_production.py": "a458d3c10de2eab8f19848527c01b4443f548e5213700dbc3cf644b4c2b244ca",
+    "smart_signal_quality.py": "2d01bfd80cc28f8624dc4b5b4934f0b9bf6aa06a83cbe053df519b88023bc381",
+    "smart_signal_weights.py": "bdc6baf1110f7d75dc665feb159663211e038c778eaf0c2593125ff945168d4e",
+    "smart_context_regime.py": "41b7f1e1900039900d638749649603063c0fe9f85d6ce037602b20f96f2efe59",
+    "smart_signal_marginal_utility.py": "02ea0bc21981cc9737f1b80762f3832101a4c93573659fdf407a59a7fd79d64e",
+    "smart_signal_redundancy_consensus.py": "eaa93c230dd6444547e8eb252bbd0e7bc3d2bd8addf82b67a62adffdfd5ab201",
+    "smart_signal_interactions.py": "666c959b9ae0ad7b0116f71d8ebfabb85ee172514b203611057ee6df6a07b447",
+    "smart_contextual_meta_weights.py": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
+    "smart_rank_score_calibration.py": "c07c3d55093b79aec8d56cf67607ef8dfb0bfb494ac59a6dcd0a086fb890a8e4",
+    "smart_multi_challengers.py": "e1dd415ecd00261621e0a22007a178f295705bc758d79dc00de9ced39c107e3e",
+    "smart_meta_governor.py": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5",
+    "smart_bounded_online_learning.py": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07",
+    "smart_signal_expansion_governance.py": "2e7e7c8cb17fa43f9d381b5009a72a387e2850e8f1074e2efddc3259bef5eb2b",
+    "smart_sequential_prospective_proof.py": "72fd4bbbfdcedd92deb238b78ac96913c0bc4ce23511e1faab962c3376ab3654",
+    "smart_promotion_gate.py": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+    "smart_independent_audit.py": "e35f34faaa8643564459d45a16a6590b2fd736f63165a8d0f7d95b3bd6ddd1c4",
+    "smart_independent_oracle.py": "1629c191e07edc83060e977379148c7f7ad432515d59d849c2a25a087e457f60",
+    "smart_evidence_only_promotion.py": "3bdc8f00bf2f0edf7502872ace54fb702a382d1c575a12e8b2165c61b7759384",
+    "smart_global_integrity.py": "8df552f65782117cbfdd5489b987abbf84ef9aef2b504cece619311727b2fb4f",
+    "smart_signal_agent.py": "04f1abc512178ffff767964021438fc9d8bcf52ec67ce88c2823542264a3f02f",
+    "smart_data_quality_gate.py": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52",
+    "smart_learning_activation_gate.py": "1b94e263ffaca2a3dddcc4d59aeb644cb2feabf696d9c3553283f506bb214f13",
+    "smart_learning_activation_authority.py": "43d7c3fcf2f82f5a70d8c8999fb6c04306a28edf69baa759b2e0995832055c9d",
+    "smart_ai_fine_tuning.py": "f54d6575d891df6711c6798c9d0116b0c73d38c3308077e5b807061455407e4d",
+    "smart_material_deficiency_registry.py": "a45144c1dd98c0f53311360d71ab222aa6d0d499cc0136cc3d0fa422e25ff70e",
+    "smart_champion_challenger.py": "ccd796698ee1fe0836cff639db7a881dd05a50ee8cebf3061427aee46a600dd4",
+    "smart_agent_skill_orchestration.py": "996fd30bcb0954cd5613acc600f7546a6e5da5183e6106d141fc9712870edc6b",
+    "smart_agent_runtime.py": "16239dedee2954ff92eec47d6b445d7f8844b9b18386175b0b5a636fe5f73ebd",
+    "smart_agent_skill_functional_gate.py": "8f6b6d9a5d98e1f634db5c45cca02996584e8c417141b0b9517fd00369274614",
+    "smart_skill_runtime.py": "5a858c89dd792ab66874afd11688682d3ffacd7bf27a811f1f3278f2154dbd83",
+    "smart_total_integration_gate.py": "2e7424f92b17a04628f0ac5690cb5b09c1fb0be8a461cba956f90e7c18d57357",
+    "adjudicate_signal_challenger.py": "cac984784b3a56ab563048468747c31a3d02d7baeea3d04755d3cdafab72a5c3"
+  },
+  "red_team_module_sha256": "4a96274e94537738c0a94011262a11413a16f95a682c9e2085e8d062a68b6e15",
+  "continuous_policy": "any behavioral hash change makes this report stale and blocks future freeze once the 15-point gate opens",
+  "prospective_predictive_claim": false,
+  "scenarios": {
+    "iid": {
+      "rounds": 30,
+      "false_positive_rate": 0.06666666666666667,
+      "detections": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        1,
+        0,
+        0,
+        0,
+        0,
+        2,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "pass": true,
+      "criterion": "IID context false-positive rate <= 10%"
+    },
+    "gradual_drift": {
+      "rounds": 30,
+      "detection_rate": 0.9666666666666667,
+      "mean_delay": 229.89655172413794,
+      "pass": true,
+      "criterion": "gradual drift detected in >=60% of rounds"
+    },
+    "abrupt_shift": {
+      "rounds": 30,
+      "detection_rate": 1.0,
+      "mean_delay": 52.6,
+      "pass": true,
+      "criterion": "abrupt regime shift detected in >=80% of rounds"
+    },
+    "false_signal_recovery": {
+      "degraded_weights": {
+        "good": 0.42,
+        "false": 0.16808649104179077,
+        "neutral": 0.41191350895820933
+      },
+      "recovered_weights": {
+        "good": 0.29000000000000004,
+        "false": 0.42,
+        "neutral": 0.29000000000000004
+      },
+      "pass": true,
+      "criterion": "false signal is penalized after failure and can recover after sustained real utility"
+    },
+    "missing_corrupt_data": {
+      "checks": {
+        "short_signal_rejected": true,
+        "nonfinite_signal_rejected": true,
+        "invalid_draw_rejected": true,
+        "length_mismatch_rejected": true
+      },
+      "pass": true,
+      "criterion": "missing/corrupt inputs fail closed"
+    },
+    "redundancy_false_consensus": {
+      "clone_mean_penalty": 0.28536656936440286,
+      "independent_penalty": 0.9479361474832964,
+      "clusters": [
+        {
+          "cluster_id": 1,
+          "members": [
+            "clone0",
+            "clone1",
+            "clone2",
+            "clone3"
+          ],
+          "size": 4,
+          "base_utility_mass": 0.8,
+          "cluster_factor": 0.25
+        },
+        {
+          "cluster_id": 2,
+          "members": [
+            "independent"
+          ],
+          "size": 1,
+          "base_utility_mass": 0.2,
+          "cluster_factor": 1.0
+        }
+      ],
+      "pass": true,
+      "criterion": "cloned consensus must be penalized more than independent information"
+    },
+    "online_anti_ranking": {
+      "steps": 100,
+      "selected_hits_total": 0,
+      "selected_hits_max": 0,
+      "posthoc_oracle_hits_total": 0,
+      "switches": 0,
+      "final_state": {
+        "schema": "SMART_META_GOVERNOR_1",
+        "eta": 0.11552453009332421,
+        "prior_mix": 0.2,
+        "observations": 100,
+        "log_weights": {
+          "quality_dynamic": -6.931471805599453,
+          "diversity_max": -6.931471805599453,
+          "low_redundancy": -6.931471805599453,
+          "regime_context": -6.931471805599453,
+          "conservative": -6.931471805599453
+        },
+        "policy_weights": {
+          "quality_dynamic": 0.20000000000000004,
+          "diversity_max": 0.20000000000000004,
+          "low_redundancy": 0.20000000000000004,
+          "regime_context": 0.20000000000000004,
+          "conservative": 0.20000000000000004
+        },
+        "cumulative_hits": {
+          "quality_dynamic": 0,
+          "diversity_max": 0,
+          "low_redundancy": 0,
+          "regime_context": 0,
+          "conservative": 0
+        },
+        "selection_counts": {
+          "quality_dynamic": 100,
+          "diversity_max": 0,
+          "low_redundancy": 0,
+          "regime_context": 0,
+          "conservative": 0
+        },
+        "selected_cumulative_hits": 0,
+        "last_selected_policy": "quality_dynamic",
+        "anchor_policy": "quality_dynamic",
+        "allow_alternate_selection": false,
+        "automatic_evidence_guard": true,
+        "alternate_activation_mode": "AUTOMATIC_CAUSAL_EVIDENCE_GUARD",
+        "alternate_guard": {
+          "min_observations": 100,
+          "min_log_weight_lead": 1.3862943611198906,
+          "min_cumulative_hit_lead": 12
+        },
+        "selection_scope": "P07_CHALLENGERS_ONLY",
+        "production_authority": false,
+        "champion_remains_active": true,
+        "sha256": "c0ce4dd926c634a9b84e8be335634a4c8e527f0329185ca9d30ccf130520e40e"
+      },
+      "pass": true,
+      "criterion": "adaptive anti-ranking adversary cannot trigger post-result reselection or invalid state"
+    },
+    "recurring_regimes": {
+      "rounds": 20,
+      "rate_at_least_two_detections": 1.0,
+      "detection_counts": [
+        24,
+        24,
+        24,
+        19,
+        23,
+        24,
+        24,
+        21,
+        22,
+        19,
+        21,
+        21,
+        23,
+        24,
+        21,
+        22,
+        22,
+        24,
+        25,
+        22
+      ],
+      "pass": true,
+      "criterion": "recurring regimes produce >=2 detections in >=70% of rounds"
+    },
+    "regime_recovery": {
+      "rounds": 20,
+      "recovery_rate": 0.85,
+      "mean_final_score": 0.02802777777777778,
+      "pass": true,
+      "criterion": "context returns inactive after signal disappears in >=80%"
+    },
+    "full_stack_smoke": {
+      "rounds": 3,
+      "records": [
+        {
+          "round": 1,
+          "oos": 140,
+          "top6": [
+            4,
+            20,
+            51,
+            8,
+            29,
+            48
+          ],
+          "policy_count": 5,
+          "meta_policy": "quality_dynamic",
+          "weights_finite": true,
+          "weight_sum": 1.0,
+          "pass": true
+        },
+        {
+          "round": 2,
+          "oos": 140,
+          "top6": [
+            27,
+            11,
+            6,
+            7,
+            4,
+            20
+          ],
+          "policy_count": 5,
+          "meta_policy": "quality_dynamic",
+          "weights_finite": true,
+          "weight_sum": 1.0,
+          "pass": true
+        },
+        {
+          "round": 3,
+          "oos": 140,
+          "top6": [
+            49,
+            27,
+            17,
+            7,
+            30,
+            18
+          ],
+          "policy_count": 5,
+          "meta_policy": "quality_dynamic",
+          "weights_finite": true,
+          "weight_sum": 1.0,
+          "pass": true
+        }
+      ],
+      "pass": true,
+      "criterion": "full P01-P08 stack remains finite and structurally valid under IID smoke"
+    }
+  },
+  "sha256": "58177f162297c6448900fc6158539fd4669b11f7aa6a371b941d0b1989aeed5e"
+}

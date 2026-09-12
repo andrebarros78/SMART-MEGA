@@ -1,0 +1,80 @@
+from pathlib import Path
+import hashlib
+import json
+import pytest
+
+from smart_mission_status import load_mission_status, write_mission_status
+
+ROOT = Path(__file__).resolve().parent
+
+
+def _base():
+    return {
+        "schema": "SMART_MISSION_STATUS_V2",
+        "status": "MISSION_ACTIVE",
+        "terminal_6of6_proven": False,
+        "engineering_governance_status": "PROVEN",
+        "scientific_predictive_status": "UNPROVEN",
+        "prospective_advantage_status": "INSUFFICIENT_EVIDENCE",
+        "supersedes_terminal_authority_of": [],
+        "terminal_authority_inventory_rule": {
+            "unclassified_terminal_claims_fail_closed": True,
+            "hash_binding_required": True,
+            "canonical_authority": "SMART_MISSION_STATUS.json",
+        },
+    }
+
+
+def test_current_mission_status_is_self_hashed_and_valid():
+    doc = load_mission_status(ROOT / "SMART_MISSION_STATUS.json", root=ROOT)
+    assert len(doc["sha256"]) == 64
+    assert doc["status"] == "MISSION_ACTIVE"
+    assert doc["terminal_6of6_proven"] is False
+
+
+def test_mission_status_tamper_fails_closed(tmp_path):
+    path = tmp_path / "SMART_MISSION_STATUS.json"
+    write_mission_status(path, _base(), root=tmp_path)
+    obj = json.loads(path.read_text(encoding="utf-8"))
+    obj["scientific_predictive_status"] = "TAMPERED"
+    path.write_text(json.dumps(obj), encoding="utf-8")
+    with pytest.raises(ValueError, match="self-hash invalid"):
+        load_mission_status(path, root=tmp_path)
+
+
+def test_active_mission_rejects_unclassified_terminal_claim(tmp_path):
+    path = tmp_path / "SMART_MISSION_STATUS.json"
+    write_mission_status(path, _base(), root=tmp_path)
+    (tmp_path / "rogue.json").write_text('{"status":"MISSION_PROVEN"}', encoding="utf-8")
+    with pytest.raises(ValueError, match="unclassified or stale terminal claim"):
+        load_mission_status(path, root=tmp_path)
+
+
+def test_terminal_transition_accepts_bound_terminal_proof(tmp_path):
+    proof = tmp_path / "terminal.json"
+    proof.write_text('{"status":"MISSION_PROVEN"}', encoding="utf-8")
+    doc = _base()
+    doc.update({
+        "status": "MISSION_PROVEN",
+        "terminal_6of6_proven": True,
+        "scientific_predictive_status": "TERMINAL_PROSPECTIVE_6OF6_OBSERVED",
+        "terminal_proof_file": proof.name,
+        "terminal_proof_sha256": hashlib.sha256(proof.read_bytes()).hexdigest(),
+    })
+    written = write_mission_status(tmp_path / "SMART_MISSION_STATUS.json", doc, root=tmp_path)
+    assert written["terminal_6of6_proven"] is True
+
+
+def test_critical_mission_consumers_use_validated_contract():
+    required = {
+        "smart_3054_terminal_executor.py": ("load_mission_status", "write_mission_status"),
+        "smart_agent_runtime.py": ("load_mission_status",),
+        "smart_agent_skill_orchestration.py": ("load_mission_status",),
+        "smart_continuity_consolidator.py": ("load_mission_status",),
+        "smart_execution_checkpoint.py": ("load_mission_status",),
+        "smart_finalize_deployment.py": ("load_mission_status",),
+    }
+    for name, tokens in required.items():
+        source = (ROOT / name).read_text(encoding="utf-8")
+        for token in tokens:
+            assert token in source

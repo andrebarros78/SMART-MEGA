@@ -1,0 +1,69 @@
+from __future__ import annotations
+import hashlib, json, pathlib, subprocess, sys, time, xml.etree.ElementTree as ET
+root=pathlib.Path.cwd()
+py=root/'.venv'/'Scripts'/'python.exe'
+coverage_data='.coverage.final7'
+junit=root/'SMART_B2_FINAL7_REGRESSION_JUNIT_20260910.xml'
+covjson=root/'SMART_COVERAGE_GLOBAL_B2_FINAL7_20260910.json'
+proof_path=root/'SMART_B2_FINAL7_RUNNER_PROOF_20260910.json'
+
+def sha(path):
+ h=hashlib.sha256()
+ with path.open('rb') as f:
+  for c in iter(lambda:f.read(1024*1024),b''): h.update(c)
+ return h.hexdigest()
+
+def code_files():
+ names={p.name for pat in ('smart_*.py','test_*.py') for p in root.glob(pat)}
+ for name in ('adjudicate_signal_challenger.py','freeze_next_research.py'):
+  if (root/name).is_file(): names.add(name)
+ return sorted(names)
+
+def fingerprint():
+ files={n:sha(root/n) for n in code_files()}
+ raw=json.dumps(files,sort_keys=True,separators=(',',':')).encode()
+ return {'sha256':hashlib.sha256(raw).hexdigest(),'count':len(files),'files':files}
+
+def run(args,timeout=1800):
+ p=subprocess.run([str(x) for x in args],cwd=root,capture_output=True,text=True,timeout=timeout)
+ return {'argv':[str(x) for x in args],'rc':p.returncode,'stdout_tail':p.stdout[-12000:],'stderr_tail':p.stderr[-8000:]}
+
+def junit_summary(path):
+ tree=ET.parse(path); r=tree.getroot(); suites=[r] if r.tag=='testsuite' else list(r.findall('.//testsuite'))
+ if not suites: raise RuntimeError('no junit suites')
+ return {k:sum(int(s.attrib.get(k,'0')) for s in suites) for k in ('tests','failures','errors','skipped')}
+
+start=time.time(); before=fingerprint(); steps=[]
+for p in (junit,covjson,proof_path):
+ if p.exists(): p.unlink()
+steps.append(run([py,'-m','coverage','erase','--data-file='+coverage_data],120))
+if steps[-1]['rc']==0:
+ steps.append(run([py,'-m','coverage','run','--data-file='+coverage_data,'--branch','-m','pytest','-q','--disable-warnings','--maxfail=50','--junitxml='+junit.name],1800))
+if steps[-1]['rc']==0:
+ steps.append(run([py,'-m','coverage','run','--data-file='+coverage_data,'--append','--branch','smart_continuous_red_team.py'],600))
+if steps[-1]['rc']==0:
+ steps.append(run([py,'-m','coverage','json','--data-file='+coverage_data,'-o',covjson.name],300))
+after=fingerprint(); stable=(before==after)
+coverage_gate={'status':'NOT_RUN'}
+if covjson.is_file():
+ obj=json.loads(covjson.read_text(encoding='utf-8'))
+ q=subprocess.run([str(py),'-c','import json,smart_global_integrity as gi; print(json.dumps(list(gi.REQUIRED_GLOBAL_COVERAGE_SOURCES)))'],cwd=root,capture_output=True,text=True,timeout=60)
+ required=json.loads(q.stdout.strip()) if q.returncode==0 else []
+ rows={}; failed=[]
+ for name in required:
+  r=obj.get('files',{}).get(name); s=None if r is None else r.get('summary',{})
+  ok=bool(s and s.get('missing_lines')==0 and s.get('missing_branches')==0 and s.get('covered_lines')==s.get('num_statements') and s.get('covered_branches')==s.get('num_branches'))
+  rows[name]={'pass':ok,'summary':s}
+  if not ok: failed.append(name)
+ coverage_gate={'status':'PASS' if len(required)==23 and not failed and obj.get('meta',{}).get('branch_coverage') is True else 'FAIL','required_count':len(required),'pass_count':len(required)-len(failed),'failed':failed,'rows':rows,'report_sha256':sha(covjson),'branch_coverage':obj.get('meta',{}).get('branch_coverage')}
+js=junit_summary(junit) if junit.is_file() else None
+registry=None
+rp=root/'SMART_MATERIAL_DEFICIENCY_REGISTRY.json'
+if rp.is_file():
+ q=subprocess.run([str(py),'-c','import json,smart_material_deficiency_registry as m; print(json.dumps(m.load_registry(m.DEFAULT_PATH,root=__import__(\"pathlib\").Path.cwd())))'],cwd=root,capture_output=True,text=True,timeout=60)
+ if q.returncode==0: registry=json.loads(q.stdout.strip())
+ok=all(s['rc']==0 for s in steps) and stable and coverage_gate.get('status')=='PASS' and js is not None and js['failures']==0 and js['errors']==0 and registry is not None and registry.get('open_count')==0
+proof={'schema':'SMART_B2_FINAL7_RUNNER_PROOF_1','status':'PASS' if ok else 'FAIL','created_at_utc':__import__('datetime').datetime.now(__import__('datetime').timezone.utc).isoformat(),'seconds':round(time.time()-start,3),'before':before,'after':after,'fingerprint_stable':stable,'junit':js,'junit_file':junit.name if junit.is_file() else None,'junit_sha256':sha(junit) if junit.is_file() else None,'coverage':coverage_gate,'registry':registry,'steps':steps}
+proof_path.write_text(json.dumps(proof,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+print(json.dumps({'status':proof['status'],'seconds':proof['seconds'],'fingerprint_stable':stable,'fingerprint':after['sha256'],'file_count':after['count'],'junit':js,'coverage':{k:v for k,v in coverage_gate.items() if k!='rows'},'registry':None if registry is None else {'entry_count':registry.get('entry_count'),'open_count':registry.get('open_count')},'proof_sha256':sha(proof_path),'steps':[{'rc':s['rc'],'stdout_tail':s['stdout_tail'][-1500:],'stderr_tail':s['stderr_tail'][-800:]} for s in steps]},ensure_ascii=False))
+raise SystemExit(0 if ok else 1)

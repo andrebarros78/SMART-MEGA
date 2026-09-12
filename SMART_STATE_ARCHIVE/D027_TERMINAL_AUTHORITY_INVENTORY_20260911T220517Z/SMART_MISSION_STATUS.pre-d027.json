@@ -1,0 +1,27 @@
+{
+  "schema": "SMART_MISSION_STATUS_V2",
+  "created_brasilia": "2026-09-04T14:31:59.592776-03:00",
+  "status": "MISSION_ACTIVE",
+  "terminal_6of6_proven": false,
+  "engineering_governance_status": "PROVEN",
+  "scientific_predictive_status": "UNPROVEN",
+  "prospective_advantage_status": "INSUFFICIENT_EVIDENCE",
+  "supersedes_terminal_authority_of": [
+    {
+      "file": "SMART_MISSION_PROVEN_6OF6.json",
+      "sha256": "c109798af4f9732e35d729955cd48d6eeb3e677396c9fb7d9c1956286265bf4b",
+      "authority": "HISTORICAL_ENGINEERING_ONLY"
+    },
+    {
+      "file": "SMART_MISSION_PROVEN_FINAL_RETEST.json",
+      "sha256": "0a6ecfba65c282648afebe74a3bebffa2857cdd4222c8c5b27fada649a089a00",
+      "authority": "HISTORICAL_ENGINEERING_ONLY"
+    }
+  ],
+  "terminal_rule": "MISSION_PROVEN only after one unique Top-6 frozen before official result achieves exact 6/6 with causal lineage, immutable hashes, all attempts counted, and independent audit PASS",
+  "anti_false_proof": {
+    "historical_backtest_not_terminal_proof": true,
+    "engineering_pass_not_terminal_6of6": true,
+    "retroactive_selection_prohibited": true
+  }
+}

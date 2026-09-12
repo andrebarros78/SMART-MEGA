@@ -1,0 +1,30 @@
+$ErrorActionPreference='Continue'
+$root='C:\SMART-MEGA'
+Set-Location -LiteralPath $root
+$py=Join-Path $root '.venv\Scripts\python.exe'
+$status=Join-Path $root 'runtime\D020_FULL_REGRESSION_STATUS_20260911.json'
+$junit=Join-Path $root 'SMART_D020_FULL_REGRESSION_FINAL_20260911.xml'
+$stdout=Join-Path $root 'runtime\D020_FULL_REGRESSION_20260911.stdout.txt'
+$stderr=Join-Path $root 'runtime\D020_FULL_REGRESSION_20260911.stderr.txt'
+$started=(Get-Date).ToString('o')
+$sw=[Diagnostics.Stopwatch]::StartNew()
+& $py -m pytest -q --disable-warnings --junitxml=$junit 1> $stdout 2> $stderr
+$rc=$LASTEXITCODE
+$sw.Stop()
+$hash=$null;$size=$null
+if(Test-Path -LiteralPath $junit){$hash=(Get-FileHash -Algorithm SHA256 -LiteralPath $junit).Hash;$size=(Get-Item -LiteralPath $junit).Length}
+$doc=[ordered]@{
+ schema='SMART_D020_FULL_REGRESSION_STATUS_1'
+ started_at=$started
+ finished_at=(Get-Date).ToString('o')
+ exit_code=$rc
+ seconds=[math]::Round($sw.Elapsed.TotalSeconds,3)
+ junit=$junit
+ junit_sha256=$hash
+ junit_size=$size
+ stdout=$stdout
+ stderr=$stderr
+}
+$tmp=$status+'.tmp'
+$doc|ConvertTo-Json -Depth 4|Set-Content -LiteralPath $tmp -Encoding UTF8
+Move-Item -LiteralPath $tmp -Destination $status -Force

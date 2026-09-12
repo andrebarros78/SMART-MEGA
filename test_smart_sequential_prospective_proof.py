@@ -293,3 +293,27 @@ def test_p12_final_hash_and_supersede_guard_branches(monkeypatch):
     monkeypatch.setattr(sp,'_active_freeze_from_events',lambda events:None)
     with pytest.raises(ValueError, match='requires a frozen prediction'):
         sp.validate_target_sequence({'events':[f]},10)
+
+
+def test_p12_historical_absolute_artifacts_relocate_by_unique_hash(tmp_path: Path):
+    freeze=tmp_path/'f.json'; freeze.write_text('{}'); fsha=sp.sha256_file(freeze)
+    state=tmp_path/'state.json'; state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10})); ssha=sp.sha256_file(state)
+    f=_minimal_freeze(10,fsha); f['freeze_file']=r'C:\Retired Root\SMART-MEGA\f.json'
+    a=_minimal_adj(10,fsha)
+    l=_learn_event(a,state_file=r'C:\Retired Root\SMART-MEGA\state.json',state_sha=ssha)
+    out=sp.validate_target_sequence({'events':[f,a,l]},10,verify_files=True,root=tmp_path)
+    assert out['valid'] is True
+
+
+def test_p12_historical_absolute_artifact_resolution_fails_closed_on_ambiguity(tmp_path: Path):
+    for folder in ('a','b'):
+        d=tmp_path/folder; d.mkdir(); (d/'state.json').write_text('same')
+    sha=sp.sha256_file(tmp_path/'a'/'state.json')
+    with pytest.raises(ValueError, match='ambiguous'):
+        sp._resolve_verified_artifact(tmp_path,r'C:\Retired\state.json',sha,'learning state')
+
+
+def test_p12_historical_absolute_artifact_resolution_fails_closed_on_hash_mismatch(tmp_path: Path):
+    (tmp_path/'state.json').write_text('current')
+    with pytest.raises(ValueError, match='hash mismatch'):
+        sp._resolve_verified_artifact(tmp_path,r'C:\Retired\state.json','0'*64,'learning state')

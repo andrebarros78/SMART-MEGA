@@ -1,0 +1,126 @@
+{
+  "schema": "SMART_B2_TERMINAL_ISOLATION_AUDIT_3",
+  "status": "PASS",
+  "hostname": "DESKTOP-4T6AS9K",
+  "workspace": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA",
+  "legacy_root": "C:\\New Projet\\SMART-MEGA",
+  "checks": {
+    "canonical_root_exists": true,
+    "legacy_root_absent": true,
+    "process_hits_zero": true,
+    "service_hits_zero": true,
+    "task_hits_zero": true,
+    "environment_hits_zero": true,
+    "external_reparse_zero": true,
+    "active_code_config_legacy_hits_zero": true,
+    "active_authority_state_external_paths_zero": true,
+    "scan_errors_zero": true,
+    "regression_runner_pass": true,
+    "regression_762_clean": true,
+    "coverage_23_of_23": true,
+    "red_team_10_of_10": true,
+    "regression_fingerprint_stable": true,
+    "post_audit_fingerprint_matches_regression": true,
+    "post_audit_file_count_matches_regression": true,
+    "registry_zero_open": true,
+    "registry_d019_present": true,
+    "product_certification_current_b2": true,
+    "stale_activation_authority_absent": true
+  },
+  "counts": {
+    "process_hits": 0,
+    "service_hits": 0,
+    "task_hits": 0,
+    "environment_hits": 0,
+    "reparse_points_total": 0,
+    "external_reparse_points": 0,
+    "active_code_config_legacy_hits": 0,
+    "active_authority_state_external_paths": 0,
+    "scan_errors": 0,
+    "registry_entries": 20,
+    "registry_open": 0
+  },
+  "fingerprint": {
+    "file_count": 203,
+    "sha256": "43fb447c4034806573a48fa2358cf26548b0b502304e3bafd442e12950128204",
+    "runner_before_sha256": "43fb447c4034806573a48fa2358cf26548b0b502304e3bafd442e12950128204",
+    "runner_after_sha256": "43fb447c4034806573a48fa2358cf26548b0b502304e3bafd442e12950128204"
+  },
+  "regression": {
+    "proof_file": "SMART_B2_ISOLATION_FINAL_RUNNER_PROOF_20260910.json",
+    "proof_file_sha256": "3d1d09cb87c1adb3b3f41e2659a8ed59b1cd88ee1ded4f9ea851741a7bcbffd8",
+    "tests": 762,
+    "coverage_pass_count": 23,
+    "coverage_required_count": 23,
+    "fingerprint_stable": true
+  },
+  "registry": {
+    "entry_count": 20,
+    "open_count": 0,
+    "d019_resolved": true,
+    "file_sha256": "2a3198529618136b91aaf75cd0bdaa011261dd6184f992babe22f9414e3e6462"
+  },
+  "product_certification": {
+    "status": "CONSTRUCTION_PROVEN",
+    "file_sha256": "1d0d0f9d8c67714ae07186bce21e2023001dc173e9cbedc93f0bedaf097405eb",
+    "runtime_guard": {
+      "schema": "SMART_RUNTIME_GUARD_V2",
+      "project_root": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA",
+      "canonical_python": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA\\.venv\\Scripts\\python.exe",
+      "current_python": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA\\.venv\\Scripts\\python.exe",
+      "python_version": "3.13.15",
+      "modules": {
+        "numpy": {
+          "ok": true,
+          "version": "2.4.6"
+        },
+        "pandas": {
+          "ok": true,
+          "version": "3.0.5"
+        },
+        "pytest": {
+          "ok": true,
+          "version": "9.1.1"
+        },
+        "river": {
+          "ok": true,
+          "version": "0.26.1"
+        },
+        "pypdf": {
+          "ok": true,
+          "version": "6.17.0"
+        },
+        "yt_dlp": {
+          "ok": true,
+          "version": null
+        }
+      },
+      "external_project_paths": [],
+      "unpinned_requirements": [],
+      "direct_lock_mismatch": {},
+      "checks": {
+        "canonical_python_exists": true,
+        "running_canonical_python": true,
+        "required_modules_available": true,
+        "no_external_project_path_in_sys_path": true,
+        "direct_requirements_fully_pinned": true,
+        "direct_requirements_match_lock_and_environment": true
+      },
+      "status": "PASS"
+    }
+  },
+  "details": {
+    "process_hits": [],
+    "service_hits": [],
+    "task_hits": [],
+    "environment_hits": [],
+    "external_reparse_points": [],
+    "active_code_config_legacy_hits": [],
+    "active_authority_state_external_paths": [],
+    "scan_errors": [],
+    "open_registry_entries": [],
+    "product_cert_legacy_runtime_fields": []
+  },
+  "timestamp_utc": "2026-09-10T19:57:35.690871+00:00",
+  "self_sha256": "2d449bd2b01dc39fb548fdce6de2eec2e2b8b247cd6759af7757f6e585e2bae6"
+}

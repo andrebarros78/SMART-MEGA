@@ -113,7 +113,7 @@ def test_online_update_can_change_next_selection_only_after_accumulated_evidence
 
 
 
-def test_default_governor_keeps_anchor_while_hedge_remains_shadow():
+def test_default_governor_can_promote_material_alternate_only_after_strong_causal_evidence():
 
     g=MetaGovernor(); hits={p:0 for p in POLICY_IDS}; hits['low_redundancy']=6
 
@@ -125,11 +125,41 @@ def test_default_governor_keeps_anchor_while_hedge_remains_shadow():
 
     assert after['hedge_candidate_policy']=='low_redundancy'
 
+    assert after['selected_policy']=='low_redundancy'
+
+    assert after['alternate_authorized'] is True
+
+    assert after['automatic_evidence_guard'] is True
+
+    assert after['material_decision_change'] is True
+
+
+
+def test_automatic_gate_rejects_subthreshold_material_lead():
+
+    g=MetaGovernor()
+    for i in range(MIN_ALT_OBSERVATIONS):
+        hits={p:0 for p in POLICY_IDS}
+        if i < 11:
+            hits['low_redundancy']=1
+        frozen=g.select(_multi()); g.update(hits,frozen['selected_policy'])
+    after=g.select(_multi())
+    assert after['hedge_candidate_policy']=='low_redundancy'
     assert after['selected_policy']=='quality_dynamic'
-
     assert after['alternate_authorized'] is False
+    assert 'insufficient_log_weight_lead' in after['alternate_evidence']['blockers']
+    assert 'insufficient_cumulative_hit_lead' in after['alternate_evidence']['blockers']
 
-    assert 'explicit_prospective_promotion_required' in after['alternate_evidence']['blockers']
+
+def test_duplicate_high_weight_policy_cannot_hide_material_candidate():
+
+    g=MetaGovernor()
+    g.log_weights['regime_context']=10.0
+    g.log_weights['low_redundancy']=1.0
+    out=g.select(_multi())
+    assert tuple(out['material_candidate_policies'])
+    assert out['hedge_candidate_policy'] != 'regime_context'
+    assert out['hedge_candidate_policy'] in out['material_candidate_policies']
 
 
 

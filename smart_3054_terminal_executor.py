@@ -1,10 +1,14 @@
 from __future__ import annotations
 
+from smart_mission_status import load_mission_status, write_mission_status, sha256_json as mission_sha256_json
+
 import hashlib
 import json
 import os
 import shutil
 import tempfile
+import threading
+from contextlib import contextmanager
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any, Callable
@@ -19,6 +23,9 @@ import smart_official_result_ingest as official_ingest
 import smart_prospective_authority as prospective_authority
 import smart_sequential_prospective_proof as sequential
 import smart_champion_challenger as champion_challenger
+import smart_canonical_history_advance as history_advance
+from smart_current_epoch_contract import resolve as resolve_current_epoch
+from smart_learning_epoch_reset import verify_active_epoch
 from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
@@ -36,6 +43,8 @@ LEARNED_STATE = "SMART_SIGNAL_STATE_3054_LEARNED.json"
 RESULT_STORE_PROOF = "SMART_CANONICAL_RESULT_STORE_ADVANCE_3054.json"
 TERMINAL_PROOF = "SMART_TERMINAL_6OF6_PROOF_3054.json"
 STATUS_FILE = "SMART_3054_TERMINAL_EXECUTOR_STATUS.json"
+INDEPENDENT_AUDIT_FILE = "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json"
+_ACTIVE_CONTEXT_LOCK = threading.RLock()
 COVERAGE_BINDINGS = (
     "SMART_P14_COVERAGE_BINDING_AUDIT.json",
     "SMART_P14_COVERAGE_BINDING_ORCHESTRATOR.json",
@@ -73,6 +82,121 @@ def _atomic_write_json(path: Path, document: dict[str, Any]) -> None:
     finally:
         if temp.exists():
             temp.unlink()
+
+
+
+def _project_local(root: Path, value: str | Path, label: str) -> Path:
+    path = (root / Path(value)).resolve() if not Path(value).is_absolute() else Path(value).resolve()
+    try:
+        path.relative_to(root.resolve())
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes canonical root") from exc
+    return path
+
+
+def _active_epoch_binding(root: Path) -> dict[str, Any] | None:
+    root = Path(root).resolve()
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    if not active_path.is_file():
+        return None
+    active = verify_active_epoch(active_path)
+    if int(active.get("target_contest", -1)) != int(TARGET):
+        return None
+    if int(active.get("cutoff_contest", -1)) != int(CUTOFF) or CUTOFF != TARGET - 1:
+        raise ValueError("active epoch target/cutoff mismatch")
+    if active.get("status") != "FROZEN" or active.get("result_used") is not False:
+        raise ValueError("active epoch is not a frozen authority")
+    state_paths = active.get("state_paths")
+    if not isinstance(state_paths, dict):
+        raise ValueError("active epoch state paths missing")
+    freeze = _project_local(root, str(state_paths.get("freeze", "")), "active freeze")
+    ledger = _project_local(root, str(state_paths.get("ledger", "")), "active ledger")
+    state = _project_local(root, str(state_paths.get("state", "")), "active state")
+    data = _project_local(root, str(active.get("data_file", "")), "active cutoff data")
+    for path, label in ((freeze, "freeze"), (ledger, "ledger"), (state, "state"), (data, "cutoff data")):
+        if not path.is_file():
+            raise ValueError(f"active epoch {label} missing")
+    freeze_auth = active.get("freeze_authority") if isinstance(active.get("freeze_authority"), dict) else {}
+    expected_freeze = str(freeze_auth.get("sha256") or "")
+    if len(expected_freeze) != 64 or sha256_file(freeze) != expected_freeze:
+        raise ValueError("active epoch freeze hash mismatch")
+    if int(freeze_auth.get("target_contest", -1)) != TARGET or int(freeze_auth.get("cutoff_contest", -1)) != CUTOFF:
+        raise ValueError("active epoch freeze authority target/cutoff mismatch")
+    if str(active.get("data_sha256", "")) != sha256_file(data):
+        raise ValueError("active epoch cutoff data hash mismatch")
+    state_auth = active.get("learning_state_authority") if isinstance(active.get("learning_state_authority"), dict) else {}
+    if state_auth.get("sha256") and str(state_auth.get("sha256")) != sha256_file(state):
+        raise ValueError("active epoch learning state hash mismatch")
+    freeze_doc = _read_json(freeze)
+    if int(freeze_doc.get("target_contest", -1)) != TARGET or int(freeze_doc.get("cutoff_contest", -1)) != CUTOFF:
+        raise ValueError("active epoch freeze document target/cutoff mismatch")
+    if freeze_doc.get("frozen_before_result") is not True or freeze_doc.get("causal_cutoff") is not True:
+        raise ValueError("active epoch freeze is not causally pre-result")
+    ledger_doc = champion_challenger.load_ledger(ledger)
+    freeze_event = champion_challenger.active_freeze(ledger_doc, TARGET)
+    if freeze_event is None or freeze_event.get("freeze_sha256") != expected_freeze:
+        raise ValueError("active epoch ledger does not preserve the authoritative freeze")
+    adjudications = _target_events(ledger_doc, "ADJUDICATION")
+    if len(adjudications) > 1:
+        raise ValueError("multiple target adjudications are forbidden")
+    if not adjudications:
+        current = resolve_current_epoch(root)
+        if current.get("status") != "FROZEN" or int(current.get("target_contest", -1)) != int(TARGET):
+            raise ValueError("current epoch contract does not match terminal target")
+        if current.get("freeze_authority_present") is not True or current.get("generation_proof_valid") is not True:
+            raise ValueError("current epoch lacks frozen generation authority")
+        if str(current.get("freeze_sha256") or "") != expected_freeze:
+            raise ValueError("current epoch freeze differs from active authority")
+        expected_ledger = str(active.get("ledger_sha256") or "")
+        if len(expected_ledger) == 64 and sha256_file(ledger) != expected_ledger:
+            raise ValueError("unadjudicated active ledger hash changed")
+        mode = "ACTIVE_EPOCH"
+    else:
+        adjudication = adjudications[0]
+        if adjudication.get("freeze_sha256") != expected_freeze:
+            raise ValueError("post-result adjudication is not bound to the authoritative freeze")
+        actual = [int(x) for x in adjudication.get("actual_numbers", [])]
+        if len(actual) != 6 or len(set(actual)) != 6 or any(x < 1 or x > 60 for x in actual):
+            raise ValueError("post-result adjudication numbers are invalid")
+        if adjudication.get("retroactive_rewrite") is not False:
+            raise ValueError("post-result adjudication permits retroactive rewrite")
+        guard = active.get("temporal_guard") if isinstance(active.get("temporal_guard"), dict) else {}
+        if guard.get("status") != "PASS" or int(guard.get("target_contest", -1)) != TARGET:
+            raise ValueError("post-result recovery lacks valid pre-draw temporal guard")
+        if guard.get("before_scheduled_draw") is not True or guard.get("result_used") is not False:
+            raise ValueError("post-result recovery temporal guard is not causal")
+        current = {
+            "status": "POST_RESULT_RECOVERY",
+            "target_contest": TARGET,
+            "freeze_authority_present": True,
+            "generation_proof_valid": False,
+            "historical_pre_result_authority_preserved": True,
+            "freeze_sha256": expected_freeze,
+        }
+        mode = "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY"
+    return {
+        "mode": mode,
+        "freeze": freeze,
+        "freeze_sha256": expected_freeze,
+        "ledger": ledger,
+        "state": state,
+        "data": data,
+        "learned": ledger.parent / LEARNED_STATE,
+        "active": active,
+        "current": current,
+    }
+
+def _preflight_readiness(root: Path, binding: dict[str, Any]) -> dict[str, Any]:
+    if binding.get("mode") == "ACTIVE_EPOCH":
+        return {
+            "readiness_status": "PASS",
+            "target_contest": TARGET,
+            "cutoff_contest": CUTOFF,
+            "generation_proof_valid": binding.get("current", {}).get("generation_proof_valid") is True,
+            "freeze_sha256": binding.get("freeze_sha256"),
+            "result_used": False,
+        }
+    return preflight.build_preflight(root)
 
 
 def _preserved_lock_binding(root: Path) -> dict[str, Any]:
@@ -143,6 +267,9 @@ def _runtime_binding(root: Path) -> dict[str, Any]:
             "data": root / PRE_RESULT_DATA,
             "learned": root / LEARNED_STATE,
         }
+    active_binding = _active_epoch_binding(root)
+    if active_binding is not None:
+        return active_binding
     try:
         paths = preflight._current_paths(root)
     except Exception:
@@ -258,7 +385,7 @@ def _load_existing_official_evidence(root: Path) -> tuple[dict[str, Any], dict[s
     return payload, consensus
 
 
-def _ensure_ingest(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
+def _ensure_ingest(root: Path, payload: dict[str, Any], binding: dict[str, Any] | None = None) -> dict[str, Any]:
     output = root / RESULT_DATA
     proof_path = root / INGEST_PROOF
     normalized = _normalized_primary(payload)
@@ -274,15 +401,15 @@ def _ensure_ingest(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
         if int(contests[-1]) != TARGET:
             raise ValueError("existing official ingest output does not end at target")
         return proof
-    binding = _runtime_binding(root)
+    binding = binding or _runtime_binding(root)
     source = binding["data"]
     if _contest_max(source) != CUTOFF:
         raise ValueError("active pre-result dataset must end at cutoff before first target ingest")
     return official_ingest.ingest(source, output, proof_path, TARGET, payload)
 
 
-def _ensure_adjudication(root: Path, actual_numbers: list[int]) -> dict[str, Any]:
-    binding = _runtime_binding(root)
+def _ensure_adjudication(root: Path, actual_numbers: list[int], binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    binding = binding or _runtime_binding(root)
     ledger_path = binding["ledger"]
     expected_freeze_sha256 = binding["freeze_sha256"]
     ledger = champion_challenger.load_ledger(ledger_path)
@@ -323,8 +450,8 @@ def _agent_from_prestate(prestate: dict[str, Any]) -> SmartSignalAgent:
     )
 
 
-def _ensure_learned_state(root: Path) -> dict[str, Any]:
-    binding = _runtime_binding(root)
+def _ensure_learned_state(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    binding = binding or _runtime_binding(root)
     through = root / RESULT_DATA
     learned_path = binding["learned"]
     prestate_path = binding["state"]
@@ -364,8 +491,8 @@ def _ensure_learned_state(root: Path) -> dict[str, Any]:
     return state
 
 
-def _ensure_learning_and_sequence(root: Path) -> dict[str, Any]:
-    binding = _runtime_binding(root)
+def _ensure_learning_and_sequence(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    binding = binding or _runtime_binding(root)
     ledger_path = binding["ledger"]
     learned_path = binding["learned"]
     ledger = champion_challenger.load_ledger(ledger_path)
@@ -388,8 +515,8 @@ def _ensure_learning_and_sequence(root: Path) -> dict[str, Any]:
     return validation
 
 
-def _run_independent_audit(root: Path) -> dict[str, Any]:
-    binding = _runtime_binding(root)
+def _run_independent_audit(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    binding = binding or _runtime_binding(root)
     bindings = [root / name for name in COVERAGE_BINDINGS]
     cwd = Path.cwd()
     try:
@@ -401,7 +528,7 @@ def _run_independent_audit(root: Path) -> dict[str, Any]:
         os.chdir(cwd)
     if report.get("status") != "PASS":
         raise RuntimeError("independent audit did not pass")
-    _atomic_write_json(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json", report)
+    _atomic_write_json(root / INDEPENDENT_AUDIT_FILE, report)
     return report
 
 
@@ -477,6 +604,7 @@ def evaluate_terminal_rule(
     consensus: dict[str, Any],
     audit: dict[str, Any],
     sequence_validation: dict[str, Any],
+    binding: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     freeze_event = champion_challenger.active_freeze(ledger, TARGET)
     if freeze_event is None:
@@ -484,7 +612,7 @@ def evaluate_terminal_rule(
     freeze_path = Path(str(freeze_event["freeze_file"]))
     if not freeze_path.is_absolute():
         freeze_path = root / freeze_path
-    binding = _runtime_binding(root)
+    binding = binding or _runtime_binding(root)
     expected_freeze_sha256 = binding["freeze_sha256"]
     if not freeze_path.is_file() or sha256_file(freeze_path) != expected_freeze_sha256:
         raise ValueError("active target freeze artifact hash mismatch")
@@ -498,7 +626,8 @@ def evaluate_terminal_rule(
     actual = sorted(int(x) for x in adjudication["actual_numbers"])
     champion_top6 = sorted(int(x) for x in freeze["champion"]["top6"])
     recomputed_hits = len(set(actual) & set(champion_top6))
-    adjudication_count = sum(1 for event in ledger.get("events", []) if event.get("event_type") == "ADJUDICATION")
+    target_adjudication_count = len(adjudications)
+    total_adjudication_count = sum(1 for event in ledger.get("events", []) if event.get("event_type") == "ADJUDICATION")
     prospective = audit.get("prospective_ledger", {})
     primary = consensus.get("primary", {})
     checks = {
@@ -510,7 +639,7 @@ def evaluate_terminal_rule(
         "official_numbers_match_adjudication": sorted(int(x) for x in primary.get("numbers", [])) == actual,
         "sequential_proof_valid": sequence_validation.get("valid") is True and sequence_validation.get("proof_recorded") is True,
         "independent_audit_pass": audit.get("status") == "PASS" and prospective.get("status") == "PASS",
-        "all_attempts_counted": int(prospective.get("pair_count", -1)) == adjudication_count,
+        "all_attempts_counted": int(prospective.get("pair_count", -1)) == total_adjudication_count,
         "no_future_leakage": prospective.get("no_future_leakage") is True,
         "source_corroborated": consensus.get("terminal_source_corroboration_authorized") is True,
         "exact_6of6": recomputed_hits == 6 and int(adjudication.get("champion_hits", -1)) == 6,
@@ -535,32 +664,37 @@ def evaluate_terminal_rule(
         "frozen_top6": champion_top6,
         "actual_numbers": actual,
         "recomputed_hits": recomputed_hits,
-        "adjudication_count": adjudication_count,
+        "adjudication_count": target_adjudication_count,
+        "total_adjudication_count": total_adjudication_count,
         "audited_pair_count": prospective.get("pair_count"),
         "checks": checks,
     }
 
 
-def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus: dict[str, Any], audit: dict[str, Any], sequence: dict[str, Any]) -> dict[str, Any]:
+def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus: dict[str, Any], audit: dict[str, Any], sequence: dict[str, Any], binding: dict[str, Any] | None = None) -> dict[str, Any]:
     if evaluation.get("eligible_for_mission_proven") is not True:
         raise ValueError("terminal mission promotion requires a fully eligible evaluation")
     mission_path = root / "SMART_MISSION_STATUS.json"
-    mission = _read_json(mission_path)
+    mission = load_mission_status(mission_path, root=root)
     if mission.get("terminal_6of6_proven") is True:
         return mission
     if mission.get("status") != "MISSION_ACTIVE":
         raise ValueError("unexpected mission state before terminal promotion")
-    binding = _runtime_binding(root)
+    binding = binding or _runtime_binding(root)
     proof = {
         "schema": "SMART_TERMINAL_6OF6_PROOF_1",
         "created_at_utc": datetime.now(timezone.utc).isoformat(),
         "target_contest": TARGET,
         "terminal_rule": mission.get("terminal_rule"),
         "evaluation": evaluation,
+        "freeze_file": binding["freeze"].resolve().relative_to(root.resolve()).as_posix(),
         "freeze_sha256": binding["freeze_sha256"],
+        "signal_ledger_file": binding["ledger"].resolve().relative_to(root.resolve()).as_posix(),
         "signal_ledger_sha256": sha256_file(binding["ledger"]),
+        "official_evidence_file": CONSENSUS_FILE,
         "official_evidence_sha256": sha256_file(root / CONSENSUS_FILE),
-        "independent_audit_sha256": sha256_file(root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json"),
+        "independent_audit_file": INDEPENDENT_AUDIT_FILE,
+        "independent_audit_sha256": sha256_file(root / INDEPENDENT_AUDIT_FILE),
         "sequence_sha256": sequence.get("sequence_sha256"),
         "all_attempts_counted": evaluation["checks"]["all_attempts_counted"],
         "independent_audit_pass": audit.get("status") == "PASS",
@@ -568,6 +702,7 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
         "retroactive_selection_prohibited": True,
         "status": "MISSION_PROVEN",
     }
+    proof["sha256"] = mission_sha256_json(proof)
     proof_path = root / TERMINAL_PROOF
     _atomic_write_json(proof_path, proof)
     mission = dict(mission)
@@ -580,11 +715,23 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
         "official_actual_numbers": evaluation["actual_numbers"],
         "terminal_proof_file": TERMINAL_PROOF,
         "terminal_proof_sha256": sha256_file(proof_path),
-        "independent_audit_file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+        "independent_audit_file": INDEPENDENT_AUDIT_FILE,
         "official_evidence_file": CONSENSUS_FILE,
         "proven_at_utc": datetime.now(timezone.utc).isoformat(),
     })
-    _atomic_write_json(mission_path, mission)
+    try:
+        write_mission_status(mission_path, mission, root=root)
+    except Exception:
+        # Active-epoch proof is non-authoritative until SMART_MISSION_STATUS binds it.
+        # Remove the just-written candidate on ordinary failure; if the process is
+        # interrupted before cleanup, epoch-scoped placement keeps top-level
+        # terminal claim inventory consistent.
+        try:
+            if proof_path.is_file() and sha256_file(proof_path) == mission.get("terminal_proof_sha256"):
+                proof_path.unlink()
+        finally:
+            pass
+        raise
     return mission
 
 
@@ -597,7 +744,7 @@ def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensu
     adjudications = _target_events(ledger, "ADJUDICATION")
     existing = _load_existing_official_evidence(root)
     if not adjudications:
-        readiness = preflight.build_preflight(root)
+        readiness = _preflight_readiness(root, binding)
         if readiness.get("readiness_status") != "PASS":
             raise RuntimeError("3054 preflight is not PASS")
     else:
@@ -655,7 +802,7 @@ def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consen
     if len(adjudications) > 1:
         raise ValueError("multiple 3054 adjudications are forbidden")
     if not adjudications:
-        readiness = preflight.build_preflight(root)
+        readiness = _preflight_readiness(root, binding)
         if readiness.get("readiness_status") != "PASS":
             raise RuntimeError("3054 preflight is not PASS")
     existing = _load_existing_official_evidence(root)
@@ -681,19 +828,19 @@ def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consen
         consensus = _ensure_monotonic_consensus(root, fresh_consensus)
 
     normalized = _normalized_primary(payload)
-    ingest = _ensure_ingest(root, payload)
-    adjudication = _ensure_adjudication(root, normalized["numbers"])
-    learned = _ensure_learned_state(root)
-    sequence_validation = _ensure_learning_and_sequence(root)
-    audit = _run_independent_audit(root)
-    result_store = _advance_canonical_result_store(root)
+    ingest = _ensure_ingest(root, payload, binding=binding)
+    adjudication = _ensure_adjudication(root, normalized["numbers"], binding=binding)
+    learned = _ensure_learned_state(root, binding=binding)
+    sequence_validation = _ensure_learning_and_sequence(root, binding=binding)
+    audit = _run_independent_audit(root, binding=binding)
+    result_store = history_advance.advance_completed_epoch(root, binding["active"]) if binding.get("mode") == "ACTIVE_EPOCH" else _advance_canonical_result_store(root)
     ledger = champion_challenger.load_ledger(binding["ledger"])
     consensus = _read_json(root / CONSENSUS_FILE)
-    evaluation = evaluate_terminal_rule(root, ledger, consensus, audit, sequence_validation)
+    evaluation = evaluate_terminal_rule(root, ledger, consensus, audit, sequence_validation, binding=binding)
 
-    mission = _read_json(root / "SMART_MISSION_STATUS.json")
+    mission = load_mission_status(root / "SMART_MISSION_STATUS.json", root=root)
     if evaluation["eligible_for_mission_proven"] and allow_terminal_write:
-        mission = _promote_terminal_mission(root, evaluation, consensus, audit, sequence_validation)
+        mission = _promote_terminal_mission(root, evaluation, consensus, audit, sequence_validation, binding=binding)
 
     status = {
         "schema": SCHEMA,
@@ -719,6 +866,53 @@ def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consen
     }
     _atomic_write_json(root / STATUS_FILE, status)
     return status
+
+
+@contextmanager
+def active_epoch_context(root: str | Path, target: int):
+    global SCHEMA, TARGET, CUTOFF, PRE_RESULT_DATA, RESULT_DATA, INGEST_PROOF, PRIMARY_PAYLOAD
+    global CONSENSUS_FILE, LEARNED_STATE, RESULT_STORE_PROOF, TERMINAL_PROOF, STATUS_FILE, INDEPENDENT_AUDIT_FILE
+    root = Path(root).resolve()
+    with _ACTIVE_CONTEXT_LOCK:
+        active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
+        selected = int(active.get("target_contest", -1))
+        if int(target) != selected:
+            raise ValueError("requested terminal target differs from active epoch")
+        state_paths = active.get("state_paths")
+        if not isinstance(state_paths, dict) or not state_paths.get("ledger"):
+            raise ValueError("active epoch ledger path missing")
+        epoch_rel = Path(str(state_paths["ledger"])).parent
+        names = ("SCHEMA", "TARGET", "CUTOFF", "PRE_RESULT_DATA", "RESULT_DATA", "INGEST_PROOF", "PRIMARY_PAYLOAD", "CONSENSUS_FILE", "LEARNED_STATE", "RESULT_STORE_PROOF", "TERMINAL_PROOF", "STATUS_FILE", "INDEPENDENT_AUDIT_FILE")
+        saved = {name: globals()[name] for name in names}
+        try:
+            SCHEMA = "SMART_TERMINAL_EXECUTOR_ACTIVE_EPOCH_1"
+            TARGET = selected
+            CUTOFF = selected - 1
+            PRE_RESULT_DATA = str(active.get("data_file", ""))
+            RESULT_DATA = (epoch_rel / f"Mega-Sena_through_{selected}.xlsx").as_posix()
+            INGEST_PROOF = (epoch_rel / f"SMART_OFFICIAL_RESULT_INGEST_{selected}.json").as_posix()
+            PRIMARY_PAYLOAD = (epoch_rel / f"SMART_{selected}_OFFICIAL_PRIMARY_PAYLOAD.json").as_posix()
+            CONSENSUS_FILE = (epoch_rel / f"SMART_{selected}_OFFICIAL_EVIDENCE_CURRENT.json").as_posix()
+            LEARNED_STATE = f"SMART_SIGNAL_STATE_{selected}_LEARNED.json"
+            RESULT_STORE_PROOF = f"SMART_CANONICAL_HISTORY_ADVANCE_{selected}.json"
+            TERMINAL_PROOF = (epoch_rel / f"SMART_TERMINAL_6OF6_PROOF_{selected}.json").as_posix()
+            STATUS_FILE = (epoch_rel / f"SMART_TERMINAL_EXECUTOR_STATUS_{selected}.json").as_posix()
+            INDEPENDENT_AUDIT_FILE = (epoch_rel / f"SMART_P14_INDEPENDENT_AUDIT_{selected}.json").as_posix()
+            yield active
+        finally:
+            for name, value in saved.items():
+                globals()[name] = value
+
+
+def probe_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
+    with active_epoch_context(root, target):
+        return probe(root, fetcher=fetcher)
+
+
+def execute_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
+    with active_epoch_context(root, target):
+        return execute(root, fetcher=fetcher, allow_terminal_write=allow_terminal_write)
+
 
 def main() -> None:
     import argparse

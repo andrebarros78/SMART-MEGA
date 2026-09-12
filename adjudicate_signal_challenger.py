@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import argparse
 import json
@@ -150,7 +150,7 @@ def _validate_freeze_event_against_artifact(fr: dict, frozen: dict, target: int)
     top_level_snapshot_keys = {
         'signal_expansion_governance', 'sequential_prospective_proof', 'promotion_policy',
         'independent_audit_policy', 'evidence_only_promotion_policy', 'global_integrity_policy',
-        'global_integrity_proof', 'promotion_lineage', 'learning_activation_authority',
+        'global_integrity_proof', 'promotion_lineage', 'learning_activation_authority', 'ai_hyperparameter_authority',
     }
     for key, observed in snapshot.items():
         if key in challenger:
@@ -570,3 +570,4 @@ def main():
 
 if __name__ == '__main__':
     main()
+

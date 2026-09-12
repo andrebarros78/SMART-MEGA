@@ -1,0 +1,127 @@
+from __future__ import annotations
+
+import hashlib, json
+
+from pathlib import Path
+
+import pytest
+
+import smart_champion_challenger as cc
+
+import smart_independent_audit as ia
+
+import smart_sequential_prospective_proof as sp
+
+from test_smart_independent_audit import _pair_fixture
+
+
+
+def _sha(path: Path) -> str:
+
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+
+def _completed(target=11):
+
+    fr={'event_type':'FREEZE','target_contest':target,'cutoff_contest':target-1,'freeze_sha256':'a'*64,'frozen_before_result':True,'causal_cutoff':True}
+
+    ad={'event_type':'ADJUDICATION','target_contest':target,'freeze_sha256':'a'*64,'actual_numbers':[1,2,3,4,5,6],'champion_hits':1,'challenger_hits':1,'difference_hits':0,'e_value_after':1.0}
+
+    learn={'event_type':'LEARNING_UPDATE','target_contest':target,'source_adjudication_sha256':sp.canonical_event_hash(ad),'trained_through_contest':target,'learning_after_adjudication':True,'retroactive_rewrite':False}
+
+    prior=[fr,ad,learn]; hashes,chain=sp._event_chain(list(enumerate(prior)))
+
+    proof={'event_type':'SEQUENTIAL_PROOF','target_contest':target,'event_hashes':hashes,'sequence_sha256':chain,'retroactive_rewrite':False}
+
+    return {'schema':cc.LEDGER_SCHEMA,'events':prior+[proof]}
+
+
+
+def test_d012_reanchors_stale_absolute_path_by_hash(tmp_path):
+
+    artifact=tmp_path/'artifact.bin'; artifact.write_bytes(b'canonical')
+
+    stale=Path(r'Z:\retired\SMART-MEGA\artifact.bin')
+
+    assert ia._resolve_hash_bound_evidence(tmp_path,stale,_sha(artifact),'artifact') == artifact
+
+
+
+def test_d012_fails_closed_and_legacy_is_explicit(tmp_path):
+
+    artifact=tmp_path/'artifact.bin'; artifact.write_bytes(b'current'); stale=Path(r'Z:\retired\SMART-MEGA\artifact.bin'); old=hashlib.sha256(b'old').hexdigest()
+
+    with pytest.raises(ValueError,match='missing'): ia._resolve_hash_bound_evidence(tmp_path,stale,old,'artifact')
+
+    assert ia._resolve_hash_bound_evidence(tmp_path,stale,old,'artifact',allow_legacy_mismatch=True) == artifact
+
+    other=tmp_path/'nested'/'artifact.bin'; other.parent.mkdir(); other.write_bytes(b'canonical'); artifact.write_bytes(b'canonical')
+
+    with pytest.raises(ValueError,match='ambiguous'): ia._resolve_hash_bound_evidence(tmp_path,stale,_sha(artifact),'artifact')
+
+
+
+def test_d012_rejects_untrusted_absolute_path_even_with_exact_hash_and_legacy_override(tmp_path):
+
+    artifact=tmp_path/'artifact.bin'; artifact.write_bytes(b'canonical')
+
+    external=Path(r'Z:\retired\SMART-MEGA\artifact.bin')
+
+    with pytest.raises(ValueError,match='external absolute path denied'):
+        ia._resolve_hash_bound_evidence(tmp_path,external,_sha(artifact),'artifact')
+
+    with pytest.raises(ValueError,match='external absolute path denied'):
+        ia._resolve_hash_bound_evidence(tmp_path,external,_sha(artifact),'artifact',allow_legacy_mismatch=True)
+
+
+def test_d012_full_audit_reanchors_identical_result(tmp_path):
+
+    ledger,pre,result,freeze,state,fr,ad,actual=_pair_fixture(tmp_path,target=11)
+
+    ad['result_data_file']=r'Z:\retired\SMART-MEGA\result.xlsx'; ledger.write_text(json.dumps({'schema':ia.LEDGER_SCHEMA,'events':[fr,ad]}),encoding='utf-8')
+
+    out=ia.audit_prospective_ledger(tmp_path,ledger)
+
+    assert out['status']=='PASS' and out['pair_count']==1 and out['pairs'][0]['actual_numbers']==actual
+
+
+
+def test_d013_reconcile_idempotent_and_seed(tmp_path):
+
+    canonical=tmp_path/'SMART_SIGNAL_LEDGER.json'; canonical.write_text(json.dumps(cc.load_ledger(tmp_path/'missing.json')),encoding='utf-8')
+
+    epoch=tmp_path/'epoch.json'; epoch.write_text(json.dumps(_completed()),encoding='utf-8')
+
+    first=cc.reconcile_completed_epoch_ledger(canonical,epoch,11,root=tmp_path); assert first['status']=='PASS' and first['appended_event_count']==4
+
+    second=cc.reconcile_completed_epoch_ledger(canonical,epoch,11,root=tmp_path); assert second['status']=='ALREADY_RECONCILED'
+
+    dest=tmp_path/'next'/'SMART_SIGNAL_LEDGER.json'; seed=cc.seed_ledger_from_canonical(canonical,dest)
+
+    assert seed['event_count']==4 and dest.read_bytes()==canonical.read_bytes()
+
+
+
+def test_d013_blocks_incomplete_and_conflicting(tmp_path):
+
+    canonical=tmp_path/'SMART_SIGNAL_LEDGER.json'; canonical.write_text(json.dumps(cc.load_ledger(tmp_path/'missing.json')),encoding='utf-8')
+
+    epoch=tmp_path/'epoch.json'; bad=_completed(); bad['events']=bad['events'][:2]; epoch.write_text(json.dumps(bad),encoding='utf-8')
+
+    with pytest.raises(ValueError,match='learning update'): cc.reconcile_completed_epoch_ledger(canonical,epoch,11,root=tmp_path)
+
+    good=_completed(); epoch.write_text(json.dumps(good),encoding='utf-8'); cc.reconcile_completed_epoch_ledger(canonical,epoch,11,root=tmp_path)
+
+    bad=_completed(); bad['events'][1]['actual_numbers']=[7,8,9,10,11,12]; epoch.write_text(json.dumps(bad),encoding='utf-8')
+
+    with pytest.raises(ValueError,match='differs|learning does not bind'): cc.reconcile_completed_epoch_ledger(canonical,epoch,11,root=tmp_path)
+
+
+
+def test_d013_operator_contract():
+
+    import smart_operator as operator
+
+    c=operator.contract(); assert c['all_attempts_preserved_across_epochs'] is True; assert c['supersede_requires_completed_epoch_or_explicit_withdrawal'] is True
+

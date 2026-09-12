@@ -39,6 +39,18 @@ def _decision():
                     preregistered=True, prospective_evidence=True, leakage_free=True)
 
 
+def _materiality():
+    return aa.build_materiality_evidence(
+        decision_change_count=4, validation_gain=1.0, holdout_gain=0.5, global_gain=0.5,
+        independent_holdout=True, leakage_free=True,
+    )
+
+
+def _build_learning_authority(**kwargs):
+    kwargs.setdefault('materiality_evidence', _materiality())
+    return aa.build_authority(**kwargs)
+
+
 def _write_auth(path: Path, obj: dict, *, rehash: bool = True):
     obj = copy.deepcopy(obj)
     if rehash:
@@ -154,33 +166,33 @@ def test_activation_authority_build_guards(monkeypatch, tmp_path):
     assert not aa._is_hex64('short')
     assert not aa._is_hex64('z' * 64)
     with pytest.raises(ValueError, match='positive'):
-        aa.build_authority(target_contest=0, decision=_decision(), evidence_sha256='a'*64,
+        _build_learning_authority(target_contest=0, decision=_decision(), evidence_sha256='a'*64,
                            marginal_strength=.1, root=ROOT)
     with pytest.raises(ValueError, match='ActivationDecision'):
-        aa.build_authority(target_contest=1, decision=None, evidence_sha256='a'*64,
+        _build_learning_authority(target_contest=1, decision=None, evidence_sha256='a'*64,
                            marginal_strength=.1, root=ROOT)
     rejected = ActivationDecision('REJECT', False, False, 'x')
     with pytest.raises(ValueError, match='prospective'):
-        aa.build_authority(target_contest=1, decision=rejected, evidence_sha256='a'*64,
+        _build_learning_authority(target_contest=1, decision=rejected, evidence_sha256='a'*64,
                            marginal_strength=.1, root=ROOT)
     for strength in (float('nan'), -0.1, 1.1):
         with pytest.raises(ValueError, match='marginal_strength'):
-            aa.build_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
+            _build_learning_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
                                marginal_strength=strength, root=ROOT)
     with pytest.raises(ValueError, match='at least one'):
-        aa.build_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
+        _build_learning_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
                            marginal_strength=0.0, allow_meta_alternate_selection=False, root=ROOT)
     with pytest.raises(ValueError, match='64-hex'):
-        aa.build_authority(target_contest=1, decision=_decision(), evidence_sha256='bad',
+        _build_learning_authority(target_contest=1, decision=_decision(), evidence_sha256='bad',
                            marginal_strength=.1, root=ROOT)
     monkeypatch.setattr(aa, 'COMPONENTS', {'x': 'missing.py'})
     with pytest.raises(ValueError, match='component missing'):
-        aa.build_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
+        _build_learning_authority(target_contest=1, decision=_decision(), evidence_sha256='a'*64,
                            marginal_strength=.1, root=tmp_path)
 
 
 def test_activation_authority_load_and_write_guards(tmp_path):
-    base = aa.build_authority(target_contest=4000, decision=_decision(), evidence_sha256='a'*64,
+    base = _build_learning_authority(target_contest=4000, decision=_decision(), evidence_sha256='a'*64,
                               marginal_strength=.25, allow_meta_alternate_selection=True, root=ROOT)
     p = tmp_path / 'a.json'
 

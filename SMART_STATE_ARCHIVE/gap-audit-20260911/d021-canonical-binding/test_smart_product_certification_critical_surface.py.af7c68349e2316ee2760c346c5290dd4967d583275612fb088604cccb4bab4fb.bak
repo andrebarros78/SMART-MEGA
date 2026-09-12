@@ -1,0 +1,23 @@
+from pathlib import Path
+
+import smart_product_certification as certification
+from smart_global_integrity import CRITICAL_SOURCE_FILES
+
+ROOT = Path(__file__).resolve().parent
+
+
+def test_product_certification_fingerprint_covers_global_critical_surface() -> None:
+    names = {path.name for path in certification._code_files(ROOT)}
+    assert set(CRITICAL_SOURCE_FILES) <= names
+    assert "adjudicate_signal_challenger.py" in names
+    assert "freeze_next_research.py" in names
+    assert "p14_coverage_plugin.py" in names
+
+
+def test_product_certification_fingerprint_changes_for_nonprefix_critical_source(tmp_path: Path) -> None:
+    source = tmp_path / "adjudicate_signal_challenger.py"
+    source.write_text("alpha\n", encoding="utf-8")
+    before = certification.code_fingerprint(tmp_path)["sha256"]
+    source.write_text("beta\n", encoding="utf-8")
+    after = certification.code_fingerprint(tmp_path)["sha256"]
+    assert before != after

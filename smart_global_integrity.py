@@ -51,6 +51,7 @@ REQUIRED_GLOBAL_COVERAGE_SOURCES = (
     'smart_agent_skill_orchestration.py', 'smart_agent_runtime.py', 'smart_agent_skill_functional_gate.py',
     'smart_learning_activation_gate.py', 'smart_learning_activation_authority.py',
     'smart_data_quality_gate.py', 'smart_independent_oracle.py', 'smart_material_deficiency_registry.py',
+    'smart_operator.py', 'smart_canonical_history_advance.py',
 )
 CRITICAL_SOURCE_FILES = (
     'smart_v2_engine.py', 'smart_v2_production.py', 'freeze_next_research.py',
@@ -65,8 +66,9 @@ CRITICAL_SOURCE_FILES = (
     'smart_continuous_red_team.py', 'smart_global_integrity.py',
     'smart_portfolio_optimizer.py', 'smart_portfolio_pipeline.py',
     'smart_agent_skill_orchestration.py', 'smart_agent_runtime.py', 'smart_agent_skill_functional_gate.py',
-    'smart_learning_activation_gate.py', 'smart_learning_activation_authority.py', 'smart_independent_oracle.py',
+    'smart_learning_activation_gate.py', 'smart_learning_activation_authority.py', 'smart_ai_fine_tuning.py', 'smart_independent_oracle.py',
     'smart_material_deficiency_registry.py', 'smart_continuity_consolidator.py', 'smart_finalize_deployment.py',
+    'smart_operator.py', 'smart_canonical_history_advance.py',
 )
 
 
@@ -361,3 +363,4 @@ def verify_global_integrity(root: Path, gate_path: Path, proof_path: Path = DEFA
     return {'status': 'PASS', 'proof_file': proof_path.name, 'proof_file_sha256': sha256_file(proof_path),
             'critical_source_hashes_current': True, 'coverage_current': True, 'red_team_current': True,
             'independent_audit_current': True, 'full_regression_current': True, 'material_deficiency_registry_current': True, 'material_deficiencies': list(deficiency_registry['open_deficiencies'])}
+

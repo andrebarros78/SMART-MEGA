@@ -1,0 +1,71 @@
+from __future__ import annotations
+import hashlib, json, pathlib, subprocess, time
+
+root = pathlib.Path(__file__).resolve().parent
+py = root / ".venv" / "Scripts" / "python.exe"
+
+def sha(path: pathlib.Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+def fingerprint():
+    files = sorted(
+        [p for p in root.glob("smart_*.py") if p.is_file()]
+        + [p for p in root.glob("test_*.py") if p.is_file()]
+        + [p for p in root.glob("adjudicate_*.py") if p.is_file()]
+        + [p for p in root.glob("freeze_*.py") if p.is_file()]
+    )
+    rows = {p.name: sha(p) for p in files}
+    canon = json.dumps(rows, sort_keys=True, separators=(",", ":")).encode()
+    return {"sha256": hashlib.sha256(canon).hexdigest(), "files": rows, "count": len(rows)}
+
+def run(args, timeout):
+    p = subprocess.run(args, cwd=root, capture_output=True, text=True,
+                       encoding="utf-8", errors="replace", timeout=timeout)
+    return {"args":[str(x) for x in args], "rc":p.returncode,
+            "stdout_tail":p.stdout[-20000:], "stderr_tail":p.stderr[-12000:]}
+
+t0 = time.time()
+before = fingerprint()
+steps = []
+
+s = run([str(py), "-m", "coverage", "erase"], 60)
+steps.append(s)
+if s["rc"] != 0:
+    print(json.dumps({"status":"ERASE_FAIL","before":before,"steps":steps}, ensure_ascii=False))
+    raise SystemExit(s["rc"])
+
+s = run([str(py), "-m", "coverage", "run", "--branch", "-m", "pytest", "-q",
+         "--disable-warnings", "--maxfail=50",
+         "--junitxml=SMART_B2_FINAL4_REGRESSION_JUNIT_20260909.xml"], 1200)
+steps.append(s)
+if s["rc"] != 0:
+    after = fingerprint()
+    print(json.dumps({"status":"TEST_FAIL","before":before,"after":after,
+                      "fingerprint_stable":before["sha256"]==after["sha256"],
+                      "seconds":round(time.time()-t0,3),"steps":steps}, ensure_ascii=False))
+    raise SystemExit(s["rc"])
+
+s = run([str(py), "-m", "coverage", "run", "--append", "--branch",
+         "smart_continuous_red_team.py"], 600)
+steps.append(s)
+if s["rc"] != 0:
+    after = fingerprint()
+    print(json.dumps({"status":"REDTEAM_FAIL","before":before,"after":after,
+                      "fingerprint_stable":before["sha256"]==after["sha256"],
+                      "seconds":round(time.time()-t0,3),"steps":steps}, ensure_ascii=False))
+    raise SystemExit(s["rc"])
+
+s = run([str(py), "-m", "coverage", "json",
+         "-o", "SMART_COVERAGE_GLOBAL_B2_FINAL4_20260909.json"], 180)
+steps.append(s)
+after = fingerprint()
+out = {"status":"PASS" if s["rc"]==0 and before["sha256"]==after["sha256"] else "FAIL",
+       "fingerprint_stable":before["sha256"]==after["sha256"],
+       "before":before,"after":after,
+       "seconds":round(time.time()-t0,3),"steps":steps}
+(root / "SMART_B2_FINAL4_RUNNER_PROOF_20260909.json").write_text(
+    json.dumps(out, ensure_ascii=False, indent=2)+"\n", encoding="utf-8"
+)
+print(json.dumps(out, ensure_ascii=False))
+if out["status"] != "PASS":
+    raise SystemExit(1)

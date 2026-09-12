@@ -79,6 +79,20 @@ def _files_under(path: Path) -> set[Path]:
     return {item.resolve() for item in path.rglob("*") if item.is_file()}
 
 
+def _pre_freeze_ledger_checks(root: Path, active: dict[str, Any], ledger_path: Path, ledger_before: dict[str, Any], target: int) -> dict[str, bool]:
+    events = ledger_before.get("events")
+    events_valid = isinstance(events, list)
+    target_events_absent = events_valid and not any(isinstance(ev, dict) and int(ev.get("target_contest", -1)) == int(target) for ev in events)
+    if active.get("operator_selected_target") is not True:
+        return {"ledger_baseline_integrity": events_valid and events == [], "pre_freeze_target_events_absent": target_events_absent}
+    seed_sha = active.get("canonical_ledger_seed_sha256")
+    seed_count = active.get("canonical_ledger_seed_event_count")
+    canonical = root / "SMART_SIGNAL_LEDGER.json"
+    metadata_valid = isinstance(seed_sha, str) and len(seed_sha) == 64 and isinstance(seed_count, int) and not isinstance(seed_count, bool) and seed_count >= 0
+    integrity = metadata_valid and ledger_path.is_file() and canonical.is_file() and sha256_file(ledger_path) == seed_sha and sha256_file(canonical) == seed_sha and events_valid and len(events) == seed_count
+    return {"ledger_baseline_integrity": bool(integrity), "pre_freeze_target_events_absent": bool(target_events_absent)}
+
+
 def _restore_fresh_epoch(epoch_dir: Path, files_before: set[Path], ledger_path: Path, ledger_bytes: bytes) -> None:
     ledger_path.write_bytes(ledger_bytes)
     for item in sorted(_files_under(epoch_dir) - files_before, reverse=True):
@@ -133,9 +147,10 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
         scheduled_datetime=str(schedule["scheduled_datetime"]),
         observed_at=datetime.now(timezone.utc).isoformat(),
     )
+    ledger_checks = _pre_freeze_ledger_checks(root, active, ledger_path, ledger_before, target)
     pre_checks = {
         "epoch_reset_ready": active["status"] == "RESET_READY",
-        "fresh_ledger_zero_events": ledger_before.get("events") == [],
+        **ledger_checks,
         "learned_state_absent": not state_path.exists(),
         "activation_authority_absent": not activation_authority_path.exists(),
         "expansion_registry_absent": not expansion_registry_path.exists(),

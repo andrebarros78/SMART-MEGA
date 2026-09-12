@@ -1,0 +1,800 @@
+{
+  "schema": "SMART_3052_IMPLEMENTATION_GATE_1",
+  "created_brt": "2026-08-30T13:43:14-03:00",
+  "target_contest": 3052,
+  "mandatory_before_freeze": true,
+  "freeze_allowed": true,
+  "completion_rule": "ALL_15_ITEMS_STATUS_PROVEN_WITH_EVIDENCE",
+  "governance": {
+    "no_partial_success": true,
+    "five_of_six_not_acceptable": true,
+    "retroactive_optimization_prohibited": true,
+    "future_leakage_prohibited": true,
+    "champion_remains_active_until_prospective_promotion": true,
+    "historical_or_synthetic_improvement_not_equal_prospective_proof": true
+  },
+  "items": [
+    {
+      "priority": 1,
+      "id": "P01_COUNTERFACTUAL_ATTRIBUTION",
+      "title": "Atribuição marginal e contrafactual permanente",
+      "requirement": "Medir após cada concurso qual sinal acrescentou valor, repetiu informação, empurrou dezenas corretas para baixo e quais combinações causaram perda.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P01_COUNTERFACTUAL_ATTRIBUTION_PROOF.json",
+          "sha256": "db5477646563381100357c99439a185d041dc900dc151202a026f67c834e8d86"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P01_FINAL.json",
+          "sha256": "2923635c1944a1739c9035694805a386670f63beb0a608cafd0af48d71ca9395",
+          "statements": 1011,
+          "branches": 306,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "module",
+          "file": "smart_signal_attribution.py",
+          "sha256": "501738d348959ecab8a0ab381553c55597a7c675cc4b5761b23c5710a9c65d33"
+        },
+        {
+          "type": "integration",
+          "file": "adjudicate_signal_challenger.py",
+          "sha256": "974804d5ed050dea7ed22565458e6c8910270f9fc8e2f0ddff57455b73a5797b",
+          "flow": "ADJUDICATION -> ATTRIBUTION"
+        },
+        {
+          "type": "prospective_ledger_attribution",
+          "target_contest": 3051,
+          "attribution_sha256": "84f5738dea417e887e5eb12350afd3e7019c8efbbece481b2a10adc112db4159",
+          "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53"
+        }
+      ],
+      "proven_brt": "2026-08-30T14:16:00.391062-03:00"
+    },
+    {
+      "priority": 2,
+      "id": "P02_MARGINAL_SIGNAL_UTILITY",
+      "title": "Utilidade marginal por sinal",
+      "requirement": "Avaliar contribuição incremental real de cada sinal ao ensemble, além do acerto individual.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P02_MARGINAL_SIGNAL_UTILITY_PROOF.json",
+          "sha256": "12f0e82352a66e633999347fd3d8049fdab92637f6bb5d76ff14edb6e078cf5b"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P02_FINAL.json",
+          "sha256": "f6ca91f339e559f9dc0b7c27a728cf59e0dda12029c00067c3d16eeeb0f7cdd9",
+          "statements": 1195,
+          "branches": 362,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "historical_oos",
+          "file": "SMART_P02_MARGINAL_UTILITY_HISTORICAL.json",
+          "sha256": "cc817e4ca20edfa66632d5ffee76b6c51a6632c016d5af98096203632d60b64e",
+          "predictions": 2050,
+          "challenger_hits": 1269,
+          "weight_effect_enabled": false
+        },
+        {
+          "type": "module",
+          "file": "smart_signal_marginal_utility.py",
+          "sha256": "02ea0bc21981cc9737f1b80762f3832101a4c93573659fdf407a59a7fd79d64e"
+        },
+        {
+          "type": "agent_integration",
+          "file": "smart_signal_agent.py",
+          "sha256": "d6244a3e8e5d67c265f0fe03f344c6372984b279cdcb9fd3cec6068da375c63f",
+          "flow": "pre-result metrics -> result -> leave-one-out marginal update -> next contest"
+        },
+        {
+          "type": "adjudication_integration",
+          "file": "adjudicate_signal_challenger.py",
+          "sha256": "71b2c9690fe7a2cf8c020550c966850ea223d179a752cb60dd9d3ff8cd236a3e",
+          "flow": "ADJUDICATION -> ATTRIBUTION -> MARGINAL_UTILITY"
+        },
+        {
+          "type": "prospective_ledger_marginal_utility",
+          "target_contest": 3051,
+          "marginal_utility_sha256": "c6d4cee9748e61f4de3773fd275d90ef37a09fdce8af1432cebd910891a9547d",
+          "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53"
+        }
+      ]
+    },
+    {
+      "priority": 3,
+      "id": "P03_FALSE_CONSENSUS_REDUNDANCY",
+      "title": "Penalização de redundância e consenso falso",
+      "requirement": "Impedir que sinais altamente correlacionados obtenham influência excessiva apenas por concordância redundante.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P03_FALSE_CONSENSUS_REDUNDANCY_PROOF.json",
+          "sha256": "4e262621d9a50e20b4491a05c2f4d4a2c93b7ff94b4594b04818a848e93c16cc"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P03_FINAL.json",
+          "sha256": "251e138332f6512893bb97b109102a6db77cd2f08c92a16644142358d343c768",
+          "statements": 1296,
+          "branches": 400,
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "module",
+          "file": "smart_signal_redundancy_consensus.py",
+          "sha256": "eaa93c230dd6444547e8eb252bbd0e7bc3d2bd8addf82b67a62adffdfd5ab201",
+          "threshold": 0.9
+        },
+        {
+          "type": "anti_overfit_decision",
+          "file": "SMART_P03_THRESHOLD_DECISION.json",
+          "sha256": "12bb52bf6182896b471c74afe958c608a84b70c5cbb7e94eebe1839703562a75",
+          "rejected_exploratory_threshold": 0.95,
+          "adopted_predeclared_threshold": 0.9
+        },
+        {
+          "type": "historical_oos",
+          "file": "SMART_P03_FINAL_OOS.json",
+          "sha256": "39018a9db3887d188f95cd1efb78027e2526c7fc939b2ace8a38813ecb3af249",
+          "legacy_total_hits": 1269,
+          "p03_total_hits": 1271,
+          "legacy_holdout_hits": 541,
+          "p03_holdout_hits": 543
+        }
+      ]
+    },
+    {
+      "priority": 4,
+      "id": "P04_SIGNAL_INTERACTIONS",
+      "title": "Interações entre sinais",
+      "requirement": "Modelar e medir quando pares ou grupos de sinais produzem ganho ou perda além de seus efeitos individuais.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P04_SIGNAL_INTERACTIONS_PROOF.json",
+          "sha256": "945cc1ccd4f06474a46c3105ed000d57cee5e0d83687674fd0b23422c5619c43"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P04_FINAL.json",
+          "sha256": "79120b107d930a72cd353167b802d63c8827fe46adee0fb567e103adb9d45c26",
+          "statements": 1472,
+          "branches": 460,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "historical_oos",
+          "file": "SMART_P04_INTERACTIONS_HISTORICAL.json",
+          "sha256": "2356aa4c5cb50b2a98633b3c9920c59495abbb337e35561407e73004921840da",
+          "predictions": 2050,
+          "pair_count": 66,
+          "challenger_hits": 1271,
+          "weight_effect_enabled": false
+        },
+        {
+          "type": "module",
+          "file": "smart_signal_interactions.py",
+          "sha256": "666c959b9ae0ad7b0116f71d8ebfabb85ee172514b203611057ee6df6a07b447"
+        },
+        {
+          "type": "prospective_ledger_interactions",
+          "target_contest": 3051,
+          "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+          "original_interaction_sha256": "81993db0cca46ac33ad0ad4fa87cf83ef4d9d7f3a8de05da62df6489557e0311",
+          "active_correction_sha256": "ce280becbd05b5278a833331e8c64d7e8b613a0a00dccc9ea3fc9db66a6d5190",
+          "semantic_equivalence": true,
+          "pair_count": 66,
+          "triple_count": 220
+        },
+        {
+          "type": "future_freeze_governance",
+          "file": "smart_champion_challenger.py",
+          "sha256": "686a561f946666f1a9d29d50ce0a97e36bd8e3328c6a3cbe500d0379e64e1d51",
+          "hashes_signal_interactions": true,
+          "snapshots_signal_interactions": true
+        }
+      ],
+      "proven_brt": "2026-08-30T17:25:06.062335-03:00"
+    },
+    {
+      "priority": 5,
+      "id": "P05_CONTEXTUAL_META_WEIGHTS",
+      "title": "Meta-pesos condicionais ao contexto",
+      "requirement": "Condicionar pesos a regime, estabilidade, dispersão, divergência entre famílias, drift e qualidade recente.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P05_CONTEXTUAL_META_WEIGHTS_PROOF.json",
+          "sha256": "4360d33d2073ffe9415a62a087d03b1a46781a02e44c479fcdddf677bcaac1cb"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P05_FINAL.json",
+          "sha256": "90696cef0a0a0780d3b589870de4abe0897886698d0c5ffa146bfda76e0a5464",
+          "statements": 1604,
+          "branches": 514,
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "module",
+          "file": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
+          "default_meta_strength": 0.06,
+          "max_meta_strength": 0.15
+        },
+        {
+          "type": "anti_overfit_decision",
+          "file": "SMART_P05_DECISION.json",
+          "sha256": "9b52f8540ca6d32200a739f238402031fc280bb74f8b41aad43f32bf813cb6b0",
+          "rejected_strength": 0.08,
+          "adopted_strength": 0.06
+        },
+        {
+          "type": "calibration",
+          "file": "SMART_P05_STRENGTH_CALIBRATION.json",
+          "sha256": "af75d7d5e09249a12e5fdf0d1b2960c1b44882c5418a77123d5b735b8fae4f8a",
+          "scope": "1001-2200 only",
+          "selected_strength": 0.06,
+          "holdout_used_for_selection": false
+        },
+        {
+          "type": "final_holdout",
+          "file": "SMART_P05_FINAL_HOLDOUT.json",
+          "sha256": "0832711f8da1167671f13339c353683392fce648cd60d025efc795d03aa61ee8",
+          "scope": "2801-3050",
+          "baseline_hits": 150,
+          "p05_hits": 150,
+          "delta": 0,
+          "total_baseline_hits": 1271,
+          "total_p05_hits": 1271
+        },
+        {
+          "type": "future_freeze_governance",
+          "file": "smart_champion_challenger.py",
+          "sha256": "638bb270df23ff6d2a09f167b8fc0c1dbd87726a392d9f29ea0f66b74bdf061f",
+          "hashes_contextual_meta_weights": true,
+          "snapshots_contextual_meta_weights": true
+        }
+      ],
+      "proven_brt": "2026-08-30T18:04:22.174453-03:00"
+    },
+    {
+      "priority": 6,
+      "id": "P06_RANK_SCORE_CALIBRATION",
+      "title": "Calibração das 60 posições/scores",
+      "requirement": "Testar monotonicidade e calibração OOS entre score/rank e frequência posterior; recalibrar ou neutralizar quando necessário.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P06_RANK_SCORE_CALIBRATION_PROOF.json",
+          "sha256": "018e03d70faeb614416a0d56673d55597e0c8da1cd8a6854dff03cf3d8783ede"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P06_FINAL.json",
+          "sha256": "1c277ccdd71061020b769ac11c01cebbfc5fbd715bd51b6ab60c634553a9e347",
+          "statements": 1769,
+          "branches": 564,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "strength_calibration",
+          "file": "SMART_P06_STRENGTH_CALIBRATION.json",
+          "sha256": "5cbe633a4ae0f1f14cd4794842bb3fcc430a48f29f7006a011c44e524e3a5438",
+          "selected_pre_holdout": 0.5,
+          "scope": "1001-2200 only"
+        },
+        {
+          "type": "rejected_candidate_holdout",
+          "file": "SMART_P06_FINAL_HOLDOUT.json",
+          "sha256": "ab0302a3ad4c7b7cda0d36830517160aa55f4233de00347c071b4fbdcbf59d87",
+          "candidate_strength": 0.5,
+          "final_holdout_delta_vs_uniform": 1.3576700524302432e-05,
+          "decision": "REJECT_NONZERO_CALIBRATION"
+        },
+        {
+          "type": "neutralized_validation",
+          "file": "SMART_P06_NEUTRALIZED_VALIDATION.json",
+          "sha256": "cd8fb3fdb9250251f92e946a1dc1efb3bf4897c9526cb2ca9449893bcdccd1b9",
+          "adopted_strength": 0.0,
+          "final_holdout_delta_vs_uniform": 0.0,
+          "full_oos_delta_vs_uniform": 0.0
+        },
+        {
+          "type": "decision",
+          "file": "SMART_P06_DECISION.json",
+          "sha256": "bd633472d4f77cde987bf5efc300b47de914d8ec89367caaf71cd70b0c31a291",
+          "mode": "NEUTRALIZED",
+          "published_probability": 0.1
+        },
+        {
+          "type": "module",
+          "file": "smart_rank_score_calibration.py",
+          "sha256": "c07c3d55093b79aec8d56cf67607ef8dfb0bfb494ac59a6dcd0a086fb890a8e4"
+        },
+        {
+          "type": "future_freeze_governance",
+          "file": "smart_champion_challenger.py",
+          "sha256": "fe4cc54a4cfc9ed9aba12b83c5a33a7d883e659fb2650c18b02b89fa8211e5d9",
+          "hashes_rank_score_calibration": true,
+          "snapshots_rank_score_calibration": true
+        },
+        {
+          "type": "future_adjudication_governance",
+          "file": "adjudicate_signal_challenger.py",
+          "sha256": "3fd279999cbec1b7bb6022f4300cfab59f4d7363793efbc7e08c14045a38c68f",
+          "appends_frozen_calibration_evaluation": true,
+          "backfill_3051": false
+        }
+      ],
+      "proven_brt": "2026-08-30T18:51:31.171267-03:00"
+    },
+    {
+      "priority": 7,
+      "id": "P07_MULTI_CHALLENGERS",
+      "title": "Múltiplos Challengers especializados",
+      "requirement": "Disponibilizar políticas independentes de qualidade dinâmica, diversidade máxima, baixa redundância, regime/contexto e política conservadora.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P07_MULTI_CHALLENGERS_PROOF.json",
+          "sha256": "f718a00220f3196de07204036fae5230818518e8c4365988a3c1ff65008c0a44"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P07_FINAL.json",
+          "sha256": "abc0fb246056c95980765fa954cc8432a118dd649602d7d3f9d90f97f6a2556f",
+          "statements": 1962,
+          "branches": 654,
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "historical_oos",
+          "file": "SMART_P07_MULTI_CHALLENGERS_HISTORICAL.json",
+          "sha256": "52c721d2cd4a4b1fb4eb6bf343054cf611aaf2ae21adbeb6f77b216c0fc84144",
+          "oos_predictions": 2050,
+          "selection_performed": false
+        },
+        {
+          "type": "module",
+          "file": "smart_multi_challengers.py",
+          "sha256": "316c68abdff606060d42a570f652c4c414d75f49c5378939f9a0a53edb257bf8"
+        }
+      ],
+      "proven_brt": "2026-08-30T19:59:00-03:00"
+    },
+    {
+      "priority": 8,
+      "id": "P08_META_GOVERNOR",
+      "title": "Meta-governador Champion-of-Challengers",
+      "requirement": "Comparar Challengers sob o mesmo corte causal, sem seleção retroativa, mantendo Champion até promoção comprovada.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P08_META_GOVERNOR_PROOF.json",
+          "sha256": "27838507fe8ca72825502faec5251829723623a880cfb2a0a458c4223e9a6eae"
+        },
+        {
+          "type": "coverage_union",
+          "file": "SMART_COVERAGE_P08_UNION.json",
+          "sha256": "40bd252b0a2e11e0697ca3f6fa030fbabe23862905d7ec380c5557965ada505b",
+          "modified_modules": [
+            "adjudicate_signal_challenger.py",
+            "smart_champion_challenger.py",
+            "smart_meta_governor.py",
+            "smart_signal_agent.py"
+          ],
+          "coverage": "100% lines + branches by union of full-suite and guard runs"
+        },
+        {
+          "type": "historical_oos",
+          "file": "SMART_P08_META_GOVERNOR_HISTORICAL.json",
+          "sha256": "571ebbb266b28db40b348ba9a53e22e7515d21324373dd6b5725c8d68c1f1a2d",
+          "oos_predictions": 2050,
+          "selected_hits": 1259,
+          "quality_dynamic_hits": 1271,
+          "production_authority": false
+        },
+        {
+          "type": "module",
+          "file": "smart_meta_governor.py",
+          "sha256": "759fd9b627110ca6fa5aa553950e71966948bd8727ff93d21d14ed7fcd81284f"
+        }
+      ],
+      "proven_brt": "2026-08-30T20:45:00-03:00"
+    },
+    {
+      "priority": 9,
+      "id": "P09_CONTINUOUS_RED_TEAM",
+      "title": "Red Team adversarial contínuo",
+      "requirement": "Testar IID, drift gradual, mudança abrupta, sinais falsos, dados ausentes, redundância, adversário anti-ranking, regimes recorrentes e recuperação.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "continuous_red_team",
+          "file": "SMART_P09_RED_TEAM_LATEST.json",
+          "sha256": "c40964e94d98288dbb0323c2b9525df287447d8a46beea93d6b77e0d6186e225",
+          "report_sha256": "13e3e90b489aff180b2b6ca1bf2a6fbde6b2d49baf16942be74a16c8aff6943e",
+          "all_checks_pass": true
+        },
+        {
+          "type": "registration_proof",
+          "file": "SMART_P09_P14_GATE_REGISTRATION_PROOF.json",
+          "sha256": "d86a76c0a7c8edb7978581b23e0416b7f756b9bffad6d82ee8341c91efde832a"
+        },
+        {
+          "type": "red_team_module",
+          "file": "smart_continuous_red_team.py",
+          "sha256": "2d299962d8ee1be107956a2710276045c8f3336d0eb8859a7d00bb90fce475c4"
+        },
+        {
+          "type": "global_critical_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% lines + branches"
+        }
+      ],
+      "proven_brt": "2026-09-03T20:58:51.359123-03:00"
+    },
+    {
+      "priority": 10,
+      "id": "P10_BOUNDED_ONLINE_LEARNING",
+      "title": "Aprendizado incremental com proteção contra sobre-reação",
+      "requirement": "Atualizar após resultado real com limites, regularização, recuperação e proteção contra mudança desproporcional causada por poucos concursos.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P10_BOUNDED_ONLINE_LEARNING_PROOF.json",
+          "sha256": "ff1eac105d1e2317db6fd667e4e96c7bc352deda41c59f32a830fb00d2688d71"
+        },
+        {
+          "type": "historical_nonregression",
+          "file": "SMART_P10_HISTORICAL_NONREGRESSION.json",
+          "sha256": "21e9c8f1ab40373b6cfa8b370be98a2014fefde2adff0f3be53ee7127eee8cd2",
+          "oos_predictions": 2050,
+          "total_delta": 0,
+          "holdout_delta": 0
+        },
+        {
+          "type": "module",
+          "file": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "type": "agent_integration",
+          "file": "smart_signal_agent.py",
+          "sha256": "e0a161ad6b63c5d6aa7eb7577a87039f7623b49b4256ed6ad689114b3b7e59fd"
+        },
+        {
+          "type": "regression",
+          "test_file": "test_smart_bounded_online_learning.py",
+          "test_sha256": "4b254bd4d812148b18ad9789709c39beb980334e6ccc602118190a924969d5c4",
+          "combined_p10_p11_passed": 20
+        }
+      ],
+      "proven_brt": "2026-08-31T22:21:07.233372-03:00"
+    },
+    {
+      "priority": 11,
+      "id": "P11_SIGNAL_EXPANSION_GOVERNANCE",
+      "title": "Expansão criteriosa de novos sinais",
+      "requirement": "Novos sinais entram somente como Challengers e exigem contribuição marginal OOS comprovada antes de influência material.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P11_SIGNAL_EXPANSION_GOVERNANCE_PROOF.json",
+          "sha256": "71b3bac7bedabbd3fb0f176b63a8b72760ac7e32a8a9661a2fac9c747afa5f2a"
+        },
+        {
+          "type": "validation",
+          "file": "SMART_P11_SIGNAL_EXPANSION_VALIDATION.json",
+          "sha256": "4955286dc05ba4adeedff1d8153fb903e9502f6ee4bf3883fc21a5789bfd4d2c",
+          "all_checks_pass": true
+        },
+        {
+          "type": "module",
+          "file": "smart_signal_expansion_governance.py",
+          "sha256": "ad76396cefe2112403fec795c604d11e72d1ddd5c0e45c5d67ef18875e1ec95f"
+        },
+        {
+          "type": "authorization_proof",
+          "sha256": "a96ed3ff5d3fa10325c33b538f4e6d41d2ee2e9c9fada5ccfe96bc1e41622dd8",
+          "scope": "CHALLENGER_ONLY"
+        },
+        {
+          "type": "regression",
+          "test_file": "test_smart_signal_expansion_governance.py",
+          "test_sha256": "e1fb0df0882ff986d70ceaf8b8c9643bd2f1d1dacf0af465dbccbd67c3a65721",
+          "combined_p10_p11_passed": 20
+        }
+      ],
+      "proven_brt": "2026-08-31T22:21:07.233372-03:00"
+    },
+    {
+      "priority": 12,
+      "id": "P12_SEQUENTIAL_PROSPECTIVE_PROOF",
+      "title": "Prova prospectiva sequencial",
+      "requirement": "Fluxo obrigatório freeze antes do resultado -> resultado -> adjudicação -> aprendizado, com ledger append-only e hashes.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P12_SEQUENTIAL_PROSPECTIVE_PROOF.json",
+          "sha256": "d6030886b144241e0b126f57165ba91f75fca648d581e13e55cdedefcf2fa2ee"
+        },
+        {
+          "type": "coverage_module",
+          "file": "SMART_COVERAGE_P12_FINAL.json",
+          "sha256": "fd5c8795687111bf83404372164538c8736c2679ff0eeaa2f245f6c66ffb900e",
+          "coverage": "100% lines + branches for smart_sequential_prospective_proof.py"
+        },
+        {
+          "type": "coverage_gate_union",
+          "file": "SMART_COVERAGE_P12_UNION.json",
+          "sha256": "a995d773f86d05971ff7dc2954fe24300f030839c08593e52de750bacc42fd5e",
+          "coverage": "100% lines + branches by union for smart_champion_challenger.py"
+        },
+        {
+          "type": "module",
+          "file": "smart_sequential_prospective_proof.py",
+          "sha256": "04ddf440e165b6eb965ad4d5a9f333bd3c654082bed18c643136ab8cc7beb01b"
+        },
+        {
+          "type": "integration",
+          "file": "smart_champion_challenger.py",
+          "sha256": "a38bfaaaf59e0049fa69fc1719a8c21399e0133ae2aeb1b92c82b70c0b298b28",
+          "flow": "FREEZE -> ADJUDICATION -> DERIVED EVALUATIONS -> LEARNING_UPDATE -> SEQUENTIAL_PROOF"
+        },
+        {
+          "type": "regression",
+          "test_file": "test_smart_sequential_prospective_proof.py",
+          "test_sha256": "4b7867578c1bc1a677e46ad7dbfc9d76f5314430019db0f3117d46b09f34d0e5",
+          "focused_passed": 14,
+          "full_suite_passed": 178
+        }
+      ],
+      "proven_brt": "2026-08-31T11:57:53.116494-03:00"
+    },
+    {
+      "priority": 13,
+      "id": "P13_PROMOTION_GATE",
+      "title": "Gate de promoção",
+      "requirement": "Implementar e preservar gate com mínimo prospectivo, superioridade acumulada, regret favorável e evidência sequencial; aumentar amostra quando vantagem for pequena.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P13_PROMOTION_GATE_PROOF.json",
+          "sha256": "6542135e8805c225d2bf6b4b3425836d2017c15088b471930f2ee3c910d3938f"
+        },
+        {
+          "type": "coverage",
+          "file": "SMART_COVERAGE_P13_FINAL.json",
+          "sha256": "c60527ae91af2377418b8bb9e88803b7dae8555bc37c4eed57a92749910c0daf",
+          "statements": 64,
+          "branches": 26,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "module",
+          "file": "smart_promotion_gate.py",
+          "sha256": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6"
+        },
+        {
+          "type": "orchestrator_integration",
+          "file": "smart_champion_challenger.py",
+          "sha256": "ec9bc056292dee8b590517329dcdb732371ef593093d09e0374367ae09d43762",
+          "flow": "causal FREEZE/ADJUDICATION pairs -> adaptive promotion gate -> KEEP_CHAMPION or eligible promotion"
+        },
+        {
+          "type": "adjudication_integration",
+          "file": "adjudicate_signal_challenger.py",
+          "sha256": "5bdbe5320ef1c63121c06e37c9a5353e1866f5649923cb3502ba252a451b289f",
+          "flow": "ADJUDICATION appends e_value_after then returns promotion_status"
+        },
+        {
+          "type": "regression",
+          "test_file": "test_smart_promotion_gate.py",
+          "test_sha256": "b00d19f8f300f4bdf4fd3de4c8e84aa65cd8afc145059e8c2eb11fa785bec124",
+          "focused_passed": 13,
+          "focused_plus_architecture_passed": 18,
+          "full_suite_passed": 191
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "current_real_ledger_decision",
+          "file": "SMART_P13_CURRENT_LEDGER_DECISION.json",
+          "sha256": "6eb594c29e5a9b8e4e482b092dfda2728cbf4d93d62f1dad46b7621629b82b2f",
+          "decision": "KEEP_CHAMPION",
+          "n": 1,
+          "e_value": 1.0
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        }
+      ],
+      "proven_brt": "2026-08-31T12:39:08.964236-03:00"
+    },
+    {
+      "priority": 14,
+      "id": "P14_INDEPENDENT_AUDIT_NONREGRESSION",
+      "title": "Auditoria independente e não regressão",
+      "requirement": "Antes de promoção: cobertura, branches, hashes, replay determinístico, ausência de leakage e comparação completa contra Champion.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "independent_audit",
+          "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+          "sha256": "55199b35357699579a0a274ddc31aaf79b47c0e649cc3fe52e4c8ec5079721c5",
+          "report_sha256": "69d8c0190d1d1ffdb8e81d3a83576c3f2ff6987ac15b30d7d24740187c246ed7",
+          "material_deficiencies": []
+        },
+        {
+          "type": "registration_proof",
+          "file": "SMART_P09_P14_GATE_REGISTRATION_PROOF.json",
+          "sha256": "d86a76c0a7c8edb7978581b23e0416b7f756b9bffad6d82ee8341c91efde832a"
+        },
+        {
+          "type": "coverage_binding",
+          "file": "SMART_P14_COVERAGE_BINDING_AUDIT.json",
+          "sha256": "6338aa6881058a21aad4d6d60dc2ddbf73d626fca8d063fdbcf7882c2f98e1bf",
+          "source_file": "smart_independent_audit.py",
+          "covered_lines": 480,
+          "statements": 480,
+          "covered_branches": 246,
+          "branches": 246
+        },
+        {
+          "type": "coverage_binding",
+          "file": "SMART_P14_COVERAGE_BINDING_ORCHESTRATOR.json",
+          "sha256": "69399cb57389a7c5fed03ff3545948ec9b36f403b6cb908e80b668bbec5734ed",
+          "source_file": "smart_champion_challenger.py",
+          "covered_lines": 286,
+          "statements": 286,
+          "covered_branches": 110,
+          "branches": 110
+        },
+        {
+          "type": "coverage_binding",
+          "file": "SMART_P14_COVERAGE_BINDING_PROMOTION.json",
+          "sha256": "68abcb5470907ba85d705c083ffe3c8bbd1842c771406a3b0e5cfbdf40f14943",
+          "source_file": "smart_promotion_gate.py",
+          "covered_lines": 64,
+          "statements": 64,
+          "covered_branches": 26,
+          "branches": 26
+        },
+        {
+          "type": "coverage_binding",
+          "file": "SMART_P14_COVERAGE_BINDING_EVIDENCE_ONLY.json",
+          "sha256": "78d8536dc146b2d0db7e41842a39bfa6dbc49c4586b7ea54fad7a7b9f03ba569",
+          "source_file": "smart_evidence_only_promotion.py",
+          "covered_lines": 297,
+          "statements": 297,
+          "covered_branches": 160,
+          "branches": 160
+        },
+        {
+          "type": "global_critical_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% lines + branches"
+        }
+      ],
+      "proven_brt": "2026-09-03T20:58:51.359123-03:00"
+    },
+    {
+      "priority": 15,
+      "id": "P15_EVIDENCE_ONLY_PROMOTION",
+      "title": "Promoção somente com evidência",
+      "requirement": "Challenger somente pode virar Champion após superioridade prospectiva material, reproduzível e sem deficiência material conhecida.",
+      "status": "PROVEN",
+      "evidence": [
+        {
+          "type": "implementation_proof",
+          "file": "SMART_P15_EVIDENCE_ONLY_PROMOTION_PROOF.json",
+          "sha256": "bbf5573a6059b5983c29b27a857c7633b815632b0d99e10aec9b15e0dc55510e"
+        },
+        {
+          "type": "coverage_module",
+          "file": "SMART_COVERAGE_P15_MODULE.json",
+          "sha256": "f9240d6667950b559fc9e717409be1a8a13efbe054d21f1844c8e331b24cf506",
+          "statements": 297,
+          "branches": 160,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "coverage_orchestrator",
+          "file": "SMART_COVERAGE_P15_ORCHESTRATOR.json",
+          "sha256": "44512e5a4829c19d9966653098a8c5f3866be596619817095c8033e35d4ffaf8",
+          "statements": 268,
+          "branches": 104,
+          "coverage": "100% lines + branches"
+        },
+        {
+          "type": "module",
+          "file": "smart_evidence_only_promotion.py",
+          "sha256": "4395b2278c6478d705755bdb3dbf356f4183f749661b8288674f39d585d8694d"
+        },
+        {
+          "type": "orchestrator_integration",
+          "file": "smart_champion_challenger.py",
+          "sha256": "2ea9d64499509e40a99b974d882bfe6be995a03db6735ef5228ada33518a22c7",
+          "flow": "P13 ELIGIBILITY -> P15 EVIDENCE/AUDIT/MATERIAL-DEFICIENCY GATE -> KEEP_CHAMPION or AUTHORIZED PROMOTION"
+        },
+        {
+          "type": "regression",
+          "test_file": "test_smart_evidence_only_promotion.py",
+          "test_sha256": "c08fae4389e4062d61a0f77ee60933ed2fc7bfb1c163d3f9fd6ffeca2a484d9d",
+          "focused_passed": 34,
+          "p15_coverage_passed": 15,
+          "orchestrator_coverage_passed": 97,
+          "full_suite_passed": 235
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        },
+        {
+          "type": "current_real_ledger_decision",
+          "file": "SMART_P15_CURRENT_LEDGER_DECISION.json",
+          "sha256": "bc966bd16cecda9ea91b95907abc82f1e5d478327af22e188b889a804982c2e4",
+          "decision": "KEEP_CHAMPION",
+          "authorized": false
+        },
+        {
+          "type": "current_global_coverage",
+          "file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+          "sha256": "f91776fa29658cf0c45eae31f1ae9f03f57b0571000dd46997c02508a4ae283a",
+          "coverage": "100% critical lines + branches"
+        }
+      ],
+      "proven_brt": "2026-08-31T23:46:17.109228-03:00"
+    }
+  ],
+  "notes": [
+    "Itens 12-15 exigem que os mecanismos e gates estejam implementados antes do concurso 3052; não exigem fabricar evidência prospectiva impossível de acumular antes desse concurso.",
+    "Nenhuma evidência histórica, sintética ou pós-resultado do concurso 3051 pode ser usada para reescrever a freeze do 3051.",
+    "A liberação da freeze 3052 exige atualização deste manifesto com todos os 15 itens em status PROVEN e referências de evidência verificáveis."
+  ],
+  "progress": {
+    "proven_items": 15,
+    "total_items": 15,
+    "remaining_items": 0,
+    "remaining_ids": []
+  },
+  "last_updated_brt": "2026-09-03T20:58:51.359123-03:00",
+  "last_update_brt": "2026-08-30T18:04:22.174453-03:00",
+  "updated_brt": "2026-09-03T20:58:51.359123-03:00",
+  "global_integrity": {
+    "file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
+    "sha256": "60f8b23c6c9e80aa803e93ecbe1ee3b7820483390151e2e04d35c6b213f40e6b",
+    "status": "PASS",
+    "material_deficiencies": []
+  }
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "SMART_B2_ABSOLUTE_PATH_FAILCLOSED_PROOF_1",
+  "generated_at": "2026-09-10T17:22:08.465588+00:00",
+  "workspace": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA",
+  "host": "DESKTOP-4T6AS9K",
+  "hardening_source": "smart_independent_audit.py",
+  "hardening_source_sha256": "8ac0647581209952665172474ff04c89f004028b0c5301cdd74fb13a5dc376f0",
+  "checks": {
+    "audit_untrusted_absolute_exact_sha": {
+      "pass": true,
+      "error": "ValueError: artifact external absolute path denied"
+    },
+    "audit_untrusted_absolute_override_cannot_bypass": {
+      "pass": true,
+      "error": "ValueError: artifact external absolute path denied"
+    },
+    "audit_trusted_legacy_exact_sha_reanchors": {
+      "pass": true,
+      "resolved": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA\\runtime\\isolation-hardening-proof-20260910\\artifact.bin"
+    },
+    "audit_trusted_prefix_traversal_denied": {
+      "pass": true,
+      "error": "ValueError: artifact external absolute path denied"
+    },
+    "orchestrator_untrusted_absolute_denied": {
+      "pass": false,
+      "error": "ValueError: foreign absolute external paths are forbidden: Z:\\foreign\\freeze.json"
+    },
+    "orchestrator_trusted_legacy_reanchors": {
+      "pass": false,
+      "error": "ValueError: legacy absolute external paths are forbidden: C:\\New Projet\\SMART-MEGA\\runtime\\freeze.json"
+    },
+    "orchestrator_traversal_denied": {
+      "pass": false,
+      "error": "ValueError: traversal absolute external paths are forbidden: C:\\New Projet\\SMART-MEGA\\..\\outside\\freeze.json"
+    }
+  },
+  "status": "FAIL"
+}

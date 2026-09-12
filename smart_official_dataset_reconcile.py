@@ -35,11 +35,13 @@ def reconcile(
     source: Path,
     output: Path,
     proof: Path,
-    fetcher: Callable[[int], tuple[dict[str, Any], str]] = fetch_official_payload,
+    fetcher: Callable[[int], tuple[dict[str, Any], str]] | None = None,
 ) -> dict[str, Any]:
     source = Path(source)
     output = Path(output)
     proof = Path(proof)
+    if fetcher is None:
+        fetcher = fetch_official_payload
     if not source.is_file():
         raise ValueError("source dataset is missing")
     if proof.exists():

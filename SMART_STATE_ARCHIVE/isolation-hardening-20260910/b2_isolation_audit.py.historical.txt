@@ -1,0 +1,49 @@
+from __future__ import annotations
+import json, os, pathlib, sys
+ROOT = pathlib.Path(r'C:\ProgramData\B2-Learning-Work\SMART-MEGA').resolve()
+OLD = r'C:\New Projet\SMART-MEGA'
+needles = {
+    OLD.lower(),
+    OLD.replace('\\','/').lower(),
+    OLD.replace('\\','\\\\').lower(),
+}
+text_exts={'.py','.json','.md','.txt','.cfg','.ini','.toml','.yaml','.yml','.ps1','.cmd','.bat','.pth','.lock','.csv','.xml','.html','.js','.ts','.tsx','.jsx','.log'}
+text_names={'pyvenv.cfg','requirements.txt','requirements.lock.txt','pytest.ini','.env'}
+refs=[]; reparse=[]; outside_resolve=[]; errors=[]; scanned=0
+for p in ROOT.rglob('*'):
+    try:
+        if not p.is_file() and not p.is_dir():
+            continue
+        st=os.lstat(p)
+        attrs=getattr(st,'st_file_attributes',0)
+        if attrs & getattr(os,'FILE_ATTRIBUTE_REPARSE_POINT',0):
+            target=None
+            try: target=os.readlink(p)
+            except Exception: pass
+            reparse.append({'path':str(p.relative_to(ROOT)),'target':target,'resolved':str(p.resolve())})
+            try:
+                p.resolve().relative_to(ROOT)
+            except Exception:
+                outside_resolve.append({'path':str(p.relative_to(ROOT)),'resolved':str(p.resolve())})
+        if p.is_file() and (p.suffix.lower() in text_exts or p.name.lower() in {x.lower() for x in text_names}):
+            if p.stat().st_size > 25_000_000: continue
+            scanned += 1
+            raw=p.read_bytes()
+            low=raw.lower()
+            hit=[n for n in needles if n.encode('utf-8') in low]
+            if hit:
+                try: txt=raw.decode('utf-8-sig','replace')
+                except Exception: txt=''
+                lines=[]
+                for i,line in enumerate(txt.splitlines(),1):
+                    if any(n in line.lower() for n in needles):
+                        lines.append({'line':i,'text':line[:500]})
+                refs.append({'path':str(p.relative_to(ROOT)),'size':len(raw),'matches':lines[:50]})
+    except Exception as e:
+        errors.append({'path':str(p),'error':type(e).__name__+': '+str(e)})
+# inspect python env binding files explicitly
+special=[]
+for rel in [r'.venv\pyvenv.cfg', r'.venv\Lib\site-packages']:
+    p=ROOT/rel
+    special.append({'path':rel,'exists':p.exists(),'resolved':str(p.resolve()) if p.exists() else None})
+print(json.dumps({'root':str(ROOT),'old':OLD,'scanned_text_files':scanned,'literal_reference_file_count':len(refs),'literal_references':refs,'reparse_count':len(reparse),'reparse_points':reparse,'outside_resolve_count':len(outside_resolve),'outside_resolve':outside_resolve,'errors_count':len(errors),'errors':errors[:50],'special':special},ensure_ascii=False))

@@ -1,0 +1,29 @@
+{
+  "schema": "SMART_B2_EXTERNAL_PATH_FAILCLOSED_PROOF_2",
+  "status": "PASS",
+  "workspace": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA",
+  "legacy_root_exists": false,
+  "runtime_path_cases": {
+    "deleted_legacy_root": {
+      "blocked": true,
+      "error": "ValueError: deleted_legacy_root absolute external paths are forbidden: C:\\New Projet\\SMART-MEGA\\runtime\\freeze.json"
+    },
+    "foreign_absolute": {
+      "blocked": true,
+      "error": "ValueError: foreign_absolute absolute external paths are forbidden: C:\\Other\\Project\\runtime\\freeze.json"
+    },
+    "foreign_drive": {
+      "blocked": true,
+      "error": "ValueError: foreign_drive absolute external paths are forbidden: Z:\\retired\\SMART-MEGA\\runtime\\freeze.json"
+    },
+    "relative_traversal": {
+      "blocked": true,
+      "error": "ValueError: relative_traversal escapes project root: ../outside/freeze.json"
+    }
+  },
+  "audit_operational_absolute_path_blocked": true,
+  "inside_relative_path_allowed": true,
+  "active_code_config_legacy_root_hits": [],
+  "historical_absolute_paths_policy": "METADATA_ONLY_NO_DEREFERENCE",
+  "timestamp_utc": "2026-09-10T17:31:53.926118+00:00"
+}

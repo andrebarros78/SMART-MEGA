@@ -1,0 +1,295 @@
+from __future__ import annotations
+
+import copy
+import json
+from pathlib import Path
+
+import numpy as np
+import pandas as pd
+import pytest
+
+import smart_champion_challenger as cc
+import adjudicate_signal_challenger as adj
+import smart_v2_engine as e
+from smart_signal_agent import SmartSignalAgent, write_state
+import smart_sequential_prospective_proof as sp
+
+
+def _minimal_freeze(target=10, sha='a'*64):
+    return {'event_type':'FREEZE','target_contest':target,'cutoff_contest':target-1,
+            'freeze_sha256':sha,'freeze_file':'f.json','frozen_before_result':True,'causal_cutoff':True}
+
+
+def _minimal_adj(target=10, sha='a'*64):
+    return {'event_type':'ADJUDICATION','target_contest':target,'freeze_sha256':sha,
+            'champion_hits':1,'challenger_hits':1,'retroactive_rewrite':False}
+
+
+def test_freeze_snapshot_declares_strict_sequence_rules():
+    s=sp.freeze_snapshot()
+    assert s['schema']==sp.FREEZE_SNAPSHOT_SCHEMA
+    assert s['freeze_before_result_required'] is True
+    assert s['learning_after_adjudication_only'] is True
+    assert s['append_only_prefix_preservation_required'] is True
+    assert len(s['sha256'])==64
+
+
+def test_validator_requires_freeze_and_rejects_post_result_without_adjudication():
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[]},10)
+    L={'events':[_minimal_freeze(),{'event_type':'ATTRIBUTION','target_contest':10}]}
+    with pytest.raises(ValueError): sp.validate_target_sequence(L,10)
+
+
+def test_validator_rejects_adjudication_before_active_freeze_and_hash_mismatch():
+    L={'events':[_minimal_adj(),_minimal_freeze()]}
+    with pytest.raises(ValueError): sp.validate_target_sequence(L,10)
+    L={'events':[_minimal_freeze(),_minimal_adj(sha='b'*64)]}
+    with pytest.raises(ValueError): sp.validate_target_sequence(L,10)
+
+
+def test_validator_supports_pre_result_supersede_but_only_one_active_freeze():
+    f1=_minimal_freeze(10,'a'*64); f2=_minimal_freeze(10,'b'*64)
+    sup={'event_type':'SUPERSEDE','target_contest':10,'old_freeze_sha256':'a'*64,'new_freeze_sha256':'b'*64}
+    adj=_minimal_adj(10,'b'*64)
+    out=sp.validate_target_sequence({'events':[f1,f2,sup,adj]},10)
+    assert out['active_freeze_sha256']=='b'*64 and out['adjudicated'] is True
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f1,f2,adj]},10)
+
+
+def test_learning_must_bind_to_adjudication_and_end_at_target(tmp_path: Path):
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':[_minimal_freeze(),_minimal_adj()]}))
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':9}))
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state)
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    out=sp.append_learning_update(ledger,10,state)
+    assert out['status']=='LEARNING_RECORDED'
+    L=json.loads(ledger.read_text()); learn=L['events'][-1]
+    assert learn['source_adjudication_sha256']==sp.canonical_event_hash(L['events'][1])
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state)
+
+
+def test_learning_rejects_nonstate_and_canonical_data_not_ending_at_target(tmp_path: Path):
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'; data=tmp_path/'d.xlsx'
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':[_minimal_freeze(),_minimal_adj()]}))
+    state.write_text(json.dumps({'schema':'BAD','last_contest':10}))
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state)
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    pd.DataFrame([{'Concurso':9}]).to_excel(data,index=False)
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state,data)
+
+
+def test_sequence_proof_is_chained_append_only_and_detects_tampering(tmp_path: Path):
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
+    prefix=[_minimal_freeze(),_minimal_adj(),{'event_type':'ATTRIBUTION','target_contest':10}]
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':copy.deepcopy(prefix)}))
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    sp.append_learning_update(ledger,10,state)
+    before=json.loads(ledger.read_text())['events']
+    out=sp.append_sequence_proof(ledger,10)
+    assert out['status']=='SEQUENCE_PROVEN'
+    after=json.loads(ledger.read_text())['events']
+    assert after[:len(before)]==before
+    assert sp.validate_target_sequence(json.loads(ledger.read_text()),10,require_learning=True,require_proof=True)['valid']
+    with pytest.raises(ValueError): sp.append_sequence_proof(ledger,10)
+    bad=json.loads(ledger.read_text()); bad['events'][1]['champion_hits']=6
+    with pytest.raises(ValueError): sp.validate_target_sequence(bad,10,require_learning=True,require_proof=True)
+
+
+def _dataset(n: int, seed: int) -> pd.DataFrame:
+    rng=np.random.default_rng(seed); rows=[]
+    for i in range(1,n+1):
+        draw=np.sort(rng.choice(np.arange(1,61),6,replace=False))
+        row={'Concurso':i,'Data do Sorteio':pd.Timestamp('2024-01-01')+pd.Timedelta(days=i)}
+        row.update({f'Bola{j}':int(draw[j-1]) for j in range(1,7)}); rows.append(row)
+    return pd.DataFrame(rows)
+
+
+def test_full_freeze_adjudicate_learn_prove_cycle_and_freeze_contains_p12(tmp_path: Path):
+    target=66; full=_dataset(target,1212); cutoff=full.iloc[:-1].copy()
+    pre=tmp_path/'pre.xlsx'; through=tmp_path/'through.xlsx'; freeze=tmp_path/'freeze.json'
+    ledger=tmp_path/'ledger.json'; prestate=tmp_path/'prestate.json'; learned=tmp_path/'learned.json'
+    cutoff.to_excel(pre,index=False); full.to_excel(through,index=False)
+    fr=cc.freeze_champion_challenger(pre,target,freeze,ledger,prestate,start=30, enforce_temporal_guard=False)
+    assert fr['status']=='FROZEN'
+    obj=json.loads(freeze.read_text()); L=json.loads(ledger.read_text()); fe=L['events'][0]
+    assert len(obj['sequential_prospective_proof_sha256'])==64
+    assert obj['sequential_prospective_proof']['schema']==sp.FREEZE_SNAPSHOT_SCHEMA
+    assert fe['snapshot']['sequential_prospective_proof']['sha256']==obj['sequential_prospective_proof']['sha256']
+    original_prefix=copy.deepcopy(L['events'])
+    adj.adjudicate(through,target,ledger)
+    draws,contests=e.load_draws(through)
+    agent=SmartSignalAgent(start=30); agent.replay_history(draws,contests)
+    st=agent.state_document(data_sha256=sp.sha256_file(through)); st.update({'sequential_learning_target':target,'learning_after_adjudication':True})
+    write_state(learned,st)
+    lr=sp.append_learning_update(ledger,target,learned,through); assert lr['status']=='LEARNING_RECORDED'
+    pr=sp.append_sequence_proof(ledger,target); assert pr['status']=='SEQUENCE_PROVEN'
+    final=json.loads(ledger.read_text())
+    assert final['events'][:len(original_prefix)]==original_prefix
+    types=[e['event_type'] for e in final['events'] if e.get('target_contest')==target]
+    assert types[0]=='FREEZE' and 'ADJUDICATION' in types and types[-2:]==[sp.LEARNING_EVENT,sp.PROOF_EVENT]
+    v=sp.validate_target_sequence(final,target,require_learning=True,require_proof=True,verify_files=True,root=tmp_path)
+    assert v['valid'] is True
+
+
+def test_verify_files_rejects_tampered_learning_state(tmp_path: Path):
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'; freeze=tmp_path/'f.json'
+    freeze.write_text('{}'); fsha=sp.sha256_file(freeze)
+    f=_minimal_freeze(10,fsha); f['freeze_file']=str(freeze)
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':[f,_minimal_adj(10,fsha)]}))
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    sp.append_learning_update(ledger,10,state); sp.append_sequence_proof(ledger,10)
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10,'tampered':True}))
+    with pytest.raises(ValueError): sp.validate_target_sequence(json.loads(ledger.read_text()),10,require_learning=True,require_proof=True,verify_files=True)
+
+
+def _learn_event(adj, target=10, state_file='state.json', state_sha='x'):
+    return {'event_type':sp.LEARNING_EVENT,'target_contest':target,
+            'source_adjudication_sha256':sp.canonical_event_hash(adj),'source_freeze_sha256':adj['freeze_sha256'],
+            'state_file':state_file,'state_sha256':state_sha,'trained_through_contest':target,
+            'learning_after_adjudication':True,'retroactive_rewrite':False}
+
+
+def test_p12_all_sequence_guard_branches(tmp_path: Path):
+    f=_minimal_freeze(); a=_minimal_adj()
+    with pytest.raises(ValueError): sp.validate_target_sequence([],10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,copy.deepcopy(a)]},10)
+    l=_learn_event(a)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,l,copy.deepcopy(l)]},10)
+    p1={'event_type':sp.PROOF_EVENT,'target_contest':10}; p2=copy.deepcopy(p1)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,l,p1,p2]},10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a]},10,require_learning=True)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,l]},10,require_proof=True)
+    f2=_minimal_freeze(10,'b'*64); sup={'event_type':'SUPERSEDE','target_contest':10,'old_freeze_sha256':'b'*64,'new_freeze_sha256':'a'*64}
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,f2,sup]},10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,{'event_type':'ATTRIBUTION','target_contest':10},a]},10)
+    early=_learn_event(a)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,early,a]},10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,l,{'event_type':'ATTRIBUTION','target_contest':10}]},10)
+    bad=copy.deepcopy(l); bad['source_adjudication_sha256']='0'*64
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,bad]},10)
+    bad=copy.deepcopy(l); bad['trained_through_contest']=9
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,bad]},10)
+    bad=copy.deepcopy(l); bad['learning_after_adjudication']=False
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,bad]},10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,{'event_type':sp.PROOF_EVENT,'target_contest':10}]},10)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,{'event_type':sp.PROOF_EVENT,'target_contest':10},l]},10)
+    wrong={'event_type':sp.PROOF_EVENT,'target_contest':10,'event_hashes':[],'sequence_sha256':'bad'}
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,l,wrong]},10)
+    assert len(sp._event_chain([(0,f)],stop_before_proof=False)[0])==1
+
+
+def test_p12_relative_file_verification_and_io_guards(tmp_path: Path):
+    freeze=tmp_path/'f.json'; freeze.write_text('{}'); fsha=sp.sha256_file(freeze)
+    state=tmp_path/'state.json'; state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10})); ssha=sp.sha256_file(state)
+    f=_minimal_freeze(10,fsha); f['freeze_file']='f.json'; a=_minimal_adj(10,fsha); l=_learn_event(a,state_file='state.json',state_sha=ssha)
+    out=sp.validate_target_sequence({'events':[f,a,l]},10,verify_files=True,root=tmp_path)
+    assert out['valid']
+    bad=copy.deepcopy(l); bad['state_sha256']='0'*64
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[f,a,bad]},10,verify_files=True,root=tmp_path)
+    badf=copy.deepcopy(f); badf['freeze_sha256']='0'*64; bada=_minimal_adj(10,'0'*64); badl=_learn_event(bada,state_file='state.json',state_sha=ssha)
+    with pytest.raises(ValueError): sp.validate_target_sequence({'events':[badf,bada,badl]},10,verify_files=True,root=tmp_path)
+    missing=tmp_path/'none.json'; assert sp._load_ledger(missing)['events']==[]
+    invalid=tmp_path/'badledger.json'; invalid.write_text(json.dumps({'schema':'BAD','events':[]}))
+    with pytest.raises(ValueError): sp._load_ledger(invalid)
+    good=tmp_path/'goodledger.json'; assert len(sp._write_ledger(good,{'schema':sp.LEDGER_SCHEMA,'events':[]}))==64
+
+
+def test_p12_append_input_guards_and_unreachable_prefix_defense(monkeypatch, tmp_path: Path):
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':[_minimal_freeze(),_minimal_adj()]}))
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,tmp_path/'missing_state.json')
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state,tmp_path/'missing.xlsx')
+
+    class MutatingList(list):
+        def append(self, item):
+            if self: self[0]['mutated']=True
+            super().append(item)
+    base={'schema':sp.LEDGER_SCHEMA,'events':MutatingList([_minimal_freeze(),_minimal_adj()])}
+    monkeypatch.setattr(sp,'_load_ledger',lambda path: base)
+    with pytest.raises(RuntimeError): sp.append_learning_update(tmp_path/'x.json',10,state)
+
+    a=_minimal_adj(); l=_learn_event(a,state_file=str(state),state_sha=sp.sha256_file(state))
+    base2={'schema':sp.LEDGER_SCHEMA,'events':MutatingList([_minimal_freeze(),a,l])}
+    monkeypatch.setattr(sp,'_load_ledger',lambda path: base2)
+    with pytest.raises(RuntimeError): sp.append_sequence_proof(tmp_path/'y.json',10)
+
+
+def test_p12_freeze_only_is_valid_pre_result_but_learning_is_blocked(tmp_path: Path):
+    L={'events':[_minimal_freeze()]}
+    out=sp.validate_target_sequence(L,10)
+    assert out['adjudicated'] is False and out['learning_recorded'] is False
+    ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
+    ledger.write_text(json.dumps({'schema':cc.LEDGER_SCHEMA,'events':[_minimal_freeze()]}))
+    state.write_text(json.dumps({'schema':'SMART_SIGNAL_STATE_9','last_contest':10}))
+    with pytest.raises(ValueError): sp.append_learning_update(ledger,10,state)
+
+
+def test_all_proven_gate_calls_continuous_red_team_freshness(monkeypatch, tmp_path: Path):
+    import smart_continuous_red_team as rt
+    import smart_global_integrity as gi
+    gate=tmp_path/'gate.json'
+    obj={'schema':cc.PRE_3052_GATE_SCHEMA,'freeze_allowed':True,
+         'items':[{'priority':i,'id':f'P{i:02d}','status':'PROVEN','evidence':[{'proof':'x'}]} for i in range(1,16)]}
+    gate.write_text(json.dumps(obj))
+    seen={}
+    def fake_verify(*, root):
+        seen['root']=Path(root); return {'status':'PASS'}
+    monkeypatch.setattr(rt,'verify_latest_report',fake_verify)
+    monkeypatch.setattr(gi,'verify_global_integrity',lambda **kwargs: {'status':'PASS'})
+    monkeypatch.setattr(cc,'PRE_3052_GATE_PATH',gate)
+    out=cc.require_pre_3052_gate(3052,gate)
+    assert out['freeze_allowed'] is True and seen['root']==tmp_path.resolve()
+
+
+def test_p12_remaining_internal_fail_closed_branches(monkeypatch):
+    import smart_sequential_prospective_proof as sp
+    import pytest
+    assert sp._active_freeze_from_events([]) is None
+    f1=_minimal_freeze(10,'a'*64); f2=_minimal_freeze(10,'b'*64)
+    with pytest.raises(ValueError, match='exactly one active freeze'):
+        sp._active_freeze_from_events([(0,f1),(1,f2)])
+    assert sp._is_hex64('g'*64) is False
+    sup={'event_type':'SUPERSEDE','target_contest':10,'old_freeze_sha256':'a'*64,'new_freeze_sha256':'b'*64}
+    f3=_minimal_freeze(10,'c'*64)
+    with pytest.raises(ValueError, match='before prior supersede'):
+        sp._validate_supersede_chain([(0,f1),(1,f2),(2,f3),(3,sup)])
+
+    base={'events':[f1,_minimal_adj(10,'a'*64)]}
+    monkeypatch.setattr(sp,'_validate_supersede_chain',lambda events:'b'*64)
+    monkeypatch.setattr(sp,'_active_freeze_from_events',lambda events:(0,f1))
+    with pytest.raises(ValueError, match='disagrees with supersede chain'):
+        sp.validate_target_sequence(base,10)
+
+    monkeypatch.undo()
+    late={'events':[f1,_minimal_adj(10,'a'*64),f2]}
+    monkeypatch.setattr(sp,'_validate_supersede_chain',lambda events:'a'*64)
+    monkeypatch.setattr(sp,'_active_freeze_from_events',lambda events:(0,f1))
+    with pytest.raises(ValueError, match='freeze/supersede cannot occur after adjudication'):
+        sp.validate_target_sequence(late,10)
+
+
+
+
+
+def test_p12_final_hash_and_supersede_guard_branches(monkeypatch):
+    import smart_sequential_prospective_proof as sp
+    import pytest
+    assert sp._is_hex64('short') is False
+    f=_minimal_freeze(10,'a'*64)
+    with pytest.raises(ValueError, match='invalid or duplicate freeze hash'):
+        sp._validate_supersede_chain([(0,f),(1,copy.deepcopy(f))])
+    badsup={'event_type':'SUPERSEDE','target_contest':10,'old_freeze_sha256':'a'*64,'new_freeze_sha256':'a'*64}
+    with pytest.raises(ValueError, match='invalid supersede hash linkage'):
+        sp._validate_supersede_chain([(0,f),(1,badsup)])
+    sup={'event_type':'SUPERSEDE','target_contest':10,'old_freeze_sha256':'a'*64,'new_freeze_sha256':'b'*64}
+    with pytest.raises(ValueError, match='requires a preceding new freeze'):
+        sp._validate_supersede_chain([(0,f),(1,sup)])
+    f2=_minimal_freeze(10,'b'*64)
+    with pytest.raises(ValueError, match='missing its supersede linkage'):
+        sp._validate_supersede_chain([(0,f),(1,f2)])
+    monkeypatch.setattr(sp,'_validate_supersede_chain',lambda events:'a'*64)
+    monkeypatch.setattr(sp,'_active_freeze_from_events',lambda events:None)
+    with pytest.raises(ValueError, match='requires a frozen prediction'):
+        sp.validate_target_sequence({'events':[f]},10)

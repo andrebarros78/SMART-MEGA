@@ -16,6 +16,7 @@ SCHEMA = "SMART_REGRESSION_RUNNER_V3"
 CANDIDATE = "SMART_AUDIT_JUNIT_CANDIDATE.xml"
 CURRENT = "SMART_AUDIT_JUNIT_CURRENT.xml"
 LOCK_FILE = ".smart_regression.lock"
+CANONICAL_AUTHORITY = "SMART_CANONICAL_ROOT.json"
 AUXILIARY_CODE_FILES = (
     "requirements.txt",
     "requirements.lock.txt",
@@ -80,11 +81,66 @@ def code_fingerprint(root: str | Path) -> dict[str, Any]:
     return {"file_count": len(rows), "sha256": hashlib.sha256(raw).hexdigest()}
 
 
+def canonical_environment_snapshot(root: str | Path) -> dict[str, Any]:
+    root = Path(root).resolve()
+    authority_path = root / CANONICAL_AUTHORITY
+    if not authority_path.is_file():
+        return {
+            "enforced": False, "ok": True, "authority_present": False,
+            "authority_sha256": None, "root_matches": False,
+            "legacy_alias": None, "legacy_alias_exists": None,
+            "declared_canonical_only": None,
+        }
+    try:
+        authority = json.loads(authority_path.read_text(encoding="utf-8-sig"))
+    except Exception:
+        return {
+            "enforced": True, "ok": False, "authority_present": True,
+            "authority_sha256": _hash_if_present(authority_path), "root_matches": False,
+            "legacy_alias": None, "legacy_alias_exists": None,
+            "declared_canonical_only": False,
+        }
+    declared_root = authority.get("canonical_root")
+    try:
+        root_matches = isinstance(declared_root, str) and Path(declared_root).resolve() == root
+    except Exception:
+        root_matches = False
+    legacy_alias = authority.get("legacy_alias")
+    legacy_exists = None
+    if root_matches and isinstance(legacy_alias, str) and legacy_alias:
+        try:
+            legacy_exists = Path(legacy_alias).exists()
+        except OSError:
+            legacy_exists = True
+    declared_canonical_only = (
+        authority.get("canonical_state") == "CANONICAL_ONLY"
+        and authority.get("legacy_alias_present") is False
+        and authority.get("legacy_alias_type") == "REMOVED"
+    )
+    enforced = bool(root_matches)
+    ok = (not enforced) or (declared_canonical_only and legacy_exists is False)
+    return {
+        "enforced": enforced, "ok": bool(ok), "authority_present": True,
+        "authority_sha256": _hash_if_present(authority_path), "root_matches": bool(root_matches),
+        "legacy_alias": legacy_alias, "legacy_alias_exists": legacy_exists,
+        "declared_canonical_only": bool(declared_canonical_only),
+    }
+
+
 def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None) -> dict[str, Any]:
     candidate = root / CANDIDATE
     current = root / CURRENT
     current_before = _hash_if_present(current)
     code_before = code_fingerprint(root)
+    environment_before = canonical_environment_snapshot(root)
+    if environment_before.get("enforced") and not environment_before.get("ok"):
+        return {
+            "schema": SCHEMA, "status": "FAIL",
+            "reason": "CANONICAL_ENVIRONMENT_INVALID_BEFORE_REGRESSION",
+            "candidate_present": candidate.is_file(), "current_preserved": True,
+            "current_sha256": current_before, "code_fingerprint": code_before,
+            "canonical_environment_before": environment_before, "promoted": False,
+        }
 
     if candidate.exists():
         candidate.unlink()
@@ -106,6 +162,21 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
     current_after_test = _hash_if_present(current)
     if current_after_test != current_before:
         raise RuntimeError("canonical CURRENT regression evidence changed during candidate execution")
+
+    environment_after = canonical_environment_snapshot(root)
+    if environment_after != environment_before or (environment_after.get("enforced") and not environment_after.get("ok")):
+        return {
+            "schema": SCHEMA, "status": "FAIL",
+            "reason": "CANONICAL_ENVIRONMENT_CHANGED_DURING_REGRESSION",
+            "pytest_returncode": int(completed.returncode),
+            "candidate_present": candidate.is_file(),
+            "current_preserved": _hash_if_present(current) == current_before,
+            "current_sha256": current_before,
+            "code_fingerprint_before": code_before,
+            "canonical_environment_before": environment_before,
+            "canonical_environment_after": environment_after,
+            "promoted": False,
+        }
 
     code_after = code_fingerprint(root)
     code_stable = code_after == code_before
@@ -164,6 +235,8 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
         "current_preserved_during_test": current_after_test == current_before,
         "code_fingerprint_stable": True,
         "code_fingerprint": code_before,
+        "canonical_environment_stable": True,
+        "canonical_environment": environment_after,
         "isolated_python_environment": True,
         "exclusive_runner_lock": True,
         "promoted": True,

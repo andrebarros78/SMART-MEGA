@@ -1,0 +1,38 @@
+from pathlib import Path
+import hashlib, json, os
+import smart_material_deficiency_registry as mdr
+
+root = Path(__file__).resolve().parent
+p = root / 'SMART_MATERIAL_DEFICIENCY_REGISTRY.json'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+obj = json.loads(raw.decode('utf-8-sig'))
+entries = list(obj['entries'])
+did = 'D016_STALE_CANONICAL_RESULT_STORE_REGRESSION_ASSERTION'
+entry = {
+    'id': did,
+    'severity': 'P1',
+    'status': 'RESOLVED',
+    'summary': 'A regression test still hard-coded Mega-Sena.xlsx to contest 3054 after the canonical result store was validly advanced through completed contest 3055, causing a false failure and risking future rollback of the canonical-history continuity contract.',
+    'evidence': [
+        'test_smart_canonical_result_store_reconcile.py::test_real_canonical_store_tracks_latest_completed_epoch_and_preserves_prior_freeze',
+        'SMART_B2_D016_TARGETED_JUNIT_20260910.xml',
+        'SMART_CANONICAL_HISTORY_ADVANCE_3055.json',
+    ],
+}
+existing = [e for e in entries if e.get('id') == did]
+if not existing:
+    entries.append(entry)
+elif existing != [entry]:
+    raise SystemExit('D016_EXISTING_ENTRY_DIFFERS')
+registry = mdr.build_registry(entries)
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260910'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists():
+    bak.write_bytes(raw)
+tmp = p.with_name(p.name + '.d016.tmp')
+tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+os.replace(tmp, p)
+check = mdr.load_registry(p, root=root)
+print(json.dumps({'entry_count': check['entry_count'], 'open_count': check['open_count'], 'registry_sha256': check['registry_sha256'], 'file_sha256': check['file_sha256'], 'backup': str(bak.relative_to(root)).replace('\\','/'), 'added': not existing}, ensure_ascii=False))

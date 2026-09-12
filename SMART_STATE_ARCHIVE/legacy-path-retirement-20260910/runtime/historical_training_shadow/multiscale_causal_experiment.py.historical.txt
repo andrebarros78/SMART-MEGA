@@ -1,0 +1,46 @@
+import json, math, statistics, random
+from pathlib import Path
+SRC=Path(r'C:\New Projet\SMART-MEGA\runtime\historical_training_shadow\SMART_CAUSAL_REPLAY_1001_3053.json')
+d=json.loads(SRC.read_text(encoding='utf-8'))
+rows=d if isinstance(d,list) else d.get('rows',d.get('replay',d.get('records',[])))
+features=[]
+for r in rows:
+    w=r['weights_before_result']
+    f={'contest':int(r['contest']),'hits':int(r['challenger_hits']),
+       'long_mid_ratio':float(w['freq1000'])/(float(w['freq50'])+float(w['freq100'])+1e-12),
+       'long_share':float(w['freq1000'])+float(w['ewma250']),
+       'mid_share':float(w['freq50'])+float(w['freq100'])+float(w['ewma100']),
+       'weight_hhi':sum(float(x)**2 for x in w.values()),
+       'family_divergence':float(r['meta_family_divergence_before_result']),
+       'meta_span':float(r['meta_factor_max_before_result'])-float(r['meta_factor_min_before_result'])}
+    f['scale_balance']=-abs(f['long_share']-f['mid_share'])
+    features.append(f)
+cut=int(len(features)*0.70); cal=features[:cut]; ev=features[cut:]
+metrics=['long_mid_ratio','long_share','mid_share','weight_hhi','family_divergence','meta_span','scale_balance']
+def quantile(vals,q):
+    s=sorted(vals); x=(len(s)-1)*q; lo=int(math.floor(x)); hi=int(math.ceil(x))
+    return s[lo] if lo==hi else s[lo]*(hi-x)+s[hi]*(x-lo)
+comparisons=[]; invalid=[]
+for m in metrics:
+    vals=[x[m] for x in cal]
+    for tail,thr in [('low',quantile(vals,.2)),('high',quantile(vals,.8))]:
+      flags=[(x[m]<=thr if tail=='low' else x[m]>=thr) for x in ev]
+      n=sum(flags)
+      if n==0 or n==len(ev):
+          invalid.append({'metric':m,'tail':tail,'threshold':thr,'n_selected':n,'reason':'CALIBRATION_THRESHOLD_OUTSIDE_EVALUATION_SUPPORT'})
+          continue
+      grp=[x['hits'] for x,f in zip(ev,flags) if f]; other=[x['hits'] for x,f in zip(ev,flags) if not f]
+      diff=statistics.mean(grp)-statistics.mean(other)
+      y=[x['hits'] for x in ev]; rng=random.Random(20260905+len(comparisons)); ge=0
+      for _ in range(5000):
+        yy=y[:]; rng.shuffle(yy); a=[v for v,f in zip(yy,flags) if f]; b=[v for v,f in zip(yy,flags) if not f]
+        if statistics.mean(a)-statistics.mean(b)>=diff-1e-15: ge+=1
+      p=(ge+1)/5001
+      comparisons.append({'metric':m,'tail':tail,'threshold':thr,'n_selected':len(grp),'n_other':len(other),'mean_selected':statistics.mean(grp),'mean_other':statistics.mean(other),'diff':diff,'p_raw':p})
+order=sorted(range(len(comparisons)),key=lambda i:comparisons[i]['p_raw']); running=0.0
+for rank,i in enumerate(order):
+    adj=min(1.0,(len(comparisons)-rank)*comparisons[i]['p_raw']); running=max(running,adj)
+    comparisons[i]['p_holm']=running; comparisons[i]['reject_005']=running<=0.05
+out={'schema':'SMART_MULTISCALE_CAUSAL_EXPERIMENT_V2','source':SRC.name,'design':'70pct chronological calibration, 30pct untouched evaluation; calibration q20/q80 thresholds; one-sided permutation; Holm across valid comparisons','calibration_n':len(cal),'evaluation_n':len(ev),'evaluation_contest_min':ev[0]['contest'],'evaluation_contest_max':ev[-1]['contest'],'invalid_due_to_support_shift':invalid,'comparisons':comparisons,'holm_rejections':[c for c in comparisons if c['reject_005']]}
+Path(r'C:\New Projet\SMART-MEGA\runtime\historical_training_shadow\MULTISCALE_CAUSAL_EXPERIMENT.json').write_text(json.dumps(out,indent=2,ensure_ascii=False),encoding='utf-8')
+print(json.dumps(out,indent=2,ensure_ascii=False))

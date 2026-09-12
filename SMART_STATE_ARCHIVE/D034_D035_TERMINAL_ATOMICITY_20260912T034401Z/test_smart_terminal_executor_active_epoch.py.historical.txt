@@ -1,0 +1,167 @@
+﻿from __future__ import annotations
+
+from pathlib import Path
+import json
+import hashlib
+import pytest
+
+import smart_3054_terminal_executor as legacy
+import smart_terminal_executor as terminal
+import smart_operator as operator
+
+
+def _active(target: int = 9001):
+    return {
+        "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+        "status": "FROZEN",
+        "project": "SMART-MEGA",
+        "epoch_id": "synthetic",
+        "target_contest": target,
+        "cutoff_contest": target - 1,
+        "result_used": False,
+        "data_file": "runtime/learning_epochs/synthetic/cutoff.xlsx",
+        "data_sha256": "d" * 64,
+        "state_paths": {
+            "ledger": "runtime/learning_epochs/synthetic/SMART_SIGNAL_LEDGER.json",
+            "state": "runtime/learning_epochs/synthetic/SMART_SIGNAL_STATE.json",
+            "freeze": f"runtime/learning_epochs/synthetic/SMART_{target}_CHAMPION_CHALLENGER_FREEZE.json",
+        },
+        "freeze_authority": {"target_contest": target, "cutoff_contest": target - 1, "sha256": "f" * 64},
+        "learning_state_authority": {"sha256": "s" * 64},
+    }
+
+
+def test_active_epoch_context_derives_dynamic_names_and_restores_legacy_globals(tmp_path, monkeypatch):
+    active = _active()
+    monkeypatch.setattr(legacy, "verify_active_epoch", lambda path: active)
+    original = (legacy.SCHEMA, legacy.TARGET, legacy.CUTOFF, legacy.CONSENSUS_FILE, legacy.INDEPENDENT_AUDIT_FILE)
+    with legacy.active_epoch_context(tmp_path, 9001):
+        assert legacy.SCHEMA == "SMART_TERMINAL_EXECUTOR_ACTIVE_EPOCH_1"
+        assert legacy.TARGET == 9001 and legacy.CUTOFF == 9000
+        assert legacy.RESULT_DATA.endswith("runtime/learning_epochs/synthetic/Mega-Sena_through_9001.xlsx")
+        assert legacy.CONSENSUS_FILE.endswith("runtime/learning_epochs/synthetic/SMART_9001_OFFICIAL_EVIDENCE_CURRENT.json")
+        assert legacy.INDEPENDENT_AUDIT_FILE.endswith("runtime/learning_epochs/synthetic/SMART_P14_INDEPENDENT_AUDIT_9001.json")
+        assert legacy.TERMINAL_PROOF == "SMART_TERMINAL_6OF6_PROOF_9001.json"
+    assert (legacy.SCHEMA, legacy.TARGET, legacy.CUTOFF, legacy.CONSENSUS_FILE, legacy.INDEPENDENT_AUDIT_FILE) == original
+
+
+def test_active_epoch_context_rejects_target_mismatch(tmp_path, monkeypatch):
+    monkeypatch.setattr(legacy, "verify_active_epoch", lambda path: _active(9001))
+    with pytest.raises(ValueError, match="differs from active epoch"):
+        with legacy.active_epoch_context(tmp_path, 9002):
+            pass
+
+
+def test_runtime_binding_prefers_valid_active_epoch_for_dynamic_target(tmp_path, monkeypatch):
+    target=9001; active=_active(target); (tmp_path/"SMART_ACTIVE_EPOCH.json").write_text("{}",encoding="utf-8"); epoch=tmp_path/"runtime"/"learning_epochs"/"synthetic"; epoch.mkdir(parents=True)
+    freeze=epoch/f"SMART_{target}_CHAMPION_CHALLENGER_FREEZE.json"; freeze.write_text("{}",encoding="utf-8")
+    ledger=epoch/"SMART_SIGNAL_LEDGER.json"; ledger.write_text('{"events":[]}',encoding="utf-8")
+    state=epoch/"SMART_SIGNAL_STATE.json"; state.write_text("{}",encoding="utf-8")
+    data=epoch/"cutoff.xlsx"; data.write_bytes(b"cutoff")
+    fsha=hashlib.sha256(freeze.read_bytes()).hexdigest(); dsha=hashlib.sha256(data.read_bytes()).hexdigest(); ssha=hashlib.sha256(state.read_bytes()).hexdigest()
+    active["freeze_authority"]["sha256"]=fsha; active["data_sha256"]=dsha; active["learning_state_authority"]["sha256"]=ssha
+    monkeypatch.setattr(legacy,"verify_active_epoch",lambda path: active)
+    monkeypatch.setattr(legacy,"resolve_current_epoch",lambda root:{"status":"FROZEN","target_contest":target,"freeze_authority_present":True,"generation_proof_valid":True,"freeze_sha256":fsha})
+    with legacy.active_epoch_context(tmp_path,target):
+        binding=legacy._runtime_binding(tmp_path)
+        assert binding["mode"]=="ACTIVE_EPOCH"
+        assert binding["freeze"]==freeze.resolve() and binding["ledger"]==ledger.resolve()
+        assert legacy._preflight_readiness(tmp_path,binding)["readiness_status"]=="PASS"
+
+
+def test_execute_waits_fail_closed_when_official_result_unavailable(tmp_path, monkeypatch):
+    freeze=tmp_path/"f.json"; freeze.write_bytes(b"freeze"); fsha=hashlib.sha256(freeze.read_bytes()).hexdigest(); binding={"mode":"ACTIVE_EPOCH","freeze":freeze,"freeze_sha256":fsha,"ledger":tmp_path/"l.json","state":tmp_path/"s.json","data":tmp_path/"d.xlsx","current":{"generation_proof_valid":True}}
+    monkeypatch.setattr(legacy,"_runtime_binding",lambda root:binding)
+    monkeypatch.setattr(legacy.champion_challenger,"load_ledger",lambda path:{"events":[]})
+    monkeypatch.setattr(legacy,"_preflight_readiness",lambda root,b:{"readiness_status":"PASS"})
+    def unavailable(target): raise RuntimeError("not published")
+    monkeypatch.setattr(legacy,"TARGET",9001)
+    out=legacy.execute(tmp_path,fetcher=unavailable)
+    assert out["status"]=="WAITING_OFFICIAL_RESULT"
+    assert out["canonical_writes_performed"] is False
+    assert out["terminal_6of6_proven"] is False
+
+
+def test_facade_delegates_to_active_epoch_engine(tmp_path, monkeypatch):
+    seen={}
+    monkeypatch.setattr(legacy,"probe_active_epoch",lambda root,target,fetcher=legacy.official_consensus.fetch_consensus: seen.setdefault("probe",(Path(root),target)) or {})
+    monkeypatch.setattr(legacy,"execute_active_epoch",lambda root,target,fetcher=legacy.official_consensus.fetch_consensus,allow_terminal_write=True: {"target":target,"allow":allow_terminal_write})
+    assert terminal.probe(tmp_path,9001)[1]==9001
+    assert terminal.execute(tmp_path,9001,allow_terminal_write=False)=={"target":9001,"allow":False}
+
+
+def test_operator_contract_and_terminal_operation_use_generic_executor(tmp_path, monkeypatch):
+    assert "terminal" in operator.contract()["supported_actions"]
+    assert operator.contract()["generic_active_epoch_terminal_executor"] is True
+    monkeypatch.setattr(operator,"verify_active_epoch",lambda path:_active(9001))
+    monkeypatch.setattr(operator,"resolve_current_epoch",lambda root:{"status":"FROZEN","target_contest":9001,"freeze_authority_present":True,"generation_proof_valid":True})
+    monkeypatch.setattr(operator.terminal_executor,"probe",lambda root,target:{"status":"WAITING_OFFICIAL_RESULT","target_contest":target})
+    monkeypatch.setattr(operator.terminal_executor,"execute",lambda root,target,allow_terminal_write=True:{"status":"MISSION_ACTIVE_RESULT_ADJUDICATED_NO_6OF6","target_contest":target,"allow":allow_terminal_write})
+    assert operator.terminal_operation(tmp_path,9001,probe_only=True)["status"]=="WAITING_OFFICIAL_RESULT"
+    out=operator.terminal_operation(tmp_path,9001,allow_terminal_write=False)
+    assert out["target_contest"]==9001 and out["allow"] is False
+    with pytest.raises(ValueError,match="does not match terminal target"):
+        operator.terminal_operation(tmp_path,9002)
+
+
+def test_dynamic_source_uses_epoch_scoped_evidence_and_generic_history_advance():
+    source=Path(legacy.__file__).read_text(encoding="utf-8")
+    assert "history_advance.advance_completed_epoch" in source
+    assert "INDEPENDENT_AUDIT_FILE" in source
+    assert "execute_active_epoch" in source
+    op_source=Path(operator.__file__).read_text(encoding="utf-8")
+    assert "terminal_operation" in op_source and "smart_terminal_executor" in op_source
+
+
+
+
+def test_post_adjudication_learned_state_accepts_prevalidated_binding_without_reauthorization(tmp_path, monkeypatch):
+    target = 9001
+    through = tmp_path / "through.bin"
+    through.write_bytes(b"official-through")
+    learned = tmp_path / "learned.json"
+    data_sha = hashlib.sha256(through.read_bytes()).hexdigest()
+    learned.write_text(json.dumps({"last_contest": target, "data_sha256": data_sha}), encoding="utf-8")
+    binding = {"learned": learned, "state": tmp_path / "state.json", "data": tmp_path / "cutoff.xlsx", "freeze_sha256": "f" * 64, "mode": "ACTIVE_EPOCH"}
+    monkeypatch.setattr(legacy, "TARGET", target)
+    monkeypatch.setattr(legacy, "RESULT_DATA", through.name)
+    monkeypatch.setattr(legacy, "_runtime_binding", lambda root: (_ for _ in ()).throw(AssertionError("post-adjudication reauthorization forbidden")))
+    assert legacy._ensure_learned_state(tmp_path, binding=binding)["last_contest"] == target
+
+
+def test_execute_carries_single_pre_result_binding_across_post_result_stages(tmp_path, monkeypatch):
+    target = 9001
+    freeze = tmp_path / "freeze.json"; freeze.write_text("{}", encoding="utf-8")
+    ledger_path = tmp_path / "ledger.json"; ledger_path.write_text('{"events":[]}', encoding="utf-8")
+    binding = {"mode":"ACTIVE_EPOCH", "freeze":freeze, "freeze_sha256":hashlib.sha256(freeze.read_bytes()).hexdigest(), "ledger":ledger_path, "state":tmp_path/"state.json", "data":tmp_path/"cutoff.xlsx", "active":{}, "current":{"generation_proof_valid":True}}
+    calls = {"runtime": 0}
+    def once(root):
+        calls["runtime"] += 1
+        if calls["runtime"] > 1: raise AssertionError("predictive authority revalidated after result mutation")
+        return binding
+    monkeypatch.setattr(legacy, "TARGET", target)
+    monkeypatch.setattr(legacy, "_runtime_binding", once)
+    monkeypatch.setattr(legacy, "_preflight_readiness", lambda root,b:{"readiness_status":"PASS"})
+    monkeypatch.setattr(legacy.champion_challenger, "load_ledger", lambda path:{"events":[]})
+    payload={"numero":target,"listaDezenas":["01","02","03","04","05","06"],"dataApuracao":"01/01/2030","acumulado":False}
+    consensus={"primary":{"validated":True,"numbers":[1,2,3,4,5,6]},"terminal_source_corroboration_authorized":True,"status":"DUAL_CAIXA_CHANNEL_CONSENSUS"}
+    monkeypatch.setattr(legacy, "_ensure_primary_payload", lambda root,p:p)
+    monkeypatch.setattr(legacy, "_ensure_monotonic_consensus", lambda root,c:c)
+    monkeypatch.setattr(legacy, "_normalized_primary", lambda p:{"numbers":[1,2,3,4,5,6],"draw_date":"01/01/2030"})
+    seen=[]
+    def require(name, value):
+        assert value is binding; seen.append(name)
+    monkeypatch.setattr(legacy, "_ensure_ingest", lambda root,payload,binding=None:(require("ingest",binding) or {"schema":"INGEST"}))
+    monkeypatch.setattr(legacy, "_ensure_adjudication", lambda root,nums,binding=None:(require("adjudication",binding) or {"status":"ADJUDICATED","champion_hits":0,"challenger_hits":0}))
+    monkeypatch.setattr(legacy, "_ensure_learned_state", lambda root,binding=None:(require("learned",binding) or {"last_contest":target}))
+    monkeypatch.setattr(legacy, "_ensure_learning_and_sequence", lambda root,binding=None:(require("sequence",binding) or {"valid":True,"proof_recorded":True}))
+    monkeypatch.setattr(legacy, "_run_independent_audit", lambda root,binding=None:(require("audit",binding) or {"status":"PASS","prospective_ledger":{"pair_count":1,"status":"PASS","no_future_leakage":True}}))
+    monkeypatch.setattr(legacy.history_advance, "advance_completed_epoch", lambda root,active:{"status":"PASS"})
+    monkeypatch.setattr(legacy, "_read_json", lambda path: consensus)
+    monkeypatch.setattr(legacy, "evaluate_terminal_rule", lambda root,ledger,consensus,audit,seq,binding=None:(require("evaluation",binding) or {"status":"MISSION_ACTIVE_RESULT_ADJUDICATED_NO_6OF6","eligible_for_mission_proven":False,"actual_numbers":[1,2,3,4,5,6],"checks":{}}))
+    monkeypatch.setattr(legacy, "load_mission_status", lambda path,root=None:{"status":"MISSION_ACTIVE","terminal_6of6_proven":False})
+    monkeypatch.setattr(legacy, "_atomic_write_json", lambda *a,**k:None)
+    out=legacy.execute(tmp_path,fetcher=lambda t:(payload,consensus))
+    assert calls["runtime"] == 1
+    assert seen == ["ingest","adjudication","learned","sequence","audit","evaluation"]
+    assert out["terminal_6of6_proven"] is False

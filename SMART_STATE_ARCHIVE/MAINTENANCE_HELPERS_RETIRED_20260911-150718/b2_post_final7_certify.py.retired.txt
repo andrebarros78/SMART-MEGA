@@ -1,0 +1,96 @@
+from __future__ import annotations
+import hashlib, json, os, pathlib, shutil
+from datetime import datetime, timezone
+
+root=pathlib.Path.cwd()
+archive=root/'SMART_STATE_ARCHIVE'/'b2-final7-20260910'
+archive.mkdir(parents=True,exist_ok=True)
+
+def sha(p):
+ h=hashlib.sha256()
+ with pathlib.Path(p).open('rb') as f:
+  for c in iter(lambda:f.read(1024*1024),b''): h.update(c)
+ return h.hexdigest()
+
+def backup(p):
+ p=pathlib.Path(p)
+ if not p.exists(): return None
+ d=sha(p); dest=archive/(p.name+'.'+d+'.bak')
+ if not dest.exists(): shutil.copy2(p,dest)
+ if sha(dest)!=d: raise RuntimeError('backup hash mismatch: '+p.name)
+ return str(dest.relative_to(root)).replace('\\','/')
+
+def atomic_bytes(p,data):
+ p=pathlib.Path(p); tmp=p.with_name(p.name+'.final7.tmp'); tmp.write_bytes(data); os.replace(tmp,p)
+
+def atomic_json(p,obj):
+ atomic_bytes(p,(json.dumps(obj,ensure_ascii=False,indent=2)+'\n').encode('utf-8'))
+
+final_proof=root/'SMART_B2_FINAL7_RUNNER_PROOF_20260910.json'
+fp=json.loads(final_proof.read_text(encoding='utf-8'))
+if fp.get('status')!='PASS' or fp.get('fingerprint_stable') is not True: raise SystemExit('FINAL7_PROOF_NOT_PASS')
+if fp.get('coverage',{}).get('status')!='PASS' or fp.get('coverage',{}).get('required_count')!=23 or fp.get('coverage',{}).get('pass_count')!=23: raise SystemExit('FINAL7_COVERAGE_NOT_23_OF_23')
+if fp.get('junit',{}).get('failures')!=0 or fp.get('junit',{}).get('errors')!=0: raise SystemExit('FINAL7_JUNIT_NOT_CLEAN')
+
+src_cov=root/'SMART_COVERAGE_GLOBAL_B2_FINAL7_20260910.json'; cur_cov=root/'SMART_COVERAGE_GLOBAL_CURRENT.json'
+src_junit=root/'SMART_B2_FINAL7_REGRESSION_JUNIT_20260910.xml'; cur_junit=root/'SMART_AUDIT_JUNIT_CURRENT.xml'
+for p in (src_cov,src_junit):
+ if not p.is_file(): raise FileNotFoundError(p)
+backups={'coverage_current':backup(cur_cov),'junit_current':backup(cur_junit)}
+atomic_bytes(cur_cov,src_cov.read_bytes()); atomic_bytes(cur_junit,src_junit.read_bytes())
+if sha(cur_cov)!=sha(src_cov) or sha(cur_junit)!=sha(src_junit): raise RuntimeError('current evidence promotion hash mismatch')
+
+import smart_independent_audit as ia
+import smart_global_integrity as gi
+from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch
+
+binding_specs=[
+ ('SMART_P14_COVERAGE_BINDING_AUDIT.json','smart_independent_audit.py'),
+ ('SMART_P14_COVERAGE_BINDING_ORCHESTRATOR.json','smart_champion_challenger.py'),
+ ('SMART_P14_COVERAGE_BINDING_PROMOTION.json','smart_promotion_gate.py'),
+ ('SMART_P14_COVERAGE_BINDING_EVIDENCE_ONLY.json','smart_evidence_only_promotion.py'),
+]
+binding_paths=[]
+for name,source in binding_specs:
+ p=root/name; backups['binding:'+name]=backup(p)
+ obj={'schema':ia.COVERAGE_BINDING_SCHEMA,'source_file':source,'source_sha256':sha(root/source),'coverage_report_file':cur_cov.name,'coverage_report_sha256':sha(cur_cov),'coverage_file_key':source,'required':'100% lines + branches'}
+ atomic_json(p,obj); ia.audit_coverage_binding(root,p); binding_paths.append(p)
+
+active=verify_active_epoch(root/ACTIVE_PATH)
+if int(active.get('target_contest',-1))!=3055: raise SystemExit('ACTIVE_TARGET_NOT_3055')
+replay_data=root/active['data_file']
+ledger=root/'SMART_SIGNAL_LEDGER.json'
+if not replay_data.is_file() or not ledger.is_file(): raise SystemExit('P14_INPUT_MISSING')
+p14=ia.run_independent_audit(root,ledger,binding_paths,replay_data,3055,start=1000)
+p14_candidate=root/'SMART_P14_INDEPENDENT_AUDIT_B2_3055_FINAL7.json'; atomic_json(p14_candidate,p14)
+if p14.get('status')!='PASS' or p14.get('material_deficiencies')!=[] or not all(p14.get('checks',{}).values()): raise SystemExit('P14_CANDIDATE_NOT_PASS')
+# Candidate validator also ensures registry, coverage, independence and replay are current.
+gi.validate_p14_report(root,p14_candidate.name)
+p14_current=root/'SMART_P14_INDEPENDENT_AUDIT_CURRENT.json'; backups['p14_current']=backup(p14_current); atomic_bytes(p14_current,p14_candidate.read_bytes())
+p14_verified=gi.validate_p14_report(root)
+
+# Build and promote Global Integrity only after current P14 is valid.
+gate_path=root/'SMART_3052_IMPLEMENTATION_GATE.json'; gate=json.loads(gate_path.read_text(encoding='utf-8'))
+coverage_specs=[(cur_cov.name,s) for s in gi.REQUIRED_GLOBAL_COVERAGE_SOURCES]
+global_proof=gi.build_global_integrity_proof(root,gate,cur_junit,coverage_specs)
+if global_proof.get('status')!='PASS' or global_proof.get('material_deficiencies')!=[]: raise SystemExit('GLOBAL_INTEGRITY_CANDIDATE_NOT_PASS')
+global_candidate=root/'SMART_GLOBAL_INTEGRITY_PROOF_B2_FINAL7_20260910.json'; atomic_json(global_candidate,global_proof)
+global_current=root/'SMART_GLOBAL_INTEGRITY_PROOF.json'; backups['global_integrity']=backup(global_current); atomic_bytes(global_current,global_candidate.read_bytes())
+backups['implementation_gate']=backup(gate_path)
+gate['global_integrity']={'file':global_current.name,'sha256':sha(global_current)}
+atomic_json(gate_path,gate)
+global_verified=gi.verify_global_integrity(root,gate_path,global_current)
+
+# Product certification is built after all upstream authorities are current.
+import smart_product_certification as pc
+cert_candidate_obj=pc.build(root)
+cert_candidate=root/'SMART_PRODUCT_CERTIFICATION_B2_FINAL7_CANDIDATE_20260910.json'; atomic_json(cert_candidate,cert_candidate_obj)
+if cert_candidate_obj.get('status')!='CONSTRUCTION_PROVEN' or not all(cert_candidate_obj.get('checks',{}).values()):
+ print(json.dumps({'status':'BLOCKED_AT_PRODUCT_CERTIFICATION','checks':cert_candidate_obj.get('checks'),'candidate':cert_candidate.name},ensure_ascii=False))
+ raise SystemExit(2)
+cert_current=root/'SMART_PRODUCT_CERTIFICATION.json'; backups['product_certification']=backup(cert_current); atomic_bytes(cert_current,cert_candidate.read_bytes())
+cert_verified=pc.verify_product_certification(cert_current,root=root,require_current_code=True)
+
+chain={'schema':'SMART_B2_FINAL7_CERTIFICATION_CHAIN_1','status':'PASS','created_at_utc':datetime.now(timezone.utc).isoformat(),'final7_proof_file':final_proof.name,'final7_proof_sha256':sha(final_proof),'coverage_current_sha256':sha(cur_cov),'junit_current_sha256':sha(cur_junit),'p14':p14_verified,'global_integrity':global_verified,'product_certification':{'status':cert_verified['status'],'sha256':cert_verified['sha256'],'file_sha256':sha(cert_current),'code_fingerprint_sha256':cert_verified['code_fingerprint']['sha256']},'registry':cert_verified.get('material_deficiency_registry_sha256'),'backups':backups}
+chain_path=root/'SMART_B2_FINAL7_CERTIFICATION_CHAIN_20260910.json'; atomic_json(chain_path,chain)
+print(json.dumps({'status':'PASS','p14_file_sha256':sha(p14_current),'global_integrity_file_sha256':sha(global_current),'product_certification_file_sha256':sha(cert_current),'product_certification_sha256':cert_verified['sha256'],'code_fingerprint_sha256':cert_verified['code_fingerprint']['sha256'],'chain_file':chain_path.name,'chain_sha256':sha(chain_path)},ensure_ascii=False))

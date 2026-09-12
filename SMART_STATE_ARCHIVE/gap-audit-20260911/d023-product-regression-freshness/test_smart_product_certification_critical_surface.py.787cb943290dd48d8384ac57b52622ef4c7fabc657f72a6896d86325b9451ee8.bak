@@ -1,0 +1,59 @@
+from pathlib import Path
+
+import smart_product_certification as certification
+from smart_global_integrity import CRITICAL_SOURCE_FILES
+
+ROOT = Path(__file__).resolve().parent
+
+
+def test_product_certification_fingerprint_covers_global_critical_surface() -> None:
+    names = {path.name for path in certification._code_files(ROOT)}
+    assert set(CRITICAL_SOURCE_FILES) <= names
+    assert "adjudicate_signal_challenger.py" in names
+    assert "freeze_next_research.py" in names
+    assert "p14_coverage_plugin.py" in names
+
+
+def test_product_certification_fingerprint_changes_for_nonprefix_critical_source(tmp_path: Path) -> None:
+    source = tmp_path / "adjudicate_signal_challenger.py"
+    source.write_text("alpha\n", encoding="utf-8")
+    before = certification.code_fingerprint(tmp_path)["sha256"]
+    source.write_text("beta\n", encoding="utf-8")
+    after = certification.code_fingerprint(tmp_path)["sha256"]
+    assert before != after
+
+def test_product_certification_canonical_authority_is_bound_to_current_junit() -> None:
+    junit = ROOT / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    regression = certification.junit_summary(junit)
+    binding = certification.canonical_root_authority_binding(ROOT, junit, regression)
+    assert binding["status"] == "PASS"
+    assert all(binding["checks"].values())
+
+
+def test_product_certification_canonical_authority_fails_closed_on_stale_junit_hash(tmp_path: Path) -> None:
+    junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    junit.write_text("<testsuites name='pytest tests'><testsuite name='pytest' tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
+    regression = certification.junit_summary(junit)
+    authority = {
+        "schema": "SMART_CANONICAL_ROOT_V1",
+        "project": "SMART-MEGA",
+        "version": "6.3.1",
+        "canonical_root": str(tmp_path.resolve()),
+        "legacy_alias_present": False,
+        "canonical_state": "CANONICAL_ONLY",
+        "certified_regression_tests": regression["tests"],
+        "certified_regression_failures": regression["failures"],
+        "certified_regression_errors": regression["errors"],
+        "certified_regression_junit": junit.name,
+        "certified_regression_junit_sha256": "0" * 64,
+        "certified_regression": {
+            "tests": regression["tests"], "failures": regression["failures"], "errors": regression["errors"],
+            "junit_file": junit.name, "junit_sha256": "0" * 64,
+        },
+    }
+    authority["sha256"] = certification._sha256_json(authority)
+    (tmp_path / "SMART_CANONICAL_ROOT.json").write_text(__import__("json").dumps(authority), encoding="utf-8")
+    binding = certification.canonical_root_authority_binding(tmp_path.resolve(), junit, regression)
+    assert binding["status"] == "FAIL"
+    assert binding["checks"]["junit_sha_bound"] is False
+

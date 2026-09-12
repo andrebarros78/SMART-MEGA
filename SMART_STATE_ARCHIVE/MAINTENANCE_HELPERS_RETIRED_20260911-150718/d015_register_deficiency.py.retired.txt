@@ -1,0 +1,37 @@
+from pathlib import Path
+import hashlib, json, os
+import smart_material_deficiency_registry as mdr
+
+root = Path(__file__).resolve().parent
+p = root / 'SMART_MATERIAL_DEFICIENCY_REGISTRY.json'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+obj = json.loads(raw.decode('utf-8-sig'))
+entries = list(obj['entries'])
+did = 'D015_CRITICAL_OPERATIONAL_COMPONENTS_MISSING_FROM_GLOBAL_COVERAGE_SET'
+entry = {
+    'id': did,
+    'severity': 'P0',
+    'status': 'RESOLVED',
+    'summary': 'The global 100% line/branch coverage authority still required 21 components after smart_operator.py and smart_canonical_history_advance.py became critical operational authority, allowing a formally green proof that omitted newly critical code.',
+    'evidence': [
+        'test_smart_d015_critical_operational_coverage.py',
+        'SMART_D015_COVERAGE_V2.json',
+        'smart_global_integrity.py REQUIRED_GLOBAL_COVERAGE_SOURCES=23',
+    ],
+}
+existing = [e for e in entries if e.get('id') == did]
+if not existing:
+    entries.append(entry)
+elif existing != [entry]:
+    raise SystemExit('D015_EXISTING_ENTRY_DIFFERS')
+registry = mdr.build_registry(entries)
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260910'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists(): bak.write_bytes(raw)
+tmp = p.with_name(p.name + '.d015.tmp')
+tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+os.replace(tmp, p)
+check = mdr.load_registry(p, root=root)
+print(json.dumps({'entry_count':check['entry_count'],'open_count':check['open_count'],'registry_sha256':check['registry_sha256'],'file_sha256':check['file_sha256'],'backup':str(bak.relative_to(root)).replace('\\','/'),'added':not existing}, ensure_ascii=False))

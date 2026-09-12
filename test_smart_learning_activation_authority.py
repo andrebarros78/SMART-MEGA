@@ -19,6 +19,18 @@ def _decision():
     )
 
 
+def _materiality():
+    return aa.build_materiality_evidence(
+        decision_change_count=4, validation_gain=1.0, holdout_gain=0.5, global_gain=0.5,
+        independent_holdout=True, leakage_free=True,
+    )
+
+
+def _build_authority(**kwargs):
+    kwargs.setdefault('materiality_evidence', _materiality())
+    return aa.build_authority(**kwargs)
+
+
 def _dataset(n=35, seed=551):
     rng=np.random.default_rng(seed)
     rows=[]
@@ -37,8 +49,24 @@ def test_missing_activation_authority_is_explicit_fail_closed(tmp_path):
     assert cfg.authority['status']=='FAIL_CLOSED_INACTIVE'
 
 
+def test_activation_authority_rejects_nonmaterial_mechanism():
+    import pytest
+    with pytest.raises(ValueError, match='materiality'):
+        aa.build_authority(
+            target_contest=4000, decision=_decision(), evidence_sha256='a'*64,
+            marginal_strength=0.25, root=ROOT,
+        )
+    with pytest.raises(ValueError, match='at least one changed decision'):
+        aa.build_authority(
+            target_contest=4000, decision=_decision(), evidence_sha256='a'*64,
+            marginal_strength=0.25, materiality_evidence=aa.build_materiality_evidence(
+                decision_change_count=1, validation_gain=1.0, holdout_gain=0.5, global_gain=0.5
+            ) | {'decision_change_count': 0}, root=ROOT,
+        )
+
+
 def test_hash_bound_single_target_authority_roundtrip_and_tamper_rejection(tmp_path):
-    authority=aa.build_authority(
+    authority=_build_authority(
         target_contest=4000, decision=_decision(), evidence_sha256='a'*64,
         marginal_strength=0.25, allow_meta_alternate_selection=True, root=ROOT,
     )

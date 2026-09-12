@@ -1,0 +1,51 @@
+from __future__ import annotations
+import hashlib, json, os, pathlib, shutil
+ROOT=pathlib.Path.cwd().resolve()
+ARCH=ROOT/'SMART_STATE_ARCHIVE'/'b2-sovereignty-20260910'
+ARCH.mkdir(parents=True,exist_ok=True)
+
+def sha(p):
+ h=hashlib.sha256()
+ with pathlib.Path(p).open('rb') as f:
+  for c in iter(lambda:f.read(1024*1024),b''): h.update(c)
+ return h.hexdigest()
+
+def backup(p):
+ p=pathlib.Path(p); d=sha(p); dest=ARCH/(p.name+'.'+d+'.bak')
+ if not dest.exists(): shutil.copy2(p,dest)
+ if sha(dest)!=d: raise RuntimeError('backup hash mismatch '+p.name)
+ return str(dest.relative_to(ROOT)).replace('\\','/')
+
+def atomic_text(p,text):
+ p=pathlib.Path(p); tmp=p.with_name(p.name+'.b2sovereignty.tmp'); tmp.write_text(text,encoding='utf-8',newline=''); os.replace(tmp,p)
+
+changes={}
+# 1. Active resolver: only project-root-contained paths are accepted. No legacy root rebinding.
+p=ROOT/'smart_agent_skill_orchestration.py'; before=sha(p); bak=backup(p)
+text=p.read_text(encoding='utf-8-sig')
+start=text.index('LEGACY_PROJECT_ROOTS =')
+end=text.index('\ndef _resolve_state_paths',start)
+replacement='''def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:\n    value = str(relative).strip()\n    if not value:\n        raise ValueError(f"{label} path is empty")\n    resolved_root = root.resolve()\n    raw = Path(value)\n    candidate = raw.resolve() if raw.is_absolute() else (resolved_root / raw).resolve()\n    try:\n        candidate.relative_to(resolved_root)\n    except ValueError as exc:\n        raise ValueError(f"{label} escapes project root: {value}") from exc\n    return candidate\n\n'''
+text=text[:start]+replacement+text[end+1:]
+if 'LEGACY_PROJECT_ROOTS' in text or 'New Projet' in text:
+ raise SystemExit('ACTIVE_RESOLVER_LEGACY_REFERENCE_REMAINS')
+atomic_text(p,text)
+changes[p.name]={'before':before,'after':sha(p),'backup':bak}
+
+# 2. Replace migration-era tests with sovereignty contract tests; no specific former root literal.
+p=ROOT/'test_smart_v631_portable_restore.py'; before=sha(p); bak=backup(p)
+new='''from pathlib import Path\nimport pytest\n\nimport smart_agent_skill_orchestration as aso\nimport smart_champion_challenger as cc\n\n\ndef test_b2_rejects_external_absolute_project_paths(tmp_path):\n    with pytest.raises(ValueError, match="escapes project root"):\n        aso._resolve_project_file(tmp_path, r"C:\\\\Legacy\\\\SMART-MEGA\\\\runtime\\\\freeze.json", label="external freeze")\n\n\ndef test_b2_rejects_other_absolute_path(tmp_path):\n    with pytest.raises(ValueError, match="escapes project root"):\n        aso._resolve_project_file(tmp_path, r"C:\\\\Other\\\\Project\\\\runtime\\\\freeze.json", label="foreign freeze")\n\n\ndef test_b2_rejects_relative_traversal_outside_root(tmp_path):\n    with pytest.raises(ValueError, match="escapes project root"):\n        aso._resolve_project_file(tmp_path, r"..\\\\outside\\\\freeze.json", label="traversal freeze")\n\n\ndef test_new_project_local_paths_are_persisted_relative(tmp_path):\n    p = tmp_path / "runtime" / "state.json"\n    p.parent.mkdir(parents=True)\n    p.write_text("{}", encoding="utf-8")\n    assert cc._persist_project_path(p, tmp_path) == "runtime/state.json"\n\n\ndef test_external_paths_are_not_relabelled_as_project_local(tmp_path):\n    outside = tmp_path.parent / "outside.json"\n    assert Path(cc._persist_project_path(outside, tmp_path)).is_absolute()\n\n\ndef test_tracked_quarantine_manifest_is_runtime_self_contained():\n    import json\n    manifest_path = Path(__file__).resolve().parent / "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"\n    doc = json.loads(manifest_path.read_text(encoding="utf-8"))\n    assert doc["acquired_items"] == 21\n    assert doc["source_payload_required_at_runtime"] is False\n    assert doc["external_code_auto_execute"] is False\n    assert len(doc["items"]) == 21\n    assert all("local_path" not in item for item in doc["items"])\n    assert all(item["execution_policy"] == "SOURCE_ONLY_QUARANTINE" for item in doc["items"] )\n\n\ndef test_quarantine_probe_does_not_require_ignored_external_payload(tmp_path):\n    from smart_agent_runtime import SmartAgentRuntime\n    source = Path(__file__).resolve().parent / "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"\n    (tmp_path / source.name).write_bytes(source.read_bytes())\n    runtime = object.__new__(SmartAgentRuntime)\n    runtime.root = tmp_path\n    result = runtime._probe_quarantine_curator()\n    assert result["pass"] is True\n    assert result["optional_source_payload_present"] is False\n    assert result["source_payload_required_at_runtime"] is False\n    assert result["external_code_executed"] is False\n\n\ndef test_b2_resolver_rejects_filesystem_escape(tmp_path, monkeypatch):\n    restored = tmp_path / "restored"\n    restored.mkdir()\n    outside = tmp_path / "outside"\n    outside.mkdir()\n    rebound_candidate = restored / "runtime" / "escape" / "freeze.json"\n    escaped_target = outside / "freeze.json"\n    original_resolve = Path.resolve\n    def guarded_resolve(self, *args, **kwargs):\n        if str(self) == str(rebound_candidate):\n            return escaped_target\n        return original_resolve(self, *args, **kwargs)\n    monkeypatch.setattr(Path, "resolve", guarded_resolve)\n    with pytest.raises(ValueError, match="escapes project root"):\n        aso._resolve_project_file(restored, "runtime/escape/freeze.json", label="junction escape")\n\n\ndef test_b2_active_resolver_has_no_legacy_root_allowlist():\n    source = (Path(__file__).resolve().parent / "smart_agent_skill_orchestration.py").read_text(encoding="utf-8-sig")\n    assert "LEGACY_PROJECT_ROOTS" not in source\n    assert "New Projet" not in source\n'''
+atomic_text(p,new)
+changes[p.name]={'before':before,'after':sha(p),'backup':bak}
+
+# 3. Ignored acquisition manifest becomes location-independent; source payload remains local optional quarantine.
+p=ROOT/'.external_skills_acquired'/'ACQUISITION_MANIFEST.json'
+if p.is_file():
+ before=sha(p); bak=backup(p); obj=json.loads(p.read_text(encoding='utf-8-sig'))
+ for item in obj.get('items',[]):
+  if isinstance(item,dict) and item.get('name'):
+   item['local_path']=f".external_skills_acquired/{item['name']}"
+ tmp=p.with_name(p.name+'.b2sovereignty.tmp'); tmp.write_text(json.dumps(obj,ensure_ascii=False,indent=2)+'\n',encoding='utf-8'); os.replace(tmp,p)
+ changes[str(p.relative_to(ROOT)).replace('\\','/')]={'before':before,'after':sha(p),'backup':bak}
+
+print(json.dumps({'status':'PASS','root':str(ROOT),'changes':changes},ensure_ascii=False))

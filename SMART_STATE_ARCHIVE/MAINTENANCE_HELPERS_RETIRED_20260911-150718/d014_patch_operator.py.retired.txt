@@ -1,0 +1,36 @@
+from pathlib import Path
+import hashlib, json
+
+root = Path(__file__).resolve().parent
+p = root / 'smart_operator.py'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+text = raw.decode('utf-8-sig')
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260909'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists():
+    bak.write_bytes(raw)
+
+imp = 'from smart_champion_challenger import load_ledger, reconcile_completed_epoch_ledger, seed_ledger_from_canonical\n'
+new_imp = 'from smart_canonical_history_advance import advance_completed_epoch\n'
+if new_imp not in text:
+    if imp not in text:
+        raise SystemExit('IMPORT_CONTEXT_NOT_FOUND')
+    text = text.replace(imp, imp + new_imp, 1)
+
+old = '''    certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)\n    canonical = root / "Mega-Sena.xlsx"\n    history = validate_target_against_history(canonical, int(target))\n    schedule = resolve_target_schedule(root, int(target))\n    temporal = assert_pre_draw_window(schedule)\n    active_path = root / ACTIVE_PATH\n    reconciliation = None\n    if active_path.exists() and not supersede_existing:\n        raise FileExistsError("an operational epoch already exists; use --supersede only when the operator intentionally starts another target")\n    if active_path.exists():\n        previous_active = verify_active_epoch(active_path)\n        previous_ledger = root / previous_active["state_paths"]["ledger"]\n        previous_target = int(previous_active["target_contest"])\n        previous_events = load_ledger(previous_ledger).get("events", [])\n        if not any(ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == previous_target for ev in previous_events):\n            raise ValueError("cannot supersede an unresolved prospective attempt; use the explicit pre-result withdrawal/unfreeze path")\n        reconciliation = reconcile_completed_epoch_ledger(root / "SMART_SIGNAL_LEDGER.json", previous_ledger, previous_target, root=root)\n    previous_sha = _archive_active(root, active_path) if active_path.exists() else None\n'''
+new = '''    certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)\n    active_path = root / ACTIVE_PATH\n    reconciliation = None\n    result_store_reconciliation = None\n    if active_path.exists() and not supersede_existing:\n        raise FileExistsError("an operational epoch already exists; use --supersede only when the operator intentionally starts another target")\n    if active_path.exists():\n        previous_active = verify_active_epoch(active_path)\n        previous_ledger = root / previous_active["state_paths"]["ledger"]\n        previous_target = int(previous_active["target_contest"])\n        previous_events = load_ledger(previous_ledger).get("events", [])\n        if not any(ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == previous_target for ev in previous_events):\n            raise ValueError("cannot supersede an unresolved prospective attempt; use the explicit pre-result withdrawal/unfreeze path")\n        reconciliation = reconcile_completed_epoch_ledger(root / "SMART_SIGNAL_LEDGER.json", previous_ledger, previous_target, root=root)\n        result_store_reconciliation = advance_completed_epoch(root, previous_active)\n    canonical = root / "Mega-Sena.xlsx"\n    history = validate_target_against_history(canonical, int(target))\n    schedule = resolve_target_schedule(root, int(target))\n    temporal = assert_pre_draw_window(schedule)\n    previous_sha = _archive_active(root, active_path) if active_path.exists() else None\n'''
+if old not in text:
+    raise SystemExit('PREPARE_CONTEXT_NOT_FOUND')
+text = text.replace(old, new, 1)
+
+oldret = 'return {"status": "READY_TO_FREEZE", "product_certification_sha256": certification["sha256"], "active_epoch": active, "history": history, "schedule": schedule, "prior_epoch_reconciliation": reconciliation, "ledger_seed": ledger_seed}'
+newret = 'return {"status": "READY_TO_FREEZE", "product_certification_sha256": certification["sha256"], "active_epoch": active, "history": history, "schedule": schedule, "prior_epoch_reconciliation": reconciliation, "canonical_result_store_reconciliation": result_store_reconciliation, "ledger_seed": ledger_seed}'
+if oldret not in text:
+    raise SystemExit('RETURN_CONTEXT_NOT_FOUND')
+text = text.replace(oldret, newret, 1)
+
+p.write_text(text, encoding='utf-8')
+after = hashlib.sha256(p.read_bytes()).hexdigest()
+print(json.dumps({'before_sha256': before, 'after_sha256': after, 'backup': str(bak.relative_to(root)).replace('\\', '/'), 'changed': before != after}, ensure_ascii=False))

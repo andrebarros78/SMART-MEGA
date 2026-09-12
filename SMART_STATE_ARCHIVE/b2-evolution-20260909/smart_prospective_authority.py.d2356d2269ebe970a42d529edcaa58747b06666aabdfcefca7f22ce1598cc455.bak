@@ -1,0 +1,103 @@
+from __future__ import annotations
+
+import hashlib
+import json
+from datetime import datetime, timezone, timedelta
+from pathlib import Path
+from typing import Any
+
+SCHEMA = "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY_V1"
+
+
+def sha256_file(path: Path) -> str:
+    h = hashlib.sha256()
+    with Path(path).open("rb") as stream:
+        for block in iter(lambda: stream.read(1024 * 1024), b""):
+            h.update(block)
+    return h.hexdigest()
+
+
+def _read_json(path: Path) -> dict[str, Any]:
+    obj = json.loads(Path(path).read_text(encoding="utf-8-sig"))
+    if not isinstance(obj, dict):
+        raise ValueError(f"JSON object required: {path}")
+    return obj
+
+
+def events_for(ledger: dict[str, Any], target: int) -> list[dict[str, Any]]:
+    return [event for event in ledger.get("events", []) if int(event.get("target_contest", -1)) == int(target)]
+
+
+def build_authority(root: str | Path) -> dict[str, Any]:
+    root = Path(root)
+    signal_path = root / "SMART_SIGNAL_LEDGER.json"
+    legacy_path = root / "SMART_PROSPECTIVE_LEDGER.json"
+    audit_path = root / "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json"
+    signal = _read_json(signal_path)
+    legacy = _read_json(legacy_path)
+    audit = _read_json(audit_path)
+    summary: dict[str, Any] = {}
+    for target in range(3051, 3055):
+        events = events_for(signal, target)
+        summary[str(target)] = {
+            "event_types": [event.get("event_type") for event in events],
+            "active_or_latest_freeze_hash": next(
+                (event.get("freeze_sha256") for event in reversed(events) if event.get("event_type") == "FREEZE"),
+                None,
+            ),
+            "adjudicated": any(event.get("event_type") == "ADJUDICATION" for event in events),
+            "sequential_proof": any(event.get("event_type") == "SEQUENTIAL_PROOF" for event in events),
+        }
+    prospective = audit.get("prospective_ledger", {})
+    return {
+        "schema": SCHEMA,
+        "created_brasilia": datetime.now(timezone(timedelta(hours=-3))).isoformat(),
+        "canonical_sequential_ledger": signal_path.name,
+        "canonical_sequential_ledger_sha256": sha256_file(signal_path),
+        "canonical_schema": signal.get("schema"),
+        "legacy_ledger": legacy_path.name,
+        "legacy_ledger_sha256": sha256_file(legacy_path),
+        "legacy_role": "COMPATIBILITY_ONLY_NON_AUTHORITATIVE_FOR_CURRENT_SEQUENTIAL_PROOF",
+        "targets": summary,
+        "independent_audit": {
+            "file": audit_path.name,
+            "sha256": sha256_file(audit_path),
+            "status": prospective.get("status"),
+            "pair_count": prospective.get("pair_count"),
+            "no_future_leakage": prospective.get("no_future_leakage"),
+            "hash_integrity": prospective.get("hash_integrity"),
+            "e_process_recomputed": prospective.get("e_process_recomputed"),
+        },
+        "policy": {
+            "retroactive_legacy_backfill_prohibited": True,
+            "all_future_freeze_adjudication_learning_proof_events_go_to_canonical_signal_ledger": True,
+            "legacy_records_do_not_create_promotion_evidence": True,
+        },
+    }
+
+
+def write_authority(root: str | Path) -> dict[str, Any]:
+    root = Path(root)
+    obj = build_authority(root)
+    (root / "SMART_PROSPECTIVE_EVIDENCE_AUTHORITY.json").write_text(
+        json.dumps(obj, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
+    )
+    return obj
+
+
+def main() -> None:
+    import sys
+
+    root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
+    obj = write_authority(root)
+    legacy = _read_json(root / "SMART_PROSPECTIVE_LEDGER.json")
+    print(json.dumps({
+        "canonical_events": len(_read_json(root / "SMART_SIGNAL_LEDGER.json").get("events", [])),
+        "legacy_records": len(legacy.get("records", [])),
+        "p14_pairs": obj["independent_audit"]["pair_count"],
+        "3054_adjudicated": obj["targets"]["3054"]["adjudicated"],
+    }, ensure_ascii=False))
+
+
+if __name__ == "__main__":
+    main()

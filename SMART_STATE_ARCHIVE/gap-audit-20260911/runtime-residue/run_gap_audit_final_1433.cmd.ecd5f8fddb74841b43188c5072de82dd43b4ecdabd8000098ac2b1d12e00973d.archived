@@ -1,0 +1,5 @@
+@echo off
+cd /d C:\SMART-MEGA
+set PYTHONPATH=C:\SMART-MEGA
+"C:\SMART-MEGA\.venv\Scripts\python.exe" -m pytest -q --disable-warnings --junitxml=runtime\GAP_AUDIT_FINAL_20260911_1433.junit.xml > runtime\GAP_AUDIT_FINAL_20260911_1433.log 2>&1
+echo %ERRORLEVEL%> runtime\GAP_AUDIT_FINAL_20260911_1433.exit

@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+from smart_mission_status import load_mission_status
+
 import hashlib
 import json
 from dataclasses import asdict, dataclass
@@ -192,7 +194,7 @@ class SmartAgentRuntime:
 
     def _probe_mission_governor(self) -> dict[str, Any]:
         p = self.root / "SMART_MISSION_STATUS.json"
-        mission = json.loads(p.read_text(encoding="utf-8-sig"))
+        mission = load_mission_status(p, root=self.root)
         status = str(mission.get("status", "UNKNOWN"))
         terminal = bool(mission.get("terminal_6of6_proven", False))
         consistent = status in {"MISSION_ACTIVE", "MISSION_PROVEN"} and ((status == "MISSION_PROVEN") == terminal)

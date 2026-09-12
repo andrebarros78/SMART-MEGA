@@ -1,0 +1,36 @@
+from pathlib import Path
+import hashlib, json, os
+import smart_material_deficiency_registry as mdr
+
+root = Path(__file__).resolve().parent
+p = root / 'SMART_MATERIAL_DEFICIENCY_REGISTRY.json'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+obj = json.loads(raw.decode('utf-8-sig'))
+entries = list(obj['entries'])
+did = 'D017_PYTEST_DISCOVERY_COLLECTED_APPLIED_MAINTENANCE_HELPER'
+entry = {
+    'id': did,
+    'severity': 'P1',
+    'status': 'RESOLVED',
+    'summary': 'An already-applied maintenance helper ended with _test.py and was accidentally collected by pytest, executing SystemExit during full regression before product tests could run.',
+    'evidence': [
+        'SMART_B2_D017_PYTEST_COLLECTION_PROOF_20260910.json',
+        'test_smart_regression_runner.py::test_pytest_runtime_utilities_are_not_collected',
+    ],
+}
+existing = [e for e in entries if e.get('id') == did]
+if not existing:
+    entries.append(entry)
+elif existing != [entry]:
+    raise SystemExit('D017_EXISTING_ENTRY_DIFFERS')
+registry = mdr.build_registry(entries)
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260910'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists(): bak.write_bytes(raw)
+tmp = p.with_name(p.name + '.d017.tmp')
+tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+os.replace(tmp, p)
+check = mdr.load_registry(p, root=root)
+print(json.dumps({'entry_count': check['entry_count'], 'open_count': check['open_count'], 'registry_sha256': check['registry_sha256'], 'file_sha256': check['file_sha256'], 'backup': str(bak.relative_to(root)).replace('\\','/'), 'added': not existing}, ensure_ascii=False))

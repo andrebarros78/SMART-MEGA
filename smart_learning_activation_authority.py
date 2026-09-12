@@ -10,12 +10,14 @@ from typing import Any
 from smart_learning_activation_gate import ActivationDecision
 
 SCHEMA = 'SMART_LEARNING_ACTIVATION_AUTHORITY_1'
+MATERIALITY_SCHEMA = 'SMART_DECISION_MATERIALITY_1'
 DEFAULT_PATH = Path('SMART_LEARNING_ACTIVATION_AUTHORITY.json')
 COMPONENTS = {
     'learning_activation_gate': 'smart_learning_activation_gate.py',
     'signal_agent': 'smart_signal_agent.py',
     'marginal_utility': 'smart_signal_marginal_utility.py',
     'meta_governor': 'smart_meta_governor.py',
+    'multi_challengers': 'smart_multi_challengers.py',
 }
 
 
@@ -40,6 +42,50 @@ def _is_hex64(value: Any) -> bool:
         return True
     except ValueError:
         return False
+
+
+def build_materiality_evidence(*, decision_change_count: int, validation_gain: float, holdout_gain: float,
+                               global_gain: float, independent_holdout: bool = True, leakage_free: bool = True) -> dict[str, Any]:
+    obj = {
+        'schema': MATERIALITY_SCHEMA,
+        'decision_change_count': decision_change_count,
+        'validation_gain': float(validation_gain),
+        'holdout_gain': float(holdout_gain),
+        'global_gain': float(global_gain),
+        'independent_holdout': independent_holdout,
+        'leakage_free': leakage_free,
+    }
+    _validate_materiality_evidence(obj, require_hash=False)
+    obj['sha256'] = _sha256_json(obj)
+    return obj
+
+
+def _validate_materiality_evidence(value: Any, *, require_hash: bool = True) -> dict[str, Any]:
+    if not isinstance(value, dict) or value.get('schema') != MATERIALITY_SCHEMA:
+        raise ValueError('decision materiality evidence missing or invalid')
+    count = value.get('decision_change_count')
+    if isinstance(count, bool) or not isinstance(count, int) or count <= 0:
+        raise ValueError('decision materiality requires at least one changed decision')
+    gains = []
+    for key in ('validation_gain', 'holdout_gain', 'global_gain'):
+        x = value.get(key)
+        if isinstance(x, bool) or not isinstance(x, (int, float)) or not math.isfinite(float(x)):
+            raise ValueError(f'decision materiality {key} must be finite')
+        if float(x) < 0.0:
+            raise ValueError(f'decision materiality {key} regresses baseline')
+        gains.append(float(x))
+    if max(gains) <= 0.0:
+        raise ValueError('decision materiality requires positive gain on at least one declared partition')
+    if value.get('independent_holdout') is not True:
+        raise ValueError('decision materiality requires independent holdout')
+    if value.get('leakage_free') is not True:
+        raise ValueError('decision materiality requires leakage-free evidence')
+    if require_hash:
+        observed = value.get('sha256')
+        canonical = dict(value); canonical.pop('sha256', None)
+        if not _is_hex64(observed) or observed.lower() != _sha256_json(canonical):
+            raise ValueError('decision materiality evidence self-hash invalid')
+    return value
 
 
 @dataclass(frozen=True)
@@ -70,7 +116,7 @@ def _disabled(reason: str, path: Path, target: int) -> ActivationRuntimeConfig:
 
 def build_authority(*, target_contest: int, decision: ActivationDecision, evidence_sha256: str,
                     marginal_strength: float = 0.0, allow_meta_alternate_selection: bool = False,
-                    root: Path = Path('.')) -> dict[str, Any]:
+                    materiality_evidence: dict[str, Any] | None = None, root: Path = Path('.')) -> dict[str, Any]:
     target = int(target_contest)
     if target < 1:
         raise ValueError('target_contest must be positive')
@@ -86,6 +132,7 @@ def build_authority(*, target_contest: int, decision: ActivationDecision, eviden
         raise ValueError('activation authority must enable at least one bounded mechanism')
     if not _is_hex64(evidence_sha256):
         raise ValueError('evidence_sha256 must be 64-hex')
+    materiality = _validate_materiality_evidence(materiality_evidence)
     root = Path(root).resolve()
     component_hashes = {}
     for key, name in COMPONENTS.items():
@@ -101,6 +148,7 @@ def build_authority(*, target_contest: int, decision: ActivationDecision, eviden
         'marginal_strength': strength,
         'allow_meta_alternate_selection': allow_meta,
         'evidence_sha256': evidence_sha256.lower(),
+        'materiality_evidence': materiality,
         'component_hashes': component_hashes,
         'single_target_authority': True,
         'future_targets_require_new_authority': True,
@@ -130,6 +178,7 @@ def load_activation_authority(path: Path = DEFAULT_PATH, *, target_contest: int,
         raise ValueError('learning activation authority target mismatch')
     if not _is_hex64(obj.get('evidence_sha256')):
         raise ValueError('learning activation authority evidence hash invalid')
+    _validate_materiality_evidence(obj.get('materiality_evidence'))
     decision_obj = obj.get('activation_decision')
     if not isinstance(decision_obj, dict):
         raise ValueError('learning activation decision missing')
@@ -183,4 +232,4 @@ def write_authority(path: Path, authority: dict[str, Any]) -> str:
     return _sha256_file(path)
 
 
-__all__ = ['SCHEMA', 'DEFAULT_PATH', 'ActivationRuntimeConfig', 'build_authority', 'load_activation_authority', 'write_authority']
+__all__ = ['SCHEMA', 'MATERIALITY_SCHEMA', 'DEFAULT_PATH', 'ActivationRuntimeConfig', 'build_materiality_evidence', 'build_authority', 'load_activation_authority', 'write_authority']

@@ -1,0 +1,647 @@
+{
+  "schema": "SMART_INDEPENDENT_AUDIT_1",
+  "status": "PASS",
+  "policy": {
+    "schema": "SMART_INDEPENDENT_AUDIT_POLICY_1",
+    "promotion_authority": false,
+    "fail_closed": true,
+    "independent_recomputation_required": true,
+    "coverage_source_hash_binding_required": true,
+    "line_and_branch_coverage_required": true,
+    "evidence_only_promotion_coverage_required": true,
+    "frozen_artifact_hash_required": true,
+    "immutable_state_archive_required_for_new_freezes": true,
+    "legacy_mutable_state_continuity_targets": [
+      3051,
+      3052
+    ],
+    "frozen_data_hash_required": true,
+    "result_data_hash_required": true,
+    "legacy_result_continuity_target": 3051,
+    "legacy_binary_hash_exception_requires_full_semantic_equivalence": true,
+    "active_freeze_required": true,
+    "freeze_before_adjudication_required": true,
+    "cutoff_must_end_at_target_minus_one": true,
+    "target_result_absent_from_freeze_data": true,
+    "recompute_hits_from_frozen_top6": true,
+    "recompute_e_process": true,
+    "deterministic_replay_required": true,
+    "full_champion_comparison_required": true,
+    "promotion_lineage_recomputation_required": true,
+    "independence_static_import_scan_required": true,
+    "independent_decision_oracle_required": true,
+    "material_deficiency_registry_required": true,
+    "deterministic_replay_uses_production_implementation": true,
+    "deterministic_replay_is_not_independent_oracle": true,
+    "forbidden_upward_dependencies": [
+      "smart_champion_challenger",
+      "smart_promotion_gate",
+      "adjudicate_signal_challenger"
+    ],
+    "sha256": "6b1628cafebcfed5229fa36ebd5ac1b65cf5233c5dfdf6735ccbbaf596205b27"
+  },
+  "independence": {
+    "status": "PASS",
+    "source_file": "smart_independent_audit.py",
+    "source_sha256": "211af7b3009c2a1ad6a03d061a4c13f847e3f05c4382b43dd26ad377cb4497f3",
+    "forbidden_dependencies": [
+      "adjudicate_signal_challenger",
+      "smart_champion_challenger",
+      "smart_promotion_gate"
+    ],
+    "forbidden_dependencies_found": [],
+    "static_import_scan": true,
+    "independent": true,
+    "independent_oracle_file": "smart_independent_oracle.py",
+    "independent_oracle_sha256": "1629c191e07edc83060e977379148c7f7ad432515d59d849c2a25a087e457f60",
+    "independent_oracle_project_imports": [],
+    "independent_oracle_has_no_project_imports": true,
+    "deterministic_replay_classification": "SAME_IMPLEMENTATION_DETERMINISM_ONLY"
+  },
+  "coverage": {
+    "status": "PASS",
+    "count": 4,
+    "bindings": [
+      {
+        "status": "PASS",
+        "binding_file": "SMART_P14_COVERAGE_BINDING_AUDIT.json",
+        "binding_sha256": "721287dbf7021f30b264e200985567edca5ef8f9ac523f5b8de290bb909e9312",
+        "source_file": "smart_independent_audit.py",
+        "source_sha256": "211af7b3009c2a1ad6a03d061a4c13f847e3f05c4382b43dd26ad377cb4497f3",
+        "coverage_report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+        "coverage_report_sha256": "1d97b8b1a44c97e2439663d43b4f82ddfcacc8eb97f9cb65ec530da4df1e2ea8",
+        "covered_lines": 559,
+        "statements": 559,
+        "covered_branches": 286,
+        "branches": 286
+      },
+      {
+        "status": "PASS",
+        "binding_file": "SMART_P14_COVERAGE_BINDING_ORCHESTRATOR.json",
+        "binding_sha256": "71eb5cc87cb88648726673907fbae9c998bd53403c04a676a777a282036ffc36",
+        "source_file": "smart_champion_challenger.py",
+        "source_sha256": "3f3b43628e7643abf2e54c6c1dcfb68caa1f133d622d1160d40120bced606292",
+        "coverage_report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+        "coverage_report_sha256": "1d97b8b1a44c97e2439663d43b4f82ddfcacc8eb97f9cb65ec530da4df1e2ea8",
+        "covered_lines": 380,
+        "statements": 380,
+        "covered_branches": 144,
+        "branches": 144
+      },
+      {
+        "status": "PASS",
+        "binding_file": "SMART_P14_COVERAGE_BINDING_PROMOTION.json",
+        "binding_sha256": "333ebb17d5c6a49ad1034ffb7a991701bf9a667ba51df9ba125ae4e90d2b275d",
+        "source_file": "smart_promotion_gate.py",
+        "source_sha256": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+        "coverage_report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+        "coverage_report_sha256": "1d97b8b1a44c97e2439663d43b4f82ddfcacc8eb97f9cb65ec530da4df1e2ea8",
+        "covered_lines": 64,
+        "statements": 64,
+        "covered_branches": 26,
+        "branches": 26
+      },
+      {
+        "status": "PASS",
+        "binding_file": "SMART_P14_COVERAGE_BINDING_EVIDENCE_ONLY.json",
+        "binding_sha256": "8fe5c809383b97bb730153aeb08388059dc5534a8e41f65e12d312b0ce4e85f7",
+        "source_file": "smart_evidence_only_promotion.py",
+        "source_sha256": "3bdc8f00bf2f0edf7502872ace54fb702a382d1c575a12e8b2165c61b7759384",
+        "coverage_report_file": "SMART_COVERAGE_GLOBAL_CURRENT.json",
+        "coverage_report_sha256": "1d97b8b1a44c97e2439663d43b4f82ddfcacc8eb97f9cb65ec530da4df1e2ea8",
+        "covered_lines": 300,
+        "statements": 300,
+        "covered_branches": 162,
+        "branches": 162
+      }
+    ]
+  },
+  "prospective_ledger": {
+    "status": "PASS",
+    "ledger_file": "SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "8abb6e2bfac36a8cb5cff0dfd7ed11380339a629f22e5fa6824ce8a941cb057e",
+    "pair_count": 5,
+    "no_future_leakage": true,
+    "hash_integrity": true,
+    "supersede_chain_integrity": true,
+    "legacy_result_continuity_used": true,
+    "e_process_recomputed": true,
+    "full_champion_comparison": {
+      "adjudicated_contests": 5,
+      "champion_hits": 3,
+      "challenger_hits": 4,
+      "advantage_hits": 1,
+      "cumulative_regret": -1,
+      "all_pairs_recomputed": true
+    },
+    "promotion_lineage_comparison": {
+      "candidate_fingerprint": "ef2ed8b4ab0ebb5399ad52e7a3ec8f4b2872c7d40279cf88708ec2c1488bbc3c",
+      "adjudicated_contests": 1,
+      "champion_hits": 1,
+      "challenger_hits": 2,
+      "advantage_hits": 1,
+      "cumulative_regret": -1,
+      "e_value": 1.0416666666666667,
+      "unversioned_causal_pairs_ignored": 4,
+      "discarded_prior_version_pairs": 0,
+      "lineage_recomputed_independently": true,
+      "lineage_pairs_recomputed": true
+    },
+    "independent_oracle_applicable_pairs": 5,
+    "independent_oracle_verified_pairs": 5,
+    "independent_oracle_scope_complete": true,
+    "pairs": [
+      {
+        "target_contest": 3051,
+        "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+        "cutoff_contest": 3050,
+        "actual_numbers": [
+          11,
+          15,
+          20,
+          21,
+          38,
+          48
+        ],
+        "champion_top6": [
+          11,
+          27,
+          10,
+          30,
+          53,
+          46
+        ],
+        "challenger_top6": [
+          11,
+          27,
+          10,
+          30,
+          53,
+          43
+        ],
+        "champion_hits": 1,
+        "challenger_hits": 1,
+        "difference_hits": 0,
+        "e_value_after_recomputed": 1.0,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "LEGACY_HASH_BOUND_CONTINUITY",
+          "target_contest": 3051,
+          "evidence_file": "SMART_SIGNAL_INTEGRATION_FINAL_PROOF.json",
+          "evidence_file_sha256": "024007099705ff7ee1a95a23e1de6105b8d105cf3a91212f8362f3a711480672",
+          "freeze_sha256": "795d6e405c4723f79355bdaea2074e784746afcc8eadc4c492206c68f9b2ff53",
+          "state_sha256": "f106f6ea8353b9b482585bdf88955f4d4b376c38fb0cc24752fb1aaeadd84d77",
+          "mutable_state_path_not_trusted": true,
+          "legacy_scope_only": true
+        },
+        "result_data_hash_verified": false,
+        "result_binary_hash_exact": false,
+        "legacy_result_continuity": {
+          "status": "PASS",
+          "target_contest": 3051,
+          "proof_file": "SMART_P14_LEGACY_RESULT_CONTINUITY_3051.json",
+          "proof_sha256": "06312f431c7e8603b643eeec17083d03040dda4a8386d06e8a882561f255f6fb",
+          "original_adjudicated_result_sha256": "81493e40d405cdfd72e97a3cd81eedaa5bf8cb7f92be26985096c7958c4fc357",
+          "current_result_sha256": "fd9d6c30d12b5ec1512becfead1974b1987a61d74716b0fae60037ff00bdaa13",
+          "frozen_prefix_sha256": "09f98911ac1a43494502678d30b6bc616d8ca7283e839db396fa0d56e32c7027",
+          "prefix_semantic_sha256": "c67d049ea5f1e8837a9e17c80791f2c95ea5a72ee4a54243eedc1b2401e7effc",
+          "current_semantic_sha256": "031187b76e20c0feedf0652610825d6bea95543c75fd10ad96182c23e39491b2",
+          "exact_prefix_semantic_equal": true,
+          "target_numbers": [
+            11,
+            15,
+            20,
+            21,
+            38,
+            48
+          ],
+          "binary_hash_exception_scope": "legacy contest 3051 only"
+        },
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": null,
+        "independent_decision_oracle": {
+          "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+          "status": "PASS",
+          "verified": true,
+          "signal_count": 12,
+          "weight_sum": 1.0,
+          "anchor_top6": [
+            11,
+            27,
+            10,
+            30,
+            53,
+            43
+          ],
+          "final_top6": [
+            11,
+            27,
+            10,
+            30,
+            53,
+            43
+          ],
+          "decision_mode": "quality_dynamic_anchor",
+          "production_engine_imported": false,
+          "recomputed_weights": true,
+          "recomputed_aggregate_scores": true,
+          "recomputed_ranking": true,
+          "recomputed_final_top6": true
+        }
+      },
+      {
+        "target_contest": 3052,
+        "freeze_sha256": "06eceb02da2636dee98924d7e766b0c96f45efa75915b7e3374eafa705423cd5",
+        "cutoff_contest": 3051,
+        "actual_numbers": [
+          16,
+          30,
+          40,
+          47,
+          48,
+          60
+        ],
+        "champion_top6": [
+          11,
+          27,
+          10,
+          38,
+          30,
+          46
+        ],
+        "challenger_top6": [
+          11,
+          27,
+          10,
+          38,
+          30,
+          53
+        ],
+        "champion_hits": 1,
+        "challenger_hits": 1,
+        "difference_hits": 0,
+        "e_value_after_recomputed": 1.0,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "LEGACY_HASH_BOUND_CONTINUITY",
+          "target_contest": 3052,
+          "evidence_file": "SMART_3052_TRAINED_APPLICATION.json",
+          "evidence_file_sha256": "fa50ddaa520aa65e6c0dd14a130b3529d72fbede3ab33bfc761f50806e681f09",
+          "freeze_sha256": "06eceb02da2636dee98924d7e766b0c96f45efa75915b7e3374eafa705423cd5",
+          "state_sha256": "0818ca154dda296503191d59d3174cc91d69c0d7196b2631cb22177e77d77441",
+          "mutable_state_path_not_trusted": true,
+          "legacy_scope_only": true
+        },
+        "result_data_hash_verified": true,
+        "result_binary_hash_exact": true,
+        "legacy_result_continuity": null,
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": null,
+        "independent_decision_oracle": {
+          "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+          "status": "PASS",
+          "verified": true,
+          "signal_count": 12,
+          "weight_sum": 1.0,
+          "anchor_top6": [
+            11,
+            27,
+            10,
+            38,
+            30,
+            53
+          ],
+          "final_top6": [
+            11,
+            27,
+            10,
+            38,
+            30,
+            53
+          ],
+          "decision_mode": "quality_dynamic_anchor",
+          "production_engine_imported": false,
+          "recomputed_weights": true,
+          "recomputed_aggregate_scores": true,
+          "recomputed_ranking": true,
+          "recomputed_final_top6": true
+        }
+      },
+      {
+        "target_contest": 3053,
+        "freeze_sha256": "e8773cf0d5f29bab5c0dfb3a3352130ee36dafe13b6c6db6747412789c9a8781",
+        "cutoff_contest": 3052,
+        "actual_numbers": [
+          1,
+          13,
+          25,
+          35,
+          39,
+          51
+        ],
+        "champion_top6": [
+          11,
+          27,
+          30,
+          10,
+          38,
+          46
+        ],
+        "challenger_top6": [
+          11,
+          30,
+          27,
+          10,
+          38,
+          16
+        ],
+        "champion_hits": 0,
+        "challenger_hits": 0,
+        "difference_hits": 0,
+        "e_value_after_recomputed": 1.0,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "IMMUTABLE_HASH_ARCHIVE",
+          "archive_file": "7410564d72f484eadafdd045d3f4911144b99643fde6b1efe58a1cbf5c535320.json",
+          "archive_sha256": "7410564d72f484eadafdd045d3f4911144b99643fde6b1efe58a1cbf5c535320",
+          "legacy_scope_only": false
+        },
+        "result_data_hash_verified": true,
+        "result_binary_hash_exact": true,
+        "legacy_result_continuity": null,
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": null,
+        "independent_decision_oracle": {
+          "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+          "status": "PASS",
+          "verified": true,
+          "signal_count": 12,
+          "weight_sum": 1.0,
+          "anchor_top6": [
+            11,
+            30,
+            27,
+            10,
+            38,
+            16
+          ],
+          "final_top6": [
+            11,
+            30,
+            27,
+            10,
+            38,
+            16
+          ],
+          "decision_mode": "quality_dynamic_anchor",
+          "production_engine_imported": false,
+          "recomputed_weights": true,
+          "recomputed_aggregate_scores": true,
+          "recomputed_ranking": true,
+          "recomputed_final_top6": true
+        }
+      },
+      {
+        "target_contest": 3054,
+        "freeze_sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+        "cutoff_contest": 3053,
+        "actual_numbers": [
+          8,
+          17,
+          24,
+          43,
+          47,
+          58
+        ],
+        "champion_top6": [
+          11,
+          30,
+          27,
+          35,
+          10,
+          38
+        ],
+        "challenger_top6": [
+          11,
+          30,
+          27,
+          35,
+          10,
+          38
+        ],
+        "champion_hits": 0,
+        "challenger_hits": 0,
+        "difference_hits": 0,
+        "e_value_after_recomputed": 1.0,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "IMMUTABLE_HASH_ARCHIVE",
+          "archive_file": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b.json",
+          "archive_sha256": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b",
+          "legacy_scope_only": false
+        },
+        "result_data_hash_verified": true,
+        "result_binary_hash_exact": true,
+        "legacy_result_continuity": null,
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": null,
+        "independent_decision_oracle": {
+          "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+          "status": "PASS",
+          "verified": true,
+          "signal_count": 12,
+          "weight_sum": 1.0,
+          "anchor_top6": [
+            11,
+            30,
+            27,
+            35,
+            10,
+            38
+          ],
+          "final_top6": [
+            11,
+            30,
+            27,
+            35,
+            10,
+            38
+          ],
+          "decision_mode": "quality_dynamic_anchor",
+          "production_engine_imported": false,
+          "recomputed_weights": true,
+          "recomputed_aggregate_scores": true,
+          "recomputed_ranking": true,
+          "recomputed_final_top6": true
+        }
+      },
+      {
+        "target_contest": 3055,
+        "freeze_sha256": "8dae686a9522e50b6433bacb41ddcb601e87f6da8e595acdced2d74df5cb6394",
+        "cutoff_contest": 3054,
+        "actual_numbers": [
+          1,
+          11,
+          36,
+          43,
+          48,
+          49
+        ],
+        "champion_top6": [
+          11,
+          30,
+          27,
+          10,
+          35,
+          38
+        ],
+        "challenger_top6": [
+          11,
+          30,
+          27,
+          43,
+          10,
+          35
+        ],
+        "champion_hits": 1,
+        "challenger_hits": 2,
+        "difference_hits": 1,
+        "e_value_after_recomputed": 1.0416666666666667,
+        "freeze_hash_verified": true,
+        "frozen_data_hash_verified": true,
+        "state_evidence": {
+          "status": "PASS",
+          "mode": "IMMUTABLE_HASH_ARCHIVE",
+          "archive_file": "1159a9a64366faab412fe61e8f5beb371e20a78c63ec1505d9257ceb62d59ba1.json",
+          "archive_sha256": "1159a9a64366faab412fe61e8f5beb371e20a78c63ec1505d9257ceb62d59ba1",
+          "legacy_scope_only": false
+        },
+        "result_data_hash_verified": true,
+        "result_binary_hash_exact": true,
+        "legacy_result_continuity": null,
+        "future_leakage_detected": false,
+        "promotion_lineage_sha256": "ef2ed8b4ab0ebb5399ad52e7a3ec8f4b2872c7d40279cf88708ec2c1488bbc3c",
+        "independent_decision_oracle": {
+          "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+          "status": "PASS",
+          "verified": true,
+          "signal_count": 12,
+          "weight_sum": 1.0,
+          "anchor_top6": [
+            11,
+            30,
+            27,
+            43,
+            10,
+            35
+          ],
+          "final_top6": [
+            11,
+            30,
+            27,
+            43,
+            10,
+            35
+          ],
+          "decision_mode": "quality_dynamic_anchor",
+          "production_engine_imported": false,
+          "recomputed_weights": true,
+          "recomputed_aggregate_scores": true,
+          "recomputed_ranking": true,
+          "recomputed_final_top6": true
+        }
+      }
+    ]
+  },
+  "deterministic_replay": {
+    "status": "PASS",
+    "data_file": "Mega-Sena_cutoff_3056.xlsx",
+    "data_sha256": "fa09f3749781efe38cc25b9f64071f8256a0ce9fe567b0f34b4e0234a6e18fad",
+    "target_contest": 3057,
+    "cutoff_contest": 3056,
+    "start_index": 1000,
+    "champion_replay_sha256": "126a7431f0174e75f153b18659b97874d325ae36cffd72adb8c91d630be54903",
+    "challenger_replay_sha256": "8392f1efdaf2d3937ea20363f918f79d45abc34b6cc107fcaab3bda425a5b7ae",
+    "champion_top6": [
+      11,
+      43,
+      27,
+      30,
+      10,
+      38
+    ],
+    "challenger_top6": [
+      11,
+      43,
+      27,
+      30,
+      10,
+      38
+    ],
+    "independent_decision_oracle": {
+      "schema": "SMART_INDEPENDENT_DECISION_ORACLE_1",
+      "status": "PASS",
+      "verified": true,
+      "signal_count": 12,
+      "weight_sum": 1.0,
+      "anchor_top6": [
+        11,
+        43,
+        27,
+        30,
+        10,
+        38
+      ],
+      "final_top6": [
+        11,
+        43,
+        27,
+        30,
+        10,
+        38
+      ],
+      "decision_mode": "quality_dynamic_anchor",
+      "production_engine_imported": false,
+      "recomputed_weights": true,
+      "recomputed_aggregate_scores": true,
+      "recomputed_ranking": true,
+      "recomputed_final_top6": true
+    },
+    "deterministic": true,
+    "causal_cutoff_verified": true
+  },
+  "checks": {
+    "coverage_lines_and_branches": true,
+    "hash_integrity": true,
+    "deterministic_replay": true,
+    "future_leakage_absent": true,
+    "full_champion_comparison": true,
+    "promotion_lineage_recomputed": true,
+    "independence_no_forbidden_dependencies": true,
+    "independent_freeze_decision_oracle": true
+  },
+  "promotion_authority": false,
+  "independent_of_promotion_decision": true,
+  "material_deficiency_registry": {
+    "schema": "SMART_MATERIAL_DEFICIENCY_REGISTRY_1",
+    "status": "PASS",
+    "file": "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+    "file_sha256": "7459b6f1320039d640b566fd37e982b9a8ebe7a87f04174924a683e942311620",
+    "registry_sha256": "b84b434fa9837e8360330f1706b0b07be35b88334e6ff4e864ed326e2b0562f4",
+    "entry_count": 28,
+    "open_count": 0,
+    "open_deficiencies": [],
+    "open_entries": [],
+    "all_entries_validated": true
+  },
+  "material_deficiencies": [],
+  "sha256": "d75efdbbf4fe3925591e0c656125864d5d4ff782857cfb7403b9fa8e3dea0b2c"
+}

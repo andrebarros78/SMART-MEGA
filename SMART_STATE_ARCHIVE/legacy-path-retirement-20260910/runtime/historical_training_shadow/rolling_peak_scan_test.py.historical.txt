@@ -1,0 +1,55 @@
+import json, random, math, statistics
+from pathlib import Path
+ROOT=Path(r'C:\New Projet\SMART-MEGA')
+d=json.loads((ROOT/'runtime/historical_training_shadow/SMART_CAUSAL_REPLAY_1001_3053.json').read_text(encoding='utf-8'))
+rows=d if isinstance(d,list) else d.get('rows',d.get('replay',d.get('records',[])))
+y=[int(r['challenger_hits']) for r in rows]
+# exact null hit distribution: intersection size between two independent 6-subsets of 60
+from math import comb
+probs=[]; vals=list(range(7))
+den=comb(60,6)
+for k in vals:
+    if k<=6 and 6-k<=54: probs.append(comb(6,k)*comb(54,6-k)/den)
+    else: probs.append(0.0)
+cum=[]; s=0
+for p in probs:s+=p;cum.append(s)
+def draw_hit(rng):
+ u=rng.random()
+ for k,c in enumerate(cum):
+  if u<=c:return k
+ return 6
+def max_roll(arr,w):
+ s=sum(arr[:w]); best=s; idx=0
+ for i in range(w,len(arr)):
+  s+=arr[i]-arr[i-w]
+  if s>best:best=s;idx=i-w+1
+ return best,idx
+def min_roll(arr,w):
+ s=sum(arr[:w]); best=s; idx=0
+ for i in range(w,len(arr)):
+  s+=arr[i]-arr[i-w]
+  if s<best:best=s;idx=i-w+1
+ return best,idx
+windows=[50,100,150,250]
+obs={}
+for w in windows:
+ mx,ix=max_roll(y,w); mn,inidx=min_roll(y,w)
+ obs[str(w)]={'max_hits':mx,'max_mean':mx/w,'max_start_contest':int(rows[ix]['contest']),'min_hits':mn,'min_mean':mn/w,'min_start_contest':int(rows[inidx]['contest'])}
+# global look-elsewhere statistic standardized by exact null mean/var, max across all windows and positions
+mu=sum(k*p for k,p in zip(vals,probs)); var=sum((k-mu)**2*p for k,p in zip(vals,probs))
+def global_stat(arr):
+ best=-1e9; worst=1e9
+ for w in windows:
+  s=sum(arr[:w]); z=(s-w*mu)/math.sqrt(w*var);best=max(best,z);worst=min(worst,z)
+  for i in range(w,len(arr)):
+   s+=arr[i]-arr[i-w];z=(s-w*mu)/math.sqrt(w*var);best=max(best,z);worst=min(worst,z)
+ return best,worst
+obs_best,obs_worst=global_stat(y)
+rng=random.Random(2026090503); reps=10000; ge=0; le=0; maxstats=[]
+for _ in range(reps):
+ arr=[draw_hit(rng) for _ in y]; b,w=global_stat(arr); maxstats.append(b)
+ if b>=obs_best-1e-12:ge+=1
+ if w<=obs_worst+1e-12:le+=1
+out={'schema':'SMART_ROLLING_PEAK_SCAN_NULL_TEST_V1','n_contests':len(y),'windows':windows,'null_mean_hits_per_contest':mu,'null_var_hits_per_contest':var,'observed':obs,'observed_global_max_z':obs_best,'observed_global_min_z':obs_worst,'mc_reps':reps,'look_elsewhere_p_max':(ge+1)/(reps+1),'look_elsewhere_p_min':(le+1)/(reps+1),'conclusion_max':'UNUSUAL_AFTER_SCAN' if (ge+1)/(reps+1)<.05 else 'COMPATIBLE_WITH_CHANCE_AFTER_SCAN'}
+(ROOT/'runtime/historical_training_shadow/ROLLING_PEAK_SCAN_TEST.json').write_text(json.dumps(out,indent=2),encoding='utf-8')
+print(json.dumps(out,indent=2))

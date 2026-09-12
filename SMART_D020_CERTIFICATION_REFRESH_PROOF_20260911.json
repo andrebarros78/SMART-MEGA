@@ -1,0 +1,90 @@
+{
+  "schema": "SMART_D020_CERTIFICATION_REFRESH_1",
+  "status": "PASS",
+  "created_utc": "2026-09-11T18:01:46.422192+00:00",
+  "target_contest": 3057,
+  "archive": "C:\\SMART-MEGA\\SMART_STATE_ARCHIVE\\D020_CERTIFICATION_REFRESH_20260911-145834",
+  "backups": {
+    "SMART_AUDIT_JUNIT_CURRENT.xml": {
+      "sha256": "ff5f17f788c526ff8752ef6c60a251ed31c899694d6049f1237b51c182f0fc80",
+      "size": 106103
+    },
+    "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json": {
+      "sha256": "00db29bfced4cccb1faefd8a7c727fabd9f4aae16a646702ec9e2247bfc2de74",
+      "size": 21274
+    },
+    "SMART_GLOBAL_INTEGRITY_PROOF.json": {
+      "sha256": "c2b6f1b9e327e95e7f75f4eced4bde031e3f71daef615716dbd8fb71ae5458e0",
+      "size": 15768
+    },
+    "SMART_3052_IMPLEMENTATION_GATE.json": {
+      "sha256": "e2b3a189f2e6312e128601cdd268e11b21cd66fba4ae86bb68018a1d852a9d8b",
+      "size": 33506
+    },
+    "SMART_PRODUCT_CERTIFICATION.json": {
+      "sha256": "af034f695163f34ee9d1cd9df5c7e10c41265a5fb7a4c64bf2b52d487e16e294",
+      "size": 37902
+    },
+    "SMART_MATERIAL_DEFICIENCY_REGISTRY.json": {
+      "sha256": "007d3d93959ecd04c9222c22fcd81160c048df038b83694d13beab27775b6835",
+      "size": 12098
+    }
+  },
+  "junit": {
+    "file": "SMART_AUDIT_JUNIT_CURRENT.xml",
+    "sha256": "ff5f17f788c526ff8752ef6c60a251ed31c899694d6049f1237b51c182f0fc80",
+    "tests": 799,
+    "failures": 0,
+    "errors": 0
+  },
+  "registry": {
+    "schema": "SMART_MATERIAL_DEFICIENCY_REGISTRY_1",
+    "status": "PASS",
+    "file": "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+    "file_sha256": "ce567e278be18465141d578cd4dadb3a11af74c90b28c155f9a93929d72964be",
+    "registry_sha256": "858c1a57bfc389a6025086b9e14f402957bd7fe86c5887c4bc4df775c86ace2e",
+    "entry_count": 22,
+    "open_count": 0,
+    "open_deficiencies": [],
+    "open_entries": [],
+    "all_entries_validated": true
+  },
+  "p14": {
+    "status": "PASS",
+    "file": "SMART_P14_INDEPENDENT_AUDIT_CURRENT.json",
+    "file_sha256": "0884e0cac6816ba6b14e04e1044a2832cf1c2e9ba54af884f9b60d271dbc6925",
+    "report_sha256": "06b965281100471a197875e29d7a72a3c29052fa54b04683be9549f51b8c90e7",
+    "material_deficiency_registry": {
+      "schema": "SMART_MATERIAL_DEFICIENCY_REGISTRY_1",
+      "status": "PASS",
+      "file": "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+      "file_sha256": "ce567e278be18465141d578cd4dadb3a11af74c90b28c155f9a93929d72964be",
+      "registry_sha256": "858c1a57bfc389a6025086b9e14f402957bd7fe86c5887c4bc4df775c86ace2e",
+      "entry_count": 22,
+      "open_count": 0,
+      "open_deficiencies": [],
+      "open_entries": [],
+      "all_entries_validated": true
+    },
+    "material_deficiencies": []
+  },
+  "global_integrity": {
+    "status": "PASS",
+    "proof_file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
+    "proof_file_sha256": "4a86b13e245bda3ad70690b45f90c7b0b7c884f2f0ef34d347612498beb1eb37",
+    "critical_source_hashes_current": true,
+    "coverage_current": true,
+    "red_team_current": true,
+    "independent_audit_current": true,
+    "full_regression_current": true,
+    "material_deficiency_registry_current": true,
+    "material_deficiencies": []
+  },
+  "product_certification": {
+    "status": "CONSTRUCTION_PROVEN",
+    "sha256": "fd9c03e09ba4f92379fe01f09f433af8c2ca805f6a8f9e616cd7b6a705f849d7",
+    "file_sha256": "7075a35f0e6a8a022ad39f222a5fd42fa1b20d4f54f66911a3b7d95007fb193f",
+    "code_fingerprint_sha256": "1f6e241e15f242de7fbf0015e79506d38888185aef03c6106470ebc535e9e341",
+    "file_count": 214
+  }
+}

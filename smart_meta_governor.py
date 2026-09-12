@@ -13,9 +13,10 @@ META_ETA = math.log(2.0) / 6.0
 PRIOR_MIX = 0.20
 UNIFORM_EXPECTED_HITS = 0.60
 ANCHOR_POLICY = 'quality_dynamic'
-MIN_ALT_OBSERVATIONS = 20
-MIN_LOG_WEIGHT_LEAD = math.log(2.0)
-MIN_CUMULATIVE_HIT_LEAD = 1
+MIN_ALT_OBSERVATIONS = 100
+MIN_LOG_WEIGHT_LEAD = math.log(4.0)
+MIN_CUMULATIVE_HIT_LEAD = 12
+AUTOMATIC_EVIDENCE_GUARD = True
 
 
 def sha256_json(obj: Any) -> str:
@@ -61,6 +62,7 @@ class MetaGovernor:
     eta: float = META_ETA
     prior_mix: float = PRIOR_MIX
     allow_alternate_selection: bool = False
+    automatic_evidence_guard: bool = AUTOMATIC_EVIDENCE_GUARD
     observations: int = 0
     log_weights: dict[str, float] = field(default_factory=lambda: {p: 0.0 for p in POLICY_IDS})
     cumulative_hits: dict[str, int] = field(default_factory=lambda: {p: 0 for p in POLICY_IDS})
@@ -72,6 +74,8 @@ class MetaGovernor:
         self.eta = float(self.eta); self.prior_mix = float(self.prior_mix)
         if not isinstance(self.allow_alternate_selection, bool):
             raise ValueError('allow_alternate_selection must be boolean')
+        if not isinstance(self.automatic_evidence_guard, bool):
+            raise ValueError('automatic_evidence_guard must be boolean')
         if not math.isfinite(self.eta) or self.eta <= 0.0:
             raise ValueError('eta must be finite and positive')
         if not 0.0 <= self.prior_mix < 1.0:
@@ -85,26 +89,39 @@ class MetaGovernor:
     def select(self, multi: dict[str, Any]) -> dict[str, Any]:
         policies = _validate_multi(multi)
         weights = self.weights()
-        # Hedge remains the adaptive scout, but it may not displace the
-        # quality_dynamic anchor without accumulated causal evidence. This
-        # fail-closed guard prevents meta-selection from degrading the primary
-        # challenger merely because of short-run weight fluctuations.
-        hedge_candidate = max(POLICY_IDS, key=lambda p: (weights[p], -POLICY_IDS.index(p)))
+        # Only a policy that would materially change the decision may challenge
+        # the anchor. A high-weight duplicate must not hide a lower-weight but
+        # genuinely different policy. The automatic evidence guard is causal,
+        # bounded by accumulated pre-result evidence, and intentionally stricter
+        # than the previous +6-hit-equivalent gate, which regressed in replay.
         anchor = ANCHOR_POLICY
+        anchor_top6 = tuple(int(x) for x in policies[anchor]['top6'])
+        material_candidates = [
+            p for p in POLICY_IDS
+            if p != anchor and tuple(int(x) for x in policies[p]['top6']) != anchor_top6
+        ]
+        hedge_candidate = (
+            max(material_candidates, key=lambda p: (weights[p], -POLICY_IDS.index(p)))
+            if material_candidates else anchor
+        )
+        material_decision_change = hedge_candidate != anchor
         log_lead = float(self.log_weights[hedge_candidate] - self.log_weights[anchor])
         hit_lead = int(self.cumulative_hits[hedge_candidate] - self.cumulative_hits[anchor])
+        evidence_guard_enabled = bool(self.automatic_evidence_guard or self.allow_alternate_selection)
         alternate_authorized = bool(
-            self.allow_alternate_selection
-            and hedge_candidate != anchor
+            evidence_guard_enabled
+            and material_decision_change
             and self.observations >= MIN_ALT_OBSERVATIONS
             and log_lead >= MIN_LOG_WEIGHT_LEAD - 1e-15
             and hit_lead >= MIN_CUMULATIVE_HIT_LEAD
         )
         selected = hedge_candidate if alternate_authorized else anchor
         blockers = []
-        if hedge_candidate != anchor and not alternate_authorized:
-            if not self.allow_alternate_selection:
-                blockers.append('explicit_prospective_promotion_required')
+        if not alternate_authorized:
+            if not material_decision_change:
+                blockers.append('no_material_decision_change')
+            if not evidence_guard_enabled:
+                blockers.append('evidence_guard_disabled')
             if self.observations < MIN_ALT_OBSERVATIONS:
                 blockers.append('insufficient_observations')
             if log_lead < MIN_LOG_WEIGHT_LEAD - 1e-15:
@@ -119,7 +136,10 @@ class MetaGovernor:
             'policy_weights_before_result': weights,
             'anchor_policy': anchor,
             'allow_alternate_selection': self.allow_alternate_selection,
-            'alternate_activation_mode': 'EVIDENCE_GUARD' if self.allow_alternate_selection else 'EXPLICIT_PROSPECTIVE_PROMOTION_REQUIRED',
+            'automatic_evidence_guard': self.automatic_evidence_guard,
+            'alternate_activation_mode': 'AUTOMATIC_CAUSAL_EVIDENCE_GUARD' if self.automatic_evidence_guard else ('EVIDENCE_GUARD' if self.allow_alternate_selection else 'DISABLED'),
+            'material_candidate_policies': list(material_candidates),
+            'material_decision_change': bool(material_decision_change),
             'hedge_candidate_policy': hedge_candidate,
             'alternate_authorized': alternate_authorized,
             'alternate_evidence': {'observations': int(self.observations), 'log_weight_lead_vs_anchor': log_lead,
@@ -188,7 +208,8 @@ class MetaGovernor:
             'last_selected_policy': self.last_selected_policy,
             'anchor_policy': ANCHOR_POLICY,
             'allow_alternate_selection': self.allow_alternate_selection,
-            'alternate_activation_mode': 'EVIDENCE_GUARD' if self.allow_alternate_selection else 'EXPLICIT_PROSPECTIVE_PROMOTION_REQUIRED',
+            'automatic_evidence_guard': self.automatic_evidence_guard,
+            'alternate_activation_mode': 'AUTOMATIC_CAUSAL_EVIDENCE_GUARD' if self.automatic_evidence_guard else ('EVIDENCE_GUARD' if self.allow_alternate_selection else 'DISABLED'),
             'alternate_guard': {'min_observations': MIN_ALT_OBSERVATIONS,
                                 'min_log_weight_lead': MIN_LOG_WEIGHT_LEAD,
                                 'min_cumulative_hit_lead': MIN_CUMULATIVE_HIT_LEAD},

@@ -1,0 +1,45 @@
+from pathlib import Path
+import hashlib, json, os
+import smart_material_deficiency_registry as mdr
+
+root = Path(__file__).resolve().parent
+p = root / 'SMART_MATERIAL_DEFICIENCY_REGISTRY.json'
+raw = p.read_bytes()
+before = hashlib.sha256(raw).hexdigest()
+obj = json.loads(raw.decode('utf-8-sig'))
+entries = list(obj['entries'])
+did = 'D014_CANONICAL_HISTORY_NOT_ADVANCED_AFTER_COMPLETED_EPOCH'
+entry = {
+    'id': did,
+    'severity': 'P0',
+    'status': 'RESOLVED',
+    'summary': 'A completed and learned prospective epoch could leave Mega-Sena.xlsx at target-1, blocking the next canonical prospective target even though a verified through-target dataset existed.',
+    'evidence': [
+        'test_smart_canonical_history_advance.py',
+        'test_smart_canonical_history_advance_dtype.py',
+        'SMART_CANONICAL_HISTORY_ADVANCE_3055.json',
+    ],
+}
+existing = [e for e in entries if e.get('id') == did]
+if not existing:
+    entries.append(entry)
+elif existing != [entry]:
+    raise SystemExit('D014_EXISTING_ENTRY_DIFFERS')
+registry = mdr.build_registry(entries)
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260909'
+bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists():
+    bak.write_bytes(raw)
+tmp = p.with_name(p.name + '.d014.tmp')
+tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+os.replace(tmp, p)
+check = mdr.load_registry(p, root=root)
+print(json.dumps({
+    'entry_count': check['entry_count'],
+    'open_count': check['open_count'],
+    'registry_sha256': check['registry_sha256'],
+    'file_sha256': check['file_sha256'],
+    'backup': str(bak.relative_to(root)).replace('\\', '/'),
+    'added': not existing,
+}, ensure_ascii=False))

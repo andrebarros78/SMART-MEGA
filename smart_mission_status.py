@@ -1,0 +1,241 @@
+from __future__ import annotations
+
+import hashlib
+import json
+import os
+from pathlib import Path
+from typing import Any
+
+SCHEMA = "SMART_MISSION_STATUS_V2"
+TERMINAL_PROOF_SCHEMA = "SMART_TERMINAL_6OF6_PROOF_1"
+DEFAULT_PATH = Path("SMART_MISSION_STATUS.json")
+
+
+def sha256_file(path: str | Path) -> str:
+    return hashlib.sha256(Path(path).read_bytes()).hexdigest()
+
+
+def sha256_json(value: Any) -> str:
+    raw = json.dumps(value, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    return hashlib.sha256(raw).hexdigest()
+
+
+def _is_hex64(value: Any) -> bool:
+    if not isinstance(value, str) or len(value) != 64:
+        return False
+    try:
+        int(value, 16)
+        return True
+    except ValueError:
+        return False
+
+
+def _terminal_claims(root: Path) -> dict[str, dict[str, str]]:
+    observed: dict[str, dict[str, str]] = {}
+    for path in sorted(root.glob("*.json")):
+        if path.name == DEFAULT_PATH.name:
+            continue
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8-sig"))
+        except Exception:
+            continue
+        if not isinstance(obj, dict):
+            continue
+        status = str(obj.get("status") or "")
+        if status.startswith("MISSION_PROVEN") or obj.get("terminal_authority") is True or obj.get("terminal_6of6_proven") is True:
+            observed[path.name] = {"status": status, "sha256": sha256_file(path)}
+    return observed
+
+
+
+def _numbers6(value: Any, label: str) -> list[int]:
+    if not isinstance(value, list):
+        raise ValueError(f"{label} must be a list")
+    try:
+        numbers = [int(x) for x in value]
+    except (TypeError, ValueError) as exc:
+        raise ValueError(f"{label} contains invalid numbers") from exc
+    if len(numbers) != 6 or len(set(numbers)) != 6 or any(n < 1 or n > 60 for n in numbers):
+        raise ValueError(f"{label} must contain six unique numbers in 1..60")
+    return sorted(numbers)
+
+
+def _bound_json(root: Path, name: Any, expected_sha: Any, label: str) -> tuple[Path, dict[str, Any]]:
+    if not isinstance(name, str) or not name or not _is_hex64(expected_sha):
+        raise ValueError(f"{label} binding missing")
+    path = (root / name).resolve()
+    try:
+        path.relative_to(root.resolve())
+    except ValueError as exc:
+        raise ValueError(f"{label} escapes canonical root") from exc
+    if not path.is_file() or sha256_file(path) != str(expected_sha).lower():
+        raise ValueError(f"{label} binding stale")
+    try:
+        obj = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception as exc:
+        raise ValueError(f"{label} unreadable") from exc
+    if not isinstance(obj, dict):
+        raise ValueError(f"{label} must be a JSON object")
+    return path, obj
+
+
+def _validate_terminal_proof(doc: dict[str, Any], *, root: Path, observed: dict[str, dict[str, str]]) -> None:
+    proof_name = doc.get("terminal_proof_file")
+    proof_path, proof = _bound_json(root, proof_name, doc.get("terminal_proof_sha256"), "terminal mission proof")
+    proof_rel = Path(str(proof_name))
+    normalized_proof_name = str(proof_name).replace("\\", "/")
+    if proof_rel.parent == Path("."):
+        if proof_path.name not in observed:
+            raise ValueError("terminal mission proof not visible in terminal claim inventory")
+    else:
+        if not normalized_proof_name.startswith("runtime/learning_epochs/"):
+            raise ValueError("nested terminal mission proof must be epoch-scoped")
+    if proof.get("schema") != TERMINAL_PROOF_SCHEMA or proof.get("status") != "MISSION_PROVEN":
+        raise ValueError("terminal mission proof schema/status invalid")
+    proof_self = proof.get("sha256")
+    proof_canonical = dict(proof); proof_canonical.pop("sha256", None)
+    if not _is_hex64(proof_self) or str(proof_self).lower() != sha256_json(proof_canonical):
+        raise ValueError("terminal mission proof self-hash invalid")
+
+    target = doc.get("proven_target_contest")
+    if not isinstance(target, int) or target <= 0 or int(proof.get("target_contest", -1)) != target:
+        raise ValueError("terminal mission target mismatch")
+    if proof.get("terminal_rule") != doc.get("terminal_rule"):
+        raise ValueError("terminal mission rule mismatch")
+    evaluation = proof.get("evaluation")
+    if not isinstance(evaluation, dict) or evaluation.get("status") != "MISSION_PROVEN_ELIGIBLE" or evaluation.get("eligible_for_mission_proven") is not True:
+        raise ValueError("terminal mission evaluation is not eligible")
+    if int(evaluation.get("target_contest", -1)) != target:
+        raise ValueError("terminal mission evaluation target mismatch")
+    checks = evaluation.get("checks")
+    if not isinstance(checks, dict) or not checks or any(value is not True for value in checks.values()):
+        raise ValueError("terminal mission evaluation checks are not all true")
+    if int(evaluation.get("recomputed_hits", -1)) != 6 or int(evaluation.get("adjudication_count", -1)) != 1:
+        raise ValueError("terminal mission does not prove unique exact 6/6 adjudication")
+    top6 = _numbers6(evaluation.get("frozen_top6"), "terminal frozen Top-6")
+    actual = _numbers6(evaluation.get("actual_numbers"), "terminal actual numbers")
+    if top6 != actual:
+        raise ValueError("terminal mission recomputed Top-6 is not exact 6/6")
+    if _numbers6(doc.get("proven_top6"), "mission proven Top-6") != top6 or _numbers6(doc.get("official_actual_numbers"), "mission official numbers") != actual:
+        raise ValueError("terminal mission summary does not match proof")
+
+    for flag in ("all_attempts_counted", "independent_audit_pass", "source_corroborated", "retroactive_selection_prohibited"):
+        if proof.get(flag) is not True:
+            raise ValueError(f"terminal mission proof guard false: {flag}")
+    for key in ("freeze_sha256", "signal_ledger_sha256", "official_evidence_sha256", "independent_audit_sha256", "sequence_sha256"):
+        if not _is_hex64(proof.get(key)):
+            raise ValueError(f"terminal mission proof hash invalid: {key}")
+
+    freeze_path, freeze = _bound_json(root, proof.get("freeze_file"), proof.get("freeze_sha256"), "terminal freeze")
+    if int(freeze.get("target_contest", -1)) != target or int(freeze.get("cutoff_contest", -1)) != target - 1:
+        raise ValueError("terminal freeze target/cutoff mismatch")
+    if freeze.get("frozen_before_result") is not True or freeze.get("causal_cutoff") is not True:
+        raise ValueError("terminal freeze is not causally pre-result")
+    freeze_top6 = freeze.get("governed_challenger_top6") or freeze.get("challenger", {}).get("top6") or freeze.get("champion", {}).get("top6")
+    if _numbers6(freeze_top6, "terminal freeze Top-6") != top6:
+        raise ValueError("terminal freeze Top-6 mismatch")
+
+    _, ledger = _bound_json(root, proof.get("signal_ledger_file"), proof.get("signal_ledger_sha256"), "terminal signal ledger")
+    events = ledger.get("events")
+    if not isinstance(events, list):
+        raise ValueError("terminal signal ledger events missing")
+    matching_freezes = [e for e in events if isinstance(e, dict) and e.get("event_type") == "FREEZE" and int(e.get("target_contest", -1)) == target and e.get("freeze_sha256") == proof.get("freeze_sha256")]
+    matching_adjudications = [e for e in events if isinstance(e, dict) and e.get("event_type") == "ADJUDICATION" and int(e.get("target_contest", -1)) == target and e.get("freeze_sha256") == proof.get("freeze_sha256")]
+    if not matching_freezes or len(matching_adjudications) != 1:
+        raise ValueError("terminal signal ledger lacks unique bound adjudication")
+    if _numbers6(matching_adjudications[0].get("actual_numbers"), "terminal adjudication actual numbers") != actual:
+        raise ValueError("terminal adjudication actual numbers mismatch")
+
+    audit_name = doc.get("independent_audit_file")
+    if proof.get("independent_audit_file") != audit_name:
+        raise ValueError("terminal independent audit filename mismatch")
+    _, audit = _bound_json(root, audit_name, proof.get("independent_audit_sha256"), "terminal independent audit")
+    if audit.get("status") != "PASS":
+        raise ValueError("terminal independent audit not PASS")
+
+    official_name = doc.get("official_evidence_file")
+    if proof.get("official_evidence_file") != official_name:
+        raise ValueError("terminal official evidence filename mismatch")
+    _, official = _bound_json(root, official_name, proof.get("official_evidence_sha256"), "terminal official evidence")
+    if official.get("terminal_source_corroboration_authorized") is not True:
+        raise ValueError("terminal official evidence lacks source corroboration")
+
+def _validate_semantics(doc: dict[str, Any], *, root: Path | None = None) -> None:
+    if doc.get("schema") != SCHEMA:
+        raise ValueError("mission status schema invalid")
+    status = doc.get("status")
+    terminal = doc.get("terminal_6of6_proven")
+    if status not in {"MISSION_ACTIVE", "MISSION_PROVEN"} or not isinstance(terminal, bool):
+        raise ValueError("mission status state invalid")
+    if (status == "MISSION_PROVEN") != terminal:
+        raise ValueError("mission status terminal flag inconsistent")
+    if not isinstance(doc.get("scientific_predictive_status"), str) or not isinstance(doc.get("prospective_advantage_status"), str):
+        raise ValueError("mission scientific status fields invalid")
+    rows = doc.get("supersedes_terminal_authority_of")
+    rule = doc.get("terminal_authority_inventory_rule")
+    if not isinstance(rows, list) or not isinstance(rule, dict):
+        raise ValueError("mission terminal authority inventory missing")
+    if rule.get("unclassified_terminal_claims_fail_closed") is not True or rule.get("hash_binding_required") is not True:
+        raise ValueError("mission terminal authority inventory rules invalid")
+    classified: dict[str, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("mission terminal authority row invalid")
+        name = row.get("file")
+        if not isinstance(name, str) or not name or name in classified:
+            raise ValueError("mission terminal authority file invalid/duplicate")
+        if row.get("authority") != "HISTORICAL_ENGINEERING_ONLY" or not _is_hex64(row.get("sha256")):
+            raise ValueError("mission historical authority classification invalid")
+        classified[name] = row
+    if root is None:
+        return
+    root = Path(root).resolve()
+    for name, row in classified.items():
+        path = root / name
+        if not path.is_file() or sha256_file(path) != str(row["sha256"]).lower():
+            raise ValueError(f"mission historical authority hash stale: {name}")
+        try:
+            obj = json.loads(path.read_text(encoding="utf-8-sig"))
+        except Exception as exc:
+            raise ValueError(f"mission historical authority unreadable: {name}") from exc
+        if str(obj.get("status") or "") != str(row.get("observed_status") or ""):
+            raise ValueError(f"mission historical authority status stale: {name}")
+    observed = _terminal_claims(root)
+    if terminal is False:
+        if set(observed) != set(classified):
+            raise ValueError("unclassified or stale terminal claim exists while mission is active")
+    else:
+        _validate_terminal_proof(doc, root=root, observed=observed)
+
+
+def validate_mission_status(doc: dict[str, Any], *, root: str | Path | None = None) -> dict[str, Any]:
+    if not isinstance(doc, dict):
+        raise ValueError("mission status object required")
+    observed = doc.get("sha256")
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    if not _is_hex64(observed) or str(observed).lower() != sha256_json(canonical):
+        raise ValueError("mission status self-hash invalid")
+    _validate_semantics(canonical, root=Path(root).resolve() if root is not None else None)
+    return doc
+
+
+def load_mission_status(path: str | Path = DEFAULT_PATH, *, root: str | Path | None = None) -> dict[str, Any]:
+    path = Path(path)
+    obj = json.loads(path.read_text(encoding="utf-8-sig"))
+    return validate_mission_status(obj, root=root if root is not None else path.parent)
+
+
+def write_mission_status(path: str | Path, doc: dict[str, Any], *, root: str | Path | None = None) -> dict[str, Any]:
+    path = Path(path)
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    _validate_semantics(canonical, root=Path(root).resolve() if root is not None else path.parent.resolve())
+    canonical["sha256"] = sha256_json(canonical)
+    tmp = path.with_name(path.name + ".tmp-mission-status")
+    tmp.write_text(json.dumps(canonical, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(tmp, path)
+    return load_mission_status(path, root=root if root is not None else path.parent)
+
+
+__all__ = ["SCHEMA", "DEFAULT_PATH", "sha256_file", "sha256_json", "validate_mission_status", "load_mission_status", "write_mission_status"]

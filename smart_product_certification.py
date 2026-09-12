@@ -2,6 +2,8 @@
 
 import hashlib
 import json
+import os
+import socket
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -10,6 +12,7 @@ from smart_agent_runtime import SmartAgentRuntime, sha256_file
 from smart_agent_skill_functional_gate import evaluate as functional_evaluate
 from smart_agent_skill_orchestration import build_orchestration
 from smart_material_deficiency_registry import load_registry
+from smart_global_integrity import CRITICAL_SOURCE_FILES
 from smart_operator import contract as operator_contract, validate_target_sequence
 from smart_regression_evidence import junit_summary
 from smart_runtime_guard import audit as runtime_audit
@@ -17,6 +20,7 @@ from smart_total_integration_gate import evaluate as total_integration_evaluate
 
 SCHEMA = "SMART_PRODUCT_CERTIFICATION_V1"
 DEFAULT_PATH = Path("SMART_PRODUCT_CERTIFICATION.json")
+AUXILIARY_CODE_FILES = ("p14_coverage_plugin.py",)
 
 
 def _sha256_json(value: Any) -> str:
@@ -26,7 +30,9 @@ def _sha256_json(value: Any) -> str:
 
 def _code_files(root: Path) -> list[Path]:
     files = sorted(set(root.glob("smart_*.py")) | set(root.glob("test_*.py")))
-    for name in ("requirements.txt", "requirements.lock.txt", "smart_python.cmd", "pytest.ini", "SMART_DATA_CONTRACT.md"):
+    authority_files = tuple(CRITICAL_SOURCE_FILES) + AUXILIARY_CODE_FILES
+    metadata_files = ("requirements.txt", "requirements.lock.txt", "smart_python.cmd", "pytest.ini", "SMART_DATA_CONTRACT.md")
+    for name in authority_files + metadata_files:
         p = root / name
         if p.is_file():
             files.append(p)
@@ -36,6 +42,54 @@ def _code_files(root: Path) -> list[Path]:
 def code_fingerprint(root: Path) -> dict[str, Any]:
     rows = [{"path": p.name, "sha256": sha256_file(p)} for p in _code_files(root)]
     return {"file_count": len(rows), "files": rows, "sha256": _sha256_json(rows)}
+
+
+def canonical_root_authority_binding(root: Path, junit_path: Path, regression: dict[str, Any]) -> dict[str, Any]:
+    authority_path = root / "SMART_CANONICAL_ROOT.json"
+    actual_junit_sha = sha256_file(junit_path) if junit_path.is_file() else None
+    checks: dict[str, bool] = {
+        "authority_file_present": authority_path.is_file(),
+        "junit_file_present": junit_path.is_file(),
+    }
+    if not authority_path.is_file() or not junit_path.is_file():
+        return {"status": "FAIL", "file": authority_path.name, "file_sha256": None, "junit_sha256": actual_junit_sha, "checks": checks}
+    try:
+        authority = json.loads(authority_path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        checks["authority_json_valid"] = False
+        return {"status": "FAIL", "file": authority_path.name, "file_sha256": sha256_file(authority_path), "junit_sha256": actual_junit_sha, "checks": checks}
+    canonical = dict(authority)
+    observed_self_hash = canonical.pop("sha256", None)
+    nested = authority.get("certified_regression") if isinstance(authority.get("certified_regression"), dict) else {}
+    authority_hostname = str(authority.get("hostname") or "")
+    local_authority_host = os.name == "nt" and bool(authority_hostname) and authority_hostname.casefold() == socket.gethostname().casefold()
+    legacy_alias = authority.get("legacy_alias")
+    legacy_alias_physically_absent = True
+    if local_authority_host:
+        legacy_alias_physically_absent = isinstance(legacy_alias, str) and bool(legacy_alias) and not Path(legacy_alias).exists()
+    checks.update({
+        "authority_json_valid": True,
+        "authority_self_hash_valid": isinstance(observed_self_hash, str) and observed_self_hash == _sha256_json(canonical),
+        "authority_project_valid": authority.get("project") == "SMART-MEGA",
+        "authority_root_matches": authority.get("canonical_root") == str(root),
+        "authority_state_canonical_only": authority.get("canonical_state") == "CANONICAL_ONLY" and authority.get("legacy_alias_present") is False,
+        "legacy_alias_physically_absent": legacy_alias_physically_absent,
+        "junit_file_bound": authority.get("certified_regression_junit") == junit_path.name and nested.get("junit_file") == junit_path.name,
+        "junit_sha_bound": authority.get("certified_regression_junit_sha256") == actual_junit_sha and nested.get("junit_sha256") == actual_junit_sha,
+        "regression_counts_bound": authority.get("certified_regression_tests") == regression.get("tests") == nested.get("tests") and authority.get("certified_regression_failures") == regression.get("failures") == nested.get("failures") and authority.get("certified_regression_errors") == regression.get("errors") == nested.get("errors"),
+    })
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "file": authority_path.name,
+        "file_sha256": sha256_file(authority_path),
+        "authority_sha256": observed_self_hash,
+        "junit_file": junit_path.name,
+        "junit_sha256": actual_junit_sha,
+        "tests": regression.get("tests"),
+        "failures": regression.get("failures"),
+        "errors": regression.get("errors"),
+        "checks": checks,
+    }
 
 
 def _all_total_gates_true(doc: dict[str, Any]) -> bool:
@@ -60,6 +114,15 @@ def verify_product_certification(path: str | Path, *, root: str | Path | None = 
         project_root = Path(root).resolve() if root is not None else p.resolve().parent
         if doc.get("code_fingerprint") != code_fingerprint(project_root):
             raise ValueError("SMART product certification is stale for current code")
+        current_junit = project_root / "SMART_AUDIT_JUNIT_CURRENT.xml"
+        current_regression = junit_summary(current_junit)
+        current_authority = canonical_root_authority_binding(project_root, current_junit, current_regression)
+        if current_authority.get("status") != "PASS" or doc.get("canonical_root_authority") != current_authority:
+            raise ValueError("SMART product certification canonical regression authority is stale")
+        code_files = _code_files(project_root)
+        regression_fresh = current_junit.is_file() and bool(code_files) and current_junit.stat().st_mtime >= max(item.stat().st_mtime for item in code_files)
+        if not regression_fresh:
+            raise ValueError("SMART product certification regression is stale for current code")
     return doc
 
 
@@ -67,6 +130,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
     junit_path = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
     regression = junit_summary(junit_path)
+    canonical_authority = canonical_root_authority_binding(root, junit_path, regression)
     code_files = _code_files(root)
     regression_fresh = junit_path.is_file() and junit_path.stat().st_mtime >= max(p.stat().st_mtime for p in code_files)
     runtime = runtime_audit(root)
@@ -86,6 +150,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
     checks = {
         "full_regression_green": regression["status"] == "PASS" and regression["failures"] == 0 and regression["errors"] == 0,
         "full_regression_fresh_for_current_code": regression_fresh,
+        "canonical_root_authority_bound_to_current_regression": canonical_authority.get("status") == "PASS",
         "runtime_guard_pass": runtime.get("status") == "PASS" and all(runtime.get("checks", {}).values()),
         "build_orchestration_pass": orchestration.get("phase") == "BUILD" and orchestration.get("integration_status") == "PASS" and all(orchestration.get("checks", {}).values()),
         "build_runtime_pass": agent_runtime.get("phase") == "BUILD" and agent_runtime.get("status") == "PASS" and all(agent_runtime.get("checks", {}).values()),
@@ -107,6 +172,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
         "code_fingerprint": code_fingerprint(root),
         "regression": regression,
+        "canonical_root_authority": canonical_authority,
         "runtime_guard": runtime,
         "build_orchestration_sha256": orchestration.get("orchestration_sha256"),
         "build_runtime_sha256": agent_runtime.get("runtime_sha256"),

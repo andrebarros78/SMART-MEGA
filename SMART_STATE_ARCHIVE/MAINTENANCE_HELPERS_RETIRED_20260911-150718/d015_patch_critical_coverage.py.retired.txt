@@ -1,0 +1,37 @@
+from pathlib import Path
+import hashlib, json
+
+root = Path(__file__).resolve().parent
+changes = {}
+
+# 1) Make duplicate detection reachable before contiguity detection.
+p = root / 'smart_canonical_history_advance.py'
+raw = p.read_bytes(); before = hashlib.sha256(raw).hexdigest(); text = p.read_text(encoding='utf-8')
+old = '''    if not values or values != list(range(values[0], values[-1] + 1)):\n        raise ValueError("history contest sequence is not contiguous")\n    if len(values) != len(set(values)):\n        raise ValueError("history contains duplicate contests")\n'''
+new = '''    if len(values) != len(set(values)):\n        raise ValueError("history contains duplicate contests")\n    if not values or values != list(range(values[0], values[-1] + 1)):\n        raise ValueError("history contest sequence is not contiguous")\n'''
+if old not in text:
+    raise SystemExit('D015_SEQUENCE_CONTEXT_NOT_FOUND')
+bdir = root / 'SMART_STATE_ARCHIVE' / 'b2-evolution-20260909'; bdir.mkdir(parents=True, exist_ok=True)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists(): bak.write_bytes(raw)
+text = text.replace(old, new, 1); p.write_text(text, encoding='utf-8'); after = hashlib.sha256(p.read_bytes()).hexdigest()
+changes[p.name] = {'before': before, 'after': after, 'backup': str(bak.relative_to(root)).replace('\\','/')}
+
+# 2) Expand Global Integrity mandatory coverage/hash scope to the two critical operational components.
+p = root / 'smart_global_integrity.py'
+raw = p.read_bytes(); before = hashlib.sha256(raw).hexdigest(); text_raw = raw.decode('utf-8-sig'); newline = '\r\n' if '\r\n' in text_raw else '\n'; text = text_raw.replace('\r\n','\n')
+old = "    'smart_data_quality_gate.py', 'smart_independent_oracle.py', 'smart_material_deficiency_registry.py',\n)"
+new = "    'smart_data_quality_gate.py', 'smart_independent_oracle.py', 'smart_material_deficiency_registry.py',\n    'smart_operator.py', 'smart_canonical_history_advance.py',\n)"
+if old not in text:
+    raise SystemExit('D015_GLOBAL_COVERAGE_CONTEXT_NOT_FOUND')
+text = text.replace(old, new, 1)
+old2 = "    'smart_material_deficiency_registry.py', 'smart_continuity_consolidator.py', 'smart_finalize_deployment.py',\n)"
+new2 = "    'smart_material_deficiency_registry.py', 'smart_continuity_consolidator.py', 'smart_finalize_deployment.py',\n    'smart_operator.py', 'smart_canonical_history_advance.py',\n)"
+if old2 not in text:
+    raise SystemExit('D015_CRITICAL_HASH_CONTEXT_NOT_FOUND')
+text = text.replace(old2, new2, 1)
+bak = bdir / f'{p.name}.{before}.bak'
+if not bak.exists(): bak.write_bytes(raw)
+p.write_text(text.replace('\n',newline), encoding='utf-8', newline=''); after = hashlib.sha256(p.read_bytes()).hexdigest()
+changes[p.name] = {'before': before, 'after': after, 'backup': str(bak.relative_to(root)).replace('\\','/')}
+print(json.dumps(changes, ensure_ascii=False))
