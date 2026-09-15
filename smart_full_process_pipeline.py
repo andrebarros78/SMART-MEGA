@@ -12,6 +12,7 @@ from smart_champion_challenger import freeze_champion_challenger, load_ledger
 from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
 from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch, write_active_epoch
+from smart_manual_generation_authority import validate as validate_manual_generation, consume as consume_manual_generation
 from smart_prospective_cycle import register as register_prospective_cycle
 from smart_procedural_actionability_gate import evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
@@ -106,7 +107,9 @@ def _restore_fresh_epoch(epoch_dir: Path, files_before: set[Path], ledger_path: 
             continue
 
 
-def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any]:
+def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_generation_authorized: bool = False) -> dict[str, Any]:
+    if manual_generation_authorized is not True:
+        raise PermissionError("MANUAL_GENERATION_AUTHORITY_REQUIRED")
     root = Path(root).resolve()
     active_path = root / ACTIVE_PATH
     active = verify_active_epoch(active_path)
@@ -142,6 +145,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     draws, contests = engine.load_draws(data_path)
     target = int(active["target_contest"])
     cutoff = int(active["cutoff_contest"])
+    manual_generation_authority = validate_manual_generation(root, active, target)
     schedule = resolve_target_schedule(root, target)
     freeze_window = evaluate_freeze_window(
         scheduled_datetime=str(schedule["scheduled_datetime"]),
@@ -150,6 +154,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     ledger_checks = _pre_freeze_ledger_checks(root, active, ledger_path, ledger_before, target)
     pre_checks = {
         "epoch_reset_ready": active["status"] == "RESET_READY",
+        "manual_generation_authority_valid": True,
         **ledger_checks,
         "learned_state_absent": not state_path.exists(),
         "activation_authority_absent": not activation_authority_path.exists(),
@@ -305,6 +310,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
         "state_sha256": freeze_result["state_sha256"],
         "freeze_file": _rel(root, actual_freeze_path),
         "freeze_sha256": freeze_result["freeze_sha256"],
+        "manual_generation_authority": {"schema": manual_generation_authority.get("schema"), "target_contest": manual_generation_authority.get("target_contest"), "epoch_id": manual_generation_authority.get("epoch_id"), "data_sha256": manual_generation_authority.get("data_sha256")},
         "frontier_freeze_file": _rel(root, frontier_freeze_path),
         "frontier_freeze_sha256": sha256_file(frontier_freeze_path),
         "probability_ledger_file": _rel(root, probability_ledger_path),
@@ -322,7 +328,8 @@ def run_full_process(root: str | Path = ".", start: int = 1000) -> dict[str, Any
     })
     proof_path = epoch_dir / "FULL_PROCESS_PROOF.json"
     proof_path.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-    return {"proof": proof, "active_epoch": active_frozen, "freeze": freeze_result, "proof_file": _rel(root, proof_path)}
+    consumed_manual_authority = consume_manual_generation(root, active, target, freeze_result["freeze_sha256"])
+    return {"proof": proof, "active_epoch": active_frozen, "freeze": freeze_result, "manual_generation_authority": consumed_manual_authority, "proof_file": _rel(root, proof_path)}
 
 
 def main() -> None:

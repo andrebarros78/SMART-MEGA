@@ -132,11 +132,15 @@ def sha256_file(path: Path) -> str:
 
 
 
+    path = Path(path)
+    if not path.is_absolute():
+        path = Path(__file__).resolve().parent / path
+
     h = hashlib.sha256()
 
 
 
-    with Path(path).open('rb') as f:
+    with path.open('rb') as f:
 
 
 

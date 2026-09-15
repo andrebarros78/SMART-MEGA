@@ -364,7 +364,7 @@ def test_pre_3052_gate_all_guards_and_release(tmp_path):
 
 
 def test_pre_3052_gate_fails_closed_when_registered_items_are_pending(tmp_path):
-    gate = json.loads(Path('SMART_3052_IMPLEMENTATION_GATE.json').read_text(encoding='utf-8'))
+    gate = json.loads((Path(__file__).resolve().parent / 'SMART_3052_IMPLEMENTATION_GATE.json').read_text(encoding='utf-8'))
     gate['items'][8]['status'] = 'TO_VERIFY_OR_IMPLEMENT'
     gate['items'][8]['evidence'] = []
     gate['freeze_allowed'] = False

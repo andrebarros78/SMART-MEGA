@@ -6,6 +6,9 @@ import numpy as np
 import smart_v2_engine as e
 
 def sha256(p:Path):
+    p=Path(p)
+    if not p.is_absolute():
+        p=Path(__file__).resolve().parent / p
     h=hashlib.sha256(); h.update(p.read_bytes()); return h.hexdigest()
 
 def current_policy(draws,start=1000,eta=math.log(2)):

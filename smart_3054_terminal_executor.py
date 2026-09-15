@@ -726,11 +726,8 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
         # Remove the just-written candidate on ordinary failure; if the process is
         # interrupted before cleanup, epoch-scoped placement keeps top-level
         # terminal claim inventory consistent.
-        try:
-            if proof_path.is_file() and sha256_file(proof_path) == mission.get("terminal_proof_sha256"):
-                proof_path.unlink()
-        finally:
-            pass
+        if proof_path.is_file() and sha256_file(proof_path) == mission.get("terminal_proof_sha256"):
+            proof_path.unlink()
         raise
     return mission
 

@@ -291,8 +291,8 @@ def test_operator_freeze_all_short_circuit_paths(tmp_path: Path, monkeypatch):
     with pytest.raises(ValueError, match='does not match'):
         op.freeze_operation(tmp_path, 4)
     monkeypatch.setattr(op, 'verify_active_epoch', lambda p: {'operator_selected_target': True, 'target_contest': 4})
-    monkeypatch.setattr(op, 'run_full_process', lambda root: {'status': 'PASS'})
-    assert op.freeze_operation(tmp_path, 4)['status'] == 'PASS'
+    monkeypatch.setattr(op, 'run_full_process', lambda root, manual_generation_authorized=False: {'status': 'PASS', 'manual': manual_generation_authorized})
+    assert op.freeze_operation(tmp_path, 4) == {'status': 'PASS', 'manual': True}
 
 
 def test_operator_adjudicate_status_and_main_paths(tmp_path: Path, monkeypatch, capsys):

@@ -138,6 +138,12 @@ def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> 
 
 def sha256(path: Path) -> str:
 
+    path = Path(path)
+
+    if not path.is_absolute():
+
+        path = Path(__file__).resolve().parent / path
+
     h = hashlib.sha256()
 
     with path.open('rb') as f:
@@ -806,6 +812,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
     data_hash = sha256(data)
 
+    expansion_registry_path = Path(expansion_registry_path)
+    if not expansion_registry_path.is_absolute():
+        expansion_registry_path = Path(__file__).resolve().parent / expansion_registry_path
     expansion_governance = load_registry(expansion_registry_path, tuple(SIGNAL_NAMES))
 
     expansion_snapshot = expansion_governance.snapshot()

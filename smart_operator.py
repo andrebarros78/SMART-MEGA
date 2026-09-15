@@ -19,6 +19,7 @@ from smart_canonical_history_advance import advance_completed_epoch
 from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import run_full_process
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
+from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
@@ -62,11 +63,13 @@ def contract() -> dict[str, Any]:
         "product_completion_independent_of_operation": True,
         "operator_selects_target": True,
         "target_required_for_prepare_and_freeze": True,
-        "supported_actions": ["status", "prepare", "withdraw", "recover-missed", "freeze", "adjudicate", "terminal"],
+        "supported_actions": ["status", "prepare", "withdraw", "recover-missed", "authorize-generation", "freeze", "adjudicate", "terminal"],
         "pre_freeze_withdrawal_preserves_failed_preparation": True,
         "missed_unfrozen_recovery_is_non_predictive": True,
         "missed_unfrozen_recovery_requires_post_draw_official_result": True,
         "freeze_is_operational_not_construction_gate": True,
+        "manual_generation_authority_required_for_prospective_freeze": True,
+        "analysis_calibration_and_testing_do_not_require_generation_authority": True,
         "adjudication_is_operational_not_construction_gate": True,
         "generic_active_epoch_terminal_executor": True,
         "terminal_action_revalidates_official_consensus_and_scientific_guards": True,
@@ -177,8 +180,14 @@ def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, An
     ledger = load_ledger(ledger_path)
     events = ledger.get("events", [])
     target_events = [ev for ev in events if isinstance(ev, dict) and int(ev.get("target_contest", -1)) == int(target)]
+    manual_authority_path = epoch_dir / "SMART_MANUAL_GENERATION_AUTHORITY.json"
     baseline_files = {ledger_path.resolve(), data_path.resolve()}
+    if manual_authority_path.is_file(): baseline_files.add(manual_authority_path.resolve())
     unexpected_epoch_files = [p for p in epoch_dir.rglob("*") if p.is_file() and p.resolve() not in baseline_files]
+    manual_authority_valid = True
+    if manual_authority_path.is_file():
+        try: validate_manual_generation(root, active, int(target))
+        except Exception: manual_authority_valid = False
     seed_sha = active.get("canonical_ledger_seed_sha256")
     seed_count = active.get("canonical_ledger_seed_event_count")
     canonical_ledger = root / "SMART_SIGNAL_LEDGER.json"
@@ -192,6 +201,7 @@ def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, An
         "seed_ledger_hash_match": ledger_path.is_file() and isinstance(seed_sha, str) and sha256_file(ledger_path) == seed_sha,
         "seed_event_count_match": isinstance(events, list) and isinstance(seed_count, int) and len(events) == seed_count,
         "canonical_ledger_unchanged_since_prepare": canonical_ledger.is_file() and isinstance(seed_sha, str) and sha256_file(canonical_ledger) == seed_sha,
+        "manual_generation_authority_valid_if_present": manual_authority_valid,
     }
     if not all(checks.values()):
         raise RuntimeError(f"pre-freeze withdrawal blocked: {checks}")
@@ -210,6 +220,7 @@ def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, An
         "preserved_epoch_dir": str(epoch_dir.relative_to(root)).replace("\\", "/"),
         "withdrawn_utc": datetime.now(timezone.utc).isoformat(),
         "reason": "PRE_FREEZE_TECHNICAL_CORRECTION",
+        "manual_generation_authority_invalidated_by_withdrawal": manual_authority_path.is_file(),
         "checks": checks,
     }
     active_path.unlink()
@@ -334,12 +345,22 @@ def recover_missed_unfrozen_operation(root: str | Path, target: int, *, payload:
     return {**proof, "proof_file": proof_path.name}
 
 
+def authorize_generation_operation(root: str | Path, target: int) -> dict[str, Any]:
+    root = Path(root).resolve()
+    active = verify_active_epoch(root / ACTIVE_PATH)
+    if active.get("status") != "RESET_READY" or active.get("operator_selected_target") is not True:
+        raise ValueError("manual generation authorization requires RESET_READY operator-selected epoch")
+    if int(active.get("target_contest", -1)) != int(target):
+        raise ValueError("active operational epoch does not match generation authorization target")
+    return authorize_manual_generation(root, active, int(target))
+
+
 def freeze_operation(root: str | Path, target: int) -> dict[str, Any]:
     root = Path(root).resolve()
     active = verify_active_epoch(root / ACTIVE_PATH)
     if active.get("operator_selected_target") is not True or int(active["target_contest"]) != int(target):
         raise ValueError("active operational epoch does not match operator-selected target")
-    return run_full_process(root)
+    return run_full_process(root, manual_generation_authorized=True)
 
 
 def adjudicate_operation(root: str | Path, target: int, result_data: str | Path) -> dict[str, Any]:
@@ -398,6 +419,7 @@ def main(argv: list[str] | None = None) -> None:
     p = sub.add_parser("prepare"); p.add_argument("--target", type=int, required=True); p.add_argument("--supersede", action="store_true")
     w = sub.add_parser("withdraw"); w.add_argument("--target", type=int, required=True)
     m = sub.add_parser("recover-missed"); m.add_argument("--target", type=int, required=True)
+    g = sub.add_parser("authorize-generation"); g.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
     t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
@@ -407,6 +429,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "prepare": out = prepare_operation(root, args.target, supersede_existing=args.supersede)
     elif args.action == "withdraw": out = withdraw_pre_freeze_operation(root, args.target)
     elif args.action == "recover-missed": out = recover_missed_unfrozen_operation(root, args.target)
+    elif args.action == "authorize-generation": out = authorize_generation_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
     else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)

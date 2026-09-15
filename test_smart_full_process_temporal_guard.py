@@ -37,6 +37,7 @@ def _wire(monkeypatch,tmp_path,schedule):
     monkeypatch.setattr(fp,'load_ledger',lambda _p:{"schema":"SMART_SIGNAL_LEDGER_1","events":[]})
     monkeypatch.setattr(fp.engine,'load_draws',lambda _p:(np.zeros((1,6),dtype=int),np.asarray([3053],dtype=int)))
     monkeypatch.setattr(fp,'resolve_target_schedule',lambda *_a,**_k:schedule)
+    monkeypatch.setattr(fp,'validate_manual_generation',lambda *_a,**_k:{'schema':'TEST','target_contest':4,'epoch_id':'test','data_sha256':'x'})
     return active
 
 
@@ -53,7 +54,7 @@ def test_full_process_blocks_after_deadline_before_any_freeze(monkeypatch,tmp_pa
     monkeypatch.setattr(fp,'freeze_champion_challenger',forbidden_freeze)
     monkeypatch.setattr(fp,'write_total_integration',forbidden_integration)
     with pytest.raises(RuntimeError,match='full process preconditions failed') as exc:
-        fp.run_full_process(tmp_path)
+        fp.run_full_process(tmp_path, manual_generation_authorized=True)
     assert "'freeze_window_open': False" in str(exc.value)
     assert called=={"freeze":False,"integration":False}
 
@@ -65,4 +66,4 @@ def test_full_process_before_deadline_crosses_temporal_guard(monkeypatch,tmp_pat
     monkeypatch.setattr(fp,'write_total_integration',lambda *_a,**_k:(_ for _ in ()).throw(ReachedPreGate('reached pre-freeze integration')))
     monkeypatch.setattr(fp,'freeze_champion_challenger',lambda *_a,**_k:(_ for _ in ()).throw(AssertionError('freeze should not be reached in this test')))
     with pytest.raises(ReachedPreGate,match='reached pre-freeze integration'):
-        fp.run_full_process(tmp_path)
+        fp.run_full_process(tmp_path, manual_generation_authorized=True)
