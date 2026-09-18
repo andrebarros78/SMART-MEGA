@@ -1,25 +1,42 @@
 # SMART-MEGA - CONTINUIDADE CANONICA ATUAL
 
-**Atualizacao:** 2026-09-18T12:32:11.280853-03:00
+**Atualizacao:** 2026-09-18T19:57:25.637298+00:00
 **Workspace:** `C:\SMART-MEGA`
+**Construcao:** `CONSTRUCTION_PROVEN`
+**Implantacao/control plane:** `EXTERNAL_CONTROL_PLANE_REQUIRED`
 **Missao cientifica:** `MISSION_ACTIVE`
-**Terminal 6/6:** `False`
 
-## Autoridade operacional viva
+## Separacao obrigatoria
 
-- estado: **POST_RESULT_HOLD**
-- autoridade: **POST_RESULT_HOLD**
-- concurso concluido/cutoff: **3058**
-- proximo alvo: **3059**
-- active epoch: **ausente**
-- freeze prospectivo atual: **ausente**
-- prepare permitido: **False**
-- geracao permitida: **False**
-- comando explicito do operador requerido: **True**
-- semantica requerida: **USER_EXPLICIT_APPLY_OR_GENERATE**
+A construcao do produto e certificada por `SMART_PRODUCT_CERTIFICATION.json` em fase `BUILD`.
+Nenhum concurso, sequencia de dezenas, freeze ou adjudicacao e requisito para finalizar o software.
+`SMART_ACTIVE_EPOCH.json` representa apenas uma operacao escolhida pelo operador e nao possui autoridade sobre a conclusao da construcao.
 
-O estado pos-resultado nao deve ser reinterpretado como freeze pre-resultado. O hold atual permanece nao-generativo ate comando explicito do operador.
+## Operacao
+
+O operador escolhe explicitamente o alvo:
+
+- `python smart_operator.py prepare --target N`
+- `python smart_operator.py freeze --target N`
+- `python smart_operator.py adjudicate --target N --result-data ARQUIVO`
+
+O alvo pode ser qualquer concurso futuro suportado pela base causal. Para operar N, a base oficial precisa estar completa ate N-1.
+
+Estado operacional observado: `NO_ACTIVE_OPERATION`.
+Esse estado nao e gate de construcao.
+
+## Prova de construcao
+
+- status: **CONSTRUCTION_PROVEN**;
+- regressao: **861 testes / 0 failures / 0 errors**;
+- runtime BUILD: **PASS**;
+- integracao total BUILD: **PASS**;
+- zero deficiencias materiais abertas: **true**;
+- modo do control plane: **EXTERNAL**;
+- WMCP/execucao real local: **FAIL**;
+- control plane externo, quando aplicavel, exige prova operacional separada e nao bloqueia a certificacao de construcao.
 
 ## Limite cientifico
 
-`SMART_MISSION_STATUS.json` permanece com `scientific_predictive_status=UNPROVEN` e `prospective_advantage_status=INSUFFICIENT_EVIDENCE`. Nenhum estado de engenharia altera essa autoridade cientifica.
+`SMART_MISSION_STATUS.json` continua sendo a autoridade da hipotese cientifica e do eventual 6/6 prospectivo.
+Isso e separado da conclusao do software. `MISSION_ACTIVE` cientifico nao significa produto inacabado.
