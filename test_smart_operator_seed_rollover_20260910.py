@@ -123,6 +123,6 @@ def test_main_routes_withdraw_without_mutating_real_operation(monkeypatch, capsy
     monkeypatch.setattr(operator, "withdraw_pre_freeze_operation", fake_withdraw)
     operator.main(["withdraw", "--target", "3056"])
     assert calls["target"] == 3056
-    assert calls["root"].name == "SMART-MEGA"
+    assert calls["root"].resolve() == Path(operator.__file__).resolve().parent
     printed = json.loads(capsys.readouterr().out)
     assert printed["status"] == "WITHDRAWN_PRE_FREEZE"

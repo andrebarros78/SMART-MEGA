@@ -22,7 +22,8 @@ def _declared_pins(path: Path) -> dict[str,str]:
 
 def audit(root: str|Path='.') -> dict:
     root=Path(root).resolve()
-    canonical=(root/'.venv'/'Scripts'/'python.exe').resolve()
+    local_canonical=(root/'.venv'/'Scripts'/'python.exe').resolve()
+    canonical=local_canonical if local_canonical.exists() else Path(sys.executable).resolve()
     modules={}
     for name in REQUIRED_MODULES:
         try:

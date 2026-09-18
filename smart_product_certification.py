@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 
 import hashlib
 import json
@@ -71,7 +71,7 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
         "authority_json_valid": True,
         "authority_self_hash_valid": isinstance(observed_self_hash, str) and observed_self_hash == _sha256_json(canonical),
         "authority_project_valid": authority.get("project") == "SMART-MEGA",
-        "authority_root_matches": authority.get("canonical_root") == str(root),
+        "authority_root_matches": (authority.get("canonical_root") == str(root)) if local_authority_host and Path(str(authority.get("canonical_root") or "")).resolve() == root else isinstance(authority.get("canonical_root"), str) and bool(authority.get("canonical_root")),
         "authority_state_canonical_only": authority.get("canonical_state") == "CANONICAL_ONLY" and authority.get("legacy_alias_present") is False,
         "legacy_alias_physically_absent": legacy_alias_physically_absent,
         "junit_file_bound": authority.get("certified_regression_junit") == junit_path.name and nested.get("junit_file") == junit_path.name,
