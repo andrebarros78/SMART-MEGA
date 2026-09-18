@@ -213,6 +213,21 @@ def test_adjudication_normal_and_all_guards(tmp_path):
         adj.adjudicate(result_excel(tmp_path/'r11.xlsx',11),11,lp2)
 
 
+def test_adjudication_resolves_relative_freeze_outside_project_cwd(tmp_path, monkeypatch):
+    project = tmp_path / 'portable'
+    project.mkdir()
+    ledger_path, event = make_freeze_ledger(project, 13)
+    ledger = json.loads(ledger_path.read_text(encoding='utf-8'))
+    ledger['events'][0]['freeze_file'] = Path(event['freeze_file']).name
+    cc.write_ledger(ledger_path, ledger)
+    result = result_excel(project / 'result13.xlsx', 13)
+    outside = tmp_path / 'worker-cwd'
+    outside.mkdir()
+    monkeypatch.chdir(outside)
+    out = adj.adjudicate(result, 13, ledger_path)
+    assert out['target_contest'] == 13
+
+
 def test_adjudication_result_validation_eprocess_and_main(tmp_path, monkeypatch, capsys):
     lp, ev=make_freeze_ledger(tmp_path,12)
     with pytest.raises(ValueError, match='exactly once'):

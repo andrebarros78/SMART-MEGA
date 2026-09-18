@@ -37,6 +37,13 @@ def test_orchestration_respects_active_epoch_lifecycle():
         assert doc["evidence_hashes"]["active_freeze_sha256"] is None
         assert doc["active_context"]["freeze_file"] is None
         assert doc["checks"]["pre_freeze_has_no_freeze_authority"] is True
+    elif doc["phase"] == "POST_RESULT_HOLD":
+        assert doc["evidence_hashes"]["active_freeze_sha256"] is None
+        assert doc["active_context"]["freeze_file"] is None
+        assert doc["active_context"]["prepare_allowed"] is False
+        assert doc["active_context"]["generation_allowed"] is False
+        assert doc["checks"]["post_result_hold_is_non_operational"] is True
+        assert doc["checks"]["post_result_hold_has_no_generation_authority"] is True
     else:
         assert len(doc["evidence_hashes"]["active_freeze_sha256"]) == 64
         assert doc["checks"]["active_freeze_present"] is True

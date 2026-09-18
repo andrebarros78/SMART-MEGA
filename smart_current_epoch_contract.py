@@ -73,7 +73,7 @@ def _verify_ref(root: Path, ref: Any, *, label: str, expected_file: str | None =
 
 
 def validate_generation_proof(root: str | Path, active: dict[str, Any], freeze_doc: dict[str, Any],
-                              freeze_sha256: str) -> dict[str, Any]:
+                              freeze_sha256: str, *, historical_only: bool = False) -> dict[str, Any]:
     root = Path(root).resolve()
     state_paths = active.get("state_paths")
     if not isinstance(state_paths, dict) or not isinstance(state_paths.get("ledger"), str):
@@ -132,8 +132,18 @@ def validate_generation_proof(root: str | Path, active: dict[str, Any], freeze_d
     ledger_path = _project_path(root, state_paths["ledger"], label="recovery ledger")
     ledger = json.loads(ledger_path.read_text(encoding="utf-8-sig"))
     target = int(active["target_contest"])
-    if any(isinstance(ev, dict) and ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == target for ev in ledger.get("events", [])):
-        raise ValueError("full-process recovery proof cannot authorize an already-adjudicated target")
+    target_adjudications = [ev for ev in ledger.get("events", []) if isinstance(ev, dict) and ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == target]
+    if len(target_adjudications) > 1:
+        raise ValueError("full-process recovery proof sees multiple target adjudications")
+    if target_adjudications:
+        adjudication = target_adjudications[0]
+        actual = [int(x) for x in adjudication.get("actual_numbers", [])]
+        if adjudication.get("freeze_sha256") != freeze_sha256 or adjudication.get("retroactive_rewrite") is not False:
+            raise ValueError("post-adjudication historical proof is not bound to immutable freeze")
+        if len(actual) != 6 or len(set(actual)) != 6 or any(x < 1 or x > 60 for x in actual):
+            raise ValueError("post-adjudication historical proof has invalid official numbers")
+        if historical_only is not True:
+            raise ValueError("full-process recovery proof cannot authorize an already-adjudicated target")
     checks = proof.get("checks")
     if not isinstance(checks, dict) or not checks:
         raise ValueError("full-process recovery proof checks missing")
@@ -145,11 +155,114 @@ def validate_generation_proof(root: str | Path, active: dict[str, Any], freeze_d
     return {"valid": True, "mode": "RECOVERED_FULL_PROCESS_PROOF", "file": str(recovery.relative_to(root)).replace("\\", "/"), "sha256": _sha(recovery)}
 
 
+HOLD_SCHEMA = "SMART_NEXT_CYCLE_HOLD_1"
+REVIEW_SCHEMA = "SMART_POST_RESULT_REVIEW_1"
+HOLD_STATUS = "AWAITING_OPERATOR_APPLY_OR_GENERATE"
+
+
+def _resolve_post_result_hold(root: Path) -> dict[str, Any] | None:
+    hold_path = root / "SMART_NEXT_CYCLE_HOLD.json"
+    if not hold_path.is_file():
+        return None
+    try:
+        hold = json.loads(hold_path.read_text(encoding="utf-8-sig"))
+    except Exception as exc:
+        raise ValueError("post-result hold cannot be parsed") from exc
+    if not isinstance(hold, dict) or hold.get("schema") != HOLD_SCHEMA or hold.get("status") != HOLD_STATUS:
+        raise ValueError("post-result hold schema/status invalid")
+    observed = hold.get("sha256")
+    canonical_hold = dict(hold); canonical_hold.pop("sha256", None)
+    if not isinstance(observed, str) or observed.lower() != _sha_json(canonical_hold):
+        raise ValueError("post-result hold self-hash invalid")
+    completed = int(hold.get("completed_contest", -1))
+    target = int(hold.get("next_target", -1))
+    if completed <= 0 or target != completed + 1:
+        raise ValueError("post-result hold contest sequence invalid")
+    if hold.get("automatic_prepare_forbidden") is not True or hold.get("prepare_allowed") is not False or hold.get("generation_allowed") is not False or hold.get("operator_command_required") is not True:
+        raise ValueError("post-result hold authority flags invalid")
+    if hold.get("required_command_semantics") != "USER_EXPLICIT_APPLY_OR_GENERATE":
+        raise ValueError("post-result hold command semantics invalid")
+    canonical = root / "Mega-Sena.xlsx"
+    if not canonical.is_file():
+        raise ValueError("post-result hold canonical history missing")
+    canonical_sha = _sha(canonical)
+    if canonical_sha != hold.get("canonical_sha256_at_review"):
+        raise ValueError("post-result hold canonical history hash mismatch")
+    review_file = hold.get("review_file")
+    if not isinstance(review_file, str):
+        raise ValueError("post-result hold review file missing")
+    review_path = _project_path(root, review_file, label="post-result review")
+    if not review_path.is_file() or _sha(review_path) != hold.get("review_file_sha256"):
+        raise ValueError("post-result hold review file hash mismatch")
+    try:
+        review = json.loads(review_path.read_text(encoding="utf-8-sig"))
+    except Exception as exc:
+        raise ValueError("post-result review cannot be parsed") from exc
+    if not isinstance(review, dict) or review.get("schema") != REVIEW_SCHEMA or review.get("status") != "POST_RESULT_REVIEW_COMPLETE":
+        raise ValueError("post-result review schema/status invalid")
+    review_observed = review.get("sha256")
+    review_canonical = dict(review); review_canonical.pop("sha256", None)
+    if not isinstance(review_observed, str) or review_observed.lower() != _sha_json(review_canonical):
+        raise ValueError("post-result review self-hash invalid")
+    if review_observed != hold.get("review_sha256") or int(review.get("target_contest", -1)) != completed or int(review.get("next_target", -1)) != target:
+        raise ValueError("post-result hold/review binding mismatch")
+    if review.get("stop_required") is not True or review.get("terminal_state") != HOLD_STATUS:
+        raise ValueError("post-result review does not require lifecycle hold")
+    authority_present = (root / "SMART_NEXT_CYCLE_AUTHORITY.json").is_file()
+    return {
+        "schema": SCHEMA,
+        "epoch_id": None,
+        "status": "POST_RESULT_HOLD",
+        "post_result_hold": True,
+        "active_epoch_sha256": None,
+        "authority_mode": "POST_RESULT_HOLD",
+        "current_engineering_role": "POST_RESULT_ANALYSIS_HOLD",
+        "first_possible_authoritative_target_for_current_engineering": target,
+        "data_file": "Mega-Sena.xlsx",
+        "data_sha256": canonical_sha,
+        "cutoff_contest": completed,
+        "target_contest": target,
+        "result_used": False,
+        "freeze_authority_present": False,
+        "freeze_file": None,
+        "freeze_sha256": None,
+        "top6": None,
+        "freeze_origin": None,
+        "scientific_adjudication_authority": False,
+        "current_engineering_generation_authority": False,
+        "parallel_locked_experiment": None,
+        "parallel_attempts_must_be_counted_separately": False,
+        "parallel_experiment_adjudicated": False,
+        "post_adjudication": False,
+        "historical_pre_result_authority_preserved": False,
+        "historical_generation_proof_valid": False,
+        "rollover_required": False,
+        "generation_proof_valid": False,
+        "generation_proof_mode": None,
+        "generation_proof_file": None,
+        "generation_proof_sha256": None,
+        "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
+        "terminal_authority": False,
+        "prepare_allowed": False,
+        "generation_allowed": False,
+        "next_cycle_authority_present": authority_present,
+        "operator_command_required": True,
+        "required_command_semantics": "USER_EXPLICIT_APPLY_OR_GENERATE",
+        "post_result_review_file": review_file,
+        "post_result_review_sha256": review_observed,
+        "post_result_hold_file": hold_path.name,
+        "post_result_hold_sha256": observed,
+    }
+
+
 def resolve(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
     active_path = root / "SMART_ACTIVE_EPOCH.json"
     if not active_path.is_file():
-        raise ValueError("SMART_ACTIVE_EPOCH.json missing; current authority cannot be inferred from legacy artifacts")
+        hold = _resolve_post_result_hold(root)
+        if hold is not None:
+            return hold
+        raise ValueError("SMART_ACTIVE_EPOCH.json missing and no valid post-result hold exists")
     active = verify_active_epoch(active_path)
     data_path = (root / active["data_file"]).resolve()
     if not data_path.is_file() or _sha(data_path) != active["data_sha256"]:
@@ -196,6 +309,8 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
     scientific_adjudication_authority = False
     current_engineering_generation_authority = False
     freeze_origin = None
+    post_adjudication = False
+    historical_generation_proof_valid = False
     if status == "RESET_READY":
         if freeze_authority is not None or active.get("result_used") is not False:
             raise ValueError("RESET_READY epoch must have no freeze authority and no result use")
@@ -233,9 +348,28 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
             auth = lock["experiment_authority"]
             if auth.get("freeze_sha256") != freeze_sha or int(auth.get("target_contest", -1)) != int(active["target_contest"]):
                 raise ValueError("carry-forward epoch differs from authority lock")
-        generation_proof = ({"valid": True, "mode": "CARRY_FORWARD_AUTHORITY_LOCK", "file": str(active.get("prospective_authority_lock_file")), "sha256": str(active.get("prospective_authority_lock_sha256"))}
-                            if current_engineering_generation_authority is False
-                            else validate_generation_proof(root, active, freeze_doc, str(freeze_sha)))
+        ledger_path = _project_path(root, str(active["state_paths"]["ledger"]), label="active epoch ledger")
+        ledger_doc = json.loads(ledger_path.read_text(encoding="utf-8-sig"))
+        target_adjudications = [ev for ev in ledger_doc.get("events", []) if isinstance(ev, dict) and ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == int(active["target_contest"])]
+        if len(target_adjudications) > 1:
+            raise ValueError("active epoch contains multiple target adjudications")
+        post_adjudication = len(target_adjudications) == 1
+        if post_adjudication:
+            adjudication = target_adjudications[0]
+            actual = [int(x) for x in adjudication.get("actual_numbers", [])]
+            if adjudication.get("freeze_sha256") != freeze_sha or adjudication.get("retroactive_rewrite") is not False:
+                raise ValueError("active post-adjudication state is not bound to immutable freeze")
+            if len(actual) != 6 or len(set(actual)) != 6 or any(x < 1 or x > 60 for x in actual):
+                raise ValueError("active post-adjudication official numbers invalid")
+            current_engineering_generation_authority = False
+            scientific_adjudication_authority = False
+            historical = validate_generation_proof(root, active, freeze_doc, str(freeze_sha), historical_only=True)
+            historical_generation_proof_valid = historical.get("valid") is True
+            generation_proof = {**historical, "valid": False, "mode": "POST_ADJUDICATION_HISTORICAL_" + str(historical.get("mode"))}
+        else:
+            generation_proof = ({"valid": True, "mode": "CARRY_FORWARD_AUTHORITY_LOCK", "file": str(active.get("prospective_authority_lock_file")), "sha256": str(active.get("prospective_authority_lock_sha256"))}
+                                if current_engineering_generation_authority is False
+                                else validate_generation_proof(root, active, freeze_doc, str(freeze_sha)))
     else:
         raise ValueError(f"unsupported active epoch status: {status}")
     generation_proof = locals().get("generation_proof")
@@ -262,8 +396,11 @@ def resolve(root: str | Path = ".") -> dict[str, Any]:
         "parallel_locked_experiment": parallel_locked_experiment,
         "parallel_attempts_must_be_counted_separately": parallel_attempts_must_be_counted_separately,
         "parallel_experiment_adjudicated": parallel_experiment_adjudicated,
-        "rollover_required": parallel_experiment_adjudicated,
-        "generation_proof_valid": bool(generation_proof and generation_proof.get("valid") is True) if status == "FROZEN" else False,
+        "post_adjudication": post_adjudication,
+        "historical_pre_result_authority_preserved": bool(post_adjudication and historical_generation_proof_valid),
+        "historical_generation_proof_valid": bool(historical_generation_proof_valid),
+        "rollover_required": bool(parallel_experiment_adjudicated or post_adjudication),
+        "generation_proof_valid": bool(generation_proof and generation_proof.get("valid") is True) if status == "FROZEN" and not post_adjudication else False,
         "generation_proof_mode": generation_proof.get("mode") if generation_proof else None,
         "generation_proof_file": generation_proof.get("file") if generation_proof else None,
         "generation_proof_sha256": generation_proof.get("sha256") if generation_proof else None,

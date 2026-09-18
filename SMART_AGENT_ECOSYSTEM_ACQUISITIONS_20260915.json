@@ -1,0 +1,49 @@
+{
+  "schema": "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_V1",
+  "generated_utc": "2026-09-17T20:47:46.729761+00:00",
+  "project": "SMART-MEGA",
+  "policy": "External methodologies may inform native design but do not execute inside the predictive runtime without a separate evidence gate.",
+  "items": [
+    {
+      "name": "langgraph-durable-orchestration",
+      "status": "SOURCE_REFERENCE_ACQUIRED",
+      "local_reference": ".external_agent_methodologies_20260915/langgraph_durable_orchestration.md",
+      "local_sha256": "cbe0c84ab109c0002e557ca728a065c37201f782ef4722b91b59d308528127be",
+      "official_source": "https://langchain-ai.github.io/langgraph/reference/",
+      "execution_policy": "SOURCE_REFERENCE_ONLY",
+      "runtime_dependency": false,
+      "decision": "REFERENCE_ONLY_NO_RUNTIME_INSTALL"
+    },
+    {
+      "name": "mcp-2026-07-28-contracts",
+      "status": "SOURCE_REFERENCE_ACQUIRED",
+      "local_reference": ".external_agent_methodologies_20260915/mcp_2026_07_28_contracts.md",
+      "local_sha256": "399ef247a89594060ab0df3e622d440a4b179e6134617bf2b392d7f8c43cde40",
+      "official_source": "https://blog.modelcontextprotocol.io/posts/2026-07-28/",
+      "execution_policy": "SOURCE_REFERENCE_ONLY",
+      "runtime_dependency": false,
+      "decision": "REFERENCE_ONLY_NO_RUNTIME_INSTALL"
+    },
+    {
+      "name": "openai-eval-flywheel",
+      "status": "SOURCE_REFERENCE_ACQUIRED",
+      "local_reference": ".external_agent_methodologies_20260915/openai_eval_flywheel.md",
+      "local_sha256": "5666197251f3f5322273ddc4110d7d174cb0edc16a29dc77769d170e8b92f25d",
+      "official_source": "https://github.com/openai/openai-cookbook",
+      "execution_policy": "SOURCE_REFERENCE_ONLY",
+      "runtime_dependency": false,
+      "decision": "REFERENCE_ONLY_NO_RUNTIME_INSTALL"
+    }
+  ],
+  "rejected_runtime_frameworks": {
+    "CrewAI": "role-based orchestration already exists natively; no measured gain justifies a second runtime",
+    "LangGraph-runtime": "durability patterns are useful, but native SMART state/hashes already cover the current need",
+    "Microsoft-Agent-Framework": "cooperative runtime would duplicate current deterministic handoffs",
+    "Dify": "visual workflow layer is not required by the canonical headless execution path",
+    "LlamaIndex-Workflows": "document/event workflow runtime does not close a current material project gap"
+  },
+  "external_code_auto_execute": false,
+  "runtime_dependency_added": false,
+  "status": "PASS",
+  "sha256": "c9d5dd52589b9e59458c05082504f5c66c2ff38a9e381a66ff73ccdb65ef98ea"
+}

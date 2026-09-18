@@ -14,7 +14,7 @@ def test_canonical_root_authority_matches_sanitized_state() -> None:
     doc = json.loads(AUTHORITY.read_text(encoding="utf-8-sig"))
     assert doc["schema"] == "SMART_CANONICAL_ROOT_V1"
     assert doc["project"] == "SMART-MEGA"
-    assert doc["version"] == "6.3.1"
+    assert doc["version"] == (ROOT / "VERSION").read_text(encoding="utf-8-sig").strip()
     assert doc["canonical_root"] == r"C:\SMART-MEGA"
     assert doc["legacy_alias"] == r"C:\ProgramData\B2-Learning-Work\SMART-MEGA"
     assert doc["legacy_alias_type"] == "REMOVED"

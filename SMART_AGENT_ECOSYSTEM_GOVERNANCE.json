@@ -1,0 +1,87 @@
+{
+  "schema": "SMART_AGENT_ECOSYSTEM_GOVERNANCE_V1",
+  "generated_utc": "2026-09-15T21:30:36.397578+00:00",
+  "project": "SMART-MEGA",
+  "status": "FAIL",
+  "scope": "Supervisory architecture governance only; no predictive-weight, freeze-mutation or terminal-mission authority.",
+  "base_agent_runtime": {
+    "agents": 9,
+    "capabilities": 41,
+    "unchanged": true
+  },
+  "supervisory_agents": {
+    "architecture_gap_hunter": {
+      "role": "detect stale evidence, architecture drift, unmeasured change and governance gaps",
+      "skills": [
+        "proof_freshness_audit",
+        "orchestration_context_reconciliation",
+        "regression_freshness_audit",
+        "material_deficiency_crosscheck"
+      ],
+      "authority": "OBSERVE_AND_GATE_ONLY"
+    },
+    "capability_acquisition_guardian": {
+      "role": "admit external methodologies only through provenance, quarantine and non-regression gates",
+      "skills": [
+        "source_provenance_hashing",
+        "source_quarantine_enforcement",
+        "runtime_dependency_bloat_rejection",
+        "negative_acquisition_memory"
+      ],
+      "authority": "ACQUISITION_GATE_ONLY"
+    }
+  },
+  "executions": {
+    "architecture_gap_hunter": {
+      "status": "FAIL",
+      "skills": {
+        "proof_freshness_audit": false,
+        "orchestration_context_reconciliation": true,
+        "regression_freshness_audit": false,
+        "material_deficiency_crosscheck": true
+      },
+      "observations": {
+        "product_certification_current": false,
+        "product_certification_error": "ValueError: SMART product certification is stale for current code",
+        "regression_fresh": false,
+        "open_material_deficiencies": 0,
+        "build_target_contest": 3058,
+        "build_cutoff_contest": 3057
+      }
+    },
+    "capability_acquisition_guardian": {
+      "status": "PASS",
+      "skills": {
+        "source_provenance_hashing": true,
+        "source_quarantine_enforcement": true,
+        "runtime_dependency_bloat_rejection": true,
+        "negative_acquisition_memory": true
+      },
+      "observations": {
+        "acquired_methodologies": 3,
+        "rejected_runtime_frameworks": [
+          "CrewAI",
+          "Dify",
+          "LangGraph-runtime",
+          "LlamaIndex-Workflows",
+          "Microsoft-Agent-Framework"
+        ],
+        "forbidden_runtime_dependencies": [],
+        "runtime_framework_import_hits": [],
+        "external_code_auto_execute": false
+      }
+    }
+  },
+  "checks": {
+    "two_supervisory_agents_active": true,
+    "all_supervisory_skills_executed": false,
+    "base_orchestration_build_pass": true,
+    "acquisition_manifest_pass": true,
+    "no_external_runtime_framework_added": true,
+    "external_methodologies_have_no_predictive_authority": true
+  },
+  "acquisition_manifest_file": "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json",
+  "acquisition_manifest_sha256": "ef80339e77f50ec4f9124cc18ee7b4c896455f447428cc5a29aa8f5ff2491aae",
+  "base_orchestration_sha256": "16ec62956a03a31847d8496d1d45b0db5fc45f639ce89eb985ac768279873f30",
+  "sha256": "7bad95b9ea86e8ae270aaaa5df280531b5490371b7de8b58aa54cef34967435f"
+}

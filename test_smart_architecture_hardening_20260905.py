@@ -214,17 +214,20 @@ def test_orchestration_write_failure_and_main_branches(tmp_path, monkeypatch, ca
 
 def test_agent_layer_resolves_active_context_without_fixed_contest_literals():
     import smart_agent_skill_orchestration as aso
-    from smart_learning_epoch_reset import verify_active_epoch
+    from smart_current_epoch_contract import resolve as resolve_current_epoch
     doc = aso.build_orchestration(ROOT)
-    active = verify_active_epoch(ROOT / 'SMART_ACTIVE_EPOCH.json')
+    current = resolve_current_epoch(ROOT)
     assert doc['active_context']['target_contest'] == doc['active_context']['cutoff_contest'] + 1
-    assert doc['active_context']['target_contest'] == int(active['target_contest'])
-    assert doc['active_context']['cutoff_contest'] == int(active['cutoff_contest'])
+    assert doc['active_context']['target_contest'] == int(current['target_contest'])
+    assert doc['active_context']['cutoff_contest'] == int(current['cutoff_contest'])
+    if current['status'] == 'POST_RESULT_HOLD':
+        assert not (ROOT / 'SMART_ACTIVE_EPOCH.json').exists()
+        assert current['current_engineering_generation_authority'] is False
+        assert current['prepare_allowed'] is False
     source = (ROOT / 'smart_agent_skill_orchestration.py').read_text(encoding='utf-8')
     runtime_source = (ROOT / 'smart_agent_runtime.py').read_text(encoding='utf-8')
     assert 'SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json' not in source
     assert 'Mega-Sena_through_3053_v2.xlsx' not in runtime_source
-
 
 def test_agent_runtime_data_guardian_uses_resolved_active_dataset():
     import smart_agent_runtime as ar

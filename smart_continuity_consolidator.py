@@ -515,6 +515,10 @@ def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
         current['status']=='RESET_READY' and not current['freeze_authority_present'] and current['freeze_sha256'] is None
     ) or (
         current['status']=='FROZEN' and current['freeze_authority_present'] and isinstance(current['freeze_sha256'],str) and len(current['freeze_sha256'])==64
+    ) or (
+        current['status']=='POST_RESULT_HOLD' and current.get('post_result_hold') is True
+        and not current['freeze_authority_present'] and current['freeze_sha256'] is None
+        and current.get('prepare_allowed') is False and current.get('current_engineering_generation_authority') is False
     )
     checks={
         'active_epoch_contract_valid': current['target_contest']==current['cutoff_contest']+1 and current['result_used'] is False,
@@ -541,7 +545,7 @@ def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
     return {
         'schema':'SMART_CURRENT_CONTINUITY_V2',
         'generated_at_utc':datetime.now(timezone.utc).isoformat(),
-        'purpose':'canonical continuity derived from the active learning epoch; legacy freeze/data are historical evidence only',
+        'purpose':'canonical continuity derived from the current lifecycle contract; post-result HOLD is non-generative and legacy freeze/data are historical evidence only',
         'workspace':str(root),
         'branch':source_identity['branch'],
         'head':source_identity['head'],
@@ -549,12 +553,12 @@ def build(root: Path, *, require_fresh_wmcp: bool=False) -> dict[str,Any]:
         'source_identity':source_identity,
         'current_epoch':current,
         'canonical_data':{
-            'file':current['data_file'],'cutoff':current['cutoff_contest'],'sha256':current['data_sha256'],'authority':'ACTIVE_EPOCH'
+            'file':current['data_file'],'cutoff':current['cutoff_contest'],'sha256':current['data_sha256'],'authority':('POST_RESULT_HOLD' if current['status']=='POST_RESULT_HOLD' else 'ACTIVE_EPOCH')
         },
         'prospective_freeze':{
             'status':current['status'],'file':current['freeze_file'],'target_contest':current['target_contest'],
             'cutoff_contest':current['cutoff_contest'],'top6':current['top6'],'sha256':current['freeze_sha256'],
-            'authority':('CARRY_FORWARD_PROSPECTIVE_AUTHORITY' if current.get('authority_mode')=='CARRY_FORWARD_UNRESOLVED_PROSPECTIVE' else ('ACTIVE_CURRENT_ENGINEERING_EPOCH' if current['freeze_authority_present'] else 'NONE_RESET_READY')),
+            'authority':('NONE_POST_RESULT_HOLD' if current['status']=='POST_RESULT_HOLD' else ('HISTORICAL_FROZEN_POST_ADJUDICATION' if current.get('post_adjudication') is True else ('CARRY_FORWARD_PROSPECTIVE_AUTHORITY' if current.get('authority_mode')=='CARRY_FORWARD_UNRESOLVED_PROSPECTIVE' else ('ACTIVE_CURRENT_ENGINEERING_EPOCH' if current['freeze_authority_present'] else 'NONE_RESET_READY')))),
             'result_used':current['result_used'],
         },
         'legacy_pre_activation':{

@@ -42,9 +42,54 @@ def _strict_top6(value, label: str) -> list[int]:
 
 def _resolve_evidence_file(raw: object, fr: dict) -> Path:
     path = Path(str(raw))
-    if not path.is_absolute() and not path.is_file():
-        freeze_file = Path(str(fr.get('freeze_file', '')))
-        path = freeze_file.parent / path.name
+    if path.is_absolute() or path.is_file():
+        return path
+
+    freeze_file = Path(str(fr.get('freeze_file', '')))
+    if freeze_file.is_absolute():
+        nearby = freeze_file.parent / path.name
+        if nearby.is_file():
+            return nearby
+        for base in freeze_file.parents:
+            candidate = base / path
+            if candidate.is_file():
+                return candidate
+        return nearby
+
+    return freeze_file.parent / path.name
+
+
+def _resolve_freeze_file(raw: object, expected_sha256: object, ledger_path: Path) -> Path:
+    path = Path(str(raw))
+    candidates: list[Path] = [path]
+    if not path.is_absolute():
+        for base in ledger_path.resolve().parents:
+            candidates.append(base / path)
+
+    matches: list[Path] = []
+    existing: list[Path] = []
+    seen: set[str] = set()
+    for candidate in candidates:
+        try:
+            resolved = candidate.resolve()
+        except OSError:
+            resolved = candidate
+        key = str(resolved).lower()
+        if key in seen:
+            continue
+        seen.add(key)
+        if not candidate.is_file():
+            continue
+        existing.append(candidate)
+        if isinstance(expected_sha256, str) and sha256(candidate) == expected_sha256:
+            matches.append(candidate)
+
+    if len(matches) == 1:
+        return matches[0]
+    if len(matches) > 1:
+        raise ValueError('ambiguous frozen artifact resolution')
+    if existing:
+        return existing[0]
     return path
 
 
@@ -478,12 +523,14 @@ def adjudicate(result_data: Path, target: int, ledger_path: Path) -> dict:
         raise ValueError('meta-governor evaluation cannot predate adjudication')
     if _rank_calibration_events(ledger, target):
         raise ValueError('rank calibration cannot predate adjudication')
-    freeze_file = Path(fr['freeze_file'])
+    freeze_file = _resolve_freeze_file(fr.get('freeze_file'), fr.get('freeze_sha256'), ledger_path)
     if not freeze_file.exists() or sha256(freeze_file) != fr['freeze_sha256']:
         raise ValueError('frozen artifact hash mismatch')
     frozen = json.loads(freeze_file.read_text(encoding='utf-8'))
     if not isinstance(frozen, dict):
         raise ValueError('frozen artifact must be an object')
+    fr = dict(fr)
+    fr['freeze_file'] = str(freeze_file)
     _validate_freeze_event_against_artifact(fr, frozen, target)
 
     df = pd.read_excel(result_data)

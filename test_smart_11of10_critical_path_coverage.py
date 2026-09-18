@@ -147,6 +147,18 @@ def test_adjudication_basic_numeric_and_path_guards(tmp_path):
     assert adj._resolve_evidence_file('missing.json', fr) == tmp_path/'missing.json'
 
 
+def test_adjudication_relative_evidence_preserves_project_subdirectories(tmp_path):
+    project = tmp_path / 'project'
+    freeze = project / 'runtime' / 'learning_epochs' / 'e1' / 'freeze.json'
+    evidence = project / 'runtime' / 'learning_epochs' / 'e1' / 'SMART_STATE_ARCHIVE' / 'state.json'
+    evidence.parent.mkdir(parents=True)
+    freeze.write_text('{}', encoding='utf-8')
+    evidence.write_text('{}', encoding='utf-8')
+    fr = {'freeze_file': str(freeze)}
+    raw = 'runtime/learning_epochs/e1/SMART_STATE_ARCHIVE/state.json'
+    assert adj._resolve_evidence_file(raw, fr) == evidence
+
+
 def test_adjudication_state_archive_all_guards(tmp_path):
     fr = {'freeze_file': str(tmp_path/'freeze.json')}
     frozen = {'signal_state_archive_file': 1, 'signal_state_archive_sha256': 'a'*64}

@@ -1,4 +1,4 @@
-﻿from pathlib import Path
+from pathlib import Path
 import copy
 import smart_continuity_consolidator as cc
 
@@ -14,12 +14,25 @@ def test_chat_continuity_consolidation_is_canonical_and_complete():
     assert doc["canonical_data"]["sha256"] == current["data_sha256"]
     assert doc["legacy_pre_activation"]["freeze_sha256"] == cc.LEGACY_FREEZE_EXPECTED_SHA256
     assert doc["legacy_pre_activation"]["authority"] == "PRE_FULL_ACTIVATION_HISTORICAL_ONLY"
-    if current["status"] == "RESET_READY":
+    if current["status"] == "POST_RESULT_HOLD":
+        assert doc["canonical_data"]["authority"] == "POST_RESULT_HOLD"
+        assert doc["prospective_freeze"]["sha256"] is None
+        assert doc["prospective_freeze"]["authority"] == "NONE_POST_RESULT_HOLD"
+        assert current["current_engineering_generation_authority"] is False
+        assert current["generation_proof_valid"] is False
+        assert current["prepare_allowed"] is False
+    elif current["status"] == "RESET_READY":
         assert doc["prospective_freeze"]["sha256"] is None
         assert doc["prospective_freeze"]["authority"] == "NONE_RESET_READY"
     else:
         assert len(doc["prospective_freeze"]["sha256"]) == 64
-        if current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
+        if current.get("post_adjudication") is True:
+            assert doc["prospective_freeze"]["authority"] == "HISTORICAL_FROZEN_POST_ADJUDICATION"
+            assert current["current_engineering_generation_authority"] is False
+            assert current["generation_proof_valid"] is False
+            assert current["historical_pre_result_authority_preserved"] is True
+            assert current["rollover_required"] is True
+        elif current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
             assert doc["prospective_freeze"]["authority"] == "CARRY_FORWARD_PROSPECTIVE_AUTHORITY"
             assert current["current_engineering_generation_authority"] is False
         else:
@@ -38,7 +51,6 @@ def test_chat_continuity_consolidation_is_canonical_and_complete():
     assert doc["monte_carlo_convergence"]["predictive_weight_authorized"] is False
     assert doc["mission_state"] == "MISSION_ACTIVE"
     assert doc["terminal_6of6_proven"] is False
-
 
 def test_wmcp_v2_freshness_gate_rejects_stale_signed_proof():
     doc = cc.read_json(ROOT / "SMART_WMCP_EXECUTION_PROOF_20260905.json")

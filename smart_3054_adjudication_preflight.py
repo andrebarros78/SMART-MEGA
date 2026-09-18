@@ -72,9 +72,8 @@ def _current_paths(root: Path) -> dict[str, Any]:
         raise ValueError("active epoch is not the 3054/3053 prospective target")
     if current["result_used"] is not False:
         raise ValueError("active epoch authority is not pre-result")
-    active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
-
     if current["status"] == "FROZEN" and current["freeze_authority_present"] is True:
+        active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
         state_paths = active.get("state_paths", {})
         prospective = active.get("prospective_registration")
         if not isinstance(prospective, dict) and current.get("authority_mode") == "CARRY_FORWARD_UNRESOLVED_PROSPECTIVE":
@@ -117,6 +116,7 @@ def _current_paths(root: Path) -> dict[str, Any]:
         locked = current.get("parallel_locked_experiment")
         if not isinstance(locked, dict):
             raise ValueError("3054 preflight requires a FROZEN active epoch or a preserved locked prospective authority")
+        active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
         if int(locked.get("target_contest", -1)) != TARGET or int(locked.get("cutoff_contest", -1)) != CUTOFF:
             raise ValueError("preserved prospective authority target/cutoff mismatch")
         if locked.get("eligible_for_scientific_adjudication") is not True:

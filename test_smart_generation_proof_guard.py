@@ -52,9 +52,17 @@ def _synthetic_epoch(tmp_path: Path, *, with_original: bool) -> None:
 def test_live_frozen_epoch_generation_proof_is_valid() -> None:
     current = contract.resolve(ROOT)
     if current["status"] == "FROZEN":
-        assert current["generation_proof_valid"] is True
-        assert current["generation_proof_mode"] in {"ORIGINAL_FULL_PROCESS_PROOF", "RECOVERED_FULL_PROCESS_PROOF", "CARRY_FORWARD_AUTHORITY_LOCK"}
         assert (ROOT / current["generation_proof_file"]).is_file()
+        if current.get("post_adjudication") is True:
+            assert current["generation_proof_valid"] is False
+            assert current["historical_generation_proof_valid"] is True
+            assert current["historical_pre_result_authority_preserved"] is True
+            assert current["current_engineering_generation_authority"] is False
+            assert current["rollover_required"] is True
+            assert current["generation_proof_mode"].startswith("POST_ADJUDICATION_HISTORICAL_")
+        else:
+            assert current["generation_proof_valid"] is True
+            assert current["generation_proof_mode"] in {"ORIGINAL_FULL_PROCESS_PROOF", "RECOVERED_FULL_PROCESS_PROOF", "CARRY_FORWARD_AUTHORITY_LOCK"}
 
 
 def test_current_engineering_frozen_epoch_fails_closed_without_generation_proof(tmp_path: Path) -> None:
@@ -77,6 +85,22 @@ def test_tampered_original_generation_proof_is_rejected(tmp_path: Path) -> None:
     proof.write_text(json.dumps(doc) + "\n", encoding="utf-8")
     with pytest.raises(ValueError, match="self-hash invalid"):
         contract.resolve(tmp_path)
+
+
+def test_post_adjudication_epoch_preserves_history_but_revokes_generation(tmp_path: Path) -> None:
+    _synthetic_epoch(tmp_path, with_original=True)
+    active = json.loads((tmp_path / "SMART_ACTIVE_EPOCH.json").read_text(encoding="utf-8"))
+    ledger_path = tmp_path / active["state_paths"]["ledger"]
+    freeze_sha = active["freeze_authority"]["sha256"]
+    ledger_path.write_text(json.dumps({"events": [{"event_type": "ADJUDICATION", "target_contest": 10, "freeze_sha256": freeze_sha, "actual_numbers": [1,2,3,4,5,6], "retroactive_rewrite": False}]}) + "\n", encoding="utf-8")
+    current = contract.resolve(tmp_path)
+    assert current["post_adjudication"] is True
+    assert current["historical_pre_result_authority_preserved"] is True
+    assert current["historical_generation_proof_valid"] is True
+    assert current["generation_proof_valid"] is False
+    assert current["current_engineering_generation_authority"] is False
+    assert current["scientific_adjudication_authority"] is False
+    assert current["rollover_required"] is True
 
 
 def test_operator_adjudication_reconciles_generation_proof_and_ledger(tmp_path: Path, monkeypatch) -> None:

@@ -1,0 +1,44 @@
+{
+  "schema": "SMART_G07_SECURITY_DR_PROOF_1",
+  "gate": "G07_SECURITY_DR",
+  "status": "PASS",
+  "generated_brasilia": "2026-09-18T13:42:54.985251-03:00",
+  "workspace": "C:\\SMART-MEGA",
+  "source_host": "DESKTOP-4T6AS9K",
+  "checks": {
+    "secret_scan_pass": true,
+    "secret_scan_files": 1654,
+    "pip_check_pass": true,
+    "sbom_lock_match": true,
+    "sbom_components": 75,
+    "external_backup_host_distinct": true,
+    "external_backup_host": "Vendas",
+    "external_zip_sha256_match": true,
+    "external_restore_isolated": true,
+    "restored_file_hashes_match_source": true
+  },
+  "backup": {
+    "source_zip": "SMART_G07_EXTERNAL_BACKUP_PAYLOAD.zip",
+    "source_zip_sha256": "8e1029a961b44c58776151b089a0a52a361dbc65329437247fb036a068fc7c1d",
+    "external_host": "Vendas",
+    "external_backup_path": "C:\\SMART-MEGA_G07_EXTERNAL_BACKUP_20260918_BIN\\SMART_G07_EXTERNAL_BACKUP_PAYLOAD.zip",
+    "external_restore_path": "C:\\SMART-MEGA_G07_RESTORE_TEST_20260918_BIN",
+    "manifest": {
+      "VERSION": "6f07a6aabe3558147a7f17fac5d806c1eec88e06fbbdc2193cd878d29f3f5303",
+      "requirements.txt": "7f3fe5a0dfcb805c94805a96d85485ae1b3edc6961c072972df8588a0d309cca",
+      "requirements.lock.txt": "2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa",
+      "SMART_G06_RUNTIME_CONSISTENCY_PROOF.json": "c122432da22dc4a79e2c9d09475b4df04950e545d29dac834ec841055723cee6",
+      "SMART_G07_DEPENDENCY_SBOM.json": "23cbb6ea7be838bb25049871e0ca0eeacf0d8f7ccb57b65c63f6eae0c35d9356",
+      "SMART_NEXT_CYCLE_HOLD.json": "4755847fe2bfbf14854ebaf8e5de1c33a26c060fc99766c2adc68ad00682584e",
+      "SMART_POST_RESULT_REVIEW_3058.json": "1c7bdb24c675bde0a312f514f34e9b0b7e5dae1c52431698ab52310b1480ae69",
+      "SMART_CONTINUITY.md": "0f7e44de7575729564db277832bb18dcf3789bcc9e15eebcdaa60be1f676460e",
+      "SMART_MISSION_STATUS.json": "d1f32fadecc5c15d8087bcd7d203185e859621cfdc351c28b2574393ebe2e5d6"
+    }
+  },
+  "dependency_sbom": "SMART_G07_DEPENDENCY_SBOM.json",
+  "notes": [
+    "Initial secret scan false-positive matched substring inside task-... identifier; lexical-boundary rescan returned zero hits.",
+    "Initial text-mode external copy was rejected because it altered bytes. Final DR proof uses binary ZIP/base64 transfer and SHA-256 identity."
+  ],
+  "sha256": "f06d4decd05cbe39624647a43866148cc4e82929b5440da154449cb3a15e176e"
+}

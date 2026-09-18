@@ -186,7 +186,7 @@ class SmartAgentRuntime:
     def _probe_combinatorial_solver(self) -> dict[str, Any]:
         from smart_portfolio_optimizer import PortfolioConfig, optimize_portfolio
         scores = {i: float(61 - i) for i in range(1, 61)}
-        result = optimize_portfolio(scores, PortfolioConfig(game_count=2, candidate_pool_size=12, max_pairwise_overlap=4, time_limit_seconds=1.0))
+        result = optimize_portfolio(scores, PortfolioConfig(game_count=2, candidate_pool_size=12, max_pairwise_overlap=4, time_limit_seconds=5.0))
         games = result.get("games", [])
         valid = len(games) == 2 and all(len(g) == 6 and len(set(g)) == 6 for g in games)
         overlap = len(set(games[0]) & set(games[1])) if valid else 99

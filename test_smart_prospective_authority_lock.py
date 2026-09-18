@@ -34,6 +34,14 @@ def test_legacy_3054_attempt_is_no_longer_live_unresolved_after_adjudication():
 def test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering():
     current = resolve(ROOT)
     mode = current["authority_mode"]
+    if mode == "POST_RESULT_HOLD":
+        assert current["status"] == "POST_RESULT_HOLD"
+        assert current["freeze_authority_present"] is False
+        assert current["freeze_sha256"] is None
+        assert current["scientific_adjudication_authority"] is False
+        assert current["current_engineering_generation_authority"] is False
+        assert current["parallel_locked_experiment"] is None
+        return
     if mode == "POST_ADJUDICATION_ROLLOVER_PENDING":
         assert current["target_contest"] == 3054
         assert current["parallel_experiment_adjudicated"] is True
@@ -57,7 +65,6 @@ def test_active_epoch_never_reassigns_legacy_freeze_to_current_engineering():
     else:
         assert current["freeze_sha256"] != LEGACY_FREEZE
         assert current["freeze_origin"] != "PRE_CURRENT_ENGINEERING_ACTIVATION"
-
 
 def test_authority_lock_lifecycle_is_verifiable_before_or_after_closure():
     live = ROOT / "SMART_PROSPECTIVE_AUTHORITY_LOCK.json"

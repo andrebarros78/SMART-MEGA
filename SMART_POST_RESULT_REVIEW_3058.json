@@ -1,0 +1,75 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3058,
+  "next_target": 3059,
+  "reviewed_utc": "2026-09-16T10:10:14.703631+00:00",
+  "source_evidence": {
+    "file": "SMART_MISSED_TARGET_RECOVERY_3058.json",
+    "file_sha256": "6ff5f5c8a8ab770c3aa5770a48bf295fc6b11dd9e43ad024fc4ff1fcae7ae371",
+    "proof_sha256": "e1b663ea6c23331a55557875d7777cfd32ab107a11359dece0708f8d276c30ef"
+  },
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "694293fea6e79f3bb4c4adfb4508d304dbb5f060cc3f74cebf622f19cdbff1ee",
+    "history_max": 3058,
+    "row_count": 3058
+  },
+  "official_result": [
+    14,
+    23,
+    53,
+    56,
+    57,
+    60
+  ],
+  "predictive_assessment": "NOT_APPLICABLE_NO_VALID_PRE_DRAW_ATTEMPT",
+  "prospective_attempt_counted": false,
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "automatic_weight_change_performed": false,
+  "statistical_adjustment_authorized": false,
+  "findings": [
+    {
+      "code": "NO_PRE_DRAW_PREPARATION",
+      "class": "OPERATIONAL_GOVERNANCE",
+      "severity": "MATERIAL_PROCESS_GAP"
+    },
+    {
+      "code": "NO_VALID_PRE_DRAW_ATTEMPT",
+      "class": "PREDICTIVE_EVALUATION",
+      "severity": "INFORMATIONAL"
+    }
+  ],
+  "adjustments_applied": [
+    {
+      "code": "WITHDRAW_PREMATURE_3059_PREPARATION",
+      "status": "APPLIED",
+      "evidence": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_1bfdc3f9e76fe1139d3a30a1e9b0f17ce31b48b98f88fea700dfede840a62060.json"
+    },
+    {
+      "code": "ARCHIVE_ABORTED_PRE_FREEZE_DIAGNOSTIC",
+      "status": "APPLIED",
+      "evidence": "SMART_STATE_ARCHIVE/aborted-pre-freeze-3059/PRE_FREEZE_TOTAL_INTEGRATION.dd10c90d34baa4f1e4c684990f3a15ce3d7b0127148f6c389ab7e16ba58cfce2.json"
+    }
+  ],
+  "proposed_adjustments_or_corrections": [
+    {
+      "code": "NO_STATISTICAL_RECALIBRATION_FROM_3058",
+      "action": "KEEP_CURRENT_SIGNAL_WEIGHTS_UNCHANGED",
+      "reason": "No valid pre-draw attempt exists for causal scoring."
+    },
+    {
+      "code": "ENFORCE_POST_RESULT_HOLD",
+      "action": "BLOCK_NEXT_PREPARE_UNTIL_EXPLICIT_USER_APPLY_OR_GENERATE"
+    },
+    {
+      "code": "REQUIRE_NEXT_CYCLE_AUTHORITY",
+      "action": "BIND_PREPARE_TO_REVIEW_AND_CURRENT_CANONICAL_HASH"
+    }
+  ],
+  "parecer": "INGESTION_VALID; PREDICTIVE_EVALUATION_NOT_APPLICABLE; NO_WEIGHT_RECALIBRATION_AUTHORIZED; WORKFLOW_GATE_CORRECTION_REQUIRED",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "sha256": "c50fa9892d3cffc5e63c9133c19ab94d60d69b5665c8ef43bacd82216d117abd"
+}

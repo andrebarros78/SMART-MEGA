@@ -103,3 +103,62 @@ def test_advance_rejects_result_hash_mismatch(tmp_path: Path, monkeypatch):
     ledger['events'][0]['result_data_sha256'] = '0' * 64
     with pytest.raises(ValueError, match='result evidence'):
         cha.advance_completed_epoch(tmp_path, active)
+
+
+def test_advance_already_current_preserves_non_predictive_metadata_enrichment(tmp_path: Path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    enriched = pd.read_excel(through)
+    enriched.loc[enriched['Concurso'] == 4, 'Ganhadores 6 acertos'] = 0
+    enriched.to_excel(canonical, index=False)
+    assert _sha(canonical) != _sha(through)
+    out = cha.advance_completed_epoch(tmp_path, active)
+    assert out['status'] == 'ALREADY_CURRENT'
+    assert out['core_history_equal'] is True
+    assert out['canonical_metadata_enrichment_preserved'] is True
+    assert _sha(canonical) != _sha(through)
+
+
+def test_advance_already_current_rejects_core_draw_divergence(tmp_path: Path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    current = pd.read_excel(through)
+    current.loc[current['Concurso'] == 2, 'Bola1'] = 60
+    current.to_excel(canonical, index=False)
+    with pytest.raises(ValueError, match='core draw history differs'):
+        cha.advance_completed_epoch(tmp_path, active)
+
+
+def test_advance_already_current_rejects_metadata_rewrite(tmp_path: Path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    base = pd.read_excel(through)
+    base.loc[base['Concurso'] == 4, 'Ganhadores 6 acertos'] = 1
+    base.to_excel(through, index=False)
+    changed = pd.read_excel(through)
+    changed.loc[changed['Concurso'] == 4, 'Ganhadores 6 acertos'] = 2
+    changed.to_excel(canonical, index=False)
+    with pytest.raises(ValueError, match='already-advanced canonical history differs'):
+        cha.advance_completed_epoch(tmp_path, active)
+
+
+def test_advance_resolves_archived_result_evidence_by_committed_hash(tmp_path: Path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    expected = _sha(result)
+    archive_dir = tmp_path / 'SMART_STATE_ARCHIVE' / 'adjudication-evidence'
+    archive_dir.mkdir(parents=True)
+    archived = archive_dir / f'Mega-Sena.{expected}.xlsx'
+    archived.write_bytes(result.read_bytes())
+    result.write_bytes(b'mutable canonical path advanced after adjudication')
+
+    out = cha.advance_completed_epoch(tmp_path, active)
+    assert out['status'] == 'PASS'
+    assert out['result_file'].replace('\\', '/').endswith(f'SMART_STATE_ARCHIVE/adjudication-evidence/Mega-Sena.{expected}.xlsx')
+    assert out['result_file_sha256'] == expected
+    assert ledger['events'][0]['result_data_sha256'] == expected
+
+
+
+def test_core_history_equal_normalizes_brazilian_day_first_mixed_dates():
+    left = _frame(2)
+    right = _frame(2)
+    left['Data do Sorteio'] = ['11/03/1996', '18/03/1996']
+    right['Data do Sorteio'] = [pd.Timestamp('1996-03-11'), pd.Timestamp('1996-03-18')]
+    assert cha._core_history_equal(left, right) is True

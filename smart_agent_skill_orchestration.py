@@ -407,6 +407,33 @@ def _resolve_pre_freeze_context(root: Path) -> dict[str, Any]:
     }
 
 
+def _resolve_post_result_hold_context(root: Path) -> dict[str, Any]:
+    from smart_current_epoch_contract import resolve as resolve_current_epoch
+    current = resolve_current_epoch(root)
+    if current.get("status") != "POST_RESULT_HOLD":
+        raise ValueError("post-result hold context is not active")
+    ledger_path = root / "SMART_SIGNAL_LEDGER.json"
+    return {
+        "target_contest": int(current["target_contest"]),
+        "cutoff_contest": int(current["cutoff_contest"]),
+        "freeze_file": None,
+        "freeze_sha256": None,
+        "data_file": str(current["data_file"]),
+        "data_sha256": str(current["data_sha256"]),
+        "signal_state_file": None,
+        "signal_state_sha256": None,
+        "ledger_file": _project_relative(root, ledger_path) if ledger_path.is_file() else None,
+        "ledger_sha256": _sha256(ledger_path) if ledger_path.is_file() else None,
+        "pending_target": False,
+        "phase": "POST_RESULT_HOLD",
+        "context_role": "POST_RESULT_ANALYSIS_HOLD",
+        "operator_target_selected": False,
+        "prepare_allowed": False,
+        "generation_allowed": False,
+        "operator_command_required": True,
+    }
+
+
 def _resolve_build_context(root: Path) -> dict[str, Any]:
     """Construction-only context. Never creates or requires operational target authority."""
     import pandas as pd
@@ -441,10 +468,10 @@ def _resolve_build_context(root: Path) -> dict[str, Any]:
 def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
     root = Path(root)
     requested = str(phase).upper()
-    if requested in {"BUILD", "PRE_FREEZE", "POST_FREEZE"}:
+    if requested in {"BUILD", "PRE_FREEZE", "POST_FREEZE", "POST_RESULT_HOLD"}:
         return requested
     if requested != "AUTO":
-        raise ValueError("phase must be AUTO, BUILD, PRE_FREEZE or POST_FREEZE")
+        raise ValueError("phase must be AUTO, BUILD, PRE_FREEZE, POST_FREEZE or POST_RESULT_HOLD")
     active_path = root / "SMART_ACTIVE_EPOCH.json"
     if active_path.is_file():
         try:
@@ -457,6 +484,15 @@ def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
         if status == "FROZEN":
             return "POST_FREEZE"
         raise ValueError(f"active epoch status has no runtime phase: {status}")
+    hold_path = root / "SMART_NEXT_CYCLE_HOLD.json"
+    authority_path = root / "SMART_NEXT_CYCLE_AUTHORITY.json"
+    if hold_path.is_file() and not authority_path.is_file():
+        try:
+            hold = _read_json(hold_path)
+        except Exception as exc:
+            raise ValueError("post-result hold cannot be parsed for phase resolution") from exc
+        if hold.get("status") == "AWAITING_OPERATOR_APPLY_OR_GENERATE" and hold.get("prepare_allowed") is False and hold.get("generation_allowed") is False:
+            return "POST_RESULT_HOLD"
     return "POST_FREEZE"
 
 
@@ -468,7 +504,7 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
     v4_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V4.json"
     mission_path = root / "SMART_MISSION_STATUS.json"
     phase = resolve_runtime_phase(root, phase)
-    active_context = (_resolve_build_context(root) if phase == "BUILD" else (_resolve_pre_freeze_context(root) if phase == "PRE_FREEZE" else _resolve_active_context(root)))
+    active_context = (_resolve_build_context(root) if phase == "BUILD" else (_resolve_pre_freeze_context(root) if phase == "PRE_FREEZE" else (_resolve_post_result_hold_context(root) if phase == "POST_RESULT_HOLD" else _resolve_active_context(root))))
 
     source_manifest = _read_json(source_manifest_path)
     v2 = _read_json(v2_path)
@@ -514,6 +550,13 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
         checks.update({
             "pre_freeze_has_no_freeze_authority": active_context.get("freeze_file") is None and active_context.get("freeze_sha256") is None,
             "pre_freeze_has_no_learned_state_authority": active_context.get("signal_state_file") is None and active_context.get("signal_state_sha256") is None,
+        })
+    elif phase == "POST_RESULT_HOLD":
+        checks.update({
+            "post_result_hold_is_non_operational": active_context.get("context_role") == "POST_RESULT_ANALYSIS_HOLD" and active_context.get("operator_target_selected") is False,
+            "post_result_hold_has_no_freeze_authority": active_context.get("freeze_file") is None and active_context.get("freeze_sha256") is None,
+            "post_result_hold_has_no_generation_authority": active_context.get("generation_allowed") is False and active_context.get("prepare_allowed") is False,
+            "post_result_hold_requires_operator_command": active_context.get("operator_command_required") is True,
         })
     else:
         checks.update({

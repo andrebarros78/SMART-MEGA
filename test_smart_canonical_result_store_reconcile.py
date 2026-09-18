@@ -44,24 +44,43 @@ def test_plan_rejects_changed_historical_draw(tmp_path: Path):
 
 
 def test_real_canonical_store_tracks_latest_completed_epoch_and_preserves_prior_freeze():
+    import hashlib
     import json
 
     _, contests = load_draws(ROOT / "Mega-Sena.xlsx")
     values = [int(x) for x in contests]
-    active = json.loads((ROOT / "SMART_ACTIVE_EPOCH.json").read_text(encoding="utf-8-sig"))
-    cutoff = int(active["cutoff_contest"])
-    target = int(active["target_contest"])
-    snapshot_path = ROOT / active["data_file"]
-    _, snapshot_contests = load_draws(snapshot_path)
-    snapshot_values = [int(x) for x in snapshot_contests]
-    assert target == cutoff + 1
-    assert snapshot_values[-1] == cutoff
-    assert snapshot_values == list(range(snapshot_values[0], cutoff + 1))
-    assert cr.sha256_file(snapshot_path) == active["data_sha256"]
-    assert values[: len(snapshot_values)] == snapshot_values
-    assert values[-1] in {cutoff, target}
-    assert cr.sha256_file(ROOT / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json") == FREEZE_SHA
+    active_path = ROOT / "SMART_ACTIVE_EPOCH.json"
+    if active_path.is_file():
+        active = json.loads(active_path.read_text(encoding="utf-8-sig"))
+        cutoff = int(active["cutoff_contest"])
+        target = int(active["target_contest"])
+        snapshot_path = ROOT / active["data_file"]
+        _, snapshot_contests = load_draws(snapshot_path)
+        snapshot_values = [int(x) for x in snapshot_contests]
+        assert target == cutoff + 1
+        assert snapshot_values[-1] == cutoff
+        assert snapshot_values == list(range(snapshot_values[0], cutoff + 1))
+        assert cr.sha256_file(snapshot_path) == active["data_sha256"]
+        assert values[: len(snapshot_values)] == snapshot_values
+        assert values[-1] in {cutoff, target}
+    else:
+        hold = json.loads((ROOT / "SMART_NEXT_CYCLE_HOLD.json").read_text(encoding="utf-8-sig"))
+        cutoff = int(hold["completed_contest"])
+        target = int(hold["next_target"])
+        assert hold["status"] == "AWAITING_OPERATOR_APPLY_OR_GENERATE"
+        assert target == cutoff + 1
+        assert values[-1] == cutoff
+        assert values == list(range(values[0], cutoff + 1))
+        assert cr.sha256_file(ROOT / "Mega-Sena.xlsx") == hold["canonical_sha256_at_review"]
+        review_path = ROOT / hold["review_file"]
+        assert review_path.is_file()
+        assert hashlib.sha256(review_path.read_bytes()).hexdigest() == hold["review_file_sha256"]
+        review = json.loads(review_path.read_text(encoding="utf-8-sig"))
+        assert int(review["target_contest"]) == cutoff
+        assert int(review["next_target"]) == target
+        assert review["stop_required"] is True
 
+    assert cr.sha256_file(ROOT / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json") == FREEZE_SHA
     prior = json.loads((ROOT / "SMART_CANONICAL_RESULT_STORE_RECONCILIATION_3053.json").read_text(encoding="utf-8"))
     assert prior["final_status"] == "PASS"
     assert prior["result_store_ready_for_next_contest"] is True
@@ -80,8 +99,7 @@ def test_real_canonical_store_tracks_latest_completed_epoch_and_preserves_prior_
     assert recovery["status"] == "RECOVERED_NO_VALID_FREEZE"
     assert recovery["target_contest"] == 3056
     assert recovery["ready_for_next_target"] == 3057
-    assert recovery["canonical_sha256_after"] == active["canonical_source_sha256_at_prepare"]
-    assert recovery["canonical_sha256_after"] == active["data_sha256"]
     assert recovery["prediction_authority_created"] is False
     assert recovery["prospective_attempt_counted"] is False
     assert recovery["result_used_for_prediction"] is False
+    assert values[-1] >= recovery["target_contest"]

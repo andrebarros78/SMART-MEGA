@@ -28,6 +28,32 @@ def _under_root(root: Path, path: Path) -> Path:
     return resolved
 
 
+def _resolve_adjudication_result_evidence(root: Path, adjudication: dict[str, Any]) -> Path:
+    declared = _under_root(root, root / str(adjudication.get("result_data_file", "")))
+    expected = str(adjudication.get("result_data_sha256") or "").lower()
+    if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected):
+        raise ValueError("adjudication result evidence missing or hash mismatch")
+    if declared.is_file() and sha256_file(declared).lower() == expected:
+        return declared
+
+    # The adjudication hash is immutable, while an originally-declared canonical
+    # workbook path may later advance. Permit recovery only from the project's
+    # immutable archive and only when the archived bytes match the exact hash
+    # already committed by the adjudication event. The ledger event itself is
+    # never rewritten, preserving learning/proof hash chains.
+    archive_root = root / "SMART_STATE_ARCHIVE"
+    if archive_root.is_dir():
+        candidates = sorted(
+            (p for p in archive_root.rglob("*") if p.is_file() and expected in p.name.lower()),
+            key=lambda p: str(p).casefold(),
+        )
+        for candidate in candidates:
+            candidate = _under_root(root, candidate)
+            if sha256_file(candidate).lower() == expected:
+                return candidate
+    raise ValueError("adjudication result evidence missing or hash mismatch")
+
+
 def _atomic_json(path: Path, payload: dict[str, Any]) -> None:
     path.parent.mkdir(parents=True, exist_ok=True)
     fd, raw = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=path.parent)
@@ -62,6 +88,49 @@ def _frames_value_equal(left: pd.DataFrame, right: pd.DataFrame) -> bool:
         if not ((a.eq(b)) | (a.isna() & b.isna())).all():
             return False
     return True
+
+
+def _core_history_equal(left: pd.DataFrame, right: pd.DataFrame) -> bool:
+    left = left.reset_index(drop=True)
+    right = right.reset_index(drop=True)
+    core = ["Concurso", "Data do Sorteio", *[f"Bola{i}" for i in range(1, 7)]]
+    if any(c not in left.columns or c not in right.columns for c in core):
+        return False
+    if len(left) != len(right):
+        return False
+    # Normalize contest/balls numerically and draw dates to pandas timestamps.
+    for column in ["Concurso", *[f"Bola{i}" for i in range(1, 7)]]:
+        a = pd.to_numeric(left[column], errors="raise").astype(int)
+        b = pd.to_numeric(right[column], errors="raise").astype(int)
+        if not a.equals(b):
+            return False
+    a_date = pd.to_datetime(left["Data do Sorteio"], errors="raise", format="mixed", dayfirst=True).reset_index(drop=True)
+    b_date = pd.to_datetime(right["Data do Sorteio"], errors="raise", format="mixed", dayfirst=True).reset_index(drop=True)
+    return a_date.equals(b_date)
+
+
+def _metadata_enrichment_only(canonical: pd.DataFrame, through: pd.DataFrame) -> bool:
+    canonical = canonical.reset_index(drop=True)
+    through = through.reset_index(drop=True)
+    if canonical.shape != through.shape or list(canonical.columns) != list(through.columns):
+        return False
+    if not _core_history_equal(canonical, through):
+        return False
+    core = {"Concurso", "Data do Sorteio", *[f"Bola{i}" for i in range(1, 7)]}
+    enriched = False
+    for column in canonical.columns:
+        if column in core:
+            continue
+        for current, prior in zip(canonical[column].tolist(), through[column].tolist()):
+            current_na = bool(pd.isna(current))
+            prior_na = bool(pd.isna(prior))
+            if prior_na:
+                if not current_na:
+                    enriched = True
+                continue
+            if current_na or current != prior:
+                return False
+    return enriched
 
 
 def _numbers(frame: pd.DataFrame, target: int) -> list[int]:
@@ -107,10 +176,8 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
     if len(actual) != 6 or len(set(actual)) != 6 or actual[0] < 1 or actual[-1] > 60:
         raise ValueError("adjudication actual numbers invalid")
 
-    result_file = _under_root(root, root / str(adjudication.get("result_data_file", "")))
     expected_result_sha = str(adjudication.get("result_data_sha256") or "")
-    if not result_file.is_file() or sha256_file(result_file) != expected_result_sha:
-        raise ValueError("adjudication result evidence missing or hash mismatch")
+    result_file = _resolve_adjudication_result_evidence(root, adjudication)
 
     epoch_dir = ledger_path.parent
     through = _under_root(root, epoch_dir / f"Mega-Sena_through_{target}.xlsx")
@@ -136,17 +203,34 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
     through_sha = sha256_file(through)
     proof_path = root / f"SMART_CANONICAL_HISTORY_ADVANCE_{target}.json"
     if canonical_seq[-1] == target:
-        if sha256_file(canonical) != through_sha:
-            raise ValueError("already-advanced canonical history differs from completed through-dataset")
-        return {
+        if canonical_seq != through_seq or not _core_history_equal(canonical_frame, through_frame):
+            raise ValueError("already-advanced canonical core draw history differs from completed through-dataset")
+        canonical_sha = sha256_file(canonical)
+        metadata_enrichment = False
+        if canonical_sha != through_sha:
+            if not _metadata_enrichment_only(canonical_frame, through_frame):
+                raise ValueError("already-advanced canonical history differs from completed through-dataset")
+            metadata_enrichment = True
+        proof = {
             "schema": SCHEMA,
             "status": "ALREADY_CURRENT",
+            "created_at_utc": datetime.now(timezone.utc).isoformat(),
             "target_contest": target,
-            "canonical_sha256": through_sha,
+            "canonical_sha256": canonical_sha,
             "through_sha256": through_sha,
             "sequence_valid": True,
+            "core_history_equal": True,
+            "canonical_metadata_enrichment_preserved": metadata_enrichment,
+            "completed_sequence_required": True,
+            "sequence_sha256": validation.get("sequence_sha256"),
+            "future_information_used": False,
             "retroactive_rewrite": False,
+            "ready_for_next_target": target + 1,
         }
+        canonical_doc = json.dumps(proof, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+        proof["sha256"] = hashlib.sha256(canonical_doc).hexdigest()
+        _atomic_json(proof_path, proof)
+        return proof
 
     if not _frames_value_equal(canonical_frame, through_frame.iloc[:-1]):
         raise ValueError("canonical history rows differ from through-dataset prefix")

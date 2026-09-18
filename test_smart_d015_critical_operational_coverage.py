@@ -230,6 +230,8 @@ def _patch_prepare_common(monkeypatch, root: Path):
     monkeypatch.setattr(op, 'assert_pre_draw_window', lambda schedule: {'status': 'PASS', 'target_contest': schedule['target_contest']})
     monkeypatch.setattr(op, 'seed_ledger_from_canonical', lambda canonical, destination: {'status': 'SEEDED', 'sha256': 'd' * 64, 'event_count': 7})
     monkeypatch.setattr(op, 'write_active_epoch', lambda path, payload: payload)
+    monkeypatch.setattr(op, '_require_next_cycle_authority', lambda root, target: {'status': 'AUTHORIZED', 'sha256': 'a' * 64})
+    monkeypatch.setattr(op, '_consume_next_cycle_authority', lambda root, target, epoch_id: {'status': 'CONSUMED_FOR_PREPARE', 'sha256': 'b' * 64, 'prepared_epoch_id': epoch_id})
     pd.DataFrame({'Concurso': [1, 2, 3]}).to_excel(root / 'Mega-Sena.xlsx', index=False)
 
 
@@ -328,3 +330,37 @@ def test_operator_module_main_guard_executes_read_only(monkeypatch, capsys):
     monkeypatch.setattr(sys, 'argv', ['smart_operator.py', 'status'])
     runpy.run_path(str(Path(op.__file__).resolve()), run_name='__main__')
     assert 'operator_contract' in capsys.readouterr().out
+
+
+def test_operator_post_result_hold_requires_explicit_next_cycle_authority(tmp_path: Path):
+    pd.DataFrame({"Concurso": [1, 2, 3]}).to_excel(tmp_path / "Mega-Sena.xlsx", index=False)
+    review = tmp_path / "SMART_POST_RESULT_REVIEW_3.json"
+    review.write_text('{"status":"POST_RESULT_REVIEW_COMPLETE"}\\n', encoding="utf-8")
+    op._write_operator_hashed_doc(tmp_path / op.POST_RESULT_HOLD_PATH, {
+        "schema": op.NEXT_CYCLE_HOLD_SCHEMA,
+        "status": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+        "completed_contest": 3,
+        "next_target": 4,
+        "review_file": review.name,
+        "review_file_sha256": op.sha256_file(review),
+        "review_sha256": "c" * 64,
+        "canonical_sha256_at_review": op.sha256_file(tmp_path / "Mega-Sena.xlsx"),
+        "automatic_prepare_forbidden": True,
+        "prepare_allowed": False,
+        "generation_allowed": False,
+        "operator_command_required": True,
+    })
+    with pytest.raises(FileNotFoundError):
+        op._require_next_cycle_authority(tmp_path, 4)
+    authority = op.authorize_next_cycle_operation(tmp_path, 4)
+    assert authority["authorized_by"] == "USER_EXPLICIT_APPLY_OR_GENERATE"
+    assert op._require_next_cycle_authority(tmp_path, 4)["sha256"] == authority["sha256"]
+    consumed = op._consume_next_cycle_authority(tmp_path, 4, "operator-4-test")
+    assert consumed["consumed"] is True
+    with pytest.raises(PermissionError, match="not active"):
+        op._require_next_cycle_authority(tmp_path, 4)
+
+
+def test_operator_prepare_is_blocked_before_product_work_without_post_result_gate(tmp_path: Path):
+    with pytest.raises(FileNotFoundError):
+        op.prepare_operation(tmp_path, 4)

@@ -10,6 +10,17 @@ def test_current_epoch_contract_is_causal_and_not_legacy_inferred():
     assert d["target_contest"] == d["cutoff_contest"] + 1
     assert d["result_used"] is False
     assert d["terminal_authority"] is False
+    if d["status"] == "POST_RESULT_HOLD":
+        assert d["post_result_hold"] is True
+        assert d["authority_mode"] == "POST_RESULT_HOLD"
+        assert d["freeze_authority_present"] is False
+        assert d["freeze_sha256"] is None
+        assert d["current_engineering_generation_authority"] is False
+        assert d["generation_proof_valid"] is False
+        assert d["prepare_allowed"] is False
+        assert d["generation_allowed"] is False
+        assert d["operator_command_required"] is True
+        return
     if d["status"] == "RESET_READY":
         assert d["freeze_authority_present"] is False
         assert d["freeze_sha256"] is None
@@ -19,10 +30,18 @@ def test_current_epoch_contract_is_causal_and_not_legacy_inferred():
         assert len(d["freeze_sha256"]) == 64
         assert len(set(d["top6"])) == 6
 
-
 def test_legacy_locked_attempt_is_never_misattributed_to_current_engineering():
     d = resolve(ROOT)
     mode = d["authority_mode"]
+    if mode == "POST_RESULT_HOLD":
+        assert d["status"] == "POST_RESULT_HOLD"
+        assert d["target_contest"] >= 3055
+        assert d["current_engineering_role"] == "POST_RESULT_ANALYSIS_HOLD"
+        assert d["freeze_authority_present"] is False
+        assert d["scientific_adjudication_authority"] is False
+        assert d["current_engineering_generation_authority"] is False
+        assert d["parallel_locked_experiment"] is None
+        return
     if mode == "POST_ADJUDICATION_ROLLOVER_PENDING":
         assert d["status"] == "RESET_READY"
         assert d["target_contest"] == 3054
