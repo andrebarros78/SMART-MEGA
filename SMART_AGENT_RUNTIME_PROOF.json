@@ -1,7 +1,8 @@
 {
   "schema": "SMART_AGENT_RUNTIME_V2",
+  "phase": "BUILD",
   "status": "PASS",
-  "claim_scope": "Native modules are actually executed by deterministic read-only/synthetic probes. External skill source code remains quarantined and is not executed.",
+  "claim_scope": "The nine named agents are deterministic SMART role executors validated by read-only/synthetic native probes; they are not autonomous AI/LLM agents. External skill source code remains quarantined and is not executed.",
   "checks": {
     "all_9_agents_native_probed": true,
     "all_41_capabilities_owned": true,
@@ -26,17 +27,17 @@
       "native_targets": [],
       "artifacts": [
         {
-          "path": ".external_skills_acquired/ACQUISITION_MANIFEST.json",
-          "sha256": "a5031f77f74fe3b55cffedfbd125a07f7f14563969a40daf620a45fbacb9048c"
+          "path": "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json",
+          "sha256": "ce7e6c1b474acbcb3934794cfb78b62e5ad8f1524050ea0b9fac0dd5714a9ec1"
         }
       ],
       "consumed_handoffs": [],
       "produced_handoffs": [
         {
-          "handoff_id": "quarantine_curator->research_scout:14c17f40a14c5553",
+          "handoff_id": "quarantine_curator->research_scout:6ce5202ccf857222",
           "producer": "quarantine_curator",
           "consumer": "research_scout",
-          "payload_sha256": "14c17f40a14c55534c6b75a6b2da1e3ac1a168ad7cf31da49ea2d0a11b090c71",
+          "payload_sha256": "6ce5202ccf85722242b535e3df6d6d8feaaf032322123eeaeda95f0595db52bf",
           "probe_id": "quarantine_manifest_integrity"
         }
       ],
@@ -44,11 +45,12 @@
       "probe_result": {
         "probe_id": "quarantine_manifest_integrity",
         "executed_functions": [
-          "json.loads",
-          "Path.is_dir"
+          "json.loads"
         ],
         "items": 21,
         "invalid_items": [],
+        "source_payload_required_at_runtime": false,
+        "optional_source_payload_present": true,
         "external_code_executed": false,
         "pass": true
       },
@@ -79,19 +81,19 @@
       ],
       "consumed_handoffs": [
         {
-          "handoff_id": "quarantine_curator->research_scout:14c17f40a14c5553",
+          "handoff_id": "quarantine_curator->research_scout:6ce5202ccf857222",
           "producer": "quarantine_curator",
           "consumer": "research_scout",
-          "payload_sha256": "14c17f40a14c55534c6b75a6b2da1e3ac1a168ad7cf31da49ea2d0a11b090c71",
+          "payload_sha256": "6ce5202ccf85722242b535e3df6d6d8feaaf032322123eeaeda95f0595db52bf",
           "probe_id": "quarantine_manifest_integrity"
         }
       ],
       "produced_handoffs": [
         {
-          "handoff_id": "research_scout->falsification_auditor:5bd8b10bce7fee28",
+          "handoff_id": "research_scout->falsification_auditor:2c0b19b404915005",
           "producer": "research_scout",
           "consumer": "falsification_auditor",
-          "payload_sha256": "5bd8b10bce7fee28d123bb694ef0d07686a0bb1c7fe3d7fcb274307cf8935a43",
+          "payload_sha256": "2c0b19b404915005cffa8729dc7d4d4228c3a18b830ddc9fb663815b897df565",
           "probe_id": "research_registry_read_validation"
         }
       ],
@@ -129,8 +131,8 @@
       ],
       "artifacts": [
         {
-          "path": "Mega-Sena_through_3053_v2.xlsx",
-          "sha256": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60"
+          "path": "Mega-Sena.xlsx",
+          "sha256": "694293fea6e79f3bb4c4adfb4508d304dbb5f060cc3f74cebf622f19cdbff1ee"
         },
         {
           "path": "SMART_DATA_CONTRACT.md",
@@ -140,17 +142,17 @@
       "consumed_handoffs": [],
       "produced_handoffs": [
         {
-          "handoff_id": "data_guardian->null_model_cartographer:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->null_model_cartographer:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "null_model_cartographer",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         },
         {
-          "handoff_id": "data_guardian->falsification_auditor:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->falsification_auditor:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "falsification_auditor",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         }
       ],
@@ -160,11 +162,11 @@
         "executed_functions": [
           "smart_data_quality_gate.audit_draw_file"
         ],
-        "data_file": "Mega-Sena_through_3053_v2.xlsx",
-        "target_contest": 3054,
+        "data_file": "Mega-Sena.xlsx",
+        "target_contest": 3059,
         "status": "PASS",
-        "rows": 3053,
-        "contest_max": 3053,
+        "rows": 3058,
+        "contest_max": 3058,
         "checks": {
           "required_columns": true,
           "no_nulls": true,
@@ -206,26 +208,26 @@
       ],
       "consumed_handoffs": [
         {
-          "handoff_id": "data_guardian->null_model_cartographer:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->null_model_cartographer:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "null_model_cartographer",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         },
         {
-          "handoff_id": "data_guardian->falsification_auditor:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->falsification_auditor:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "falsification_auditor",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         }
       ],
       "produced_handoffs": [
         {
-          "handoff_id": "null_model_cartographer->falsification_auditor:227c4edd6a98cf8d",
+          "handoff_id": "null_model_cartographer->falsification_auditor:899247590ccd9296",
           "producer": "null_model_cartographer",
           "consumer": "falsification_auditor",
-          "payload_sha256": "227c4edd6a98cf8d9f3fe2c69df4f3b3c03cbcda3c729bfe1df31961c2d75d92",
+          "payload_sha256": "899247590ccd9296c88fb90ccf011b54a5e207cb3abf644d112b1c7748b38829",
           "probe_id": "synthetic_cartography_execution"
         }
       ],
@@ -268,52 +270,52 @@
         },
         {
           "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
-          "sha256": "3067930e84bcdb445675c71bd5ae0e46b2f2456aa5e41d86fcb256632eabdb02"
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
         }
       ],
       "consumed_handoffs": [
         {
-          "handoff_id": "research_scout->falsification_auditor:5bd8b10bce7fee28",
+          "handoff_id": "research_scout->falsification_auditor:2c0b19b404915005",
           "producer": "research_scout",
           "consumer": "falsification_auditor",
-          "payload_sha256": "5bd8b10bce7fee28d123bb694ef0d07686a0bb1c7fe3d7fcb274307cf8935a43",
+          "payload_sha256": "2c0b19b404915005cffa8729dc7d4d4228c3a18b830ddc9fb663815b897df565",
           "probe_id": "research_registry_read_validation"
         },
         {
-          "handoff_id": "data_guardian->null_model_cartographer:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->null_model_cartographer:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "null_model_cartographer",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         },
         {
-          "handoff_id": "data_guardian->falsification_auditor:2ef91cb2232d3ab6",
+          "handoff_id": "data_guardian->falsification_auditor:89145c33cdfaba99",
           "producer": "data_guardian",
           "consumer": "falsification_auditor",
-          "payload_sha256": "2ef91cb2232d3ab6d0d091dfc1944398c6f58bea82204eb447f948070fd954f6",
+          "payload_sha256": "89145c33cdfaba99aff49339c0afc1f37e3b52d8d15e4ba66105a3605a02c699",
           "probe_id": "canonical_draw_quality_audit"
         },
         {
-          "handoff_id": "null_model_cartographer->falsification_auditor:227c4edd6a98cf8d",
+          "handoff_id": "null_model_cartographer->falsification_auditor:899247590ccd9296",
           "producer": "null_model_cartographer",
           "consumer": "falsification_auditor",
-          "payload_sha256": "227c4edd6a98cf8d9f3fe2c69df4f3b3c03cbcda3c729bfe1df31961c2d75d92",
+          "payload_sha256": "899247590ccd9296c88fb90ccf011b54a5e207cb3abf644d112b1c7748b38829",
           "probe_id": "synthetic_cartography_execution"
         }
       ],
       "produced_handoffs": [
         {
-          "handoff_id": "falsification_auditor->learning_calibration_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->learning_calibration_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "learning_calibration_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         },
         {
-          "handoff_id": "falsification_auditor->mission_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->mission_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "mission_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         }
       ],
@@ -362,26 +364,26 @@
       ],
       "consumed_handoffs": [
         {
-          "handoff_id": "falsification_auditor->learning_calibration_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->learning_calibration_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "learning_calibration_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         },
         {
-          "handoff_id": "falsification_auditor->mission_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->mission_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "mission_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         }
       ],
       "produced_handoffs": [
         {
-          "handoff_id": "learning_calibration_governor->mission_governor:5b38d44f55d3d312",
+          "handoff_id": "learning_calibration_governor->mission_governor:b64e270a11bb8398",
           "producer": "learning_calibration_governor",
           "consumer": "mission_governor",
-          "payload_sha256": "5b38d44f55d3d3128be38e2e20051abe2ec150690905a9a5a1e1d3ac1039b725",
+          "payload_sha256": "b64e270a11bb8398d3c07606acb81b4570236468a7f78ce23871d4b29e321a98",
           "probe_id": "bounded_learning_and_calibration_execution"
         }
       ],
@@ -395,7 +397,7 @@
         ],
         "weights_changed": true,
         "update_after_result_only": true,
-        "probability_sum": 5.999999999999995,
+        "probability_sum": 6.0,
         "brier_delta": 0.0,
         "calibration_mode": "SHRUNK_ISOTONIC",
         "pass": true
@@ -418,20 +420,20 @@
       "artifacts": [
         {
           "path": "SMART_P09_RED_TEAM_LATEST.json",
-          "sha256": "1e3d3098a26130f8fd6ec220e32602a3e6ba196b9d81fa64d6226999537168b2"
+          "sha256": "ab4ae28877ae8e9713c038963992bad7098fab162555daa1bbf5acf7de1c29a4"
         },
         {
           "path": "smart_continuous_red_team.py",
-          "sha256": "158a64d9163cd60afaf596520ee963d03e8e9a864cd8884e50c7b1ff2524a01b"
+          "sha256": "4a96274e94537738c0a94011262a11413a16f95a682c9e2085e8d062a68b6e15"
         }
       ],
       "consumed_handoffs": [],
       "produced_handoffs": [
         {
-          "handoff_id": "robustness_red_team->mission_governor:e032e6812a7cc6ed",
+          "handoff_id": "robustness_red_team->mission_governor:b7c1b9df9fbaa8eb",
           "producer": "robustness_red_team",
           "consumer": "mission_governor",
-          "payload_sha256": "e032e6812a7cc6edd040fe3f93e7b5f66147dc0488ff9c6e7697f42ddc6ffc63",
+          "payload_sha256": "b7c1b9df9fbaa8eb9b53a8c996e8dc6ec9506b8d2585f00ddbe06017e27435ab",
           "probe_id": "red_team_safety_execution"
         }
       ],
@@ -521,36 +523,36 @@
       "artifacts": [
         {
           "path": "SMART_MISSION_STATUS.json",
-          "sha256": "b563a5d18d75e100356215543a57b1662aa28a63d1dce2606bca0a60b3c05d7b"
+          "sha256": "d1f32fadecc5c15d8087bcd7d203185e859621cfdc351c28b2574393ebe2e5d6"
         }
       ],
       "consumed_handoffs": [
         {
-          "handoff_id": "falsification_auditor->learning_calibration_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->learning_calibration_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "learning_calibration_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         },
         {
-          "handoff_id": "falsification_auditor->mission_governor:8d573abe0256fd90",
+          "handoff_id": "falsification_auditor->mission_governor:4c8ce898973d9e87",
           "producer": "falsification_auditor",
           "consumer": "mission_governor",
-          "payload_sha256": "8d573abe0256fd90e91e9fdf7476abb2bfd250c602aaa8dd6b023f7c13dcb083",
+          "payload_sha256": "4c8ce898973d9e87c676879360071cd18053705a772ccdb4c3120c1df7432436",
           "probe_id": "synthetic_falsification_execution"
         },
         {
-          "handoff_id": "learning_calibration_governor->mission_governor:5b38d44f55d3d312",
+          "handoff_id": "learning_calibration_governor->mission_governor:b64e270a11bb8398",
           "producer": "learning_calibration_governor",
           "consumer": "mission_governor",
-          "payload_sha256": "5b38d44f55d3d3128be38e2e20051abe2ec150690905a9a5a1e1d3ac1039b725",
+          "payload_sha256": "b64e270a11bb8398d3c07606acb81b4570236468a7f78ce23871d4b29e321a98",
           "probe_id": "bounded_learning_and_calibration_execution"
         },
         {
-          "handoff_id": "robustness_red_team->mission_governor:e032e6812a7cc6ed",
+          "handoff_id": "robustness_red_team->mission_governor:b7c1b9df9fbaa8eb",
           "producer": "robustness_red_team",
           "consumer": "mission_governor",
-          "payload_sha256": "e032e6812a7cc6edd040fe3f93e7b5f66147dc0488ff9c6e7697f42ddc6ffc63",
+          "payload_sha256": "b7c1b9df9fbaa8eb9b53a8c996e8dc6ec9506b8d2585f00ddbe06017e27435ab",
           "probe_id": "red_team_safety_execution"
         },
         {
@@ -579,19 +581,11 @@
   "capability_count": 41,
   "agent_count": 9,
   "critical_hashes_before": {
-    "Mega-Sena_through_3053_v2.xlsx": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
-    "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
-    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4",
-    "SMART_SIGNAL_STATE_3054_V2.json": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b"
+    "Mega-Sena.xlsx": "694293fea6e79f3bb4c4adfb4508d304dbb5f060cc3f74cebf622f19cdbff1ee"
   },
   "critical_hashes_after": {
-    "Mega-Sena_through_3053_v2.xlsx": "287afcdb89ba822c6e4acc848a80583a17653d646581d2a582cad3abc1947c60",
-    "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
-    "SMART_SIGNAL_LEDGER.json": "08898b00a5822908d1ab4f5603fc34fa6b6209e3d89769b2a284bf1fa0f4546e",
-    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4",
-    "SMART_SIGNAL_STATE_3054_V2.json": "2f7a0b0420f287807938a7bb84c388c0df131380b45eb29edaa289b3396bb02b"
+    "Mega-Sena.xlsx": "694293fea6e79f3bb4c4adfb4508d304dbb5f060cc3f74cebf622f19cdbff1ee"
   },
-  "declarative_orchestration_sha256": "fbf316d90e34528e3295039246f9691f5b037752720fa475d47b722f79d757f9",
-  "runtime_sha256": "e909effba00e263875708b2a2d6edd3048e3806b2e8021c549040c1e0ca76aaf"
+  "declarative_orchestration_sha256": "b434f6d83df99bc33d063f89f2897930f2d6061ea6bbe48336afc8da05f3405e",
+  "runtime_sha256": "dcb8911a06df576da049d77588d614347a95fc198112da4c150451c5d250a890"
 }
