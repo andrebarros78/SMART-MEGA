@@ -1,0 +1,52 @@
+{
+  "schema": "SMART_RAG_EXCEL_TRAINING_1",
+  "status": "PASS",
+  "mode": "RETRIEVAL_INDEX_BUILD",
+  "target_contest": 3059,
+  "source_user_upload": {
+    "xlsx_file": "Mega-Sena_RAG_READY_PRE_INGEST.xlsx",
+    "xlsx_sha256": "7314f79c7f89780ccda80f4a81b5d5642ea6faafa5c7b070f233589b13c652dd",
+    "json_file": "Mega-Sena_RAG_READY_PRE_INGEST.json",
+    "json_sha256": "bde07a0e7831d4e5f2611e9d07b1b1f99cebc08d04b838e78c01e24953e98cb8",
+    "declared_source_sha256": "9298dfc13ada50a9011783b386ee229eac9db091c35773b235a30b05f0616da0",
+    "semantic_prefix_1_3058_sha256": "1f5c63ac9a7295d82165527c24b181fbc6571d46e0cb26f3f89ea2172879b37b"
+  },
+  "ingested_result": [
+    1,
+    2,
+    7,
+    18,
+    33,
+    35
+  ],
+  "draw_date": "17/09/2026",
+  "canonical_sha256_before": "694293fea6e79f3bb4c4adfb4508d304dbb5f060cc3f74cebf622f19cdbff1ee",
+  "canonical_sha256_after": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+  "historical_validation": {
+    "schema": "SMART_HISTORICAL_TRAINING_INPUT_VALIDATION_V1",
+    "status": "PASS",
+    "file": "Mega-Sena.xlsx",
+    "sha256": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "rows": 3059,
+    "contest_min": 1,
+    "contest_max": 3059,
+    "has_draw_date": true,
+    "ready_for_shadow_replay": true
+  },
+  "indexed_documents": 3059,
+  "index_file": "runtime/rag_excel/mega_sena_3059.jsonl",
+  "index_sha256": "bcebb5dd9556f313c4bade3eb89151202680ea68e0b858381ba4a13a139dd24c",
+  "preparation_proof_sha256": "793c3644c58c49a19478ad5f3e1c16806b0cf139d73c630b09c489a48fcd91e3",
+  "predictive_weight_authority": false,
+  "freeze_mutation_authority": false,
+  "generation_authority": false,
+  "learning_ledger_mutation_allowed": false,
+  "checks": {
+    "prefix_semantically_reconciled": true,
+    "contest_3059_appended": true,
+    "rag_documents_3059": true,
+    "preparation_proof_pass": true,
+    "predictive_authority_not_created": true
+  },
+  "sha256": "66938a460c9dc33c5e566dd2476dcb40b7eb0bcc0f4a32165193879f1ad12b1b"
+}

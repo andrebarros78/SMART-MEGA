@@ -1,0 +1,76 @@
+{
+  "schema": "SMART_RAG_EXCEL_PREPARATION_PROOF_V1",
+  "status": "PASS",
+  "manifest": {
+    "schema": "SMART_RAG_EXCEL_V1",
+    "status": "READY",
+    "source_file": "Mega-Sena.xlsx",
+    "source_sha256": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "source_rows": 3059,
+    "source_contest_min": 1,
+    "source_contest_max": 3059,
+    "as_of_contest": 3059,
+    "indexed_documents": 3059,
+    "temporal_cutoff_enforced": true,
+    "predictive_weight_authority": false,
+    "freeze_mutation_authority": false,
+    "signal_state_mutation_authority": false,
+    "ledger_mutation_authority": false,
+    "role": "READ_ONLY_RETRIEVAL_AND_LEARNING_SUPPORT"
+  },
+  "checks": {
+    "historical_input_valid": true,
+    "all_rows_through_cutoff_indexed": true,
+    "cutoff_not_beyond_source": true,
+    "latest_allowed_contest_retrievable": true,
+    "retrieval_context_has_provenance": true,
+    "retrieval_context_contains_evidence_id": true,
+    "critical_canonical_state_unchanged": true,
+    "no_predictive_or_freeze_authority": true
+  },
+  "retrieval_probe": {
+    "query": "concurso 3059 dezenas 01 02 07 18 33 35",
+    "expected_evidence_id": "mega:300bece26f85ddba:3059",
+    "hits": [
+      {
+        "evidence_id": "mega:300bece26f85ddba:3059",
+        "title": "Mega-Sena concurso 3059",
+        "source": "excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=3059",
+        "score": 0.96641,
+        "excerpt": "Concurso 3059 | dezenas 01 02 07 18 33 35 | data 2026-09-17 00:00:00"
+      },
+      {
+        "evidence_id": "mega:300bece26f85ddba:2945",
+        "title": "Mega-Sena concurso 2945",
+        "source": "excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=2945",
+        "score": 0.642878,
+        "excerpt": "Concurso 2945 | dezenas 01 02 03 07 27 33 | data 29/11/2025 | Ganhadores 6 acertos: 1 | Ganhadores 5 acertos: 202 | Ganhadores 4 acertos: 10041 | Cidade / UF: SAO PAULO/SP"
+      },
+      {
+        "evidence_id": "mega:300bece26f85ddba:181",
+        "title": "Mega-Sena concurso 181",
+        "source": "excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=181",
+        "score": 0.62941,
+        "excerpt": "Concurso 181 | dezenas 01 27 33 35 51 55 | data 21/08/1999 | Ganhadores 6 acertos: 0 | Ganhadores 5 acertos: 182 | Ganhadores 4 acertos: 11797 | Observação: Estimativa de prêmio para a sena do próximo concurso: R$ 18 milhões."
+      }
+    ],
+    "context": "[mega:300bece26f85ddba:3059] Mega-Sena concurso 3059 | excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=3059 | score=0.966410\nConcurso 3059 | dezenas 01 02 07 18 33 35 | data 2026-09-17 00:00:00\n\n[mega:300bece26f85ddba:2945] Mega-Sena concurso 2945 | excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=2945 | score=0.642878\nConcurso 2945 | dezenas 01 02 03 07 27 33 | data 29/11/2025 | Ganhadores 6 acertos: 1 | Ganhadores 5 acertos: 202 | Ganhadores 4 acertos: 10041 | Cidade / UF: SAO PAULO/SP\n\n[mega:300bece26f85ddba:181] Mega-Sena concurso 181 | excel://Mega-Sena.xlsx#sha256=300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9&contest=181 | score=0.629410\nConcurso 181 | dezenas 01 27 33 35 51 55 | data 21/08/1999 | Ganhadores 6 acertos: 0 | Ganhadores 5 acertos: 182 | Ganhadores 4 acertos: 11797 | Observação: Estimativa de prêmio para a sena do próximo concurso: R$ 18 milhões."
+  },
+  "critical_hashes_before": {
+    "Mega-Sena.xlsx": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "SMART_MISSION_STATUS.json": "d1f32fadecc5c15d8087bcd7d203185e859621cfdc351c28b2574393ebe2e5d6",
+    "SMART_SIGNAL_LEDGER.json": "e8c28791e53d30f2aa39181e2f49b2482eabd371e10ab7c23156533cc94371f7",
+    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4",
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_MANUAL_GENERATION_AUTHORITY.json": null
+  },
+  "critical_hashes_after": {
+    "Mega-Sena.xlsx": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "SMART_MISSION_STATUS.json": "d1f32fadecc5c15d8087bcd7d203185e859621cfdc351c28b2574393ebe2e5d6",
+    "SMART_SIGNAL_LEDGER.json": "e8c28791e53d30f2aa39181e2f49b2482eabd371e10ab7c23156533cc94371f7",
+    "SMART_SIGNAL_STATE.json": "3050323b613b6bf5c07e9ce20e59370ab5c5e0b3f030a370a819aacef3734df4",
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_MANUAL_GENERATION_AUTHORITY.json": null
+  },
+  "sha256": "e28622a6c93f606381c8a30619bb3e166aa7caea6110e2427ed5b1f5e9aba840"
+}

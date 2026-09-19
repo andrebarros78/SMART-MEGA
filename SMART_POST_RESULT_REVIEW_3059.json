@@ -1,0 +1,56 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3059,
+  "next_target": 3060,
+  "reviewed_utc": "2026-09-19T17:54:21.446939+00:00",
+  "source_evidence": {
+    "file": "SMART_RAG_EXCEL_INGEST_3059.json",
+    "file_sha256": "73d3bef31e5ae7818c91fc77e1448a63ee053d20bc1b62a25fd7133347b3c17f",
+    "proof_sha256": "33de2fd2fb704c5015687cedb5743f99b717d03814913ef215f7a984bb9f1dba"
+  },
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "history_max": 3059,
+    "row_count": 3059
+  },
+  "official_result": [
+    1,
+    2,
+    7,
+    18,
+    33,
+    35
+  ],
+  "predictive_assessment": "NOT_APPLICABLE_NO_VALID_PRE_DRAW_ATTEMPT",
+  "prospective_attempt_counted": false,
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "automatic_weight_change_performed": false,
+  "statistical_adjustment_authorized": false,
+  "findings": [
+    {
+      "code": "RAG_EXCEL_TRAINING_COMPLETED",
+      "class": "LEARNING_SUPPORT",
+      "severity": "INFORMATIONAL"
+    }
+  ],
+  "adjustments_applied": [
+    {
+      "code": "INGEST_3059_AND_BUILD_RAG_INDEX",
+      "status": "APPLIED",
+      "evidence": "SMART_RAG_EXCEL_TRAINING_3059.json"
+    }
+  ],
+  "proposed_adjustments_or_corrections": [
+    {
+      "code": "NO_AUTOMATIC_PREDICTIVE_RECALIBRATION_FROM_RAG",
+      "action": "KEEP_PREDICTIVE_WEIGHTS_UNCHANGED"
+    }
+  ],
+  "parecer": "INGESTION_VALID; RAG_EXCEL_TRAINING_VALID; NO_WEIGHT_RECALIBRATION_AUTHORIZED",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "sha256": "b5302ff0c911683c3b2f85e41e2c8ff5596c4cadeb527a876275163f9e067cd0"
+}
