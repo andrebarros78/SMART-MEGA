@@ -1,0 +1,112 @@
+{
+  "schema": "SMART_SCOPE_SEAL_MANIFEST_1",
+  "ALVO": "SMART-MEGA V6 RAG + Excel through contest 3059",
+  "SCOPE_TYPE": "RAG_EXCEL_INGESTION_RETRIEVAL_LEARNING",
+  "OBJECTIVE": "Ingest contest 3059, persist and train deterministic RAG retrieval over canonical Excel history, preserve causal/predictive authority boundaries, and prove recoverable clean operation.",
+  "VERSION": "6.3.2",
+  "RELEASE_ID": "SMART-MEGA-RAG-EXCEL-3059-20260919",
+  "GIT_BRANCH": "fix/v6.3.1-portable-restore",
+  "GIT_COMMIT": "052d30dd3687b97c0fdc166e09d6b05c90649f91",
+  "GIT_TREE": "2135965ee6ba9a483559c330c153c478c16231ef",
+  "GIT_TREE_STATE": "CLEAN_AT_SOURCE_BASELINE",
+  "SOURCE_HASH": "2135965ee6ba9a483559c330c153c478c16231ef",
+  "ARTIFACT_HASH": "a407b6d80b6d760f7bcfc44764369a5d7347868b043f5ee62403be9a2210242d",
+  "ARTIFACT_COMPONENT_HASHES": {
+    "Mega-Sena.xlsx": "300bece26f85ddba52542cf7e36f2e88bf9aa26cd242e89363bca70ff05d7ca9",
+    "runtime/rag_excel/mega_sena_3059.jsonl": "bcebb5dd9556f313c4bade3eb89151202680ea68e0b858381ba4a13a139dd24c",
+    "smart_rag_excel.py": "5d92a315a173b451da4b4ed030cf19a18799da802554c7ec9499e24449624440",
+    "SMART_RAG_EXCEL_TRAINING_3059.json": "b57f232da3f87810d9bc5bcc937f0fbbad22b73e7684fc50c8f2b1745bd90193"
+  },
+  "BUILD_TIMESTAMP": "2026-09-19T19:03:33.665690+00:00",
+  "DEPENDENCY_MANIFEST": {
+    "file": "requirements.txt",
+    "sha256": "7f3fe5a0dfcb805c94805a96d85485ae1b3edc6961c072972df8588a0d309cca",
+    "sbom": "SMART_RAG_EXCEL_SBOM_3059.json",
+    "sbom_sha256": "7a52824476d3ddf9702d02e7ebd4a42e5382d1d21bb7a8b9b6deb159f438cda7"
+  },
+  "MIGRATION_VERSION": "NOT_APPLICABLE_NO_DATABASE",
+  "TEST_MANIFEST": {
+    "full_regression": "868 passed / 0 failed",
+    "targeted_reconciliation": "23 passed",
+    "security_integration": "18 passed",
+    "rag_excel": "9 passed",
+    "endurance_queries": 500,
+    "concurrency_levels": [
+      1,
+      2,
+      4,
+      8
+    ]
+  },
+  "BUILD_STATUS": "PASS",
+  "TEST_STATUS": "PASS",
+  "TEST_COUNT": 868,
+  "UNIT_STATUS": "PASS",
+  "INTEGRATION_STATUS": "PASS",
+  "E2E_STATUS": "PASS",
+  "REGRESSION_STATUS": "PASS",
+  "SECURITY_STATUS": "PASS",
+  "SECRET_SCAN_STATUS": {
+    "status": "PASS",
+    "files_scanned": 2031,
+    "findings": 0
+  },
+  "DEPENDENCY_SCAN_STATUS": {
+    "status": "PASS",
+    "pip_check": "PASS",
+    "pip_audit": "0 known vulnerabilities"
+  },
+  "PERMISSION_STATUS": "PASS_READ_ONLY_RAG_NO_PREDICTIVE_AUTHORITY",
+  "ISOLATION_STATUS": "PASS",
+  "PERSISTENCE_STATUS": "PASS",
+  "IDEMPOTENCY_STATUS": "PASS_INDEX_REBUILD_IDENTICAL_SHA256",
+  "RESTART_STATUS": "PASS_2_OF_2",
+  "BACKUP_STATUS": "PASS",
+  "RESTORE_STATUS": "PASS",
+  "RECOVERY_STATUS": "PASS",
+  "ENDURANCE_STATUS": "PASS_500_OF_500",
+  "OBSERVABILITY_STATUS": "PASS_STRUCTURED_JSON_PROOFS_AND_OPERATOR_STATUS",
+  "HEALTH_STATUS": "PASS",
+  "READINESS_STATUS": "PASS",
+  "ROLLBACK_STATUS": "PASS_BASELINE_3058_RESTORED_IN_ISOLATION",
+  "DOCUMENTATION_STATUS": "PASS",
+  "KNOWN_CRITICAL_ISSUES": [],
+  "KNOWN_NONCRITICAL_ISSUES": [],
+  "NOT_APPLICABLE_CONTROLS": [
+    {
+      "control": "DATABASE_MIGRATIONS_TRANSACTIONS_MULTITENANCY",
+      "reason": "No database in RAG+Excel scope; persistent state is file-based."
+    },
+    {
+      "control": "HTTP_API_AUTH_RATE_LIMIT_CIRCUIT_BREAKER",
+      "reason": "No scope-owned HTTP service; operation is local CLI/library retrieval."
+    },
+    {
+      "control": "NETWORK_TLS",
+      "reason": "No scope-owned network listener or transport."
+    },
+    {
+      "control": "DISTRIBUTED_TRACING",
+      "reason": "No distributed service topology in this scope."
+    },
+    {
+      "control": "HOST_REBOOT",
+      "reason": "Library/CLI restart was tested; host reboot is not required to prove file persistence and would exceed proportional scope risk."
+    }
+  ],
+  "EVIDENCE_REFERENCES": [
+    "SMART_RAG_EXCEL_INGEST_3059.json",
+    "SMART_RAG_EXCEL_TRAINING_3059.json",
+    "SMART_RAG_EXCEL_PREPARATION_PROOF.json",
+    "SMART_POST_RESULT_REVIEW_3059.json",
+    "SMART_NEXT_CYCLE_HOLD.json",
+    "runtime/historical_training_shadow/INPUT_VALIDATION_3059.json",
+    "runtime/rag_excel/mega_sena_3059.jsonl",
+    "SMART_STATE_ARCHIVE/RAG_EXCEL_INGEST_3059_20260919_145104"
+  ],
+  "MISSION_PROVEN_SCOPE": true,
+  "GLOBAL_SCIENTIFIC_MISSION_PROVEN": false,
+  "SCOPE_SEAL_STATUS": "PENDING_INDEPENDENT_POST_COMMIT_REVALIDATION",
+  "SEALED_AT": null,
+  "sha256": "21ac2244eaa21bb89cfebaaa4e72a53045cae293e9c5067ab58d138ef71ee8d3"
+}
