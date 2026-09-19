@@ -86,3 +86,19 @@ def test_build_registry_accepts_reopened_and_hash_helpers():
     reg = mdr.build_registry([{'id':'D3','severity':'P3','status':'REOPENED','summary':'again','evidence':['x']}])
     assert len(reg['sha256']) == 64
     assert reg['rules']['open_statuses'] == ['OPEN','REOPENED']
+
+
+def test_upsert_deficiency_opens_reopens_and_preserves_integrity(tmp_path):
+    path = tmp_path / 'registry.json'
+    base = mdr.build_registry([{'id':'D37','severity':'P0','status':'RESOLVED','summary':'fixed','evidence':['old-proof']}])
+    mdr.write_registry(path, base)
+    snap = mdr.upsert_deficiency(path, {'id':'D37','severity':'P0','status':'OPEN','summary':'failed again','evidence':['new-proof']}, root=tmp_path)
+    assert snap['status'] == 'BLOCKED' and snap['open_count'] == 1
+    assert snap['open_entries'][0]['status'] == 'REOPENED'
+    assert mdr.load_registry(path, root=tmp_path) == snap
+
+    tampered = json.loads(path.read_text(encoding='utf-8'))
+    tampered['entries'][0]['summary'] = 'tampered'
+    path.write_text(json.dumps(tampered), encoding='utf-8')
+    with pytest.raises(ValueError, match='self-hash'):
+        mdr.upsert_deficiency(path, {'id':'D38','severity':'P1','status':'OPEN','summary':'x','evidence':[]}, root=tmp_path)

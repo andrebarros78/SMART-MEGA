@@ -118,6 +118,32 @@ def load_registry(path: Path = DEFAULT_PATH, *, root: Path = Path('.')) -> dict[
     }
 
 
+def upsert_deficiency(path: Path, entry: dict[str, Any], *, root: Path = Path('.')) -> dict[str, Any]:
+    root = Path(root).resolve()
+    path = Path(path)
+    resolved = path if path.is_absolute() else root / path
+    load_registry(resolved, root=root)
+    current = json.loads(resolved.read_text(encoding='utf-8'))
+    entries = list(current.get('entries', []))
+    deficiency_id = entry.get('id')
+    replaced = False
+    for index, row in enumerate(entries):
+        if row.get('id') == deficiency_id:
+            next_entry = dict(entry)
+            if row.get('status') == 'RESOLVED' and next_entry.get('status') == 'OPEN':
+                next_entry['status'] = 'REOPENED'
+            entries[index] = next_entry
+            replaced = True
+            break
+    if not replaced:
+        entries.append(dict(entry))
+    registry = build_registry(entries)
+    tmp = resolved.with_name(resolved.name + '.tmp-deficiency-sync')
+    tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+    tmp.replace(resolved)
+    return load_registry(resolved, root=root)
+
+
 def write_registry(path: Path, registry: dict[str, Any]) -> str:
     path = Path(path)
     if path.exists():
@@ -132,4 +158,4 @@ def write_registry(path: Path, registry: dict[str, Any]) -> str:
     return sha256_file(path)
 
 
-__all__ = ['SCHEMA', 'DEFAULT_PATH', 'build_registry', 'load_registry', 'write_registry', 'sha256_file', 'sha256_json']
+__all__ = ['SCHEMA', 'DEFAULT_PATH', 'build_registry', 'load_registry', 'upsert_deficiency', 'write_registry', 'sha256_file', 'sha256_json']

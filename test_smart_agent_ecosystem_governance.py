@@ -5,6 +5,7 @@ import json
 from pathlib import Path
 
 import smart_agent_ecosystem_governance as g
+import smart_material_deficiency_registry as mdr
 from smart_agent_skill_orchestration import build_orchestration
 
 ROOT = Path(__file__).resolve().parent
@@ -69,3 +70,30 @@ def test_stale_product_certification_fails_closed(monkeypatch):
     rendered = json.dumps(doc, sort_keys=True)
     assert "proof_freshness_audit" in rendered
     assert "stale-test" in rendered
+
+
+def test_material_supervisor_fail_reopens_registry(tmp_path):
+    path = tmp_path / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json"
+    resolved = mdr.build_registry([{
+        "id": g.MATERIAL_SUPERVISOR_DEFICIENCY_ID,
+        "severity": "P0",
+        "status": "RESOLVED",
+        "summary": "previously fixed",
+        "evidence": ["old-proof"],
+    }])
+    mdr.write_registry(path, resolved)
+    doc = {
+        "status": "FAIL",
+        "checks": {"proof_freshness_audit": False},
+        "executions": {"architecture_gap_hunter": {"observations": {
+            "product_certification_error": "ValueError: stale-test"
+        }}},
+    }
+    g._sync_material_supervisor_failure(tmp_path, doc)
+    snap = mdr.load_registry(path, root=tmp_path)
+    assert snap["status"] == "BLOCKED"
+    assert snap["open_count"] == 1
+    row = snap["open_entries"][0]
+    assert row["id"] == g.MATERIAL_SUPERVISOR_DEFICIENCY_ID
+    assert row["status"] == "REOPENED"
+    assert "stale-test" in json.dumps(row)

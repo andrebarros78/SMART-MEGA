@@ -423,6 +423,17 @@
         "SMART_ACTIVE_EPOCH.json",
         "SMART_D036_TERMINAL_RECOVERY_SANDBOX_PROOF_20260912.json"
       ]
+    },
+    {
+      "id": "D037_AGENT_ECOSYSTEM_MATERIAL_SUPERVISOR_FAIL",
+      "severity": "P0",
+      "status": "RESOLVED",
+      "summary": "Material supervisory FAIL could coexist with zero OPEN deficiencies; governance now atomically opens/reopens D037 whenever a material supervisor is persisted as FAIL.",
+      "evidence": [
+        "test_smart_material_deficiency_registry.py::test_upsert_deficiency_opens_reopens_and_preserves_integrity",
+        "test_smart_agent_ecosystem_governance.py::test_material_supervisor_fail_reopens_registry",
+        "11 focused tests passed on 2026-09-18"
+      ]
     }
   ],
   "rules": {
@@ -434,5 +445,5 @@
     "missing_registry_fails_closed": true,
     "self_hash_required": true
   },
-  "sha256": "1a6583d45ae1b3e59616fae5acd2db58ce2230c1176b2c6c71235f90131ab5a9"
+  "sha256": "037a3837b18dac0c8ca495671e01f7325af5e4dc30a4dfb6ada85ecc4fd62763"
 }

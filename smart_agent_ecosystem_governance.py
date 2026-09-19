@@ -9,6 +9,7 @@ from typing import Any
 SCHEMA = "SMART_AGENT_ECOSYSTEM_GOVERNANCE_V1"
 ACQUISITION_SCHEMA = "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_V1"
 SOURCE_DIR = ".external_agent_methodologies_20260915"
+MATERIAL_SUPERVISOR_DEFICIENCY_ID = "D037_AGENT_ECOSYSTEM_MATERIAL_SUPERVISOR_FAIL"
 
 SUPERVISORY_AGENTS: dict[str, dict[str, Any]] = {
     "architecture_gap_hunter": {
@@ -275,9 +276,40 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     return doc
 
 
+def _sync_material_supervisor_failure(root: Path, doc: dict[str, Any]) -> dict[str, Any] | None:
+    if doc.get("status") != "FAIL":
+        return None
+    from smart_material_deficiency_registry import upsert_deficiency
+    architecture = doc.get("executions", {}).get("architecture_gap_hunter", {})
+    observations = architecture.get("observations", {})
+    failed_checks = sorted(name for name, ok in doc.get("checks", {}).items() if ok is not True)
+    evidence = [
+        "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
+        "test_smart_agent_ecosystem_governance.py::test_stale_product_certification_fails_closed",
+        "test_smart_agent_ecosystem_governance.py::test_material_supervisor_fail_reopens_registry",
+    ]
+    product_error = observations.get("product_certification_error")
+    if product_error:
+        evidence.append(str(product_error))
+    return upsert_deficiency(
+        root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+        {
+            "id": MATERIAL_SUPERVISOR_DEFICIENCY_ID,
+            "severity": "P0",
+            "status": "OPEN",
+            "summary": "Material supervisory governance is FAIL; failed checks: " + ", ".join(failed_checks),
+            "evidence": evidence,
+        },
+        root=root,
+    )
+
+
 def write(root: str | Path, output: str = "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json") -> dict[str, Any]:
     root = Path(root).resolve()
     doc = evaluate(root)
+    if doc.get("status") == "FAIL":
+        _sync_material_supervisor_failure(root, doc)
+        doc = evaluate(root)
     (root / output).write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return doc
 
