@@ -1150,6 +1150,8 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'portfolio_artifact_type': portfolio_package['artifact_type'],
         'portfolio_id': portfolio_package['portfolio_id'],
         'portfolio_game_records': portfolio_package['games'],
+        'primary_card': portfolio_package['primary_card'],
+        'primary_card_role': portfolio_package['primary_card_role'],
         'portfolio_product_role': portfolio_package['product_role'],
 
         'portfolio_games': portfolio_package['portfolio']['games'],

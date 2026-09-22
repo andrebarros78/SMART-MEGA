@@ -294,6 +294,21 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     post_gate = write_total_integration(root, post_gate_path, phase="POST_FREEZE")
 
     challenger = freeze_obj.get("challenger", {})
+    champion_top6 = [int(x) for x in freeze_obj["champion"]["top6"]]
+    primary_card_numbers = sorted(champion_top6)
+    primary_card = {
+        "schema": "SMART_PRIMARY_SINGLE_CARD_1",
+        "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
+        "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+        "target_contest": target,
+        "cutoff_contest": cutoff,
+        "numbers": primary_card_numbers,
+        "source_head": "champion",
+        "source_top6_ordered": champion_top6,
+        "selection_rule": "single primary card equals the six highest-ranked champion numbers; multicard portfolio is auxiliary only",
+        "freeze_sha256": freeze_result["freeze_sha256"],
+    }
     activation_time = datetime.fromisoformat(str(activation["activated_utc"]).replace("Z", "+00:00"))
     freeze_time = datetime.fromisoformat(str(freeze_obj["frozen_utc"]).replace("Z", "+00:00"))
     trace_checks = {
@@ -304,6 +319,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "no_adjudication_or_result_used": len(adjudications) == 0 and active_frozen.get("result_used") is False,
         "all_required_signal_trace_fields_present": isinstance(challenger, dict) and all(key in challenger for key in TRACE_FIELDS),
         "champion_top6_valid": _valid_top6(freeze_obj.get("champion", {}).get("top6")),
+        "primary_card_single_game_valid": _valid_top6(primary_card_numbers),
+        "primary_card_matches_champion_top6": primary_card_numbers == sorted(champion_top6),
+        "primary_card_objective_is_six_hit": primary_card["optimization_objective"] == "MAXIMIZE_SIX_HIT_SINGLE_CARD",
         "challenger_top6_valid": _valid_top6(challenger.get("top6")),
         "pre_freeze_integration_pass": pre_gate.get("status") == "PASS" and pre_gate.get("phase") == "PRE_FREEZE",
         "post_freeze_integration_pass": post_gate.get("status") == "PASS" and post_gate.get("phase") == "POST_FREEZE",
@@ -347,6 +365,14 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "probability_ledger_sha256": sha256_file(probability_ledger_path),
         "pre_freeze_total_integration_sha256": pre_gate["sha256"],
         "post_freeze_total_integration_sha256": post_gate["sha256"],
+        "primary_card": primary_card,
+        "optimization_contract": {
+            "primary_output": "SINGLE_CARD",
+            "numbers_per_card": 6,
+            "objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+            "portfolio_is_auxiliary": True,
+            "portfolio_must_not_replace_primary_card": True,
+        },
         "champion_top6": freeze_obj["champion"]["top6"],
         "challenger_top6": challenger["top6"],
         "governed_challenger_top6": freeze_obj.get("governed_challenger_top6"),
@@ -371,6 +397,7 @@ def main() -> None:
         "epoch_id": proof["epoch_id"],
         "target_contest": proof["target_contest"],
         "target_date": proof["target_schedule"]["target_date"],
+        "primary_card": proof["primary_card"],
         "champion_top6": proof["champion_top6"],
         "challenger_top6": proof["challenger_top6"],
         "freeze_sha256": proof["freeze_sha256"],

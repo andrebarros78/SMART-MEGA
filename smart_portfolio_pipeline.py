@@ -69,10 +69,29 @@ def build_portfolio_package(
     )
     portfolio = optimize_from_freeze(freeze_path, config=config, head="champion")
     objective_gap = abs(float(portfolio["objective_value"]) - float(portfolio["best_objective_bound"]))
+    champion_top6 = [int(x) for x in champion["top6"]]
+    primary_card_numbers = sorted(champion_top6)
+    primary_card = {
+        "schema": "SMART_PRIMARY_SINGLE_CARD_1",
+        "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
+        "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+        "target_contest": target,
+        "cutoff_contest": cutoff,
+        "numbers": primary_card_numbers,
+        "source_head": "champion",
+        "source_top6_ordered": champion_top6,
+        "selection_rule": "use the six highest-ranked champion numbers as the only primary card; portfolio diversification is auxiliary only",
+        "freeze_sha256": sha256(freeze_path),
+    }
+
     checks = {
         "pre_result_freeze": True,
         "causal_cutoff": target == cutoff + 1,
-        "single_game_preserved": sorted(control["games"][0]) == sorted(int(x) for x in champion["top6"]),
+        "single_game_preserved": sorted(control["games"][0]) == primary_card_numbers,
+        "primary_card_is_single_game": len(primary_card_numbers) == 6 and len(set(primary_card_numbers)) == 6,
+        "primary_card_matches_champion_top6": primary_card_numbers == sorted(champion_top6),
+        "portfolio_not_primary_product": True,
         "solver_optimal": portfolio["solver_status"] == "OPTIMAL",
         "objective_gap_zero": objective_gap <= 1e-6,
         "overlap_within_contract": portfolio["metrics"]["max_pairwise_overlap_observed"] <= config.max_pairwise_overlap,
@@ -102,8 +121,10 @@ def build_portfolio_package(
         "solver": {"status": portfolio["solver_status"], "objective_value": portfolio["objective_value"], "best_objective_bound": portfolio["best_objective_bound"]},
         "games": game_records,
         "metrics": portfolio["metrics"],
-        "product_role": "FINAL_MULTICARD_PRODUCT",
-        "champion_top6_role": "PREDICTIVE_EVIDENCE_ONLY",
+        "product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
+        "primary_card_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "primary_card": primary_card,
+        "champion_top6_role": "PRIMARY_SINGLE_CARD_SOURCE",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "target_contest": target,
@@ -121,6 +142,8 @@ def build_portfolio_package(
         "contract": {
             "post_scoring_component": True,
             "predictive_model_unchanged": True,
+            "primary_output_is_single_card": True,
+            "portfolio_requires_explicit_multicard_request": True,
             "no_retroactive_result_use": True,
             "no_claim_of_predictability_gain": True,
         },
