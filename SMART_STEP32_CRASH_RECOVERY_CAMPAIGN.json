@@ -1,0 +1,89 @@
+{
+  "schema": "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN_1",
+  "status": "PASS",
+  "timestamp_utc": "2026-09-22T14:40:35.356693+00:00",
+  "evidence_dir": "C:\\SMART-MEGA\\runtime\\step32_crash_recovery\\20260922T144028Z",
+  "candidate": {
+    "step31_status": "PASS",
+    "step31_sha256": "dd3f8ac6c05a15c82afd01eace4fb1e4000fbe0be97089f2913b5710a5d23fd3",
+    "step30_status": "PASS",
+    "step30_sha256": "7389c069f8b6fb2bc1510db6942568cb3f558b27298f107999739c63f65c4ce9",
+    "candidate_fingerprint_sha256": "fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19"
+  },
+  "checks": {
+    "step31_pass_bound": true,
+    "all_crash_recovery_scenarios_pass": true,
+    "focused_recovery_regression_pass": true,
+    "live_operational_state_unchanged": true
+  },
+  "scenarios": [
+    {
+      "scenario": "atomic_write_failure_cleans_own_temp",
+      "pass": true,
+      "raised": "OSError: crash-safe temporary hash mismatch before commit",
+      "target_unchanged": true,
+      "temporary_files_remaining": [],
+      "sabotage_calls": 1
+    },
+    {
+      "scenario": "precommit_crash_orphan_isolated",
+      "pass": true,
+      "worker_returncode": 23,
+      "target_unchanged_after_crash": true,
+      "orphan_temp_count_observed": 1,
+      "subsequent_atomic_write_ok": true
+    },
+    {
+      "scenario": "transaction_journal_open_recover_and_corruption_reject",
+      "pass": true,
+      "open_after_prepared": [
+        "STEP32:ROLLBACK"
+      ],
+      "open_after_rollback": [],
+      "open_after_committing": [
+        "STEP32:COMMIT"
+      ],
+      "open_after_committed": [],
+      "entry_count": 7,
+      "corrupted_rejected": true,
+      "corrupted_error": "invalid journal phase at line 7"
+    },
+    {
+      "scenario": "operation_lock_process_crash_recovery",
+      "pass": true,
+      "worker_returncode": 17,
+      "worker_stdout": "{\"schema\": \"SMART_OPERATION_LOCK_1\", \"status\": \"ACTIVE\", \"lock_id\": \"daa638738e804bdfbb261aabd838a7eb\", \"host\": \"DESKTOP-4T6AS9K\", \"pid\": 12692, \"operation\": \"STEP32_CRASH_INJECTION\", \"target_contest\": 3299, \"epoch_id\": null, \"transaction_id\": null, \"acquired_utc\": \"2026-09-22T14:40:28.528939+00:00\", \"recovery\": {\"stale_metadata_recovered\": false, \"previous_lock_id\": null, \"previous_metadata_sha256\": null, \"os_lock_is_authority\": true}, \"sha256\": \"381476d897bf5f7a16614730b855925484017b6682656be5704bac4e6a3e93ab\"}",
+      "worker_stderr": "",
+      "metadata_after_crash_status": "ACTIVE",
+      "stale_metadata_recovered": true,
+      "metadata_after_release_status": "RELEASED"
+    }
+  ],
+  "focused_pytest": {
+    "scenario": "focused_existing_recovery_regression",
+    "pass": true,
+    "returncode": 0,
+    "junit": "C:\\SMART-MEGA\\runtime\\step32_crash_recovery\\20260922T144028Z\\STEP32_FOCUSED_RECOVERY_JUNIT.xml",
+    "junit_sha256": "c8bfb2116c189616ea8b5b27778316c1d7b66502f3b05fdbf2d5195df0684d83",
+    "stdout_tail": "................                                                         [100%]\n16 passed in 5.46s\n",
+    "stderr_tail": ""
+  },
+  "live_snapshot_before": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "live_snapshot_after": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "duration_seconds": 7.354434,
+  "sha256": "ec9848ff9e54863d0fa519cfe29bac65baf77366cfc9e4e7d9a478ec78dc71a4"
+}

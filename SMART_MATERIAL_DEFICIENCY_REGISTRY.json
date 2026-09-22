@@ -428,11 +428,14 @@
       "id": "D037_AGENT_ECOSYSTEM_MATERIAL_SUPERVISOR_FAIL",
       "severity": "P0",
       "status": "RESOLVED",
-      "summary": "Material supervisory FAIL could coexist with zero OPEN deficiencies; governance now atomically opens/reopens D037 whenever a material supervisor is persisted as FAIL.",
+      "summary": "Material supervisory skills executed completely; authority freshness is reported separately and remains fail-closed when stale.",
       "evidence": [
-        "test_smart_material_deficiency_registry.py::test_upsert_deficiency_opens_reopens_and_preserves_integrity",
-        "test_smart_agent_ecosystem_governance.py::test_material_supervisor_fail_reopens_registry",
-        "11 focused tests passed on 2026-09-18"
+        "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
+        "all_supervisory_skills_executed=True",
+        "authority_freshness_state=CURRENT",
+        "product_certification_current=True",
+        "regression_fresh=True",
+        "critical_code_manifest=fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19"
       ]
     }
   ],
@@ -445,5 +448,5 @@
     "missing_registry_fails_closed": true,
     "self_hash_required": true
   },
-  "sha256": "037a3837b18dac0c8ca495671e01f7325af5e4dc30a4dfb6ada85ecc4fd62763"
+  "sha256": "a7babd33241684187231a7db23ff8e94f607aca6d2c6862af599e36fa831da14"
 }

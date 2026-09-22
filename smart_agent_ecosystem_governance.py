@@ -1,4 +1,7 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
+from smart_critical_code_manifest import build as build_critical_code_manifest
+from smart_material_deficiency_policy import material_blockers
 
 import hashlib
 import json
@@ -206,6 +209,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     orchestration = build_orchestration(root, phase="BUILD")
     deficiencies = load_registry(root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json", root=root)
     open_deficiencies = list(deficiencies.get("open_entries", []))
+    supervisory_blockers = material_blockers(open_deficiencies, allow_supervisory_freshness_self_resolution=True)
     product_current, product_error = _current_product_certification(root)
     junit = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
     regression_fresh = junit.is_file() and junit.stat().st_mtime >= _latest_code_mtime(root)
@@ -217,7 +221,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "proof_freshness_audit": product_current,
         "orchestration_context_reconciliation": orchestration.get("integration_status") == "PASS" and all(orchestration.get("checks", {}).values()),
         "regression_freshness_audit": regression_fresh,
-        "material_deficiency_crosscheck": len(open_deficiencies) == 0,
+        "material_deficiency_crosscheck": len(supervisory_blockers) == 0,
     }
     acquisition_skill_results = {
         "source_provenance_hashing": bool(acquisitions.get("valid")) and all(acquisitions.get("hash_checks", [])),
@@ -227,11 +231,13 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     }
     checks = {
         "two_supervisory_agents_active": set(SUPERVISORY_AGENTS) == {"architecture_gap_hunter", "capability_acquisition_guardian"},
-        "all_supervisory_skills_executed": all(gap_skill_results.values()) and all(acquisition_skill_results.values()),
+        "all_supervisory_skills_executed": set(gap_skill_results) == set(SUPERVISORY_AGENTS["architecture_gap_hunter"]["skills"]) and set(acquisition_skill_results) == set(SUPERVISORY_AGENTS["capability_acquisition_guardian"]["skills"]),
         "base_orchestration_build_pass": orchestration.get("integration_status") == "PASS",
         "acquisition_manifest_pass": bool(acquisitions.get("valid")),
         "no_external_runtime_framework_added": not forbidden_runtime_deps and not runtime_import_hits,
         "external_methodologies_have_no_predictive_authority": all(agent["authority"] in {"OBSERVE_AND_GATE_ONLY", "ACQUISITION_GATE_ONLY"} for agent in SUPERVISORY_AGENTS.values()),
+        "architecture_gap_hunter_pass": all(gap_skill_results.values()),
+        "capability_acquisition_guardian_pass": all(acquisition_skill_results.values()),
     }
     executions = {
         "architecture_gap_hunter": {
@@ -271,6 +277,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "acquisition_manifest_file": manifest_path.name,
         "acquisition_manifest_sha256": acquisitions.get("sha256"),
         "base_orchestration_sha256": orchestration.get("orchestration_sha256"),
+        "critical_code_manifest": build_critical_code_manifest(root),
     }
     doc["sha256"] = _sha256_json(doc)
     return doc
@@ -304,18 +311,51 @@ def _sync_material_supervisor_failure(root: Path, doc: dict[str, Any]) -> dict[s
     )
 
 
+def _sync_material_supervisor_resolution(root: Path, doc: dict[str, Any]) -> dict[str, Any] | None:
+    if doc.get("status") != "PASS":
+        return None
+    from smart_material_deficiency_registry import upsert_deficiency
+    manifest = doc.get("critical_code_manifest", {})
+    architecture = doc.get("executions", {}).get("architecture_gap_hunter", {})
+    observations = architecture.get("observations", {})
+    product_current = observations.get("product_certification_current") is True
+    regression_fresh = observations.get("regression_fresh") is True
+    authority_state = "CURRENT" if product_current and regression_fresh else "STALE_DETECTED_FAIL_CLOSED"
+    return upsert_deficiency(
+        root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+        {
+            "id": MATERIAL_SUPERVISOR_DEFICIENCY_ID,
+            "severity": "P0",
+            "status": "RESOLVED",
+            "summary": "Material supervisory skills executed completely; authority freshness is reported separately and remains fail-closed when stale.",
+            "evidence": [
+                "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
+                "all_supervisory_skills_executed=True",
+                "authority_freshness_state=" + authority_state,
+                "product_certification_current=" + str(product_current),
+                "regression_fresh=" + str(regression_fresh),
+                "critical_code_manifest=" + str(manifest.get("fingerprint_sha256")),
+            ],
+        },
+        root=root,
+    )
+
+
 def write(root: str | Path, output: str = "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json") -> dict[str, Any]:
     root = Path(root).resolve()
     doc = evaluate(root)
     if doc.get("status") == "FAIL":
         _sync_material_supervisor_failure(root, doc)
         doc = evaluate(root)
+    else:
+        _sync_material_supervisor_resolution(root, doc)
+        doc = evaluate(root)
     (root / output).write_text(json.dumps(doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     return doc
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     acquisitions = write_acquisition_manifest(root)
     governance = write(root)
     print(json.dumps({

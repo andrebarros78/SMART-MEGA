@@ -1,0 +1,40 @@
+{
+  "schema": "SMART_RAG_EXCEL_TRAINING_1",
+  "status": "PASS",
+  "mode": "RETRIEVAL_INDEX_BUILD",
+  "target_contest": 3060,
+  "source_file": "Mega-Sena.xlsx",
+  "source_sha256": "aaf2ad076a157c31724075edce942796758a18cf4a5735aeaf02aa06e9c1091c",
+  "indexed_documents": 3060,
+  "index_file": "runtime/rag_excel/mega_sena_3060.jsonl",
+  "index_sha256": "976e10a964394c595edbba35fa9649de50a2e907e2cf666a6f8db3175def0f45",
+  "retrieval_probe": {
+    "query": "concurso 3060 dezenas 06 15 23 36 37 38",
+    "top_evidence_id": "mega:aaf2ad076a157c31:3060",
+    "top_source": "excel://Mega-Sena.xlsx#sha256=aaf2ad076a157c31724075edce942796758a18cf4a5735aeaf02aa06e9c1091c&contest=3060",
+    "score": 0.96641,
+    "excerpt": "Concurso 3060 | dezenas 06 15 23 36 37 38 | data 2026-09-20 00:00:00"
+  },
+  "canonical_advance_proof": "SMART_CANONICAL_HISTORY_ADVANCE_3060.json",
+  "canonical_advance_proof_sha256": "b3d4f7936ed36276fafdbdec7795b3bf39c827a560d35c2b44a7f6d4dbb97f51",
+  "official_consensus_file": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_OFFICIAL_EVIDENCE_CURRENT.json",
+  "official_consensus_sha256": "6341e3fff361108c8f195bbc937f45a8372dded4c1a06924c1ddb152782bf6a3",
+  "operator_image_sha256": "80e358ac5211b4a4cb7e7dd4d746d6f22b64317f854fa67c04efdb37442b162c",
+  "operator_image_observation": {
+    "contest": 3060,
+    "date": "20/09/2026",
+    "numbers": [
+      6,
+      15,
+      23,
+      36,
+      37,
+      38
+    ]
+  },
+  "predictive_weight_authority": false,
+  "freeze_mutation_authority": false,
+  "generation_authority": false,
+  "learning_support_only": true,
+  "sha256": "4d4374120aa4e7fac29bfb37d9e91b64de445cad330a49ad075836134dab721b"
+}

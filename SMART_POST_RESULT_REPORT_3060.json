@@ -1,0 +1,71 @@
+{
+  "schema": "SMART_POST_RESULT_REPORT_1",
+  "status": "PASS",
+  "contest_number": 3060,
+  "official_result": [
+    6,
+    15,
+    23,
+    36,
+    37,
+    38
+  ],
+  "generated_card": [
+    11,
+    53,
+    35,
+    27,
+    14,
+    43
+  ],
+  "hit_count": 0,
+  "matched_numbers": [],
+  "missed_result_numbers": [
+    6,
+    15,
+    23,
+    36,
+    37,
+    38
+  ],
+  "card_numbers_not_drawn": [
+    11,
+    14,
+    27,
+    35,
+    43,
+    53
+  ],
+  "process_audit": {
+    "freeze_artifact": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+    "freeze_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+    "ledger": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "79df86b5c72ea29453ee3a4f714eea480040318c0b7fd6f97d028d0b25f3a851",
+    "freeze_authority_present": true,
+    "reported_hits": null,
+    "recomputed_hits": 0,
+    "findings": []
+  },
+  "self_analysis": {
+    "summary": "Concurso 3060: 0/6 acertos. A análise separa desempenho observado, integridade do processo e recomendações de melhoria.",
+    "what_worked": [
+      "O cartão cobriu 0 das 6 dezenas sorteadas.",
+      "A comparação usa o cartão congelado, preservando previsão × resultado real e evitando reescrita retroativa."
+    ],
+    "errors_and_failures": [
+      "O cartão não cobriu 6 dezenas do resultado: 06, 15, 23, 36, 37, 38."
+    ],
+    "recommended_actions": [
+      "Executar atribuição causal por família e sinal para identificar contribuição correta, excesso de peso, atraso, ruído e redundância.",
+      "Comparar o comportamento com a janela histórica e com evidência prospectiva acumulada; não recalibrar pesos por um único concurso.",
+      "Registrar falsos positivos e falsos negativos por sinal e procurar recorrência antes de promover, penalizar ou neutralizar influência.",
+      "Validar qualquer ajuste em dados não usados na calibração e aplicar a regra medir antes -> alterar -> medir depois -> comparar.",
+      "Se uma mudança melhorar métrica local mas piorar resultado global, reverter/corrigir e retestar."
+    ],
+    "single_contest_weight_change_prohibited": true,
+    "oos_validation_required_for_material_changes": true
+  },
+  "source_fingerprint": "32fd241b7edaef634295023a9eafcb32a23dc66b9aaef005858f05bb9be640cc",
+  "generated_utc": "2026-09-20T20:01:47.325194+00:00",
+  "sha256": "b43f29faf657e3222701085456b457cf6c6274cf55f03e1bc74fc6f531de8430"
+}

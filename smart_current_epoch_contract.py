@@ -6,6 +6,7 @@ from pathlib import Path
 from typing import Any
 
 from smart_learning_epoch_reset import verify_active_epoch
+from smart_operational_lifecycle import load_lifecycle
 from smart_prospective_authority_lock import adjudicated_lock_evidence, verify_lock
 
 SCHEMA = "SMART_CURRENT_EPOCH_CONTRACT_2"
@@ -257,12 +258,15 @@ def _resolve_post_result_hold(root: Path) -> dict[str, Any] | None:
 
 def resolve(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
+    lifecycle = load_lifecycle(root)
+    if lifecycle["state"] == "HOLD":
+        hold = _resolve_post_result_hold(root)
+        if hold is None:
+            raise ValueError("lifecycle HOLD requires valid post-result hold evidence")
+        return {**hold, "lifecycle_state": "HOLD", "lifecycle_revision": lifecycle["revision"], "lifecycle_sha256": lifecycle["sha256"]}
     active_path = root / "SMART_ACTIVE_EPOCH.json"
     if not active_path.is_file():
-        hold = _resolve_post_result_hold(root)
-        if hold is not None:
-            return hold
-        raise ValueError("SMART_ACTIVE_EPOCH.json missing and no valid post-result hold exists")
+        raise ValueError(f"lifecycle state {lifecycle['state']} requires an active operational epoch")
     active = verify_active_epoch(active_path)
     data_path = (root / active["data_file"]).resolve()
     if not data_path.is_file() or _sha(data_path) != active["data_sha256"]:

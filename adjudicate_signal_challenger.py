@@ -133,7 +133,7 @@ def _validate_portfolio_evidence(fr: dict, frozen: dict, target: int) -> None:
         portfolio = json.loads(portfolio_path.read_text(encoding='utf-8-sig'))
     except (OSError, json.JSONDecodeError) as exc:
         raise ValueError('portfolio artifact invalid JSON') from exc
-    if not isinstance(portfolio, dict) or portfolio.get('schema') != 'SMART_PORTFOLIO_PIPELINE_V1':
+    if not isinstance(portfolio, dict) or portfolio.get('schema') not in {'SMART_PORTFOLIO_PIPELINE_V1', 'SMART_PORTFOLIO_ARTIFACT_1'}:
         raise ValueError('portfolio artifact schema invalid')
     if portfolio.get('status') != 'PASS' or fr.get('portfolio_status') != 'PASS':
         raise ValueError('portfolio artifact is not PASS')

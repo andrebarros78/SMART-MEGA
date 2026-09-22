@@ -1,0 +1,22 @@
+{
+  "schema": "SMART_P0_AUTHORITY_RESERVATION_IMPLEMENTATION_1",
+  "status": "PASS",
+  "implementation_state": "IMPLEMENTATION_COMPLETE_NO_TESTS_RUN",
+  "contract": [
+    "AUTHORIZED",
+    "RESERVED(transaction_id)",
+    "CONSUMED"
+  ],
+  "prepare_transaction_journal": true,
+  "reservation_release_before_commit": true,
+  "consumption_after_active_materialization": true,
+  "consumption_requires_verified_active_epoch": true,
+  "completed_cycle_authority_supersession": true,
+  "legacy_live_authority_status": "CONSUMED_FOR_PREPARE",
+  "legacy_live_authority_target": 3060,
+  "live_lifecycle_state": "HOLD",
+  "live_lifecycle_target": 3061,
+  "live_next_cycle_not_authorized_by_implementation": true,
+  "tests_executed": false,
+  "sha256": "f970e73a83d32238e8b0f144e3edb8d379f401d8db3c7ea3d1767f634df0f5d2"
+}

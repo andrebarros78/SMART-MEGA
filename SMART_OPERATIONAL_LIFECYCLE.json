@@ -1,0 +1,40 @@
+{
+  "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+  "state": "HOLD",
+  "revision": 1,
+  "project": "SMART-MEGA",
+  "effective_version": "6.3.2",
+  "target_contest": 3061,
+  "completed_contest": 3060,
+  "previous_state": null,
+  "transition": "LEGACY_RECONCILIATION",
+  "transition_actor": "P0_LIFECYCLE_MIGRATION",
+  "transition_utc": "2026-09-21T17:05:17.740995+00:00",
+  "previous_lifecycle_sha256": null,
+  "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+  "legacy_documents_are_evidence_not_authority": true,
+  "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+  "evidence": {
+    "post_result_hold": {
+      "file": "SMART_NEXT_CYCLE_HOLD.json",
+      "sha256": "12193cd881d6cac0b583594677d1b44eebf7b508d2334547cddfa89fa8faa9bd"
+    },
+    "post_result_review": {
+      "file": "SMART_POST_RESULT_REVIEW_3060.json",
+      "sha256": "0805da8a67160c8e1674b53b881610bd6ea6a32b782a4b2832a973e5dd6d89bd"
+    },
+    "legacy_active_epoch": {
+      "file": "SMART_ACTIVE_EPOCH.json",
+      "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+      "status": "FROZEN",
+      "target_contest": 3060
+    },
+    "legacy_next_cycle_authority": {
+      "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+      "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+      "status": "CONSUMED_FOR_PREPARE",
+      "target_contest": 3060
+    }
+  },
+  "sha256": "1403cf997bd3c15f025e24baa782f31d5680e55908c6c4ed06eba03828ef5eb8"
+}

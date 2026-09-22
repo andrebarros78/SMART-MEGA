@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -195,7 +196,7 @@ def write_gate(root: str | Path, output: str | Path = "SMART_SKILL_RUNTIME_PROOF
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     result = write_gate(root)
     print(json.dumps({"status": result["status"], "counts": result["counts"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
 

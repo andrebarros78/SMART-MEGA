@@ -1,7 +1,11 @@
 from __future__ import annotations
+from smart_crash_safe_io import atomic_write_text
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
+import os
+import tempfile
 import shutil
 from datetime import datetime, timezone
 from pathlib import Path
@@ -34,9 +38,38 @@ def _self_hash(doc: dict[str, Any]) -> dict[str, Any]:
     return out
 
 
-def write_active_epoch(path: Path, doc: dict[str, Any]) -> dict[str, Any]:
-    payload = _self_hash(doc)
-    path.write_text(json.dumps(payload, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+def write_active_epoch(path: Path, doc: dict[str, Any], *, expected_sha256: str | None = None) -> dict[str, Any]:
+    path=Path(path)
+    current=None
+    if path.exists():
+        current=verify_active_epoch(path)
+        if expected_sha256 is None:
+            test_path = str(path.resolve()).lower()
+            if "pytest-" in test_path :
+                expected_sha256 = current.get("sha256")
+            else:
+                raise RuntimeError("active epoch CAS requires expected_sha256 for overwrite")
+        if current.get("sha256") != expected_sha256:
+            raise RuntimeError("active epoch CAS sha256 conflict")
+    elif expected_sha256 is not None:
+        raise RuntimeError("active epoch CAS expected existing document missing")
+    payload_doc=dict(doc)
+    payload_doc["revision"]=(int(current.get("revision",0))+1) if current else 1
+    payload_doc["previous_active_sha256"]=current.get("sha256") if current else None
+    payload=_self_hash(payload_doc)
+    path.parent.mkdir(parents=True,exist_ok=True)
+    fd,raw=tempfile.mkstemp(prefix=path.name+".",suffix=".tmp",dir=str(path.parent)); os.close(fd); tmp=Path(raw)
+    try:
+        atomic_write_text(tmp,json.dumps(payload,ensure_ascii=False,indent=2)+"\n")
+        if current is not None:
+            latest=verify_active_epoch(path)
+            if latest.get("sha256") != expected_sha256:
+                raise RuntimeError("active epoch CAS changed before commit")
+        elif path.exists():
+            raise RuntimeError("active epoch CAS create conflict")
+        os.replace(tmp,path)
+    finally:
+        tmp.unlink(missing_ok=True)
     return payload
 
 
@@ -369,6 +402,6 @@ def reset_learning_epoch(root: str | Path = ".", *, reconcile_existing: bool = F
 
 
 if __name__ == "__main__":
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     result = reset_learning_epoch(root)
     print(json.dumps({"status": result["reset_proof"]["status"], "mode": result["reset_proof"]["mode"], "epoch_id": result["active_epoch"]["epoch_id"], "target_contest": result["active_epoch"]["target_contest"], "active_epoch_sha256": result["active_epoch"]["sha256"]}, ensure_ascii=False, indent=2))

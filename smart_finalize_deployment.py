@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 from smart_mission_status import load_mission_status
 
@@ -309,7 +310,7 @@ def write(root: Path) -> dict[str, Any]:
 
 if __name__ == "__main__":
     import sys
-    project_root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
+    project_root = canonical_root(Path(sys.argv[1]) if len(sys.argv) > 1 else None)
     result = write(project_root)
     print(json.dumps({
         "deployment_status": result["deployment_status"],

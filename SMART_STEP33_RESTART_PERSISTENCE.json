@@ -1,0 +1,206 @@
+{
+  "schema": "SMART_STEP33_RESTART_PERSISTENCE_CAMPAIGN_1",
+  "status": "PASS",
+  "timestamp_utc": "2026-09-22T15:21:16.379812+00:00",
+  "evidence_dir": "C:\\SMART-MEGA\\runtime\\step33_restart_persistence\\20260922T152045Z",
+  "checks": {
+    "step32_pass_bound": true,
+    "artifact_hashes_stable_across_restart": true,
+    "semantic_status_stable_across_restart": true,
+    "startup_reconcile_stable_across_restart": true,
+    "agent_runtime_stable_across_restart": true,
+    "skill_runtime_stable_across_restart": true,
+    "live_operational_state_unchanged": true
+  },
+  "before_live_hashes": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "after_live_hashes": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "groups": {
+    "snapshot": [
+      {
+        "mode": "snapshot",
+        "index": 1,
+        "returncode": 0,
+        "stdout": "{\"SMART_AUDIT_JUNIT_CURRENT.xml\": \"0a297878ac7361e82e527b760b2e93aac00001c552e3217ef0b9d63dfa8f63b1\", \"SMART_IMPLEMENTATION_COMPLETE.json\": \"3251c78daeb5edf6f6a0dc6f4f265400aa9c22db27feee0b30d2cc827251b534\", \"SMART_MATERIAL_DEFICIENCY_REGISTRY.json\": \"657f90c9e3f562d4f760ba363e11ebebcd950062e1c362f2ed4873e581e0bd31\", \"SMART_NEXT_CYCLE_HOLD.json\": \"2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4\", \"SMART_OPERATIONAL_LIFECYCLE.json\": \"830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c\", \"SMART_STEP30_FULL_REGRESSION.json\": \"1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c\", \"SMART_STEP31_CONCURRENCY_CAMPAIGN.json\": \"2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802\", \"SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json\": \"087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10\", \"pytest.ini\": \"985a54d79fec09ad2e0e18405025b8a12c600b4545f6b839284faf9ff5048172\", \"requirements.lock.txt\": \"2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa\"}",
+        "stderr": "",
+        "parsed": {
+          "SMART_AUDIT_JUNIT_CURRENT.xml": "0a297878ac7361e82e527b760b2e93aac00001c552e3217ef0b9d63dfa8f63b1",
+          "SMART_IMPLEMENTATION_COMPLETE.json": "3251c78daeb5edf6f6a0dc6f4f265400aa9c22db27feee0b30d2cc827251b534",
+          "SMART_MATERIAL_DEFICIENCY_REGISTRY.json": "657f90c9e3f562d4f760ba363e11ebebcd950062e1c362f2ed4873e581e0bd31",
+          "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+          "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+          "SMART_STEP30_FULL_REGRESSION.json": "1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c",
+          "SMART_STEP31_CONCURRENCY_CAMPAIGN.json": "2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802",
+          "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+          "pytest.ini": "985a54d79fec09ad2e0e18405025b8a12c600b4545f6b839284faf9ff5048172",
+          "requirements.lock.txt": "2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa"
+        }
+      },
+      {
+        "mode": "snapshot",
+        "index": 2,
+        "returncode": 0,
+        "stdout": "{\"SMART_AUDIT_JUNIT_CURRENT.xml\": \"0a297878ac7361e82e527b760b2e93aac00001c552e3217ef0b9d63dfa8f63b1\", \"SMART_IMPLEMENTATION_COMPLETE.json\": \"3251c78daeb5edf6f6a0dc6f4f265400aa9c22db27feee0b30d2cc827251b534\", \"SMART_MATERIAL_DEFICIENCY_REGISTRY.json\": \"657f90c9e3f562d4f760ba363e11ebebcd950062e1c362f2ed4873e581e0bd31\", \"SMART_NEXT_CYCLE_HOLD.json\": \"2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4\", \"SMART_OPERATIONAL_LIFECYCLE.json\": \"830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c\", \"SMART_STEP30_FULL_REGRESSION.json\": \"1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c\", \"SMART_STEP31_CONCURRENCY_CAMPAIGN.json\": \"2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802\", \"SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json\": \"087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10\", \"pytest.ini\": \"985a54d79fec09ad2e0e18405025b8a12c600b4545f6b839284faf9ff5048172\", \"requirements.lock.txt\": \"2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa\"}",
+        "stderr": "",
+        "parsed": {
+          "SMART_AUDIT_JUNIT_CURRENT.xml": "0a297878ac7361e82e527b760b2e93aac00001c552e3217ef0b9d63dfa8f63b1",
+          "SMART_IMPLEMENTATION_COMPLETE.json": "3251c78daeb5edf6f6a0dc6f4f265400aa9c22db27feee0b30d2cc827251b534",
+          "SMART_MATERIAL_DEFICIENCY_REGISTRY.json": "657f90c9e3f562d4f760ba363e11ebebcd950062e1c362f2ed4873e581e0bd31",
+          "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+          "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+          "SMART_STEP30_FULL_REGRESSION.json": "1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c",
+          "SMART_STEP31_CONCURRENCY_CAMPAIGN.json": "2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802",
+          "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+          "pytest.ini": "985a54d79fec09ad2e0e18405025b8a12c600b4545f6b839284faf9ff5048172",
+          "requirements.lock.txt": "2588a13f31d9022820edcb166310cd3d523cfb4eb59e64138547bcf0cab712fa"
+        }
+      }
+    ],
+    "semantic": [
+      {
+        "mode": "semantic",
+        "index": 3,
+        "returncode": 0,
+        "stdout": "{\"candidate_fingerprint_sha256\": \"fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19\", \"step30_junit_sha256\": null, \"step30_status\": \"PASS\", \"step31_status\": \"PASS\", \"step32_status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "candidate_fingerprint_sha256": "fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19",
+          "step30_junit_sha256": null,
+          "step30_status": "PASS",
+          "step31_status": "PASS",
+          "step32_status": "PASS"
+        }
+      },
+      {
+        "mode": "semantic",
+        "index": 4,
+        "returncode": 0,
+        "stdout": "{\"candidate_fingerprint_sha256\": \"fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19\", \"step30_junit_sha256\": null, \"step30_status\": \"PASS\", \"step31_status\": \"PASS\", \"step32_status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "candidate_fingerprint_sha256": "fcb90a9899f5e9a644955d87b6aadb1c003e7724a1070c449daadd5573a25a19",
+          "step30_junit_sha256": null,
+          "step30_status": "PASS",
+          "step31_status": "PASS",
+          "step32_status": "PASS"
+        }
+      }
+    ],
+    "reconcile": [
+      {
+        "mode": "reconcile",
+        "index": 5,
+        "returncode": 0,
+        "stdout": "{\"check_count\": 9, \"failed_checks\": [], \"mutated_state\": false, \"status\": \"OK\"}",
+        "stderr": "",
+        "parsed": {
+          "check_count": 9,
+          "failed_checks": [],
+          "mutated_state": false,
+          "status": "OK"
+        }
+      },
+      {
+        "mode": "reconcile",
+        "index": 6,
+        "returncode": 0,
+        "stdout": "{\"check_count\": 9, \"failed_checks\": [], \"mutated_state\": false, \"status\": \"OK\"}",
+        "stderr": "",
+        "parsed": {
+          "check_count": 9,
+          "failed_checks": [],
+          "mutated_state": false,
+          "status": "OK"
+        }
+      }
+    ],
+    "runtime": [
+      {
+        "mode": "runtime",
+        "index": 7,
+        "returncode": 0,
+        "stdout": "{\"agent_count\": 9, \"capability_count\": 41, \"checks\": {\"all_41_capabilities_owned\": true, \"all_9_agents_native_probed\": true, \"all_agents_have_executed_function_evidence\": true, \"all_agents_have_runtime_evidence\": true, \"all_declared_handoffs_acknowledged\": true, \"all_native_targets_verified\": true, \"critical_canonical_files_unchanged\": true, \"mission_governor_reads_canonical_status\": true, \"no_agent_predictive_or_freeze_authority\": true}, \"phase\": \"POST_FREEZE\", \"status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "agent_count": 9,
+          "capability_count": 41,
+          "checks": {
+            "all_41_capabilities_owned": true,
+            "all_9_agents_native_probed": true,
+            "all_agents_have_executed_function_evidence": true,
+            "all_agents_have_runtime_evidence": true,
+            "all_declared_handoffs_acknowledged": true,
+            "all_native_targets_verified": true,
+            "critical_canonical_files_unchanged": true,
+            "mission_governor_reads_canonical_status": true,
+            "no_agent_predictive_or_freeze_authority": true
+          },
+          "phase": "POST_FREEZE",
+          "status": "PASS"
+        }
+      },
+      {
+        "mode": "runtime",
+        "index": 8,
+        "returncode": 0,
+        "stdout": "{\"agent_count\": 9, \"capability_count\": 41, \"checks\": {\"all_41_capabilities_owned\": true, \"all_9_agents_native_probed\": true, \"all_agents_have_executed_function_evidence\": true, \"all_agents_have_runtime_evidence\": true, \"all_declared_handoffs_acknowledged\": true, \"all_native_targets_verified\": true, \"critical_canonical_files_unchanged\": true, \"mission_governor_reads_canonical_status\": true, \"no_agent_predictive_or_freeze_authority\": true}, \"phase\": \"POST_FREEZE\", \"status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "agent_count": 9,
+          "capability_count": 41,
+          "checks": {
+            "all_41_capabilities_owned": true,
+            "all_9_agents_native_probed": true,
+            "all_agents_have_executed_function_evidence": true,
+            "all_agents_have_runtime_evidence": true,
+            "all_declared_handoffs_acknowledged": true,
+            "all_native_targets_verified": true,
+            "critical_canonical_files_unchanged": true,
+            "mission_governor_reads_canonical_status": true,
+            "no_agent_predictive_or_freeze_authority": true
+          },
+          "phase": "POST_FREEZE",
+          "status": "PASS"
+        }
+      }
+    ],
+    "skill": [
+      {
+        "mode": "skill",
+        "index": 9,
+        "returncode": 0,
+        "stdout": "{\"capability\": \"pymc\", \"status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "capability": "pymc",
+          "status": "PASS"
+        }
+      },
+      {
+        "mode": "skill",
+        "index": 10,
+        "returncode": 0,
+        "stdout": "{\"capability\": \"pymc\", \"status\": \"PASS\"}",
+        "stderr": "",
+        "parsed": {
+          "capability": "pymc",
+          "status": "PASS"
+        }
+      }
+    ]
+  },
+  "sha256": "ea0f0eb936c33476c882ec4c2c975911ba8e28885b68cf2323e6a65fb82376ba"
+}

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 
 
@@ -1146,6 +1147,10 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
         'portfolio_file': _persist_project_path(portfolio_out), 'portfolio_sha256': portfolio_hash,
 
         'portfolio_status': portfolio_package['status'],
+        'portfolio_artifact_type': portfolio_package['artifact_type'],
+        'portfolio_id': portfolio_package['portfolio_id'],
+        'portfolio_game_records': portfolio_package['games'],
+        'portfolio_product_role': portfolio_package['product_role'],
 
         'portfolio_games': portfolio_package['portfolio']['games'],
 
@@ -1243,6 +1248,7 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
 def main():
 
+    canonical_root()
     ap = argparse.ArgumentParser()
 
     ap.add_argument('--data', required=True, help='causal dataset ending at target-1')

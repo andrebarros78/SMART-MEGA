@@ -88,6 +88,27 @@ def test_build_registry_accepts_reopened_and_hash_helpers():
     assert reg['rules']['open_statuses'] == ['OPEN','REOPENED']
 
 
+def test_replace_with_retry_falls_back_when_replace_is_denied(tmp_path, monkeypatch):
+    source = tmp_path / 'source.json'
+    target = tmp_path / 'target.json'
+    source.write_text('new', encoding='utf-8')
+    target.write_text('old', encoding='utf-8')
+    original_replace = Path.replace
+    calls = {'count': 0}
+
+    def denied_replace(self, other):
+        if self == source:
+            calls['count'] += 1
+            raise PermissionError('replace denied')
+        return original_replace(self, other)
+
+    monkeypatch.setattr(Path, 'replace', denied_replace)
+    mdr._replace_with_retry(source, target, attempts=2, delay_seconds=0)
+    assert calls['count'] == 2
+    assert target.read_text(encoding='utf-8') == 'new'
+    assert not target.with_name(target.name + '.replace-backup').exists()
+
+
 def test_upsert_deficiency_opens_reopens_and_preserves_integrity(tmp_path):
     path = tmp_path / 'registry.json'
     base = mdr.build_registry([{'id':'D37','severity':'P0','status':'RESOLVED','summary':'fixed','evidence':['old-proof']}])

@@ -1,0 +1,93 @@
+{
+  "schema": "SMART_STEP34_CONTAMINATION_GUARD_1",
+  "status": "PASS",
+  "timestamp_utc": "2026-09-22T15:29:26.856033+00:00",
+  "evidence_dir": "C:\\SMART-MEGA\\runtime\\step34_contamination_guard\\20260922T152909Z",
+  "checks": {
+    "step33_pass_bound": true,
+    "all_contamination_scenarios_pass": true,
+    "focused_contamination_regression_pass": true,
+    "live_operational_state_unchanged": true
+  },
+  "scenarios": [
+    {
+      "scenario": "step33_pass_bound",
+      "pass": true,
+      "status": "PASS",
+      "sha256_valid": true
+    },
+    {
+      "scenario": "future_information_blocks_promotion",
+      "pass": true,
+      "status": "FAIL",
+      "failed_checks": [
+        "no_future_information"
+      ]
+    },
+    {
+      "scenario": "result_used_registration_blocked",
+      "pass": true,
+      "raised": "ValueError: frontier freeze used target result"
+    },
+    {
+      "scenario": "current_freeze_artifacts_causal_noncontaminated",
+      "pass": true,
+      "rows": [
+        {
+          "file": "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
+          "exists": true,
+          "sha256": "503dc4e99db017a4c6954709e40ea707878faf1601d9ee690d1ea409d452a816",
+          "result_used": null,
+          "frozen_before_result": true,
+          "causal_cutoff": true,
+          "production_authority": null,
+          "material_weight": null
+        },
+        {
+          "file": "SMART_3054_FRONTIER_SHADOW_FREEZE.json",
+          "exists": true,
+          "sha256": "7d7ab67a8300803777e4ee135adf142829bfad475246b515e29b6e130d1abffa",
+          "result_used": false,
+          "frozen_before_result": null,
+          "causal_cutoff": null,
+          "production_authority": false,
+          "material_weight": 0.0
+        }
+      ]
+    },
+    {
+      "scenario": "focused_contamination_guard_pytest",
+      "pass": true,
+      "returncode": 0,
+      "stdout_tail": "............................................                             [100%]\n44 passed in 15.40s\n",
+      "stderr_tail": "",
+      "junit": "C:\\SMART-MEGA\\runtime\\step34_contamination_guard\\20260922T152909Z\\STEP34_CONTAMINATION_GUARD_FOCUSED.xml",
+      "junit_sha256": "0a913654e398844f9d7e729430dad217f77df9a9e6e8cd63d29973caf85f079e"
+    }
+  ],
+  "live_before": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "SMART_STEP30_FULL_REGRESSION.json": "1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c",
+    "SMART_STEP31_CONCURRENCY_CAMPAIGN.json": "2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802",
+    "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+    "SMART_STEP33_RESTART_PERSISTENCE.json": "f196df62187b4ef418657be3388a12fe356b6c40ca42b59fc84e98458cd0e6bc",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "live_after": {
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "45cb64c0415381d3586e2bb2c19a480558033f5bd284347b87736af727f97212",
+    "SMART_NEXT_CYCLE_HOLD.json": "2baecad4ad119026825ec2a5b4a55780ecfb73b89ade19ddeab38aaac9950ac4",
+    "SMART_STEP30_FULL_REGRESSION.json": "1cb691d676eabec5c2fcc23ced3848332b91e3c13f4354abee91d28235df4f8c",
+    "SMART_STEP31_CONCURRENCY_CAMPAIGN.json": "2d85a33fde27257523077c4622cbf5ad8566799236bac8ee3f33f5cdd410f802",
+    "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+    "SMART_STEP33_RESTART_PERSISTENCE.json": "f196df62187b4ef418657be3388a12fe356b6c40ca42b59fc84e98458cd0e6bc",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "runtime\\locks\\SMART_OPERATION_LOCK.json": null
+  },
+  "sha256": "5104dd7c5f952d7e0183e17753184f9728b4e135527aaefb12ad45949527a4da"
+}

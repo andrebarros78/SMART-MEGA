@@ -1,0 +1,15 @@
+{
+  "schema": "SMART_STEP29_FUNCTIONAL_TESTS_1",
+  "status": "PASS",
+  "candidate_fingerprint_sha256": "8c7071f780cf5d1e3cc00491a915b1e3511e0f80ff5eccdf3ca347579dec026b",
+  "tests_passed": 134,
+  "tests_failed": 0,
+  "junit": "runtime/STEP29_FUNCTIONAL_FINAL_JUNIT.xml",
+  "deferred_to_authority_phase": [
+    "test_smart_total_integration_gate.py::test_total_integration_gate",
+    "test_smart_total_integration_gate.py::test_total_integration_roundtrip"
+  ],
+  "defer_reason": "These assertions require fresh integrated authorities; canonical roadmap regenerates authorities at step 37 after steps 29-36. They are not counted as PASS in step 29.",
+  "next_step": 30,
+  "mission_proven": false
+}

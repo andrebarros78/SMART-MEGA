@@ -77,11 +77,13 @@ def test_verify_current_code_rejects_junit_older_than_current_code(tmp_path: Pat
     monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
     monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
     monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
+    critical_manifest = certification.build_critical_code_manifest(tmp_path)
     doc = {
         "schema": certification.SCHEMA,
         "status": "CONSTRUCTION_PROVEN",
         "checks": {"full_regression_green": True},
         "code_fingerprint": fingerprint,
+        "critical_code_manifest": critical_manifest,
         "canonical_root_authority": authority,
     }
     doc["sha256"] = certification._sha256_json(doc)
@@ -108,11 +110,13 @@ def test_verify_current_code_accepts_junit_not_older_than_current_code(tmp_path:
     monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
     monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
     monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
+    critical_manifest = certification.build_critical_code_manifest(tmp_path)
     doc = {
         "schema": certification.SCHEMA,
         "status": "CONSTRUCTION_PROVEN",
         "checks": {"full_regression_green": True},
         "code_fingerprint": fingerprint,
+        "critical_code_manifest": critical_manifest,
         "canonical_root_authority": authority,
     }
     doc["sha256"] = certification._sha256_json(doc)

@@ -1,0 +1,55 @@
+{
+  "schema": "SMART_CANONICAL_IDENTITY_V1",
+  "project": "SMART-MEGA",
+  "version": "6.3.2",
+  "canonical_host": "DESKTOP-4T6AS9K",
+  "canonical_root": "C:\\SMART-MEGA",
+  "canonical_root_resolved": "C:\\SMART-MEGA",
+  "root_id": "0f9615127c23c3d9f87de23a74303ae25d2d31579fd695e106347dee1abb204e",
+  "authority_file": "SMART_CANONICAL_ROOT.json",
+  "identity_module": "smart_canonical_identity.py",
+  "root_resolution": "Path.resolve plus exact canonical address binding",
+  "git_identity": {
+    "repository_root": "C:\\SMART-MEGA",
+    "git_dir": ".git",
+    "identity_rule": "git top-level resolves to canonical_root"
+  },
+  "competing_root_policy": "FAIL_CLOSED",
+  "forbidden_operational_roots": [
+    "C:\\SMART-MEGA V6",
+    "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA"
+  ],
+  "critical_entrypoints": [
+    "smart_operator.py",
+    "smart_full_process_pipeline.py",
+    "smart_3054_terminal_executor.py",
+    "smart_agent_skill_orchestration.py",
+    "smart_champion_challenger.py",
+    "smart_product_certification.py",
+    "smart_regression_runner.py",
+    "smart_finalize_deployment.py",
+    "smart_runtime_guard.py",
+    "smart_prospective_authority.py",
+    "smart_prospective_authority_lock.py",
+    "smart_agent_runtime.py",
+    "smart_agent_skill_functional_gate.py",
+    "smart_agent_ecosystem_governance.py",
+    "smart_engineering_activation.py",
+    "smart_learning_epoch_reset.py",
+    "smart_total_integration_gate.py",
+    "smart_rag_excel.py",
+    "smart_skill_runtime.py",
+    "smart_portfolio_pipeline.py",
+    "smart_official_result_ingest.py"
+  ],
+  "tests_required_for_this_implementation_step": false,
+  "additional_guarded_entrypoints": [
+    "smart_skill_runtime.py",
+    "smart_portfolio_pipeline.py",
+    "smart_official_result_ingest.py"
+  ],
+  "additional_guard_policy": "DIRECT_EXECUTION_MUST_CALL_CANONICAL_ROOT",
+  "effective_version": "6.3.2",
+  "operational_entrypoint_policy": "ALL_CRITICAL_ENTRYPOINTS_CALL_SMART_CANONICAL_IDENTITY_CANONICAL_ROOT",
+  "sha256": "0f378b0355bbfe6881141c323fb5d732bcf21df6dff566cda715fad767816e31"
+}

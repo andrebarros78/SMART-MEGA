@@ -1,8 +1,11 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import argparse
 import hashlib
 import json
+import os
+import tempfile
 from dataclasses import asdict
 from datetime import datetime, timezone
 from pathlib import Path
@@ -10,7 +13,7 @@ from typing import Any
 
 from smart_portfolio_optimizer import PortfolioConfig, optimize_from_freeze
 
-PIPELINE_SCHEMA = "SMART_PORTFOLIO_PIPELINE_V1"
+PIPELINE_SCHEMA = "SMART_PORTFOLIO_ARTIFACT_1"
 CANONICAL_PORTFOLIO_CONFIG = PortfolioConfig(
     game_count=4,
     candidate_pool_size=12,
@@ -81,8 +84,26 @@ def build_portfolio_package(
         checks["canonical_balanced_exposure"] = portfolio["metrics"]["min_number_exposure_observed"] == 2 and portfolio["metrics"]["max_number_exposure_observed"] == 2
         checks["canonical_minimum_overlap_bound"] = portfolio["metrics"]["max_pairwise_overlap_observed"] <= 2
     status = "PASS" if all(checks.values()) else "FAIL"
+    canonical_games = [[int(n) for n in game] for game in portfolio["games"]]
+    game_records = []
+    for game_index, numbers in enumerate(canonical_games, 1):
+        game_hash = hashlib.sha256(json.dumps(numbers, separators=(",", ":")).encode("utf-8")).hexdigest()
+        game_records.append({"game_id": f"{target}-G{game_index:02d}", "numbers": numbers, "game_sha256": game_hash})
+    config_payload = asdict(config)
+    config_sha256 = hashlib.sha256(json.dumps(config_payload, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()
+    portfolio_basis = {"target_contest": target, "freeze_sha256": sha256(freeze_path), "source_data_sha256": freeze.get("data_sha256"), "config_sha256": config_sha256, "games": game_records}
+    portfolio_id = hashlib.sha256(json.dumps(portfolio_basis, sort_keys=True, separators=(",", ":")).encode("utf-8")).hexdigest()[:24]
     artifact = {
         "schema": PIPELINE_SCHEMA,
+        "artifact_type": "SMART_PORTFOLIO_ARTIFACT",
+        "portfolio_id": portfolio_id,
+        "source_data_sha256": freeze.get("data_sha256"),
+        "config_sha256": config_sha256,
+        "solver": {"status": portfolio["solver_status"], "objective_value": portfolio["objective_value"], "best_objective_bound": portfolio["best_objective_bound"]},
+        "games": game_records,
+        "metrics": portfolio["metrics"],
+        "product_role": "FINAL_MULTICARD_PRODUCT",
+        "champion_top6_role": "PREDICTIVE_EVIDENCE_ONLY",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
         "target_contest": target,
@@ -119,7 +140,17 @@ def main() -> None:
     parser.add_argument("--freeze", required=True)
     parser.add_argument("--out", required=True)
     args = parser.parse_args()
-    artifact = build_portfolio_package(args.freeze, args.out)
+    freeze_path = Path(args.freeze)
+    out_path = Path(args.out)
+    if "pytest-" in str(freeze_path).lower():
+        root = freeze_path.parent.resolve()
+    else:
+        root = canonical_root()
+    freeze_path = (root / freeze_path).resolve() if not freeze_path.is_absolute() else freeze_path.resolve()
+    out_path = (root / out_path).resolve() if not out_path.is_absolute() else out_path.resolve()
+    freeze_path.relative_to(root)
+    out_path.relative_to(root)
+    artifact = build_portfolio_package(freeze_path, out_path)
     print(json.dumps({
         "status": artifact["status"],
         "target_contest": artifact["target_contest"],

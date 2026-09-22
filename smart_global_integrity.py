@@ -7,6 +7,7 @@ from pathlib import Path
 from typing import Any, Iterable
 
 from smart_material_deficiency_registry import load_registry as load_material_deficiency_registry
+from smart_critical_code_manifest import build as build_critical_code_manifest
 
 SCHEMA = 'SMART_GLOBAL_INTEGRITY_PROOF_1'
 POLICY_SCHEMA = 'SMART_GLOBAL_INTEGRITY_POLICY_1'
@@ -303,6 +304,7 @@ def build_global_integrity_proof(root: Path, gate: dict[str, Any], junit_path: P
         'gate_state_sha256': gate_state_sha256(gate),
         'gate_check': gate_check,
         'critical_source_hashes': sources,
+        'critical_code_manifest': build_critical_code_manifest(root),
         'coverage': coverages,
         'red_team': {**red, 'file': DEFAULT_RED_TEAM_PATH.name, 'file_sha256': sha256_file(root / DEFAULT_RED_TEAM_PATH)},
         'independent_audit': p14,
@@ -335,6 +337,8 @@ def verify_global_integrity(root: Path, gate_path: Path, proof_path: Path = DEFA
         raise ValueError('global integrity material deficiency registry is stale')
     if proof.get('critical_source_hashes') != current_source_hashes(root):
         raise ValueError('global integrity critical source hashes are stale')
+    if proof.get('critical_code_manifest') != build_critical_code_manifest(root):
+        raise ValueError('global integrity critical code manifest is stale')
     coverage_rows = proof.get('coverage')
     if not isinstance(coverage_rows, list):
         raise ValueError('global integrity coverage evidence missing')

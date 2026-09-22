@@ -1,0 +1,284 @@
+{
+  "schema": "SMART_SCHEMA_CONTRACT_REGISTRY_1",
+  "status": "CANONICAL",
+  "compatibility_policy": "EXPLICIT_VERSION_ONLY_FAIL_CLOSED",
+  "schemas": {
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "version": 1,
+      "owner": "smart_operational_lifecycle.py",
+      "required_fields": [
+        "schema",
+        "state",
+        "revision",
+        "target_contest",
+        "sha256"
+      ],
+      "invariants": [
+        "self_hash",
+        "revision_monotonic",
+        "single_operational_authority"
+      ],
+      "upstream_hashes": [
+        "previous_lifecycle_sha256"
+      ],
+      "valid_transitions": [
+        "IDLE->AUTHORIZED",
+        "HOLD->AUTHORIZED",
+        "AUTHORIZED->PREPARING",
+        "PREPARING->PREPARED",
+        "PREPARED->FREEZING",
+        "FREEZING->FROZEN",
+        "FROZEN->ADJUDICATED",
+        "ADJUDICATED->REVIEWED",
+        "REVIEWED->HOLD"
+      ]
+    },
+    "transaction_journal": {
+      "schema": "SMART_TRANSACTION_JOURNAL_1",
+      "version": 1,
+      "owner": "smart_transaction_journal.py",
+      "required_fields": [
+        "schema",
+        "transaction_id",
+        "operation",
+        "phase",
+        "entry_sha256"
+      ],
+      "invariants": [
+        "append_only",
+        "hash_chain",
+        "phase_transition_fail_closed"
+      ],
+      "upstream_hashes": [
+        "previous_entry_sha256"
+      ],
+      "valid_transitions": [
+        "BEGIN->PREPARED",
+        "PREPARED->COMMITTING",
+        "COMMITTING->COMMITTED",
+        "BEGIN->ROLLED_BACK",
+        "PREPARED->ROLLED_BACK"
+      ]
+    },
+    "operation_lock": {
+      "schema": "SMART_OPERATION_LOCK_1",
+      "version": 1,
+      "owner": "smart_operation_lock.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "idempotency": {
+      "schema": "SMART_IDEMPOTENCY_1",
+      "version": 1,
+      "owner": "smart_idempotency.py",
+      "required_fields": [
+        "schema",
+        "operation",
+        "idempotency_key",
+        "target",
+        "result"
+      ],
+      "invariants": [
+        "same_key_same_result",
+        "target_conflict_fail_closed"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "active_learning_epoch": {
+      "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+      "version": 2,
+      "owner": "smart_learning_epoch_reset.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "learning_epoch_reset_proof": {
+      "schema": "SMART_LEARNING_EPOCH_RESET_PROOF_2",
+      "version": 2,
+      "owner": "smart_learning_epoch_reset.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "operator_contract": {
+      "schema": "SMART_OPERATOR_CONTRACT_V1",
+      "version": 1,
+      "owner": "smart_operator.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "next_cycle_authority": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "version": 1,
+      "owner": "smart_operator.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "next_cycle_hold": {
+      "schema": "SMART_NEXT_CYCLE_HOLD_1",
+      "version": 1,
+      "owner": "smart_operator.py",
+      "required_fields": [
+        "schema"
+      ],
+      "invariants": [
+        "explicit_schema_version"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "startup_reconciliation": {
+      "schema": "SMART_STARTUP_RECONCILIATION_1",
+      "version": 1,
+      "owner": "smart_startup_reconciler.py",
+      "required_fields": [
+        "schema",
+        "status",
+        "checks",
+        "failed_checks",
+        "mutated_state"
+      ],
+      "invariants": [
+        "read_only",
+        "recovery_required_on_any_failed_invariant"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "scientific_operational_separation": {
+      "schema": "SMART_SCIENTIFIC_OPERATIONAL_SEPARATION_1",
+      "version": 1,
+      "owner": "smart_scientific_state_guard.py",
+      "required_fields": [
+        "schema",
+        "status"
+      ],
+      "invariants": [
+        "scientific_state_not_operationally_rewritten",
+        "immutable_history_not_rewritten"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "immutable_history_binding": {
+      "schema": "SMART_IMMUTABLE_HISTORY_BINDING_1",
+      "version": 1,
+      "owner": "smart_historical_binding.py",
+      "required_fields": [
+        "schema",
+        "status",
+        "target_contest",
+        "archive_manifest",
+        "frozen_historical_artifacts",
+        "sha256"
+      ],
+      "invariants": [
+        "metadata_only",
+        "no_retroactivity",
+        "hash_bound"
+      ],
+      "upstream_hashes": [
+        "archive_manifest.self_sha256"
+      ],
+      "valid_transitions": []
+    },
+    "proof_chain_contract": {
+      "schema": "SMART_PROOF_CHAIN_CONTRACT_1",
+      "version": 1,
+      "owner": "smart_proof_chain.py",
+      "required_fields": [
+        "schema",
+        "status",
+        "order",
+        "stages"
+      ],
+      "invariants": [
+        "ordered_regeneration",
+        "upstream_change_invalidates_downstream"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "operator_preflight": {
+      "schema": "SMART_OPERATOR_PREFLIGHT_2",
+      "version": 2,
+      "owner": "smart_operator.py",
+      "required_fields": [
+        "schema",
+        "status",
+        "target_contest",
+        "mutated_state"
+      ],
+      "invariants": [
+        "read_only",
+        "full_state_fail_closed"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "operator_status": {
+      "schema": "SMART_OPERATOR_STATUS_2",
+      "version": 2,
+      "owner": "smart_operator.py",
+      "required_fields": [
+        "schema",
+        "status",
+        "reconciled_state",
+        "scientific_operational_boundaries",
+        "proof_chain"
+      ],
+      "invariants": [
+        "single_reconciled_view"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    },
+    "critical_code_manifest": {
+      "schema": "SMART_CRITICAL_CODE_MANIFEST_1",
+      "version": 1,
+      "owner": "smart_critical_code_manifest.py",
+      "required_fields": [
+        "schema",
+        "file_count",
+        "files",
+        "fingerprint_sha256"
+      ],
+      "invariants": [
+        "all_smart_modules_fingerprinted"
+      ],
+      "upstream_hashes": [],
+      "valid_transitions": []
+    }
+  },
+  "sha256": "44106087bbcf568df8e41dce44514243c8e09d6fe5bc8f5069425ccc009144ff"
+}

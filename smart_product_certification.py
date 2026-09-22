@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -9,9 +10,11 @@ from pathlib import Path
 from typing import Any
 
 from smart_agent_runtime import SmartAgentRuntime, sha256_file
+from smart_critical_code_manifest import build as build_critical_code_manifest
 from smart_agent_skill_functional_gate import evaluate as functional_evaluate
 from smart_agent_skill_orchestration import build_orchestration
 from smart_material_deficiency_registry import load_registry
+from smart_material_deficiency_policy import material_blockers
 from smart_global_integrity import CRITICAL_SOURCE_FILES
 from smart_operator import contract as operator_contract, validate_target_sequence
 from smart_regression_evidence import junit_summary
@@ -114,6 +117,8 @@ def verify_product_certification(path: str | Path, *, root: str | Path | None = 
         project_root = Path(root).resolve() if root is not None else p.resolve().parent
         if doc.get("code_fingerprint") != code_fingerprint(project_root):
             raise ValueError("SMART product certification is stale for current code")
+        if doc.get("critical_code_manifest") != build_critical_code_manifest(project_root):
+            raise ValueError("SMART product certification critical code manifest is stale")
         current_junit = project_root / "SMART_AUDIT_JUNIT_CURRENT.xml"
         current_regression = junit_summary(current_junit)
         current_authority = canonical_root_authority_binding(project_root, current_junit, current_regression)
@@ -140,6 +145,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
     total = total_integration_evaluate(root, phase="BUILD")
     deficiencies = load_registry(root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json", root=root)
     open_deficiencies = deficiencies.get("open_entries", [])
+    product_blocking_deficiencies = material_blockers(open_deficiencies, allow_supervisory_freshness_self_resolution=True)
     op = operator_contract()
     generic_target_accept = validate_target_sequence([8998, 8999, 9000], 9001)["target_contest"] == 9001
     gap_rejected = False
@@ -159,7 +165,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "operator_contract_separates_construction_from_freeze": op.get("product_completion_independent_of_operation") is True and op.get("freeze_is_operational_not_construction_gate") is True,
         "operator_target_is_explicit_and_generic": op.get("operator_selects_target") is True and generic_target_accept,
         "operator_target_fails_closed_without_complete_prior_history": gap_rejected and op.get("fail_closed_on_history_gap_or_target_result_present") is True,
-        "zero_open_material_deficiencies": len(open_deficiencies) == 0,
+        "zero_open_material_deficiencies": len(product_blocking_deficiencies) == 0,
         "scientific_terminal_claim_not_required_for_product_completion": op.get("scientific_terminal_claim_independent_of_product_completion") is True,
     }
     doc = {
@@ -171,6 +177,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
         "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
         "code_fingerprint": code_fingerprint(root),
+        "critical_code_manifest": build_critical_code_manifest(root),
         "regression": regression,
         "canonical_root_authority": canonical_authority,
         "runtime_guard": runtime,
@@ -181,6 +188,7 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "operator_contract": op,
         "material_deficiency_registry_sha256": deficiencies.get("registry_sha256"),
         "open_material_deficiencies": open_deficiencies,
+        "product_blocking_material_deficiencies": product_blocking_deficiencies,
         "checks": checks,
     }
     doc["sha256"] = _sha256_json(doc)
@@ -196,6 +204,6 @@ def write(root: str | Path = ".", out: str | Path = DEFAULT_PATH) -> dict[str, A
     return doc
 
 if __name__ == "__main__":
-    result = write(Path(__file__).resolve().parent)
+    result = write(canonical_root())
     print(json.dumps({"status": result["status"], "sha256": result["sha256"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
 

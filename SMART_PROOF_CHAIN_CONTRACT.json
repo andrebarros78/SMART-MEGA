@@ -1,0 +1,80 @@
+{
+  "schema": "SMART_PROOF_CHAIN_CONTRACT_1",
+  "status": "IMPLEMENTED_NOT_FINALIZED",
+  "order": [
+    "critical_code_manifest",
+    "regression_authority",
+    "canonical_root",
+    "product_certification",
+    "global_integrity",
+    "governance",
+    "material_registry",
+    "mission_status",
+    "continuity",
+    "release_attestation"
+  ],
+  "stages": [
+    {
+      "name": "critical_code_manifest",
+      "file": "SMART_CRITICAL_CODE_MANIFEST.json",
+      "generator": "smart_critical_code_manifest.write",
+      "verifier": "smart_critical_code_manifest.build"
+    },
+    {
+      "name": "regression_authority",
+      "file": "SMART_AUDIT_JUNIT_CURRENT.xml",
+      "generator": "smart_regression_runner.run_regression",
+      "verifier": null
+    },
+    {
+      "name": "canonical_root",
+      "file": "SMART_CANONICAL_ROOT.json",
+      "generator": null,
+      "verifier": "smart_canonical_identity.require_canonical_identity"
+    },
+    {
+      "name": "product_certification",
+      "file": "SMART_PRODUCT_CERTIFICATION.json",
+      "generator": "smart_product_certification.write",
+      "verifier": "smart_product_certification.verify_product_certification"
+    },
+    {
+      "name": "global_integrity",
+      "file": "SMART_GLOBAL_INTEGRITY_PROOF.json",
+      "generator": "smart_global_integrity.build_global_integrity_proof",
+      "verifier": "smart_global_integrity.verify_global_integrity"
+    },
+    {
+      "name": "governance",
+      "file": "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
+      "generator": "smart_agent_ecosystem_governance.write",
+      "verifier": "smart_authority_freshness.verify_governance"
+    },
+    {
+      "name": "material_registry",
+      "file": "SMART_MATERIAL_DEFICIENCY_REGISTRY.json",
+      "generator": "smart_material_deficiency_registry.write_registry",
+      "verifier": "smart_material_deficiency_registry.load_registry"
+    },
+    {
+      "name": "mission_status",
+      "file": "SMART_MISSION_STATUS.json",
+      "generator": "smart_mission_status.write_mission_status",
+      "verifier": "smart_mission_status.load_mission_status"
+    },
+    {
+      "name": "continuity",
+      "file": "SMART_CONTINUITY.md",
+      "generator": "smart_continuity_consolidator.write",
+      "verifier": "smart_continuity_consolidator.build"
+    },
+    {
+      "name": "release_attestation",
+      "file": "SMART_RELEASE_ATTESTATION.json",
+      "generator": null,
+      "verifier": null
+    }
+  ],
+  "invalidation_rule": "ANY_UPSTREAM_CHANGE_INVALIDATES_ALL_DOWNSTREAM_STAGES",
+  "final_proof_generation_allowed_in_p1": false
+}

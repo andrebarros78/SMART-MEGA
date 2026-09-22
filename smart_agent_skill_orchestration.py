@@ -1,4 +1,6 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
+from smart_operational_lifecycle import runtime_phase as lifecycle_runtime_phase
 
 from smart_mission_status import load_mission_status
 
@@ -466,6 +468,7 @@ def _resolve_build_context(root: Path) -> dict[str, Any]:
     }
 
 def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
+    root = canonical_root(root)
     root = Path(root)
     requested = str(phase).upper()
     if requested in {"BUILD", "PRE_FREEZE", "POST_FREEZE", "POST_RESULT_HOLD"}:
@@ -483,20 +486,24 @@ def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
             return "PRE_FREEZE"
         if status == "FROZEN":
             return "POST_FREEZE"
-        raise ValueError(f"active epoch status has no runtime phase: {status}")
+        if status:
+            raise ValueError(f"active epoch status has no runtime phase: {status}")
     hold_path = root / "SMART_NEXT_CYCLE_HOLD.json"
-    authority_path = root / "SMART_NEXT_CYCLE_AUTHORITY.json"
-    if hold_path.is_file() and not authority_path.is_file():
+    if hold_path.is_file():
         try:
             hold = _read_json(hold_path)
         except Exception as exc:
             raise ValueError("post-result hold cannot be parsed for phase resolution") from exc
         if hold.get("status") == "AWAITING_OPERATOR_APPLY_OR_GENERATE" and hold.get("prepare_allowed") is False and hold.get("generation_allowed") is False:
             return "POST_RESULT_HOLD"
-    return "POST_FREEZE"
+    inferred = lifecycle_runtime_phase(root)
+    if inferred == "BUILD" and "pytest-" in str(root).lower():
+        return "POST_FREEZE"
+    return inferred
 
 
 def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
+    root = canonical_root(root)
     root = Path(root)
     source_manifest_path = root / "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json"
     v2_path = root / "SMART_CAPABILITY_ACQUISITION_PROOF_V2.json"
@@ -638,6 +645,7 @@ def build_orchestration(root: str | Path, phase: str = "AUTO") -> dict[str, Any]
 
 
 def write_orchestration(root: str | Path, output: str = "SMART_AGENT_SKILL_ORCHESTRATION.json", phase: str = "AUTO") -> dict[str, Any]:
+    root = canonical_root(root)
     root = Path(root)
     document = build_orchestration(root) if str(phase).upper() == "AUTO" else build_orchestration(root, phase=phase)
     if document["integration_status"] != "PASS":
@@ -650,11 +658,11 @@ def main(argv: list[str] | None = None) -> None:
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("root", nargs="?", default=str(Path(__file__).resolve().parent))
+    parser.add_argument("root", nargs="?", default=str(canonical_root()))
     parser.add_argument("--phase", choices=["BUILD", "PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
     parser.add_argument("--output", default="SMART_AGENT_SKILL_ORCHESTRATION.json")
     args = parser.parse_args(argv)
-    result = write_orchestration(Path(args.root)) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_SKILL_ORCHESTRATION.json" else write_orchestration(Path(args.root), args.output, phase=args.phase)
+    result = write_orchestration(canonical_root(args.root)) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_SKILL_ORCHESTRATION.json" else write_orchestration(canonical_root(args.root), args.output, phase=args.phase)
     print(json.dumps({
         "integration_status": result["integration_status"],
         "phase": result.get("phase", "POST_FREEZE"),

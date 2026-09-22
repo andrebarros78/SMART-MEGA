@@ -141,6 +141,7 @@ def test_consensus_upgrade_is_monotonic_and_conflict_fails(tmp_path: Path):
 
 
 def test_probe_before_result_is_write_free(tmp_path: Path, monkeypatch):
+    monkeypatch.setattr(te, "canonical_root", lambda root=None: Path(root).resolve())
     freeze_path = tmp_path / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json"
     _freeze(freeze_path)
     monkeypatch.setattr(te, "EXPECTED_FREEZE_SHA256", te.sha256_file(freeze_path))

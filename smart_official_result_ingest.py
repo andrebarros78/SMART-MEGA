@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import argparse
 import hashlib
@@ -173,4 +174,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    canonical_root()
     main()

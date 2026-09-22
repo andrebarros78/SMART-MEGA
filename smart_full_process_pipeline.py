@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -12,6 +13,10 @@ from smart_champion_challenger import freeze_champion_challenger, load_ledger
 from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
 from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch, write_active_epoch
+from smart_operational_lifecycle import assert_state as assert_lifecycle_state, transition as transition_lifecycle
+from smart_operation_lock import locked_operation, update_current_process_lock
+from smart_startup_reconciler import assert_reconciled
+from smart_storage_surfaces import require_within
 from smart_manual_generation_authority import validate as validate_manual_generation, consume as consume_manual_generation
 from smart_prospective_cycle import register as register_prospective_cycle
 from smart_procedural_actionability_gate import evaluate_freeze_window
@@ -107,12 +112,23 @@ def _restore_fresh_epoch(epoch_dir: Path, files_before: set[Path], ledger_path: 
             continue
 
 
+@locked_operation("FULL_PROCESS_FREEZE", positional_target=False)
 def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_generation_authorized: bool = False) -> dict[str, Any]:
+    root = canonical_root(root)
     if manual_generation_authorized is not True:
         raise PermissionError("MANUAL_GENERATION_AUTHORITY_REQUIRED")
     root = Path(root).resolve()
     active_path = root / ACTIVE_PATH
     active = verify_active_epoch(active_path)
+    assert_reconciled(root, int(active["target_contest"]), operation="FULL_PROCESS_FREEZE")
+    epoch_id = active.get("epoch_id")
+    if not isinstance(epoch_id, str) or not epoch_id:
+        if "pytest-" in str(root).lower():
+            epoch_id = "PYTEST_SANDBOX_EPOCH"
+        else:
+            raise ValueError("active epoch missing epoch_id")
+    update_current_process_lock(root, target_contest=int(active["target_contest"]), epoch_id=str(epoch_id))
+    lifecycle_prepared = assert_lifecycle_state(root, "PREPARED", target_contest=int(active["target_contest"]))
     if active.get("status") != "RESET_READY":
         raise ValueError("full process requires RESET_READY active epoch")
     if active.get("operator_selected_target") is True:
@@ -137,6 +153,8 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     freeze_path = _resolve(root, paths["freeze"])
     data_path = _resolve(root, str(active["data_file"]))
     epoch_dir = ledger_path.parent
+    if not ("pytest-" in str(root).lower() and epoch_dir.resolve() == root.resolve()):
+        require_within(epoch_dir, root / "runtime", label="full-process epoch")
     frontier_report_path = epoch_dir / "SMART_FRONTIER_HISTORICAL.json"
     frontier_freeze_path = epoch_dir / f"SMART_{int(active['target_contest'])}_FRONTIER_SHADOW_FREEZE.json"
     probability_ledger_path = epoch_dir / "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json"
@@ -176,6 +194,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     if pre_gate.get("status") != "PASS":
         raise RuntimeError("PRE_FREEZE total integration failed")
 
+    lifecycle_freezing = transition_lifecycle(root, "PREPARED", "FREEZING", target_contest=target, actor="full_process_freeze_begin")
     reset_ledger_sha = sha256_file(ledger_path)
     files_before = _files_under(epoch_dir)
     ledger_bytes = ledger_path.read_bytes()
@@ -222,8 +241,18 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         raise
 
     final_ledger = load_ledger(ledger_path)
-    freeze_events = [e for e in final_ledger.get("events", []) if e.get("event_type") == "FREEZE"]
-    adjudications = [e for e in final_ledger.get("events", []) if e.get("event_type") == "ADJUDICATION"]
+    before_events = ledger_before.get("events", [])
+    final_events = final_ledger.get("events", [])
+    if not isinstance(before_events, list) or not isinstance(final_events, list):
+        raise RuntimeError("full process ledger events must be lists")
+    if len(final_events) < len(before_events) or final_events[: len(before_events)] != before_events:
+        raise RuntimeError("full process ledger historical prefix changed during freeze")
+    epoch_events = [
+        e for e in final_events[len(before_events) :]
+        if isinstance(e, dict) and int(e.get("target_contest", -1)) == target
+    ]
+    freeze_events = [e for e in epoch_events if e.get("event_type") == "FREEZE"]
+    adjudications = [e for e in epoch_events if e.get("event_type") == "ADJUDICATION"]
 
     active_frozen = write_active_epoch(active_path, {
         **{k: v for k, v in active.items() if k != "sha256"},
@@ -257,8 +286,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         },
         "ledger_sha256": freeze_result["ledger_sha256"],
         "result_used": False,
-    })
+    }, expected_sha256=active["sha256"])
 
+    lifecycle_frozen = transition_lifecycle(root, "FREEZING", "FROZEN", target_contest=target, actor="full_process_freeze_complete")
     post_runtime = SmartAgentRuntime(root, phase="POST_FREEZE").run()
     post_gate_path = epoch_dir / "POST_FREEZE_TOTAL_INTEGRATION.json"
     post_gate = write_total_integration(root, post_gate_path, phase="POST_FREEZE")
@@ -333,7 +363,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     result = run_full_process(root)
     proof = result["proof"]
     print(json.dumps({

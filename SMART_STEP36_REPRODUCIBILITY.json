@@ -1,0 +1,526 @@
+{
+  "schema": "SMART_STEP36_REPRODUCIBILITY_1",
+  "status": "PASS",
+  "timestamp_utc": "2026-09-22T15:38:54.394467+00:00",
+  "evidence_dir": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z",
+  "scenarios": [
+    {
+      "scenario": "step35_pass_bound",
+      "pass": true,
+      "status": "PASS",
+      "sha256_valid": true
+    },
+    {
+      "scenario": "independent_api_cli_reproducibility",
+      "pass": true,
+      "stable_sha256": "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+      "stable_hashes": [
+        "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+        "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+        "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+        "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952"
+      ],
+      "portfolio_ids": [
+        "c9b6da3b1fb72fe3e99666d6",
+        "c9b6da3b1fb72fe3e99666d6",
+        "c9b6da3b1fb72fe3e99666d6",
+        "c9b6da3b1fb72fe3e99666d6"
+      ],
+      "games": [
+        [
+          1,
+          2,
+          3,
+          6,
+          11,
+          12
+        ],
+        [
+          1,
+          4,
+          5,
+          6,
+          7,
+          10
+        ],
+        [
+          2,
+          3,
+          7,
+          8,
+          9,
+          10
+        ],
+        [
+          4,
+          5,
+          8,
+          9,
+          11,
+          12
+        ]
+      ],
+      "metrics": {
+        "unique_numbers": [
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          11,
+          12
+        ],
+        "unique_number_count": 12,
+        "average_pairwise_overlap": 2.0,
+        "max_pairwise_overlap_observed": 2,
+        "raw_selection_score": 1308.0,
+        "raw_unique_score": 654.0,
+        "exposure_counts": {
+          "1": 2,
+          "2": 2,
+          "3": 2,
+          "4": 2,
+          "5": 2,
+          "6": 2,
+          "7": 2,
+          "8": 2,
+          "9": 2,
+          "10": 2,
+          "11": 2,
+          "12": 2
+        },
+        "exposure_mean": 2.0,
+        "exposure_stddev": 0.0,
+        "min_number_exposure_observed": 2,
+        "max_number_exposure_observed": 2
+      },
+      "runs": [
+        {
+          "label": "a",
+          "mode": "api",
+          "path": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z\\api_a\\portfolio_api_a.json",
+          "file_sha256": "4568d86b7aa654ed9b9d4b29100c0aad85e6b7d2f08766031206ae80d67fdde8",
+          "stable_sha256": "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+          "portfolio_id": "c9b6da3b1fb72fe3e99666d6",
+          "games": [
+            [
+              1,
+              2,
+              3,
+              6,
+              11,
+              12
+            ],
+            [
+              1,
+              4,
+              5,
+              6,
+              7,
+              10
+            ],
+            [
+              2,
+              3,
+              7,
+              8,
+              9,
+              10
+            ],
+            [
+              4,
+              5,
+              8,
+              9,
+              11,
+              12
+            ]
+          ],
+          "metrics": {
+            "unique_numbers": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "unique_number_count": 12,
+            "average_pairwise_overlap": 2.0,
+            "max_pairwise_overlap_observed": 2,
+            "raw_selection_score": 1308.0,
+            "raw_unique_score": 654.0,
+            "exposure_counts": {
+              "1": 2,
+              "2": 2,
+              "3": 2,
+              "4": 2,
+              "5": 2,
+              "6": 2,
+              "7": 2,
+              "8": 2,
+              "9": 2,
+              "10": 2,
+              "11": 2,
+              "12": 2
+            },
+            "exposure_mean": 2.0,
+            "exposure_stddev": 0.0,
+            "min_number_exposure_observed": 2,
+            "max_number_exposure_observed": 2
+          },
+          "checks": {
+            "pre_result_freeze": true,
+            "causal_cutoff": true,
+            "single_game_preserved": true,
+            "solver_optimal": true,
+            "objective_gap_zero": true,
+            "overlap_within_contract": true,
+            "portfolio_only": true,
+            "scores_unchanged": true,
+            "canonical_full_candidate_coverage": true,
+            "canonical_balanced_exposure": true,
+            "canonical_minimum_overlap_bound": true
+          },
+          "status": "PASS"
+        },
+        {
+          "label": "b",
+          "mode": "api",
+          "path": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z\\api_b\\portfolio_api_b.json",
+          "file_sha256": "31e380599fe77fa78b041297d9a705c58ada1dd1f516cb72c8a3ed1355a0ee3e",
+          "stable_sha256": "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+          "portfolio_id": "c9b6da3b1fb72fe3e99666d6",
+          "games": [
+            [
+              1,
+              2,
+              3,
+              6,
+              11,
+              12
+            ],
+            [
+              1,
+              4,
+              5,
+              6,
+              7,
+              10
+            ],
+            [
+              2,
+              3,
+              7,
+              8,
+              9,
+              10
+            ],
+            [
+              4,
+              5,
+              8,
+              9,
+              11,
+              12
+            ]
+          ],
+          "metrics": {
+            "unique_numbers": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "unique_number_count": 12,
+            "average_pairwise_overlap": 2.0,
+            "max_pairwise_overlap_observed": 2,
+            "raw_selection_score": 1308.0,
+            "raw_unique_score": 654.0,
+            "exposure_counts": {
+              "1": 2,
+              "2": 2,
+              "3": 2,
+              "4": 2,
+              "5": 2,
+              "6": 2,
+              "7": 2,
+              "8": 2,
+              "9": 2,
+              "10": 2,
+              "11": 2,
+              "12": 2
+            },
+            "exposure_mean": 2.0,
+            "exposure_stddev": 0.0,
+            "min_number_exposure_observed": 2,
+            "max_number_exposure_observed": 2
+          },
+          "checks": {
+            "pre_result_freeze": true,
+            "causal_cutoff": true,
+            "single_game_preserved": true,
+            "solver_optimal": true,
+            "objective_gap_zero": true,
+            "overlap_within_contract": true,
+            "portfolio_only": true,
+            "scores_unchanged": true,
+            "canonical_full_candidate_coverage": true,
+            "canonical_balanced_exposure": true,
+            "canonical_minimum_overlap_bound": true
+          },
+          "status": "PASS"
+        },
+        {
+          "label": "a",
+          "mode": "cli",
+          "returncode": 0,
+          "stdout_tail": "{\n  \"status\": \"PASS\",\n  \"target_contest\": 4100,\n  \"games\": [\n    [\n      1,\n      2,\n      3,\n      6,\n      11,\n      12\n    ],\n    [\n      1,\n      4,\n      5,\n      6,\n      7,\n      10\n    ],\n    [\n      2,\n      3,\n      7,\n      8,\n      9,\n      10\n    ],\n    [\n      4,\n      5,\n      8,\n      9,\n      11,\n      12\n    ]\n  ],\n  \"solver\": \"OPTIMAL\",\n  \"unique_numbers\": 12,\n  \"max_overlap\": 2,\n  \"artifact_sha256\": \"f89660751ffb976a2dfbef93aaff502a124e3d17467a1150d82c30f130d3ab3d\"\n}\n",
+          "stderr_tail": "",
+          "path": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z\\cli_a\\portfolio_cli_a.json",
+          "file_sha256": "f89660751ffb976a2dfbef93aaff502a124e3d17467a1150d82c30f130d3ab3d",
+          "stable_sha256": "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+          "portfolio_id": "c9b6da3b1fb72fe3e99666d6",
+          "games": [
+            [
+              1,
+              2,
+              3,
+              6,
+              11,
+              12
+            ],
+            [
+              1,
+              4,
+              5,
+              6,
+              7,
+              10
+            ],
+            [
+              2,
+              3,
+              7,
+              8,
+              9,
+              10
+            ],
+            [
+              4,
+              5,
+              8,
+              9,
+              11,
+              12
+            ]
+          ],
+          "metrics": {
+            "unique_numbers": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "unique_number_count": 12,
+            "average_pairwise_overlap": 2.0,
+            "max_pairwise_overlap_observed": 2,
+            "raw_selection_score": 1308.0,
+            "raw_unique_score": 654.0,
+            "exposure_counts": {
+              "1": 2,
+              "2": 2,
+              "3": 2,
+              "4": 2,
+              "5": 2,
+              "6": 2,
+              "7": 2,
+              "8": 2,
+              "9": 2,
+              "10": 2,
+              "11": 2,
+              "12": 2
+            },
+            "exposure_mean": 2.0,
+            "exposure_stddev": 0.0,
+            "min_number_exposure_observed": 2,
+            "max_number_exposure_observed": 2
+          },
+          "checks": {
+            "pre_result_freeze": true,
+            "causal_cutoff": true,
+            "single_game_preserved": true,
+            "solver_optimal": true,
+            "objective_gap_zero": true,
+            "overlap_within_contract": true,
+            "portfolio_only": true,
+            "scores_unchanged": true,
+            "canonical_full_candidate_coverage": true,
+            "canonical_balanced_exposure": true,
+            "canonical_minimum_overlap_bound": true
+          },
+          "status": "PASS"
+        },
+        {
+          "label": "b",
+          "mode": "cli",
+          "returncode": 0,
+          "stdout_tail": "{\n  \"status\": \"PASS\",\n  \"target_contest\": 4100,\n  \"games\": [\n    [\n      1,\n      2,\n      3,\n      6,\n      11,\n      12\n    ],\n    [\n      1,\n      4,\n      5,\n      6,\n      7,\n      10\n    ],\n    [\n      2,\n      3,\n      7,\n      8,\n      9,\n      10\n    ],\n    [\n      4,\n      5,\n      8,\n      9,\n      11,\n      12\n    ]\n  ],\n  \"solver\": \"OPTIMAL\",\n  \"unique_numbers\": 12,\n  \"max_overlap\": 2,\n  \"artifact_sha256\": \"af3a6691006ff10017611126b5825d7cebabf24bea9a7543386afe41b28bb218\"\n}\n",
+          "stderr_tail": "",
+          "path": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z\\cli_b\\portfolio_cli_b.json",
+          "file_sha256": "af3a6691006ff10017611126b5825d7cebabf24bea9a7543386afe41b28bb218",
+          "stable_sha256": "b4964d0e2c78da87b3cb730417f3e36fc405628e177cf441a43ff8e40a5fc952",
+          "portfolio_id": "c9b6da3b1fb72fe3e99666d6",
+          "games": [
+            [
+              1,
+              2,
+              3,
+              6,
+              11,
+              12
+            ],
+            [
+              1,
+              4,
+              5,
+              6,
+              7,
+              10
+            ],
+            [
+              2,
+              3,
+              7,
+              8,
+              9,
+              10
+            ],
+            [
+              4,
+              5,
+              8,
+              9,
+              11,
+              12
+            ]
+          ],
+          "metrics": {
+            "unique_numbers": [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8,
+              9,
+              10,
+              11,
+              12
+            ],
+            "unique_number_count": 12,
+            "average_pairwise_overlap": 2.0,
+            "max_pairwise_overlap_observed": 2,
+            "raw_selection_score": 1308.0,
+            "raw_unique_score": 654.0,
+            "exposure_counts": {
+              "1": 2,
+              "2": 2,
+              "3": 2,
+              "4": 2,
+              "5": 2,
+              "6": 2,
+              "7": 2,
+              "8": 2,
+              "9": 2,
+              "10": 2,
+              "11": 2,
+              "12": 2
+            },
+            "exposure_mean": 2.0,
+            "exposure_stddev": 0.0,
+            "min_number_exposure_observed": 2,
+            "max_number_exposure_observed": 2
+          },
+          "checks": {
+            "pre_result_freeze": true,
+            "causal_cutoff": true,
+            "single_game_preserved": true,
+            "solver_optimal": true,
+            "objective_gap_zero": true,
+            "overlap_within_contract": true,
+            "portfolio_only": true,
+            "scores_unchanged": true,
+            "canonical_full_candidate_coverage": true,
+            "canonical_balanced_exposure": true,
+            "canonical_minimum_overlap_bound": true
+          },
+          "status": "PASS"
+        }
+      ]
+    },
+    {
+      "scenario": "focused_reproducibility_pytest",
+      "pass": true,
+      "returncode": 0,
+      "stdout_tail": "..........                                                               [100%]\n10 passed in 3.77s\n",
+      "stderr_tail": "",
+      "junit": "C:\\SMART-MEGA\\runtime\\step36_reproducibility\\20260922T153846Z\\pytest\\STEP36_REPRODUCIBILITY_FOCUSED.xml",
+      "junit_sha256": "344bae26fb57d6bb6f2a48193bda118acfce9bf682731e9d9bd6cc56a1d44c61"
+    }
+  ],
+  "checks": {
+    "step35_pass_bound": true,
+    "independent_api_cli_reproducible": true,
+    "focused_reproducibility_regression_pass": true,
+    "live_operational_state_unchanged": true
+  },
+  "live_state_before": {
+    "SMART_STEP35_E2E_MULTICARD.json": "e6eb4b07383edb89a79a8df2be14f3ee5d2a0bc75966e5f66dc06f86fd252cc5",
+    "SMART_STEP34_CONTAMINATION_GUARD.json": "a8db1c4d82ec5d45e3aed353183dd87279487acc67bd221a8e95924635093534",
+    "SMART_STEP33_RESTART_PERSISTENCE.json": "f196df62187b4ef418657be3388a12fe356b6c40ca42b59fc84e98458cd0e6bc",
+    "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "live_state_after": {
+    "SMART_STEP35_E2E_MULTICARD.json": "e6eb4b07383edb89a79a8df2be14f3ee5d2a0bc75966e5f66dc06f86fd252cc5",
+    "SMART_STEP34_CONTAMINATION_GUARD.json": "a8db1c4d82ec5d45e3aed353183dd87279487acc67bd221a8e95924635093534",
+    "SMART_STEP33_RESTART_PERSISTENCE.json": "f196df62187b4ef418657be3388a12fe356b6c40ca42b59fc84e98458cd0e6bc",
+    "SMART_STEP32_CRASH_RECOVERY_CAMPAIGN.json": "087306ad8cbaf2973120fc971815150a10a07d7e665e399a7b264bcfb5c09d10",
+    "SMART_ACTIVE_EPOCH.json": null,
+    "SMART_OPERATIONAL_LIFECYCLE.json": "830fc7508737a48e8a80a0c93ed016908b25588f8308c0f62e3d79574a24085c",
+    "runtime\\transactions\\SMART_TRANSACTION_JOURNAL.jsonl": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  },
+  "sha256": "31a9f4c078c96e0a716bfc2f3235583ed6a664145702a531c7bdf040693e2167"
+}

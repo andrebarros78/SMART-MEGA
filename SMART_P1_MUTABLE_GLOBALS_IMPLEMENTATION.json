@@ -1,0 +1,34 @@
+{
+  "schema": "SMART_P1_MUTABLE_GLOBALS_IMPLEMENTATION_1",
+  "status": "PASS",
+  "found": [
+    [
+      "smart_operator.py",
+      "POST_RESULT_HOLD_PATH"
+    ],
+    [
+      "smart_operator.py",
+      "NEXT_CYCLE_AUTHORITY_PATH"
+    ],
+    [
+      "smart_operational_lifecycle.py",
+      "ALLOWED"
+    ],
+    [
+      "smart_learning_epoch_reset.py",
+      "ACTIVE_PATH"
+    ],
+    [
+      "smart_transaction_journal.py",
+      "ALLOWED"
+    ]
+  ],
+  "bad": [],
+  "checks": {
+    "ast": true,
+    "no_unconfined_mutable_globals": true,
+    "only_constants_or_transition_tables": true
+  },
+  "tests_executed": false,
+  "sha256": "fb2379ab9f911b6b371604548e2396a5bdee190e8a0b10018705becf1259e243"
+}

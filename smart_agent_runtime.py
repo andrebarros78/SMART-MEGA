@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 from smart_mission_status import load_mission_status
 
@@ -284,7 +285,7 @@ def main(argv: list[str] | None = None) -> None:
     parser.add_argument("--phase", choices=["BUILD", "PRE_FREEZE", "POST_FREEZE"], default="POST_FREEZE")
     parser.add_argument("--output", default="SMART_AGENT_RUNTIME_PROOF.json")
     args = parser.parse_args([] if argv is None else argv)
-    result = write_runtime(Path(__file__).resolve().parent) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_RUNTIME_PROOF.json" else write_runtime(Path(__file__).resolve().parent, args.output, phase=args.phase)
+    result = write_runtime(canonical_root()) if args.phase == "POST_FREEZE" and args.output == "SMART_AGENT_RUNTIME_PROOF.json" else write_runtime(canonical_root(), args.output, phase=args.phase)
     print(json.dumps({"status": result["status"], "phase": result.get("phase", "POST_FREEZE"), "agents": result["agent_count"], "capabilities": result["capability_count"], "checks": result["checks"]}, ensure_ascii=False, indent=2))
 
 

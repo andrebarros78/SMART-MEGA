@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -148,6 +149,7 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
     env = os.environ.copy()
     env["PYTHONPATH"] = ""
     env["PYTHONNOUSERSITE"] = "1"
+    env["SMART_PYTEST_SANDBOX_ROOTS"] = "1"
     command = [
         sys.executable,
         "-E",
@@ -261,7 +263,7 @@ def run_regression(root: str | Path, pytest_args: Sequence[str] | None = None) -
 
 
 def main() -> None:
-    result = run_regression(Path(__file__).resolve().parent, sys.argv[1:])
+    result = run_regression(canonical_root(), sys.argv[1:])
     print(json.dumps(result, ensure_ascii=False))
     raise SystemExit(0 if result["status"] == "PASS" else 1)
 

@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -283,6 +284,6 @@ def write_lock(root: str | Path = ".", out: str | Path = DEFAULT_PATH) -> dict[s
 
 
 if __name__ == "__main__":
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     result = write_lock(root)
     print(json.dumps(result or {"status": "NO_UNRESOLVED_PROSPECTIVE_AUTHORITY"}, ensure_ascii=False, indent=2))

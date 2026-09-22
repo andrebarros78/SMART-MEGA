@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import argparse
 import hashlib
@@ -172,13 +173,14 @@ def write_preparation_proof(root: str | Path, output: str | Path = "SMART_RAG_EX
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=str(Path(__file__).resolve().parent))
+    parser.add_argument("--root", default=str(canonical_root()))
     parser.add_argument("--excel", default="Mega-Sena.xlsx")
     parser.add_argument("--as-of-contest", type=int)
     parser.add_argument("--output", default="SMART_RAG_EXCEL_PREPARATION_PROOF.json")
     parser.add_argument("--query")
     parser.add_argument("--k", type=int, default=5)
     args = parser.parse_args(argv)
+    args.root = str(canonical_root(args.root))
     root = Path(args.root).resolve()
     if args.query:
         p = Path(args.excel)

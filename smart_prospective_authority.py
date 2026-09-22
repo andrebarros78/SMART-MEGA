@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -89,7 +90,7 @@ def write_authority(root: str | Path) -> dict[str, Any]:
 def main() -> None:
     import sys
 
-    root = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).resolve().parent
+    root = canonical_root(Path(sys.argv[1]) if len(sys.argv) > 1 else None)
     obj = write_authority(root)
     legacy = _read_json(root / "SMART_PROSPECTIVE_LEDGER.json")
     print(json.dumps({

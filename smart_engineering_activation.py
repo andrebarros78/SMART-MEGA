@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 import hashlib
 import json
@@ -274,7 +275,7 @@ def activate(
 
 
 def main() -> None:
-    root = Path(__file__).resolve().parent
+    root = canonical_root()
     doc = activate(root)
     print(json.dumps({
         "status": doc["status"],

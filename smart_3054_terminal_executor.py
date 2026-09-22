@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 
 from smart_mission_status import load_mission_status, write_mission_status, sha256_json as mission_sha256_json
 
@@ -733,6 +734,7 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
 
 
 def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
+    root = canonical_root(root)
     root = Path(root).resolve()
     binding = _runtime_binding(root)
     if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
@@ -790,6 +792,7 @@ def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensu
 
 
 def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
+    root = canonical_root(root)
     root = Path(root).resolve()
     binding = _runtime_binding(root)
     if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
@@ -867,6 +870,7 @@ def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consen
 
 @contextmanager
 def active_epoch_context(root: str | Path, target: int):
+    root = canonical_root(root)
     global SCHEMA, TARGET, CUTOFF, PRE_RESULT_DATA, RESULT_DATA, INGEST_PROOF, PRIMARY_PAYLOAD
     global CONSENSUS_FILE, LEARNED_STATE, RESULT_STORE_PROOF, TERMINAL_PROOF, STATUS_FILE, INDEPENDENT_AUDIT_FILE
     root = Path(root).resolve()
@@ -902,11 +906,13 @@ def active_epoch_context(root: str | Path, target: int):
 
 
 def probe_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
+    root = canonical_root(root)
     with active_epoch_context(root, target):
         return probe(root, fetcher=fetcher)
 
 
 def execute_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
+    root = canonical_root(root)
     with active_epoch_context(root, target):
         return execute(root, fetcher=fetcher, allow_terminal_write=allow_terminal_write)
 
@@ -915,11 +921,11 @@ def main() -> None:
     import argparse
 
     parser = argparse.ArgumentParser()
-    parser.add_argument("--root", default=str(Path(__file__).resolve().parent))
+    parser.add_argument("--root", default=str(canonical_root()))
     parser.add_argument("--probe-only", action="store_true")
     parser.add_argument("--no-terminal-write", action="store_true")
     args = parser.parse_args()
-    root = Path(args.root)
+    root = canonical_root(args.root)
     result = probe(root) if args.probe_only else execute(root, allow_terminal_write=not args.no_terminal_write)
     if args.probe_only:
         _atomic_write_json(root / STATUS_FILE, result)

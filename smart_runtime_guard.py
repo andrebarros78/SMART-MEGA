@@ -1,4 +1,5 @@
 from __future__ import annotations
+from smart_canonical_identity import canonical_root
 import importlib, importlib.metadata, json, platform, re, sys
 from pathlib import Path
 
@@ -62,5 +63,5 @@ def audit(root: str|Path='.') -> dict:
     return {'schema':'SMART_RUNTIME_GUARD_V2','project_root':str(root),'canonical_python':str(canonical),'current_python':str(current),'python_version':platform.python_version(),'modules':modules,'external_project_paths':external_project_paths,'unpinned_requirements':unpinned,'direct_lock_mismatch':direct_lock_mismatch,'checks':checks,'status':'PASS' if all(checks.values()) else 'FAIL'}
 
 if __name__=='__main__':
-    report=audit(Path(__file__).resolve().parent)
-    out=Path(__file__).resolve().parent/'runtime'/'SMART_RUNTIME_GUARD.json'; out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps(report,indent=2),encoding='utf-8'); print(json.dumps(report,indent=2)); raise SystemExit(0 if report['status']=='PASS' else 1)
+    report=audit(canonical_root())
+    out=canonical_root()/'runtime'/'SMART_RUNTIME_GUARD.json'; out.parent.mkdir(parents=True,exist_ok=True); out.write_text(json.dumps(report,indent=2),encoding='utf-8'); print(json.dumps(report,indent=2)); raise SystemExit(0 if report['status']=='PASS' else 1)

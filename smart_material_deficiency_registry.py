@@ -2,6 +2,7 @@
 
 import hashlib
 import json
+import time
 from pathlib import Path
 from typing import Any, Iterable
 
@@ -118,6 +119,35 @@ def load_registry(path: Path = DEFAULT_PATH, *, root: Path = Path('.')) -> dict[
     }
 
 
+def _replace_with_retry(source: Path, target: Path, *, attempts: int = 20, delay_seconds: float = 0.05) -> None:
+    last_error: PermissionError | None = None
+    for attempt in range(attempts):
+        try:
+            source.replace(target)
+            return
+        except PermissionError as exc:
+            last_error = exc
+            if attempt + 1 < attempts:
+                time.sleep(delay_seconds)
+
+    assert last_error is not None
+    backup = target.with_name(target.name + '.replace-backup')
+    if backup.exists():
+        raise PermissionError(f'replacement backup already exists: {backup}') from last_error
+    target.rename(backup)
+    try:
+        source.rename(target)
+    except Exception:
+        backup.rename(target)
+        raise
+    try:
+        backup.unlink()
+    except Exception:
+        if target.exists() and not source.exists():
+            raise
+        raise
+
+
 def upsert_deficiency(path: Path, entry: dict[str, Any], *, root: Path = Path('.')) -> dict[str, Any]:
     root = Path(root).resolve()
     path = Path(path)
@@ -140,7 +170,7 @@ def upsert_deficiency(path: Path, entry: dict[str, Any], *, root: Path = Path('.
     registry = build_registry(entries)
     tmp = resolved.with_name(resolved.name + '.tmp-deficiency-sync')
     tmp.write_text(json.dumps(registry, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-    tmp.replace(resolved)
+    _replace_with_retry(tmp, resolved)
     return load_registry(resolved, root=root)
 
 

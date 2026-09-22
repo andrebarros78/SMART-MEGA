@@ -1,0 +1,21 @@
+{
+  "schema": "SMART_IDEMPOTENCY_CONTRACT_1",
+  "operations": [
+    "authorize",
+    "prepare",
+    "freeze",
+    "adjudicate",
+    "review",
+    "rollover",
+    "terminal"
+  ],
+  "key_fields": [
+    "operation",
+    "target",
+    "payload"
+  ],
+  "storage": "runtime/idempotency/<operation>/<sha256>.json",
+  "conflict_policy": "FAIL_CLOSED",
+  "tests_executed": false,
+  "sha256": "acf7ed5be0f06b322b7dcd49cf77bdcb4afb09c6a197430929046fc2226f112a"
+}
