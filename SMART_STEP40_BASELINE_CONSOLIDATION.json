@@ -1,0 +1,34 @@
+{
+  "schema": "SMART_STEP40_BASELINE_CONSOLIDATION_1",
+  "generated_utc": "2026-09-22T18:30:01.854552+00:00",
+  "project": "SMART-MEGA",
+  "host": "DESKTOP-4T6AS9K",
+  "root": "C:\\SMART-MEGA",
+  "source_head_before_consolidation_commit": "3b110dab6e8476e52c95da07466ad1c8b3bc79d9",
+  "source_tags_at_head": [
+    "smart-mega-v6.3.2-step39-20260922T175034Z"
+  ],
+  "operation": "RECONCILE_TEST_CORRECT_RETEST_CONSOLIDATE_GIT_ADD_GIT_COMMIT_CLEAN_BASELINE",
+  "reconciliation": {
+    "git_status_before_artifact_update": "",
+    "step39_proof_present": true
+  },
+  "correction": {
+    "required": true,
+    "reason": "Consolidation evidence parser corrected to aggregate testsuite counts. Commit hash is intentionally not embedded to avoid self-referential proof."
+  },
+  "retest": {
+    "junit_file": "runtime\\step40_baseline\\STEP40_PRECOMMIT_JUNIT.xml",
+    "junit_sha256": "802dd3225addfa7966aa76cbf9e800ead7fc881f75c196274101ff4af25715f3",
+    "tests": 883,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS"
+  },
+  "baseline_rule": {
+    "git_add_policy": "targeted_file_only_no_git_add_dot",
+    "final_status_required": "clean"
+  },
+  "sha256": "417917a2e0780f0f9a057a23119c2b230531e1dcb2c0666b1e485e754f7ab70a"
+}
