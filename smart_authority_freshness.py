@@ -49,7 +49,7 @@ def audit(root: str | Path) -> dict[str, Any]:
         result["authorities"]["governance"]={"current":False,"reason":f"{type(exc).__name__}: {exc}"}
     try:
         from smart_global_integrity import verify_global_integrity
-        verify_global_integrity(root,root/"SMART_TOTAL_INTEGRATION_GATE.json",root/"SMART_GLOBAL_INTEGRITY_PROOF.json")
+        verify_global_integrity(root,root/"SMART_3052_IMPLEMENTATION_GATE.json",root/"SMART_GLOBAL_INTEGRITY_PROOF.json")
         result["authorities"]["global_integrity"]={"current":True}
     except Exception as exc:
         result["authorities"]["global_integrity"]={"current":False,"reason":f"{type(exc).__name__}: {exc}"}

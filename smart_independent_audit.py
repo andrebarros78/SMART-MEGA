@@ -285,6 +285,15 @@ def _resolve_historical_evidence_by_hash(root: Path, filename: str, expected_sha
     if len(exact) == 1:
         return exact[0]
     if len(exact) > 1:
+        # Prefer one live canonical artifact over immutable archival copies of
+        # the same hash. Multiple live matches remain ambiguous/fail-closed.
+        live = []
+        for candidate in exact:
+            rel_parts = candidate.relative_to(root).parts
+            if not rel_parts or rel_parts[0].casefold() != 'smart_state_archive':
+                live.append(candidate)
+        if len(live) == 1:
+            return live[0]
         raise ValueError(f'{label} hash-bound evidence ambiguous')
     if allow_legacy_mismatch and len(candidates) == 1:
         return candidates[0]

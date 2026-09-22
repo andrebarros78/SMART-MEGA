@@ -61,6 +61,17 @@ def test_d012_fails_closed_and_legacy_is_explicit(tmp_path):
     with pytest.raises(ValueError,match='ambiguous'): ia._resolve_audit_evidence(tmp_path,stale,_sha(artifact),'artifact')
 
 
+def test_d012_prefers_single_live_match_over_identical_archive_copy(tmp_path):
+    live = tmp_path / 'runtime' / 'artifact.bin'
+    live.parent.mkdir()
+    live.write_bytes(b'canonical')
+    archived = tmp_path / 'SMART_STATE_ARCHIVE' / 'epoch' / 'artifact.bin'
+    archived.parent.mkdir(parents=True)
+    archived.write_bytes(b'canonical')
+    stale = Path(r'Z:\\retired\\SMART-MEGA\\artifact.bin')
+    assert ia._resolve_audit_evidence(tmp_path, stale, _sha(live), 'artifact') == live
+
+
 
 def test_d012_rejects_untrusted_absolute_path_even_with_exact_hash_and_legacy_override(tmp_path):
 

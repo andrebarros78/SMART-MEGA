@@ -141,3 +141,26 @@ def test_preflight_blocks_malformed_ledger_without_traceback(tmp_path: Path, mon
     out = op.preflight_operation(tmp_path, 3060)
     assert out["status"] == "BLOCKED_INTEGRITY"
     assert out["integrity_checks"]["ledger_valid"] is False
+
+
+def test_authority_freshness_uses_bound_global_integrity_gate(monkeypatch, tmp_path: Path) -> None:
+    import smart_authority_freshness as freshness
+
+    observed = {}
+
+    def fake_verify_global_integrity(root, gate_path, proof_path):
+        observed["gate_path"] = Path(gate_path).name
+        observed["proof_path"] = Path(proof_path).name
+        return {"status": "PASS"}
+
+    monkeypatch.setattr("smart_product_certification.verify_product_certification", lambda *a, **k: {"status": "CONSTRUCTION_PROVEN"})
+    monkeypatch.setattr(freshness, "verify_governance", lambda root: {"status": "PASS"})
+    monkeypatch.setattr("smart_global_integrity.verify_global_integrity", fake_verify_global_integrity)
+    monkeypatch.setattr(freshness, "build_critical_code_manifest", lambda root: {"schema": "SMART_CRITICAL_CODE_MANIFEST_1", "files": {}, "file_count": 0, "fingerprint_sha256": "0" * 64})
+    monkeypatch.setattr(freshness, "load_registry", lambda *a, **k: {"open_count": 0})
+
+    result = freshness.audit(tmp_path)
+
+    assert result["authorities"]["global_integrity"]["current"] is True
+    assert observed["gate_path"] == "SMART_3052_IMPLEMENTATION_GATE.json"
+    assert observed["proof_path"] == "SMART_GLOBAL_INTEGRITY_PROOF.json"
