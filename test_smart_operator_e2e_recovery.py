@@ -1,6 +1,8 @@
 from pathlib import Path
 import smart_operator as op
 
+ROOT = Path(__file__).resolve().parent
+
 def test_preflight_hold_returns_operator_authorization_status(tmp_path, monkeypatch):
     monkeypatch.setattr(op,"canonical_root",lambda root=None: Path(root).resolve())
     monkeypatch.setattr(op,"reconcile_startup",lambda *a,**k:{"status":"OK","checks":{}})
@@ -30,4 +32,4 @@ def test_freeze_operation_is_idempotent_when_already_frozen(tmp_path, monkeypatc
     assert op.freeze_operation(tmp_path,3062)["idempotent_replay"] is True
 
 def test_run_full_process_contains_exception_rollback():
-    assert 'recover_interrupted_freeze_operation(root, target, reason="run_full_process_exception_rollback")' in Path('C:/SMART-MEGA/smart_full_process_pipeline.py').read_text(encoding="utf-8")
+    assert 'recover_interrupted_freeze_operation(root, target, reason="run_full_process_exception_rollback")' in (ROOT / 'smart_full_process_pipeline.py').read_text(encoding="utf-8")
