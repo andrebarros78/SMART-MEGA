@@ -29,17 +29,6 @@ def _git_root() -> Path:
 ROOT = _git_root()
 
 
-def _read_json(relative: str) -> dict[str, Any]:
-    path = _safe_relative(relative)
-    try:
-        value = json.loads(path.read_text(encoding="utf-8-sig"))
-    except Exception as exc:
-        raise RepositoryIntegrityError(f"invalid JSON {relative}: {exc}") from exc
-    if not isinstance(value, dict):
-        raise RepositoryIntegrityError(f"JSON root must be an object: {relative}")
-    return value
-
-
 def _safe_relative(relative: str) -> Path:
     if not isinstance(relative, str) or not relative.strip():
         raise RepositoryIntegrityError(f"invalid relative path: {relative!r}")
@@ -52,12 +41,32 @@ def _safe_relative(relative: str) -> Path:
     if ".." in pure.parts:
         raise RepositoryIntegrityError(f"path traversal forbidden: {relative}")
 
-    resolved = (ROOT.joinpath(*pure.parts)).resolve()
+    resolved = ROOT.joinpath(*pure.parts).resolve()
     try:
         resolved.relative_to(ROOT)
     except ValueError as exc:
         raise RepositoryIntegrityError(f"path escapes repository: {relative}") from exc
     return resolved
+
+
+def _read_json(relative: str) -> dict[str, Any]:
+    path = _safe_relative(relative)
+    if not path.is_file():
+        raise RepositoryIntegrityError(f"JSON authority missing: {relative}")
+    try:
+        value = json.loads(path.read_text(encoding="utf-8-sig"))
+    except Exception as exc:
+        raise RepositoryIntegrityError(f"invalid JSON {relative}: {exc}") from exc
+    if not isinstance(value, dict):
+        raise RepositoryIntegrityError(f"JSON root must be an object: {relative}")
+    return value
+
+
+def _require_file(label: str, relative: str) -> Path:
+    path = _safe_relative(relative)
+    if not path.is_file():
+        raise RepositoryIntegrityError(f"{label} missing: {relative}")
+    return path
 
 
 def _sha256(path: Path) -> str:
@@ -68,10 +77,8 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
-def _require_hash(label: str, relative: str, expected: str) -> None:
-    path = _safe_relative(relative)
-    if not path.is_file():
-        raise RepositoryIntegrityError(f"{label} missing: {relative}")
+def _require_raw_hash(label: str, relative: str, expected: str) -> None:
+    path = _require_file(label, relative)
     expected = str(expected).lower()
     if not re.fullmatch(r"[0-9a-f]{64}", expected):
         raise RepositoryIntegrityError(f"{label} invalid expected SHA-256: {expected!r}")
@@ -104,9 +111,7 @@ def _check_discovery_docs() -> None:
     )
 
     for relative in required_files:
-        path = _safe_relative(relative)
-        if not path.is_file():
-            raise RepositoryIntegrityError(f"discovery file missing: {relative}")
+        path = _require_file("discovery file", relative)
         text = path.read_text(encoding="utf-8-sig")
         for marker in required_markers:
             if marker not in text:
@@ -153,31 +158,49 @@ def _check_active_epoch() -> dict[str, Any]:
     if target <= cutoff:
         raise RepositoryIntegrityError(f"non-monotonic target/cutoff: {target} <= {cutoff}")
 
-    _require_hash(
-        "product certification",
-        str(epoch["product_certification_file"]),
-        str(epoch["product_certification_sha256"]),
-    )
-    _require_hash("active dataset", str(epoch["data_file"]), str(epoch["data_sha256"]))
+    certification_rel = str(epoch["product_certification_file"])
+    certification = _read_json(certification_rel)
+    if certification.get("project") != "SMART-MEGA":
+        raise RepositoryIntegrityError("product certification project mismatch")
+
+    _require_raw_hash("active dataset", str(epoch["data_file"]), str(epoch["data_sha256"]))
 
     state_paths = epoch.get("state_paths") or {}
-    _require_hash("signal ledger", str(state_paths["ledger"]), str(epoch["ledger_sha256"]))
+    ledger_rel = str(state_paths["ledger"])
+    ledger = _read_json(ledger_rel)
+    events = ledger.get("events")
+    if not isinstance(events, list):
+        raise RepositoryIntegrityError("signal ledger events missing")
 
     freeze = epoch.get("freeze_authority") or {}
-    _require_hash("freeze authority", str(freeze["file"]), str(freeze["sha256"]))
+    freeze_rel = str(freeze["file"])
+    freeze_sha = str(freeze["sha256"]).lower()
+    _require_raw_hash("freeze authority", freeze_rel, freeze_sha)
     if int(freeze["target_contest"]) != target or int(freeze["cutoff_contest"]) != cutoff:
         raise RepositoryIntegrityError("freeze authority target/cutoff mismatch")
 
+    freeze_events = [
+        event
+        for event in events
+        if isinstance(event, dict)
+        and event.get("event_type") == "FREEZE"
+        and int(event.get("target_contest", -1)) == target
+    ]
+    if not freeze_events:
+        raise RepositoryIntegrityError("signal ledger has no FREEZE event for active target")
+    if not any(
+        not event.get("freeze_sha256")
+        or str(event.get("freeze_sha256")).lower() == freeze_sha
+        for event in freeze_events
+    ):
+        raise RepositoryIntegrityError("signal ledger FREEZE event is not bound to active freeze")
+
     learning = epoch.get("learning_state_authority") or {}
-    _require_hash("learning state", str(learning["file"]), str(learning["sha256"]))
+    _require_raw_hash("learning state", str(learning["file"]), str(learning["sha256"]))
 
     schedule = epoch.get("target_schedule") or {}
-    _require_hash("schedule source", str(schedule["source_file"]), str(schedule["source_sha256"]))
-    _require_hash(
-        "draw-time policy",
-        str(schedule["draw_time_policy_file"]),
-        str(schedule["draw_time_policy_sha256"]),
-    )
+    _require_raw_hash("schedule source", str(schedule["source_file"]), str(schedule["source_sha256"]))
+    _require_file("draw-time policy", str(schedule["draw_time_policy_file"]))
     if int(schedule["target_contest"]) != target:
         raise RepositoryIntegrityError("schedule target mismatch")
     if schedule.get("result_used") is not False:
@@ -191,7 +214,7 @@ def _check_active_epoch() -> dict[str, Any]:
             ("probability ledger", "probability_ledger_file", "probability_ledger_sha256"),
         ):
             if prospective.get(file_key) or prospective.get(sha_key):
-                _require_hash(label, str(prospective[file_key]), str(prospective[sha_key]))
+                _require_raw_hash(label, str(prospective[file_key]), str(prospective[sha_key]))
         if prospective.get("result_used") is not False:
             raise RepositoryIntegrityError("prospective registration must remain result-free")
 
