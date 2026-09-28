@@ -33,6 +33,7 @@ jobs:
         run: python -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_AUDIT_JUNIT_GITHUB.xml
       - name: Upload JUnit evidence
         if: always()
+        continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
           name: smart-mega-junit
