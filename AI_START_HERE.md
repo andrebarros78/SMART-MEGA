@@ -1,17 +1,23 @@
-# SMART-MEGA V6 — AI START HERE
+# SMART-MEGA — AI START HERE
 
-Este arquivo é somente um ponteiro de descoberta.
+Este arquivo é o ponteiro inicial de descoberta para agentes e IAs.
 
-## Autoridade executiva única
+## Autoridade operacional GitHub-native
 
-Leia e execute integralmente:
+Leia primeiro:
 
-`C:\SMART-MEGA\SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md`
+`SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`
 
-Root canônica: `C:\SMART-MEGA`  
-Host canônico: `DESKTOP-4T6AS9K`  
-Não usar como root: `C:\SMART-MEGA V6`
+A identidade operacional é o repositório `andrebarros78/SMART-MEGA`, com `main` como baseline aprovada e root resolvida dinamicamente pelo Git top-level do checkout atual.
 
-Regra principal: implementar P0 -> P1 -> P2 sem bloquear módulos por testes intermediários. Ao atingir `IMPLEMENTATION_COMPLETE`, executar a campanha final de testes. `MISSION_PROVEN` somente depois de prova final completa.
+Não exigir hostname, letra de unidade ou caminho físico fixo. `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica da migração.
 
-Este arquivo não substitui nem modifica a baseline.
+## Plano executivo preservado
+
+Depois leia integralmente:
+
+`SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md`
+
+A baseline histórica continua definindo o plano P0 -> P1 -> P2 e a campanha final, exceto onde suas regras antigas de host/root foram explicitamente supersedidas pela baseline GitHub-native.
+
+Regra terminal: `MISSION_PROVEN` somente com prova fresca 6/6 posterior ao último byte funcional relevante.
