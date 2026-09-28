@@ -7,9 +7,19 @@ from typing import Any
 SCHEMA = "SMART_CANONICAL_IDENTITY_V1"
 PROJECT = "SMART-MEGA"
 VERSION = "6.3.2"
+
+# Historical/provenance identity. These values remain stable because the
+# signed/self-hashed authority documents were produced on the original host.
+# They are no longer used as a physical execution requirement.
 CANONICAL_HOST = "DESKTOP-4T6AS9K"
 CANONICAL_ROOT_TEXT = r"C:\SMART-MEGA"
-CANONICAL_ROOT = Path(CANONICAL_ROOT_TEXT)
+LEGACY_CANONICAL_ROOT = Path(CANONICAL_ROOT_TEXT)
+
+# Operational identity is repository-relative and therefore portable across
+# GitHub Actions, clean restores and authorized workstations.
+OPERATIONAL_ROOT = Path(__file__).resolve().parent
+CANONICAL_ROOT = OPERATIONAL_ROOT
+
 AUTHORITY_FILE = "SMART_CANONICAL_ROOT.json"
 IDENTITY_FILE = "SMART_CANONICAL_IDENTITY.json"
 ROOT_MARKERS = ("SMART_CANONICAL_ROOT.json", "smart_operator.py", "smart_full_process_pipeline.py")
@@ -34,6 +44,7 @@ def _sha_json(v: Any) -> str:
     return hashlib.sha256(json.dumps(v,ensure_ascii=False,sort_keys=True,separators=(",",":")).encode("utf-8")).hexdigest()
 
 def canonical_root_id() -> str:
+    """Return the stable provenance root id used by the authority documents."""
     return _sha_json({"project":PROJECT,"version":VERSION,"canonical_host":CANONICAL_HOST,"canonical_root":CANONICAL_ROOT_TEXT})
 
 def _norm(p: str | Path) -> str:
@@ -74,7 +85,7 @@ def discover_competing_roots(canonical: Path | None = None) -> tuple[str,...]:
     except Exception:
         pass
     scans=(
-        (CANONICAL_ROOT.parent,("SMART-MEGA V6*","SMART-MEGA-V6*")),
+        (canonical.parent,("SMART-MEGA V6*","SMART-MEGA-V6*")),
         (Path(r"C:\New Projet"),("SMART-MEGA V6*","SMART-MEGA-V6*")),
         (Path(r"C:\ProgramData\B2-Learning-Work"),("SMART-MEGA*",)),
     )
@@ -92,6 +103,7 @@ def discover_competing_roots(canonical: Path | None = None) -> tuple[str,...]:
     return tuple(sorted(str(x) for x in found.values()))
 
 def _validate_authority(root: Path) -> dict[str,Any]:
+    """Validate immutable provenance fields without binding execution to them."""
     doc=_read_hashed(root/AUTHORITY_FILE)
     expected={
         "project":PROJECT,"version":VERSION,"canonical_root":CANONICAL_ROOT_TEXT,"hostname":CANONICAL_HOST,
@@ -103,6 +115,7 @@ def _validate_authority(root: Path) -> dict[str,Any]:
     return doc
 
 def _validate_contract(root: Path) -> dict[str,Any]:
+    """Validate the signed historical identity contract as provenance."""
     doc=_read_hashed(root/IDENTITY_FILE,SCHEMA)
     expected={"project":PROJECT,"version":VERSION,"canonical_host":CANONICAL_HOST,"canonical_root":CANONICAL_ROOT_TEXT,
               "root_id":canonical_root_id(),"authority_file":AUTHORITY_FILE,"identity_module":Path(__file__).name}
@@ -115,42 +128,61 @@ def _validate_contract(root: Path) -> dict[str,Any]:
 def _authorized_pytest_sandbox(candidate: str | Path | None) -> bool:
     if candidate is None:
         return False
-    if False:
-        return False
     try:
         supplied = Path(candidate).resolve()
-        temp_root = Path(tempfile.gettempdir()).resolve()
         text = _absnorm(supplied)
         return "pytest-" in text.lower()
     except Exception:
         return False
 
+def _resolve_operational_root(candidate: str | Path | None) -> Path:
+    supplied = Path(candidate).resolve() if candidate is not None else OPERATIONAL_ROOT.resolve()
+    expected = OPERATIONAL_ROOT.resolve()
+    if _norm(supplied) != _norm(expected):
+        raise CanonicalIdentityError(f"non-canonical repository root: {supplied}; expected checkout root: {expected}")
+    if not _looks_like_root(expected):
+        raise CanonicalIdentityError(f"repository root markers missing: {expected}")
+    return expected
+
 def require_canonical_identity(candidate: str | Path | None = None, *, require_host: bool = True, require_git: bool = True, detect_competitors: bool = True) -> dict[str,Any]:
-    expected=CANONICAL_ROOT.resolve(); supplied=Path(candidate) if candidate is not None else Path(__file__).resolve().parent
+    supplied=Path(candidate) if candidate is not None else OPERATIONAL_ROOT
     if _authorized_pytest_sandbox(supplied):
-        return {"schema": SCHEMA, "status": "PASS", "project": PROJECT, "version": VERSION, "canonical_host": CANONICAL_HOST, "observed_host": socket.gethostname(), "canonical_root": str(Path(supplied).resolve()), "pytest_sandbox_root": True, "git_identity": None, "competing_roots": []}
-    if _absnorm(supplied) != _absnorm(CANONICAL_ROOT): raise CanonicalIdentityError(f"non-canonical root address: {supplied}")
-    if _norm(supplied) != _norm(expected): raise CanonicalIdentityError(f"non-canonical physical root: {supplied}")
+        return {"schema": SCHEMA, "status": "PASS", "project": PROJECT, "version": VERSION,
+                "provenance_host": CANONICAL_HOST, "observed_host": socket.gethostname(),
+                "canonical_root": str(Path(supplied).resolve()), "pytest_sandbox_root": True,
+                "git_identity": None, "competing_roots": []}
+
+    expected=_resolve_operational_root(supplied)
     host=socket.gethostname()
-    if require_host and host.casefold()!=CANONICAL_HOST.casefold(): raise CanonicalIdentityError(f"non-canonical host: {host}")
-    authority=_validate_authority(expected); contract=_validate_contract(expected)
+
+    # `require_host` is retained for API compatibility. Host identity is now
+    # evidence/provenance, not an execution gate; repository identity is the
+    # portable authority. This intentionally allows clean GitHub restores.
+    authority=_validate_authority(expected)
+    contract=_validate_contract(expected)
     competitors=discover_competing_roots(expected) if detect_competitors else ()
     if competitors: raise CanonicalIdentityError(f"ambiguous SMART-MEGA roots: {list(competitors)}")
+
     git_identity=None
     if require_git:
         top=Path(_git(expected,"rev-parse","--show-toplevel")).resolve()
         if _norm(top)!=_norm(expected): raise CanonicalIdentityError(f"git top-level mismatch: {top}")
         gd=Path(_git(expected,"rev-parse","--git-dir")); gd=(expected/gd).resolve() if not gd.is_absolute() else gd.resolve()
         git_identity={"repository_root":str(top),"git_dir":str(gd),"branch":_git(expected,"branch","--show-current"),
-                      "head":_git(expected,"rev-parse","HEAD"),"identity_rule":"git top-level resolves to canonical_root"}
-    return {"schema":SCHEMA,"status":"PASS","project":PROJECT,"version":VERSION,"canonical_host":CANONICAL_HOST,
-            "observed_host":host,"canonical_root":CANONICAL_ROOT_TEXT,"canonical_root_resolved":str(expected),
+                      "head":_git(expected,"rev-parse","HEAD"),
+                      "identity_rule":"git top-level resolves to operational checkout root"}
+
+    return {"schema":SCHEMA,"status":"PASS","project":PROJECT,"version":VERSION,
+            "canonical_host":CANONICAL_HOST,"observed_host":host,
+            "canonical_root":str(expected),"canonical_root_resolved":str(expected),
+            "provenance_root":CANONICAL_ROOT_TEXT,"provenance_host":CANONICAL_HOST,
             "root_id":canonical_root_id(),"authority_file":AUTHORITY_FILE,"authority_sha256":authority.get("sha256"),
             "identity_contract_file":IDENTITY_FILE,"identity_contract_sha256":contract.get("sha256"),
-            "competing_roots":list(competitors),"git_identity":git_identity}
+            "competing_roots":list(competitors),"git_identity":git_identity,
+            "portable_identity":True,"host_enforced":False}
 
 def canonical_root(candidate: str | Path | None = None) -> Path:
     if _authorized_pytest_sandbox(candidate):
         return Path(candidate).resolve()
     require_canonical_identity(candidate)
-    return CANONICAL_ROOT.resolve()
+    return OPERATIONAL_ROOT.resolve()
