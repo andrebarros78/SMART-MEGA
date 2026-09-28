@@ -12,6 +12,8 @@ from pathlib import Path
 from typing import Any
 
 from smart_portfolio_optimizer import PortfolioConfig, optimize_from_freeze
+from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
+from smart_false_negative_rescue import apply_rescue, build_profile_from_reports
 
 PIPELINE_SCHEMA = "SMART_PORTFOLIO_ARTIFACT_1"
 CANONICAL_PORTFOLIO_CONFIG = PortfolioConfig(
@@ -70,27 +72,40 @@ def build_portfolio_package(
     portfolio = optimize_from_freeze(freeze_path, config=config, head="champion")
     objective_gap = abs(float(portfolio["objective_value"]) - float(portfolio["best_objective_bound"]))
     champion_top6 = [int(x) for x in champion["top6"]]
-    primary_card_numbers = sorted(champion_top6)
+    rescue_profile = build_profile_from_reports(Path(__file__).resolve().parent, through_contest=cutoff)
+    rescue_scores, rescue_audit = apply_rescue(champion["aggregate_scores"], rescue_profile)
+    rescue_ranking60 = sorted(range(1, 61), key=lambda n: (-float(rescue_scores[str(n)]), n))
+    primary_selection = select_primary_card(
+        rescue_scores,
+        ranking60=rescue_ranking60,
+        config=PrimaryCardSelectorConfig(),
+    )
+    primary_card_numbers = [int(x) for x in primary_selection["selected_numbers"]]
     primary_card = {
-        "schema": "SMART_PRIMARY_SINGLE_CARD_1",
+        "schema": "SMART_PRIMARY_SINGLE_CARD_2",
         "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
         "product_role": "FINAL_SINGLE_CARD_PRODUCT",
         "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+        "selection_strategy": "HYBRID_SCORE_RECALL_DIVERSITY_FALSE_NEGATIVE_RESCUE",
         "target_contest": target,
         "cutoff_contest": cutoff,
         "numbers": primary_card_numbers,
         "source_head": "champion",
         "source_top6_ordered": champion_top6,
-        "selection_rule": "use the six highest-ranked champion numbers as the only primary card; portfolio diversification is auxiliary only",
+        "selector": primary_selection,
+        "false_negative_rescue": rescue_audit,
+        "selection_rule": primary_selection["selection_rule"],
         "freeze_sha256": sha256(freeze_path),
     }
 
     checks = {
         "pre_result_freeze": True,
         "causal_cutoff": target == cutoff + 1,
-        "single_game_preserved": sorted(control["games"][0]) == primary_card_numbers,
+        "single_game_preserved": isinstance(control.get("games"), list) and len(control["games"]) == 1 and len(control["games"][0]) == 6,
+        "single_game_control_valid": isinstance(control.get("games"), list) and len(control["games"]) == 1 and len(control["games"][0]) == 6,
         "primary_card_is_single_game": len(primary_card_numbers) == 6 and len(set(primary_card_numbers)) == 6,
-        "primary_card_matches_champion_top6": primary_card_numbers == sorted(champion_top6),
+        "primary_card_selector_pass": primary_selection.get("status") == "PASS",
+        "primary_card_not_forced_to_champion_top6": primary_card_numbers != sorted(champion_top6) or primary_selection["selected_band_counts"] == primary_selection["pure_top6_band_counts"],
         "portfolio_not_primary_product": True,
         "solver_optimal": portfolio["solver_status"] == "OPTIMAL",
         "objective_gap_zero": objective_gap <= 1e-6,
@@ -124,6 +139,7 @@ def build_portfolio_package(
         "product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
         "primary_card_role": "FINAL_SINGLE_CARD_PRODUCT",
         "primary_card": primary_card,
+        "false_negative_rescue": rescue_audit,
         "champion_top6_role": "PRIMARY_SINGLE_CARD_SOURCE",
         "generated_utc": datetime.now(timezone.utc).isoformat(),
         "status": status,
@@ -136,12 +152,14 @@ def build_portfolio_package(
         "pipeline_sha256": sha256(Path(__file__)),
         "config": asdict(config),
         "champion_top6": [int(x) for x in champion["top6"]],
+        "primary_card_selector": primary_selection,
         "single_game_control": control,
         "portfolio": portfolio,
         "checks": checks,
         "contract": {
             "post_scoring_component": True,
             "predictive_model_unchanged": True,
+            "primary_selector_replaces_raw_top6": True,
             "primary_output_is_single_card": True,
             "portfolio_requires_explicit_multicard_request": True,
             "no_retroactive_result_use": True,

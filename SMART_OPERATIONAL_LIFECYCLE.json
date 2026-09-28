@@ -1,27 +1,27 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "FROZEN",
-  "revision": 6,
+  "state": "ADJUDICATED",
+  "revision": 15,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3061,
-  "completed_contest": 3060,
-  "previous_state": "FREEZING",
-  "transition": "FREEZING_TO_FROZEN",
-  "transition_actor": "full_process_freeze_complete",
-  "transition_utc": "2026-09-22T19:56:39.469845+00:00",
-  "previous_lifecycle_sha256": "ac38e1e88d43f353fe2302f8cb42c6a65c47b1a17e8fbdaddf1d8d5bb88a86ce",
+  "target_contest": 3062,
+  "completed_contest": 3061,
+  "previous_state": "FROZEN",
+  "transition": "FROZEN_TO_ADJUDICATED",
+  "transition_actor": "operator_adjudicate_complete",
+  "transition_utc": "2026-09-25T01:28:58.941599+00:00",
+  "previous_lifecycle_sha256": "f8f07aaa28821690479016f22e032a2a73bb5e930cb39e8afc3fbaf8b97ed90a",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "12193cd881d6cac0b583594677d1b44eebf7b508d2334547cddfa89fa8faa9bd"
+      "sha256": "65ccc97cf183b49addfda46d95ba92f7ab30cc08f8e203714a0d276789babdac"
     },
     "post_result_review": {
-      "file": "SMART_POST_RESULT_REVIEW_3060.json",
-      "sha256": "0805da8a67160c8e1674b53b881610bd6ea6a32b782a4b2832a973e5dd6d89bd"
+      "file": "SMART_POST_RESULT_REVIEW_3061.json",
+      "sha256": "bf4efb2595bd4bade88f451ca4c2376f1cc8814fb7e553c7e11fd00c790eb84c"
     },
     "legacy_active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
@@ -35,13 +35,19 @@
       "status": "CONSUMED_FOR_PREPARE",
       "target_contest": 3060
     },
-    "prepare_transaction_id": "PREPARE:3061:operator-3061-1d798ed37904-20260922T195353823390Z",
-    "reserved_authority_sha256": "c46db01c7baf2b5dc9cd109dae3924bd19ab2efa87a873db60a30d7ad53d9db9",
+    "prepare_transaction_id": "PREPARE:3062:operator-3062-dce4e8ec9118-20260924T180535590187Z",
+    "reserved_authority_sha256": "d55c1a680463bbf58bbe9f61b03da763490ed00c0c2a70abf380d01eb65ab8e5",
     "active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
-      "sha256": "4fd8d118df7e015e7c3cef108d7a7c5d7e33a592f2b9a4c91719beae86d8c970",
-      "epoch_id": "operator-3061-1d798ed37904-20260922T195353823390Z"
-    }
+      "sha256": "0465417c318c15e462fd6df930b3d7d753ab6348ba05f14ffd62646dc94c1e49",
+      "epoch_id": "operator-3062-dce4e8ec9118-20260924T180535590187Z"
+    },
+    "rollover_archive": {
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3061/operator-3061-1d798ed37904-20260922T195353823390Z/ARCHIVE_MANIFEST.json",
+      "sha256": "024183b155b91e7f6a94dd2d2851dc4734bad3ad7f09464114faf53c7547c61b"
+    },
+    "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+    "active_pointer_absent_expected": true
   },
-  "sha256": "9a405997a18ebad98c374c8ac1ba10436f1f41a3ad0382b3a65b26963e146452"
+  "sha256": "e1bc407b7310c79ccba5e30f6e65d3f5db825d656a4e8479452ee3256a4ed180"
 }

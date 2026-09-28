@@ -66,3 +66,10 @@ def test_report_is_idempotent_for_same_evidence(tmp_path: Path) -> None:
     assert first["status"] == "EMITTED"
     assert second["status"] == "EXISTING_VALID"
     assert second["report"]["source_fingerprint"] == first["report"]["source_fingerprint"]
+
+from smart_post_result_report import _numbers
+
+
+def test_numbers_accepts_portfolio_game_records():
+    assert _numbers({"game_id": "G1", "numbers": [1, 2, 3, 4, 5, 6]}) == [1, 2, 3, 4, 5, 6]
+    assert _numbers({"game_id": "BAD", "numbers": [1, 1, 3, 4, 5, 6]}) is None

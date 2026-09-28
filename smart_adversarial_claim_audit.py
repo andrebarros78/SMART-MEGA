@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import copy, hashlib, json
 from datetime import datetime, timezone
 from pathlib import Path
@@ -21,7 +21,8 @@ def run(root: str|Path='.', data_name='Mega-Sena.xlsx', target: int|None=None) -
     if target is None: target=cutoff+1
     target=int(target)
     if cutoff != target-1: raise ValueError('causal cutoff mismatch')
-    agent=SmartSignalAgent(start=1000)
+    audit_start=max(1000, len(contests)-120)
+    agent=SmartSignalAgent(start=audit_start)
     pred, back=agent.predict_next(draws, contests, target_contest=target)
     policies=pred.multi_challengers['policies']
     policy_top6={k:list(v['top6']) for k,v in policies.items()}
@@ -50,7 +51,7 @@ def run(root: str|Path='.', data_name='Mega-Sena.xlsx', target: int|None=None) -
       'weights':weights,'weight_range':float(max(weights.values())-min(weights.values())),'heaviest_signal':heaviest,
       'heaviest_weight_before':weights[heaviest],'heaviest_weight_after_forced_quality_degradation':float(degraded_weights[heaviest]),
       'heaviest_weight_delta':delta,'meta_governor':pred.meta_governor,
-      'walk_forward_mean_hits':float(back['mean_hits']),'walk_forward_excess_hits':float(back['excess_hits']),
+      'audit_start_index':int(audit_start),'walk_forward_mean_hits':float(back['mean_hits']),'walk_forward_excess_hits':float(back['excess_hits']),
       'claim':'The current SMART predictive pipeline is not output-inert: actual policies produce multiple Top-6 sets and signal weights causally respond to quality degradation. This does not prove lottery predictability or 6/6.',
       'component_hashes':{x:sha256_file(root/x) for x in ['smart_signal_agent.py','smart_signal_weights.py','smart_multi_challengers.py','smart_meta_governor.py']},
     }

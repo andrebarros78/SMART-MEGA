@@ -317,3 +317,51 @@ def test_p12_historical_absolute_artifact_resolution_fails_closed_on_hash_mismat
     (tmp_path/'state.json').write_text('current')
     with pytest.raises(ValueError, match='hash mismatch'):
         sp._resolve_verified_artifact(tmp_path,r'C:\Retired\state.json','0'*64,'learning state')
+
+
+def test_resolve_verified_artifact_covers_hash_bound_failure_branches(tmp_path: Path, monkeypatch):
+    good = tmp_path / 'inside.bin'
+    good.write_bytes(b'ok')
+    good_sha = sp.sha256_file(good)
+    bad_sha = '0' * 64 if good_sha != '0' * 64 else '1' * 64
+
+    with pytest.raises(ValueError, match='hash invalid'):
+        sp._resolve_verified_artifact(tmp_path, good, 'not-a-hash', 'artifact')
+
+    with pytest.raises(ValueError, match='missing'):
+        sp._resolve_verified_artifact(tmp_path, tmp_path / 'missing.bin', good_sha, 'artifact')
+
+    with pytest.raises(ValueError, match='hash mismatch'):
+        sp._resolve_verified_artifact(tmp_path, good, bad_sha, 'artifact')
+
+    outside = tmp_path.parent / ('retired-' + tmp_path.name) / 'artifact.bin'
+    outside.parent.mkdir(parents=True, exist_ok=True)
+    outside.write_bytes(b'retired-root-copy')
+    same_name_dir = tmp_path / outside.name
+    same_name_dir.mkdir()
+    relocated_dir = tmp_path / 'relocated'
+    relocated_dir.mkdir()
+    relocated = relocated_dir / outside.name
+    relocated.write_bytes(outside.read_bytes())
+    assert sp._resolve_verified_artifact(tmp_path, outside, sp.sha256_file(relocated), 'artifact') == relocated
+
+    escaped = tmp_path.parent / ('escaped-' + tmp_path.name) / 'artifact.bin'
+    escaped.parent.mkdir(parents=True, exist_ok=True)
+    escaped.write_bytes(b'escaped')
+    original_rglob = Path.rglob
+
+    def fake_rglob(self, pattern):
+        if self == tmp_path and pattern == escaped.name:
+            return iter([escaped])
+        return original_rglob(self, pattern)
+
+    monkeypatch.setattr(Path, 'rglob', fake_rglob)
+    with pytest.raises(ValueError, match='candidate escapes project root'):
+        sp._resolve_verified_artifact(tmp_path, escaped, sp.sha256_file(escaped), 'artifact')
+
+    with pytest.raises(ValueError, match='escapes project root'):
+        sp._resolve_verified_artifact(tmp_path, Path('..') / 'outside.bin', good_sha, 'artifact')
+
+    with pytest.raises(ValueError, match='missing'):
+        sp._resolve_verified_artifact(tmp_path, 'missing-relative.bin', good_sha, 'artifact')
+

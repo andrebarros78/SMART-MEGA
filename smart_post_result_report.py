@@ -37,6 +37,8 @@ def _atomic_write(path: Path, data: str) -> None:
 
 
 def _numbers(value: Any) -> list[int] | None:
+    if isinstance(value, dict):
+        value = value.get("numbers")
     if not isinstance(value, (list, tuple)) or len(value) != 6:
         return None
     try:

@@ -2,6 +2,7 @@ import json
 from pathlib import Path
 
 import pytest
+import smart_portfolio_pipeline as spp
 
 from smart_portfolio_optimizer import PortfolioConfig
 from smart_portfolio_pipeline import CANONICAL_PORTFOLIO_CONFIG, build_portfolio_package
@@ -65,3 +66,14 @@ def test_canonical_policy_is_frozen_contract():
     assert CANONICAL_PORTFOLIO_CONFIG.max_number_exposure == 2
 
 
+
+
+def test_pipeline_builds_rescue_profile_at_freeze_cutoff(tmp_path, monkeypatch):
+    path=_freeze(tmp_path); seen={}
+    def fake_builder(root,config=None,through_contest=None):
+        seen["through_contest"]=through_contest
+        return None
+    monkeypatch.setattr(spp,"build_profile_from_reports",fake_builder)
+    result=spp.build_portfolio_package(path,config=PortfolioConfig(game_count=1,candidate_pool_size=6,time_limit_seconds=5))
+    assert seen["through_contest"] == 9
+    assert result["primary_card"]["false_negative_rescue"]["result_used"] is False

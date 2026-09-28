@@ -102,6 +102,9 @@ def _agent_from_prestate(prestate: dict[str, Any]) -> SmartSignalAgent:
 
 def build_sandbox(root: str | Path) -> dict[str, Any]:
     root = Path(root).resolve()
+    current_guard = resolve_current_epoch(root)
+    if current_guard.get("status") != "FROZEN" or int(current_guard.get("target_contest", -1)) != TARGET or int(current_guard.get("cutoff_contest", -1)) != CUTOFF:
+        raise ValueError("3054 full-cycle sandbox requires the current FROZEN 3054/3053 active epoch")
     readiness = preflight.build_preflight(root)
     if readiness["readiness_status"] != "PASS":
         raise RuntimeError("3054 adjudication preflight is not PASS")

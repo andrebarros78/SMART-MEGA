@@ -492,7 +492,20 @@ def preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
             "result_used": False,
             "mutated_state": False,
         }
-    authority = _require_next_cycle_authority(root, target)
+    try:
+        authority = _require_next_cycle_authority(root, target)
+    except Exception as exc:
+        try:
+            from smart_operational_lifecycle import load_lifecycle
+            lifecycle = load_lifecycle(root)
+        except Exception:
+            lifecycle = {}
+        lifecycle_state = lifecycle.get("state"); lifecycle_target = lifecycle.get("target_contest")
+        if lifecycle_state == "HOLD" and int(lifecycle_target or -1) == target:
+            return {"schema":"SMART_OPERATOR_PREFLIGHT_2","status":"AWAITING_OPERATOR_AUTHORIZATION","target_contest":target,"phase":"OPERATOR_HOLD","reason":"NEXT_CYCLE_HOLD_REQUIRES_AUTHORIZE_NEXT_CYCLE","lifecycle_state":lifecycle_state,"lifecycle_sha256":lifecycle.get("sha256"),"result_used":False,"mutated_state":False}
+        if lifecycle_state == "FREEZING" and int(lifecycle_target or -1) == target:
+            return {"schema":"SMART_OPERATOR_PREFLIGHT_2","status":"RECOVERY_REQUIRED","target_contest":target,"phase":"FREEZE_RECOVERY","reason":"INTERRUPTED_FREEZE_RECOVERY_REQUIRED","lifecycle_state":lifecycle_state,"lifecycle_sha256":lifecycle.get("sha256"),"error_type":type(exc).__name__,"result_used":False,"mutated_state":False}
+        return {"schema":"SMART_OPERATOR_PREFLIGHT_2","status":"BLOCKED_LIFECYCLE","target_contest":target,"phase":"LIFECYCLE","reason":str(exc),"error_type":type(exc).__name__,"lifecycle_state":lifecycle_state,"lifecycle_sha256":lifecycle.get("sha256"),"result_used":False,"mutated_state":False}
     history = validate_target_against_history(root / "Mega-Sena.xlsx", target)
     schedule = resolve_target_schedule(root, target)
     temporal = assert_pre_draw_window(schedule)
@@ -973,11 +986,42 @@ def authorize_generation_operation(root: str | Path, target: int) -> dict[str, A
     return authorize_manual_generation(root, active, int(target))
 
 
+
+
+def _existing_frozen_freeze_summary(root: str | Path, target: int) -> dict[str, Any]:
+    root=Path(canonical_root(root)).resolve(); active=verify_active_epoch(root / ACTIVE_PATH)
+    fa=active.get("freeze_authority") or {}; ff=fa.get("file"); fs=fa.get("sha256")
+    fp=_resolve(root,str(ff)) if isinstance(ff,str) else None
+    if active.get("status")!="FROZEN" or int(active.get("target_contest",-1))!=int(target) or fp is None or not fp.is_file() or sha256_file(fp)!=fs:
+        raise ValueError("existing frozen epoch is not bound to requested target")
+    return {"schema":"SMART_FREEZE_OPERATION_1","status":"FROZEN","idempotent_replay":True,"target_contest":int(target),"cutoff_contest":int(active.get("cutoff_contest",target-1)),"epoch_id":active.get("epoch_id"),"freeze_file":_rel(root,fp),"freeze_sha256":fs,"active_epoch_sha256":active.get("sha256"),"result_used":False,"mutated_state":False}
+
+def recover_interrupted_freeze_operation(root: str | Path, target: int, *, reason: str="operator_recovery") -> dict[str, Any]:
+    root=Path(canonical_root(root)).resolve()
+    from smart_operational_lifecycle import load_lifecycle,lifecycle_path,_atomic_write
+    cur=load_lifecycle(root); st=str(cur.get("state") or "")
+    if st=="FROZEN" and int(cur.get("target_contest",-1))==int(target): return {"status":"ALREADY_FROZEN","target_contest":int(target),"lifecycle_sha256":cur.get("sha256")}
+    if st!="FREEZING" or int(cur.get("target_contest",-1))!=int(target): return {"status":"NOOP","target_contest":int(target),"lifecycle_state":st,"lifecycle_sha256":cur.get("sha256")}
+    active=verify_active_epoch(root / ACTIVE_PATH)
+    if active.get("status")!="RESET_READY" or int(active.get("target_contest",-1))!=int(target): raise RuntimeError("cannot recover interrupted freeze: active epoch is not RESET_READY")
+    paths=active.get("state_paths") or {}; ledger=_resolve(root,paths["ledger"]); epoch=ledger.parent
+    guarded=[_resolve(root,paths[k]) for k in ("state","activation_authority","expansion_registry","freeze")]+[epoch/f"SMART_{int(target)}_FRONTIER_SHADOW_FREEZE.json",epoch/"SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",epoch/"POST_FREEZE_TOTAL_INTEGRATION.json"]
+    existing=[_rel(root,x) for x in guarded if x.exists()]
+    if existing: raise RuntimeError(f"cannot recover interrupted freeze: material artifacts exist: {existing}")
+    if not ledger.is_file() or sha256_file(ledger)!=active.get("canonical_ledger_seed_sha256"): raise RuntimeError("cannot recover interrupted freeze: ledger seed mismatch")
+    ev={**(cur.get("evidence") or {}),"interrupted_freeze_recovery":{"reason":str(reason),"target_contest":int(target),"active_epoch_sha256":active.get("sha256"),"ledger_sha256":sha256_file(ledger),"material_artifacts_absent":True}}
+    nxt={"schema":cur.get("schema","SMART_OPERATIONAL_LIFECYCLE_1"),"state":"PREPARED","revision":int(cur["revision"])+1,"project":cur.get("project","SMART-MEGA"),"effective_version":cur.get("effective_version","6.3.2"),"target_contest":int(target),"completed_contest":cur.get("completed_contest"),"previous_state":st,"transition":"FREEZING_TO_PREPARED_RECOVERY","transition_actor":"interrupted_freeze_recovery","transition_utc":datetime.now(timezone.utc).isoformat(),"previous_lifecycle_sha256":cur["sha256"],"authority":"SINGLE_OPERATIONAL_LIFECYCLE","legacy_documents_are_evidence_not_authority":True,"migration_mode":cur.get("migration_mode"),"evidence":ev}
+    out=_atomic_write(lifecycle_path(root),nxt,expected_revision=int(cur["revision"]),expected_sha256=cur["sha256"])
+    return {"status":"RECOVERED_INTERRUPTED_FREEZE","target_contest":int(target),"lifecycle_sha256":out["sha256"],"result_used":False}
+
 @startup_guarded("FREEZE")
 @idempotent_operation('FREEZE')
 def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
+    recovery = recover_interrupted_freeze_operation(root, int(target), reason="freeze_operation_entry")
+    if recovery.get("status") == "ALREADY_FROZEN":
+        return _existing_frozen_freeze_summary(root, int(target))
     assert_lifecycle_state(root, "PREPARED", target_contest=int(target))
     active = verify_active_epoch(root / ACTIVE_PATH)
     if active.get("operator_selected_target") is not True or int(active["target_contest"]) != int(target):
@@ -991,35 +1035,63 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 def adjudicate_operation(root: str | Path, target: int, result_data: str | Path, *, idempotency_key: str | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
-    assert_lifecycle_state(root, "FROZEN", target_contest=int(target))
+    target = int(target)
+    assert_lifecycle_state(root, "FROZEN", target_contest=target)
     active = verify_active_epoch(root / ACTIVE_PATH)
-    if int(active["target_contest"]) != int(target):
+    if int(active["target_contest"]) != target:
         raise ValueError("active operational epoch does not match adjudication target")
     current = resolve_current_epoch(root)
     if current.get("status") != "FROZEN" or current.get("freeze_authority_present") is not True:
         raise ValueError("adjudication requires a validated FROZEN current epoch")
-    if int(current.get("target_contest", -1)) != int(target):
+    if int(current.get("target_contest", -1)) != target:
         raise ValueError("current epoch authority does not match adjudication target")
     if current.get("generation_proof_valid") is not True:
         raise ValueError("adjudication requires a valid generation proof")
     ledger_path = root / active["state_paths"]["ledger"]
     ledger = load_ledger(ledger_path)
-    frozen_event = active_freeze(ledger, int(target))
+    frozen_event = active_freeze(ledger, target)
     if frozen_event is None or str(frozen_event.get("freeze_sha256")) != str(current.get("freeze_sha256")):
         raise ValueError("active epoch freeze authority differs from signal ledger")
-    adjudication_result = adjudicate(Path(result_data), int(target), ledger_path)
-    if not isinstance(adjudication_result, dict):
-        raise RuntimeError("adjudication must return a structured result")
-    lifecycle_adjudicated = transition_lifecycle(root, "FROZEN", "ADJUDICATED", target_contest=int(target), actor="operator_adjudicate_complete")
-    state_paths = active.get("state_paths") if isinstance(active.get("state_paths"), dict) else {}
-    if not state_paths.get("freeze"):
-        return adjudication_result
-    state_paths = active.get("state_paths") if isinstance(active.get("state_paths"), dict) else {}
-    if not state_paths.get("freeze"):
-        return adjudication_result
-    from smart_post_result_report import emit_post_result_report
-    report = emit_post_result_report(root, active, adjudication_result)
-    return {**adjudication_result, "post_result_report": report, "operational_lifecycle": lifecycle_adjudicated}
+
+    report_json = root / f"SMART_POST_RESULT_REPORT_{target}.json"
+    report_md = root / f"SMART_POST_RESULT_REPORT_{target}.md"
+    lifecycle_file = root / "SMART_OPERATIONAL_LIFECYCLE.json"
+    transactional_paths = [ledger_path, lifecycle_file, report_json, report_md]
+
+    def _capture_snapshot(paths: list[Path]) -> dict[str, bytes | None]:
+        return {str(p): (p.read_bytes() if p.exists() else None) for p in paths}
+
+    def _restore_snapshot(snapshot: dict[str, bytes | None]) -> None:
+        for raw, payload in reversed(list(snapshot.items())):
+            p = Path(raw)
+            if payload is None:
+                p.unlink(missing_ok=True)
+                continue
+            p.parent.mkdir(parents=True, exist_ok=True)
+            fd, tmp_raw = tempfile.mkstemp(prefix=p.name + ".rollback.", suffix=".tmp", dir=str(p.parent))
+            os.close(fd)
+            tmp = Path(tmp_raw)
+            try:
+                tmp.write_bytes(payload)
+                os.replace(tmp, p)
+            finally:
+                tmp.unlink(missing_ok=True)
+
+    snapshot = _capture_snapshot(transactional_paths)
+    try:
+        adjudication_result = adjudicate(Path(result_data), target, ledger_path)
+        if not isinstance(adjudication_result, dict):
+            raise RuntimeError("adjudication must return a structured result")
+        lifecycle_adjudicated = transition_lifecycle(root, "FROZEN", "ADJUDICATED", target_contest=target, actor="operator_adjudicate_complete")
+        state_paths = active.get("state_paths") if isinstance(active.get("state_paths"), dict) else {}
+        if not state_paths.get("freeze"):
+            return adjudication_result
+        from smart_post_result_report import emit_post_result_report
+        report = emit_post_result_report(root, active, adjudication_result)
+        return {**adjudication_result, "post_result_report": report, "operational_lifecycle": lifecycle_adjudicated}
+    except Exception:
+        _restore_snapshot(snapshot)
+        raise
 
 
 

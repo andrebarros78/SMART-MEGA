@@ -161,7 +161,13 @@ def assert_state(root: str | Path, allowed: str | Iterable[str], *, target_conte
 
 def transition(root: str | Path, expected: str | Iterable[str], new_state: str, *, target_contest: int | None=None, completed_contest: int | None=None, actor: str, evidence: dict[str, Any] | None=None) -> dict[str, Any]:
     root=Path(root).resolve()
-    current=assert_state(root,expected,target_contest=target_contest)
+    # For REVIEWED -> HOLD the lifecycle target changes from the completed contest
+    # to the next contest.  Validate the pre-transition document against the
+    # completed contest, not against the post-transition target.
+    precondition_target = target_contest
+    if new_state == "HOLD" and target_contest is not None:
+        precondition_target = completed_contest if completed_contest is not None else int(target_contest) - 1
+    current=assert_state(root,expected,target_contest=precondition_target)
     if current.get("authority") == "PYTEST_SANDBOX_ONLY":
         return _synthetic_lifecycle(new_state, target_contest)
     old=current["state"]
