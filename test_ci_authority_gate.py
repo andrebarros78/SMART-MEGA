@@ -1,8 +1,11 @@
 from __future__ import annotations
 
+import tempfile
+import unittest
 from copy import deepcopy
+from pathlib import Path
 
-from smart_ci_authority_gate import _sha_json, binding_checks
+from smart_ci_authority_gate import _sha_json, binding_checks, junit_summary
 
 
 def _seal(doc: dict) -> dict:
@@ -12,10 +15,19 @@ def _seal(doc: dict) -> dict:
     return sealed
 
 
-def _fixture() -> tuple[dict, dict, dict, dict, dict, list[dict]]:
+def _fixture() -> tuple[dict, dict, dict, dict, dict, dict]:
     live = {"tests": 100, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS"}
-    fingerprint = {"file_count": 2, "files": [{"path": "a.py", "sha256": "a"}, {"path": "b.py", "sha256": "b"}], "sha256": "fp-current"}
-    manifest = [{"path": "a.py", "sha256": "a"}, {"path": "b.py", "sha256": "b"}]
+    fingerprint = {
+        "file_count": 2,
+        "files": [{"path": "a.py", "sha256": "a"}, {"path": "b.py", "sha256": "b"}],
+        "sha256": "fp-current",
+    }
+    manifest = {
+        "schema": "SMART_CRITICAL_CODE_MANIFEST_1",
+        "file_count": 2,
+        "files": {"a.py": "a", "b.py": "b"},
+        "fingerprint_sha256": "manifest-current",
+    }
 
     certification = _seal(
         {
@@ -51,7 +63,14 @@ def _fixture() -> tuple[dict, dict, dict, dict, dict, list[dict]]:
     return certification, canonical, governance, live, fingerprint, manifest
 
 
-def _checks(certification: dict, canonical: dict, governance: dict, live: dict, fingerprint: dict, manifest: list[dict]) -> dict[str, bool]:
+def _checks(
+    certification: dict,
+    canonical: dict,
+    governance: dict,
+    live: dict,
+    fingerprint: dict,
+    manifest: dict,
+) -> dict[str, bool]:
     return binding_checks(
         certification=certification,
         canonical_root=canonical,
@@ -62,30 +81,55 @@ def _checks(certification: dict, canonical: dict, governance: dict, live: dict, 
     )
 
 
-def test_coherent_authority_snapshot_passes() -> None:
-    certification, canonical, governance, live, fingerprint, manifest = _fixture()
-    checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
-    assert checks
-    assert all(checks.values())
+class AuthorityFreshnessGateTests(unittest.TestCase):
+    def test_coherent_authority_snapshot_passes(self) -> None:
+        certification, canonical, governance, live, fingerprint, manifest = _fixture()
+        checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
+        self.assertTrue(checks)
+        self.assertTrue(all(checks.values()))
+
+    def test_stale_product_fingerprint_cannot_false_green(self) -> None:
+        certification, canonical, governance, live, fingerprint, manifest = _fixture()
+        certification["code_fingerprint"] = {**fingerprint, "sha256": "fp-stale"}
+        certification = _seal(certification)
+        checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
+        self.assertTrue(checks["product_certification_self_hash_valid"])
+        self.assertFalse(checks["product_certification_code_fingerprint_current"])
+        self.assertFalse(all(checks.values()))
+
+    def test_stale_canonical_regression_count_cannot_false_green(self) -> None:
+        certification, canonical, governance, live, fingerprint, manifest = _fixture()
+        canonical["certified_regression_tests"] = 99
+        canonical["certified_regression"]["tests"] = 99
+        canonical = _seal(canonical)
+        checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
+        self.assertTrue(checks["canonical_root_self_hash_valid"])
+        self.assertFalse(checks["canonical_root_regression_counts_current"])
+        self.assertFalse(checks["canonical_root_nested_regression_counts_current"])
+        self.assertFalse(all(checks.values()))
+
+    def test_junit_parser_accepts_local_green_evidence(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "junit.xml"
+            path.write_text(
+                '<testsuites tests="3" failures="0" errors="0" skipped="1"><testsuite tests="3" failures="0" errors="0" skipped="1"/></testsuites>',
+                encoding="utf-8",
+            )
+            summary = junit_summary(path)
+            self.assertEqual(summary["tests"], 3)
+            self.assertEqual(summary["skipped"], 1)
+            self.assertEqual(summary["status"], "PASS")
+
+    def test_junit_parser_rejects_doctype(self) -> None:
+        with tempfile.TemporaryDirectory() as temp_dir:
+            path = Path(temp_dir) / "junit.xml"
+            path.write_text(
+                '<!DOCTYPE testsuites [<!ENTITY xxe SYSTEM "file:///etc/passwd">]><testsuites tests="1" failures="0" errors="0" skipped="0"/>',
+                encoding="utf-8",
+            )
+            with self.assertRaises(ValueError):
+                junit_summary(path)
 
 
-def test_stale_product_fingerprint_cannot_false_green() -> None:
-    certification, canonical, governance, live, fingerprint, manifest = _fixture()
-    certification["code_fingerprint"] = {**fingerprint, "sha256": "fp-stale"}
-    certification = _seal(certification)
-    checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
-    assert checks["product_certification_self_hash_valid"] is True
-    assert checks["product_certification_code_fingerprint_current"] is False
-    assert not all(checks.values())
-
-
-def test_stale_canonical_regression_count_cannot_false_green() -> None:
-    certification, canonical, governance, live, fingerprint, manifest = _fixture()
-    canonical["certified_regression_tests"] = 99
-    canonical["certified_regression"]["tests"] = 99
-    canonical = _seal(canonical)
-    checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
-    assert checks["canonical_root_self_hash_valid"] is True
-    assert checks["canonical_root_regression_counts_current"] is False
-    assert checks["canonical_root_nested_regression_counts_current"] is False
-    assert not all(checks.values())
+if __name__ == "__main__":
+    unittest.main()
