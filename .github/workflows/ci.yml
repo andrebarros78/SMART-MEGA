@@ -2,7 +2,7 @@ name: SMART-MEGA CI
 
 on:
   push:
-    branches: [main]
+    branches: [main, regression/sliced-3054]
   pull_request:
     branches: [main]
   workflow_dispatch:
@@ -27,12 +27,18 @@ jobs:
           pip install -r requirements.txt
       - name: Dependency integrity
         run: python -m pip check
+      - name: Slice - test_smart_3054_full_cycle_sandbox.py
+        if: github.ref == 'refs/heads/regression/sliced-3054'
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m pytest -q test_smart_3054_full_cycle_sandbox.py -p no:cacheprovider --disable-warnings
       - name: Full regression
+        if: github.ref != 'refs/heads/regression/sliced-3054'
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_AUDIT_JUNIT_GITHUB.xml
       - name: Upload JUnit evidence
-        if: always()
+        if: always() && github.ref != 'refs/heads/regression/sliced-3054'
         continue-on-error: true
         uses: actions/upload-artifact@v4
         with:
