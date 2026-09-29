@@ -5,15 +5,29 @@ import hashlib
 import json
 from pathlib import Path
 from typing import Any
+from xml.etree import ElementTree as ET
 
 from smart_critical_code_manifest import build as build_critical_code_manifest
-from smart_product_certification import code_fingerprint
-from smart_regression_evidence import junit_summary
 
 
 PRODUCT_CERTIFICATION = "SMART_PRODUCT_CERTIFICATION.json"
 CANONICAL_ROOT = "SMART_CANONICAL_ROOT.json"
 GOVERNANCE = "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json"
+
+# Keep this file-selection contract aligned with smart_product_certification._code_files.
+# CRITICAL_SOURCE_FILES contributes only these non-smart_*.py paths beyond the glob set.
+CRITICAL_NON_SMART_CODE_FILES = (
+    "freeze_next_research.py",
+    "adjudicate_signal_challenger.py",
+)
+AUXILIARY_CODE_FILES = ("p14_coverage_plugin.py",)
+METADATA_FILES = (
+    "requirements.txt",
+    "requirements.lock.txt",
+    "smart_python.cmd",
+    "pytest.ini",
+    "SMART_DATA_CONTRACT.md",
+)
 
 
 def _sha_json(value: Any) -> str:
@@ -21,8 +35,19 @@ def _sha_json(value: Any) -> str:
     return hashlib.sha256(raw).hexdigest()
 
 
+def _sha256_file(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as stream:
+        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
+            digest.update(chunk)
+    return digest.hexdigest()
+
+
 def _read_json(path: Path) -> dict[str, Any]:
-    return json.loads(path.read_text(encoding="utf-8-sig"))
+    value = json.loads(path.read_text(encoding="utf-8-sig"))
+    if not isinstance(value, dict):
+        raise ValueError(f"JSON object required: {path.name}")
+    return value
 
 
 def _self_hash_valid(doc: dict[str, Any]) -> bool:
@@ -30,6 +55,49 @@ def _self_hash_valid(doc: dict[str, Any]) -> bool:
     canonical = dict(doc)
     canonical.pop("sha256", None)
     return isinstance(observed, str) and observed == _sha_json(canonical)
+
+
+def _code_files(root: Path) -> list[Path]:
+    files = set(root.glob("smart_*.py")) | set(root.glob("test_*.py"))
+    for name in CRITICAL_NON_SMART_CODE_FILES + AUXILIARY_CODE_FILES + METADATA_FILES:
+        path = root / name
+        if path.is_file():
+            files.add(path)
+    return sorted((path for path in files if path.is_file()), key=lambda path: path.name.casefold())
+
+
+def code_fingerprint(root: str | Path) -> dict[str, Any]:
+    root_path = Path(root).resolve()
+    rows = [{"path": path.name, "sha256": _sha256_file(path)} for path in _code_files(root_path)]
+    return {"file_count": len(rows), "files": rows, "sha256": _sha_json(rows)}
+
+
+def junit_summary(path: str | Path) -> dict[str, Any]:
+    junit_path = Path(path)
+    raw = junit_path.read_bytes()
+    upper = raw.upper()
+    if b"<!DOCTYPE" in upper or b"<!ENTITY" in upper:
+        raise ValueError("DTD/ENTITY is forbidden in CI JUnit evidence")
+    root = ET.fromstring(raw)
+    suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
+    if root.tag == "testsuites" and root.attrib.get("tests") is not None:
+        tests = int(root.attrib.get("tests", 0))
+        failures = int(root.attrib.get("failures", 0))
+        errors = int(root.attrib.get("errors", 0))
+        skipped = int(root.attrib.get("skipped", 0))
+    else:
+        tests = sum(int(suite.attrib.get("tests", 0)) for suite in suites)
+        failures = sum(int(suite.attrib.get("failures", 0)) for suite in suites)
+        errors = sum(int(suite.attrib.get("errors", 0)) for suite in suites)
+        skipped = sum(int(suite.attrib.get("skipped", 0)) for suite in suites)
+    return {
+        "tests": tests,
+        "failures": failures,
+        "errors": errors,
+        "skipped": skipped,
+        "status": "PASS" if failures == 0 and errors == 0 and tests > 0 else "FAIL",
+        "sha256": _sha256_file(junit_path),
+    }
 
 
 def _regression_signature(regression: dict[str, Any]) -> dict[str, Any]:
@@ -130,7 +198,7 @@ def audit_ci(root: str | Path = ".", junit: str | Path = "SMART_AUDIT_JUNIT_GITH
         current_critical_manifest=current_manifest,
     )
     failed = sorted(name for name, value in checks.items() if value is not True)
-    result = {
+    return {
         "schema": "SMART_CI_AUTHORITY_GATE_V1",
         "status": "PASS" if not failed else "FAIL",
         "junit": junit_path.name,
@@ -139,7 +207,6 @@ def audit_ci(root: str | Path = ".", junit: str | Path = "SMART_AUDIT_JUNIT_GITH
         "checks": checks,
         "failed_checks": failed,
     }
-    return result
 
 
 def main() -> int:
@@ -151,7 +218,17 @@ def main() -> int:
     try:
         result = audit_ci(args.root, args.junit)
     except Exception as exc:
-        print(json.dumps({"schema": "SMART_CI_AUTHORITY_GATE_V1", "status": "FAIL", "error": f"{type(exc).__name__}: {exc}"}, ensure_ascii=False, indent=2))
+        print(
+            json.dumps(
+                {
+                    "schema": "SMART_CI_AUTHORITY_GATE_V1",
+                    "status": "FAIL",
+                    "error": f"{type(exc).__name__}: {exc}",
+                },
+                ensure_ascii=False,
+                indent=2,
+            )
+        )
         return 1
 
     print(json.dumps(result, ensure_ascii=False, indent=2))
