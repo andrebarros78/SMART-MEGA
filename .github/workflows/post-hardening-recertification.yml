@@ -1,0 +1,205 @@
+name: SMART-MEGA Post-Hardening Recertification
+
+on:
+  push:
+    branches: [recertification/post-hardening-904]
+    paths:
+      - .github/workflows/post-hardening-recertification.yml
+
+permissions:
+  contents: write
+
+jobs:
+  recertify:
+    runs-on: windows-latest
+    timeout-minutes: 90
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+          python -m pip check
+
+      - name: Promote fresh canonical regression evidence
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python smart_regression_runner.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          Remove-Item SMART_AUDIT_JUNIT_CANDIDATE.xml -ErrorAction SilentlyContinue
+          Remove-Item .smart_regression.lock -ErrorAction SilentlyContinue
+
+      - name: Refresh canonical regression authority binding
+        shell: pwsh
+        run: |
+          @'
+          import hashlib
+          import json
+          from datetime import datetime, timezone
+          from pathlib import Path
+          from smart_regression_evidence import junit_summary, sha256_file
+
+          root = Path('.').resolve()
+          authority_path = root / 'SMART_CANONICAL_ROOT.json'
+          junit_path = root / 'SMART_AUDIT_JUNIT_CURRENT.xml'
+          authority = json.loads(authority_path.read_text(encoding='utf-8-sig'))
+          summary = junit_summary(junit_path)
+          if summary['status'] != 'PASS' or summary['failures'] != 0 or summary['errors'] != 0:
+              raise SystemExit(f'canonical regression not green: {summary}')
+          junit_sha = sha256_file(junit_path)
+          authority['certified_regression_tests'] = int(summary['tests'])
+          authority['certified_regression_failures'] = int(summary['failures'])
+          authority['certified_regression_errors'] = int(summary['errors'])
+          authority['certified_regression_skipped'] = int(summary.get('skipped', 0))
+          authority['certified_regression_junit'] = junit_path.name
+          authority['certified_regression_junit_sha256'] = junit_sha
+          authority['certified_regression'] = {
+              'junit_file': junit_path.name,
+              'junit_sha256': junit_sha,
+              'tests': int(summary['tests']),
+              'failures': int(summary['failures']),
+              'errors': int(summary['errors']),
+              'skipped': int(summary.get('skipped', 0)),
+              'status': 'PASS',
+          }
+          authority['authority_refreshed_at'] = datetime.now(timezone.utc).isoformat()
+          authority['authority_refresh_reason'] = 'POST_GITHUB_NATIVE_HARDENING_RECERTIFICATION'
+          body = dict(authority)
+          body.pop('sha256', None)
+          authority['sha256'] = hashlib.sha256(
+              json.dumps(body, ensure_ascii=False, sort_keys=True, separators=(',', ':')).encode('utf-8')
+          ).hexdigest()
+          authority_path.write_text(json.dumps(authority, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          print(json.dumps({'tests': summary['tests'], 'junit_sha256': junit_sha, 'authority_sha256': authority['sha256']}))
+          '@ | python -
+
+      - name: Refresh critical code manifest
+        shell: pwsh
+        run: |
+          @'
+          from pathlib import Path
+          from smart_critical_code_manifest import write
+          doc = write(Path('.').resolve())
+          assert 'smart_repository_integrity.py' in doc['files']
+          assert doc['file_count'] >= 124
+          print(doc['fingerprint_sha256'])
+          '@ | python -
+
+      - name: Refresh global integrity proof and gate binding
+        shell: pwsh
+        run: |
+          @'
+          import json
+          from datetime import datetime
+          from pathlib import Path
+          from zoneinfo import ZoneInfo
+          from smart_global_integrity import build_global_integrity_proof, verify_global_integrity, sha256_file
+
+          root = Path('.').resolve()
+          gate_path = root / 'SMART_3052_IMPLEMENTATION_GATE.json'
+          proof_path = root / 'SMART_GLOBAL_INTEGRITY_PROOF.json'
+          junit_path = root / 'SMART_AUDIT_JUNIT_CURRENT.xml'
+          gate = json.loads(gate_path.read_text(encoding='utf-8-sig'))
+          old_proof = json.loads(proof_path.read_text(encoding='utf-8-sig'))
+          coverage_specs = []
+          for row in old_proof.get('coverage', []):
+              coverage_specs.append((str(row['report_file']), str(row['source_key'])))
+          proof = build_global_integrity_proof(root, gate, junit_path, coverage_specs)
+          proof_path.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          proof_file_sha = sha256_file(proof_path)
+          gate['global_integrity'] = {'file': proof_path.name, 'sha256': proof_file_sha}
+          now_brt = datetime.now(ZoneInfo('America/Sao_Paulo')).isoformat(timespec='seconds')
+          gate['last_updated_brt'] = now_brt
+          gate['last_update_brt'] = now_brt
+          gate['updated_brt'] = now_brt
+          gate_path.write_text(json.dumps(gate, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+          verified = verify_global_integrity(root, gate_path, proof_path)
+          assert verified['status'] == 'PASS'
+          print(json.dumps({'global_integrity_file_sha256': proof_file_sha, 'verification': verified['status']}))
+          '@ | python -
+
+      - name: Refresh product and engineering recertification chain
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python smart_product_certification.py
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          python smart_finalize_deployment.py .
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+
+      - name: Verify refreshed authorities
+        shell: pwsh
+        run: |
+          @'
+          from pathlib import Path
+          from smart_product_certification import verify_product_certification
+          from smart_global_integrity import verify_global_integrity
+          from smart_finalize_deployment import verify_engineering_chain_proof
+          from smart_critical_code_manifest import build
+
+          root = Path('.').resolve()
+          product = verify_product_certification(root / 'SMART_PRODUCT_CERTIFICATION.json', root=root, require_current_code=True)
+          assert product['status'] == 'CONSTRUCTION_PROVEN'
+          manifest = build(root)
+          assert 'smart_repository_integrity.py' in manifest['files']
+          integrity = verify_global_integrity(root, root / 'SMART_3052_IMPLEMENTATION_GATE.json')
+          assert integrity['status'] == 'PASS'
+          chain = verify_engineering_chain_proof(root)
+          assert chain['status'] == 'PASS'
+          print('RECERTIFICATION_AUTHORITY_VERIFY=PASS')
+          '@ | python -
+
+      - name: Post-refresh targeted regression
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m pytest -q -p no:cacheprovider --disable-warnings test_smart_repository_integrity.py test_smart_product_certification_critical_surface.py test_smart_global_integrity.py test_smart_current_continuity_generation.py test_smart_regression_evidence.py test_smart_regression_runner.py
+
+      - name: Final full regression after authority refresh
+        shell: pwsh
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python -m pytest -q -p no:cacheprovider --disable-warnings
+
+      - name: Commit refreshed engineering authorities
+        shell: pwsh
+        run: |
+          $allowed = @(
+            'SMART_AUDIT_JUNIT_CURRENT.xml',
+            'SMART_CANONICAL_ROOT.json',
+            'SMART_CRITICAL_CODE_MANIFEST.json',
+            'SMART_GLOBAL_INTEGRITY_PROOF.json',
+            'SMART_3052_IMPLEMENTATION_GATE.json',
+            'SMART_PRODUCT_CERTIFICATION.json',
+            'SMART_IMPLEMENTATION_PROOF_20260904.json',
+            'SMART_CONTINUITY.md',
+            'SMART_CHAIN_RECERTIFICATION_20260911.json'
+          )
+          $changed = @(git status --porcelain | ForEach-Object { $_.Substring(3).Trim() })
+          $unexpected = @($changed | Where-Object { $_ -notin $allowed })
+          if ($unexpected.Count -gt 0) {
+            Write-Host 'Unexpected changed paths:'
+            $unexpected | ForEach-Object { Write-Host $_ }
+            exit 1
+          }
+          git add -- $allowed
+          git diff --cached --check
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git config user.name 'SMART Recertification Automation'
+          git config user.email 'andrebarros78@users.noreply.github.com'
+          git commit -m 'chore: recertify post-hardening engineering authority chain'
+          if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
+          git push origin HEAD:recertification/post-hardening-904
