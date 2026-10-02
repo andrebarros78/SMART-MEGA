@@ -55,7 +55,7 @@ def test_scope_seal_release_contains_no_secret_named_files():
     forbidden_suffixes = {".pem", ".key", ".p12", ".pfx"}
     bad = []
     for p in ROOT.rglob("*"):
-        if not p.is_file() or ".venv" in p.parts or ".git" in p.parts:
+        if not p.is_file() or any(part == ".git" or part == ".venv" or part.startswith(".venv-") for part in p.parts):
             continue
         if p.name.lower() in forbidden_names or p.suffix.lower() in forbidden_suffixes:
             bad.append(p.relative_to(ROOT).as_posix())

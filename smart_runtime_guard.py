@@ -3,6 +3,8 @@ from smart_canonical_identity import canonical_root
 import importlib, importlib.metadata, json, platform, re, sys
 from pathlib import Path
 
+from smart_path_semantics import is_windows_absolute, windows_path_under
+
 REQUIRED_MODULES=('numpy','pandas','pytest','river','pypdf','yt_dlp')
 
 def _norm(name: str) -> str:
@@ -36,6 +38,10 @@ def audit(root: str|Path='.') -> dict:
     new_project_root=Path(r'C:\New Projet').resolve()
     for raw in sys.path:
         if not raw:
+            continue
+        if is_windows_absolute(raw):
+            if windows_path_under(raw, r'C:\New Projet'):
+                external_project_paths.append(str(raw))
             continue
         try: candidate=Path(raw).resolve()
         except OSError: continue

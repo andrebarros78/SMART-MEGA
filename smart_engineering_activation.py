@@ -159,9 +159,12 @@ def activate(
     if not junit_path.is_file():
         raise FileNotFoundError(junit_path)
     regression = junit_summary(junit_path)
-    code_files = _code_files(root)
-    latest_code_mtime = max(p.stat().st_mtime for p in code_files)
-    regression_fresh = junit_path.stat().st_mtime >= latest_code_mtime
+    try:
+        from smart_product_certification import verify_product_certification
+        verify_product_certification(root / "SMART_PRODUCT_CERTIFICATION.json", root=root, require_current_code=True)
+        regression_fresh = True
+    except Exception:
+        regression_fresh = False
 
     lock = build_lock(root)
     if lock is not None:

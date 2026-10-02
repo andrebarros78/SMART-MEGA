@@ -14,6 +14,15 @@ def test_product_certification_fingerprint_covers_global_critical_surface() -> N
     assert "p14_coverage_plugin.py" in names
 
 
+def test_code_fingerprint_contract_is_identical_across_runner_certification_and_ci_gate() -> None:
+    import smart_ci_authority_gate as ci_gate
+    import smart_regression_runner as runner
+
+    expected = certification.code_fingerprint(ROOT)
+    assert ci_gate.code_fingerprint(ROOT) == expected
+    assert runner.code_fingerprint(ROOT) == expected
+
+
 def test_product_certification_fingerprint_changes_for_nonprefix_critical_source(tmp_path: Path) -> None:
     source = tmp_path / "adjudicate_signal_challenger.py"
     source.write_text("alpha\n", encoding="utf-8")
@@ -59,8 +68,42 @@ def test_product_certification_canonical_authority_fails_closed_on_stale_junit_h
 
 
 
-def test_verify_current_code_rejects_junit_older_than_current_code(tmp_path: Path, monkeypatch) -> None:
+def _write_regression_proof(root: Path, junit: Path, regression: dict, fingerprint: dict) -> dict:
     import json
+    proof = {
+        "schema": certification.REGRESSION_PROOF_SCHEMA,
+        "status": "PASS",
+        "junit_file": junit.name,
+        "junit_sha256": certification.sha256_file(junit),
+        "tests": regression["tests"],
+        "failures": regression["failures"],
+        "errors": regression["errors"],
+        "skipped": regression["skipped"],
+        "code_fingerprint": fingerprint,
+    }
+    proof["sha256"] = certification._sha256_json(proof)
+    (root / certification.REGRESSION_PROOF_FILE).write_text(json.dumps(proof), encoding="utf-8")
+    return certification.regression_code_binding(root, junit, regression, fingerprint)
+
+
+def _write_certification_fixture(root: Path, fingerprint: dict, critical_manifest: dict, authority: dict, binding: dict) -> Path:
+    import json
+    doc = {
+        "schema": certification.SCHEMA,
+        "status": "CONSTRUCTION_PROVEN",
+        "checks": {"full_regression_green": True},
+        "code_fingerprint": fingerprint,
+        "critical_code_manifest": critical_manifest,
+        "canonical_root_authority": authority,
+        "regression_code_binding": binding,
+    }
+    doc["sha256"] = certification._sha256_json(doc)
+    cert = root / "SMART_PRODUCT_CERTIFICATION.json"
+    cert.write_text(json.dumps(doc), encoding="utf-8")
+    return cert
+
+
+def test_verify_current_code_rejects_regression_proof_for_different_code(tmp_path: Path, monkeypatch) -> None:
     import os
     import pytest
 
@@ -68,60 +111,36 @@ def test_verify_current_code_rejects_junit_older_than_current_code(tmp_path: Pat
     code.write_text("print('current')\n", encoding="utf-8")
     junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
     junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
-    os.utime(junit, (1000, 1000))
-    os.utime(code, (2000, 2000))
-    fingerprint = {"sha256": "f" * 64}
-    regression = {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "sha256": "j" * 64}
+    os.utime(junit, (3000, 3000))
+    os.utime(code, (1000, 1000))
+    fingerprint = certification.code_fingerprint(tmp_path)
+    stale_fingerprint = dict(fingerprint)
+    stale_fingerprint["sha256"] = "0" * 64
+    regression = certification.junit_summary(junit)
     authority = {"status": "PASS"}
-    monkeypatch.setattr(certification, "_code_files", lambda root: [code])
-    monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
-    monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
     monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
-    critical_manifest = certification.build_critical_code_manifest(tmp_path)
-    doc = {
-        "schema": certification.SCHEMA,
-        "status": "CONSTRUCTION_PROVEN",
-        "checks": {"full_regression_green": True},
-        "code_fingerprint": fingerprint,
-        "critical_code_manifest": critical_manifest,
-        "canonical_root_authority": authority,
-    }
-    doc["sha256"] = certification._sha256_json(doc)
-    cert = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
-    cert.write_text(json.dumps(doc), encoding="utf-8")
+    binding = _write_regression_proof(tmp_path, junit, regression, stale_fingerprint)
+    cert = _write_certification_fixture(tmp_path, fingerprint, certification.build_critical_code_manifest(tmp_path), authority, binding)
     with pytest.raises(ValueError, match="regression is stale for current code"):
         certification.verify_product_certification(cert, root=tmp_path, require_current_code=True)
 
 
-def test_verify_current_code_accepts_junit_not_older_than_current_code(tmp_path: Path, monkeypatch) -> None:
-    import json
+def test_verify_current_code_accepts_matching_content_binding_independent_of_mtime(tmp_path: Path, monkeypatch) -> None:
     import os
 
     code = tmp_path / "smart_example.py"
     code.write_text("print('current')\n", encoding="utf-8")
     junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
     junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
-    os.utime(code, (1000, 1000))
-    os.utime(junit, (2000, 2000))
-    fingerprint = {"sha256": "f" * 64}
-    regression = {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "sha256": "j" * 64}
+    os.utime(junit, (1000, 1000))
+    os.utime(code, (2000, 2000))
+    fingerprint = certification.code_fingerprint(tmp_path)
+    regression = certification.junit_summary(junit)
     authority = {"status": "PASS"}
-    monkeypatch.setattr(certification, "_code_files", lambda root: [code])
-    monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
-    monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
     monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
-    critical_manifest = certification.build_critical_code_manifest(tmp_path)
-    doc = {
-        "schema": certification.SCHEMA,
-        "status": "CONSTRUCTION_PROVEN",
-        "checks": {"full_regression_green": True},
-        "code_fingerprint": fingerprint,
-        "critical_code_manifest": critical_manifest,
-        "canonical_root_authority": authority,
-    }
-    doc["sha256"] = certification._sha256_json(doc)
-    cert = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
-    cert.write_text(json.dumps(doc), encoding="utf-8")
+    binding = _write_regression_proof(tmp_path, junit, regression, fingerprint)
+    assert binding["status"] == "PASS"
+    cert = _write_certification_fixture(tmp_path, fingerprint, certification.build_critical_code_manifest(tmp_path), authority, binding)
     assert certification.verify_product_certification(cert, root=tmp_path, require_current_code=True)["status"] == "CONSTRUCTION_PROVEN"
 
 

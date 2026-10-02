@@ -41,6 +41,12 @@ def test_runner_promotes_only_green_candidate(tmp_path, monkeypatch):
     assert result["isolated_python_environment"] is True
     assert result["exclusive_runner_lock"] is True
     assert evidence.sha256_file(current) == evidence.sha256_file(tmp_path / runner.CANDIDATE)
+    proof_path = tmp_path / runner.CURRENT_PROOF
+    assert proof_path.is_file()
+    proof = __import__("json").loads(proof_path.read_text(encoding="utf-8"))
+    expected_proof = runner._regression_proof(tmp_path, current, evidence.junit_summary(current), result["code_fingerprint"])
+    assert proof == expected_proof
+    assert result["current_proof_sha256"] == proof["sha256"]
 
 
 def test_runner_failed_candidate_preserves_current(tmp_path, monkeypatch):
@@ -59,6 +65,7 @@ def test_runner_failed_candidate_preserves_current(tmp_path, monkeypatch):
     assert result["promoted"] is False
     assert result["current_preserved"] is True
     assert evidence.sha256_file(current) == before
+    assert not (tmp_path / runner.CURRENT_PROOF).exists()
 
 
 def test_runner_missing_candidate_preserves_current(tmp_path, monkeypatch):

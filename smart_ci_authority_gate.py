@@ -13,6 +13,8 @@ from smart_critical_code_manifest import build as build_critical_code_manifest
 PRODUCT_CERTIFICATION = "SMART_PRODUCT_CERTIFICATION.json"
 CANONICAL_ROOT = "SMART_CANONICAL_ROOT.json"
 GOVERNANCE = "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json"
+REGRESSION_PROOF = "SMART_AUDIT_JUNIT_CURRENT_PROOF.json"
+REGRESSION_PROOF_SCHEMA = "SMART_REGRESSION_CODE_BINDING_V1"
 
 # Keep this file-selection contract aligned with smart_product_certification._code_files.
 # CRITICAL_SOURCE_FILES contributes only these non-smart_*.py paths beyond the glob set.
@@ -130,6 +132,8 @@ def binding_checks(
     certification: dict[str, Any],
     canonical_root: dict[str, Any],
     governance: dict[str, Any],
+    regression_proof: dict[str, Any],
+    regression_proof_file_sha256: str,
     live_regression: dict[str, Any],
     current_code_fingerprint: dict[str, Any],
     current_critical_manifest: Any,
@@ -138,6 +142,8 @@ def binding_checks(
     cert_regression = certification.get("regression")
     cert_authority = certification.get("canonical_root_authority")
     canonical_nested = canonical_root.get("certified_regression")
+    cert_binding = certification.get("regression_code_binding")
+    proof_junit_sha = regression_proof.get("junit_sha256")
 
     return {
         "live_regression_green": live["status"] == "PASS" and live["failures"] == 0 and live["errors"] == 0,
@@ -152,6 +158,22 @@ def binding_checks(
         "product_certification_critical_manifest_current": certification.get("critical_code_manifest") == current_critical_manifest,
         "product_certification_regression_counts_current": _same_counts(cert_regression, live),
         "product_certification_canonical_authority_counts_current": _same_counts(cert_authority, live),
+        "regression_proof_self_hash_valid": _self_hash_valid(regression_proof),
+        "regression_proof_live_pass": regression_proof.get("schema") == REGRESSION_PROOF_SCHEMA and regression_proof.get("status") == "PASS",
+        "regression_proof_code_fingerprint_current": regression_proof.get("code_fingerprint") == current_code_fingerprint,
+        "regression_proof_counts_current": _same_counts(regression_proof, live),
+        "product_certification_regression_binding_current": (
+            isinstance(cert_binding, dict)
+            and cert_binding.get("status") == "PASS"
+            and cert_binding.get("file") == REGRESSION_PROOF
+            and cert_binding.get("file_sha256") == regression_proof_file_sha256
+            and cert_binding.get("proof_sha256") == regression_proof.get("sha256")
+            and cert_binding.get("junit_file") == regression_proof.get("junit_file")
+            and cert_binding.get("junit_sha256") == proof_junit_sha
+            and cert_binding.get("code_fingerprint_sha256") == current_code_fingerprint.get("sha256")
+            and bool(cert_binding.get("checks"))
+            and all(value is True for value in cert_binding.get("checks", {}).values())
+        ),
         "canonical_root_self_hash_valid": _self_hash_valid(canonical_root),
         "canonical_root_live_state": (
             canonical_root.get("schema") == "SMART_CANONICAL_ROOT_V1"
@@ -166,6 +188,13 @@ def binding_checks(
             and canonical_root.get("certified_regression_skipped", 0) == live["skipped"]
         ),
         "canonical_root_nested_regression_counts_current": _same_counts(canonical_nested, live),
+        "canonical_root_regression_proof_hash_bound": (
+            canonical_root.get("certified_regression_junit") == regression_proof.get("junit_file")
+            and canonical_root.get("certified_regression_junit_sha256") == proof_junit_sha
+            and isinstance(canonical_nested, dict)
+            and canonical_nested.get("junit_file") == regression_proof.get("junit_file")
+            and canonical_nested.get("junit_sha256") == proof_junit_sha
+        ),
         "governance_self_hash_valid": _self_hash_valid(governance),
         "governance_live_pass": (
             governance.get("status") == "PASS"
@@ -185,6 +214,9 @@ def audit_ci(root: str | Path = ".", junit: str | Path = "SMART_AUDIT_JUNIT_GITH
     certification = _read_json(root_path / PRODUCT_CERTIFICATION)
     canonical = _read_json(root_path / CANONICAL_ROOT)
     governance = _read_json(root_path / GOVERNANCE)
+    regression_proof_path = root_path / REGRESSION_PROOF
+    regression_proof = _read_json(regression_proof_path)
+    regression_proof_file_sha256 = _sha256_file(regression_proof_path)
     live_regression = junit_summary(junit_path)
     current_fingerprint = code_fingerprint(root_path)
     current_manifest = build_critical_code_manifest(root_path)
@@ -193,6 +225,8 @@ def audit_ci(root: str | Path = ".", junit: str | Path = "SMART_AUDIT_JUNIT_GITH
         certification=certification,
         canonical_root=canonical,
         governance=governance,
+        regression_proof=regression_proof,
+        regression_proof_file_sha256=regression_proof_file_sha256,
         live_regression=live_regression,
         current_code_fingerprint=current_fingerprint,
         current_critical_manifest=current_manifest,

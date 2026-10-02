@@ -70,11 +70,45 @@ def _checks(
     live: dict,
     fingerprint: dict,
     manifest: dict,
+    *,
+    proof_fingerprint: dict | None = None,
 ) -> dict[str, bool]:
+    proof = _seal({
+        "schema": "SMART_REGRESSION_CODE_BINDING_V1",
+        "status": "PASS",
+        "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
+        "junit_sha256": "junit-current-sha",
+        "tests": live["tests"],
+        "failures": live["failures"],
+        "errors": live["errors"],
+        "skipped": live["skipped"],
+        "code_fingerprint": deepcopy(proof_fingerprint or fingerprint),
+    })
+    proof_file_sha = "proof-file-sha"
+    certification = deepcopy(certification)
+    certification["regression_code_binding"] = {
+        "status": "PASS",
+        "file": "SMART_AUDIT_JUNIT_CURRENT_PROOF.json",
+        "file_sha256": proof_file_sha,
+        "proof_sha256": proof["sha256"],
+        "junit_file": proof["junit_file"],
+        "junit_sha256": proof["junit_sha256"],
+        "code_fingerprint_sha256": fingerprint["sha256"],
+        "checks": {"binding": True},
+    }
+    certification = _seal(certification)
+    canonical = deepcopy(canonical)
+    canonical["certified_regression_junit"] = proof["junit_file"]
+    canonical["certified_regression_junit_sha256"] = proof["junit_sha256"]
+    canonical["certified_regression"]["junit_file"] = proof["junit_file"]
+    canonical["certified_regression"]["junit_sha256"] = proof["junit_sha256"]
+    canonical = _seal(canonical)
     return binding_checks(
         certification=certification,
         canonical_root=canonical,
         governance=governance,
+        regression_proof=proof,
+        regression_proof_file_sha256=proof_file_sha,
         live_regression=live,
         current_code_fingerprint=fingerprint,
         current_critical_manifest=manifest,
@@ -95,6 +129,14 @@ class AuthorityFreshnessGateTests(unittest.TestCase):
         checks = _checks(certification, canonical, governance, live, fingerprint, manifest)
         self.assertTrue(checks["product_certification_self_hash_valid"])
         self.assertFalse(checks["product_certification_code_fingerprint_current"])
+        self.assertFalse(all(checks.values()))
+
+    def test_stale_regression_proof_fingerprint_cannot_false_green(self) -> None:
+        certification, canonical, governance, live, fingerprint, manifest = _fixture()
+        stale = {**fingerprint, "sha256": "fp-stale-proof"}
+        checks = _checks(certification, canonical, governance, live, fingerprint, manifest, proof_fingerprint=stale)
+        self.assertTrue(checks["regression_proof_self_hash_valid"])
+        self.assertFalse(checks["regression_proof_code_fingerprint_current"])
         self.assertFalse(all(checks.values()))
 
     def test_stale_canonical_regression_count_cannot_false_green(self) -> None:

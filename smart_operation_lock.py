@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import msvcrt
 import os
 import socket
 import tempfile
@@ -10,6 +9,8 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+from smart_platform_lock import lock_nonblocking, unlock
 
 LOCK_FILE = Path("runtime") / "locks" / "SMART_OPERATION.lock"
 METADATA_FILE = Path("runtime") / "locks" / "SMART_OPERATION_LOCK.json"
@@ -67,7 +68,7 @@ class OperationLock:
             handle.write(b"0"); handle.flush(); os.fsync(handle.fileno())
         handle.seek(0)
         try:
-            msvcrt.locking(handle.fileno(),msvcrt.LK_NBLCK,1)
+            lock_nonblocking(handle)
         except OSError as exc:
             owner=_read_metadata(meta_path)
             handle.close()
@@ -105,7 +106,7 @@ class OperationLock:
             body["released_utc"]=datetime.now(timezone.utc).isoformat()
             self.metadata=_write_metadata(meta_path,body)
         self._handle.seek(0)
-        msvcrt.locking(self._handle.fileno(),msvcrt.LK_UNLCK,1)
+        unlock(self._handle)
         self._handle.close()
         self._handle=None
         return self.metadata

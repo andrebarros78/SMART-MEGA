@@ -9,16 +9,20 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
-import msvcrt
+from smart_platform_lock import lock_nonblocking, unlock
 
 import smart_regression_evidence as evidence
 
 SCHEMA = "SMART_REGRESSION_RUNNER_V3"
 CANDIDATE = "SMART_AUDIT_JUNIT_CANDIDATE.xml"
 CURRENT = "SMART_AUDIT_JUNIT_CURRENT.xml"
+CURRENT_PROOF = "SMART_AUDIT_JUNIT_CURRENT_PROOF.json"
+REGRESSION_PROOF_SCHEMA = "SMART_REGRESSION_CODE_BINDING_V1"
 LOCK_FILE = ".smart_regression.lock"
 CANONICAL_AUTHORITY = "SMART_CANONICAL_ROOT.json"
-AUXILIARY_CODE_FILES = (
+CRITICAL_NON_SMART_CODE_FILES = ("freeze_next_research.py", "adjudicate_signal_challenger.py")
+AUXILIARY_CODE_FILES = ("p14_coverage_plugin.py",)
+METADATA_FILES = (
     "requirements.txt",
     "requirements.lock.txt",
     "smart_python.cmd",
@@ -44,7 +48,7 @@ class _RegressionLock:
             self.handle.flush()
         self.handle.seek(0)
         try:
-            msvcrt.locking(self.handle.fileno(), msvcrt.LK_NBLCK, 1)
+            lock_nonblocking(self.handle)
         except OSError as exc:
             self.handle.close()
             self.handle = None
@@ -55,7 +59,7 @@ class _RegressionLock:
         if self.handle is not None:
             try:
                 self.handle.seek(0)
-                msvcrt.locking(self.handle.fileno(), msvcrt.LK_UNLCK, 1)
+                unlock(self.handle)
             finally:
                 self.handle.close()
                 self.handle = None
@@ -67,19 +71,45 @@ def _hash_if_present(path: Path) -> str | None:
 
 
 def _code_files(root: Path) -> list[Path]:
-    files = sorted(set(root.glob("smart_*.py")) | set(root.glob("test_*.py")))
-    for name in AUXILIARY_CODE_FILES:
+    files = set(root.glob("smart_*.py")) | set(root.glob("test_*.py"))
+    for name in CRITICAL_NON_SMART_CODE_FILES + AUXILIARY_CODE_FILES + METADATA_FILES:
         path = root / name
         if path.is_file():
-            files.append(path)
-    return sorted(set(files))
+            files.add(path)
+    return sorted((path for path in files if path.is_file()), key=lambda path: path.name.casefold())
 
 
 def code_fingerprint(root: str | Path) -> dict[str, Any]:
     root = Path(root).resolve()
     rows = [{"path": path.name, "sha256": evidence.sha256_file(path)} for path in _code_files(root)]
     raw = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
-    return {"file_count": len(rows), "sha256": hashlib.sha256(raw).hexdigest()}
+    return {"file_count": len(rows), "files": rows, "sha256": hashlib.sha256(raw).hexdigest()}
+
+
+def _regression_proof(root: Path, junit_path: Path, regression: dict[str, Any], fingerprint: dict[str, Any]) -> dict[str, Any]:
+    doc = {
+        "schema": REGRESSION_PROOF_SCHEMA,
+        "status": "PASS",
+        "junit_file": junit_path.name,
+        "junit_sha256": evidence.sha256_file(junit_path),
+        "tests": int(regression.get("tests", 0)),
+        "failures": int(regression.get("failures", 0)),
+        "errors": int(regression.get("errors", 0)),
+        "skipped": int(regression.get("skipped", 0)),
+        "code_fingerprint": fingerprint,
+    }
+    raw = json.dumps(doc, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    doc["sha256"] = hashlib.sha256(raw).hexdigest()
+    return doc
+
+
+def _write_regression_proof(root: Path, junit_path: Path, regression: dict[str, Any], fingerprint: dict[str, Any]) -> dict[str, Any]:
+    proof = _regression_proof(root, junit_path, regression, fingerprint)
+    target = root / CURRENT_PROOF
+    temp = root / f".{CURRENT_PROOF}.tmp"
+    temp.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    os.replace(temp, target)
+    return proof
 
 
 def canonical_environment_snapshot(root: str | Path) -> dict[str, Any]:
@@ -227,6 +257,8 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
     promoted = evidence.promote(candidate, current)
     if evidence.sha256_file(current) != promoted["sha256"]:
         raise RuntimeError("promoted CURRENT regression evidence hash mismatch")
+    current_summary = evidence.junit_summary(current)
+    proof = _write_regression_proof(root, current, current_summary, code_before)
 
     return {
         "schema": SCHEMA,
@@ -244,6 +276,8 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
         "promoted": True,
         "promotion": promoted,
         "current_sha256": promoted["sha256"],
+        "current_proof_file": CURRENT_PROOF,
+        "current_proof_sha256": proof["sha256"],
     }
 
 

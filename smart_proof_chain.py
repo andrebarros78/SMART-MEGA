@@ -9,7 +9,8 @@ SCHEMA = "SMART_PROOF_CHAIN_CONTRACT_1"
 CHAIN = (
     ("critical_code_manifest", "SMART_CRITICAL_CODE_MANIFEST.json", "smart_critical_code_manifest.write", "smart_critical_code_manifest.build"),
     ("regression_authority", "SMART_AUDIT_JUNIT_CURRENT.xml", "smart_regression_runner.run_regression", None),
-    ("canonical_root", "SMART_CANONICAL_ROOT.json", None, "smart_canonical_identity.require_canonical_identity"),
+    ("regression_code_binding", "SMART_AUDIT_JUNIT_CURRENT_PROOF.json", "smart_regression_runner.run_regression", "smart_product_certification.verify_current_regression_code_binding"),
+    ("canonical_root", "SMART_CANONICAL_ROOT.json", "smart_canonical_root_authority.write", "smart_canonical_root_authority.verify"),
     ("product_certification", "SMART_PRODUCT_CERTIFICATION.json", "smart_product_certification.write", "smart_product_certification.verify_product_certification"),
     ("global_integrity", "SMART_GLOBAL_INTEGRITY_PROOF.json", "smart_global_integrity.build_global_integrity_proof", "smart_global_integrity.verify_global_integrity"),
     ("governance", "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json", "smart_agent_ecosystem_governance.write", "smart_authority_freshness.verify_governance"),

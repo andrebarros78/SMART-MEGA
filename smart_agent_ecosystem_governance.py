@@ -99,9 +99,17 @@ def _code_files(root: Path) -> list[Path]:
     return sorted(set(files))
 
 
-def _latest_code_mtime(root: Path) -> float:
-    files = _code_files(root)
-    return max((path.stat().st_mtime for path in files), default=0.0)
+def _regression_binding_current(root: Path) -> bool:
+    from smart_product_certification import code_fingerprint, junit_summary, regression_code_binding
+    junit = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    if not junit.is_file():
+        return False
+    try:
+        regression = junit_summary(junit)
+        fingerprint = code_fingerprint(root)
+        return regression_code_binding(root, junit, regression, fingerprint).get("status") == "PASS"
+    except Exception:
+        return False
 
 
 def _dependency_names(root: Path) -> set[str]:
@@ -211,8 +219,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     open_deficiencies = list(deficiencies.get("open_entries", []))
     supervisory_blockers = material_blockers(open_deficiencies, allow_supervisory_freshness_self_resolution=True)
     product_current, product_error = _current_product_certification(root)
-    junit = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
-    regression_fresh = junit.is_file() and junit.stat().st_mtime >= _latest_code_mtime(root)
+    regression_fresh = _regression_binding_current(root)
     deps = _dependency_names(root)
     forbidden_runtime_deps = sorted(deps & {"langgraph", "crewai", "autogen", "pyautogen", "llama-index", "llama_index", "llamaindex", "dify", "dify-client", "dify_client", "agent-framework", "microsoft-agent-framework", "microsoft_agent_framework", "langchain", "langchain-core"})
     runtime_import_hits = _runtime_framework_imports(root)
