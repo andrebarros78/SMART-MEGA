@@ -16,6 +16,11 @@ jobs:
     timeout-minutes: 90
     steps:
       - uses: actions/checkout@v4
+        with:
+          # Authority artifacts certify the PR head tree. GitHub PR workflows
+          # default to a synthetic merge commit, which changes the certified
+          # code fingerprint with unrelated base-branch content.
+          ref: ${{ github.event.pull_request.head.sha || github.sha }}
       - uses: actions/setup-python@v5
         with:
           python-version: "3.13"
