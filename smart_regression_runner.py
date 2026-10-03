@@ -1,6 +1,7 @@
 from __future__ import annotations
 from smart_canonical_identity import canonical_root
 
+import fcntl
 import hashlib
 import json
 import os
@@ -10,8 +11,6 @@ from pathlib import Path
 from typing import Any, Sequence
 
 from smart_source_identity import sha256_source_file
-
-import msvcrt
 
 import smart_regression_evidence as evidence
 
@@ -23,7 +22,6 @@ CANONICAL_AUTHORITY = "SMART_CANONICAL_ROOT.json"
 AUXILIARY_CODE_FILES = (
     "requirements.txt",
     "requirements.lock.txt",
-    "smart_python.cmd",
     "pytest.ini",
     "SMART_DATA_CONTRACT.md",
 )
@@ -40,24 +38,20 @@ class _RegressionLock:
 
     def __enter__(self):
         self.handle = self.path.open("a+b")
-        self.handle.seek(0, os.SEEK_END)
-        if self.handle.tell() == 0:
-            self.handle.write(b"0")
-            self.handle.flush()
-        self.handle.seek(0)
         try:
-            msvcrt.locking(self.handle.fileno(), msvcrt.LK_NBLCK, 1)
+            fcntl.flock(self.handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
         except OSError as exc:
             self.handle.close()
             self.handle = None
-            raise _RegressionLockError("another SMART regression runner already holds the exclusive lock") from exc
+            raise _RegressionLockError(
+                "another SMART regression runner already holds the exclusive lock"
+            ) from exc
         return self
 
     def __exit__(self, exc_type, exc, tb):
         if self.handle is not None:
             try:
-                self.handle.seek(0)
-                msvcrt.locking(self.handle.fileno(), msvcrt.LK_UNLCK, 1)
+                fcntl.flock(self.handle.fileno(), fcntl.LOCK_UN)
             finally:
                 self.handle.close()
                 self.handle = None
@@ -89,18 +83,26 @@ def canonical_environment_snapshot(root: str | Path) -> dict[str, Any]:
     authority_path = root / CANONICAL_AUTHORITY
     if not authority_path.is_file():
         return {
-            "enforced": False, "ok": True, "authority_present": False,
-            "authority_sha256": None, "root_matches": False,
-            "legacy_alias": None, "legacy_alias_exists": None,
+            "enforced": False,
+            "ok": True,
+            "authority_present": False,
+            "authority_sha256": None,
+            "root_matches": False,
+            "legacy_alias": None,
+            "legacy_alias_exists": None,
             "declared_canonical_only": None,
         }
     try:
         authority = json.loads(authority_path.read_text(encoding="utf-8-sig"))
     except Exception:
         return {
-            "enforced": True, "ok": False, "authority_present": True,
-            "authority_sha256": _hash_if_present(authority_path), "root_matches": False,
-            "legacy_alias": None, "legacy_alias_exists": None,
+            "enforced": True,
+            "ok": False,
+            "authority_present": True,
+            "authority_sha256": _hash_if_present(authority_path),
+            "root_matches": False,
+            "legacy_alias": None,
+            "legacy_alias_exists": None,
             "declared_canonical_only": False,
         }
     declared_root = authority.get("canonical_root")
@@ -123,9 +125,13 @@ def canonical_environment_snapshot(root: str | Path) -> dict[str, Any]:
     enforced = bool(root_matches)
     ok = (not enforced) or (declared_canonical_only and legacy_exists is False)
     return {
-        "enforced": enforced, "ok": bool(ok), "authority_present": True,
-        "authority_sha256": _hash_if_present(authority_path), "root_matches": bool(root_matches),
-        "legacy_alias": legacy_alias, "legacy_alias_exists": legacy_exists,
+        "enforced": enforced,
+        "ok": bool(ok),
+        "authority_present": True,
+        "authority_sha256": _hash_if_present(authority_path),
+        "root_matches": bool(root_matches),
+        "legacy_alias": legacy_alias,
+        "legacy_alias_exists": legacy_exists,
         "declared_canonical_only": bool(declared_canonical_only),
     }
 
@@ -138,11 +144,15 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
     environment_before = canonical_environment_snapshot(root)
     if environment_before.get("enforced") and not environment_before.get("ok"):
         return {
-            "schema": SCHEMA, "status": "FAIL",
+            "schema": SCHEMA,
+            "status": "FAIL",
             "reason": "CANONICAL_ENVIRONMENT_INVALID_BEFORE_REGRESSION",
-            "candidate_present": candidate.is_file(), "current_preserved": True,
-            "current_sha256": current_before, "code_fingerprint": code_before,
-            "canonical_environment_before": environment_before, "promoted": False,
+            "candidate_present": candidate.is_file(),
+            "current_preserved": True,
+            "current_sha256": current_before,
+            "code_fingerprint": code_before,
+            "canonical_environment_before": environment_before,
+            "promoted": False,
         }
 
     if candidate.exists():
@@ -168,9 +178,12 @@ def _run_regression_locked(root: Path, pytest_args: Sequence[str] | None = None)
         raise RuntimeError("canonical CURRENT regression evidence changed during candidate execution")
 
     environment_after = canonical_environment_snapshot(root)
-    if environment_after != environment_before or (environment_after.get("enforced") and not environment_after.get("ok")):
+    if environment_after != environment_before or (
+        environment_after.get("enforced") and not environment_after.get("ok")
+    ):
         return {
-            "schema": SCHEMA, "status": "FAIL",
+            "schema": SCHEMA,
+            "status": "FAIL",
             "reason": "CANONICAL_ENVIRONMENT_CHANGED_DURING_REGRESSION",
             "pytest_returncode": int(completed.returncode),
             "candidate_present": candidate.is_file(),
