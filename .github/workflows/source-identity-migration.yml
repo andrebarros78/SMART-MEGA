@@ -1,0 +1,41 @@
+name: Source Identity Migration
+
+on:
+  push:
+    branches:
+      - codex/github-native-source-identity-20261003
+
+permissions:
+  contents: write
+
+jobs:
+  migrate:
+    if: ${{ !contains(github.event.head_commit.message, '[source-identity-applied]') }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/github-native-source-identity-20261003
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+      - name: Apply source identity migration
+        run: python tools/apply_source_identity_migration.py
+      - name: Validate patch
+        shell: bash
+        run: |
+          git diff --check
+          test -n "$(git status --porcelain)"
+      - name: Commit migrated tree
+        shell: bash
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add .gitattributes smart_source_identity.py test_smart_source_identity.py \
+            smart_critical_code_manifest.py smart_global_integrity.py smart_product_certification.py \
+            smart_regression_runner.py smart_learning_activation_authority.py smart_continuous_red_team.py \
+            smart_champion_challenger.py smart_independent_audit.py smart_agent_runtime.py
+          git commit -m "refactor: canonicalize source identity [source-identity-applied]"
+          git push origin HEAD:codex/github-native-source-identity-20261003
