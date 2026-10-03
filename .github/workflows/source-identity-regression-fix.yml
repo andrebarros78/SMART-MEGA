@@ -1,0 +1,57 @@
+name: Source Identity Regression Fix
+
+on:
+  push:
+    branches:
+      - codex/github-native-source-identity-20261003
+
+permissions:
+  contents: write
+
+jobs:
+  fix-and-verify:
+    if: ${{ !contains(github.event.head_commit.message, '[source-identity-regression-fixed]') }}
+    runs-on: windows-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: codex/github-native-source-identity-20261003
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.13'
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - name: Install deterministic dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock.txt
+          python -m pip check
+      - name: Apply regression fix
+        run: python tools/apply_source_identity_regression_fix.py
+      - name: Verify failed surfaces
+        shell: pwsh
+        run: |
+          python -m pytest -q -p no:cacheprovider --disable-warnings `
+            test_smart_architecture_alignment.py::test_freeze_hashes_every_behavioral_challenger_component `
+            test_smart_coverage_governance.py::test_real_entrypoint_guards_via_runpy `
+            test_smart_evidence_only_promotion.py::test_future_freeze_hashes_and_snapshots_p15_policy `
+            test_smart_independent_audit.py::test_coverage_binding_passes_and_detects_stale_or_incomplete_evidence `
+            test_smart_independent_audit.py::test_run_independent_audit_combines_all_required_evidence `
+            test_smart_independent_audit.py::test_p14_future_freeze_hashes_and_snapshots_independent_audit `
+            test_smart_mission_coverage_closure_20260906.py::test_independent_audit_oracle_source_guards `
+            test_smart_promotion_gate.py::test_freeze_preserves_promotion_gate_hash_and_policy_in_file_and_ledger `
+            test_smart_sequential_prospective_proof.py::test_full_freeze_adjudicate_learn_prove_cycle_and_freeze_contains_p12
+      - name: Validate and commit permanent tree
+        shell: bash
+        run: |
+          git config core.whitespace cr-at-eol
+          git diff --check
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add smart_portfolio_pipeline.py test_smart_architecture_alignment.py test_smart_evidence_only_promotion.py test_smart_independent_audit.py test_smart_mission_coverage_closure_20260906.py test_smart_promotion_gate.py
+          git rm tools/apply_source_identity_regression_fix.py .github/workflows/source-identity-regression-fix.yml
+          git commit -m "fix: align source identity contracts [source-identity-regression-fixed]"
+          git push origin HEAD:codex/github-native-source-identity-20261003
