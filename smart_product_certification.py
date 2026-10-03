@@ -23,6 +23,8 @@ from smart_total_integration_gate import evaluate as total_integration_evaluate
 
 SCHEMA = "SMART_PRODUCT_CERTIFICATION_V1"
 DEFAULT_PATH = Path("SMART_PRODUCT_CERTIFICATION.json")
+REGRESSION_PROOF_FILE = "SMART_AUDIT_JUNIT_CURRENT_PROOF.json"
+REGRESSION_PROOF_SCHEMA = "SMART_REGRESSION_CODE_BINDING_V1"
 AUXILIARY_CODE_FILES = ("p14_coverage_plugin.py",)
 
 
@@ -39,7 +41,7 @@ def _code_files(root: Path) -> list[Path]:
         p = root / name
         if p.is_file():
             files.append(p)
-    return sorted(set(files))
+    return sorted(set(files), key=lambda path: path.name.casefold())
 
 
 def code_fingerprint(root: Path) -> dict[str, Any]:
@@ -65,7 +67,12 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
     observed_self_hash = canonical.pop("sha256", None)
     nested = authority.get("certified_regression") if isinstance(authority.get("certified_regression"), dict) else {}
     authority_hostname = str(authority.get("hostname") or "")
-    local_authority_host = os.name == "nt" and bool(authority_hostname) and authority_hostname.casefold() == socket.gethostname().casefold()
+    declared_root = str(authority.get("canonical_root") or "")
+    try:
+        declared_root_matches = bool(declared_root) and Path(declared_root).resolve() == root
+    except (OSError, ValueError):
+        declared_root_matches = False
+    local_authority_host = bool(authority_hostname) and authority_hostname.casefold() == socket.gethostname().casefold() and declared_root_matches
     legacy_alias = authority.get("legacy_alias")
     legacy_alias_physically_absent = True
     if local_authority_host:
@@ -74,7 +81,7 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
         "authority_json_valid": True,
         "authority_self_hash_valid": isinstance(observed_self_hash, str) and observed_self_hash == _sha256_json(canonical),
         "authority_project_valid": authority.get("project") == "SMART-MEGA",
-        "authority_root_matches": (authority.get("canonical_root") == str(root)) if local_authority_host and Path(str(authority.get("canonical_root") or "")).resolve() == root else isinstance(authority.get("canonical_root"), str) and bool(authority.get("canonical_root")),
+        "authority_root_matches": (authority.get("canonical_root") == str(root)) if local_authority_host else isinstance(authority.get("canonical_root"), str) and bool(authority.get("canonical_root")),
         "authority_state_canonical_only": authority.get("canonical_state") == "CANONICAL_ONLY" and authority.get("legacy_alias_present") is False,
         "legacy_alias_physically_absent": legacy_alias_physically_absent,
         "junit_file_bound": authority.get("certified_regression_junit") == junit_path.name and nested.get("junit_file") == junit_path.name,
@@ -93,6 +100,51 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
         "errors": regression.get("errors"),
         "checks": checks,
     }
+
+
+def regression_code_binding(root: Path, junit_path: Path, regression: dict[str, Any], fingerprint: dict[str, Any]) -> dict[str, Any]:
+    proof_path = root / REGRESSION_PROOF_FILE
+    checks: dict[str, bool] = {"proof_file_present": proof_path.is_file(), "junit_file_present": junit_path.is_file()}
+    if not proof_path.is_file() or not junit_path.is_file():
+        return {"status": "FAIL", "file": proof_path.name, "file_sha256": None, "checks": checks}
+    try:
+        proof = json.loads(proof_path.read_text(encoding="utf-8-sig"))
+    except (OSError, ValueError, json.JSONDecodeError):
+        checks["proof_json_valid"] = False
+        return {"status": "FAIL", "file": proof_path.name, "file_sha256": sha256_file(proof_path), "checks": checks}
+    canonical = dict(proof)
+    observed_self_hash = canonical.pop("sha256", None)
+    junit_sha = sha256_file(junit_path)
+    checks.update({
+        "proof_json_valid": True,
+        "proof_schema_valid": proof.get("schema") == REGRESSION_PROOF_SCHEMA and proof.get("status") == "PASS",
+        "proof_self_hash_valid": isinstance(observed_self_hash, str) and observed_self_hash == _sha256_json(canonical),
+        "junit_file_bound": proof.get("junit_file") == junit_path.name,
+        "junit_sha_bound": proof.get("junit_sha256") == junit_sha,
+        "regression_counts_bound": proof.get("tests") == regression.get("tests") and proof.get("failures") == regression.get("failures") and proof.get("errors") == regression.get("errors") and proof.get("skipped") == regression.get("skipped"),
+        "code_fingerprint_bound": proof.get("code_fingerprint") == fingerprint,
+    })
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "file": proof_path.name,
+        "file_sha256": sha256_file(proof_path),
+        "proof_sha256": observed_self_hash,
+        "junit_file": junit_path.name,
+        "junit_sha256": junit_sha,
+        "code_fingerprint_sha256": fingerprint.get("sha256"),
+        "checks": checks,
+    }
+
+
+def verify_current_regression_code_binding(root: str | Path = ".") -> dict[str, Any]:
+    project_root = Path(root).resolve()
+    junit = project_root / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    regression = junit_summary(junit)
+    fingerprint = code_fingerprint(project_root)
+    binding = regression_code_binding(project_root, junit, regression, fingerprint)
+    if binding.get("status") != "PASS" or not all(binding.get("checks", {}).values()):
+        raise ValueError("SMART current regression/code binding is stale")
+    return binding
 
 
 def _all_total_gates_true(doc: dict[str, Any]) -> bool:
@@ -115,7 +167,8 @@ def verify_product_certification(path: str | Path, *, root: str | Path | None = 
         raise ValueError("SMART product certification checks are not all true")
     if require_current_code:
         project_root = Path(root).resolve() if root is not None else p.resolve().parent
-        if doc.get("code_fingerprint") != code_fingerprint(project_root):
+        current_fingerprint = code_fingerprint(project_root)
+        if doc.get("code_fingerprint") != current_fingerprint:
             raise ValueError("SMART product certification is stale for current code")
         if doc.get("critical_code_manifest") != build_critical_code_manifest(project_root):
             raise ValueError("SMART product certification critical code manifest is stale")
@@ -124,9 +177,8 @@ def verify_product_certification(path: str | Path, *, root: str | Path | None = 
         current_authority = canonical_root_authority_binding(project_root, current_junit, current_regression)
         if current_authority.get("status") != "PASS" or doc.get("canonical_root_authority") != current_authority:
             raise ValueError("SMART product certification canonical regression authority is stale")
-        code_files = _code_files(project_root)
-        regression_fresh = current_junit.is_file() and bool(code_files) and current_junit.stat().st_mtime >= max(item.stat().st_mtime for item in code_files)
-        if not regression_fresh:
+        current_binding = regression_code_binding(project_root, current_junit, current_regression, current_fingerprint)
+        if current_binding.get("status") != "PASS" or doc.get("regression_code_binding") != current_binding:
             raise ValueError("SMART product certification regression is stale for current code")
     return doc
 
@@ -135,9 +187,10 @@ def build(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
     junit_path = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
     regression = junit_summary(junit_path)
+    fingerprint = code_fingerprint(root)
     canonical_authority = canonical_root_authority_binding(root, junit_path, regression)
-    code_files = _code_files(root)
-    regression_fresh = junit_path.is_file() and junit_path.stat().st_mtime >= max(p.stat().st_mtime for p in code_files)
+    regression_binding = regression_code_binding(root, junit_path, regression, fingerprint)
+    regression_fresh = regression_binding.get("status") == "PASS"
     runtime = runtime_audit(root)
     orchestration = build_orchestration(root, phase="BUILD")
     agent_runtime = SmartAgentRuntime(root, phase="BUILD").run()
@@ -176,9 +229,10 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
         "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
         "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
-        "code_fingerprint": code_fingerprint(root),
+        "code_fingerprint": fingerprint,
         "critical_code_manifest": build_critical_code_manifest(root),
         "regression": regression,
+        "regression_code_binding": regression_binding,
         "canonical_root_authority": canonical_authority,
         "runtime_guard": runtime,
         "build_orchestration_sha256": orchestration.get("orchestration_sha256"),

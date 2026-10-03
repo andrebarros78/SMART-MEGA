@@ -64,12 +64,42 @@ def test_build_context_is_non_operational_and_targets_next_contest():
 
 def test_stale_product_certification_fails_closed(monkeypatch):
     monkeypatch.setattr(g, "_current_product_certification", lambda root: (False, "stale-test"))
-    monkeypatch.setattr(g, "_latest_code_mtime", lambda root: 0.0)
     doc = g.evaluate(ROOT)
     assert doc["status"] == "FAIL"
     rendered = json.dumps(doc, sort_keys=True)
     assert "proof_freshness_audit" in rendered
     assert "stale-test" in rendered
+
+
+def test_regression_freshness_is_content_bound_not_mtime(tmp_path):
+    import json
+    import os
+    import smart_product_certification as certification
+
+    code = tmp_path / "smart_example.py"
+    code.write_text("VALUE = 1\n", encoding="utf-8")
+    junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
+    os.utime(junit, (1000, 1000))
+    os.utime(code, (2000, 2000))
+    regression = certification.junit_summary(junit)
+    fingerprint = certification.code_fingerprint(tmp_path)
+    proof = {
+        "schema": certification.REGRESSION_PROOF_SCHEMA,
+        "status": "PASS",
+        "junit_file": junit.name,
+        "junit_sha256": certification.sha256_file(junit),
+        "tests": regression["tests"],
+        "failures": regression["failures"],
+        "errors": regression["errors"],
+        "skipped": regression["skipped"],
+        "code_fingerprint": fingerprint,
+    }
+    proof["sha256"] = certification._sha256_json(proof)
+    (tmp_path / certification.REGRESSION_PROOF_FILE).write_text(json.dumps(proof), encoding="utf-8")
+    assert g._regression_binding_current(tmp_path) is True
+    code.write_text("VALUE = 2\n", encoding="utf-8")
+    assert g._regression_binding_current(tmp_path) is False
 
 
 def test_material_supervisor_fail_reopens_registry(tmp_path):

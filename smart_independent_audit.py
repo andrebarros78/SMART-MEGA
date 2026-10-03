@@ -28,6 +28,8 @@ from datetime import datetime
 
 from pathlib import Path
 
+from smart_path_semantics import basename_any, is_absolute_any
+
 
 
 from typing import Any, Iterable
@@ -247,7 +249,7 @@ def _resolve(root: Path, value: str | Path) -> Path:
 def _resolve_hash_bound_evidence(root: Path, value: str | Path, expected_sha256: str, label: str, *, allow_legacy_mismatch: bool = False) -> Path:
     root = Path(root).resolve()
     declared = Path(value)
-    if declared.is_absolute():
+    if is_absolute_any(value):
         raise ValueError(f'{label} external absolute path denied')
     resolved = (root / declared).resolve()
     try:
@@ -264,7 +266,7 @@ def _resolve_hash_bound_evidence(root: Path, value: str | Path, expected_sha256:
 
 def _resolve_historical_evidence_by_hash(root: Path, filename: str, expected_sha256: str, label: str, *, allow_legacy_mismatch: bool = False) -> Path:
     root = Path(root).resolve()
-    name = Path(filename).name
+    name = basename_any(filename)
     candidates = []
     for candidate in root.rglob(name):
         if not candidate.is_file():
@@ -302,11 +304,11 @@ def _resolve_historical_evidence_by_hash(root: Path, filename: str, expected_sha
 
 def _resolve_audit_evidence(root: Path, value: str | Path, expected_sha256: str, label: str, *, allow_legacy_mismatch: bool = False) -> Path:
     declared = Path(value)
-    if declared.is_absolute():
+    if is_absolute_any(value):
         # Historical absolute paths are never dereferenced or trusted.
         # Only the filename hint plus cryptographic hash may identify a file
         # physically contained by the canonical B2 workspace.
-        return _resolve_historical_evidence_by_hash(root, declared.name, expected_sha256, label, allow_legacy_mismatch=allow_legacy_mismatch)
+        return _resolve_historical_evidence_by_hash(root, basename_any(value), expected_sha256, label, allow_legacy_mismatch=allow_legacy_mismatch)
     return _resolve_hash_bound_evidence(root, declared, expected_sha256, label, allow_legacy_mismatch=allow_legacy_mismatch)
 
 def _load_json(path: Path) -> dict[str, Any]:

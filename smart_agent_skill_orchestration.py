@@ -8,6 +8,8 @@ import hashlib
 import json
 from datetime import datetime, timezone
 from pathlib import Path
+
+from smart_path_semantics import is_absolute_any
 from typing import Any
 
 SCHEMA = "SMART_AGENT_SKILL_ORCHESTRATION_V1"
@@ -230,7 +232,7 @@ def _resolve_project_file(root: Path, relative: str, *, label: str) -> Path:
         raise ValueError(f"{label} path is empty")
     resolved_root = root.resolve()
     raw = Path(value)
-    if raw.is_absolute():
+    if is_absolute_any(value):
         raise ValueError(f"{label} absolute external paths are forbidden: {value}")
     candidate = (resolved_root / raw).resolve()
     try:

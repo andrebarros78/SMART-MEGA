@@ -25,8 +25,10 @@ WMCP_PROOF_MAX_AGE_SECONDS=300.0
 WMCP_SUPERVISOR_MAX_HEARTBEAT_AGE_SECONDS=15.0
 WMCP_WORKER_MAX_HEARTBEAT_AGE_SECONDS=20.0
 WMCP_E2E_STDOUT="SMART_MEGA_WORKER_E2E_PROVEN_20260905_1704"
-CANONICAL_WMCP_ROOT=Path(r"C:\New Projet\WMCP 3.1").resolve()
-CANONICAL_WMCP_BROKER_ROOT=Path(r"C:\ProgramData\WMCP31\PrivilegedBroker").resolve()
+CANONICAL_WMCP_ROOT_TEXT=r"C:\New Projet\WMCP 3.1"
+CANONICAL_WMCP_BROKER_ROOT_TEXT=r"C:\ProgramData\WMCP31\PrivilegedBroker"
+CANONICAL_WMCP_ROOT=Path(CANONICAL_WMCP_ROOT_TEXT).resolve()
+CANONICAL_WMCP_BROKER_ROOT=Path(CANONICAL_WMCP_BROKER_ROOT_TEXT).resolve()
 
 
 def sha(path: Path) -> str:
@@ -381,7 +383,7 @@ def _canonical_wmcp_live_binding_valid(doc: dict[str,Any], *, require_runtime_fr
     e2e=doc.get('e2e',{})
     if not isinstance(live,dict) or not isinstance(e2e,dict):
         return False
-    if live.get('wmcp_root')!=str(CANONICAL_WMCP_ROOT) or live.get('broker_root')!=str(CANONICAL_WMCP_BROKER_ROOT):
+    if live.get('wmcp_root')!=CANONICAL_WMCP_ROOT_TEXT or live.get('broker_root')!=CANONICAL_WMCP_BROKER_ROOT_TEXT:
         return False
     project_id='smart-mega'
     state_root=CANONICAL_WMCP_ROOT/'.orquestrador'/'projects'/project_id
@@ -427,7 +429,7 @@ def _canonical_wmcp_artifact_binding_valid(doc: dict[str,Any]) -> bool:
     e2e=doc.get('e2e',{})
     if not isinstance(live,dict) or not isinstance(e2e,dict):
         return False
-    if live.get('wmcp_root')!=str(CANONICAL_WMCP_ROOT) or live.get('broker_root')!=str(CANONICAL_WMCP_BROKER_ROOT):
+    if live.get('wmcp_root')!=CANONICAL_WMCP_ROOT_TEXT or live.get('broker_root')!=CANONICAL_WMCP_BROKER_ROOT_TEXT:
         return False
     if doc.get('project_id')!='smart-mega':
         return False
