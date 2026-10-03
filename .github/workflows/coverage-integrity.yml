@@ -1,0 +1,49 @@
+name: SMART-MEGA Coverage Integrity
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage-integrity:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock.txt
+      - name: Dependency integrity
+        run: python -m pip check
+      - name: Full regression under branch coverage
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        shell: pwsh
+        run: |
+          python -m coverage erase
+          python -m coverage run --branch -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_AUDIT_JUNIT_COVERAGE_GITHUB.xml
+          python -m coverage json -o SMART_COVERAGE_GLOBAL_CURRENT.json
+      - name: Verify strict required coverage
+        run: python tools/check_required_coverage.py
+      - name: Upload coverage evidence
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-mega-required-coverage
+          if-no-files-found: warn
+          path: |
+            SMART_COVERAGE_GLOBAL_CURRENT.json
+            SMART_COVERAGE_REQUIRED_SUMMARY.json
+            SMART_AUDIT_JUNIT_COVERAGE_GITHUB.xml
