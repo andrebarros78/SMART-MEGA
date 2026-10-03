@@ -9,11 +9,11 @@
 
 ## 1. Precedência e escopo
 
-Esta baseline supersede a baseline histórica **somente** nas regras de identidade física, host, root local, Python local e descoberta do repositório.
+Esta baseline supersede qualquer regra histórica de identidade física, hostname, root local, ambiente Python local ou máquina específica.
 
 O plano executivo P0 -> P1 -> P2, os critérios 6/6, os contratos científicos, as regras de não regressão, anti-overfit, causalidade, integridade e prova permanecem válidos salvo quando conflitarem com a portabilidade GitHub-native aqui definida.
 
-`DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são origem histórica/proveniência da migração. Eles **não são requisitos operacionais** e não podem ser usados para rejeitar um checkout válido em outro host ou caminho.
+Nenhum host físico, sistema operacional externo ao GitHub Actions, letra de unidade ou caminho local fixo constitui autoridade operacional.
 
 ## 2. Identidade operacional canônica
 
@@ -23,7 +23,8 @@ A identidade operacional é determinada por:
 2. branch de referência `main` para baseline aprovada;
 3. commit Git explicitamente testado para qualquer prova ou release;
 4. root operacional resolvida dinamicamente pelo Git top-level do checkout atual;
-5. ausência de dependência em hostname ou letra de unidade específicos.
+5. execução oficial dos gates em runners GitHub-hosted Ubuntu;
+6. ausência de dependência em hostname, máquina física ou caminho local específico.
 
 A root operacional deve ser obtida por equivalente a:
 
@@ -31,49 +32,48 @@ A root operacional deve ser obtida por equivalente a:
 git rev-parse --show-toplevel
 ```
 
-Nenhum arquivo operacional novo pode exigir `C:\SMART-MEGA`, `DESKTOP-4T6AS9K` ou qualquer outro host/path físico fixo.
+Nenhum arquivo operacional novo pode exigir host, caminho físico ou máquina específica.
 
 ## 3. Bootstrap reproduzível
 
-Em um ambiente limpo:
+Em um ambiente limpo GitHub-hosted:
 
-1. clonar `andrebarros78/SMART-MEGA`;
-2. fazer checkout do commit/branch desejado;
-3. usar Python 3.13 compatível;
-4. criar ambiente virtual no checkout ou em diretório externo;
-5. instalar `requirements.txt`;
-6. executar `python -m pip check`;
-7. executar a regressão integral;
-8. exigir baseline Git limpa após a execução, salvo evidências explicitamente geradas e ignoradas.
+1. fazer checkout de `andrebarros78/SMART-MEGA` no commit/branch desejado;
+2. usar Python 3.13 compatível;
+3. instalar `requirements.lock.txt`;
+4. executar `python -m pip check`;
+5. executar a regressão integral;
+6. executar os gates de integridade aplicáveis;
+7. exigir baseline Git limpa após a execução, salvo evidências explicitamente geradas e ignoradas.
 
-O ambiente virtual local histórico `.venv` não é autoridade e não deve ser versionado.
+Ambientes virtuais locais não são autoridade e não devem ser versionados.
 
 ## 4. Estado/runtime canônico
 
-O estado ativo é descrito por `SMART_ACTIVE_EPOCH.json` e pelos artefatos por ele referenciados. Arquivos com SHA-256 declarado devem existir e corresponder exatamente ao hash declarado antes de serem aceitos como autoridade.
+O estado ativo é descrito por `SMART_ACTIVE_EPOCH.json` e pelos artefatos por ele referenciados.
+
+Para artefatos binários, SHA-256 declarado deve corresponder byte a byte ao arquivo versionado.
+
+Para artefatos textuais, a verificação pode reconhecer equivalência de conteúdo entre terminações de linha LF e CRLF, sem aceitar qualquer alteração semântica. Essa portabilidade não autoriza normalização de binários nem alteração do conteúdo lógico das autoridades históricas.
 
 Caminhos opcionais/reservados declarados no epoch não devem ser fabricados apenas para satisfazer existência nominal; a obrigatoriedade depende do contrato e do estado do lifecycle.
 
-## 5. Prova de portabilidade
+## 5. Prova GitHub-native
 
-A migração GitHub-native foi comprovada no commit:
+A única prova operacional corrente é a produzida por GitHub Actions no mesmo commit sob julgamento.
 
-`35158323dc9a98720306704d1ed043f9e4bcb8b6`
+Para um commit ser aceito como baseline GitHub-native, deve haver, no mínimo:
 
-Evidências de aceitação:
-
-- checkout em GitHub-hosted Windows runner fora de `C:\SMART-MEGA`;
+- checkout em runner GitHub-hosted Ubuntu;
 - Python 3.13 reconstruído no runner;
-- instalação integral de `requirements.txt`;
+- instalação integral de `requirements.lock.txt`;
 - `pip check` aprovado;
-- regressão integral: **903 passed / 0 failed**;
-- histórico Git fonte incorporado ao `main`;
-- branches históricas e 28 tags preservadas;
-- secret scan da árvore corrente e histórico aprovados;
-- `git fsck` aprovado;
-- nenhum force-push necessário.
+- regressão integral aprovada;
+- Repository Integrity aprovado;
+- ausência de dependência operacional em máquina física ou executor externo;
+- evidências vinculadas ao mesmo commit avaliado.
 
-Essa evidência comprova portabilidade técnica daquela baseline. Alterações futuras exigem nova prova fresca; PASS histórico não autoriza declarar uma versão posterior como comprovada.
+PASS histórico não autoriza declarar uma versão posterior como comprovada. Toda alteração material exige prova fresca.
 
 ## 6. Regra 6/6
 
