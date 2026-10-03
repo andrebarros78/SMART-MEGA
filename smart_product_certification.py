@@ -9,6 +9,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
+from smart_source_identity import sha256_source_file
+
 from smart_agent_runtime import SmartAgentRuntime, sha256_file
 from smart_critical_code_manifest import build as build_critical_code_manifest
 from smart_agent_skill_functional_gate import evaluate as functional_evaluate
@@ -43,7 +45,7 @@ def _code_files(root: Path) -> list[Path]:
 
 
 def code_fingerprint(root: Path) -> dict[str, Any]:
-    rows = [{"path": p.name, "sha256": sha256_file(p)} for p in _code_files(root)]
+    rows = [{"path": p.name, "sha256": sha256_source_file(p)} for p in _code_files(root)]
     return {"file_count": len(rows), "files": rows, "sha256": _sha256_json(rows)}
 
 

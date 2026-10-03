@@ -59,6 +59,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_independent_oracle import validate_frozen_decision, validate_prediction_snapshot
 
 from smart_material_deficiency_registry import load_registry as load_material_deficiency_registry
+from smart_source_identity import sha256_source_file
 
 
 
@@ -1049,7 +1050,7 @@ def audit_independence(root: Path) -> dict[str, Any]:
 
 
 
-        if sha256_file(project_source) != sha256_file(runtime_source):
+        if sha256_source_file(project_source) != sha256_source_file(runtime_source):
 
 
 
@@ -1131,7 +1132,7 @@ def audit_independence(root: Path) -> dict[str, Any]:
 
     if project_oracle_source.is_file():
 
-        if sha256_file(project_oracle_source) != sha256_file(runtime_oracle_source):
+        if sha256_source_file(project_oracle_source) != sha256_source_file(runtime_oracle_source):
 
             raise ValueError('independent decision oracle project/runtime source mismatch')
 
@@ -1171,7 +1172,7 @@ def audit_independence(root: Path) -> dict[str, Any]:
 
 
 
-        'status': 'PASS', 'source_file': source.name, 'source_sha256': sha256_file(source),
+        'status': 'PASS', 'source_file': source.name, 'source_sha256': sha256_source_file(source),
 
 
 
@@ -1183,7 +1184,7 @@ def audit_independence(root: Path) -> dict[str, Any]:
 
         'independent_oracle_file': oracle_source.name,
 
-        'independent_oracle_sha256': sha256_file(oracle_source),
+        'independent_oracle_sha256': sha256_source_file(oracle_source),
 
         'independent_oracle_project_imports': project_imports,
 
@@ -1333,7 +1334,7 @@ def audit_coverage_binding(root: Path, binding_path: Path) -> dict[str, Any]:
 
 
 
-    current_source_sha = sha256_file(source)
+    current_source_sha = sha256_source_file(source)
 
 
 

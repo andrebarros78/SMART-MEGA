@@ -16,6 +16,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_signal_quality import SignalQualityState
 from smart_signal_redundancy_consensus import consensus_penalties
 from smart_signal_weights import dynamic_weights
+from smart_source_identity import sha256_source_file
 
 SCHEMA = 'SMART_CONTINUOUS_RED_TEAM_1'
 REPORT_PATH = Path('SMART_P09_RED_TEAM_LATEST.json')
@@ -81,7 +82,7 @@ def current_behavior_hashes(root: Path = Path('.')) -> dict[str, str]:
         p = Path(root) / name
         if not p.is_file():
             raise ValueError(f'missing behavioral file: {name}')
-        out[name] = sha256_file(p)
+        out[name] = sha256_source_file(p)
     return out
 
 

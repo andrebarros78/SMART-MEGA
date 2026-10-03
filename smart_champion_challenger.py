@@ -40,6 +40,7 @@ from smart_signal_expansion_governance import REGISTRY_PATH, load_registry
 from smart_portfolio_pipeline import build_portfolio_package
 
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
+from smart_source_identity import sha256_source_file
 
 from smart_promotion_gate import (
 
@@ -753,61 +754,61 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
     component_hashes = {
 
-        'engine': sha256(Path('smart_v2_engine.py')),
+        'engine': sha256_source_file(Path('smart_v2_engine.py')),
 
-        'champion_engine': sha256(Path('freeze_next_research.py')),
+        'champion_engine': sha256_source_file(Path('freeze_next_research.py')),
 
-        'signal_agent': sha256(Path('smart_signal_agent.py')),
+        'signal_agent': sha256_source_file(Path('smart_signal_agent.py')),
 
-        'signal_quality': sha256(Path('smart_signal_quality.py')),
+        'signal_quality': sha256_source_file(Path('smart_signal_quality.py')),
 
-        'signal_weights': sha256(Path('smart_signal_weights.py')),
+        'signal_weights': sha256_source_file(Path('smart_signal_weights.py')),
 
-        'context_regime': sha256(Path('smart_context_regime.py')),
+        'context_regime': sha256_source_file(Path('smart_context_regime.py')),
 
-        'redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py')),
+        'redundancy_consensus': sha256_source_file(Path('smart_signal_redundancy_consensus.py')),
 
-        'marginal_utility': sha256(Path('smart_signal_marginal_utility.py')),
+        'marginal_utility': sha256_source_file(Path('smart_signal_marginal_utility.py')),
 
-        'contextual_meta_weights': sha256(Path('smart_contextual_meta_weights.py')),
+        'contextual_meta_weights': sha256_source_file(Path('smart_contextual_meta_weights.py')),
 
-        'rank_score_calibration': sha256(Path('smart_rank_score_calibration.py')),
+        'rank_score_calibration': sha256_source_file(Path('smart_rank_score_calibration.py')),
 
-        'multi_challengers': sha256(Path('smart_multi_challengers.py')),
+        'multi_challengers': sha256_source_file(Path('smart_multi_challengers.py')),
 
-        'meta_governor': sha256(Path('smart_meta_governor.py')),
+        'meta_governor': sha256_source_file(Path('smart_meta_governor.py')),
 
-        'bounded_online_learning': sha256(Path('smart_bounded_online_learning.py')),
+        'bounded_online_learning': sha256_source_file(Path('smart_bounded_online_learning.py')),
 
-        'signal_interactions': sha256(Path('smart_signal_interactions.py')),
+        'signal_interactions': sha256_source_file(Path('smart_signal_interactions.py')),
 
-        'signal_expansion_governance': sha256(Path('smart_signal_expansion_governance.py')),
+        'signal_expansion_governance': sha256_source_file(Path('smart_signal_expansion_governance.py')),
 
-        'learning_activation_gate': sha256(Path('smart_learning_activation_gate.py')),
+        'learning_activation_gate': sha256_source_file(Path('smart_learning_activation_gate.py')),
 
-        'learning_activation_authority': sha256(Path('smart_learning_activation_authority.py')),
+        'learning_activation_authority': sha256_source_file(Path('smart_learning_activation_authority.py')),
 
-        'ai_fine_tuning': sha256(Path('smart_ai_fine_tuning.py')),
+        'ai_fine_tuning': sha256_source_file(Path('smart_ai_fine_tuning.py')),
 
-        'data_quality_gate': sha256(Path('smart_data_quality_gate.py')),
+        'data_quality_gate': sha256_source_file(Path('smart_data_quality_gate.py')),
 
-        'independent_oracle': sha256(Path('smart_independent_oracle.py')),
+        'independent_oracle': sha256_source_file(Path('smart_independent_oracle.py')),
 
-        'material_deficiency_registry': sha256(Path('smart_material_deficiency_registry.py')),
+        'material_deficiency_registry': sha256_source_file(Path('smart_material_deficiency_registry.py')),
 
-        'sequential_prospective_proof': sha256(Path('smart_sequential_prospective_proof.py')),
+        'sequential_prospective_proof': sha256_source_file(Path('smart_sequential_prospective_proof.py')),
 
-        'promotion_gate': sha256(Path('smart_promotion_gate.py')),
+        'promotion_gate': sha256_source_file(Path('smart_promotion_gate.py')),
 
-        'independent_audit': sha256(Path('smart_independent_audit.py')),
+        'independent_audit': sha256_source_file(Path('smart_independent_audit.py')),
 
-        'evidence_only_promotion': sha256(Path('smart_evidence_only_promotion.py')),
+        'evidence_only_promotion': sha256_source_file(Path('smart_evidence_only_promotion.py')),
 
-        'global_integrity': sha256(Path('smart_global_integrity.py')),
+        'global_integrity': sha256_source_file(Path('smart_global_integrity.py')),
 
-        'portfolio_optimizer': sha256(Path('smart_portfolio_optimizer.py')),
+        'portfolio_optimizer': sha256_source_file(Path('smart_portfolio_optimizer.py')),
 
-        'portfolio_pipeline': sha256(Path('smart_portfolio_pipeline.py')),
+        'portfolio_pipeline': sha256_source_file(Path('smart_portfolio_pipeline.py')),
 
     }
 
