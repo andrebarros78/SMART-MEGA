@@ -22,7 +22,20 @@ jobs:
         with:
           python-version: '3.13'
       - name: Apply source identity migration
-        run: python tools/apply_source_identity_migration.py
+        shell: bash
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          p = Path('tools/apply_source_identity_migration.py')
+          text = p.read_text(encoding='utf-8')
+          old = '    return raw.decode("utf-8"), newline\n'
+          new = '    text = raw.decode("utf-8").replace("\\r\\n", "\\n").replace("\\r", "\\n")\n    return text, newline\n'
+          if old not in text:
+              raise SystemExit('migration _read precondition failed')
+          p.write_text(text.replace(old, new, 1), encoding='utf-8', newline='\n')
+          PY
+          python tools/apply_source_identity_migration.py
+          git restore tools/apply_source_identity_migration.py
       - name: Validate patch
         shell: bash
         run: |
