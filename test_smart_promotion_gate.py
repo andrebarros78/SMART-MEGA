@@ -340,7 +340,7 @@ def test_freeze_preserves_promotion_gate_hash_and_policy_in_file_and_ledger(tmp_
 
     assert event['snapshot']['promotion_policy'] == policy
 
-    assert frozen['promotion_gate_sha256'] == cc.sha256(Path('smart_promotion_gate.py'))
+    assert frozen['promotion_gate_sha256'] == cc.sha256_source_file(Path('smart_promotion_gate.py'))
 
     assert event['hashes']['promotion_gate'] == frozen['promotion_gate_sha256']
 

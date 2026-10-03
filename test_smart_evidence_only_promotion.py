@@ -644,7 +644,7 @@ def test_future_freeze_hashes_and_snapshots_p15_policy(tmp_path: Path):
 
     event = led['events'][0]
 
-    assert frozen['evidence_only_promotion_sha256'] == cc.sha256(Path('smart_evidence_only_promotion.py'))
+    assert frozen['evidence_only_promotion_sha256'] == cc.sha256_source_file(Path('smart_evidence_only_promotion.py'))
 
     assert event['hashes']['evidence_only_promotion'] == frozen['evidence_only_promotion_sha256']
 

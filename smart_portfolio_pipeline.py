@@ -14,6 +14,7 @@ from typing import Any
 from smart_portfolio_optimizer import PortfolioConfig, optimize_from_freeze
 from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
 from smart_false_negative_rescue import apply_rescue, build_profile_from_reports
+from smart_source_identity import sha256_source_file
 
 PIPELINE_SCHEMA = "SMART_PORTFOLIO_ARTIFACT_1"
 CANONICAL_PORTFOLIO_CONFIG = PortfolioConfig(
@@ -148,8 +149,8 @@ def build_portfolio_package(
         "freeze_file": freeze_path.name,
         "freeze_sha256": sha256(freeze_path),
         "optimizer_file": "smart_portfolio_optimizer.py",
-        "optimizer_sha256": sha256(Path(__file__).with_name("smart_portfolio_optimizer.py")),
-        "pipeline_sha256": sha256(Path(__file__)),
+        "optimizer_sha256": sha256_source_file(Path(__file__).with_name("smart_portfolio_optimizer.py")),
+        "pipeline_sha256": sha256_source_file(Path(__file__)),
         "config": asdict(config),
         "champion_top6": [int(x) for x in champion["top6"]],
         "primary_card_selector": primary_selection,
