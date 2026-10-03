@@ -39,6 +39,7 @@ jobs:
       - name: Validate patch
         shell: bash
         run: |
+          git config core.whitespace cr-at-eol
           git diff --check
           test -n "$(git status --porcelain)"
       - name: Commit migrated tree
