@@ -3,6 +3,7 @@ from __future__ import annotations
 import re
 from pathlib import Path
 
+# Workflow-registration trigger: this commit lands after the migration workflow exists.
 ROOT = Path(__file__).resolve().parents[1]
 
 
