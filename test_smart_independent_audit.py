@@ -47,7 +47,7 @@ def _coverage_binding(tmp_path: Path, source_name='unit.py') -> Path:
     binding.write_text(json.dumps({
         'schema': ia.COVERAGE_BINDING_SCHEMA,
         'source_file': source_name,
-        'source_sha256': _sha(source),
+        'source_sha256': ia.sha256_source_file(source),
         'coverage_report_file': report.name,
         'coverage_report_sha256': _sha(report),
         'coverage_file_key': source_name,
@@ -438,7 +438,7 @@ def test_p14_future_freeze_hashes_and_snapshots_independent_audit(tmp_path: Path
         assert Path.cwd()==cwd
     assert result['status']=='FROZEN'
     frozen=json.loads(out.read_text()); L=json.loads(ledger.read_text()); ev=L['events'][0]
-    assert frozen['independent_audit_sha256']==ia.sha256_file(Path('smart_independent_audit.py'))
+    assert frozen['independent_audit_sha256']==ia.sha256_source_file(Path('smart_independent_audit.py'))
     assert frozen['independent_audit_policy']['schema']=='SMART_INDEPENDENT_AUDIT_POLICY_1'
     assert frozen['independent_audit_policy']['promotion_authority'] is False
     assert ev['hashes']['independent_audit']==frozen['independent_audit_sha256']

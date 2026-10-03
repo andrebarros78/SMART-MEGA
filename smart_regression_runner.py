@@ -9,6 +9,8 @@ import sys
 from pathlib import Path
 from typing import Any, Sequence
 
+from smart_source_identity import sha256_source_file
+
 import msvcrt
 
 import smart_regression_evidence as evidence
@@ -77,7 +79,7 @@ def _code_files(root: Path) -> list[Path]:
 
 def code_fingerprint(root: str | Path) -> dict[str, Any]:
     root = Path(root).resolve()
-    rows = [{"path": path.name, "sha256": evidence.sha256_file(path)} for path in _code_files(root)]
+    rows = [{"path": path.name, "sha256": sha256_source_file(path)} for path in _code_files(root)]
     raw = json.dumps(rows, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     return {"file_count": len(rows), "sha256": hashlib.sha256(raw).hexdigest()}
 

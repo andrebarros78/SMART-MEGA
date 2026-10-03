@@ -6,6 +6,8 @@ from defusedxml import ElementTree as ET
 from pathlib import Path
 from typing import Any, Iterable
 
+from smart_source_identity import sha256_source_file
+
 from smart_material_deficiency_registry import load_registry as load_material_deficiency_registry
 from smart_critical_code_manifest import build as build_critical_code_manifest
 
@@ -177,7 +179,7 @@ def current_source_hashes(root: Path) -> dict[str, str]:
         p = root / name
         if not p.is_file():
             raise ValueError(f'critical SMART source missing: {name}')
-        out[name] = sha256_file(p)
+        out[name] = sha256_source_file(p)
     return out
 
 

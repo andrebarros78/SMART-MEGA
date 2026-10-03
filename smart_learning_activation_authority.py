@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Any
 
 from smart_learning_activation_gate import ActivationDecision
+from smart_source_identity import sha256_source_file
 
 SCHEMA = 'SMART_LEARNING_ACTIVATION_AUTHORITY_1'
 MATERIALITY_SCHEMA = 'SMART_DECISION_MATERIALITY_1'
@@ -139,7 +140,7 @@ def build_authority(*, target_contest: int, decision: ActivationDecision, eviden
         p = root / name
         if not p.is_file():
             raise ValueError(f'activation component missing: {name}')
-        component_hashes[key] = _sha256_file(p)
+        component_hashes[key] = sha256_source_file(p)
     obj = {
         'schema': SCHEMA,
         'status': 'AUTHORIZED',
@@ -209,7 +210,7 @@ def load_activation_authority(path: Path = DEFAULT_PATH, *, target_contest: int,
     root = Path(root).resolve()
     for key, name in COMPONENTS.items():
         p = root / name
-        if not p.is_file() or component_hashes.get(key) != _sha256_file(p):
+        if not p.is_file() or component_hashes.get(key) != sha256_source_file(p):
             raise ValueError(f'learning activation component hash stale: {key}')
     return ActivationRuntimeConfig(
         enabled=True,

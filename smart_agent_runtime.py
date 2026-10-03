@@ -12,6 +12,7 @@ from typing import Any, Callable
 import numpy as np
 
 from smart_agent_skill_orchestration import AGENTS, LANES, build_orchestration, resolve_runtime_phase
+from smart_source_identity import sha256_source_file
 
 SCHEMA = "SMART_AGENT_RUNTIME_V2"
 ORDER = [
@@ -98,7 +99,7 @@ class SmartAgentRuntime:
         for relative in hints:
             path = self.root / relative
             if path.is_file():
-                records.append({"path": relative.replace("\\", "/"), "sha256": sha256_file(path)})
+                records.append({"path": relative.replace("\\", "/"), "sha256": sha256_source_file(path) if path.suffix.lower() == '.py' else sha256_file(path)})
         return records
 
     def _critical_files(self) -> list[str]:

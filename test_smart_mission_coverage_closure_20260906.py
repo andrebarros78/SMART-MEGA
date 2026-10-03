@@ -318,13 +318,13 @@ def test_independent_audit_oracle_source_guards(monkeypatch, tmp_path):
         ia.audit_independence(tmp_path)
 
     oracle_path.write_text('import smart_fake\n', encoding='utf-8')
-    original_sha = ia.sha256_file
+    original_sha = ia.sha256_source_file
     def same_oracle_hash(path):
         p = Path(path)
         if p.name == 'smart_independent_oracle.py':
             return 'a'*64
         return original_sha(p)
-    monkeypatch.setattr(ia, 'sha256_file', same_oracle_hash)
+    monkeypatch.setattr(ia, 'sha256_source_file', same_oracle_hash)
     with pytest.raises(ValueError, match='imports project implementation'):
         ia.audit_independence(tmp_path)
 

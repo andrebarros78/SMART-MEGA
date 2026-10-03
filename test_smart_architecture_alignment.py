@@ -108,20 +108,20 @@ def test_architecture_dependencies_are_layered_and_non_circular():
 def test_freeze_hashes_every_behavioral_challenger_component():
     text = (ROOT / 'smart_champion_challenger.py').read_text(encoding='utf-8-sig')
     required = {
-        "'engine': sha256(Path('smart_v2_engine.py'))",
-        "'signal_agent': sha256(Path('smart_signal_agent.py'))",
-        "'signal_quality': sha256(Path('smart_signal_quality.py'))",
-        "'signal_weights': sha256(Path('smart_signal_weights.py'))",
-        "'context_regime': sha256(Path('smart_context_regime.py'))",
-        "'redundancy_consensus': sha256(Path('smart_signal_redundancy_consensus.py'))",
-        "'marginal_utility': sha256(Path('smart_signal_marginal_utility.py'))",
-        "'contextual_meta_weights': sha256(Path('smart_contextual_meta_weights.py'))",
-        "'rank_score_calibration': sha256(Path('smart_rank_score_calibration.py'))",
-        "'multi_challengers': sha256(Path('smart_multi_challengers.py'))",
-        "'meta_governor': sha256(Path('smart_meta_governor.py'))",
-        "'signal_interactions': sha256(Path('smart_signal_interactions.py'))",
-        "'promotion_gate': sha256(Path('smart_promotion_gate.py'))",
-        "'independent_audit': sha256(Path('smart_independent_audit.py'))",
+        "'engine': sha256_source_file(Path('smart_v2_engine.py'))",
+        "'signal_agent': sha256_source_file(Path('smart_signal_agent.py'))",
+        "'signal_quality': sha256_source_file(Path('smart_signal_quality.py'))",
+        "'signal_weights': sha256_source_file(Path('smart_signal_weights.py'))",
+        "'context_regime': sha256_source_file(Path('smart_context_regime.py'))",
+        "'redundancy_consensus': sha256_source_file(Path('smart_signal_redundancy_consensus.py'))",
+        "'marginal_utility': sha256_source_file(Path('smart_signal_marginal_utility.py'))",
+        "'contextual_meta_weights': sha256_source_file(Path('smart_contextual_meta_weights.py'))",
+        "'rank_score_calibration': sha256_source_file(Path('smart_rank_score_calibration.py'))",
+        "'multi_challengers': sha256_source_file(Path('smart_multi_challengers.py'))",
+        "'meta_governor': sha256_source_file(Path('smart_meta_governor.py'))",
+        "'signal_interactions': sha256_source_file(Path('smart_signal_interactions.py'))",
+        "'promotion_gate': sha256_source_file(Path('smart_promotion_gate.py'))",
+        "'independent_audit': sha256_source_file(Path('smart_independent_audit.py'))",
     }
     for marker in required:
         assert marker in text

@@ -5,6 +5,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from smart_source_identity import sha256_source_file
+
 SCHEMA = "SMART_CRITICAL_CODE_MANIFEST_1"
 DEFAULT_PATH = Path("SMART_CRITICAL_CODE_MANIFEST.json")
 
@@ -30,7 +32,7 @@ def critical_code_files(root: str | Path) -> list[Path]:
 
 def build(root: str | Path) -> dict[str, Any]:
     root=Path(root).resolve()
-    files={p.name:sha256_file(p) for p in critical_code_files(root)}
+    files={p.name:sha256_source_file(p) for p in critical_code_files(root)}
     basis={"schema":SCHEMA,"files":files}
     fingerprint=hashlib.sha256(json.dumps(basis,sort_keys=True,separators=(",",":")).encode()).hexdigest()
     return {"schema":SCHEMA,"file_count":len(files),"files":files,"fingerprint_sha256":fingerprint}
