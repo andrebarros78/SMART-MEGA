@@ -28,6 +28,19 @@ def _git_root() -> Path:
 
 ROOT = _git_root()
 
+_TEXT_NEWLINE_PORTABLE_SUFFIXES = {
+    ".cfg",
+    ".csv",
+    ".ini",
+    ".json",
+    ".md",
+    ".py",
+    ".toml",
+    ".txt",
+    ".yaml",
+    ".yml",
+}
+
 
 def _safe_relative(relative: str) -> Path:
     if not isinstance(relative, str) or not relative.strip():
@@ -77,16 +90,35 @@ def _sha256(path: Path) -> str:
     return digest.hexdigest()
 
 
+def _sha256_bytes(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _portable_text_hashes(path: Path) -> set[str]:
+    if path.suffix.lower() not in _TEXT_NEWLINE_PORTABLE_SUFFIXES:
+        return set()
+    raw = path.read_bytes()
+    normalized_lf = raw.replace(b"\r\n", b"\n").replace(b"\r", b"\n")
+    normalized_crlf = normalized_lf.replace(b"\n", b"\r\n")
+    return {
+        _sha256_bytes(normalized_lf),
+        _sha256_bytes(normalized_crlf),
+    }
+
+
 def _require_raw_hash(label: str, relative: str, expected: str) -> None:
     path = _require_file(label, relative)
     expected = str(expected).lower()
     if not re.fullmatch(r"[0-9a-f]{64}", expected):
         raise RepositoryIntegrityError(f"{label} invalid expected SHA-256: {expected!r}")
     observed = _sha256(path)
-    if observed != expected:
-        raise RepositoryIntegrityError(
-            f"{label} SHA-256 mismatch: file={relative} expected={expected} observed={observed}"
-        )
+    if observed == expected:
+        return
+    if expected in _portable_text_hashes(path):
+        return
+    raise RepositoryIntegrityError(
+        f"{label} SHA-256 mismatch: file={relative} expected={expected} observed={observed}"
+    )
 
 
 def _check_discovery_docs() -> None:
@@ -217,9 +249,6 @@ def _check_active_epoch() -> dict[str, Any]:
                 _require_raw_hash(label, str(prospective[file_key]), str(prospective[sha_key]))
         if prospective.get("result_used") is not False:
             raise RepositoryIntegrityError("prospective registration must remain result-free")
-
-    # activation_authority and expansion_registry are reserved lifecycle paths.
-    # Their presence is not required merely because state_paths names them.
 
     return {
         "schema": epoch["schema"],
