@@ -346,7 +346,7 @@ def contract() -> dict[str, Any]:
         "product_completion_independent_of_operation": True,
         "operator_selects_target": True,
         "target_required_for_prepare_and_freeze": True,
-        "supported_actions": ["status", "preflight", "prepare", "withdraw", "recover-missed", "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "post-result-report", "review", "hold", "terminal"],
+        "supported_actions": ["status", "preflight", "prepare", "withdraw", "recover-missed", "catch-up", "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "post-result-report", "review", "hold", "terminal"],
         "post_result_review_required_before_next_prepare": True,
         "prepare_requires_explicit_next_cycle_authority": True,
         "automatic_next_target_prepare_forbidden": True,
@@ -356,6 +356,7 @@ def contract() -> dict[str, Any]:
         "missed_unfrozen_recovery_requires_post_draw_official_result": True,
         "missed_unprepared_recovery_is_non_predictive": True,
         "missed_unprepared_recovery_requires_completed_prior_epoch": True,
+        "missed_result_catchup_is_non_predictive_and_chainable": True,
         "freeze_is_operational_not_construction_gate": True,
         "manual_generation_authority_required_for_prospective_freeze": True,
         "analysis_calibration_and_testing_do_not_require_generation_authority": True,
@@ -972,6 +973,12 @@ def recover_missed_unfrozen_operation(root: str | Path, target: int, *, payload:
     return {**proof, "proof_file": proof_path.name}
 
 
+@locked_operation("CATCH_UP_MISSED_RESULTS")
+def catch_up_missed_operation(root: str | Path, through_target: int) -> dict[str, Any]:
+    from smart_missed_catchup import catch_up_missed_results
+    return catch_up_missed_results(root, int(through_target))
+
+
 @locked_operation("AUTHORIZE_GENERATION")
 @startup_guarded("AUTHORIZE_GENERATION")
 def authorize_generation_operation(root: str | Path, target: int) -> dict[str, Any]:
@@ -1206,6 +1213,7 @@ def main(argv: list[str] | None = None) -> None:
     p = sub.add_parser("prepare"); p.add_argument("--target", type=int, required=True); p.add_argument("--supersede", action="store_true")
     w = sub.add_parser("withdraw"); w.add_argument("--target", type=int, required=True)
     m = sub.add_parser("recover-missed"); m.add_argument("--target", type=int, required=True)
+    cu = sub.add_parser("catch-up"); cu.add_argument("--through", type=int, required=True)
     n = sub.add_parser("authorize-next-cycle"); n.add_argument("--target", type=int, required=True)
     g = sub.add_parser("authorize-generation"); g.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
@@ -1221,6 +1229,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "prepare": out = prepare_operation(root, args.target, supersede_existing=args.supersede)
     elif args.action == "withdraw": out = withdraw_pre_freeze_operation(root, args.target)
     elif args.action == "recover-missed": out = recover_missed_unfrozen_operation(root, args.target)
+    elif args.action == "catch-up": out = catch_up_missed_operation(root, args.through)
     elif args.action == "authorize-next-cycle": out = authorize_next_cycle_operation(root, args.target)
     elif args.action == "authorize-generation": out = authorize_generation_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
