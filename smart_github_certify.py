@@ -14,7 +14,7 @@ from smart_agent_runtime import sha256_file
 from smart_product_certification import (
     _sha256_json, code_fingerprint, junit_summary, verify_product_certification, write,
 )
-from smart_agent_ecosystem_governance import evaluate as evaluate_governance
+from smart_agent_ecosystem_governance import evaluate as evaluate_governance, write_acquisition_manifest
 from smart_authority_freshness import audit as audit_authority_freshness, verify_governance
 from smart_global_integrity import build_global_integrity_proof, verify_global_integrity
 from smart_continuous_red_team import run_suite as run_red_team_suite, verify_latest_report, write_report as write_red_team_report
@@ -24,7 +24,7 @@ ARTIFACTS = (
     "SMART_AUDIT_JUNIT_CURRENT.xml", "SMART_CANONICAL_ROOT.json",
     "SMART_PRODUCT_CERTIFICATION.json", "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
     "SMART_GLOBAL_INTEGRITY_PROOF.json", "SMART_3052_IMPLEMENTATION_GATE.json",
-    "SMART_P09_RED_TEAM_LATEST.json",
+    "SMART_P09_RED_TEAM_LATEST.json", "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json",
 )
 
 
@@ -84,6 +84,7 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str) -> dic
     cert = write(root)
     verify_product_certification(root / ARTIFACTS[2], root=root, require_current_code=True)
 
+    write_acquisition_manifest(root)
     governance = evaluate_governance(root)
     if governance.get("status") != "PASS":
         raise RuntimeError(f"supervisory agent governance failed: {governance.get('checks')}")
