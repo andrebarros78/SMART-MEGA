@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import json
+from pathlib import Path
 from datetime import datetime, timezone
 
 import pandas as pd
@@ -147,3 +148,25 @@ def test_official_payload_batch_is_self_hashed_contiguous_and_endpoint_bound(tmp
     assert sorted(payloads) == [3, 4]
     assert evidence["document_sha256"] == batch["sha256"]
     assert evidence["targets"] == [3, 4]
+
+
+def test_catchup_completes_prior_learning_before_history_advance(monkeypatch, tmp_path):
+    calls=[]
+    monkeypatch.setattr(catchup, 'complete_post_result_learning', lambda root, active: calls.append('learn') or {'status':'POST_RESULT_LEARNING_COMPLETE'})
+    monkeypatch.setattr(catchup, 'advance_completed_epoch', lambda root, active: calls.append('advance') or {'status':'PASS'})
+    monkeypatch.setattr(catchup, 'verify_product_certification', lambda *a, **k: {'sha256':'c'*64})
+    monkeypatch.setattr(catchup, 'load_lifecycle', lambda root: {'state':'ADJUDICATED','target_contest':2})
+    monkeypatch.setattr(catchup, 'verify_active_epoch', lambda path: {'project':'SMART-MEGA','target_contest':2,'state_paths':{'ledger':'ledger.json'}})
+    monkeypatch.setattr(catchup, '_assert_completed_active', lambda root, active, lifecycle: 2)
+    (tmp_path/'SMART_PRODUCT_CERTIFICATION.json').write_text('{}')
+    (tmp_path/'SMART_ACTIVE_EPOCH.json').write_text('{}')
+    (tmp_path/'SMART_OPERATIONAL_LIFECYCLE.json').write_text('{}')
+    (tmp_path/'Mega-Sena.xlsx').write_bytes(b'x')
+    (tmp_path/'ledger.json').write_text('{"schema":"SMART_SIGNAL_LEDGER_1","events":[]}')
+    monkeypatch.setattr(catchup, '_history', lambda root: {'max':2,'rows':2,'sha256':'h'*64})
+    monkeypatch.setattr(catchup, 'canonical_root', lambda root: Path(root))
+    monkeypatch.setattr(catchup, '_replace_hashed', lambda *a, **k: (_ for _ in ()).throw(RuntimeError('stop-after-prior-advance')))
+    import pytest
+    with pytest.raises(RuntimeError, match='stop-after-prior-advance'):
+        catchup.catch_up_missed_results(tmp_path,2)
+    assert calls[:2]==['learn','advance']

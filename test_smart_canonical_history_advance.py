@@ -139,6 +139,16 @@ def test_advance_already_current_rejects_metadata_rewrite(tmp_path: Path, monkey
         cha.advance_completed_epoch(tmp_path, active)
 
 
+def test_advance_resolves_historical_absolute_result_path_by_hash(tmp_path: Path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    expected = _sha(result)
+    ledger['events'][0]['result_data_file'] = str(Path(r'C:\SMART-MEGA\runtime\learning_epochs\e1') / result.name)
+    out = cha.advance_completed_epoch(tmp_path, active)
+    assert out['status'] == 'PASS'
+    assert out['result_file_sha256'] == expected
+    assert out['result_file'].replace('\\', '/').endswith('runtime/learning_epochs/e1/' + result.name)
+
+
 def test_advance_resolves_archived_result_evidence_by_committed_hash(tmp_path: Path, monkeypatch):
     canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
     expected = _sha(result)

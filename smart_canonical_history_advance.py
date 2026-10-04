@@ -29,18 +29,42 @@ def _under_root(root: Path, path: Path) -> Path:
 
 
 def _resolve_adjudication_result_evidence(root: Path, adjudication: dict[str, Any]) -> Path:
-    declared = _under_root(root, root / str(adjudication.get("result_data_file", "")))
+    root = Path(root).resolve()
+    declared_raw = Path(str(adjudication.get("result_data_file", "")))
     expected = str(adjudication.get("result_data_sha256") or "").lower()
     if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected):
         raise ValueError("adjudication result evidence missing or hash mismatch")
-    if declared.is_file() and sha256_file(declared).lower() == expected:
-        return declared
+
+    direct: Path | None = None
+    if declared_raw.is_absolute():
+        candidate = declared_raw.resolve()
+        try:
+            candidate.relative_to(root)
+            direct = candidate
+        except ValueError:
+            direct = None
+    else:
+        direct = _under_root(root, root / declared_raw)
+    if direct is not None and direct.is_file() and sha256_file(direct).lower() == expected:
+        return direct
+
+    # Absolute paths embedded by an older canonical checkout are provenance, not
+    # a runtime location requirement. Resolve the immutable result by basename +
+    # committed SHA-256 inside the current checkout without rewriting the ledger.
+    name = declared_raw.name
+    if name:
+        exact = []
+        for candidate in root.rglob(name):
+            if candidate.is_file() and sha256_file(candidate).lower() == expected:
+                exact.append(_under_root(root, candidate))
+        if len(exact) == 1:
+            return exact[0]
+        if len(exact) > 1:
+            raise ValueError("adjudication result evidence is ambiguous in current checkout")
 
     # The adjudication hash is immutable, while an originally-declared canonical
-    # workbook path may later advance. Permit recovery only from the project's
-    # immutable archive and only when the archived bytes match the exact hash
-    # already committed by the adjudication event. The ledger event itself is
-    # never rewritten, preserving learning/proof hash chains.
+    # workbook path may later advance. Permit recovery from content-addressed
+    # archive evidence when its bytes match the committed hash.
     archive_root = root / "SMART_STATE_ARCHIVE"
     if archive_root.is_dir():
         candidates = sorted(

@@ -7,6 +7,10 @@ from typing import Any
 
 import pandas as pd
 
+from smart_crash_safe_io import atomic_write_text
+from smart_signal_agent import SmartSignalAgent
+from smart_v2_engine import load_draws
+
 SCHEMA = 'SMART_SEQUENTIAL_PROSPECTIVE_PROOF_1'
 LEDGER_SCHEMA = 'SMART_SIGNAL_LEDGER_1'
 FREEZE_SNAPSHOT_SCHEMA = 'SMART_SEQUENTIAL_PROSPECTIVE_FREEZE_RULES_1'
@@ -289,6 +293,111 @@ def _load_ledger(path: Path) -> dict[str, Any]:
 def _write_ledger(path: Path, ledger: dict[str, Any]) -> str:
     Path(path).write_text(json.dumps(ledger,ensure_ascii=False,indent=2),encoding='utf-8')
     return sha256_file(Path(path))
+
+
+
+def complete_post_result_learning(root: str | Path, active: dict[str, Any]) -> dict[str, Any]:
+    """Complete the deterministic post-result learning/proof tail for one adjudicated epoch.
+
+    This is idempotent: an already-complete target is only revalidated. It never
+    changes the frozen prediction or adjudication and only appends the missing
+    LEARNING_UPDATE and SEQUENTIAL_PROOF events after the official result exists.
+    """
+    root = Path(root).resolve()
+    if not isinstance(active, dict) or active.get('project') != 'SMART-MEGA':
+        raise ValueError('active epoch authority invalid')
+    target = int(active.get('target_contest', -1))
+    cutoff = int(active.get('cutoff_contest', target - 1))
+    if target <= 1 or cutoff != target - 1:
+        raise ValueError('active epoch target/cutoff invalid')
+    state_paths = active.get('state_paths') if isinstance(active.get('state_paths'), dict) else {}
+    ledger_path = (root / str(state_paths.get('ledger') or '')).resolve()
+    prestate_path = (root / str(state_paths.get('state') or '')).resolve()
+    for path, label in ((ledger_path, 'ledger'), (prestate_path, 'pre-result state')):
+        try:
+            path.relative_to(root)
+        except ValueError as exc:
+            raise ValueError(f'{label} escapes project root') from exc
+        if not path.is_file():
+            raise FileNotFoundError(path)
+
+    ledger = _load_ledger(ledger_path)
+    target_events = _target_events(ledger, target)
+    learning = [(i, ev) for i, ev in target_events if ev.get('event_type') == LEARNING_EVENT]
+    proofs = [(i, ev) for i, ev in target_events if ev.get('event_type') == PROOF_EVENT]
+    if len(learning) > 1 or len(proofs) > 1:
+        raise ValueError('duplicate target learning/proof events are forbidden')
+    if proofs and not learning:
+        raise ValueError('sequential proof cannot exist without learning')
+    if learning and proofs:
+        validation = validate_target_sequence(ledger, target, require_learning=True, require_proof=True, verify_files=True, root=root)
+        return {'status': 'ALREADY_COMPLETE', 'target_contest': target, 'validation': validation}
+
+    adjudications = [ev for _, ev in target_events if ev.get('event_type') == 'ADJUDICATION']
+    if len(adjudications) != 1:
+        raise ValueError('post-result learning requires exactly one adjudication')
+    adjudication = adjudications[0]
+
+    epoch_dir = ledger_path.parent
+    declared_result = adjudication.get('result_data_file') or str(epoch_dir / f'Mega-Sena_through_{target}.xlsx')
+    expected_result_sha = str(adjudication.get('result_data_sha256') or '')
+    through = _resolve_verified_artifact(root, declared_result, expected_result_sha, 'adjudication result data')
+    learned_path = (epoch_dir / f'SMART_SIGNAL_STATE_THROUGH_{target}.json').resolve()
+
+    if not learning:
+        data_sha = sha256_file(through)
+        if learned_path.is_file():
+            state = json.loads(learned_path.read_text(encoding='utf-8-sig'))
+            if int(state.get('last_contest', -1)) != target or state.get('data_sha256') != data_sha:
+                raise ValueError('existing learned state is not bound to completed target data')
+        else:
+            prestate = json.loads(prestate_path.read_text(encoding='utf-8-sig'))
+            if not str(prestate.get('schema', '')).startswith('SMART_SIGNAL_STATE_'):
+                raise ValueError('pre-result learning state schema invalid')
+            if int(prestate.get('last_contest', -1)) != cutoff:
+                raise ValueError('pre-result learning state does not end at cutoff')
+            source_data = root / str(active.get('data_file') or '')
+            if source_data.is_file() and prestate.get('data_sha256') != sha256_file(source_data):
+                raise ValueError('pre-result learning state data hash mismatch')
+            draws, contests = load_draws(through)
+            if int(contests[-1]) != target:
+                raise ValueError('completed through-dataset does not end at target')
+            agent = SmartSignalAgent(
+                start=int(prestate['start_index']),
+                eta=float(prestate['eta']),
+                redundancy_threshold=float(prestate['redundancy_consensus_threshold']),
+                meta_strength=float(prestate['meta_strength']),
+                calibration_strength=float(prestate['calibration_strength']),
+            )
+            agent.replay_history(draws, contests)
+            state = agent.state_document(data_sha256=data_sha)
+            state.update({
+                'sequential_learning_target': target,
+                'learning_after_adjudication': True,
+                'official_result_learning': True,
+                'retroactive_rewrite': False,
+                'source_prestate_sha256': sha256_file(prestate_path),
+                'source_freeze_sha256': adjudication.get('freeze_sha256'),
+                'authority_mode': active.get('authority_mode'),
+            })
+            atomic_write_text(learned_path, json.dumps(state, ensure_ascii=False, indent=2) + '\n')
+        append_learning_update(ledger_path, target, learned_path, through)
+
+    ledger = _load_ledger(ledger_path)
+    target_events = _target_events(ledger, target)
+    proofs = [(i, ev) for i, ev in target_events if ev.get('event_type') == PROOF_EVENT]
+    if not proofs:
+        append_sequence_proof(ledger_path, target)
+
+    final = _load_ledger(ledger_path)
+    validation = validate_target_sequence(final, target, require_learning=True, require_proof=True, verify_files=True, root=root)
+    return {
+        'status': 'POST_RESULT_LEARNING_COMPLETE',
+        'target_contest': target,
+        'learned_state_file': str(learned_path.relative_to(root)).replace('\\', '/'),
+        'learned_state_sha256': sha256_file(learned_path),
+        'validation': validation,
+    }
 
 
 def append_learning_update(ledger_path: Path, target: int, state_file: Path,
