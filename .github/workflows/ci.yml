@@ -76,9 +76,9 @@ jobs:
         run: python smart_github_certify.py
       - name: Persist only certified evidence to canonical main
         run: |
-          git add -- .gitattributes SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json
+          git add -- .gitattributes SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json
           git diff --cached --check
-          for file in SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json; do
+          for file in SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json; do
             git show ":$file" | cmp - "$file"
           done
           git -c user.name="SMART-MEGA GitHub Certification" -c user.email="smart-mega-certification@users.noreply.github.com" commit -m "certify: GitHub regression for ${{ github.sha }}"

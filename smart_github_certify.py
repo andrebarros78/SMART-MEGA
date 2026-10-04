@@ -17,12 +17,14 @@ from smart_product_certification import (
 from smart_agent_ecosystem_governance import evaluate as evaluate_governance
 from smart_authority_freshness import audit as audit_authority_freshness, verify_governance
 from smart_global_integrity import build_global_integrity_proof, verify_global_integrity
+from smart_continuous_red_team import run_suite as run_red_team_suite, verify_latest_report, write_report as write_red_team_report
 from smart_startup_reconciler import reconcile as reconcile_startup
 
 ARTIFACTS = (
     "SMART_AUDIT_JUNIT_CURRENT.xml", "SMART_CANONICAL_ROOT.json",
     "SMART_PRODUCT_CERTIFICATION.json", "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
     "SMART_GLOBAL_INTEGRITY_PROOF.json", "SMART_3052_IMPLEMENTATION_GATE.json",
+    "SMART_P09_RED_TEAM_LATEST.json",
 )
 
 
@@ -87,6 +89,16 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str) -> dic
         raise RuntimeError(f"supervisory agent governance failed: {governance.get('checks')}")
     (root / ARTIFACTS[3]).write_text(json.dumps(governance, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     verify_governance(root)
+
+    red_team_path = root / ARTIFACTS[6]
+    try:
+        verify_latest_report(red_team_path, root)
+    except ValueError:
+        report = run_red_team_suite(root)
+        if report["status"] != "PASS":
+            raise RuntimeError(f"continuous Red Team scenarios failed: {report['failed']}")
+        write_red_team_report(report, red_team_path)
+        verify_latest_report(red_team_path, root)
 
     proof_path = root / ARTIFACTS[4]
     previous_proof = json.loads(proof_path.read_text(encoding="utf-8-sig"))
