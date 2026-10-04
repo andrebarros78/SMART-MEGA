@@ -2,82 +2,112 @@
 
 **Arquivo:** `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`  
 **Baseline ID:** SMART_GITHUB_NATIVE_BASELINE_2026-09-28  
-**Status:** NORMATIVA PARA IDENTIDADE, LOCALIZAÇÃO, BOOTSTRAP E REPRODUTIBILIDADE  
+**Reconciliada em:** 2026-10-03  
+**Status:** AUTORIDADE OPERACIONAL GERAL DO PROJETO  
 **Repositório canônico:** `andrebarros78/SMART-MEGA`  
-**Branch canônica:** `main`  
-**Baseline histórica preservada:** `SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md`
+**Branch canônica:** `main`
 
-## 1. Precedência e escopo
+## 1. Autoridade canônica única
 
-Esta baseline supersede a baseline histórica **somente** nas regras de identidade física, host, root local, Python local e descoberta do repositório.
+O único canal canônico do projeto é o GitHub, no repositório `andrebarros78/SMART-MEGA`, branch `main`.
 
-O plano executivo P0 -> P1 -> P2, os critérios 6/6, os contratos científicos, as regras de não regressão, anti-overfit, causalidade, integridade e prova permanecem válidos salvo quando conflitarem com a portabilidade GitHub-native aqui definida.
+Chat, memória de IA, anexos, cópias locais, worktrees, runners, arquivos temporários e saídas de conectores são apenas meios de trabalho. Nada neles se torna estado, regra, prova ou artefato canônico enquanto não estiver persistido no GitHub.
 
-`DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são origem histórica/proveniência da migração. Eles **não são requisitos operacionais** e não podem ser usados para rejeitar um checkout válido em outro host ou caminho.
+Dados externos oficiais podem ser usados como entrada e evidência, mas não substituem o estado do projeto no GitHub.
 
-## 2. Identidade operacional canônica
+Em conflito entre fontes, `main` prevalece, salvo ordem explícita atual do usuário. Uma nova ordem só passa a integrar a autoridade persistente do projeto depois de reconciliada e gravada no GitHub.
+
+## 2. Precedência
+
+Aplicar nesta ordem:
+
+1. ordem explícita atual do usuário;
+2. esta baseline;
+3. demais arquivos atuais em `main`;
+4. baselines e planos históricos, somente no que não conflitar;
+5. convenções genéricas de engenharia.
+
+Esta baseline supersede regras históricas que imponham host/path fixo, backup, snapshot, restore drill, regressão ampla/integral, hardening, documentação adicional, nova infraestrutura ou outra cerimônia sem necessidade concreta para o objetivo atual.
+
+## 3. Regra soberana de execução mínima
+
+Antes de qualquer ação, alteração, ferramenta, arquivo ou comando, aplicar:
+
+**PEDIDO OU INDISPENSÁVEL?**
+
+A ação deve ter sido explicitamente pedida pelo usuário ou ser indispensável para concluir exatamente o objetivo pedido. Se nenhuma condição for verdadeira, **não executar**.
+
+São proibidos por padrão, salvo pedido explícito ou necessidade técnica comprovada e imediata:
+
+- backup, cópia preventiva e snapshot;
+- branch de segurança criada apenas por precaução;
+- regressão ampla/integral e suíte adicional de testes;
+- refatoração não necessária;
+- hardening genérico;
+- nova arquitetura, banco, serviço, fila ou camada;
+- nova pipeline ou dependência;
+- documentação extra;
+- reorganização cosmética;
+- otimização prematura.
+
+Entre soluções corretas, escolher obrigatoriamente a que usa menos arquivos, menos código, menos componentes, menos dependências, menos etapas e menos trabalho humano.
+
+A busca por 6/6 não autoriza complexidade por si só. Cada mecanismo adicional precisa resolver uma deficiência material concreta que impeça o objetivo.
+
+## 4. Operação autônoma por IA
+
+O agente/IA é responsável por conduzir sozinho o trabalho técnico rotineiro até o objetivo: descobrir estado, diagnosticar, decidir a menor correção, editar, executar validação necessária, corrigir falhas, persistir no GitHub e verificar o resultado.
+
+Não transferir ao usuário comandos, edição de arquivos, investigação, escolha técnica rotineira, recuperação de falha de ferramenta ou manutenção que o agente consiga executar com os recursos autorizados.
+
+Falha de conector, sessão, runner ou ferramenta não é bloqueio terminal. O agente deve tentar outra rota técnica autorizada, reconsultar a autoridade GitHub, executar de forma idempotente e continuar.
+
+Somente uma dependência externa realmente inacessível ao agente — por exemplo autorização humana obrigatória, credencial não disponível, pagamento, ação física ou permissão externa irredutível — pode exigir intervenção humana. Antes disso, o agente deve esgotar as rotas técnicas autorizadas e apresentar evidência objetiva do bloqueio.
+
+O agente nunca deve inventar credenciais, contornar autorização ou declarar sucesso sem prova.
+
+Erro introduzido pelo próprio agente deve ser diagnosticado e corrigido pelo próprio agente; não deve virar tarefa para o usuário.
+
+## 5. Validação proporcional ao risco
+
+Validar a mudança com o menor teste capaz de provar o comportamento alterado.
+
+- mudança documental: verificar conteúdo, links/pointers e commit resultante;
+- mudança localizada de código: teste focado no comportamento afetado;
+- mudança transversal: ampliar testes somente até cobrir o impacto real;
+- regressão integral: somente quando o impacto for realmente sistêmico, quando já for gate obrigatório existente para aquela mudança, ou quando o usuário pedir explicitamente.
+
+Não criar novos testes ou gates apenas para satisfazer uma ideia abstrata de robustez.
+
+PASS histórico não prova mudança nova. A evidência usada para aprovação deve corresponder ao mesmo commit que contém a alteração relevante.
+
+## 6. Identidade e portabilidade
 
 A identidade operacional é determinada por:
 
-1. repositório Git `andrebarros78/SMART-MEGA`;
-2. branch de referência `main` para baseline aprovada;
-3. commit Git explicitamente testado para qualquer prova ou release;
-4. root operacional resolvida dinamicamente pelo Git top-level do checkout atual;
-5. ausência de dependência em hostname ou letra de unidade específicos.
+1. repositório `andrebarros78/SMART-MEGA`;
+2. `main` como baseline canônica;
+3. commit Git explicitamente identificado para cada prova;
+4. root local resolvida dinamicamente pelo Git top-level do checkout atual;
+5. nenhuma dependência normativa de hostname, letra de unidade ou caminho físico.
 
-A root operacional deve ser obtida por equivalente a:
+`DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica e não são requisitos operacionais.
 
-```text
-git rev-parse --show-toplevel
-```
+## 7. Estado operacional
 
-Nenhum arquivo operacional novo pode exigir `C:\SMART-MEGA`, `DESKTOP-4T6AS9K` ou qualquer outro host/path físico fixo.
+Estado canônico que precise sobreviver à execução deve ser persistido no GitHub. Estado existente apenas em memória, workspace, runner ou arquivo local não persistido não é autoridade.
 
-## 3. Bootstrap reproduzível
+`SMART_ACTIVE_EPOCH.json` e demais artefatos operacionais só têm autoridade quando presentes na baseline canônica aplicável e coerentes com seus contratos. Arquivos com hash declarado devem corresponder ao conteúdo declarado.
 
-Em um ambiente limpo:
+Uma execução não pode avançar silenciosamente em ambiente efêmero e depois deixar `main` apontando para estado anterior.
 
-1. clonar `andrebarros78/SMART-MEGA`;
-2. fazer checkout do commit/branch desejado;
-3. usar Python 3.13 compatível;
-4. criar ambiente virtual no checkout ou em diretório externo;
-5. instalar `requirements.txt`;
-6. executar `python -m pip check`;
-7. executar a regressão integral;
-8. exigir baseline Git limpa após a execução, salvo evidências explicitamente geradas e ignoradas.
+## 8. Segurança científica
 
-O ambiente virtual local histórico `.venv` não é autoridade e não deve ser versionado.
+É proibido fabricar desempenho, prova ou cartão retrospectivo usando resultado já conhecido.
 
-## 4. Estado/runtime canônico
+Concursos perdidos devem ser tratados como perdidos/sem geração válida conforme o contrato operacional; nunca preenchidos retrospectivamente para criar aparência de operação prospectiva.
 
-O estado ativo é descrito por `SMART_ACTIVE_EPOCH.json` e pelos artefatos por ele referenciados. Arquivos com SHA-256 declarado devem existir e corresponder exatamente ao hash declarado antes de serem aceitos como autoridade.
-
-Caminhos opcionais/reservados declarados no epoch não devem ser fabricados apenas para satisfazer existência nominal; a obrigatoriedade depende do contrato e do estado do lifecycle.
-
-## 5. Prova de portabilidade
-
-A migração GitHub-native foi comprovada no commit:
-
-`35158323dc9a98720306704d1ed043f9e4bcb8b6`
-
-Evidências de aceitação:
-
-- checkout em GitHub-hosted Windows runner fora de `C:\SMART-MEGA`;
-- Python 3.13 reconstruído no runner;
-- instalação integral de `requirements.txt`;
-- `pip check` aprovado;
-- regressão integral: **903 passed / 0 failed**;
-- histórico Git fonte incorporado ao `main`;
-- branches históricas e 28 tags preservadas;
-- secret scan da árvore corrente e histórico aprovados;
-- `git fsck` aprovado;
-- nenhum force-push necessário.
-
-Essa evidência comprova portabilidade técnica daquela baseline. Alterações futuras exigem nova prova fresca; PASS histórico não autoriza declarar uma versão posterior como comprovada.
-
-## 6. Regra 6/6
-
-A arquitetura continua sujeita aos seis critérios do projeto:
+Os seis critérios do projeto permanecem:
 
 1. captação e qualidade;
 2. interpretação;
@@ -86,10 +116,20 @@ A arquitetura continua sujeita aos seis critérios do projeto:
 5. aprendizado e robustez;
 6. resultado comprovado.
 
-Qualquer alteração material deve seguir medir -> alterar -> testar -> comparar -> retestar e não pode reduzir o resultado global.
+`6/6` é requisito de qualidade e evidência da arquitetura; não é promessa de seis acertos em loteria.
 
-`MISSION_PROVEN` exige evidência fresca posterior ao último byte funcional relevante.
+## 9. Regra de continuidade
 
-## 7. Arquivos de descoberta
+O agente não encerra em análise quando existe correção técnica executável dentro do escopo e das permissões disponíveis.
 
-`README.md`, `AGENTS.md`, `AI_START_HERE.md` e `SMART_AI_EXECUTION_ENTRYPOINT.md` devem apontar para esta baseline GitHub-native como autoridade de identidade/localização e para a baseline histórica como autoridade do plano executivo preservado.
+Fluxo padrão:
+
+**descobrir -> corrigir o mínimo -> validar o necessário -> persistir no GitHub -> verificar -> continuar**
+
+`MISSION_PROVEN` somente pode ser declarado com evidência fresca correspondente ao estado canônico atual. Se houver deficiência material conhecida, continuar a correção sem expandir o escopo além do necessário.
+
+## 10. Documentos históricos e externos
+
+`SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md` permanece como referência histórica e científica apenas no que não conflitar com esta baseline.
+
+Roadmaps, anexos ou documentos mantidos fora do GitHub são referências de trabalho, não autoridade canônica. Se uma regra externa precisar governar o projeto, ela deve ser reconciliada em `main`.

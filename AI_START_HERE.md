@@ -1,23 +1,24 @@
 # SMART-MEGA — AI START HERE
 
-Este arquivo é o ponteiro inicial de descoberta para agentes e IAs.
+Este é o ponteiro inicial de descoberta para agentes e IAs.
 
-## Autoridade operacional GitHub-native
-
-Leia primeiro:
+## Leia primeiro
 
 `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`
 
-A identidade operacional é o repositório `andrebarros78/SMART-MEGA`, com `main` como baseline aprovada e root resolvida dinamicamente pelo Git top-level do checkout atual.
+Ela é a autoridade operacional geral do projeto e define:
 
-Não exigir hostname, letra de unidade ou caminho físico fixo. `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica da migração.
+- GitHub `andrebarros78/SMART-MEGA`, branch `main`, como único canal canônico;
+- execução mínima: **PEDIDO OU INDISPENSÁVEL?**;
+- proibição padrão de backup, snapshot, regressão ampla, refatoração e infraestrutura não necessárias;
+- operação autônoma por IA, sem transferir trabalho técnico rotineiro ao usuário;
+- persistência obrigatória no GitHub do estado que deva sobreviver à execução;
+- continuidade até o objetivo ou bloqueio externo realmente irredutível e comprovado.
 
-## Plano executivo preservado
+Não exigir hostname, letra de unidade ou caminho físico fixo.
 
-Depois leia integralmente:
+## Referência histórica
 
-`SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md`
+`SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md` é referência histórica/científica apenas onde não conflitar com a baseline atual. Não é necessário lê-lo para toda tarefa.
 
-A baseline histórica continua definindo o plano P0 -> P1 -> P2 e a campanha final, exceto onde suas regras antigas de host/root foram explicitamente supersedidas pela baseline GitHub-native.
-
-Regra terminal: `MISSION_PROVEN` somente com prova fresca 6/6 posterior ao último byte funcional relevante.
+`MISSION_PROVEN` exige prova fresca do estado canônico atual; não pode ser inferido de evidência histórica.

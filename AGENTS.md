@@ -3,19 +3,25 @@
 Todos os agentes e IAs que atuarem neste repositório devem começar por:
 
 1. `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`
-2. `SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md`
+2. `AI_START_HERE.md`
 
-## Identidade operacional
+## Autoridade
 
-- Repositório canônico: `andrebarros78/SMART-MEGA`
-- Branch de baseline aprovada: `main`
-- Root operacional: Git top-level do checkout atual
-- Host/path físicos específicos não são requisitos operacionais
+- Único canal canônico: GitHub
+- Repositório: `andrebarros78/SMART-MEGA`
+- Branch canônica: `main`
+- Root local: Git top-level do checkout atual
 
-`DESKTOP-4T6AS9K` e `C:\SMART-MEGA` permanecem apenas como proveniência histórica da migração e não podem ser usados como condição de aceitação de um checkout válido.
+Chat, memória, anexos, runners e cópias locais não são autoridade enquanto não forem persistidos no GitHub.
 
-## Precedência
+## Regra operacional
 
-A baseline GitHub-native governa identidade, localização, bootstrap e reprodutibilidade. A baseline executiva histórica preserva o plano P0 -> P1 -> P2 e demais regras não conflitantes.
+Aplicar antes de qualquer ação: **PEDIDO OU INDISPENSÁVEL?**
 
-Não criar plano concorrente. Não promover PASS antigo como prova atual. `MISSION_PROVEN` somente depois de prova fresca 6/6.
+Se não foi pedido e não é indispensável ao objetivo, não fazer.
+
+Backup, snapshot, regressão ampla, refatoração, hardening, nova infraestrutura, documentação adicional e outras cerimônias são proibidos por padrão. Só entram por ordem explícita ou necessidade técnica concreta.
+
+O agente deve executar autonomamente decisões e tarefas técnicas rotineiras, corrigir os próprios erros e persistir o resultado no GitHub. Falha de ferramenta/conector não é bloqueio enquanto existir rota técnica autorizada.
+
+Planos históricos só valem no que não conflitar com a baseline GitHub-native atual. Não criar plano concorrente. Não promover PASS antigo como prova atual. `MISSION_PROVEN` somente com evidência fresca do estado canônico atual.
