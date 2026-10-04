@@ -8,9 +8,6 @@ __pycache__/
 SMART_EXPERIMENT_REGISTRY/mlflow.db
 SMART_EXPERIMENT_REGISTRY/mlruns/
 .external_capabilities_acquired_v3/
-runtime/historical_training_shadow/Mega-Sena_uploaded_*.xlsx
-runtime/historical_training_shadow/SMART_CAUSAL_REPLAY_*.json
-runtime/historical_training_shadow/SMART_SIGNAL_STATE_REBUILT_*.json
 runtime/procedural_sources/youtube_captions/
 .smart_regression.lock
 runtime/*.log
@@ -20,18 +17,14 @@ runtime/*.exit
 runtime/*.out
 runtime/*.err
 .ruff_cache/
-runtime/scope_seal/
 
 # Gate-local/transient evidence not part of reproducible source release
 SMART_G07_EXTERNAL_BACKUP_PAYLOAD.zip
 SMART_G08_RELEASE_CANDIDATE.log
 SMART_G08_RELEASE_CANDIDATE_JUNIT.xml
 SMART_AUDIT_JUNIT_G04_CANDIDATE.xml
-SMART_STATE_ARCHIVE/
-runtime/learning_epochs/
-
-# Step 38 local runtime evidence
-runtime/
+# Ephemeral runner outputs that are not canonical state
+runtime/locks/
 WMCP_TEMP/
 *.tmp-p0-identity
 
