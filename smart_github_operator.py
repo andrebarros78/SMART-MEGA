@@ -1,0 +1,195 @@
+"""Execute one SMART-MEGA operator action on a GitHub-hosted runner.
+
+The repository on main is the only durable operational state. A failed action
+never publishes its runner-local changes.
+"""
+from __future__ import annotations
+
+import argparse
+import json
+import os
+from pathlib import Path, PurePosixPath
+import re
+import subprocess
+import sys
+
+REPOSITORY = "andrebarros78/SMART-MEGA"
+READ_ONLY = {"status", "preflight"}
+TARGET_ACTIONS = {
+    "preflight", "prepare", "withdraw", "recover-missed", "catch-up",
+    "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate",
+    "post-result-report", "review", "hold", "terminal",
+}
+ACTIONS = READ_ONLY | TARGET_ACTIONS
+PAYLOAD_REQUIRED = {"adjudicate", "review"}
+PAYLOAD_OPTION = {
+    "adjudicate": "--result-data",
+    "review": "--review-file",
+    "catch-up": "--payload-file",
+}
+SUFFIXES = {".json", ".md", ".xml", ".txt", ".xlsx", ".csv", ".pdf", ".log"}
+TRANSIENT_IGNORED = (
+    "runtime/locks/",
+)
+
+
+def command_args(operation: str, target: str = "", payload: str = "") -> list[str]:
+    if operation not in ACTIONS:
+        raise ValueError(f"unsupported operation: {operation!r}")
+    if operation in TARGET_ACTIONS:
+        if not re.fullmatch(r"[1-9][0-9]*", target or ""):
+            raise ValueError("a positive integer target is required")
+    elif target:
+        raise ValueError(f"{operation} does not accept a target")
+    if operation in PAYLOAD_REQUIRED and not payload:
+        raise ValueError(f"{operation} requires a repository payload path")
+    if payload and operation not in PAYLOAD_OPTION:
+        raise ValueError(f"{operation} does not accept a payload")
+    args = [sys.executable, "smart_operator.py", operation]
+    if operation in TARGET_ACTIONS:
+        args += ["--through" if operation == "catch-up" else "--target", target]
+    if payload:
+        args += [PAYLOAD_OPTION[operation], payload]
+    return args
+
+
+def _git(root: Path, *args: str) -> str:
+    result = subprocess.run(
+        ["git", *args], cwd=root, text=True, capture_output=True, check=True
+    )
+    return result.stdout.strip()
+
+
+def _git_paths(root: Path, *args: str) -> set[str]:
+    result = subprocess.run(
+        ["git", *args], cwd=root, capture_output=True, check=True
+    )
+    return {p.decode("utf-8", "surrogateescape") for p in result.stdout.split(b"\0") if p}
+
+
+def _tracked_payload(root: Path, payload: str) -> None:
+    supplied = root / payload
+    if supplied.is_symlink():
+        raise ValueError("payload must be a regular file in this repository")
+    candidate = supplied.resolve()
+    try:
+        relative = candidate.relative_to(root)
+    except ValueError as exc:
+        raise ValueError("payload must be inside this repository") from exc
+    if not candidate.is_file():
+        raise ValueError("payload must be a regular file in this repository")
+    _git(root, "ls-files", "--error-unmatch", "--", relative.as_posix())
+
+
+def allowed_artifact(raw: str) -> bool:
+    path = PurePosixPath(raw)
+    if path.is_absolute() or ".." in path.parts or not path.parts:
+        return False
+    if len(path.parts) == 1:
+        if raw == "Mega-Sena.xlsx":
+            return True
+        return path.name.startswith("SMART_") and path.suffix.lower() in SUFFIXES
+    if path.parts[0] == "SMART_STATE_ARCHIVE":
+        return path.suffix.lower() in SUFFIXES | {".bak", ".pre", ".before", ".applied", ".archived", ".retired", ".pre-optimized", ".pre-strict", ".pre-strict-split", ".pre-d018", ".py"}
+    return path.parts[0] in {"runtime", "artifacts"} and path.suffix.lower() in SUFFIXES
+
+
+def _changes(root: Path) -> list[str]:
+    paths = _git_paths(root, "diff", "--name-only", "--no-renames", "-z", "HEAD")
+    paths |= _git_paths(root, "ls-files", "--others", "--exclude-standard", "-z")
+    return sorted(paths)
+
+
+def _require_no_unpersisted_state(root: Path) -> None:
+    ignored = _git_paths(
+        root, "ls-files", "--others", "--ignored", "--exclude-standard",
+        "-z", "--", "runtime", "SMART_STATE_ARCHIVE",
+    )
+    material = sorted(
+        path for path in ignored
+        if not path.startswith(TRANSIENT_IGNORED)
+        and not path.endswith((".log", ".pid", ".exit", ".out", ".err", ".tmp"))
+    )
+    if material:
+        raise RuntimeError(f"operator generated ignored state: {material[:20]}")
+
+
+def execute(operation: str, target: str = "", payload: str = "") -> dict:
+    root = Path(__file__).resolve().parent
+    if _git(root, "rev-parse", "--show-toplevel") != str(root):
+        raise RuntimeError("operator must run at the Git top-level")
+    if operation not in READ_ONLY and (
+        os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
+        or os.environ.get("GITHUB_REF") != "refs/heads/main"
+        or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"
+    ):
+        raise PermissionError("mutations require explicit dispatch on canonical GitHub main")
+    if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
+        raise RuntimeError("checkout is dirty before operator action")
+    if payload:
+        _tracked_payload(root, payload)
+    args = command_args(operation, target, payload)
+    result = subprocess.run(args, cwd=root, text=True, capture_output=True, check=False)
+    if result.returncode != 0:
+        raise RuntimeError(f"operator failed ({result.returncode}): {result.stderr[-3000:]} {result.stdout[-3000:]}")
+    try:
+        observation = json.loads(result.stdout)
+    except json.JSONDecodeError as exc:
+        raise RuntimeError("operator did not return one JSON document") from exc
+    changes = _changes(root)
+    _require_no_unpersisted_state(root)
+    if operation in READ_ONLY:
+        if changes:
+            raise RuntimeError(f"read-only operation changed canonical files: {changes[:20]}")
+        return {"operation": operation, "target": target or None, "observation": observation, "commit": None}
+    if not changes:
+        raise RuntimeError("mutating operation returned without any persistent change")
+    rejected = [path for path in changes if not allowed_artifact(path)]
+    if rejected:
+        raise RuntimeError(f"operator changed non-operational files: {rejected[:20]}")
+    for path in changes:
+        candidate = root / path
+        if candidate.is_symlink() or (candidate.exists() and not candidate.resolve().is_relative_to(root)):
+            raise RuntimeError(f"unsafe artifact path: {path}")
+    subprocess.run(["git", "add", "--all", "--", *changes], cwd=root, check=True)
+    subprocess.run(["git", "diff", "--cached", "--check"], cwd=root, check=True)
+    staged = _git_paths(root, "diff", "--cached", "--name-only", "--no-renames", "-z")
+    if staged != set(changes):
+        raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ set(changes))}")
+    commit_msg = f"operation: {operation} contest {target}"
+    _git(root, "-c", "user.name=SMART-MEGA GitHub Operator",
+         "-c", "user.email=smart-mega-operator@users.noreply.github.com",
+         "commit", "-m", commit_msg)
+    commit = _git(root, "rev-parse", "HEAD")
+    if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
+        raise RuntimeError("checkout still contains uncommitted state")
+    _git(root, "push", "origin", "HEAD:main")
+    remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
+    if remote != commit:
+        raise RuntimeError("remote main does not match the operation commit")
+    return {"operation": operation, "target": target, "changed_files": changes,
+            "observation_status": observation.get("status"), "commit": commit}
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--operation", required=True, choices=sorted(ACTIONS))
+    parser.add_argument("--target", default="")
+    parser.add_argument("--payload", default="")
+    args = parser.parse_args()
+    try:
+        proof = execute(args.operation, args.target, args.payload)
+    except Exception as exc:
+        print(f"GITHUB_OPERATOR=FAIL {type(exc).__name__}: {exc}", file=sys.stderr)
+        return 1
+    if args.operation in READ_ONLY:
+        observation = proof.pop("observation")
+        proof["observation_status"] = observation.get("status")
+        proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest")
+        proof["reconciled_state"] = (observation.get("reconciled_state") or {}).get("status")
+    print(json.dumps(proof, ensure_ascii=False, sort_keys=True))
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

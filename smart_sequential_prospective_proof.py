@@ -3,6 +3,8 @@ from __future__ import annotations
 import hashlib
 import json
 from pathlib import Path
+
+from smart_path_semantics import basename_any, is_windows_absolute
 from typing import Any
 
 import pandas as pd
@@ -95,7 +97,9 @@ def _resolve_verified_artifact(root: Path, value: str | Path, expected_sha256: s
     if not _is_hex64(expected_sha256):
         raise ValueError(f'{label} hash invalid')
     declared = Path(value)
-    if declared.is_absolute():
+    native_absolute = declared.is_absolute()
+    windows_absolute = is_windows_absolute(value)
+    if native_absolute:
         resolved = declared.resolve()
         try:
             resolved.relative_to(root)
@@ -110,7 +114,25 @@ def _resolve_verified_artifact(root: Path, value: str | Path, expected_sha256: s
             return resolved
 
         exact: list[Path] = []
-        for candidate in root.rglob(declared.name):
+        for candidate in root.rglob(basename_any(value)):
+            if not candidate.is_file():
+                continue
+            candidate = candidate.resolve()
+            try:
+                candidate.relative_to(root)
+            except ValueError as exc:
+                raise ValueError(f'{label} evidence candidate escapes project root') from exc
+            if sha256_file(candidate) == expected_sha256:
+                exact.append(candidate)
+        if len(exact) == 1:
+            return exact[0]
+        if len(exact) > 1:
+            raise ValueError(f'{label} hash-bound evidence ambiguous')
+        raise ValueError(f'{label} hash mismatch')
+
+    if windows_absolute:
+        exact: list[Path] = []
+        for candidate in root.rglob(basename_any(value)):
             if not candidate.is_file():
                 continue
             candidate = candidate.resolve()

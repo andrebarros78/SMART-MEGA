@@ -93,6 +93,8 @@ A identidade operacional é determinada por:
 
 `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica e não são requisitos operacionais.
 
+Não usar hosts Windows ou Linux persistentes para desenvolver ou operar o projeto. Os jobs efêmeros do GitHub Actions servem apenas como execução gerenciada pelo GitHub. Alterações operacionais bem-sucedidas precisam ser gravadas em `main` e verificar o commit remoto; falhas deixam o estado canônico intacto.
+
 ## 7. Estado operacional
 
 Estado canônico que precise sobreviver à execução deve ser persistido no GitHub. Estado existente apenas em memória, workspace, runner ou arquivo local não persistido não é autoridade.

@@ -7,7 +7,7 @@ SMART-MEGA é mantido no GitHub como sua única fonte canônica de projeto.
 - Repositório: `andrebarros78/SMART-MEGA`
 - Branch canônica: `main`
 - Política operacional: `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`
-- Root local: Git top-level do checkout atual
+- Execução: GitHub Actions em runner efêmero gerenciado pelo GitHub
 
 Chat, memória de IA, anexos, runners e cópias locais não substituem o estado persistido no GitHub.
 
@@ -29,17 +29,15 @@ Se não foi pedido e não é indispensável para atingir o objetivo atual, não 
 
 Backup, snapshot, regressão ampla, refatoração, hardening, nova infraestrutura e documentação adicional não são etapas automáticas.
 
-## Bootstrap
+## Execução no GitHub
 
-```powershell
-git clone https://github.com/andrebarros78/SMART-MEGA.git
-Set-Location SMART-MEGA
-py -3.13 -m venv .venv
-.\.venv\Scripts\python.exe -m pip install -r requirements.txt
-.\.venv\Scripts\python.exe -m pip check
-```
+O desenvolvimento e a operação usam apenas este repositório e os workflows em `.github/workflows/`. Não há estação Windows ou Linux, VPS ou checkout persistente como ambiente do projeto. Os runners efêmeros do GitHub executam CI e tarefas; seu disco é descartável.
 
-Em outros sistemas, use o executável Python 3.13 equivalente. O ambiente virtual não é versionado.
+- `CI` e `Repository Integrity`: verificam o commit no GitHub.
+- [SMART-MEGA GitHub Operator](https://github.com/andrebarros78/SMART-MEGA/actions/workflows/operator.yml): escolha manualmente `Run workflow` em `main`, informe a ação e o concurso quando necessário. `status` apenas observa; as demais ações seguem os contratos do operador.
+- `adjudicate` e `review` exigem um arquivo de resultado ou revisão já versionado em `main`. `catch-up` pode receber um arquivo versionado. O operador verifica a entrada e só confirma alterações operacionais no GitHub quando a execução termina com sucesso.
+
+Uma execução que falha não publica estado. Uma operação concluída precisa gerar commit em `main` e confirmar o SHA remoto. O token do workflow requer permissão `contents: write`; se uma regra de proteção impedir a gravação, o job falha sem declarar sucesso.
 
 Testes devem ser proporcionais ao comportamento alterado. Regressão integral só é executada quando o impacto for sistêmico, quando um gate existente realmente a exigir para a mudança ou quando solicitada explicitamente.
 

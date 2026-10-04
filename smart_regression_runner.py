@@ -11,7 +11,7 @@ from typing import Any, Sequence
 
 from smart_source_identity import sha256_source_file
 
-import msvcrt
+from smart_operation_lock import _acquire_os_lock, _release_os_lock
 
 import smart_regression_evidence as evidence
 
@@ -46,7 +46,7 @@ class _RegressionLock:
             self.handle.flush()
         self.handle.seek(0)
         try:
-            msvcrt.locking(self.handle.fileno(), msvcrt.LK_NBLCK, 1)
+            _acquire_os_lock(self.handle)
         except OSError as exc:
             self.handle.close()
             self.handle = None
@@ -57,7 +57,7 @@ class _RegressionLock:
         if self.handle is not None:
             try:
                 self.handle.seek(0)
-                msvcrt.locking(self.handle.fileno(), msvcrt.LK_UNLCK, 1)
+                _release_os_lock(self.handle)
             finally:
                 self.handle.close()
                 self.handle = None

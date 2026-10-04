@@ -1,0 +1,89 @@
+name: SMART-MEGA GitHub Operator
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+    inputs:
+      operation:
+        description: Operator action
+        required: true
+        default: status
+        type: choice
+        options:
+          - status
+          - preflight
+          - authorize-next-cycle
+          - prepare
+          - authorize-generation
+          - freeze
+          - terminal
+          - adjudicate
+          - post-result-report
+          - review
+          - hold
+          - withdraw
+          - recover-missed
+          - catch-up
+      target:
+        description: Contest number, required except for status
+        required: false
+        type: string
+      payload_path:
+        description: Existing tracked result or review file for actions that require one
+        required: false
+        type: string
+
+permissions:
+  contents: read
+
+jobs:
+  smoke:
+    if: github.event_name == 'pull_request' || github.event_name == 'push'
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - run: git config --global core.autocrlf true
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - run: python -m pip install -r requirements.lock.txt
+      - run: python -m pip check
+      - name: Inspect current operator state without mutation
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python smart_github_operator.py --operation status
+
+  operate:
+    if: github.event_name == 'workflow_dispatch' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    permissions:
+      contents: write
+    concurrency:
+      group: smart-mega-main-operation
+      cancel-in-progress: false
+    steps:
+      - run: git config --global core.autocrlf true
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - run: python -m pip install -r requirements.lock.txt
+      - run: python -m pip check
+      - name: Execute and persist exactly one operator action
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+          SMART_OPERATION: ${{ inputs.operation }}
+          SMART_TARGET: ${{ inputs.target }}
+          SMART_PAYLOAD: ${{ inputs.payload_path }}
+        run: python smart_github_operator.py --operation "$SMART_OPERATION" --target "$SMART_TARGET" --payload "$SMART_PAYLOAD"
