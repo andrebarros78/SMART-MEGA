@@ -5,11 +5,13 @@ import hashlib
 import json
 import os
 import socket
+import re
+import subprocess
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
-from smart_source_identity import sha256_source_file
+from smart_source_identity import sha256_source_bytes, sha256_source_file
 
 from smart_agent_runtime import SmartAgentRuntime, sha256_file
 from smart_critical_code_manifest import build as build_critical_code_manifest
@@ -102,6 +104,48 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
     }
 
 
+def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[str, Any]) -> dict[str, Any]:
+    """Bind CI regression evidence to the exact tested Git source commit."""
+    authority_path = root / "SMART_CANONICAL_ROOT.json"
+    authority = json.loads(authority_path.read_text(encoding="utf-8-sig")) if authority_path.is_file() else {}
+    source = authority.get("certified_source_commit")
+    run_id = authority.get("certified_ci_run_id")
+    recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
+    checks = {
+        "source_commit_recorded": isinstance(source, str) and re.fullmatch(r"[0-9a-f]{40}", source) is not None,
+        "ci_run_recorded": isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0,
+        "fingerprint_bound": recorded_fingerprint == fingerprint.get("sha256"),
+        "junit_bound": junit_path.is_file() and authority.get("certified_regression_junit_sha256") == sha256_file(junit_path),
+    }
+    checks["source_commit_ancestor"] = False
+    checks["source_files_match_tested_commit"] = False
+    if checks["source_commit_recorded"]:
+        ancestor = subprocess.run(["git", "merge-base", "--is-ancestor", source, "HEAD"],
+                                  cwd=root, capture_output=True, check=False)
+        checks["source_commit_ancestor"] = ancestor.returncode == 0
+        if checks["source_commit_ancestor"]:
+            matches = True
+            for row in fingerprint.get("files", []):
+                path = row.get("path")
+                if not isinstance(path, str) or "/" in path or path in {"", ".", ".."}:
+                    matches = False
+                    break
+                blob = subprocess.run(["git", "show", f"{source}:{path}"],
+                                      cwd=root, capture_output=True, check=False)
+                if blob.returncode != 0 or sha256_source_bytes(blob.stdout) != row.get("sha256"):
+                    matches = False
+                    break
+            checks["source_files_match_tested_commit"] = matches and bool(fingerprint.get("files"))
+    return {
+        "status": "PASS" if all(checks.values()) else "FAIL",
+        "source_commit": source,
+        "ci_run_id": run_id,
+        "code_fingerprint_sha256": recorded_fingerprint,
+        "junit_sha256": sha256_file(junit_path) if junit_path.is_file() else None,
+        "checks": checks,
+    }
+
+
 def _all_total_gates_true(doc: dict[str, Any]) -> bool:
     gates = doc.get("gates")
     return isinstance(gates, dict) and bool(gates) and all(isinstance(group, dict) and bool(group) and all(v is True for v in group.values()) for group in gates.values())
@@ -131,10 +175,9 @@ def verify_product_certification(path: str | Path, *, root: str | Path | None = 
         current_authority = canonical_root_authority_binding(project_root, current_junit, current_regression)
         if current_authority.get("status") != "PASS" or doc.get("canonical_root_authority") != current_authority:
             raise ValueError("SMART product certification canonical regression authority is stale")
-        code_files = _code_files(project_root)
-        regression_fresh = current_junit.is_file() and bool(code_files) and current_junit.stat().st_mtime >= max(item.stat().st_mtime for item in code_files)
-        if not regression_fresh:
-            raise ValueError("SMART product certification regression is stale for current code")
+        source_binding = regression_source_binding(project_root, current_junit, code_fingerprint(project_root))
+        if source_binding.get("status") != "PASS" or doc.get("regression_source") != source_binding:
+            raise ValueError("SMART product certification regression source is stale for current code")
     return doc
 
 
@@ -143,8 +186,9 @@ def build(root: str | Path = ".") -> dict[str, Any]:
     junit_path = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
     regression = junit_summary(junit_path)
     canonical_authority = canonical_root_authority_binding(root, junit_path, regression)
-    code_files = _code_files(root)
-    regression_fresh = junit_path.is_file() and junit_path.stat().st_mtime >= max(p.stat().st_mtime for p in code_files)
+    fingerprint = code_fingerprint(root)
+    regression_source = regression_source_binding(root, junit_path, fingerprint)
+    regression_fresh = regression_source["status"] == "PASS"
     runtime = runtime_audit(root)
     orchestration = build_orchestration(root, phase="BUILD")
     agent_runtime = SmartAgentRuntime(root, phase="BUILD").run()
@@ -183,7 +227,8 @@ def build(root: str | Path = ".") -> dict[str, Any]:
         "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
         "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
         "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
-        "code_fingerprint": code_fingerprint(root),
+        "code_fingerprint": fingerprint,
+        "regression_source": regression_source,
         "critical_code_manifest": build_critical_code_manifest(root),
         "regression": regression,
         "canonical_root_authority": canonical_authority,
