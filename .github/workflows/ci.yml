@@ -33,6 +33,11 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_AUDIT_JUNIT_GITHUB.xml
+      - name: Validate GitHub certification renewal
+        if: github.event_name == 'pull_request'
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python smart_github_certify.py
       - name: Upload JUnit evidence
         if: always()
         continue-on-error: true
@@ -40,3 +45,42 @@ jobs:
         with:
           name: smart-mega-junit
           path: SMART_AUDIT_JUNIT_GITHUB.xml
+  certify:
+    if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+    needs: regression
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    permissions:
+      contents: write
+    concurrency:
+      group: smart-mega-main-operation
+      cancel-in-progress: false
+    steps:
+      - name: Match existing canonical text checkout
+        run: git config --global core.autocrlf true
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.sha }}
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - run: python -m pip install -r requirements.lock.txt
+      - uses: actions/download-artifact@v4
+        with:
+          name: smart-mega-junit
+      - name: Renew construction certification for tested source
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python smart_github_certify.py
+      - name: Persist only certified evidence to canonical main
+        run: |
+          git add -- .gitattributes SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json
+          git diff --cached --check
+          for file in SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json; do
+            git show ":$file" | cmp - "$file"
+          done
+          git -c user.name="SMART-MEGA GitHub Certification" -c user.email="smart-mega-certification@users.noreply.github.com" commit -m "certify: GitHub regression for ${{ github.sha }}"
+          git push origin HEAD:main
+          test "$(git ls-remote origin refs/heads/main | cut -f1)" = "$(git rev-parse HEAD)"

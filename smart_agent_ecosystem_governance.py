@@ -211,8 +211,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
     open_deficiencies = list(deficiencies.get("open_entries", []))
     supervisory_blockers = material_blockers(open_deficiencies, allow_supervisory_freshness_self_resolution=True)
     product_current, product_error = _current_product_certification(root)
-    junit = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
-    regression_fresh = junit.is_file() and junit.stat().st_mtime >= _latest_code_mtime(root)
+    regression_fresh = product_current
     deps = _dependency_names(root)
     forbidden_runtime_deps = sorted(deps & {"langgraph", "crewai", "autogen", "pyautogen", "llama-index", "llama_index", "llamaindex", "dify", "dify-client", "dify_client", "agent-framework", "microsoft-agent-framework", "microsoft_agent_framework", "langchain", "langchain-core"})
     runtime_import_hits = _runtime_framework_imports(root)

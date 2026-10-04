@@ -59,10 +59,41 @@ def test_product_certification_canonical_authority_fails_closed_on_stale_junit_h
 
 
 
-def test_verify_current_code_rejects_junit_older_than_current_code(tmp_path: Path, monkeypatch) -> None:
+def test_verify_current_code_rejects_stale_tested_source(tmp_path: Path, monkeypatch) -> None:
+    import json
+    import pytest
+
+    code = tmp_path / "smart_example.py"
+    code.write_text("print('current')\n", encoding="utf-8")
+    junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
+    fingerprint = {"sha256": "f" * 64}
+    regression = {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "sha256": "j" * 64}
+    authority = {"status": "PASS"}
+    source = {"status": "PASS", "source_commit": "a" * 40}
+    monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
+    monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
+    monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
+    monkeypatch.setattr(certification, "regression_source_binding", lambda root, path, fp: {"status": "FAIL"})
+    doc = {
+        "schema": certification.SCHEMA,
+        "status": "CONSTRUCTION_PROVEN",
+        "checks": {"full_regression_green": True},
+        "code_fingerprint": fingerprint,
+        "critical_code_manifest": certification.build_critical_code_manifest(tmp_path),
+        "canonical_root_authority": authority,
+        "regression_source": source,
+    }
+    doc["sha256"] = certification._sha256_json(doc)
+    path = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    with pytest.raises(ValueError, match="regression source is stale"):
+        certification.verify_product_certification(path, root=tmp_path, require_current_code=True)
+
+
+def test_verify_current_code_accepts_matching_tested_source_despite_checkout_mtime(tmp_path: Path, monkeypatch) -> None:
     import json
     import os
-    import pytest
 
     code = tmp_path / "smart_example.py"
     code.write_text("print('current')\n", encoding="utf-8")
@@ -73,56 +104,52 @@ def test_verify_current_code_rejects_junit_older_than_current_code(tmp_path: Pat
     fingerprint = {"sha256": "f" * 64}
     regression = {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "sha256": "j" * 64}
     authority = {"status": "PASS"}
-    monkeypatch.setattr(certification, "_code_files", lambda root: [code])
+    source = {"status": "PASS", "source_commit": "a" * 40}
     monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
     monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
     monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
-    critical_manifest = certification.build_critical_code_manifest(tmp_path)
+    monkeypatch.setattr(certification, "regression_source_binding", lambda root, path, fp: source)
     doc = {
         "schema": certification.SCHEMA,
         "status": "CONSTRUCTION_PROVEN",
         "checks": {"full_regression_green": True},
         "code_fingerprint": fingerprint,
-        "critical_code_manifest": critical_manifest,
+        "critical_code_manifest": certification.build_critical_code_manifest(tmp_path),
         "canonical_root_authority": authority,
+        "regression_source": source,
     }
     doc["sha256"] = certification._sha256_json(doc)
-    cert = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
-    cert.write_text(json.dumps(doc), encoding="utf-8")
-    with pytest.raises(ValueError, match="regression is stale for current code"):
-        certification.verify_product_certification(cert, root=tmp_path, require_current_code=True)
+    path = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
+    path.write_text(json.dumps(doc), encoding="utf-8")
+    assert certification.verify_product_certification(path, root=tmp_path, require_current_code=True)["status"] == "CONSTRUCTION_PROVEN"
 
 
-def test_verify_current_code_accepts_junit_not_older_than_current_code(tmp_path: Path, monkeypatch) -> None:
+def test_regression_source_binding_rejects_source_drift(tmp_path: Path) -> None:
     import json
-    import os
+    import subprocess
+    from smart_agent_runtime import sha256_file
 
     code = tmp_path / "smart_example.py"
-    code.write_text("print('current')\n", encoding="utf-8")
+    code.write_text("print('tested')\n", encoding="utf-8")
+    subprocess.run(["git", "init", "-q", tmp_path.as_posix()], check=True)
+    subprocess.run(["git", "add", "smart_example.py"], cwd=tmp_path, check=True)
+    subprocess.run(["git", "-c", "user.name=test", "-c", "user.email=test@example.com",
+                    "commit", "-qm", "tested source"], cwd=tmp_path, check=True)
+    source = subprocess.run(["git", "rev-parse", "HEAD"], cwd=tmp_path, check=True,
+                            capture_output=True, text=True).stdout.strip()
     junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
     junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
-    os.utime(code, (1000, 1000))
-    os.utime(junit, (2000, 2000))
-    fingerprint = {"sha256": "f" * 64}
-    regression = {"tests": 1, "failures": 0, "errors": 0, "skipped": 0, "status": "PASS", "sha256": "j" * 64}
-    authority = {"status": "PASS"}
-    monkeypatch.setattr(certification, "_code_files", lambda root: [code])
-    monkeypatch.setattr(certification, "code_fingerprint", lambda root: fingerprint)
-    monkeypatch.setattr(certification, "junit_summary", lambda path: regression)
-    monkeypatch.setattr(certification, "canonical_root_authority_binding", lambda root, path, summary: authority)
-    critical_manifest = certification.build_critical_code_manifest(tmp_path)
-    doc = {
-        "schema": certification.SCHEMA,
-        "status": "CONSTRUCTION_PROVEN",
-        "checks": {"full_regression_green": True},
-        "code_fingerprint": fingerprint,
-        "critical_code_manifest": critical_manifest,
-        "canonical_root_authority": authority,
+    fp = certification.code_fingerprint(tmp_path)
+    authority = {
+        "certified_source_commit": source,
+        "certified_ci_run_id": "123",
+        "certified_source_code_fingerprint_sha256": fp["sha256"],
+        "certified_regression_junit_sha256": sha256_file(junit),
     }
-    doc["sha256"] = certification._sha256_json(doc)
-    cert = tmp_path / "SMART_PRODUCT_CERTIFICATION.json"
-    cert.write_text(json.dumps(doc), encoding="utf-8")
-    assert certification.verify_product_certification(cert, root=tmp_path, require_current_code=True)["status"] == "CONSTRUCTION_PROVEN"
+    (tmp_path / "SMART_CANONICAL_ROOT.json").write_text(json.dumps(authority), encoding="utf-8")
+    assert certification.regression_source_binding(tmp_path, junit, fp)["status"] == "PASS"
+    code.write_text("print('untested')\n", encoding="utf-8")
+    assert certification.regression_source_binding(tmp_path, junit, certification.code_fingerprint(tmp_path))["status"] == "FAIL"
 
 
 def test_pytest_discovery_excludes_state_archive() -> None:
