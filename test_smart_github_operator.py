@@ -77,7 +77,7 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         lambda *_: [
             sys.executable, "-c",
             "from pathlib import Path; import json; "
-            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated'); "
+            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated' + chr(10)); "
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
@@ -88,6 +88,15 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
     assert proof["commit"] != before
     assert git("ls-remote", "origin", "refs/heads/main").split()[0] == proof["commit"]
     assert git("--git-dir=" + str(remote), "show", "main:SMART_ACTIVE_EPOCH.json") == "generated"
+    assert ".gitattributes" in proof["changed_files"]
+    git("--git-dir=" + str(remote), "symbolic-ref", "HEAD", "refs/heads/main")
+    checkout = tmp_path / "verified_checkout"
+    subprocess.run(
+        ["git", "-c", "core.autocrlf=true", "clone", str(remote), str(checkout)],
+        check=True, capture_output=True,
+    )
+    assert (checkout / "SMART_ACTIVE_EPOCH.json").read_bytes() == b"generated" + bytes([10])
+    assert "/SMART_ACTIVE_EPOCH.json -text" in (checkout / ".gitattributes").read_text()
 
 
 def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: Path):

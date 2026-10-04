@@ -157,6 +157,42 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
     return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule}
 
 
+def _pin_artifact_bytes(root: Path, changes: list[str]) -> bool:
+    """Keep generated hash-bound files byte-identical after future checkouts."""
+    attributes = root / ".gitattributes"
+    previous = attributes.read_text(encoding="utf-8") if attributes.is_file() else ""
+    lines = previous.splitlines()
+    for path in changes:
+        candidate = root / path
+        if not candidate.is_file():
+            continue
+        if not re.fullmatch(r"[A-Za-z0-9_./-]+", path):
+            raise ValueError(f"artifact cannot be pinned with a safe Git attribute: {path}")
+        rule = f"/{path} -text"
+        if rule not in lines:
+            lines.append(rule)
+    updated = ("\n".join(lines) + "\n") if lines else ""
+    if updated == previous.replace("\r\n", "\n"):
+        return False
+    attributes.write_text(updated, encoding="utf-8")
+    for path in changes:
+        if (root / path).is_file() and not _git(root, "check-attr", "text", "--", path).endswith("text: unset"):
+            raise RuntimeError(f"Git is still converting artifact bytes: {path}")
+    return True
+
+
+def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
+    for path in changes:
+        candidate = root / path
+        if not candidate.is_file():
+            continue
+        staged = subprocess.run(
+            ["git", "show", f":{path}"], cwd=root, capture_output=True, check=True
+        ).stdout
+        if staged != candidate.read_bytes():
+            raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
+
+
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
     root = Path(__file__).resolve().parent
     if _git(root, "rev-parse", "--show-toplevel") != str(root):
@@ -195,11 +231,14 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         candidate = root / path
         if candidate.is_symlink() or (candidate.exists() and not candidate.resolve().is_relative_to(root)):
             raise RuntimeError(f"unsafe artifact path: {path}")
-    subprocess.run(["git", "add", "--all", "--", *changes], cwd=root, check=True)
+    attributes_changed = _pin_artifact_bytes(root, changes)
+    staged_expected = set(changes) | ({".gitattributes"} if attributes_changed else set())
+    subprocess.run(["git", "add", "--all", "--", *sorted(staged_expected)], cwd=root, check=True)
     subprocess.run(["git", "diff", "--cached", "--check"], cwd=root, check=True)
     staged = _git_paths(root, "diff", "--cached", "--name-only", "--no-renames", "-z")
-    if staged != set(changes):
-        raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ set(changes))}")
+    if staged != staged_expected:
+        raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ staged_expected)}")
+    _verify_staged_bytes(root, changes)
     commit_msg = f"operation: {operation} contest {target}"
     _git(root, "-c", "user.name=SMART-MEGA GitHub Operator",
          "-c", "user.email=smart-mega-operator@users.noreply.github.com",
@@ -216,7 +255,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         raise RuntimeError("remote main does not match the operation commit")
     nested_proof = observation.get("proof")
     observed_status = nested_proof.get("status") if isinstance(nested_proof, dict) else observation.get("status")
-    return {"operation": operation, "target": target, "changed_files": changes,
+    return {"operation": operation, "target": target, "changed_files": sorted(staged_expected),
             "observation_status": observed_status,
             "primary_card": {key: frozen_card[key] for key in ("numbers", "file", "sha256")} if frozen_card else None,
             "commit": commit}
