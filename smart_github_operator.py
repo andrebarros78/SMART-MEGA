@@ -6,6 +6,7 @@ never publishes its runner-local changes.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import os
 from pathlib import Path, PurePosixPath
@@ -114,6 +115,84 @@ def _require_no_unpersisted_state(root: Path) -> None:
         raise RuntimeError(f"operator generated ignored state: {material[:20]}")
 
 
+def _verified_freeze_publication(root: Path, observation: dict, changes: list[str],
+                                 target: str) -> dict:
+    """Allow a frozen card into main only while its pre-draw window is open."""
+    from smart_target_schedule import assert_pre_draw_window
+
+    proof = observation.get("proof")
+    if not isinstance(proof, dict) or proof.get("status") != "PASS" or proof.get("result_used") is not False:
+        raise ValueError("freeze lacks a valid prospective full-process proof")
+    if proof.get("target_contest") != int(target):
+        raise ValueError("freeze proof target mismatch")
+    card_file = proof.get("primary_card_file")
+    if not isinstance(card_file, str) or not allowed_artifact(card_file) or card_file not in changes:
+        raise ValueError("frozen primary card is not a new persistent artifact")
+    path = (root / card_file).resolve()
+    if not path.is_relative_to(root) or not path.is_file() or path.is_symlink():
+        raise ValueError("frozen primary card path is unsafe")
+    raw = path.read_bytes()
+    file_sha = hashlib.sha256(raw).hexdigest()
+    if file_sha != proof.get("primary_card_sha256"):
+        raise ValueError("frozen primary card file hash mismatch")
+    card = json.loads(raw)
+    embedded = dict(card)
+    declared = embedded.pop("sha256", None)
+    embedded_sha = hashlib.sha256(
+        json.dumps(embedded, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    ).hexdigest()
+    if (card != proof.get("primary_card") or declared != embedded_sha
+            or card.get("result_used") is not False or card.get("status") != "FROZEN"
+            or card.get("freeze_sha256") != proof.get("freeze_sha256")
+            or card.get("target_contest") != int(target)
+            or card.get("product_role") != "FINAL_SINGLE_CARD_PRODUCT"):
+        raise ValueError("frozen primary card/proof binding invalid")
+    numbers = card.get("numbers")
+    if (not isinstance(numbers, list) or len(numbers) != 6
+            or any(type(number) is not int or not 1 <= number <= 60 for number in numbers)
+            or len(set(numbers)) != 6):
+        raise ValueError("frozen primary card must contain six distinct numbers")
+    schedule = proof.get("target_schedule")
+    assert_pre_draw_window(schedule)
+    return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule}
+
+
+def _pin_artifact_bytes(root: Path, changes: list[str]) -> bool:
+    """Keep generated hash-bound files byte-identical after future checkouts."""
+    attributes = root / ".gitattributes"
+    previous = attributes.read_text(encoding="utf-8") if attributes.is_file() else ""
+    lines = previous.splitlines()
+    for path in changes:
+        candidate = root / path
+        if not candidate.is_file():
+            continue
+        if not re.fullmatch(r"[A-Za-z0-9_./-]+", path):
+            raise ValueError(f"artifact cannot be pinned with a safe Git attribute: {path}")
+        rule = f"/{path} -text"
+        if rule not in lines:
+            lines.append(rule)
+    updated = ("\n".join(lines) + "\n") if lines else ""
+    if updated == previous.replace("\r\n", "\n"):
+        return False
+    attributes.write_text(updated, encoding="utf-8")
+    for path in changes:
+        if (root / path).is_file() and not _git(root, "check-attr", "text", "--", path).endswith("text: unset"):
+            raise RuntimeError(f"Git is still converting artifact bytes: {path}")
+    return True
+
+
+def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
+    for path in changes:
+        candidate = root / path
+        if not candidate.is_file():
+            continue
+        staged = subprocess.run(
+            ["git", "show", f":{path}"], cwd=root, capture_output=True, check=True
+        ).stdout
+        if staged != candidate.read_bytes():
+            raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
+
+
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
     root = Path(__file__).resolve().parent
     if _git(root, "rev-parse", "--show-toplevel") != str(root):
@@ -144,6 +223,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         return {"operation": operation, "target": target or None, "observation": observation, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
+    frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation == "freeze" else None
     rejected = [path for path in changes if not allowed_artifact(path)]
     if rejected:
         raise RuntimeError(f"operator changed non-operational files: {rejected[:20]}")
@@ -151,11 +231,14 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         candidate = root / path
         if candidate.is_symlink() or (candidate.exists() and not candidate.resolve().is_relative_to(root)):
             raise RuntimeError(f"unsafe artifact path: {path}")
-    subprocess.run(["git", "add", "--all", "--", *changes], cwd=root, check=True)
+    attributes_changed = _pin_artifact_bytes(root, changes)
+    staged_expected = set(changes) | ({".gitattributes"} if attributes_changed else set())
+    subprocess.run(["git", "add", "--all", "--", *sorted(staged_expected)], cwd=root, check=True)
     subprocess.run(["git", "diff", "--cached", "--check"], cwd=root, check=True)
     staged = _git_paths(root, "diff", "--cached", "--name-only", "--no-renames", "-z")
-    if staged != set(changes):
-        raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ set(changes))}")
+    if staged != staged_expected:
+        raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ staged_expected)}")
+    _verify_staged_bytes(root, changes)
     commit_msg = f"operation: {operation} contest {target}"
     _git(root, "-c", "user.name=SMART-MEGA GitHub Operator",
          "-c", "user.email=smart-mega-operator@users.noreply.github.com",
@@ -163,12 +246,19 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     commit = _git(root, "rev-parse", "HEAD")
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout still contains uncommitted state")
+    if frozen_card is not None:
+        from smart_target_schedule import assert_pre_draw_window
+        assert_pre_draw_window(frozen_card["schedule"])
     _git(root, "push", "origin", "HEAD:main")
     remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
     if remote != commit:
         raise RuntimeError("remote main does not match the operation commit")
-    return {"operation": operation, "target": target, "changed_files": changes,
-            "observation_status": observation.get("status"), "commit": commit}
+    nested_proof = observation.get("proof")
+    observed_status = nested_proof.get("status") if isinstance(nested_proof, dict) else observation.get("status")
+    return {"operation": operation, "target": target, "changed_files": sorted(staged_expected),
+            "observation_status": observed_status,
+            "primary_card": {key: frozen_card[key] for key in ("numbers", "file", "sha256")} if frozen_card else None,
+            "commit": commit}
 
 
 def main() -> int:
