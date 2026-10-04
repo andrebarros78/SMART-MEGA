@@ -2,7 +2,6 @@ from __future__ import annotations
 
 import hashlib
 import json
-import msvcrt
 import os
 import socket
 import tempfile
@@ -10,6 +9,27 @@ import uuid
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
+
+if os.name == "nt":
+    import msvcrt
+else:
+    import fcntl
+
+
+def _acquire_os_lock(handle) -> None:
+    handle.seek(0)
+    if os.name == "nt":
+        msvcrt.locking(handle.fileno(), msvcrt.LK_NBLCK, 1)
+    else:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+
+
+def _release_os_lock(handle) -> None:
+    handle.seek(0)
+    if os.name == "nt":
+        msvcrt.locking(handle.fileno(), msvcrt.LK_UNLCK, 1)
+    else:
+        fcntl.flock(handle.fileno(), fcntl.LOCK_UN)
 
 LOCK_FILE = Path("runtime") / "locks" / "SMART_OPERATION.lock"
 METADATA_FILE = Path("runtime") / "locks" / "SMART_OPERATION_LOCK.json"
@@ -65,9 +85,8 @@ class OperationLock:
         handle=open(lock_path,"a+b")
         if lock_path.stat().st_size < 1:
             handle.write(b"0"); handle.flush(); os.fsync(handle.fileno())
-        handle.seek(0)
         try:
-            msvcrt.locking(handle.fileno(),msvcrt.LK_NBLCK,1)
+            _acquire_os_lock(handle)
         except OSError as exc:
             owner=_read_metadata(meta_path)
             handle.close()
@@ -104,8 +123,7 @@ class OperationLock:
             body["status"]="RELEASED"
             body["released_utc"]=datetime.now(timezone.utc).isoformat()
             self.metadata=_write_metadata(meta_path,body)
-        self._handle.seek(0)
-        msvcrt.locking(self._handle.fileno(),msvcrt.LK_UNLCK,1)
+        _release_os_lock(self._handle)
         self._handle.close()
         self._handle=None
         return self.metadata
