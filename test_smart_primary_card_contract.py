@@ -7,6 +7,7 @@ from pathlib import Path
 import pytest
 
 from smart_portfolio_pipeline import build_portfolio_package
+from smart_full_process_pipeline import _verified_primary_card
 
 
 def _load(path: Path) -> dict:
@@ -58,3 +59,50 @@ def test_3061_generation_proof_has_single_primary_card_contract():
     assert len(proof["card"]) == 6
     assert len(set(proof["card"])) == 6
     assert proof["sha256"] == _sha256_json(proof)
+
+
+def test_primary_card_flow_uses_frozen_portfolio_selection(tmp_path: Path):
+    selector = {"status": "PASS", "result_used": False, "selected_numbers": [1, 2, 3, 7, 8, 9]}
+    selector["sha256"] = _sha256_json(selector)
+    rescue = {"status": "PASS", "result_used": False, "nonzero_deltas": {}}
+    rescue["sha256"] = _sha256_json(rescue)
+    card = {
+        "schema": "SMART_PRIMARY_SINGLE_CARD_2", "target_contest": 3067,
+        "cutoff_contest": 3066, "numbers": [1, 2, 3, 7, 8, 9],
+        "source_top6_ordered": [1, 2, 3, 4, 5, 6],
+        "freeze_sha256": "a" * 64, "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+        "selector": selector, "false_negative_rescue": rescue,
+    }
+    package = {
+        "status": "PASS", "target_contest": 3067, "cutoff_contest": 3066,
+        "source_data_sha256": "b" * 64, "freeze_sha256": "a" * 64,
+        "product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
+        "primary_card": card, "primary_card_selector": selector,
+        "false_negative_rescue": rescue,
+    }
+    portfolio = tmp_path / "portfolio.json"
+    portfolio.write_text(json.dumps(package), encoding="utf-8")
+    frozen_sha = hashlib.sha256(portfolio.read_bytes()).hexdigest()
+    freeze_result = {
+        "portfolio_file": "portfolio.json", "portfolio_sha256": frozen_sha,
+        "freeze_sha256": "a" * 64,
+    }
+    event = {"primary_card": card, "portfolio_sha256": frozen_sha}
+    selected, _, observed = _verified_primary_card(
+        tmp_path, freeze_result, event, 3067, 3066, [1, 2, 3, 4, 5, 6], "b" * 64
+    )
+    assert selected["numbers"] == [1, 2, 3, 7, 8, 9]
+    assert selected["numbers"] != sorted(selected["source_top6_ordered"])
+    assert observed == frozen_sha
+
+    with pytest.raises(ValueError, match="ledger"):
+        _verified_primary_card(
+            tmp_path, freeze_result, {**event, "primary_card": {**card, "numbers": [1, 2, 3, 4, 5, 6]}},
+            3067, 3066, [1, 2, 3, 4, 5, 6], "b" * 64,
+        )
+    with pytest.raises(ValueError, match="hash"):
+        _verified_primary_card(
+            tmp_path, {**freeze_result, "portfolio_sha256": "0" * 64}, event,
+            3067, 3066, [1, 2, 3, 4, 5, 6], "b" * 64,
+        )

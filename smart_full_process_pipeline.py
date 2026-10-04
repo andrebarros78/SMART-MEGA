@@ -81,6 +81,49 @@ def _valid_top6(values: Any) -> bool:
     return len(set(nums)) == 6 and all(1 <= x <= 60 for x in nums)
 
 
+def _verified_primary_card(root: Path, freeze_result: dict[str, Any],
+                           freeze_event: dict[str, Any], target: int, cutoff: int,
+                           champion_top6: list[int], data_sha256: str) -> tuple[dict[str, Any], Path, str]:
+    """Read the single card already frozen by the portfolio pipeline."""
+    portfolio_path = _resolve(root, str(freeze_result["portfolio_file"]))
+    observed_sha = sha256_file(portfolio_path)
+    if observed_sha != freeze_result["portfolio_sha256"] or observed_sha != freeze_event.get("portfolio_sha256"):
+        raise ValueError("frozen portfolio hash mismatch")
+    package = json.loads(portfolio_path.read_text(encoding="utf-8-sig"))
+    card = package.get("primary_card")
+    if not isinstance(card, dict) or package.get("status") != "PASS":
+        raise ValueError("frozen primary card is missing or portfolio failed")
+    if (package.get("target_contest") != target or package.get("cutoff_contest") != cutoff
+            or package.get("source_data_sha256") != data_sha256
+            or package.get("freeze_sha256") != freeze_result["freeze_sha256"]
+            or package.get("product_role") != "AUXILIARY_MULTICARD_PORTFOLIO"):
+        raise ValueError("portfolio is not bound to this prospective freeze")
+    if (card != freeze_event.get("primary_card")
+            or card.get("source_top6_ordered") != champion_top6
+            or card.get("target_contest") != target
+            or card.get("cutoff_contest") != cutoff
+            or card.get("freeze_sha256") != freeze_result["freeze_sha256"]
+            or card.get("product_role") != "FINAL_SINGLE_CARD_PRODUCT"
+            or card.get("optimization_objective") != "MAXIMIZE_SIX_HIT_SINGLE_CARD"
+            or not _valid_top6(card.get("numbers"))):
+        raise ValueError("primary card differs from the frozen ledger or target")
+    selector = card.get("selector")
+    rescue = card.get("false_negative_rescue")
+    if not isinstance(selector, dict) or not isinstance(rescue, dict):
+        raise ValueError("primary card selector and rescue proofs are required")
+    for proof in (selector, rescue):
+        body = dict(proof)
+        declared = body.pop("sha256", None)
+        if declared != _sha256_json(body) or proof.get("result_used") is not False:
+            raise ValueError("primary card used an invalid or retrospective selection proof")
+    if (selector.get("status") != "PASS"
+            or selector.get("selected_numbers") != card["numbers"]
+            or package.get("primary_card_selector") != selector
+            or package.get("false_negative_rescue") != rescue):
+        raise ValueError("primary card selection differs from the frozen portfolio")
+    return card, portfolio_path, observed_sha
+
+
 def _files_under(path: Path) -> set[Path]:
     return {item.resolve() for item in path.rglob("*") if item.is_file()}
 
@@ -297,20 +340,22 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
 
     challenger = freeze_obj.get("challenger", {})
     champion_top6 = [int(x) for x in freeze_obj["champion"]["top6"]]
-    primary_card_numbers = sorted(champion_top6)
-    primary_card = {
-        "schema": "SMART_PRIMARY_SINGLE_CARD_1",
-        "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
-        "product_role": "FINAL_SINGLE_CARD_PRODUCT",
-        "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
-        "target_contest": target,
-        "cutoff_contest": cutoff,
-        "numbers": primary_card_numbers,
-        "source_head": "champion",
-        "source_top6_ordered": champion_top6,
-        "selection_rule": "single primary card equals the six highest-ranked champion numbers; multicard portfolio is auxiliary only",
-        "freeze_sha256": freeze_result["freeze_sha256"],
-    }
+    primary_card, portfolio_path, portfolio_sha = _verified_primary_card(
+        root, freeze_result, freeze_events[0] if len(freeze_events) == 1 else {},
+        target, cutoff, champion_top6, active["data_sha256"],
+    )
+    primary_card_numbers = list(primary_card["numbers"])
+    primary_card_path = epoch_dir / f"SMART_{target}_PRIMARY_CARD.json"
+    primary_card = _self_hash({
+        **primary_card,
+        "status": "FROZEN",
+        "result_used": False,
+        "freeze_file": _rel(root, actual_freeze_path),
+        "portfolio_file": _rel(root, portfolio_path),
+        "portfolio_sha256": portfolio_sha,
+    })
+    primary_card_path.write_text(json.dumps(primary_card, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+    primary_card_sha = sha256_file(primary_card_path)
     activation_time = datetime.fromisoformat(str(activation["activated_utc"]).replace("Z", "+00:00"))
     freeze_time = datetime.fromisoformat(str(freeze_obj["frozen_utc"]).replace("Z", "+00:00"))
     trace_checks = {
@@ -322,7 +367,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "all_required_signal_trace_fields_present": isinstance(challenger, dict) and all(key in challenger for key in TRACE_FIELDS),
         "champion_top6_valid": _valid_top6(freeze_obj.get("champion", {}).get("top6")),
         "primary_card_single_game_valid": _valid_top6(primary_card_numbers),
-        "primary_card_matches_champion_top6": primary_card_numbers == sorted(champion_top6),
+        "primary_card_matches_frozen_portfolio": primary_card_numbers == freeze_events[0]["primary_card"]["numbers"] if len(freeze_events) == 1 else False,
+        "primary_card_bound_to_freeze_and_portfolio": primary_card["freeze_sha256"] == freeze_result["freeze_sha256"] and primary_card["portfolio_sha256"] == portfolio_sha,
+        "primary_card_selection_used_no_target_result": primary_card["selector"]["result_used"] is False and primary_card["false_negative_rescue"]["result_used"] is False,
         "primary_card_objective_is_six_hit": primary_card["optimization_objective"] == "MAXIMIZE_SIX_HIT_SINGLE_CARD",
         "challenger_top6_valid": _valid_top6(challenger.get("top6")),
         "pre_freeze_integration_pass": pre_gate.get("status") == "PASS" and pre_gate.get("phase") == "PRE_FREEZE",
@@ -368,12 +415,17 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "pre_freeze_total_integration_sha256": pre_gate["sha256"],
         "post_freeze_total_integration_sha256": post_gate["sha256"],
         "primary_card": primary_card,
+        "primary_card_file": _rel(root, primary_card_path),
+        "primary_card_sha256": primary_card_sha,
+        "portfolio_file": _rel(root, portfolio_path),
+        "portfolio_sha256": portfolio_sha,
         "optimization_contract": {
             "primary_output": "SINGLE_CARD",
             "numbers_per_card": 6,
             "objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
             "portfolio_is_auxiliary": True,
             "portfolio_must_not_replace_primary_card": True,
+            "selection_rule": primary_card["selection_rule"],
         },
         "champion_top6": freeze_obj["champion"]["top6"],
         "challenger_top6": challenger["top6"],

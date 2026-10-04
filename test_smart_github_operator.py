@@ -1,4 +1,6 @@
 from pathlib import Path
+import hashlib
+import json
 import subprocess
 import sys
 import pytest
@@ -86,3 +88,40 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
     assert proof["commit"] != before
     assert git("ls-remote", "origin", "refs/heads/main").split()[0] == proof["commit"]
     assert git("--git-dir=" + str(remote), "show", "main:SMART_ACTIVE_EPOCH.json") == "generated"
+
+
+def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: Path):
+    relative = "runtime/learning_epochs/epoch/SMART_3067_PRIMARY_CARD.json"
+    path = tmp_path / relative
+    path.parent.mkdir(parents=True)
+    card = {
+        "status": "FROZEN", "result_used": False, "target_contest": 3067,
+        "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "freeze_sha256": "a" * 64, "numbers": [1, 2, 3, 7, 8, 9],
+    }
+    card["sha256"] = hashlib.sha256(
+        json.dumps(card, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+    ).hexdigest()
+    path.write_text(json.dumps(card), encoding="utf-8")
+    proof = {
+        "status": "PASS", "result_used": False, "target_contest": 3067,
+        "freeze_sha256": "a" * 64, "primary_card": card,
+        "primary_card_file": relative,
+        "primary_card_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
+        "target_schedule": {
+            "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+            "target_contest": 3067,
+            "scheduled_datetime": "2100-01-01T21:00:00-03:00",
+        },
+    }
+    observation = {"proof": proof}
+    result = github_operator._verified_freeze_publication(tmp_path, observation, [relative], "3067")
+    assert result["numbers"] == card["numbers"]
+
+    with pytest.raises(ValueError, match="new persistent artifact"):
+        github_operator._verified_freeze_publication(tmp_path, observation, [], "3067")
+    expired = {**proof, "target_schedule": {
+        **proof["target_schedule"], "scheduled_datetime": "2000-01-01T21:00:00-03:00"
+    }}
+    with pytest.raises(ValueError, match="freeze window closed"):
+        github_operator._verified_freeze_publication(tmp_path, {"proof": expired}, [relative], "3067")

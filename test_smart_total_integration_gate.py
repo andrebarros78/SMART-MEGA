@@ -1,4 +1,5 @@
 ﻿from pathlib import Path
+import smart_total_integration_gate as gate
 from smart_total_integration_gate import evaluate,write
 ROOT=Path(__file__).resolve().parent
 
@@ -14,3 +15,12 @@ def test_total_integration_gate():
 
 def test_total_integration_roundtrip(tmp_path):
  d=write(ROOT,tmp_path/'proof.json'); assert d['status']=='PASS'; assert len(d['sha256'])==64
+
+
+def test_total_integration_fails_when_functional_agents_or_skills_fail(monkeypatch):
+    functional = gate.evaluate_functional(ROOT, phase="BUILD")
+    functional["status"] = "FAIL"
+    monkeypatch.setattr(gate, "evaluate_functional", lambda *_a, **_k: functional)
+    result = gate.evaluate(ROOT, phase="BUILD")
+    assert result["status"] == "FAIL"
+    assert result["gates"]["G4_RUNTIME"]["functional_gate_pass"] is False
