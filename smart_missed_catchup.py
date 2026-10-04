@@ -24,6 +24,7 @@ from smart_rollover import archive_completed_epoch
 from smart_storage_surfaces import evidence_path
 
 RECOVERY_SCHEMA = "SMART_MISSED_TARGET_CATCHUP_1"
+OFFICIAL_BATCH_SCHEMA = "SMART_OFFICIAL_RESULT_BATCH_1"
 REVIEW_SCHEMA = "SMART_POST_RESULT_REVIEW_1"
 HOLD_SCHEMA = "SMART_NEXT_CYCLE_HOLD_1"
 HOLD_STATUS = "AWAITING_OPERATOR_APPLY_OR_GENERATE"
@@ -108,6 +109,50 @@ def _assert_completed_active(root: Path, active: dict[str, Any], lifecycle: dict
     return target
 
 
+
+def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, Any]], dict[str, Any]]:
+    batch_path = Path(path)
+    if not batch_path.is_file():
+        raise FileNotFoundError(batch_path)
+    obj = json.loads(batch_path.read_text(encoding="utf-8-sig"))
+    if not isinstance(obj, dict) or obj.get("schema") != OFFICIAL_BATCH_SCHEMA:
+        raise ValueError("official result batch schema invalid")
+    if obj.get("authority") != "CAIXA_LOTERIAS_OFFICIAL_API":
+        raise ValueError("official result batch authority invalid")
+    observed = obj.get("sha256")
+    body = dict(obj); body.pop("sha256", None)
+    if not isinstance(observed, str) or observed != _sha_json(body):
+        raise ValueError("official result batch self-hash invalid")
+    rows = obj.get("results")
+    if not isinstance(rows, list) or not rows:
+        raise ValueError("official result batch results missing")
+    payloads: dict[int, dict[str, Any]] = {}
+    for row in rows:
+        if not isinstance(row, dict):
+            raise ValueError("official result batch row invalid")
+        target = int(row.get("numero", -1))
+        validate_official_payload(row, target)
+        expected_endpoint = f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{target}"
+        if row.get("endpoint") != expected_endpoint:
+            raise ValueError(f"official result batch endpoint mismatch for target {target}")
+        if target in payloads:
+            raise ValueError("official result batch contains duplicate target")
+        payloads[target] = row
+    ordered = sorted(payloads)
+    if ordered != list(range(ordered[0], ordered[-1] + 1)):
+        raise ValueError("official result batch target sequence contains gaps")
+    evidence = {
+        "schema": OFFICIAL_BATCH_SCHEMA,
+        "file": batch_path.name,
+        "file_sha256": sha256_file(batch_path),
+        "document_sha256": observed,
+        "authority": obj["authority"],
+        "retrieved_at_utc": obj.get("retrieved_at_utc"),
+        "capture_transport": obj.get("capture_transport"),
+        "targets": ordered,
+    }
+    return payloads, evidence
+
 def _payload_for(payloads: dict[int, dict[str, Any]] | None, target: int) -> dict[str, Any] | None:
     if payloads is None:
         return None
@@ -124,6 +169,7 @@ def catch_up_missed_results(
     through_target: int,
     *,
     payloads: dict[int, dict[str, Any]] | None = None,
+    payload_batch_evidence: dict[str, Any] | None = None,
     now_utc: datetime | None = None,
 ) -> dict[str, Any]:
     """Advance only known official results across a gap and restore HOLD.
@@ -223,6 +269,7 @@ def catch_up_missed_results(
                 "official_result": official["actual_numbers"],
                 "official_result_proof": str(official_proof.relative_to(root)).replace("\\", "/"),
                 "official_result_proof_sha256": sha256_file(official_proof),
+                "official_result_batch": payload_batch_evidence,
                 "canonical_sha256_before": before,
                 "canonical_sha256_after": after_history["sha256"],
                 "canonical_backup": str(backup.relative_to(root)).replace("\\", "/"),
@@ -290,7 +337,7 @@ def catch_up_missed_results(
         if completed_active_target is not None:
             archive = archive_completed_epoch(root, completed_active_target)
         lifecycle = recover_to_hold(root, completed_contest=completed, evidence={
-            "missed_result_catchup": {"start_target": start_target, "through_target": completed, "proofs": recovery_proofs, "product_certification_sha256": certification["sha256"]},
+            "missed_result_catchup": {"start_target": start_target, "through_target": completed, "proofs": recovery_proofs, "product_certification_sha256": certification["sha256"], "official_result_batch": payload_batch_evidence},
             "post_result_review": {"file": review_path.name, "sha256": sha256_file(review_path)},
             "post_result_hold": {"file": hold_path.name, "sha256": hold["sha256"]},
             **({"rollover_archive": {"manifest": archive["archive_manifest"], "sha256": archive["archive_manifest_sha256"]}} if archive else {}),

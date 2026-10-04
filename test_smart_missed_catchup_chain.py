@@ -126,3 +126,24 @@ def test_recover_to_hold_refuses_backward_transition(tmp_path):
         assert "backward" in str(exc) or "regress" in str(exc)
     else:
         raise AssertionError("backward recovery transition must fail closed")
+
+
+def test_official_payload_batch_is_self_hashed_contiguous_and_endpoint_bound(tmp_path):
+    import hashlib
+    batch = {
+        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+        "retrieved_at_utc": "2026-09-09T12:00:00Z",
+        "capture_transport": "TEST",
+        "results": [
+            {**_payload(3, "05/09/2026", [13, 14, 15, 16, 17, 18]), "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3"},
+            {**_payload(4, "08/09/2026", [19, 20, 21, 22, 23, 24]), "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/4"},
+        ],
+    }
+    batch["sha256"] = hashlib.sha256(json.dumps(batch, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()).hexdigest()
+    path = tmp_path / "batch.json"
+    path.write_text(json.dumps(batch), encoding="utf-8")
+    payloads, evidence = catchup.load_official_payload_batch(path)
+    assert sorted(payloads) == [3, 4]
+    assert evidence["document_sha256"] == batch["sha256"]
+    assert evidence["targets"] == [3, 4]
