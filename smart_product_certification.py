@@ -67,7 +67,12 @@ def canonical_root_authority_binding(root: Path, junit_path: Path, regression: d
     observed_self_hash = canonical.pop("sha256", None)
     nested = authority.get("certified_regression") if isinstance(authority.get("certified_regression"), dict) else {}
     authority_hostname = str(authority.get("hostname") or "")
-    local_authority_host = os.name == "nt" and bool(authority_hostname) and authority_hostname.casefold() == socket.gethostname().casefold()
+    declared_root = str(authority.get("canonical_root") or "")
+    try:
+        declared_root_matches = bool(declared_root) and Path(declared_root).resolve() == root
+    except (OSError, ValueError):
+        declared_root_matches = False
+    local_authority_host = bool(authority_hostname) and authority_hostname.casefold() == socket.gethostname().casefold() and declared_root_matches
     legacy_alias = authority.get("legacy_alias")
     legacy_alias_physically_absent = True
     if local_authority_host:

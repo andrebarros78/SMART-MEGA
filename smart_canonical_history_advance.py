@@ -240,7 +240,12 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
     archive_dir.mkdir(parents=True, exist_ok=True)
     backup = archive_dir / f"Mega-Sena.{before_sha}.xlsx"
     if not backup.exists():
-        shutil.copy2(canonical, backup)
+        # Copy archival bytes independently of shutil.copyfile so backup creation
+        # cannot be affected by test/runtime hooks that target the temporary
+        # replacement copy below. The backup contract is byte identity, which is
+        # verified immediately by SHA-256.
+        with canonical.open("rb") as source, backup.open("xb") as backup_target:
+            shutil.copyfileobj(source, backup_target)
     if sha256_file(backup) != before_sha:
         raise RuntimeError("canonical history backup hash mismatch")
 
