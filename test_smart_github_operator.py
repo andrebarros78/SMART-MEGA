@@ -1,5 +1,9 @@
 from pathlib import Path
+import subprocess
+import sys
 import pytest
+
+import smart_github_operator as github_operator
 
 from smart_github_operator import allowed_artifact, command_args, _tracked_payload
 
@@ -41,3 +45,44 @@ def test_payload_cannot_escape_or_be_untracked(tmp_path: Path):
         _tracked_payload(tmp_path, str(tmp_path.parent / "outside.json"))
     with pytest.raises(Exception):
         _tracked_payload(tmp_path, "result.json")
+
+
+def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeypatch):
+    """Exercise the commit and remote verification path without touching main."""
+    remote = tmp_path / "remote.git"
+    root = tmp_path / "checkout"
+    subprocess.run(["git", "init", "--bare", str(remote)], check=True, capture_output=True)
+    subprocess.run(["git", "init", "--initial-branch=main", str(root)], check=True, capture_output=True)
+
+    def git(*args):
+        return subprocess.run(
+            ["git", *args], cwd=root, text=True, capture_output=True, check=True
+        ).stdout.strip()
+
+    git("config", "user.name", "SMART test")
+    git("config", "user.email", "smart-test@example.invalid")
+    (root / "README.md").write_text("initial\\n", encoding="utf-8")
+    git("add", "README.md")
+    git("commit", "-m", "initial")
+    git("remote", "add", "origin", str(remote))
+    git("push", "-u", "origin", "main")
+    before = git("rev-parse", "HEAD")
+
+    monkeypatch.setattr(github_operator, "__file__", str(root / "smart_github_operator.py"))
+    monkeypatch.setattr(
+        github_operator,
+        "command_args",
+        lambda *_: [
+            sys.executable, "-c",
+            "from pathlib import Path; import json; "
+            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated\\\\n'); "
+            "print(json.dumps({'status':'PREPARED'}))",
+        ],
+    )
+    monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
+    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
+    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    proof = github_operator.execute("prepare", "3067")
+    assert proof["commit"] != before
+    assert git("ls-remote", "origin", "refs/heads/main").split()[0] == proof["commit"]
+    assert git("--git-dir=" + str(remote), "show", "main:SMART_ACTIVE_EPOCH.json") == "generated"
