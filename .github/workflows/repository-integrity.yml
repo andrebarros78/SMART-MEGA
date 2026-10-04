@@ -12,9 +12,11 @@ permissions:
 
 jobs:
   integrity:
-    runs-on: windows-latest
+    runs-on: ubuntu-latest
     timeout-minutes: 10
     steps:
+      - name: Match existing canonical text checkout
+        run: git config --global core.autocrlf true
       - uses: actions/checkout@v4
       - uses: actions/setup-python@v5
         with:
