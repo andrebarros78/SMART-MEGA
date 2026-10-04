@@ -197,6 +197,39 @@ def transition(root: str | Path, expected: str | Iterable[str], new_state: str, 
     return _atomic_write(lifecycle_path(root),nxt,expected_revision=int(current["revision"]),expected_sha256=current["sha256"])
 
 
+
+def recover_to_hold(root: str | Path, *, completed_contest: int, evidence: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Explicit monotonic recovery transition for already-drawn missed contests.
+
+    This is not a normal lifecycle edge and cannot create prediction authority. It
+    may only advance an ADJUDICATED/REVIEWED/HOLD lifecycle to HOLD immediately
+    after canonical history has been reconciled through completed_contest.
+    """
+    root = Path(root).resolve()
+    current = load_lifecycle(root)
+    old = str(current.get("state") or "")
+    if old not in {"ADJUDICATED", "REVIEWED", "HOLD"}:
+        raise LifecycleError(f"missed-result recovery cannot transition from {old}")
+    completed = int(completed_contest)
+    current_target = int(current.get("target_contest", -1))
+    current_completed = current.get("completed_contest")
+    floor = max(current_target if old in {"ADJUDICATED", "REVIEWED"} else current_target - 1,
+                int(current_completed) if current_completed is not None else -1)
+    if completed < floor:
+        raise LifecycleError("missed-result recovery cannot move lifecycle backward")
+    target = completed + 1
+    if old == "HOLD" and current_target > target:
+        raise LifecycleError("missed-result recovery target would regress HOLD")
+    nxt={"schema":SCHEMA,"state":"HOLD","revision":int(current["revision"])+1,
+         "project":current.get("project","SMART-MEGA"),"effective_version":current.get("effective_version","6.3.2"),
+         "target_contest":target,"completed_contest":completed,"previous_state":old,
+         "transition":f"{old}_TO_HOLD_MISSED_RESULT_RECOVERY","transition_actor":"smart_missed_catchup",
+         "transition_utc":datetime.now(timezone.utc).isoformat(),"previous_lifecycle_sha256":current["sha256"],
+         "authority":"SINGLE_OPERATIONAL_LIFECYCLE","legacy_documents_are_evidence_not_authority":True,
+         "migration_mode":current.get("migration_mode"),
+         "evidence":{**(current.get("evidence") or {}),**(evidence or {})}}
+    return _atomic_write(lifecycle_path(root),nxt,expected_revision=int(current["revision"]),expected_sha256=current["sha256"])
+
 def phase_for_state(state: str) -> str:
     if state=="IDLE": return "BUILD"
     if state in ("AUTHORIZED","PREPARING","PREPARED","FREEZING"): return "PRE_FREEZE"
