@@ -75,7 +75,7 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         lambda *_: [
             sys.executable, "-c",
             "from pathlib import Path; import json; "
-            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated\\\\n'); "
+            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated'); "
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
