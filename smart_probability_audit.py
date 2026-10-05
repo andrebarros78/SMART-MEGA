@@ -12,6 +12,7 @@ import numpy as np
 
 from smart_experiment_lab import monte_carlo_null_hits
 from smart_falsification_lab import holm_adjust
+from smart_v2_engine import _strict_integral
 
 SCHEMA = "SMART_PROBABILITY_AUDIT_V1"
 UNIFORM_INCLUSION_PROBABILITY = 0.1
@@ -114,13 +115,13 @@ def audit_historical(
         ]
         if not rows:
             raise ValueError(f"candidate {name} has no rows for partition {partition}")
-        contests = np.asarray([int(row["contest"]) for row in rows], dtype=int)
-        cutoffs = np.asarray([int(row["cutoff_contest"]) for row in rows], dtype=int)
+        contests = np.asarray([_strict_integral(row["contest"], "contest") for row in rows], dtype=int)
+        cutoffs = np.asarray([_strict_integral(row["cutoff_contest"], "cutoff_contest") for row in rows], dtype=int)
         if np.any(np.diff(contests) <= 0) or np.any(cutoffs != contests - 1):
             raise ValueError(f"candidate {name} violates causal contest ordering")
         for row in rows:
             _strict_top6(row["top6"])
-        hits = np.asarray([int(row["hits"]) for row in rows], dtype=int)
+        hits = np.asarray([_strict_integral(row["hits"], "hits") for row in rows], dtype=int)
         if np.any((hits < 0) | (hits > 6)):
             raise ValueError(f"candidate {name} has invalid hit counts")
         brier = np.asarray([float(row["brier"]) for row in rows], dtype=float)
