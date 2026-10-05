@@ -1,0 +1,1202 @@
+{
+  "schema": "SMART_TOTAL_INTEGRATION_GATE_V2",
+  "phase": "PRE_FREEZE",
+  "status": "PASS",
+  "health": "HEALTHY",
+  "service_model": "BATCH_EXECUTION_WITH_PERSISTENT_CANONICAL_ARTIFACTS",
+  "gates": {
+    "G1_ROLE_EXECUTORS": {
+      "discovered": true,
+      "handoffs_integrated": true,
+      "native_probes_verified": true
+    },
+    "G2_CAPABILITY_BINDINGS": {
+      "discovered": true,
+      "registered": true,
+      "native_alias_resolvable": true,
+      "binding_gate_pass": true
+    },
+    "G3_FILES": {
+      "present": true,
+      "empty_zero": true,
+      "broken_imports_zero": true,
+      "placeholders_zero": true
+    },
+    "G4_RUNTIME": {
+      "startup": true,
+      "dependencies": true,
+      "health": true
+    },
+    "G5_INTEGRATION": {
+      "role_handoffs": true,
+      "capability_alias_to_native_probe": true,
+      "role_data": true,
+      "role_native_targets": true
+    },
+    "G6_E2E": {
+      "end_to_end": true
+    },
+    "G7_RESILIENCE": {
+      "restart": true,
+      "recovery": true,
+      "retry": true,
+      "persistence": true,
+      "concurrency_1_2_4_8": true
+    },
+    "G8_SECURITY_STATE": {
+      "canonical_unchanged": true,
+      "security": true
+    },
+    "G9_SEMANTIC_TRUTH": {
+      "agents_not_misrepresented_as_llm": true,
+      "skills_not_misrepresented_as_direct_execution": true,
+      "external_sources_remain_quarantined": true
+    }
+  },
+  "agent_inventory": [
+    {
+      "name": "quarantine_curator",
+      "responsibility": "retained as source references; no current SMART-MEGA capability gap justifies activation",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "bridging-online-offline-rl",
+        "growth-experimenter",
+        "kaggle-learner",
+        "visiontrim-unified-vision-token"
+      ],
+      "tools": [],
+      "inputs": [
+        "third-party source references"
+      ],
+      "outputs": [
+        "inventory and security classification only"
+      ],
+      "calls": [
+        "research_scout"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "research_scout",
+      "responsibility": "hypothesis generation and methodology review; never direct scoring authority",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "dianoia",
+        "thinktank-me-multi-expert-framework-middle",
+        "ml-engineer",
+        "pymc"
+      ],
+      "tools": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "inputs": [
+        "open hypotheses",
+        "negative results",
+        "capability gaps"
+      ],
+      "outputs": [
+        "shadow hypotheses",
+        "methodology proposals",
+        "no-direct-weight research artifacts"
+      ],
+      "calls": [
+        "falsification_auditor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "data_guardian",
+      "responsibility": "validate source integrity, cutoff discipline, schemas and evidence bundles",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "openai-analyze-data-quality",
+        "openai-validate-data",
+        "pandera-data-contracts",
+        "data-analysis"
+      ],
+      "tools": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "inputs": [
+        "raw draw data",
+        "dataset contracts",
+        "cutoff declaration"
+      ],
+      "outputs": [
+        "quality gate",
+        "dataset hash binding",
+        "leakage/cutoff verdict"
+      ],
+      "calls": [
+        "null_model_cartographer",
+        "falsification_auditor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "null_model_cartographer",
+      "responsibility": "diagnostic temporal, network, regime and nonlinear structure measurement",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "aeon",
+        "regime-detection",
+        "time-series-forecasting",
+        "networkx",
+        "statsmodels",
+        "ruptures"
+      ],
+      "tools": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "inputs": [
+        "quality-approved dataset",
+        "null-universe policy"
+      ],
+      "outputs": [
+        "U0-U6 diagnostics",
+        "randomness atlas",
+        "regime/network/temporal measurements"
+      ],
+      "calls": [
+        "falsification_auditor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "falsification_auditor",
+      "responsibility": "preregistration, null simulation, multiplicity, calibration and out-of-sample evidence",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "experiment-design",
+        "simulation",
+        "statistical-analysis",
+        "multiple-testing-fdr-statsmodels",
+        "bayesian-workflow",
+        "machine-learning-model-validation",
+        "mlflow"
+      ],
+      "tools": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "inputs": [
+        "preregistered hypotheses",
+        "diagnostics",
+        "null universes"
+      ],
+      "outputs": [
+        "multiplicity-corrected evidence",
+        "power-resolution verdict",
+        "promotion denial/eligibility evidence"
+      ],
+      "calls": [
+        "learning_calibration_governor",
+        "mission_governor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "learning_calibration_governor",
+      "responsibility": "bounded adaptation, calibration, drift awareness and experiment memory",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "evo-memory",
+        "model-drift-management",
+        "hyperparameter-tuning-optuna",
+        "conformal-risk-control-mapie",
+        "live-evo-online-evolution-agentic",
+        "benchmarking-uncertainty-calibration-long-form",
+        "superforecasting",
+        "extremizing-forecasts"
+      ],
+      "tools": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "inputs": [
+        "prediction-result comparisons",
+        "falsification evidence",
+        "drift telemetry"
+      ],
+      "outputs": [
+        "bounded weight decisions",
+        "negative learning",
+        "non-regression decisions"
+      ],
+      "calls": [
+        "mission_governor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "robustness_red_team",
+      "responsibility": "test generation principles, gap discovery and mutation-resistance methodology",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "property-based-testing-hypothesis",
+        "test-gap-analysis",
+        "mutmut-mutation"
+      ],
+      "tools": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "inputs": [
+        "native code",
+        "contracts",
+        "known failure modes"
+      ],
+      "outputs": [
+        "regression tests",
+        "invariant checks",
+        "failure evidence"
+      ],
+      "calls": [
+        "mission_governor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "combinatorial_solver",
+      "responsibility": "constrained optimization, invariant reasoning and structural verification",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [
+        "combinatorialist",
+        "operations-research-algorithm-developer",
+        "google-or-tools",
+        "z3-formal-verification",
+        "nisan-et-al-2007-algorithmic-game-theory"
+      ],
+      "tools": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "inputs": [
+        "frozen scores",
+        "explicit constraints"
+      ],
+      "outputs": [
+        "solver-backed engineering solutions",
+        "optimality/invariant evidence"
+      ],
+      "calls": [
+        "mission_governor"
+      ],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    },
+    {
+      "name": "mission_governor",
+      "responsibility": "mission governance",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "model": null,
+      "prompt": null,
+      "skills": [],
+      "tools": [],
+      "inputs": [
+        "all native evidence gates",
+        "prospective freeze",
+        "official adjudication"
+      ],
+      "outputs": [
+        "MISSION_ACTIVE or MISSION_PROVEN according to SMART_MISSION_STATUS terminal rule"
+      ],
+      "calls": [],
+      "state": "ROLE_PROBE_VERIFIED",
+      "last_test": "SNAPSHOT_REGISTRY_PROBE"
+    }
+  ],
+  "skill_inventory": [
+    {
+      "name": "aeon",
+      "capability": "aeon",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "bayesian-workflow",
+      "capability": "bayesian-workflow",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "benchmarking-uncertainty-calibration-long-form",
+      "capability": "benchmarking-uncertainty-calibration-long-form",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "bridging-online-offline-rl",
+      "capability": "bridging-online-offline-rl",
+      "agent": "quarantine_curator",
+      "agent_owner": "quarantine_curator",
+      "pertinent": false,
+      "callable": false,
+      "mode": "SOURCE_ONLY_QUARANTINE",
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "native_targets": []
+    },
+    {
+      "name": "combinatorialist",
+      "capability": "combinatorialist",
+      "agent": "combinatorial_solver",
+      "agent_owner": "combinatorial_solver",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ]
+    },
+    {
+      "name": "conformal-risk-control-mapie",
+      "capability": "conformal-risk-control-mapie",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "data-analysis",
+      "capability": "data-analysis",
+      "agent": "data_guardian",
+      "agent_owner": "data_guardian",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ]
+    },
+    {
+      "name": "dianoia",
+      "capability": "dianoia",
+      "agent": "research_scout",
+      "agent_owner": "research_scout",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ]
+    },
+    {
+      "name": "evo-memory",
+      "capability": "evo-memory",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "experiment-design",
+      "capability": "experiment-design",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "extremizing-forecasts",
+      "capability": "extremizing-forecasts",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "google-or-tools",
+      "capability": "google-or-tools",
+      "agent": "combinatorial_solver",
+      "agent_owner": "combinatorial_solver",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ]
+    },
+    {
+      "name": "growth-experimenter",
+      "capability": "growth-experimenter",
+      "agent": "quarantine_curator",
+      "agent_owner": "quarantine_curator",
+      "pertinent": false,
+      "callable": false,
+      "mode": "SOURCE_ONLY_QUARANTINE",
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "native_targets": []
+    },
+    {
+      "name": "hyperparameter-tuning-optuna",
+      "capability": "hyperparameter-tuning-optuna",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "kaggle-learner",
+      "capability": "kaggle-learner",
+      "agent": "quarantine_curator",
+      "agent_owner": "quarantine_curator",
+      "pertinent": false,
+      "callable": false,
+      "mode": "SOURCE_ONLY_QUARANTINE",
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "native_targets": []
+    },
+    {
+      "name": "live-evo-online-evolution-agentic",
+      "capability": "live-evo-online-evolution-agentic",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "machine-learning-model-validation",
+      "capability": "machine-learning-model-validation",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "ml-engineer",
+      "capability": "ml-engineer",
+      "agent": "research_scout",
+      "agent_owner": "research_scout",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ]
+    },
+    {
+      "name": "mlflow",
+      "capability": "mlflow",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "model-drift-management",
+      "capability": "model-drift-management",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "multiple-testing-fdr-statsmodels",
+      "capability": "multiple-testing-fdr-statsmodels",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "mutmut-mutation",
+      "capability": "mutmut-mutation",
+      "agent": "robustness_red_team",
+      "agent_owner": "robustness_red_team",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ]
+    },
+    {
+      "name": "networkx",
+      "capability": "networkx",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "nisan-et-al-2007-algorithmic-game-theory",
+      "capability": "nisan-et-al-2007-algorithmic-game-theory",
+      "agent": "combinatorial_solver",
+      "agent_owner": "combinatorial_solver",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ]
+    },
+    {
+      "name": "openai-analyze-data-quality",
+      "capability": "openai-analyze-data-quality",
+      "agent": "data_guardian",
+      "agent_owner": "data_guardian",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ]
+    },
+    {
+      "name": "openai-validate-data",
+      "capability": "openai-validate-data",
+      "agent": "data_guardian",
+      "agent_owner": "data_guardian",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ]
+    },
+    {
+      "name": "operations-research-algorithm-developer",
+      "capability": "operations-research-algorithm-developer",
+      "agent": "combinatorial_solver",
+      "agent_owner": "combinatorial_solver",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ]
+    },
+    {
+      "name": "pandera-data-contracts",
+      "capability": "pandera-data-contracts",
+      "agent": "data_guardian",
+      "agent_owner": "data_guardian",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ]
+    },
+    {
+      "name": "property-based-testing-hypothesis",
+      "capability": "property-based-testing-hypothesis",
+      "agent": "robustness_red_team",
+      "agent_owner": "robustness_red_team",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ]
+    },
+    {
+      "name": "pymc",
+      "capability": "pymc",
+      "agent": "research_scout",
+      "agent_owner": "research_scout",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ]
+    },
+    {
+      "name": "regime-detection",
+      "capability": "regime-detection",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "ruptures",
+      "capability": "ruptures",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "simulation",
+      "capability": "simulation",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "statistical-analysis",
+      "capability": "statistical-analysis",
+      "agent": "falsification_auditor",
+      "agent_owner": "falsification_auditor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ]
+    },
+    {
+      "name": "statsmodels",
+      "capability": "statsmodels",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "superforecasting",
+      "capability": "superforecasting",
+      "agent": "learning_calibration_governor",
+      "agent_owner": "learning_calibration_governor",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ]
+    },
+    {
+      "name": "test-gap-analysis",
+      "capability": "test-gap-analysis",
+      "agent": "robustness_red_team",
+      "agent_owner": "robustness_red_team",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ]
+    },
+    {
+      "name": "thinktank-me-multi-expert-framework-middle",
+      "capability": "thinktank-me-multi-expert-framework-middle",
+      "agent": "research_scout",
+      "agent_owner": "research_scout",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ]
+    },
+    {
+      "name": "time-series-forecasting",
+      "capability": "time-series-forecasting",
+      "agent": "null_model_cartographer",
+      "agent_owner": "null_model_cartographer",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ]
+    },
+    {
+      "name": "visiontrim-unified-vision-token",
+      "capability": "visiontrim-unified-vision-token",
+      "agent": "quarantine_curator",
+      "agent_owner": "quarantine_curator",
+      "pertinent": false,
+      "callable": false,
+      "mode": "SOURCE_ONLY_QUARANTINE",
+      "state": "SOURCE_ONLY_QUARANTINED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "native_targets": []
+    },
+    {
+      "name": "z3-formal-verification",
+      "capability": "z3-formal-verification",
+      "agent": "combinatorial_solver",
+      "agent_owner": "combinatorial_solver",
+      "pertinent": true,
+      "callable": true,
+      "mode": "BOUNDED_NATIVE_ADAPTER",
+      "state": "NATIVE_METHOD_ALIAS_VERIFIED",
+      "direct_named_skill_execution": false,
+      "external_source_executed": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ]
+    }
+  ],
+  "file_audit": {
+    "required": 25,
+    "missing": [],
+    "empty": [],
+    "blockers": [],
+    "pass_nodes": [],
+    "syntax_errors": [],
+    "pass": true
+  },
+  "security_audit": {
+    "findings": [],
+    "external_source_execution_disabled": true,
+    "pass": true
+  },
+  "e2e_calls": [
+    {
+      "capability": "openai-validate-data",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "statsmodels",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "statistical-analysis",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "superforecasting",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "property-based-testing-hypothesis",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "google-or-tools",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    },
+    {
+      "capability": "pymc",
+      "status": "PASS",
+      "native_targets": [
+        "SNAPSHOT_REPRESENTATIVE_BINDING"
+      ]
+    }
+  ],
+  "concurrency": {
+    "levels": {
+      "1": true,
+      "2": true,
+      "4": true,
+      "8": true
+    },
+    "pass": true,
+    "mode": "SNAPSHOT_NO_THREAD_DEADLOCK",
+    "step31_required_for_TRUE_PARALLEL_STRESS": true
+  },
+  "restart": {
+    "first": {
+      "returncode": 0,
+      "pass": true,
+      "mode": "SNAPSHOT_RUNTIME_RECONSTRUCTION",
+      "step33_required_for_PROCESS_OR_HOST_RESTART": true
+    },
+    "second": {
+      "returncode": 0,
+      "pass": true,
+      "mode": "SNAPSHOT_RUNTIME_RECONSTRUCTION",
+      "step33_required_for_PROCESS_OR_HOST_RESTART": true
+    },
+    "pass": true
+  },
+  "recovery_pass": true,
+  "scientific_mission_status": "MISSION_ACTIVE",
+  "claim_boundary": "Engineering integration snapshot proof only; true parallel stress remains Step 31 and process/host restart remains Step 33.",
+  "sha256": "d29aa547625fb73abc51026c8b514a94ebe558220f9c3b2f5dff271bf82e5814"
+}

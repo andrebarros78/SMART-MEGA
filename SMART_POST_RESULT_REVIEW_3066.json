@@ -1,0 +1,51 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3066,
+  "next_target": 3067,
+  "created_utc": "2026-10-05T20:18:12.603671+00:00",
+  "source": "MISSED_RESULT_CATCHUP_THROUGH_3066",
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4",
+    "history_max": 3066,
+    "row_count": 3066
+  },
+  "recovery_chain": [
+    {
+      "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+      "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+      "target_contest": 3063
+    },
+    {
+      "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+      "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+      "target_contest": 3064
+    },
+    {
+      "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+      "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+      "target_contest": 3065
+    },
+    {
+      "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+      "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+      "target_contest": 3066
+    }
+  ],
+  "learning_policy": {
+    "automatic_weight_change": false,
+    "requires_out_of_sample_validation": true,
+    "future_information_used": false
+  },
+  "operator_next_action": "HOLD_OR_AUTHORIZE_NEXT_CYCLE",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "automatic_weight_change_performed": false,
+  "statistical_adjustment_authorized": false,
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "reviewed_utc": "2026-10-05T20:18:12.603688+00:00",
+  "parecer": "MISSED_RESULTS_RECONCILED; CANONICAL_ADVANCED; NO_RETROACTIVE_GENERATION",
+  "sha256": "a964d3e90608997ad7b39ff31b8e7b47975dc545a242fe7a68db3ecbd2ea4b00"
+}
