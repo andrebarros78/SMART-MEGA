@@ -27,7 +27,7 @@ from smart_agent_runtime import sha256_file
 from smart_champion_challenger import active_freeze, load_ledger, reconcile_completed_epoch_ledger, seed_ledger_from_canonical
 from smart_canonical_history_advance import advance_completed_epoch
 from smart_current_epoch_contract import resolve as resolve_current_epoch
-from smart_full_process_pipeline import run_full_process
+from smart_full_process_pipeline import _rel, _resolve, run_full_process
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
 from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
