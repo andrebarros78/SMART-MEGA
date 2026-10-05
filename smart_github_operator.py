@@ -234,7 +234,12 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     attributes_changed = _pin_artifact_bytes(root, changes)
     staged_expected = set(changes) | ({".gitattributes"} if attributes_changed else set())
     subprocess.run(["git", "add", "--all", "--", *sorted(staged_expected)], cwd=root, check=True)
-    subprocess.run(["git", "diff", "--cached", "--check"], cwd=root, check=True)
+    # Archived Windows evidence is hash-bound and must retain its CRLF bytes.
+    # Accept CR as the line terminator while still rejecting real trailing spaces.
+    subprocess.run(
+        ["git", "-c", "core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
+         "diff", "--cached", "--check"], cwd=root, check=True
+    )
     staged = _git_paths(root, "diff", "--cached", "--name-only", "--no-renames", "-z")
     if staged != staged_expected:
         raise RuntimeError(f"staged artifact set differs from observed changes: {sorted(staged ^ staged_expected)}")
