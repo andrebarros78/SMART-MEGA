@@ -1,42 +1,22 @@
-# SMART-MEGA - CONTINUIDADE CANONICA ATUAL
+# SMART-MEGA — continuidade canônica atual
 
-**Atualizacao:** 2026-09-19T10:41:46.162644+00:00
-**Workspace:** `C:\SMART-MEGA`
-**Construcao:** `CONSTRUCTION_PROVEN`
-**Implantacao/control plane:** `EXTERNAL_CONTROL_PLANE_REQUIRED`
-**Missao cientifica:** `MISSION_ACTIVE`
+Autoridade: GitHub `andrebarros78/SMART-MEGA`, branch `main`. Root local é o Git top-level do checkout; hostname/path históricos não são requisito.
 
-## Separacao obrigatoria
+Leia primeiro [baseline GitHub-native](SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md), [retomada e evidências](SMART_AUDIT_HANDOFF_2026-10-05.md) e [inventário](SMART_AUDIT_COMPONENTS_2026-10-05.md). Este documento substitui o snapshot desatualizado de setembro.
 
-A construcao do produto e certificada por `SMART_PRODUCT_CERTIFICATION.json` em fase `BUILD`.
-Nenhum concurso, sequencia de dezenas, freeze ou adjudicacao e requisito para finalizar o software.
-`SMART_ACTIVE_EPOCH.json` representa apenas uma operacao escolhida pelo operador e nao possui autoridade sobre a conclusao da construcao.
+## Autoridades reais
 
-## Operacao
+- Construção: `SMART_PRODUCT_CERTIFICATION.json`, com fonte/fingerprint/JUnit vinculados em `SMART_CANONICAL_ROOT.json`.
+- Execução federada de 05/10/2026: `SMART_FEDERATED_EXECUTION_2026-10-05.json`; Python 3.13.15, 989 testes aprovados, startup OK. Não é um run do GitHub Actions.
+- Operação: `SMART_OPERATIONAL_LIFECYCLE.json` e `SMART_NEXT_CYCLE_HOLD.json`. Snapshot observado: HOLD, histórico até 3066, próximo target 3067, sem epoch ativo.
+- Ciência: `SMART_MISSION_STATUS.json`. UNPROVEN / INSUFFICIENT_EVIDENCE permanece separado da construção do software.
 
-O operador escolhe explicitamente o alvo:
+## Operação
 
-- `python smart_operator.py prepare --target N`
-- `python smart_operator.py freeze --target N`
-- `python smart_operator.py adjudicate --target N --result-data ARQUIVO`
+`python smart_operator.py status` e `python smart_operator.py preflight --target 3067` são consultas. Preparação/geração exigem autorização explícita e validação do alvo futuro; a base precisa estar completa até N-1. Nunca gerar cartão retrospectivo para um resultado conhecido.
 
-O alvo pode ser qualquer concurso futuro suportado pela base causal. Para operar N, a base oficial precisa estar completa ate N-1.
+O PC Escola e a rede federada foram autorizados para executar diretamente este repositório quando o Actions estiver indisponível. Persistir no GitHub e conferir o commit remoto antes de considerar mudança local canônica. Não copiar código/config/segredos de outros projetos.
 
-Estado operacional observado: `NO_ACTIVE_OPERATION`.
-Esse estado nao e gate de construcao.
+## Retomada
 
-## Prova de construcao
-
-- status: **CONSTRUCTION_PROVEN**;
-- regressao: **863 testes / 0 failures / 0 errors**;
-- runtime BUILD: **PASS**;
-- integracao total BUILD: **PASS**;
-- zero deficiencias materiais abertas: **true**;
-- modo do control plane: **EXTERNAL**;
-- WMCP/execucao real local: **FAIL**;
-- control plane externo, quando aplicavel, exige prova operacional separada e nao bloqueia a certificacao de construcao.
-
-## Limite cientifico
-
-`SMART_MISSION_STATUS.json` continua sendo a autoridade da hipotese cientifica e do eventual 6/6 prospectivo.
-Isso e separado da conclusao do software. `MISSION_ACTIVE` cientifico nao significa produto inacabado.
+Conferir main e as autoridades atuais antes de agir. O relatório registra o que já passou e o que está NÃO VERIFICADO. Não reiniciar ingestão já concluída, não reconstruir freeze histórico e não declarar vantagem preditiva sem prova prospectiva.

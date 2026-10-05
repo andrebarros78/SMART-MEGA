@@ -1,0 +1,309 @@
+{
+  "schema": "SMART_FEDERATED_EXECUTION_1",
+  "repository": "andrebarros78/SMART-MEGA",
+  "observed_utc": "2026-10-05T20:52:55.441471+00:00",
+  "source_commit": "6262cdcbd5be7a5ca73bcfc01c4d2e70868a93d2",
+  "execution": {
+    "kind": "FEDERATED_PC",
+    "execution_id": "43309a8a-0b91-40d4-b415-b712f45448f2",
+    "hostname": "PC-ESCOLA"
+  },
+  "regression": {
+    "tests": 989,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "sha256": "1113b93a34252f36ae3409c6424571fdd7a45b1b5e76bea9aae2f03bebba9a75"
+  },
+  "certification": {
+    "status": "CONSTRUCTION_PROVEN",
+    "tests": 989,
+    "source_commit": "6262cdcbd5be7a5ca73bcfc01c4d2e70868a93d2",
+    "ci_run_id": null,
+    "execution": {
+      "kind": "FEDERATED_PC",
+      "execution_id": "43309a8a-0b91-40d4-b415-b712f45448f2",
+      "hostname": "PC-ESCOLA"
+    },
+    "junit_sha256": "1113b93a34252f36ae3409c6424571fdd7a45b1b5e76bea9aae2f03bebba9a75",
+    "certification_sha256": "959b1bc74ff7c43bc97055b01d0f71972a33e4a3a5d820f769122d99d98c04cc",
+    "governance_sha256": "dd40079171c6dcf516872665d55e3f7ea0d8e8e148383168c6851758c38445bf",
+    "global_integrity_sha256": "4d109a2678d6877d3e50f573eb371c26df8a1d1ebbed1f1fb82293245f7d3697",
+    "operator_startup": "OK"
+  },
+  "source_code_fingerprint_sha256": "55183d423da126101c0108d7849630e43e648313530a7cb797cf40b2d0b63f6d",
+  "fixture_e2e": {
+    "fixture_e2e": "PASS",
+    "target": 121,
+    "card": [
+      12,
+      18,
+      27,
+      29,
+      39,
+      50
+    ],
+    "freeze_sha256": "bb9ddd0c90608bea0a5592063bcf08c1f428872c698b97a0835807f00d65815f",
+    "actual": [
+      4,
+      13,
+      22,
+      31,
+      40,
+      59
+    ],
+    "run_id": "fixture-121",
+    "confidence": {
+      "status": "UNPROVEN_PROSPECTIVE",
+      "level": "LOW",
+      "calibrated": false,
+      "probability_six_hits": null,
+      "guaranteed": false
+    },
+    "primary_card_hits": 0,
+    "brier": 0.09000000000000001,
+    "uniform_brier": 0.09000000000000001,
+    "freeze_replay_unchanged": true,
+    "duplicate_outcome_rejected": true
+  },
+  "cli_smoke": [
+    {
+      "command": "adjudicate_signal_challenger.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.806,
+      "stdout": "usage: adjudicate_signal_challenger.py [-h] --result-data RESULT_DATA\n                                       --target TARGET [--ledger LEDGER]\n\noptions:\n  -h, --help            show this help message and exit\n  --result-data RESULT_DATA\n  --target TARGET\n  --ledger LEDGER\n",
+      "stderr": ""
+    },
+    {
+      "command": "freeze_next_research.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.862,
+      "stdout": "usage: freeze_next_research.py [-h] --data DATA --target TARGET [--out OUT]\n                               [--start START]\n\noptions:\n  -h, --help       show this help message and exit\n  --data DATA\n  --target TARGET\n  --out OUT\n  --start START\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_3054_terminal_executor.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.739,
+      "stdout": "usage: smart_3054_terminal_executor.py [-h] [--root ROOT] [--probe-only]\n                                       [--no-terminal-write]\n\noptions:\n  -h, --help           show this help message and exit\n  --root ROOT\n  --probe-only\n  --no-terminal-write\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_agent_runtime.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.426,
+      "stdout": "usage: smart_agent_runtime.py [-h] [--phase {BUILD,PRE_FREEZE,POST_FREEZE}]\n                              [--output OUTPUT]\n\noptions:\n  -h, --help            show this help message and exit\n  --phase {BUILD,PRE_FREEZE,POST_FREEZE}\n  --output OUTPUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_agent_skill_functional_gate.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.422,
+      "stdout": "usage: smart_agent_skill_functional_gate.py [-h]\n                                            [--phase {BUILD,PRE_FREEZE,POST_FREEZE}]\n                                            [--output OUTPUT]\n\noptions:\n  -h, --help            show this help message and exit\n  --phase {BUILD,PRE_FREEZE,POST_FREEZE}\n  --output OUTPUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_agent_skill_orchestration.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.347,
+      "stdout": "usage: smart_agent_skill_orchestration.py [-h]\n                                          [--phase {BUILD,PRE_FREEZE,POST_FREEZE}]\n                                          [--output OUTPUT]\n                                          [root]\n\npositional arguments:\n  root\n\noptions:\n  -h, --help            show this help message and exit\n  --phase {BUILD,PRE_FREEZE,POST_FREEZE}\n  --output OUTPUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_ai_fine_tuning.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.044,
+      "stdout": "usage: smart_ai_fine_tuning.py [-h] --target TARGET [--start START]\n                               [--workers WORKERS]\n                               data_file\n\npositional arguments:\n  data_file\n\noptions:\n  -h, --help         show this help message and exit\n  --target TARGET\n  --start START\n  --workers WORKERS\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_champion_challenger.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.582,
+      "stdout": "usage: smart_champion_challenger.py [-h] --data DATA --target TARGET\n                                    [--out OUT] [--ledger LEDGER]\n                                    [--state STATE] [--start START]\n                                    [--allow-pre-result-supersede]\n\noptions:\n  -h, --help            show this help message and exit\n  --data DATA           causal dataset ending at target-1\n  --ta",
+      "stderr": ""
+    },
+    {
+      "command": "smart_falsification_lab.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.287,
+      "stdout": "usage: smart_falsification_lab.py [-h] --data DATA\n                                  [--preregistration PREREGISTRATION]\n                                  [--report REPORT]\n                                  [--replications REPLICATIONS] [--seed SEED]\n                                  [--holdout-fraction HOLDOUT_FRACTION]\n                                  --expected-max-contest EXPECTED_MAX_CONTEST",
+      "stderr": ""
+    },
+    {
+      "command": "smart_frontier_adjudicator.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 2.98,
+      "stdout": "usage: smart_frontier_adjudicator.py [-h] --freeze FREEZE\n                                     --main-freeze MAIN_FREEZE\n                                     --result-data RESULT_DATA --target TARGET\n                                     [--registry REGISTRY] [--ledger LEDGER]\n\noptions:\n  -h, --help            show this help message and exit\n  --freeze FREEZE\n  --main-freeze MAIN_FREEZE\n  --result-",
+      "stderr": ""
+    },
+    {
+      "command": "smart_frontier_signal_lab.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.053,
+      "stdout": "usage: smart_frontier_signal_lab.py [-h] --data DATA --target TARGET\n                                    --target-date TARGET_DATE --report REPORT\n                                    --freeze FREEZE [--registry REGISTRY]\n                                    [--start START]\n\noptions:\n  -h, --help            show this help message and exit\n  --data DATA\n  --target TARGET\n  --target-date TARGET_DATE\n ",
+      "stderr": ""
+    },
+    {
+      "command": "smart_github_operator.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.139,
+      "stdout": "usage: smart_github_operator.py [-h]\n                                --operation {adjudicate,authorize-generation,authorize-next-cycle,catch-up,freeze,hold,post-result-report,preflight,prepare,recover-missed,review,status,terminal,withdraw}\n                                [--target TARGET] [--payload PAYLOAD]\n\noptions:\n  -h, --help            show this help message and exit\n  --operation {adjudica",
+      "stderr": ""
+    },
+    {
+      "command": "smart_historical_training_intake.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.909,
+      "stdout": "usage: smart_historical_training_intake.py [-h] [--out OUT] data\n\npositional arguments:\n  data\n\noptions:\n  -h, --help  show this help message and exit\n  --out OUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_official_dataset_reconcile.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 1.139,
+      "stdout": "usage: smart_official_dataset_reconcile.py [-h] --source SOURCE --out OUT\n                                           --proof PROOF\n\noptions:\n  -h, --help       show this help message and exit\n  --source SOURCE\n  --out OUT\n  --proof PROOF\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_official_result_ingest.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 1.241,
+      "stdout": "usage: smart_official_result_ingest.py [-h] --source SOURCE --target TARGET\n                                       --out OUT --proof PROOF\n\noptions:\n  -h, --help       show this help message and exit\n  --source SOURCE\n  --target TARGET\n  --out OUT\n  --proof PROOF\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_operator.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.565,
+      "stdout": "usage: smart_operator.py [-h]\n                         {status,preflight,prepare,withdraw,recover-missed,catch-up,authorize-next-cycle,authorize-generation,freeze,adjudicate,post-result-report,review,hold,terminal} ...\n\nSMART-MEGA operator interface. Product construction is independent of contest\noperation.\n\npositional arguments:\n  {status,preflight,prepare,withdraw,recover-missed,catch-up,authori",
+      "stderr": ""
+    },
+    {
+      "command": "smart_portfolio_backtest.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 2.708,
+      "stdout": "usage: smart_portfolio_backtest.py [-h] --data DATA [--eval-from EVAL_FROM]\n                                   [--eval-through EVAL_THROUGH] [--out OUT]\n\noptions:\n  -h, --help            show this help message and exit\n  --data DATA           Explicit causal dataset path; no temporal default\n                        allowed\n  --eval-from EVAL_FROM\n  --eval-through EVAL_THROUGH\n  --out OUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_portfolio_backtest_merge.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 2.415,
+      "stdout": "usage: smart_portfolio_backtest_merge.py [-h] --out OUT chunks [chunks ...]\n\npositional arguments:\n  chunks\n\noptions:\n  -h, --help  show this help message and exit\n  --out OUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_portfolio_pipeline.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 1.021,
+      "stdout": "usage: smart_portfolio_pipeline.py [-h] --freeze FREEZE --out OUT\n\noptions:\n  -h, --help       show this help message and exit\n  --freeze FREEZE\n  --out OUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_probability_audit.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 3.287,
+      "stdout": "usage: smart_probability_audit.py [-h] [--source SOURCE] [--output OUTPUT]\n                                  [--partition PARTITION]\n                                  [--mc-replications MC_REPLICATIONS]\n                                  [--bootstrap-replications BOOTSTRAP_REPLICATIONS]\n                                  [--seed SEED]\n\noptions:\n  -h, --help            show this help message and exit",
+      "stderr": ""
+    },
+    {
+      "command": "smart_procedural_youtube_batch.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.687,
+      "stdout": "usage: smart_procedural_youtube_batch.py [-h] [--offset OFFSET]\n                                         [--count COUNT]\n\noptions:\n  -h, --help       show this help message and exit\n  --offset OFFSET\n  --count COUNT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_prospective_cycle.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.139,
+      "stdout": "usage: smart_prospective_cycle.py [-h] --frontier-freeze FRONTIER_FREEZE\n                                  --main-freeze MAIN_FREEZE [--ledger LEDGER]\n\noptions:\n  -h, --help            show this help message and exit\n  --frontier-freeze FRONTIER_FREEZE\n  --main-freeze MAIN_FREEZE\n  --ledger LEDGER\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_rag_excel.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 1.07,
+      "stdout": "usage: smart_rag_excel.py [-h] [--root ROOT] [--excel EXCEL]\n                          [--as-of-contest AS_OF_CONTEST] [--output OUTPUT]\n                          [--query QUERY] [--k K]\n\noptions:\n  -h, --help            show this help message and exit\n  --root ROOT\n  --excel EXCEL\n  --as-of-contest AS_OF_CONTEST\n  --output OUTPUT\n  --query QUERY\n  --k K\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_randomness_cartography.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.92,
+      "stdout": "usage: smart_randomness_cartography.py [-h] --data DATA [--manifest MANIFEST]\n                                       [--atlas ATLAS]\n                                       [--replications REPLICATIONS]\n                                       [--seed SEED]\n                                       --expected-max-contest EXPECTED_MAX_CONTEST\n\noptions:\n  -h, --help            show this help message and e",
+      "stderr": ""
+    },
+    {
+      "command": "smart_regression_evidence.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.178,
+      "stdout": "usage: smart_regression_evidence.py [-h] [--candidate CANDIDATE]\n                                    [--current CURRENT]\n\noptions:\n  -h, --help            show this help message and exit\n  --candidate CANDIDATE\n  --current CURRENT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_total_integration_gate.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.386,
+      "stdout": "usage: smart_total_integration_gate.py [-h]\n                                       [--phase {BUILD,PRE_FREEZE,POST_FREEZE}]\n                                       [--output OUTPUT]\n\noptions:\n  -h, --help            show this help message and exit\n  --phase {BUILD,PRE_FREEZE,POST_FREEZE}\n  --output OUTPUT\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_v2_engine.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.898,
+      "stdout": "usage: smart_v2_engine.py [-h] --data DATA [--out OUT] [--start START]\n                          [--mc-trials MC_TRIALS]\n\noptions:\n  -h, --help            show this help message and exit\n  --data DATA           Explicit causal dataset path; no implicit dataset\n                        default\n  --out OUT\n  --start START\n  --mc-trials MC_TRIALS\n",
+      "stderr": ""
+    },
+    {
+      "command": "smart_v2_production.py",
+      "input": "--help",
+      "returncode": 0,
+      "elapsed_seconds": 0.116,
+      "stdout": "usage: smart_v2_production.py [-h] [--audit AUDIT] --data DATA\n                              [--ledger LEDGER] [--out OUT]\n\noptions:\n  -h, --help       show this help message and exit\n  --audit AUDIT\n  --data DATA      Explicit causal dataset path; no implicit dataset default\n  --ledger LEDGER\n  --out OUT\n",
+      "stderr": ""
+    }
+  ],
+  "canonical_dataset_sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4",
+  "artifact_sha256": {
+    "SMART_AUDIT_JUNIT_CURRENT.xml": "1113b93a34252f36ae3409c6424571fdd7a45b1b5e76bea9aae2f03bebba9a75",
+    "SMART_CANONICAL_ROOT.json": "45cc97e361a118735a36cf28c85fd57f3cdd551127108be47f5e0b1427f933c5",
+    "SMART_PRODUCT_CERTIFICATION.json": "8390ec63adc4e09012735b7734796712925db0a0c93f04155851120b54577e8b",
+    "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json": "73ed2e7e2e76da9b5716fa9bf1d90263d771a13d365c75fcca8c25ebe07ca2fe",
+    "SMART_GLOBAL_INTEGRITY_PROOF.json": "1c8dedc958f515c6da61122d2a0387afb039a3efc4fc1819de642c7d54444c15",
+    "SMART_3052_IMPLEMENTATION_GATE.json": "acede5aeec0f3c4f86d540005cce0f7c96958654440b68e8c04fec07cda37c14",
+    "SMART_P09_RED_TEAM_LATEST.json": "76f766d5b76e1eacc796aaecee21405530d87cb5e94e7d6bbe02d4991a9aac3b",
+    "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json": "6644f95f36305050bbb6d64a6d10f77b6b076258f36e0628facd349e0fc6354c"
+  },
+  "restore_verification": "PENDING_NEW_CHECKOUT",
+  "generation_for_3067_authorized": false
+}
