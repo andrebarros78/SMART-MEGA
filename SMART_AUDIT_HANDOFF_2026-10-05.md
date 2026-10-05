@@ -1,6 +1,6 @@
 # SMART-MEGA V6 — auditoria e retomada — 05/10/2026
 
-**Construção: CONSTRUCTION_PROVEN no PC Escola. Publicação e verificação de checkout novo ainda em fechamento.** A ciência continua UNPROVEN / INSUFFICIENT_EVIDENCE; nenhuma garantia de acerto.
+**Construção: CONSTRUCTION_PROVEN. Núcleo operacional e persistência em checkout novo verificados.** A ciência continua UNPROVEN / INSUFFICIENT_EVIDENCE; nenhuma garantia de acerto.
 
 ## Produto e cartão
 
@@ -27,12 +27,12 @@ Stack: Python 3.13, NumPy/pandas, River, estatística e OR-Tools; batch, sem apl
 | D13 bloqueante da execução federada | `smart_github_certify.py:33` / `smart_product_certification.py:107`: exigência exclusiva de run do Actions | `7ac7fb0`: executor real + UUID/host/origin; ci_run_id nulo | 10 testes de proveniência e certificação real PASS |
 | D14 bloqueante Windows | `smart_github_operator.py:206`: C:/ comparado literalmente com C:\\ | `6f54d88`: comparar Paths resolvidos | falha original reproduzida; três testes Git corrigidos |
 | D15 alto | `smart_repository_integrity.py:235`: exigia epoch FROZEN mesmo em HOLD válido | `6262cdc`: reconciliar lifecycle; preservar validação estrita de freeze | HOLD sem mutação PASS; ausência/tampering/dataset incoerente rejeitados |
-| D16 médio documental | `SMART_CONTINUITY.md:3`: snapshot de setembro, path fixo e 863 testes | continuidade remete às autoridades atuais e ao relatório | revisão documental / checkout novo pendente |
+| D16 médio documental | `SMART_CONTINUITY.md:3`: snapshot de setembro, path fixo e 863 testes | continuidade remete às autoridades atuais e ao relatório | texto atualizado / checkout novo PASS |
 | EX01 externo | runners do GitHub não adquiridos | execução direta autorizada no PC Escola | 989 testes e certificação fora do Actions |
 
 ## Verificação
 
-- Primeiro run federado: **980 passed / 4 failed**, 448,06 s; duas causas corrigidas em commits separados.
+- Primeiro run federado, fonte f1e663c: **980 passed / 4 failed**, 448,06 s; duas causas corrigidas em commits separados. [Stack traces originais](SMART_AUDIT_DISCOVERY_2026-10-05.xml.gz).
 - Correções focadas: **25 passed**, 16,36 s.
 - Fonte final testada: `6262cdcbd5be7a5ca73bcfc01c4d2e70868a93d2`; **989 passed / zero failures/errors/skips**, 399,97 s. Os 29 warnings são de propriedades JUnit/record_property; não foram contabilizados como testes falhos.
 - Python 3.13.15, ambiente separado, dependências do `requirements.lock.txt`; `pip check`: sem dependências quebradas.
@@ -41,7 +41,7 @@ Stack: Python 3.13, NumPy/pandas, River, estatística e OR-Tools; batch, sem apl
 - E2E com fixture realista: target 121, cartão **12, 18, 27, 29, 39, 50**; run_id `fixture-121`; 60 probabilidades finitas em [0,1], soma 6; replay sem alteração; resultado **4, 13, 22, 31, 40, 59**; zero acertos do cartão; **Brier 0,09**, baseline uniforme 0,09; resultado duplicado rejeitado sem mutação. Isso prova fluxo, não vantagem preditiva.
 - [Evidência detalhada com entrada/saída/status/tempo dos 28 CLI](SMART_FEDERATED_EXECUTION_2026-10-05.json), [JUnit](SMART_AUDIT_JUNIT_CURRENT.xml) e [inventário completo](SMART_AUDIT_COMPONENTS_2026-10-05.md).
 - Produção canônica: resultados oficiais até 3066, HOLD 3067; recuperação não criou cartão/freeze/autoridade retrospectiva. Dataset SHA256 `107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4`.
-- **Checkout novo / persistência após reinício: PENDENTE**. Não há servidor web a reiniciar; verificar importação, hashes e saúde em processo/checkout novo.
+- **Checkout novo / persistência após reinício: PASS** no commit 229b399. Artefatos e dataset com hashes idênticos, árvore limpa; status OK (40,32 s); preflight 3067 AWAITING_OPERATOR_AUTHORIZATION (51,68 s). Não há servidor web a reiniciar. [Prova](SMART_RESTORE_VERIFICATION_2026-10-05.json).
 
 ## Decisões e limites
 
@@ -53,7 +53,7 @@ Encontrados 70 arquivos com entrada executável: 28 parsers testados com --help 
 
 Sem nova chave, compra ou autorização de acesso necessária para este fechamento técnico. O próximo concurso permanece em HOLD e exige comando explícito de aplicar/gerar; não foi selecionado silenciosamente.
 
-1. Concluir checkout novo, conferir hashes/startup, status e preflight 3067 sem autorizar geração.
-2. Persistir esta evidência e os artefatos coerentes em main, conferir commit remoto e checkout limpo.
+1. Ler main e os arquivos de autoridade atuais: checkout novo, hashes, startup, status e preflight já foram verificados; não repetir recuperação concluída.
+2. Conferir commit remoto e a correspondência do fingerprint com a fonte testada antes de qualquer nova alteração.
 3. Atualizar o estado acima somente com a prova observada; não usar certificados antigos como prova de alteração nova.
 4. Para auditoria exaustiva das 42 entradas auxiliares, usar o inventário e seus contratos/fixtures; ausência de execução direta continua explícita.

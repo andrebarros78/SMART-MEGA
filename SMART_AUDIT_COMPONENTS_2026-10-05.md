@@ -37,7 +37,7 @@ Entrada --help, subprocesso real, limite de 30 s; saída e stderr completos/resu
 | smart_v2_engine.py | --help | ✅ exit 0 / 0.898 s | 5 casos |
 | smart_v2_production.py | --help | ✅ exit 0 / 0.116 s | 11 casos |
 
-smart_operator.py expõe status, preflight, prepare, withdraw, recover-missed, catch-up, authorize-next-cycle, authorize-generation, freeze, adjudicate, post-result-report, review, hold e terminal. Fixtures testam roteamento, idempotência, rollback e transições; não se alega execução de todos os comandos em produção. Produção observada: catch-up até 3066 concluído; HOLD 3067. Status/preflight após checkout novo ainda pendentes.
+smart_operator.py expõe status, preflight, prepare, withdraw, recover-missed, catch-up, authorize-next-cycle, authorize-generation, freeze, adjudicate, post-result-report, review, hold e terminal. Fixtures testam roteamento, idempotência, rollback e transições; não se alega execução de todos os comandos em produção. Produção observada: catch-up até 3066 concluído; HOLD 3067. Checkout novo: status OK e preflight 3067 AWAITING_OPERATOR_AUTHORIZATION, ambos exit 0 e sem mutação; prova em SMART_RESTORE_VERIFICATION_2026-10-05.json.
 
 ## Nove executores e todas as 41 capacidades
 
