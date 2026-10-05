@@ -203,7 +203,7 @@ def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
 
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
     root = Path(__file__).resolve().parent
-    if _git(root, "rev-parse", "--show-toplevel") != str(root):
+    if Path(_git(root, "rev-parse", "--show-toplevel")).resolve() != root:
         raise RuntimeError("operator must run at the Git top-level")
     if operation not in READ_ONLY and (
         os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
