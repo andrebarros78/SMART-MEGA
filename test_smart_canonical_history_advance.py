@@ -162,3 +162,23 @@ def test_core_history_equal_normalizes_brazilian_day_first_mixed_dates():
     left['Data do Sorteio'] = ['11/03/1996', '18/03/1996']
     right['Data do Sorteio'] = [pd.Timestamp('1996-03-11'), pd.Timestamp('1996-03-18')]
     assert cha._core_history_equal(left, right) is True
+
+
+def test_advance_resolves_legacy_windows_epoch_result_by_exact_suffix_and_hash(tmp_path, monkeypatch):
+    canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
+    ledger["events"][0]["result_data_file"] = r"C:\SMART-MEGA\runtime\learning_epochs\e1\Mega-Sena_through_4.xlsx"
+    ledger["events"][0]["result_data_sha256"] = _sha(through)
+    (through.parent / "SMART_SIGNAL_LEDGER.json").write_text(json.dumps(ledger), encoding="utf-8")
+
+    out = cha.advance_completed_epoch(tmp_path, active)
+    assert out["status"] == "PASS"
+    assert out["result_file"] == "runtime/learning_epochs/e1/Mega-Sena_through_4.xlsx"
+    assert out["result_file_sha256"] == _sha(through)
+
+
+def test_advance_rejects_unrelated_windows_result_even_with_matching_hash(tmp_path, monkeypatch):
+    _, through, _, ledger, active = _fixture(tmp_path, monkeypatch)
+    ledger["events"][0]["result_data_file"] = r"C:\OTHER\runtime\learning_epochs\e2\Mega-Sena_through_4.xlsx"
+    ledger["events"][0]["result_data_sha256"] = _sha(through)
+    with pytest.raises(ValueError, match="result evidence missing or hash mismatch"):
+        cha.advance_completed_epoch(tmp_path, active)
