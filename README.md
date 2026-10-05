@@ -7,7 +7,7 @@ SMART-MEGA é mantido no GitHub como sua única fonte canônica de projeto.
 - Repositório: `andrebarros78/SMART-MEGA`
 - Branch canônica: `main`
 - Política operacional: `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md`
-- Execução: GitHub Actions em runner efêmero gerenciado pelo GitHub
+- Execução: GitHub Actions ou executor federado autorizado, com estado e provas persistidos no GitHub
 
 Chat, memória de IA, anexos, runners e cópias locais não substituem o estado persistido no GitHub.
 
@@ -31,7 +31,7 @@ Backup, snapshot, regressão ampla, refatoração, hardening, nova infraestrutur
 
 ## Execução no GitHub
 
-O desenvolvimento e a operação usam apenas este repositório e os workflows em `.github/workflows/`. Não há estação Windows ou Linux, VPS ou checkout persistente como ambiente do projeto. Os runners efêmeros do GitHub executam CI e tarefas; seu disco é descartável.
+O desenvolvimento e a operação usam apenas este repositório. Os workflows em `.github/workflows/` executam CI e tarefas quando os runners estão disponíveis. O PC Escola e a rede federada também podem executar diretamente o checkout autorizado, conforme a baseline. Máquinas e checkouts são recursos de execução; o GitHub, branch `main`, é a única moradia e autoridade persistente do projeto. Identificar o executor real, o commit e os hashes das provas, persistir as alterações no GitHub e verificar o commit remoto.
 
 - `CI` e `Repository Integrity`: verificam o commit no GitHub.
 - [SMART-MEGA GitHub Operator](https://github.com/andrebarros78/SMART-MEGA/actions/workflows/operator.yml): escolha manualmente `Run workflow` em `main`, informe a ação e o concurso quando necessário. `status` apenas observa; as demais ações seguem os contratos do operador.

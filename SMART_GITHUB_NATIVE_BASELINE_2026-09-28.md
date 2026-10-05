@@ -135,3 +135,18 @@ Fluxo padrão:
 `SMART_EXECUTIVE_PRIORITIZED_PLAN_BASELINE_2026-08-21.md` permanece como referência histórica e científica apenas no que não conflitar com esta baseline.
 
 Roadmaps, anexos ou documentos mantidos fora do GitHub são referências de trabalho, não autoridade canônica. Se uma regra externa precisar governar o projeto, ela deve ser reconciliada em `main`.
+
+
+## 11. Missão executiva reconciliada — 05/10/2026
+
+Por ordem atual de André, o objetivo é entregar o SMART-MEGA existente como produto preditivo operacional e integrado, com correções e evidências persistidas e verificadas no GitHub, em `andrebarros78/SMART-MEGA`, branch `main`.
+
+Comprovar o ciclo completo: dados oficiais → sinais → qualidade e interpretação → pesos dinâmicos → previsão congelada antes do resultado → resultado observado → medição → calibração e aprendizado → próximo ciclo. Aprovação isolada de testes não substitui a prova desse fluxo.
+
+Confrontar relatórios com o código e as autoridades atuais. Caminhos e hosts históricos não definem a moradia do projeto. Checkouts e máquinas federadas são meios de execução; o estado persistente e a continuidade pertencem ao GitHub.
+
+Corrigir as causas das falhas nas funções existentes. Verificar agentes e skills pela função efetivamente executada; adquirir ou integrar recursos somente quando uma lacuna concreta impedir o objetivo, preservando o isolamento deste repositório e sem gastos não autorizados.
+
+O fechamento exige os seis critérios da arquitetura com evidência atual: captação e qualidade; interpretação; conversão em pesos; calibração e adaptação; aprendizado e robustez; resultado comprovado. Registrar separadamente prontidão operacional e desempenho preditivo prospectivo. Não converter certificação de software em comprovação científica, nem gerar aprendizado ou cartão retrospectivo usando resultado conhecido.
+
+Prosseguir pelas falhas técnicas corrigíveis até a entrega comprovada ou dependência externa irredutível, preservando comandos, resultados, commits, hashes e ponto de continuidade.
