@@ -2,6 +2,8 @@ from __future__ import annotations
 
 
 
+import math
+
 from collections import defaultdict
 
 
@@ -22,7 +24,11 @@ REQUIRED_FACTORS = ('utility', 'quality', 'confidence', 'context', 'redundancy_p
 
 def _normalize(weights: dict[str, float]) -> dict[str, float]:
 
+    if any(not math.isfinite(v) or v < 0.0 for v in weights.values()):
+        raise ValueError('weights must be finite and non-negative')
     z = sum(weights.values())
+    if not math.isfinite(z):
+        raise ValueError('weight mass must be finite')
 
     if z <= 0:
 
@@ -134,7 +140,15 @@ def dynamic_weights(metrics: dict[str, dict], families: dict[str, str]) -> tuple
 
             raise ValueError(f'{name}: missing factors {missing}')
 
-        factors = {k: max(0.0, float(m[k])) for k in REQUIRED_FACTORS}
+        factors = {}
+        for k in REQUIRED_FACTORS:
+            value = m[k]
+            if isinstance(value, bool) or not isinstance(value, (int, float)):
+                raise ValueError(f'{name}.{k}: factor must be numeric')
+            value = float(value)
+            if not math.isfinite(value):
+                raise ValueError(f'{name}.{k}: factor must be finite')
+            factors[k] = max(0.0, value)
 
         product = 1.0
 
@@ -142,6 +156,8 @@ def dynamic_weights(metrics: dict[str, dict], families: dict[str, str]) -> tuple
 
             product *= value
 
+        if not math.isfinite(product):
+            raise ValueError(f'{name}: factor product must be finite')
         raw[name] = max(product, 1e-15)
 
         components[name] = {**factors, 'raw_product': raw[name]}
