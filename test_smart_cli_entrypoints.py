@@ -32,7 +32,7 @@ def _cli_files():
 
 
 @pytest.mark.parametrize("path", _cli_files(), ids=lambda path: path.name)
-def test_root_cli_help_imports_and_exits_cleanly(path):
+def test_root_cli_help_imports_and_exits_cleanly(path, record_property):
     started = time.monotonic()
     result = subprocess.run(
         [sys.executable, str(path), "--help"],
@@ -42,5 +42,6 @@ def test_root_cli_help_imports_and_exits_cleanly(path):
     evidence = {"command": path.name, "input": "--help",
                 "returncode": result.returncode, "elapsed_seconds": round(time.monotonic() - started, 3),
                 "stdout": result.stdout[:400], "stderr": result.stderr[:2000]}
+    record_property("cli_smoke", json.dumps(evidence, ensure_ascii=False))
     assert result.returncode == 0, json.dumps(evidence, ensure_ascii=False)
     assert "usage:" in result.stdout.lower(), json.dumps(evidence, ensure_ascii=False)
