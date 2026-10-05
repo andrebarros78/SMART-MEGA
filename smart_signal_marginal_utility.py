@@ -21,7 +21,7 @@ def sha256_json(obj: Any) -> str:
 
 
 def _validate_actual(actual_numbers) -> list[int]:
-    actual = sorted(int(x) for x in actual_numbers)
+    actual = sorted(e._strict_integral(x, 'actual_numbers') for x in actual_numbers)
     if len(actual) != 6 or len(set(actual)) != 6 or actual[0] < 1 or actual[-1] > 60:
         raise ValueError('actual_numbers must contain six unique numbers in 1..60')
     return actual

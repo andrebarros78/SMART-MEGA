@@ -8,6 +8,8 @@ from typing import Any
 
 import numpy as np
 
+from smart_v2_engine import _strict_integral
+
 SCHEMA = 'SMART_RANK_SCORE_CALIBRATION_1'
 N_NUMBERS = 60
 DRAW_SIZE = 6
@@ -24,17 +26,17 @@ def sha256_json(obj: Any) -> str:
 
 
 def _validate_ranking(ranking60) -> list[int]:
-    ranking = [int(x) for x in ranking60]
+    ranking = [_strict_integral(x, 'ranking60') for x in ranking60]
     if len(ranking) != N_NUMBERS or set(ranking) != set(range(1, N_NUMBERS + 1)):
         raise ValueError('ranking60 must be a permutation of 1..60')
     return ranking
 
 
 def _validate_actual(actual_numbers) -> set[int]:
-    actual = {int(x) for x in actual_numbers}
-    if len(actual) != DRAW_SIZE or min(actual) < 1 or max(actual) > N_NUMBERS:
+    actual = [_strict_integral(x, 'actual_numbers') for x in actual_numbers]
+    if len(actual) != DRAW_SIZE or len(set(actual)) != DRAW_SIZE or min(actual) < 1 or max(actual) > N_NUMBERS:
         raise ValueError('actual_numbers must contain six unique numbers in [1,60]')
-    return actual
+    return set(actual)
 
 
 def _pava_nonincreasing(values, weights) -> np.ndarray:

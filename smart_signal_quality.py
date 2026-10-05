@@ -8,6 +8,8 @@ from typing import Any
 import numpy as np
 from river import drift
 
+from smart_v2_engine import _strict_integral
+
 EXPECTED_HITS = 0.6
 DRIFT_COOLDOWN = 25
 RECENT_WINDOW = 100
@@ -90,7 +92,8 @@ class SignalQualityState:
         return active_alerts if accepted else 0
 
     def update(self, hits: int) -> None:
-        if not 0 <= int(hits) <= 6:
+        hits = _strict_integral(hits, 'hits')
+        if not 0 <= hits <= 6:
             raise ValueError('hits must be in [0, 6]')
         if self.performance_drift_cooldown > 0:
             self.performance_drift_cooldown -= 1
