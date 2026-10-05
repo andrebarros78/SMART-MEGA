@@ -119,6 +119,8 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
         "status": "FROZEN", "result_used": False, "target_contest": 3067,
         "product_role": "FINAL_SINGLE_CARD_PRODUCT",
         "freeze_sha256": "a" * 64, "numbers": [1, 2, 3, 7, 8, 9],
+        "run_id": "epoch-3067",
+        "confidence": {"status": "UNPROVEN_PROSPECTIVE", "probability_six_hits": None, "guaranteed": False},
     }
     card["sha256"] = hashlib.sha256(
         json.dumps(card, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
@@ -126,6 +128,7 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     path.write_text(json.dumps(card), encoding="utf-8")
     proof = {
         "status": "PASS", "result_used": False, "target_contest": 3067,
+        "epoch_id": "epoch-3067",
         "freeze_sha256": "a" * 64, "primary_card": card,
         "primary_card_file": relative,
         "primary_card_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
@@ -138,6 +141,24 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     observation = {"proof": proof}
     result = github_operator._verified_freeze_publication(tmp_path, observation, [relative], "3067")
     assert result["numbers"] == card["numbers"]
+    assert result["run_id"] == proof["epoch_id"]
+    assert result["confidence"]["probability_six_hits"] is None
+    original_bytes = path.read_bytes()
+    for mutation in (
+        {"run_id": None}, {"run_id": "different-epoch"},
+        {"confidence": {"status": "PROVEN", "probability_six_hits": 1.0, "guaranteed": True}},
+    ):
+        altered = {**card, **mutation}
+        altered.pop("sha256")
+        altered["sha256"] = hashlib.sha256(
+            json.dumps(altered, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
+        ).hexdigest()
+        path.write_text(json.dumps(altered), encoding="utf-8")
+        altered_proof = {**proof, "primary_card": altered,
+                         "primary_card_sha256": hashlib.sha256(path.read_bytes()).hexdigest()}
+        with pytest.raises(ValueError, match="identifier|confidence"):
+            github_operator._verified_freeze_publication(tmp_path, {"proof": altered_proof}, [relative], "3067")
+    path.write_bytes(original_bytes)
 
     with pytest.raises(ValueError, match="new persistent artifact"):
         github_operator._verified_freeze_publication(tmp_path, observation, [], "3067")
