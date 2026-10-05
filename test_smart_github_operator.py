@@ -49,7 +49,14 @@ def test_payload_cannot_escape_or_be_untracked(tmp_path: Path):
         _tracked_payload(tmp_path, "result.json")
 
 
-def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeypatch):
+@pytest.mark.parametrize("artifact_bytes,should_publish", [
+    (b"generated\n", True),
+    (b"generated\r\n", True),
+    (b"generated \r\n", False),
+])
+def test_successful_operation_publishes_its_state_to_git(
+    tmp_path: Path, monkeypatch, artifact_bytes: bytes, should_publish: bool
+):
     """Exercise the commit and remote verification path without touching main."""
     remote = tmp_path / "remote.git"
     root = tmp_path / "checkout"
@@ -77,13 +84,18 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         lambda *_: [
             sys.executable, "-c",
             "from pathlib import Path; import json; "
-            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated' + chr(10)); "
+            f"Path('SMART_ACTIVE_EPOCH.json').write_bytes({artifact_bytes!r}); "
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
     monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
     monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
     monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    if not should_publish:
+        with pytest.raises(subprocess.CalledProcessError):
+            github_operator.execute("prepare", "3067")
+        assert git("ls-remote", "origin", "refs/heads/main").split()[0] == before
+        return
     proof = github_operator.execute("prepare", "3067")
     assert proof["commit"] != before
     assert git("ls-remote", "origin", "refs/heads/main").split()[0] == proof["commit"]
@@ -95,7 +107,7 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         ["git", "-c", "core.autocrlf=true", "clone", str(remote), str(checkout)],
         check=True, capture_output=True,
     )
-    assert (checkout / "SMART_ACTIVE_EPOCH.json").read_bytes() == b"generated" + bytes([10])
+    assert (checkout / "SMART_ACTIVE_EPOCH.json").read_bytes() == artifact_bytes
     assert "/SMART_ACTIVE_EPOCH.json -text" in (checkout / ".gitattributes").read_text()
 
 
