@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="4.060" timestamp="2026-10-05T19:53:24.248184-03:00" hostname="PC-ESCOLA"><testcase classname="test_smart_operator_real_freeze_recovery" name="test_real_interrupted_freeze_recovery_restores_prepared_without_mutating_seed" time="0.061"><failure message="NameError: name '_resolve' is not defined">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_interrupted_freeze_r0')
+
+    def test_real_interrupted_freeze_recovery_restores_prepared_without_mutating_seed(tmp_path):
+        active, ledger, _ = prepared_epoch(tmp_path)
+        before = ledger.read_bytes()
+        lifecycle.transition(tmp_path, "PREPARED", "FREEZING", target_contest=121, actor="fixture")
+&gt;       result = op.recover_interrupted_freeze_operation(tmp_path, 121)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_smart_operator_real_freeze_recovery.py:37: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_interrupted_freeze_r0')
+target = 121, reason = 'operator_recovery'
+
+    def recover_interrupted_freeze_operation(root: str | Path, target: int, *, reason: str="operator_recovery") -&gt; dict[str, Any]:
+        root=Path(canonical_root(root)).resolve()
+        from smart_operational_lifecycle import load_lifecycle,lifecycle_path,_atomic_write
+        cur=load_lifecycle(root); st=str(cur.get("state") or "")
+        if st=="FROZEN" and int(cur.get("target_contest",-1))==int(target): return {"status":"ALREADY_FROZEN","target_contest":int(target),"lifecycle_sha256":cur.get("sha256")}
+        if st!="FREEZING" or int(cur.get("target_contest",-1))!=int(target): return {"status":"NOOP","target_contest":int(target),"lifecycle_state":st,"lifecycle_sha256":cur.get("sha256")}
+        active=verify_active_epoch(root / ACTIVE_PATH)
+        if active.get("status")!="RESET_READY" or int(active.get("target_contest",-1))!=int(target): raise RuntimeError("cannot recover interrupted freeze: active epoch is not RESET_READY")
+&gt;       paths=active.get("state_paths") or {}; ledger=_resolve(root,paths["ledger"]); epoch=ledger.parent
+                                                      ^^^^^^^^
+E       NameError: name '_resolve' is not defined
+
+smart_operator.py:1018: NameError</failure></testcase><testcase classname="test_smart_operator_real_freeze_recovery" name="test_real_recovery_rejects_material_artifacts_and_preserves_freezing" time="0.048"><failure message="NameError: name '_resolve' is not defined">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_recovery_rejects_mat0')
+
+    def test_real_recovery_rejects_material_artifacts_and_preserves_freezing(tmp_path):
+        _, ledger, _ = prepared_epoch(tmp_path)
+        before = ledger.read_bytes()
+        lifecycle.transition(tmp_path, "PREPARED", "FREEZING", target_contest=121, actor="fixture")
+        (ledger.parent / "state.json").write_bytes(b"material state")
+        with pytest.raises(RuntimeError, match="material artifacts exist"):
+&gt;           op.recover_interrupted_freeze_operation(tmp_path, 121)
+
+test_smart_operator_real_freeze_recovery.py:50: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_recovery_rejects_mat0')
+target = 121, reason = 'operator_recovery'
+
+    def recover_interrupted_freeze_operation(root: str | Path, target: int, *, reason: str="operator_recovery") -&gt; dict[str, Any]:
+        root=Path(canonical_root(root)).resolve()
+        from smart_operational_lifecycle import load_lifecycle,lifecycle_path,_atomic_write
+        cur=load_lifecycle(root); st=str(cur.get("state") or "")
+        if st=="FROZEN" and int(cur.get("target_contest",-1))==int(target): return {"status":"ALREADY_FROZEN","target_contest":int(target),"lifecycle_sha256":cur.get("sha256")}
+        if st!="FREEZING" or int(cur.get("target_contest",-1))!=int(target): return {"status":"NOOP","target_contest":int(target),"lifecycle_state":st,"lifecycle_sha256":cur.get("sha256")}
+        active=verify_active_epoch(root / ACTIVE_PATH)
+        if active.get("status")!="RESET_READY" or int(active.get("target_contest",-1))!=int(target): raise RuntimeError("cannot recover interrupted freeze: active epoch is not RESET_READY")
+&gt;       paths=active.get("state_paths") or {}; ledger=_resolve(root,paths["ledger"]); epoch=ledger.parent
+                                                      ^^^^^^^^
+E       NameError: name '_resolve' is not defined
+
+smart_operator.py:1018: NameError</failure></testcase><testcase classname="test_smart_operator_real_freeze_recovery" name="test_real_frozen_replay_resolves_bound_path_and_preserves_freeze" time="0.049"><failure message="NameError: name '_resolve' is not defined">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_frozen_replay_resolv0')
+
+    def test_real_frozen_replay_resolves_bound_path_and_preserves_freeze(tmp_path):
+        active, _, freeze = prepared_epoch(tmp_path, frozen=True)
+        before = freeze.read_bytes()
+&gt;       result = op.freeze_operation(tmp_path, 121)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_smart_operator_real_freeze_recovery.py:58: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+smart_startup_reconciler.py:207: in wrapped
+    return fn(root, target, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smart_idempotency.py:83: in wrapped
+    result = fn(root, target, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smart_operator.py:1035: in freeze_operation
+    return _existing_frozen_freeze_summary(root, int(target))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_frozen_replay_resolv0')
+target = 121
+
+    def _existing_frozen_freeze_summary(root: str | Path, target: int) -&gt; dict[str, Any]:
+        root=Path(canonical_root(root)).resolve(); active=verify_active_epoch(root / ACTIVE_PATH)
+        fa=active.get("freeze_authority") or {}; ff=fa.get("file"); fs=fa.get("sha256")
+&gt;       fp=_resolve(root,str(ff)) if isinstance(ff,str) else None
+           ^^^^^^^^
+E       NameError: name '_resolve' is not defined
+
+smart_operator.py:1005: NameError</failure></testcase><testcase classname="test_smart_operator_real_freeze_recovery" name="test_real_frozen_replay_rejects_changed_artifact" time="0.038"><failure message="NameError: name '_resolve' is not defined">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_frozen_replay_reject0')
+
+    def test_real_frozen_replay_rejects_changed_artifact(tmp_path):
+        _, _, freeze = prepared_epoch(tmp_path, frozen=True)
+        freeze.write_bytes(b"changed forecast")
+        with pytest.raises(ValueError, match="not bound"):
+&gt;           op.freeze_operation(tmp_path, 121)
+
+test_smart_operator_real_freeze_recovery.py:69: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+smart_startup_reconciler.py:207: in wrapped
+    return fn(root, target, *args, **kwargs)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smart_idempotency.py:83: in wrapped
+    result = fn(root, target, *args, **kwargs)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smart_operator.py:1035: in freeze_operation
+    return _existing_frozen_freeze_summary(root, int(target))
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+root = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-290/test_real_frozen_replay_reject0')
+target = 121
+
+    def _existing_frozen_freeze_summary(root: str | Path, target: int) -&gt; dict[str, Any]:
+        root=Path(canonical_root(root)).resolve(); active=verify_active_epoch(root / ACTIVE_PATH)
+        fa=active.get("freeze_authority") or {}; ff=fa.get("file"); fs=fa.get("sha256")
+&gt;       fp=_resolve(root,str(ff)) if isinstance(ff,str) else None
+           ^^^^^^^^
+E       NameError: name '_resolve' is not defined
+
+smart_operator.py:1005: NameError</failure></testcase></testsuite></testsuites>

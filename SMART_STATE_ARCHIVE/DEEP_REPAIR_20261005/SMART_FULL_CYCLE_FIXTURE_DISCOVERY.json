@@ -1,0 +1,59 @@
+{
+  "schema": "SMART_FULL_CYCLE_FIXTURE_V1",
+  "status": "FAIL",
+  "test_only": true,
+  "production_authority": false,
+  "scientific_advantage_proven": false,
+  "core_function_mocks": [],
+  "sandbox_contracts": [
+    "existing pytest identity/startup sandbox allowance"
+  ],
+  "source_commit": "e8816c3b604953835432011c8da6f0f5b0654780",
+  "started_utc": "2026-10-05T22:47:16.954006+00:00",
+  "steps": [
+    {
+      "function": "verify_product_certification(current code/JUnit/source)",
+      "status": "PASS",
+      "seconds": 12.438931
+    },
+    {
+      "function": "authorize_next_cycle_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.066124
+    },
+    {
+      "function": "prepare_operation",
+      "status": "PASS",
+      "seconds": 12.071787
+    },
+    {
+      "function": "authorize_generation_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.027984
+    }
+  ],
+  "error": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 111, in <module>\n    frozen = invoke(\"run_full_process(all core stages, start=30)\",\n                    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 26, in invoke\n    result = action()\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 112, in <lambda>\n    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n            ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operation_lock.py\", line 179, in wrapped\n    return fn(resolved,*args,**kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_full_process_pipeline.py\", line 265, in run_full_process\n    pre_gate = write_total_integration(root, pre_gate_path, phase=\"PRE_FREEZE\")\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_total_integration_gate.py\", line 155, in write\n    document = evaluate(root, phase=phase)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_total_integration_gate.py\", line 37, in evaluate\n    functional = evaluate_functional(root, phase=phase)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_agent_skill_functional_gate.py\", line 29, in evaluate\n    runtime = agent_runtime.run()\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_agent_runtime.py\", line 224, in run\n    raise RuntimeError(\"declarative orchestration is not PASS\")\nRuntimeError: declarative orchestration is not PASS\n",
+  "artifact_files_sha256": {
+    "Mega-Sena.xlsx": "f095fe36239c5ef36d38afb986755e06132085fdae8594defe51de79e093f265",
+    "SMART_ACTIVE_EPOCH.json": "48724eb38a62fb762ae1c1affffe554a9a45954b1222491fa7fd6c58cdc6d619",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "43e3d5d5e03ada5b7f40d38ba43ba8e9502944b8d8867228897215ee7b3625bc",
+    "SMART_NEXT_CYCLE_HOLD.json": "1a8a9c8d245fe9e6b1269d451dcdbf16dff6daa7546a5ae7f5aec8432dad1a42",
+    "SMART_OPERATIONAL_LIFECYCLE.json": "4e9acf57c008ea73400071158ebd99397b299970df27bb04e1e1a80e853c2c29",
+    "SMART_POST_RESULT_REVIEW_120.json": "da768fb2f13ea2b994fdaf20c800c40159c47d507768e96d04f31738dfcaaa29",
+    "SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/locks/SMART_OPERATION.lock": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "runtime/locks/SMART_OPERATION_LOCK.json": "87d35b60e3b0b4b9972b8c47e31c3eefc131a9b5403a78801ea3f40eb4b708bd",
+    "runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl": "795b5a2266d634a6b2d914a5f20fd2c8ea4c9a50d444186f0c100abdf9d6669d",
+    "runtime/procedural_sources/cronogramas_caixa/TEST_ONLY_CALENDAR.pdf": "834fa85b70a01960e26dc1d88e8473b24b88510ba500004513c17fae0c01943a",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T224752149765Z/Mega-Sena_cutoff_120.xlsx": "f095fe36239c5ef36d38afb986755e06132085fdae8594defe51de79e093f265",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T224752149765Z/SMART_MANUAL_GENERATION_AUTHORITY.json": "f8bd5e98e62f6652054e650420ec142a4dc9c0e6b59fbdc1f98a67bddf9edc98",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T224752149765Z/SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/idempotency/AUTHORIZE/855f6e676dcc7f3b34042135f2937e0deae24aa655d7f3f7f9abfe8890e22c8f.json": "33781e7b9c84bc0785a31541d1418aee905249fd6f0a617927ccc0132c464808",
+    "runtime/idempotency/PREPARE/a88c25eeb9376c4977af22ba7971baa2fa1b3e5595cde30646096549b722ee78.json": "962345cc23a7c392ffb832dd8d64c9e8fc6e725eeeeebae7f8eb16fefde8fe5a"
+  },
+  "completed_utc": "2026-10-05T22:48:05.537986+00:00",
+  "original_artifact_bundle_name": null,
+  "artifact_bundle": "full_cycle_fixture_discovery_artifacts.zip",
+  "artifact_bundle_sha256": "c56af8c96139837ee520478148dc2020506d6b32b905e0c0b5a7218c2e5b965a",
+  "evidence_packaging_note": "Discovery artifacts retained in a verified ZIP; generated member bytes unchanged."
+}

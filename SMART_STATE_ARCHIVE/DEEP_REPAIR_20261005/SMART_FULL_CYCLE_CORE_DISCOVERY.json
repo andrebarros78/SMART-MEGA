@@ -1,0 +1,60 @@
+{
+  "schema": "SMART_FULL_CYCLE_FIXTURE_V1",
+  "status": "FAIL",
+  "test_only": true,
+  "production_authority": false,
+  "scientific_advantage_proven": false,
+  "core_function_mocks": [],
+  "sandbox_contracts": [
+    "existing pytest identity/startup sandbox allowance"
+  ],
+  "source_commit": "e8816c3b604953835432011c8da6f0f5b0654780",
+  "started_utc": "2026-10-05T22:49:57.994428+00:00",
+  "steps": [
+    {
+      "function": "verify_product_certification(current code/JUnit/source)",
+      "status": "PASS",
+      "seconds": 12.321384
+    },
+    {
+      "function": "authorize_next_cycle_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.088414
+    },
+    {
+      "function": "prepare_operation",
+      "status": "PASS",
+      "seconds": 12.071445
+    },
+    {
+      "function": "authorize_generation_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.02137
+    }
+  ],
+  "error": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_full_process_pipeline.py\", line 274, in run_full_process\n    freeze_result = freeze_champion_challenger(\n        data_path,\n    ...<8 lines>...\n        schedule_authority=schedule,\n    )\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_champion_challenger.py\", line 998, in freeze_champion_challenger\n    state_archive_path = archive_state_snapshot(state_path, state_hash)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_champion_challenger.py\", line 183, in archive_state_snapshot\n    archive_path.write_bytes(state_path.read_bytes())\n    ~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_abc.py\", line 641, in write_bytes\n    with self.open(mode='wb') as f:\n         ~~~~~~~~~^^^^^^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\SMART-MEGA-REPAIR-20261005\\\\SMART_STATE_ARCHIVE\\\\DEEP_REPAIR_20261005\\\\pytest-smart-full-cycle-1wd6e1z9\\\\runtime\\\\learning_epochs\\\\operator-121-e414c7d244e4-20261005T225031953272Z\\\\SMART_STATE_ARCHIVE\\\\626d9af8f3073d5c9dcdcc4c29548de0221296c2fe1777b45dcdaa81d4f5a103.json'\n\nDuring handling of the above exception, another exception occurred:\n\nTraceback (most recent call last):\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 112, in <module>\n    frozen = invoke(\"run_full_process(all core stages, start=30)\",\n                    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 26, in invoke\n    result = action()\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 113, in <lambda>\n    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n            ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operation_lock.py\", line 179, in wrapped\n    return fn(resolved,*args,**kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_full_process_pipeline.py\", line 314, in run_full_process\n    recover_interrupted_freeze_operation(root, target, reason=\"run_full_process_exception_rollback\")\n    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operator.py\", line 1018, in recover_interrupted_freeze_operation\n    paths=active.get(\"state_paths\") or {}; ledger=_resolve(root,paths[\"ledger\"]); epoch=ledger.parent\n                                                  ^^^^^^^^\nNameError: name '_resolve' is not defined\n",
+  "artifact_files_sha256": {
+    "Mega-Sena.xlsx": "dcd581d5d4ee880f4718a5cf03a2fa49459d5dcf027daf893588f356d40f3e36",
+    "SMART_ACTIVE_EPOCH.json": "0e5592e38181e8bd55448fa992a9a5674be1755a15fd6b00ae8cf944d3ea01af",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "ebf28d7a89851f549865174521e21d621ce03d91ab10dc34547ce43d8593438b",
+    "SMART_NEXT_CYCLE_HOLD.json": "ede0dcf8e50835cca512799c880b89407a850e9650433725167c851a578a7a39",
+    "SMART_OPERATIONAL_LIFECYCLE.json": "31cba68f8ee6eb443fc86fbf7fa8e55189294b8ef01688b1217c0fca3fdcec47",
+    "SMART_POST_RESULT_REVIEW_120.json": "0bbef18828dfe32a072110cbd48191c0fd4e1d8160a23241d3ad09aaeb01e425",
+    "SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/locks/SMART_OPERATION.lock": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "runtime/locks/SMART_OPERATION_LOCK.json": "6bf54f28e9f2c22525fd3d8a63c912cb17a460a56317844ba46ed0f3e31cabef",
+    "runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl": "947832008ab8a7cdb71bfa262c1540b25e8c3b021b5fc559bcd84b353eb1194a",
+    "runtime/procedural_sources/cronogramas_caixa/TEST_ONLY_CALENDAR.pdf": "834fa85b70a01960e26dc1d88e8473b24b88510ba500004513c17fae0c01943a",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T225031953272Z/Mega-Sena_cutoff_120.xlsx": "dcd581d5d4ee880f4718a5cf03a2fa49459d5dcf027daf893588f356d40f3e36",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T225031953272Z/PRE_FREEZE_TOTAL_INTEGRATION.json": "51eb9999200e03f3257b41dd94af1e93eba8c7ab5ce31b943c4f50c7bc573e7c",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T225031953272Z/SMART_MANUAL_GENERATION_AUTHORITY.json": "34aaacedfd50509b416ddaeccac4f52f54b542f688155a633a11762c224d8cb2",
+    "runtime/learning_epochs/operator-121-e414c7d244e4-20261005T225031953272Z/SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/idempotency/AUTHORIZE/855f6e676dcc7f3b34042135f2937e0deae24aa655d7f3f7f9abfe8890e22c8f.json": "9712c626065c9dcea2b05746ff48d05f15941322fa7114380e00538162898c2b",
+    "runtime/idempotency/PREPARE/a88c25eeb9376c4977af22ba7971baa2fa1b3e5595cde30646096549b722ee78.json": "54cea4afdfab610cbba67c179661c91f20b4f8bc081d03ce082490105b577921"
+  },
+  "completed_utc": "2026-10-05T22:50:51.032667+00:00",
+  "original_artifact_bundle_name": null,
+  "artifact_bundle": "full_cycle_core_discovery_artifacts.zip",
+  "artifact_bundle_sha256": "68adcff9fa85b7c3d83fc5bc433c1326bdef456e2f228959f5ce3f33c65bc3b0",
+  "evidence_packaging_note": "Discovery artifacts retained in a verified ZIP; generated member bytes unchanged."
+}

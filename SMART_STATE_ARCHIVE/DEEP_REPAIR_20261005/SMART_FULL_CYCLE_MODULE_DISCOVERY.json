@@ -1,0 +1,95 @@
+{
+  "schema": "SMART_FULL_CYCLE_FIXTURE_V1",
+  "status": "FAIL",
+  "test_only": true,
+  "production_authority": false,
+  "scientific_advantage_proven": false,
+  "core_function_mocks": [],
+  "sandbox_contracts": [
+    "existing pytest identity/startup sandbox allowance"
+  ],
+  "source_commit": "3b3dfb52da1f7ebdffcc3a503496f6c32ae851d2",
+  "started_utc": "2026-10-05T23:12:58.690462+00:00",
+  "steps": [
+    {
+      "function": "verify_product_certification(current code/JUnit/source)",
+      "status": "PASS",
+      "seconds": 12.528176
+    },
+    {
+      "function": "authorize_next_cycle_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.065743
+    },
+    {
+      "function": "prepare_operation",
+      "status": "PASS",
+      "seconds": 12.062806
+    },
+    {
+      "function": "authorize_generation_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.021696
+    },
+    {
+      "function": "run_full_process(all core stages, start=30)",
+      "status": "PASS",
+      "seconds": 23.704418
+    },
+    {
+      "function": "verified primary-card consumer",
+      "status": "PASS",
+      "seconds": 0.001422
+    },
+    {
+      "function": "freeze_operation(idempotent replay)",
+      "status": "PASS",
+      "seconds": 0.022943
+    },
+    {
+      "function": "ingest(explicit synthetic result payload)",
+      "status": "PASS",
+      "seconds": 0.104996
+    }
+  ],
+  "working_directory_is_fixture_root": true,
+  "error": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 134, in <module>\n    scored = invoke(\"adjudicate_operation\", lambda: op.adjudicate_operation(root, 121, through))\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 26, in invoke\n    result = action()\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 134, in <lambda>\n    scored = invoke(\"adjudicate_operation\", lambda: op.adjudicate_operation(root, 121, through))\n                                                    ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operation_lock.py\", line 179, in wrapped\n    return fn(resolved,*args,**kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_startup_reconciler.py\", line 207, in wrapped\n    return fn(root, target, *args, **kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_idempotency.py\", line 83, in wrapped\n    result = fn(root, target, *args, **kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operator.py\", line 1093, in adjudicate_operation\n    adjudication_result = adjudicate(Path(result_data), target, ledger_path)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\adjudicate_signal_challenger.py\", line 526, in adjudicate\n    freeze_file = _resolve_freeze_file(fr.get('freeze_file'), fr.get('freeze_sha256'), ledger_path)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\adjudicate_signal_challenger.py\", line 84, in _resolve_freeze_file\n    if isinstance(expected_sha256, str) and sha256(candidate) == expected_sha256:\n                                            ~~~~~~^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_champion_challenger.py\", line 151, in sha256\n    with path.open('rb') as f:\n         ~~~~~~~~~^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'C:\\\\SMART-MEGA-REPAIR-20261005\\\\runtime\\\\learning_epochs\\\\operator-121-bfcbb5dc43a3-20261005T231332978398Z\\\\SMART_121_CHAMPION_CHALLENGER_FREEZE.json'\n",
+  "artifact_files_sha256": {
+    "Mega-Sena.xlsx": "50472d36ef8b357d6610249ac906c783c7027e2b0c5c9d286295e298c5d14b35",
+    "SMART_ACTIVE_EPOCH.json": "0ffd7b0f3844fc9aa71d2d769b336869eb61abe71a694fe99136a01a2ef41b13",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "90ed144d1b708448d9dc023ffda6dc9eed4b72857481d947733f3f0523bf6c6e",
+    "SMART_NEXT_CYCLE_HOLD.json": "8a4c9019c4df8204fc246235071947afb4af77d1cbe6a353aa1b5811f6393f60",
+    "SMART_OPERATIONAL_LIFECYCLE.json": "22adc46d759e54fda486084e644bd0e1d708a3c64688a2a165fd5448d72991ca",
+    "SMART_POST_RESULT_REVIEW_120.json": "86faff133361e97901fcda999fdf9779753807e030b85608c689530e7c161ca8",
+    "SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/locks/SMART_OPERATION.lock": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "runtime/locks/SMART_OPERATION_LOCK.json": "8433a49fc25268e54725c260178b581ac5dca6e4dc30fc9a400cd48b1bdac8b1",
+    "runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl": "d7936041d9d87fb233662d8d0513a9c81df17a2f8cce8c155d652c00159a20cf",
+    "runtime/procedural_sources/cronogramas_caixa/TEST_ONLY_CALENDAR.pdf": "834fa85b70a01960e26dc1d88e8473b24b88510ba500004513c17fae0c01943a",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/FULL_PROCESS_PROOF.json": "eb047ee5dfb0c4cb0d668411e38443f904d080e00ed412723b8638daf9756cc2",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/Mega-Sena_cutoff_120.xlsx": "50472d36ef8b357d6610249ac906c783c7027e2b0c5c9d286295e298c5d14b35",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/Mega-Sena_through_121.xlsx": "0c101d5be70a4f1b2a912b4a119dd7a6256a6bdae6e919227a58101978dd6190",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/POST_FREEZE_TOTAL_INTEGRATION.json": "ca461e5cb78422896e0cf2744344a58577540113370091d0196445a6b5e7ee91",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/PRE_FREEZE_TOTAL_INTEGRATION.json": "e9df46a9d175d1e290dfe6b0d85967450538f706fff88111c849f7e9e1bfa142",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_121_CHAMPION_CHALLENGER_FREEZE.json": "5a979e84e9765a2143238ee9dcc462474883ee4eb5946e006ca9ad2963063e5f",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_121_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json": "8f21b783261726323da9955bfb8df8fa2d24c50740fd4335311d68a49e2d3be4",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_121_FRONTIER_SHADOW_FREEZE.json": "9d1b6aafef758dcc0c0221d03d5dbe74cb84b93ce97c67565538c4fe8b2f12c1",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_121_PRIMARY_CARD.json": "137cca7a5c2c195875ebdbab0e945f674ba05fa154349eab6b1df9e406f753ba",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_FRONTIER_HISTORICAL.json": "8423dd4bfdedb48c97f2f5ca255d7aade24906e143b080a3848abae17c75f03d",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_MANUAL_GENERATION_AUTHORITY.json": "d211737180b537282d97281121579ab863a5be6f9301ad8092df3b6752a971c8",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_OFFICIAL_RESULT_INGEST_121.json": "8712983b302f5fef6086047b3eb170c12d6bc24ae9792647f8986346a4c3cf6c",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json": "1ae75c13f0efb4c5bf066c9ebb5c2f14042abda5ef2da3f6837f30791259a1f6",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_SIGNAL_EXPANSION_REGISTRY.json": "69117b65bbfc2dcc2db7c12df03974b7fb639e29775b34579369eecec49fd399",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_SIGNAL_LEDGER.json": "cf7d176b5b0f713b4fd1ab09f5802a901803fd2b5a9afd409e9c2a41bc6e6157",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_SIGNAL_STATE.json": "b4377c4a9867f4627c6dae3ca66ac588c2cc7edcd168b2bbd0947c6889f12542",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T231332978398Z/SMART_STATE_ARCHIVE/b4377c4a9867f4627c6dae3ca66ac588c2cc7edcd168b2bbd0947c6889f12542.json": "b4377c4a9867f4627c6dae3ca66ac588c2cc7edcd168b2bbd0947c6889f12542",
+    "runtime/idempotency/AUTHORIZE/855f6e676dcc7f3b34042135f2937e0deae24aa655d7f3f7f9abfe8890e22c8f.json": "b4d6f44e63bb4a327751beadd87afeea2eed5910677c345d5b2930539938bcae",
+    "runtime/idempotency/FREEZE/3eeff86f57b3cf05666cdc66b78d3a30dee3a9292ea5920dbe2877d36dfaf01f.json": "ae46e6d9e9c5a49e12e29701fe0003d38db44086cdd4a28aa2c87658d86074fd",
+    "runtime/idempotency/PREPARE/a88c25eeb9376c4977af22ba7971baa2fa1b3e5595cde30646096549b722ee78.json": "a107b27951bce5d94efa7768d96b5e196142ed12cfb51eebbf36ff4070316827"
+  },
+  "artifact_bundle": "full_cycle_module_discovery_artifacts.zip",
+  "artifact_bundle_sha256": "a3eafb59b5acaf01a839d42da0593606af67e8026ff5a0a989e27a16c544341c",
+  "completed_utc": "2026-10-05T23:13:57.602726+00:00",
+  "original_artifact_bundle_name": "full_cycle_fixture_artifacts.zip",
+  "evidence_packaging_note": "Discovery artifacts retained in a verified ZIP; generated member bytes unchanged."
+}

@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="21" skipped="0" tests="22" time="4.358" timestamp="2026-10-05T19:13:43.944270-03:00" hostname="PC-ESCOLA"><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[nan-utility]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'utility', bad = nan
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[nan-quality]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'quality', bad = nan
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[nan-confidence]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'confidence', bad = nan
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[nan-context]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'context', bad = nan
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[nan-redundancy_penalty]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'redundancy_penalty', bad = nan
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[inf-utility]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'utility', bad = inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[inf-quality]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'quality', bad = inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[inf-confidence]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'confidence', bad = inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[inf-context]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'context', bad = inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[inf-redundancy_penalty]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'redundancy_penalty', bad = inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[-inf-utility]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'utility', bad = -inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[-inf-quality]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'quality', bad = -inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[-inf-confidence]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">factor = 'confidence', bad = -inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[-inf-context]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'context', bad = -inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_nonfinite_signal_factor_is_rejected_before_weights[-inf-redundancy_penalty]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">factor = 'redundancy_penalty', bad = -inf
+
+    @pytest.mark.parametrize("factor", REQUIRED_FACTORS)
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -float("inf")])
+    def test_nonfinite_signal_factor_is_rejected_before_weights(factor, bad):
+        values = metrics()
+        values[SIGNAL_NAMES[0]][factor] = bad
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:25: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_factor_product_overflow_is_rejected_before_weights" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">def test_factor_product_overflow_is_rejected_before_weights():
+        values = metrics()
+        values[SIGNAL_NAMES[0]]["utility"] = 1e308
+        values[SIGNAL_NAMES[0]]["quality"] = 1e308
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:33: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_total_weight_overflow_is_rejected_before_weights" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">def test_total_weight_overflow_is_rejected_before_weights():
+        values = metrics()
+        for row in values.values():
+            row["utility"] = 1e308
+&gt;       with pytest.raises(ValueError, match="finite"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:41: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_boolean_factor_cannot_be_treated_as_measured_utility" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">def test_boolean_factor_cannot_be_treated_as_measured_utility():
+        values = metrics()
+        values[SIGNAL_NAMES[0]]["utility"] = True
+&gt;       with pytest.raises(ValueError, match="numeric"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:48: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_normalization_rejects_invalid_mass_components[nan]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">bad = nan
+
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -1.0])
+    def test_normalization_rejects_invalid_mass_components(bad):
+&gt;       with pytest.raises(ValueError, match="finite|non-negative"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:54: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_normalization_rejects_invalid_mass_components[inf]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">bad = inf
+
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -1.0])
+    def test_normalization_rejects_invalid_mass_components(bad):
+&gt;       with pytest.raises(ValueError, match="finite|non-negative"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_signal_weight_numeric_contracts.py:54: Failed</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_normalization_rejects_invalid_mass_components[-1.0]" time="0.001"><failure message="AssertionError: Regex pattern did not match.&#10;  Expected regex: 'finite|non-negative'&#10;  Actual message: 'weight mass must be positive'">bad = -1.0
+
+    @pytest.mark.parametrize("bad", [float("nan"), float("inf"), -1.0])
+    def test_normalization_rejects_invalid_mass_components(bad):
+&gt;       with pytest.raises(ValueError, match="finite|non-negative"):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+E       AssertionError: Regex pattern did not match.
+E         Expected regex: 'finite|non-negative'
+E         Actual message: 'weight mass must be positive'
+
+test_smart_signal_weight_numeric_contracts.py:54: AssertionError</failure></testcase><testcase classname="test_smart_signal_weight_numeric_contracts" name="test_valid_signal_weights_match_independent_oracle_and_keep_caps" time="0.002" /></testsuite></testsuites>

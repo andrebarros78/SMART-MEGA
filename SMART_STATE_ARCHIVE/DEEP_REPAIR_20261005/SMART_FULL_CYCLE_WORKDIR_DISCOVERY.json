@@ -1,0 +1,68 @@
+{
+  "schema": "SMART_FULL_CYCLE_FIXTURE_V1",
+  "status": "FAIL",
+  "test_only": true,
+  "production_authority": false,
+  "scientific_advantage_proven": false,
+  "core_function_mocks": [],
+  "sandbox_contracts": [
+    "existing pytest identity/startup sandbox allowance"
+  ],
+  "source_commit": "3b3dfb52da1f7ebdffcc3a503496f6c32ae851d2",
+  "started_utc": "2026-10-05T23:08:21.482250+00:00",
+  "steps": [
+    {
+      "function": "verify_product_certification(current code/JUnit/source)",
+      "status": "PASS",
+      "seconds": 15.984002
+    },
+    {
+      "function": "authorize_next_cycle_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.081949
+    },
+    {
+      "function": "prepare_operation",
+      "status": "PASS",
+      "seconds": 15.359582
+    },
+    {
+      "function": "authorize_generation_operation(TEST_ONLY)",
+      "status": "PASS",
+      "seconds": 0.033596
+    }
+  ],
+  "error": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 112, in <module>\n    frozen = invoke(\"run_full_process(all core stages, start=30)\",\n                    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 26, in invoke\n    result = action()\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\SMART_STATE_ARCHIVE\\DEEP_REPAIR_20261005\\full_cycle_fixture.py\", line 113, in <lambda>\n    lambda: fp.run_full_process(root, start=30, manual_generation_authorized=True))\n            ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_operation_lock.py\", line 179, in wrapped\n    return fn(resolved,*args,**kwargs)\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_full_process_pipeline.py\", line 366, in run_full_process\n    post_runtime = SmartAgentRuntime(root, phase=\"POST_FREEZE\").run()\n                   ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_agent_runtime.py\", line 83, in __init__\n    self.orchestration = build_orchestration(self.root, phase=self.phase)\n                         ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_agent_skill_orchestration.py\", line 515, in build_orchestration\n    active_context = (_resolve_build_context(root) if phase == \"BUILD\" else (_resolve_pre_freeze_context(root) if phase == \"PRE_FREEZE\" else (_resolve_post_result_hold_context(root) if phase == \"POST_RESULT_HOLD\" else _resolve_active_context(root))))\n                                                                                                                                                                                                                          ~~~~~~~~~~~~~~~~~~~~~~~^^^^^^\n  File \"C:\\SMART-MEGA-REPAIR-20261005\\smart_agent_skill_orchestration.py\", line 300, in _resolve_active_context\n    raise ValueError(f\"active freeze artifact missing: {freeze_file}\")\nValueError: active freeze artifact missing: pytest-cycle-ivsi0dxh/runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_121_CHAMPION_CHALLENGER_FREEZE.json\n",
+  "artifact_files_sha256": {
+    "Mega-Sena.xlsx": "9beb41f34722daa8e93cca2737a62a3c4e7165138368da6ff4366ab463782c20",
+    "SMART_ACTIVE_EPOCH.json": "86806e7161786a5dc9e5e0bf3880cb9efbfe2b948f653dc05e642050a7224aee",
+    "SMART_NEXT_CYCLE_AUTHORITY.json": "c770e5e4d7de40724cbfe4cc0399fe0a1d915eb3610fc9c942dd1d539a7ce29c",
+    "SMART_NEXT_CYCLE_HOLD.json": "f63ea3e383bb5c21eedbb869bde5ff56064eb3113373ea27e2c13008b58f4a27",
+    "SMART_OPERATIONAL_LIFECYCLE.json": "562d5f01f24a02b1bb9cfa0b357d107da7132fa863555fc56154943e64f6558d",
+    "SMART_POST_RESULT_REVIEW_120.json": "a99809b251ac9168020f37ce2b8b660344c53c55464d8e0c99ec9a911b8e8d50",
+    "SMART_SIGNAL_LEDGER.json": "504b79bfd502b13b28ee995adad0832792580267a86732b4342d725f31cc32ba",
+    "runtime/locks/SMART_OPERATION.lock": "5feceb66ffc86f38d952786c6d696c79c2dbc239dd4e91b46729d73a27fb57e9",
+    "runtime/locks/SMART_OPERATION_LOCK.json": "146af6ed798ea136a80f08cac03fc1c795364e0460f87794bcc8fc7b0fc731cb",
+    "runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl": "20b75fa5b427c2ca7ae340536f14f19b84b68b0ef69efa6f89e7c947d9d809ac",
+    "runtime/procedural_sources/cronogramas_caixa/TEST_ONLY_CALENDAR.pdf": "834fa85b70a01960e26dc1d88e8473b24b88510ba500004513c17fae0c01943a",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/Mega-Sena_cutoff_120.xlsx": "9beb41f34722daa8e93cca2737a62a3c4e7165138368da6ff4366ab463782c20",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/PRE_FREEZE_TOTAL_INTEGRATION.json": "7db670152ffb4a017d6bbd294caedc430cbe2d76979086007389783462cc5ece",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_121_CHAMPION_CHALLENGER_FREEZE.json": "1d1fa1628d24af7e48ed3545de2441b7c8f185db52d38a04746e77bec9ffc3a4",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_121_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json": "30b9affc03b7d6fcad65dad16011c9553e7a533e5cfc833960f2d6c1a7059ce0",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_121_FRONTIER_SHADOW_FREEZE.json": "8d7cf4521b0ab232e1c52f6e5cb0dc2872ea20148a509f6afd0a0201ba09b996",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_FRONTIER_HISTORICAL.json": "325f6367f0b1ec6346ec57790d4e3ae17b281e09c880af9637ceee6b0e66fdf6",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_MANUAL_GENERATION_AUTHORITY.json": "c5823c65e6dc492bc0a4828a0a5e986120e30193316aae3a3b2ad9099da7ceba",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json": "d270c1bb295b36c06b57a0226d18a3f71e39e417c2ae224b6adba280c877b51e",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_SIGNAL_EXPANSION_REGISTRY.json": "69117b65bbfc2dcc2db7c12df03974b7fb639e29775b34579369eecec49fd399",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_SIGNAL_LEDGER.json": "31eb6fe6c59d40d8760cee30624475ca4b83129623441fdddc556aaf8689b63f",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_SIGNAL_STATE.json": "1c33f7282bcea4fa7a92582576269dcb164a91b46430e7317b44828b5db0cf80",
+    "runtime/learning_epochs/operator-121-bfcbb5dc43a3-20261005T230905406697Z/SMART_STATE_ARCHIVE/1c33f7282bcea4fa7a92582576269dcb164a91b46430e7317b44828b5db0cf80.json": "1c33f7282bcea4fa7a92582576269dcb164a91b46430e7317b44828b5db0cf80",
+    "runtime/idempotency/AUTHORIZE/855f6e676dcc7f3b34042135f2937e0deae24aa655d7f3f7f9abfe8890e22c8f.json": "7597640052bcd2029c4e40f5b4f8b4da72a643d6ad0f45259fdb76fc9b43b339",
+    "runtime/idempotency/PREPARE/a88c25eeb9376c4977af22ba7971baa2fa1b3e5595cde30646096549b722ee78.json": "5df397aef01c8d9597a334953a90fb59ce5c124bb4d8476ddfe298a410c34e00"
+  },
+  "artifact_bundle": "full_cycle_workdir_discovery_artifacts.zip",
+  "artifact_bundle_sha256": "14944bcbeab42f05fb71cd0c00b78ee90f425a483492bd70e8fa7db16710db1f",
+  "completed_utc": "2026-10-05T23:09:33.095408+00:00",
+  "original_artifact_bundle_name": "full_cycle_fixture_artifacts.zip",
+  "evidence_packaging_note": "Discovery artifacts retained in a verified ZIP; generated member bytes unchanged."
+}

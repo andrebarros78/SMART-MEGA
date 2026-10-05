@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="19" skipped="0" tests="31" time="3.463" timestamp="2026-10-05T19:17:59.363535-03:00" hostname="PC-ESCOLA"><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual0]" time="0.003"><failure message="Failed: DID NOT RAISE ValueError">actual = [True, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_update_calibration(actual):
+        calibrator = RankScoreCalibrator()
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:26: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual1]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">actual = [np.True_, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_update_calibration(actual):
+        calibrator = RankScoreCalibrator()
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:26: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual2]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">actual = [1.9, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_update_calibration(actual):
+        calibrator = RankScoreCalibrator()
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:26: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual3]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual4]" time="0.002"><failure message="OverflowError: cannot convert float infinity to integer">actual = [inf, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_update_calibration(actual):
+        calibrator = RankScoreCalibrator()
+        before = calibrator.state()
+        with pytest.raises(ValueError):
+&gt;           calibrator.update(list(range(1, 61)), actual)
+
+test_smart_learning_input_contracts.py:27: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+smart_rank_score_calibration.py:163: in update
+    actual = _validate_actual(actual_numbers)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+actual_numbers = [inf, 2, 3, 4, 5, 6]
+
+    def _validate_actual(actual_numbers) -&gt; set[int]:
+&gt;       actual = {int(x) for x in actual_numbers}
+                  ^^^^^^
+E       OverflowError: cannot convert float infinity to integer
+
+smart_rank_score_calibration.py:34: OverflowError</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual5]" time="0.004"><failure message="Failed: DID NOT RAISE ValueError">actual = [1, 2, 3, 4, 5, 6, ...]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_update_calibration(actual):
+        calibrator = RankScoreCalibrator()
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:26: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual6]" time="0.004" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual7]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_update_calibration[actual8]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual0]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">actual = [True, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_create_marginal_utility_evidence(actual):
+        scores = {"a": np.arange(60, dtype=float), "b": np.arange(59, -1, -1, dtype=float)}
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:34: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual1]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">actual = [np.True_, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_create_marginal_utility_evidence(actual):
+        scores = {"a": np.arange(60, dtype=float), "b": np.arange(59, -1, -1, dtype=float)}
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:34: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual2]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">actual = [1.9, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_create_marginal_utility_evidence(actual):
+        scores = {"a": np.arange(60, dtype=float), "b": np.arange(59, -1, -1, dtype=float)}
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:34: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual3]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual4]" time="0.002"><failure message="OverflowError: cannot convert float infinity to integer">actual = [inf, 2, 3, 4, 5, 6]
+
+    @pytest.mark.parametrize("actual", INVALID_RESULTS)
+    def test_bad_outcome_cannot_create_marginal_utility_evidence(actual):
+        scores = {"a": np.arange(60, dtype=float), "b": np.arange(59, -1, -1, dtype=float)}
+        with pytest.raises(ValueError):
+&gt;           evaluate_incremental_utility(scores, {"a": 0.6, "b": 0.4}, actual)
+
+test_smart_learning_input_contracts.py:35: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+smart_signal_marginal_utility.py:75: in evaluate_incremental_utility
+    actual = _validate_actual(actual_numbers)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+smart_signal_marginal_utility.py:24: in _validate_actual
+    actual = sorted(int(x) for x in actual_numbers)
+             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+.0 = &lt;list_iterator object at 0x00000238A7AB5D20&gt;
+
+&gt;   actual = sorted(int(x) for x in actual_numbers)
+                    ^^^^^^
+E   OverflowError: cannot convert float infinity to integer
+
+smart_signal_marginal_utility.py:24: OverflowError</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual5]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual6]" time="0.001" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual7]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_bad_outcome_cannot_create_marginal_utility_evidence[actual8]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_coerced_ranking_cannot_update_calibration[True]" time="0.004"><failure message="Failed: DID NOT RAISE ValueError">first = True
+
+    @pytest.mark.parametrize("first", [True, np.bool_(True), 1.9])
+    def test_coerced_ranking_cannot_update_calibration(first):
+        calibrator = RankScoreCalibrator()
+        ranking = list(range(1, 61))
+        ranking[0] = first
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:44: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_coerced_ranking_cannot_update_calibration[first1]" time="0.004"><failure message="Failed: DID NOT RAISE ValueError">first = np.True_
+
+    @pytest.mark.parametrize("first", [True, np.bool_(True), 1.9])
+    def test_coerced_ranking_cannot_update_calibration(first):
+        calibrator = RankScoreCalibrator()
+        ranking = list(range(1, 61))
+        ranking[0] = first
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:44: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_coerced_ranking_cannot_update_calibration[1.9]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">first = 1.9
+
+    @pytest.mark.parametrize("first", [True, np.bool_(True), 1.9])
+    def test_coerced_ranking_cannot_update_calibration(first):
+        calibrator = RankScoreCalibrator()
+        ranking = list(range(1, 61))
+        ranking[0] = first
+        before = calibrator.state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:44: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[True]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">hits = True
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[hits1]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">hits = np.True_
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[6.9]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">hits = 6.9
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[2.5]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">hits = 2.5
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[-0.1]" time="0.001"><failure message="Failed: DID NOT RAISE ValueError">hits = -0.1
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[7]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[inf]" time="0.002"><failure message="OverflowError: cannot convert float infinity to integer">hits = inf
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+        with pytest.raises(ValueError):
+&gt;           state.update(hits)
+
+test_smart_learning_input_contracts.py:54: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = SignalQualityState(name='freq25', family='freq', n=0, mean_hits=0.0, m2_hits=0.0, performance_drift_count=0, performan...e_n=0, profile_drift_count=0, profile_drift_dimensions_total=0, profile_drift_cooldown=0, last_profile_drift_step=None)
+hits = inf
+
+    def update(self, hits: int) -&gt; None:
+&gt;       if not 0 &lt;= int(hits) &lt;= 6:
+                    ^^^^^^^^^
+E       OverflowError: cannot convert float infinity to integer
+
+smart_signal_quality.py:93: OverflowError</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[nan]" time="0.002" /><testcase classname="test_smart_learning_input_contracts" name="test_invalid_hit_count_cannot_mutate_signal_quality[3]" time="0.002"><failure message="Failed: DID NOT RAISE ValueError">hits = '3'
+
+    @pytest.mark.parametrize("hits", [True, np.bool_(True), 6.9, 2.5, -0.1, 7, float("inf"), float("nan"), "3"])
+    def test_invalid_hit_count_cannot_mutate_signal_quality(hits):
+        state = SignalQualityState("freq25", "freq")
+        before = state.audit_state()
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_learning_input_contracts.py:53: Failed</failure></testcase><testcase classname="test_smart_learning_input_contracts" name="test_numpy_integral_outcomes_remain_supported" time="0.002" /></testsuite></testsuites>

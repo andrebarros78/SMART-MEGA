@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="4" skipped="0" tests="4" time="3.972" timestamp="2026-10-05T19:31:34.316492-03:00" hostname="PC-ESCOLA"><testcase classname="test_smart_probability_audit_numeric_contracts" name="test_coerced_audit_row_cannot_create_performance_evidence[contest-2000.9]" time="0.047"><failure message="Failed: DID NOT RAISE ValueError">field = 'contest', bad = 2000.9
+
+    @pytest.mark.parametrize("field,bad", [
+        ("contest", 2000.9),
+        ("cutoff_contest", 1999.9),
+        ("hits", 6.9),
+        ("hits", True),
+    ])
+    def test_coerced_audit_row_cannot_create_performance_evidence(field, bad):
+        source = source_document()
+        source["rows"]["alpha"][0][field] = bad
+        source["sha256"] = audit.sha256_json({k: v for k, v in source.items() if k != "sha256"})
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_probability_audit_numeric_contracts.py:17: Failed</failure></testcase><testcase classname="test_smart_probability_audit_numeric_contracts" name="test_coerced_audit_row_cannot_create_performance_evidence[cutoff_contest-1999.9]" time="0.033"><failure message="Failed: DID NOT RAISE ValueError">field = 'cutoff_contest', bad = 1999.9
+
+    @pytest.mark.parametrize("field,bad", [
+        ("contest", 2000.9),
+        ("cutoff_contest", 1999.9),
+        ("hits", 6.9),
+        ("hits", True),
+    ])
+    def test_coerced_audit_row_cannot_create_performance_evidence(field, bad):
+        source = source_document()
+        source["rows"]["alpha"][0][field] = bad
+        source["sha256"] = audit.sha256_json({k: v for k, v in source.items() if k != "sha256"})
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_probability_audit_numeric_contracts.py:17: Failed</failure></testcase><testcase classname="test_smart_probability_audit_numeric_contracts" name="test_coerced_audit_row_cannot_create_performance_evidence[hits-6.9]" time="0.034"><failure message="Failed: DID NOT RAISE ValueError">field = 'hits', bad = 6.9
+
+    @pytest.mark.parametrize("field,bad", [
+        ("contest", 2000.9),
+        ("cutoff_contest", 1999.9),
+        ("hits", 6.9),
+        ("hits", True),
+    ])
+    def test_coerced_audit_row_cannot_create_performance_evidence(field, bad):
+        source = source_document()
+        source["rows"]["alpha"][0][field] = bad
+        source["sha256"] = audit.sha256_json({k: v for k, v in source.items() if k != "sha256"})
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_probability_audit_numeric_contracts.py:17: Failed</failure></testcase><testcase classname="test_smart_probability_audit_numeric_contracts" name="test_coerced_audit_row_cannot_create_performance_evidence[hits-True]" time="0.035"><failure message="Failed: DID NOT RAISE ValueError">field = 'hits', bad = True
+
+    @pytest.mark.parametrize("field,bad", [
+        ("contest", 2000.9),
+        ("cutoff_contest", 1999.9),
+        ("hits", 6.9),
+        ("hits", True),
+    ])
+    def test_coerced_audit_row_cannot_create_performance_evidence(field, bad):
+        source = source_document()
+        source["rows"]["alpha"][0][field] = bad
+        source["sha256"] = audit.sha256_json({k: v for k, v in source.items() if k != "sha256"})
+&gt;       with pytest.raises(ValueError):
+             ^^^^^^^^^^^^^^^^^^^^^^^^^
+E       Failed: DID NOT RAISE ValueError
+
+test_smart_probability_audit_numeric_contracts.py:17: Failed</failure></testcase></testsuite></testsuites>

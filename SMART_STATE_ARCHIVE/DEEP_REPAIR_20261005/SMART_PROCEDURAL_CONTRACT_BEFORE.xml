@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="2" skipped="0" tests="3" time="0.811" timestamp="2026-10-05T19:55:01.198886-03:00" hostname="PC-ESCOLA"><testcase classname="test_smart_procedural_coverage_failure_contract" name="test_missing_procedural_inputs_fail_closed_with_structured_output" time="0.123"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-292/test_missing_procedural_inputs0')
+
+    def test_missing_procedural_inputs_fail_closed_with_structured_output(tmp_path):
+        result = run_gate(tmp_path)
+        assert result.returncode == 1
+&gt;       report = json.loads(result.stdout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_smart_procedural_coverage_failure_contract.py:16: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\andre\P15Tools\Python313\Lib\json\__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\andre\P15Tools\Python313\Lib\json\decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;json.decoder.JSONDecoder object at 0x0000028C401BF770&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+C:\Users\andre\P15Tools\Python313\Lib\json\decoder.py:363: JSONDecodeError</failure></testcase><testcase classname="test_smart_procedural_coverage_failure_contract" name="test_malformed_procedural_inputs_fail_closed_with_structured_output" time="0.130"><failure message="json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)">tmp_path = WindowsPath('C:/Users/andre/AppData/Local/Temp/pytest-of-andre/pytest-292/test_malformed_procedural_inpu0')
+
+    def test_malformed_procedural_inputs_fail_closed_with_structured_output(tmp_path):
+        source = tmp_path / "runtime/procedural_sources/CRONOGRAM_ARCHIVE_MANIFEST.json"
+        source.parent.mkdir(parents=True)
+        source.write_text("{invalid", encoding="utf-8")
+        result = run_gate(tmp_path)
+        assert result.returncode == 1
+&gt;       report = json.loads(result.stdout)
+                 ^^^^^^^^^^^^^^^^^^^^^^^^^
+
+test_smart_procedural_coverage_failure_contract.py:30: 
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+C:\Users\andre\P15Tools\Python313\Lib\json\__init__.py:352: in loads
+    return _default_decoder.decode(s)
+           ^^^^^^^^^^^^^^^^^^^^^^^^^^
+C:\Users\andre\P15Tools\Python313\Lib\json\decoder.py:345: in decode
+    obj, end = self.raw_decode(s, idx=_w(s, 0).end())
+               ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+_ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _ _
+
+self = &lt;json.decoder.JSONDecoder object at 0x0000028C401BF770&gt;, s = '', idx = 0
+
+    def raw_decode(self, s, idx=0):
+        """Decode a JSON document from ``s`` (a ``str`` beginning with
+        a JSON document) and return a 2-tuple of the Python
+        representation and the index in ``s`` where the document ended.
+    
+        This can be used to decode a JSON document from a string that may
+        have extraneous data at the end.
+    
+        """
+        try:
+            obj, end = self.scan_once(s, idx)
+        except StopIteration as err:
+&gt;           raise JSONDecodeError("Expecting value", s, err.value) from None
+E           json.decoder.JSONDecodeError: Expecting value: line 1 column 1 (char 0)
+
+C:\Users\andre\P15Tools\Python313\Lib\json\decoder.py:363: JSONDecodeError</failure></testcase><testcase classname="test_smart_procedural_coverage_failure_contract" name="test_valid_diagnostic_inputs_preserve_promotion_block_and_metrics" time="0.158" /></testsuite></testsuites>

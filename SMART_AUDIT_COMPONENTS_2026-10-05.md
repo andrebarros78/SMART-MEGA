@@ -1,12 +1,12 @@
 # Componentes e alcance da evidência — SMART-MEGA — 05/10/2026
 
-Fonte testada: 6262cdcbd5be7a5ca73bcfc01c4d2e70868a93d2; 989 testes aprovados no PC Escola. Registro existente: smart_agent_skill_orchestration.py + SmartSkillRuntime.registrations(). Nenhum registro paralelo. Sem servidor HTTP/OpenAPI identificado.
+Fonte atual testada: **3b3dfb52da1f7ebdffcc3a503496f6c32ae851d2; 1.053 testes aprovados** no PC Escola, UUID d195eea4-555f-4bdb-a505-b1e619da31a1. [Regressão/certificação](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_DEEP_REPAIR_EXECUTION.json); [processo integrado real PASS](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_FULL_CYCLE_FIXTURE.json). Registro existente: smart_agent_skill_orchestration.py + SmartSkillRuntime.registrations(). Sem registro paralelo ou servidor HTTP/OpenAPI identificado. GitHub main é a autoridade única; [baseline §11](SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md) reconcilia as ordens.
 
 ## 28 comandos CLI com parser
 
-Entrada --help, subprocesso real, limite de 30 s; saída e stderr completos/resumidos nas propriedades cli_smoke do JUnit e no JSON de evidência federada. Smoke prova abertura/importação/contrato de argumentos, não todas as operações em produção.
+Entrada --help, subprocesso real, limite de 30 s; os 28 smokes passaram novamente no JUnit atual. A tabela abaixo preserva os tempos e as associações por nome da rodada histórica 6262cdc/989; o JSON SMART_FEDERATED_EXECUTION_2026-10-05.json é dessa rodada. Os resultados atuais estão nas propriedades cli_smoke de SMART_AUDIT_JUNIT_CURRENT.xml. Smoke comprova abertura/importação/argumentos, sem substituir execução funcional.
 
-| Comando | Entrada | Status / tempo | Cobertura funcional atribuída |
+| Comando | Entrada | Status / tempo histórico | Associação funcional histórica |
 |---|---|---|---|
 | adjudicate_signal_challenger.py | --help | ✅ exit 0 / 3.806 s | NÃO ATRIBUÍDA por nome; não inferir ausência de testes indiretos |
 | freeze_next_research.py | --help | ✅ exit 0 / 0.862 s | NÃO ATRIBUÍDA por nome; não inferir ausência de testes indiretos |
@@ -42,7 +42,7 @@ smart_operator.py expõe status, preflight, prepare, withdraw, recover-missed, c
 ## Nove executores e todas as 41 capacidades
 
 
-A regressão atual e a certificação federada executaram probes, aliases e handoffs. Casos do JUnit atual: test_runtime_executes_all_agents_and_capabilities (3.450 s); test_every_declared_handoff_is_acknowledged (3.419 s); test_functional_gate_proves_full_matrix (9.132 s); test_every_pertinent_capability_alias_resolves_through_owner_contract (9.000 s); test_every_pertinent_capability_is_individually_callable (6.236 s).
+A regressão atual e a certificação federada executaram probes, aliases e handoffs. Casos do JUnit de 1.053 testes: test_runtime_executes_all_agents_and_capabilities (3.579 s); test_every_declared_handoff_is_acknowledged (3.299 s); test_functional_gate_proves_full_matrix (9.226 s); test_every_pertinent_capability_alias_resolves_through_owner_contract (9.510 s); test_every_pertinent_capability_is_individually_callable (5.771 s). O processo completo atual também passou pelos gates reais pré/pós-freeze, com os nove executores e todas as 41 capacidades contabilizadas.
 
 **Limite:** são executores determinísticos de papéis, não agentes autônomos LLM. Os 37 nomes pertinentes são aliases de metodologia para probes/funções nativas; aprovação não significa executar diretamente os SDKs/skills de terceiros com esses nomes. As quatro referências do curator ficam intencionalmente sem execução externa. Essa quarentena é validada, não tratada como capacidade produtiva ativa.
 
@@ -61,9 +61,9 @@ A regressão atual e a certificação federada executaram probes, aliases e hand
 
 ## 42 entradas sem parser: manutenção, pesquisa e histórico
 
-Dez entradas exercitadas em clones isolados de main: oito exit 0; certificador Actions rejeita corretamente contexto ausente; gate procedural bloqueado por manifesto ausente. 32 entradas diretas restantes NÃO VERIFICADAS. A coluna funcional registra apenas casos associados por nome no JUnit; não implica ausência de cobertura indireta. Prova completa: SMART_AUXILIARY_EXECUTION_2026-10-05.json. Nenhum artefato produzido nos clones de teste foi promovido como estado operacional.
+Dez entradas exercitadas diretamente na rodada anterior em cópias isoladas: oito exit 0, certificador Actions rejeitou contexto ausente e gate procedural falhou por manifesto ausente. Prova histórica: SMART_AUXILIARY_EXECUTION_2026-10-05.json. Nesta rodada o gate procedural foi corrigido e reexecutado: BLOCKED_MISSING_INPUT, exit 1 esperado, erro estruturado e stderr vazio. As 32 entradas CLI restantes continuam NÃO VERIFICADAS diretamente. O processo completo, a certificação, adjudicação e aprendizado foram executados pelas APIs reais no cenário atual. A coluna funcional preserva associações por nome do JUnit histórico; não representa ausência de cobertura indireta. Artefatos sintéticos não foram promovidos a produção.
 
-| Script | Evidência funcional atual | Entrada direta |
+| Script | Associação funcional histórica | Entrada direta / atualização atual |
 |---|---|---|
 | smart_3054_adjudication_preflight.py | ✅ 5 casos | ❌ NÃO VERIFICADA |
 | smart_3054_full_cycle_sandbox.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
@@ -85,13 +85,13 @@ Dez entradas exercitadas em clones isolados de main: oito exit 0; certificador A
 | smart_falsification_power_audit.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
 | smart_finalize_capability_integration_v3.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_finalize_deployment.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
-| smart_full_process_pipeline.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
+| smart_full_process_pipeline.py | Sem associação histórica por nome | CLI não exercitada; API real run_full_process PASS nesta rodada, sem mocks centrais |
 | smart_github_certify.py | ❌ NÃO ATRIBUÍDA | ✅ API federada PASS; __main__ rejeita contexto Actions ausente / 7.699 s |
 | smart_hypothesis_state_reconciler.py | ✅ 4 casos | ❌ NÃO VERIFICADA |
 | smart_learning_epoch_reset.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_monte_carlo_convergence.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
 | smart_procedural_caption_extract.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
-| smart_procedural_coverage_gate.py | ❌ NÃO ATRIBUÍDA | ❌ BLOQUEADA: manifesto procedural ausente / 0.301 s; stack registrado |
+| smart_procedural_coverage_gate.py | 3 novos casos atuais aprovados | ✅ contrato fail-closed corrigido: BLOCKED_MISSING_INPUT / exit 1 esperado / 0.152 s / stderr vazio; dados ausentes continuam bloqueados |
 | smart_procedural_cronogram_acquire.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_procedural_cronogram_build_dataset.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_procedural_youtube_recent_acquire.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
@@ -107,6 +107,12 @@ Dez entradas exercitadas em clones isolados de main: oito exit 0; certificador A
 | smart_signal_50_round_simulation.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_signal_drift_calibration.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_skill_runtime.py | ✅ 4 casos | ✅ exit 0 / 25.617 s; cópia isolada |
+
+## Novos contratos e fluxo atual
+
+Foram adicionados 64 casos aprovados: pesos/fatores finitos (22), entradas de aprendizado e cardinalidade (31), contagens científicas estritas (4), recuperação FREEZING/replay de freeze reais (4) e erro procedural estruturado (3). As reproduções antes/depois estão em SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005; os commits e contagens das famílias constam no relatório de retomada.
+
+O cenário integrado executou prepare, autorização de teste, pipeline externo inteiro, consumidor do cartão persistido, freeze idempotente, ingestão sintética, adjudicação, aprendizado/replay/prova sequencial, avanço do histórico de teste e previsão seguinte. Pesos somam 1, probabilidades somam 6 e freeze/prefixo do ledger permanecem intactos. Resultado sintético zero hits/Brier igual ao uniforme; nenhum ganho prospectivo alegado. Produção real: startup OK, preflight 3067 AWAITING_OPERATOR_AUTHORIZATION, sem mutação, conforme SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_OPERATIONAL_VERIFICATION.json.
 
 ## Jobs, armazenamento e contratos
 

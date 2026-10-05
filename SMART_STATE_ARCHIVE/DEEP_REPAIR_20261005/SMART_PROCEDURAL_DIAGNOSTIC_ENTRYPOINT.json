@@ -1,0 +1,17 @@
+{
+  "schema": "SMART_PROCEDURAL_DIAGNOSTIC_ENTRYPOINT_V1",
+  "source_commit": "3b3dfb52da1f7ebdffcc3a503496f6c32ae851d2",
+  "exit_code": 1,
+  "seconds": 0.15174689999548718,
+  "response": {
+    "schema": "SMART_PROCEDURAL_COVERAGE_GATE_V1",
+    "status": "BLOCKED_MISSING_INPUT",
+    "predictive_weight_authorized": false,
+    "decision": "BLOCK_PREDICTIVE_PROMOTION",
+    "erro": "Não foi possível validar as fontes procedurais.",
+    "causa": "FileNotFoundError: [Errno 2] No such file or directory: 'runtime\\\\procedural_sources\\\\CRONOGRAM_ARCHIVE_MANIFEST.json'",
+    "acao_sugerida": "Disponibilizar e validar as fontes declaradas antes de repetir a auditoria."
+  },
+  "stderr": "",
+  "expected_fail_closed": true
+}
