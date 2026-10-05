@@ -56,14 +56,14 @@ def command_args(operation: str, target: str = "", payload: str = "") -> list[st
 
 def _git(root: Path, *args: str) -> str:
     result = subprocess.run(
-        ["git", *args], cwd=root, text=True, capture_output=True, check=True
+        ["git", *args], cwd=root, text=True, capture_output=True, check=True, timeout=60
     )
     return result.stdout.strip()
 
 
 def _git_paths(root: Path, *args: str) -> set[str]:
     result = subprocess.run(
-        ["git", *args], cwd=root, capture_output=True, check=True
+        ["git", *args], cwd=root, capture_output=True, check=True, timeout=60
     )
     return {p.decode("utf-8", "surrogateescape") for p in result.stdout.split(b"\0") if p}
 
@@ -187,7 +187,7 @@ def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
         if not candidate.is_file():
             continue
         staged = subprocess.run(
-            ["git", "show", f":{path}"], cwd=root, capture_output=True, check=True
+            ["git", "show", f":{path}"], cwd=root, capture_output=True, check=True, timeout=60
         ).stdout
         if staged != candidate.read_bytes():
             raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
@@ -208,7 +208,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     if payload:
         _tracked_payload(root, payload)
     args = command_args(operation, target, payload)
-    result = subprocess.run(args, cwd=root, text=True, capture_output=True, check=False)
+    result = subprocess.run(args, cwd=root, text=True, capture_output=True, check=False, timeout=4800)
     if result.returncode != 0:
         raise RuntimeError(f"operator failed ({result.returncode}): {result.stderr[-3000:]} {result.stdout[-3000:]}")
     try:
@@ -275,7 +275,15 @@ def main() -> int:
     try:
         proof = execute(args.operation, args.target, args.payload)
     except Exception as exc:
-        print(f"GITHUB_OPERATOR=FAIL {type(exc).__name__}: {exc}", file=sys.stderr)
+        error = {
+            "erro": "OPERACAO_SMART_MEGA_FALHOU",
+            "causa": f"{type(exc).__name__}: {exc}",
+            "acao_sugerida": (
+                "Consulte o status e corrija a causa antes de repetir a mesma operacao; "
+                "nao gere cartao retrospectivo nem altere evidencia historica."
+            ),
+        }
+        print(json.dumps(error, ensure_ascii=False, sort_keys=True), file=sys.stderr)
         return 1
     if args.operation in READ_ONLY:
         observation = proof.pop("observation")
