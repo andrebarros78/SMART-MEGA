@@ -18,6 +18,7 @@ def _git_root() -> Path:
         text=True,
         capture_output=True,
         check=False,
+        timeout=30,
     )
     if proc.returncode != 0:
         raise RepositoryIntegrityError(
@@ -230,10 +231,35 @@ def _check_active_epoch() -> dict[str, Any]:
     }
 
 
+
+def _check_operational_state() -> dict[str, Any]:
+    from smart_startup_reconciler import reconcile
+    from smart_learning_epoch_reset import verify_active_epoch
+
+    reconciliation = reconcile(ROOT, include_authority_freshness=False)
+    if reconciliation["status"] != "OK":
+        raise RepositoryIntegrityError(
+            f"operational state requires recovery: {reconciliation['failed_checks']}"
+        )
+    lifecycle = reconciliation["details"]["lifecycle_valid"]
+    active_path = ROOT / "SMART_ACTIVE_EPOCH.json"
+    if not active_path.is_file():
+        return {"schema": lifecycle["schema"],
+                "status": f"NO_ACTIVE_EPOCH_{lifecycle['state']}",
+                "target_contest": lifecycle.get("target_contest"),
+                "cutoff_contest": lifecycle.get("completed_contest"),
+                "epoch_id": None}
+    epoch = verify_active_epoch(active_path)
+    if epoch["status"] == "FROZEN":
+        return _check_active_epoch()
+    _require_raw_hash("active dataset", str(epoch["data_file"]), str(epoch["data_sha256"]))
+    return {key: epoch.get(key) for key in
+            ("schema", "status", "target_contest", "cutoff_contest", "epoch_id")}
+
 def validate_repository() -> dict[str, Any]:
     _check_discovery_docs()
     _check_identity_module()
-    epoch = _check_active_epoch()
+    epoch = _check_operational_state()
     return {
         "status": "PASS",
         "repository_root": str(ROOT),
