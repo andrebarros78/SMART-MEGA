@@ -306,6 +306,8 @@ def test_operator_adjudicate_status_and_main_paths(tmp_path: Path, monkeypatch, 
     monkeypatch.setattr(op, 'load_ledger', lambda path: {'events': []})
     monkeypatch.setattr(op, 'active_freeze', lambda ledger, target: {'freeze_sha256': 'a' * 64})
     monkeypatch.setattr(op, 'adjudicate', lambda result, target, ledger: {'status': 'PASS', 'target': target})
+    import smart_sequential_prospective_proof as sequential
+    monkeypatch.setattr(sequential, 'complete_post_result_learning', lambda *a, **k: {'status': 'TEST_COMPLETE'})
     assert op.adjudicate_operation(tmp_path, 4, 'result.xlsx')['status'] == 'PASS'
 
     empty = tmp_path / 'empty'; empty.mkdir()

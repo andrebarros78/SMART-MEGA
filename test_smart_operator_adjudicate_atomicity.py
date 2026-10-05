@@ -54,6 +54,8 @@ def test_adjudicate_operation_rolls_back_ledger_lifecycle_and_report_on_report_f
     monkeypatch.setitem(sys.modules, "smart_post_result_report", module)
     monkeypatch.setattr(smart_operator, "adjudicate", fake_adjudicate)
     monkeypatch.setattr(smart_operator, "transition_lifecycle", fake_transition)
+    import smart_sequential_prospective_proof as sequential
+    monkeypatch.setattr(sequential, "complete_post_result_learning", lambda *a, **k: {"status": "TEST_COMPLETE"})
 
     with pytest.raises(RuntimeError, match="forced report failure"):
         _raw_adjudicate_operation()(root, 999, result_file)

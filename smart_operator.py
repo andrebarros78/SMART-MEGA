@@ -1067,7 +1067,8 @@ def adjudicate_operation(root: str | Path, target: int, result_data: str | Path,
     report_json = root / f"SMART_POST_RESULT_REPORT_{target}.json"
     report_md = root / f"SMART_POST_RESULT_REPORT_{target}.md"
     lifecycle_file = root / "SMART_OPERATIONAL_LIFECYCLE.json"
-    transactional_paths = [ledger_path, lifecycle_file, report_json, report_md]
+    learned_state_path = ledger_path.parent / f"SMART_SIGNAL_STATE_THROUGH_{target}.json"
+    transactional_paths = [ledger_path, lifecycle_file, report_json, report_md, learned_state_path]
 
     def _capture_snapshot(paths: list[Path]) -> dict[str, bytes | None]:
         return {str(p): (p.read_bytes() if p.exists() else None) for p in paths}
@@ -1093,13 +1094,15 @@ def adjudicate_operation(root: str | Path, target: int, result_data: str | Path,
         adjudication_result = adjudicate(Path(result_data), target, ledger_path)
         if not isinstance(adjudication_result, dict):
             raise RuntimeError("adjudication must return a structured result")
+        from smart_sequential_prospective_proof import complete_post_result_learning
+        post_result_learning = complete_post_result_learning(root, active)
         lifecycle_adjudicated = transition_lifecycle(root, "FROZEN", "ADJUDICATED", target_contest=target, actor="operator_adjudicate_complete")
         state_paths = active.get("state_paths") if isinstance(active.get("state_paths"), dict) else {}
         if not state_paths.get("freeze"):
             return adjudication_result
         from smart_post_result_report import emit_post_result_report
         report = emit_post_result_report(root, active, adjudication_result)
-        return {**adjudication_result, "post_result_report": report, "operational_lifecycle": lifecycle_adjudicated}
+        return {**adjudication_result, "post_result_learning": post_result_learning, "post_result_report": report, "operational_lifecycle": lifecycle_adjudicated}
     except Exception:
         _restore_snapshot(snapshot)
         raise

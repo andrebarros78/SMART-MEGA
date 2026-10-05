@@ -21,6 +21,7 @@ from smart_official_result_ingest import ingest as ingest_official_result, valid
 from smart_operational_lifecycle import load_lifecycle, recover_to_hold
 from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, verify_product_certification
 from smart_rollover import archive_completed_epoch
+from smart_sequential_prospective_proof import complete_post_result_learning
 from smart_storage_surfaces import evidence_path
 
 RECOVERY_SCHEMA = "SMART_MISSED_TARGET_CATCHUP_1"
@@ -199,6 +200,7 @@ def catch_up_missed_results(
     active = verify_active_epoch(active_path) if active_path.is_file() else None
     archive = None
     prior_advance = None
+    prior_learning = None
     completed_active_target: int | None = None
     history_advance_path: Path | None = None
     history_advance_preexisting = False
@@ -206,6 +208,7 @@ def catch_up_missed_results(
         completed_active_target = _assert_completed_active(root, active, lifecycle_before)
         history_advance_path = root / f"SMART_CANONICAL_HISTORY_ADVANCE_{completed_active_target}.json"
         history_advance_preexisting = history_advance_path.exists()
+        prior_learning = complete_post_result_learning(root, active)
         prior_advance = advance_completed_epoch(root, active)
     elif lifecycle_before.get("state") != "HOLD":
         raise ValueError("catch-up without active epoch requires lifecycle HOLD")
@@ -354,6 +357,7 @@ def catch_up_missed_results(
             "post_result_review": {"file": review_path.name, "sha256": review["sha256"]},
             "post_result_hold": {"file": hold_path.name, "sha256": hold["sha256"]},
             "operational_lifecycle": lifecycle,
+            "prior_epoch_learning": prior_learning,
             "prior_epoch_history_advance": prior_advance,
             "prior_epoch_archive": archive,
             "prediction_authority_created": False,

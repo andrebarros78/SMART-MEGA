@@ -132,6 +132,30 @@ def test_full_freeze_adjudicate_learn_prove_cycle_and_freeze_contains_p12(tmp_pa
     assert v['valid'] is True
 
 
+
+def test_complete_post_result_learning_repairs_missing_learning_and_proof(tmp_path: Path):
+    target=66; full=_dataset(target,1717); cutoff=full.iloc[:-1].copy()
+    pre=tmp_path/'pre.xlsx'; through=tmp_path/'through.xlsx'; freeze=tmp_path/'freeze.json'
+    ledger=tmp_path/'ledger.json'; prestate=tmp_path/'prestate.json'
+    cutoff.to_excel(pre,index=False); full.to_excel(through,index=False)
+    cc.freeze_champion_challenger(pre,target,freeze,ledger,prestate,start=30,enforce_temporal_guard=False)
+    adj.adjudicate(through,target,ledger)
+    active={
+        'project':'SMART-MEGA','target_contest':target,'cutoff_contest':target-1,
+        'authority_mode':'TEST_RECOVERY','data_file':pre.name,
+        'state_paths':{'ledger':ledger.name,'state':prestate.name},
+    }
+    out=sp.complete_post_result_learning(tmp_path,active)
+    assert out['status']=='POST_RESULT_LEARNING_COMPLETE'
+    final=json.loads(ledger.read_text())
+    types=[e['event_type'] for e in final['events'] if e.get('target_contest')==target]
+    assert types[-2:]==[sp.LEARNING_EVENT,sp.PROOF_EVENT]
+    learned=tmp_path/f'SMART_SIGNAL_STATE_THROUGH_{target}.json'
+    assert json.loads(learned.read_text())['last_contest']==target
+    again=sp.complete_post_result_learning(tmp_path,active)
+    assert again['status']=='ALREADY_COMPLETE'
+
+
 def test_verify_files_rejects_tampered_learning_state(tmp_path: Path):
     ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'; freeze=tmp_path/'f.json'
     freeze.write_text('{}'); fsha=sp.sha256_file(freeze)
