@@ -6,13 +6,14 @@ import os
 import shutil
 import tempfile
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PureWindowsPath
 from typing import Any
 
 import pandas as pd
 
 from smart_agent_runtime import sha256_file
 from smart_champion_challenger import load_ledger
+from smart_path_semantics import is_windows_absolute
 from smart_sequential_prospective_proof import validate_target_sequence
 
 SCHEMA = "SMART_CANONICAL_HISTORY_ADVANCE_1"
@@ -28,12 +29,26 @@ def _under_root(root: Path, path: Path) -> Path:
     return resolved
 
 
-def _resolve_adjudication_result_evidence(root: Path, adjudication: dict[str, Any]) -> Path:
-    declared = _under_root(root, root / str(adjudication.get("result_data_file", "")))
+def _resolve_adjudication_result_evidence(
+    root: Path, adjudication: dict[str, Any], epoch_dir: Path, target: int
+) -> Path:
+    raw = str(adjudication.get("result_data_file", ""))
+    declared: Path | None = None
+    if is_windows_absolute(raw):
+        # A historical event can retain its Windows path while the same
+        # immutable epoch workbook is now checked out on a GitHub runner.
+        # Match the complete epoch-relative suffix and the committed hash.
+        relative = epoch_dir.relative_to(root) / f"Mega-Sena_through_{target}.xlsx"
+        suffix = tuple(part.casefold() for part in relative.parts)
+        parts = tuple(part.casefold() for part in PureWindowsPath(raw).parts)
+        if parts[-len(suffix):] == suffix:
+            declared = _under_root(root, root / relative)
+    else:
+        declared = _under_root(root, root / raw)
     expected = str(adjudication.get("result_data_sha256") or "").lower()
     if len(expected) != 64 or any(ch not in "0123456789abcdef" for ch in expected):
         raise ValueError("adjudication result evidence missing or hash mismatch")
-    if declared.is_file() and sha256_file(declared).lower() == expected:
+    if declared is not None and declared.is_file() and sha256_file(declared).lower() == expected:
         return declared
 
     # The adjudication hash is immutable, while an originally-declared canonical
@@ -177,9 +192,9 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
         raise ValueError("adjudication actual numbers invalid")
 
     expected_result_sha = str(adjudication.get("result_data_sha256") or "")
-    result_file = _resolve_adjudication_result_evidence(root, adjudication)
-
     epoch_dir = ledger_path.parent
+    result_file = _resolve_adjudication_result_evidence(root, adjudication, epoch_dir, target)
+
     through = _under_root(root, epoch_dir / f"Mega-Sena_through_{target}.xlsx")
     if not through.is_file():
         raise FileNotFoundError(f"completed epoch through-dataset missing: {through}")
