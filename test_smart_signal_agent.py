@@ -137,6 +137,32 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     assert all(1 <= n <= 60 for n in card['numbers'])
     assert card['selector']['status'] == 'PASS'
     assert card['freeze_sha256'] == result['freeze_sha256']
+    from smart_full_process_pipeline import _primary_card_artifact
+    from smart_github_operator import _verified_freeze_publication
+    bound_card = _primary_card_artifact(
+        card, run_id='fixture-121', frozen_utc=obj['frozen_utc'],
+        freeze_file=str(out), portfolio_file=result['portfolio_file'],
+        portfolio_sha256=result['portfolio_sha256'],
+    )
+    primary_path = tmp_path / 'SMART_121_PRIMARY_CARD.json'
+    primary_path.write_text(json.dumps(bound_card), encoding='utf-8')
+    publication_proof = {
+        'status': 'PASS', 'result_used': False, 'target_contest': 121,
+        'epoch_id': 'fixture-121', 'freeze_sha256': result['freeze_sha256'],
+        'primary_card': bound_card, 'primary_card_file': primary_path.name,
+        'primary_card_sha256': hashlib.sha256(primary_path.read_bytes()).hexdigest(),
+        'target_schedule': {'schema': 'SMART_TARGET_SCHEDULE_AUTHORITY_3',
+                            'target_contest': 121, 'scheduled_datetime': '2100-01-01T21:00:00-03:00'},
+    }
+    response = _verified_freeze_publication(
+        tmp_path, {'proof': publication_proof}, [primary_path.name], '121')
+    assert response['run_id'] == 'fixture-121'
+    assert response['numbers'] == card['numbers']
+    assert response['confidence']['status'] == 'UNPROVEN_PROSPECTIVE'
+    assert response['confidence']['probability_six_hits'] is None
+    assert response['confidence']['guaranteed'] is False
+    assert json.loads(primary_path.read_text(encoding='utf-8')) == bound_card
+    assert bound_card['generated_utc'] == obj['frozen_utc']
     probabilities = led['events'][0]['snapshot']['rank_score_calibration']['probabilities_by_number']
     assert len(probabilities) == 60
     assert all(np.isfinite(p) and 0 <= p <= 1 for p in probabilities.values())
@@ -172,6 +198,7 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     assert ledger.read_bytes() == after_bytes
     record_property('fixture_e2e', json.dumps({'fixture_e2e': 'PASS', 'target': 121, 'card': card['numbers'],
                       'freeze_sha256': card['freeze_sha256'], 'actual': actual,
+                      'run_id': response['run_id'], 'confidence': response['confidence'],
                       'primary_card_hits': len(set(card['numbers']) & set(actual)),
                       'brier': calibration['analysis']['brier'],
                       'uniform_brier': calibration['analysis']['uniform_brier'],
