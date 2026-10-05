@@ -1,27 +1,27 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "ADJUDICATED",
-  "revision": 15,
+  "state": "HOLD",
+  "revision": 16,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3062,
-  "completed_contest": 3061,
-  "previous_state": "FROZEN",
-  "transition": "FROZEN_TO_ADJUDICATED",
-  "transition_actor": "operator_adjudicate_complete",
-  "transition_utc": "2026-09-25T01:28:58.941599+00:00",
-  "previous_lifecycle_sha256": "f8f07aaa28821690479016f22e032a2a73bb5e930cb39e8afc3fbaf8b97ed90a",
+  "target_contest": 3067,
+  "completed_contest": 3066,
+  "previous_state": "ADJUDICATED",
+  "transition": "ADJUDICATED_TO_HOLD_MISSED_RESULT_RECOVERY",
+  "transition_actor": "smart_missed_catchup",
+  "transition_utc": "2026-10-05T20:18:12.985994+00:00",
+  "previous_lifecycle_sha256": "e1bc407b7310c79ccba5e30f6e65d3f5db825d656a4e8479452ee3256a4ed180",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "65ccc97cf183b49addfda46d95ba92f7ab30cc08f8e203714a0d276789babdac"
+      "sha256": "09da3eded9b6c70d786b94863a894c2a9006e7d438c377f503db3c434e6b00be"
     },
     "post_result_review": {
-      "file": "SMART_POST_RESULT_REVIEW_3061.json",
-      "sha256": "bf4efb2595bd4bade88f451ca4c2376f1cc8814fb7e553c7e11fd00c790eb84c"
+      "file": "SMART_POST_RESULT_REVIEW_3066.json",
+      "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
     },
     "legacy_active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
@@ -43,11 +43,39 @@
       "epoch_id": "operator-3062-dce4e8ec9118-20260924T180535590187Z"
     },
     "rollover_archive": {
-      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3061/operator-3061-1d798ed37904-20260922T195353823390Z/ARCHIVE_MANIFEST.json",
-      "sha256": "024183b155b91e7f6a94dd2d2851dc4734bad3ad7f09464114faf53c7547c61b"
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3062/operator-3062-dce4e8ec9118-20260924T180535590187Z/ARCHIVE_MANIFEST.json",
+      "sha256": "cab7010147cba9a9a9dc59bc921ac268459e8dfceade5203da94c56c7c905142"
     },
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
-    "active_pointer_absent_expected": true
+    "active_pointer_absent_expected": true,
+    "missed_result_catchup": {
+      "start_target": 3063,
+      "through_target": 3066,
+      "proofs": [
+        {
+          "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+          "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+          "target_contest": 3063
+        },
+        {
+          "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+          "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+          "target_contest": 3064
+        },
+        {
+          "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+          "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+          "target_contest": 3065
+        },
+        {
+          "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+          "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+          "target_contest": 3066
+        }
+      ],
+      "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+      "official_result_batch": null
+    }
   },
-  "sha256": "e1bc407b7310c79ccba5e30f6e65d3f5db825d656a4e8479452ee3256a4ed180"
+  "sha256": "12c91a71ab0ee9a69e276ae72bcaef96e8b7d236ab18c8c23dac0af628f5c0d6"
 }
