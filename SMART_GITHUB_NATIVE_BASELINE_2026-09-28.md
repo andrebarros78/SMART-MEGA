@@ -93,7 +93,7 @@ A identidade operacional é determinada por:
 
 `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica e não são requisitos operacionais.
 
-Não usar hosts Windows ou Linux persistentes para desenvolver ou operar o projeto. Os jobs efêmeros do GitHub Actions servem apenas como execução gerenciada pelo GitHub. Alterações operacionais bem-sucedidas precisam ser gravadas em `main` e verificar o commit remoto; falhas deixam o estado canônico intacto.
+Por ordem explícita de André em 2026-10-05, a rede federada e o PC Escola podem executar diretamente os testes e as operações deste repositório quando o GitHub Actions estiver indisponível. O checkout é meio de execução, nunca autoridade concorrente. Registrar executor real, identificador de execução, commit testado e hash do JUnit; não inventar um run do Actions. O GitHub permanece como único canal canônico. Alterações operacionais bem-sucedidas precisam ser gravadas em `main` e verificar o commit remoto; falhas deixam o estado canônico intacto.
 
 ## 7. Estado operacional
 

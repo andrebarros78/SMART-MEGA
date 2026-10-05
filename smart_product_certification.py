@@ -110,10 +110,22 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
     authority = json.loads(authority_path.read_text(encoding="utf-8-sig")) if authority_path.is_file() else {}
     source = authority.get("certified_source_commit")
     run_id = authority.get("certified_ci_run_id")
+    execution = authority.get("certified_execution")
+    if execution is None:
+        execution_valid = isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0
+    elif isinstance(execution, dict) and execution.get("kind") == "GITHUB_ACTIONS":
+        execution_valid = isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0 and execution.get("run_id") == run_id
+    elif isinstance(execution, dict) and execution.get("kind") == "FEDERATED_PC":
+        execution_id = execution.get("execution_id")
+        execution_valid = run_id is None and isinstance(execution_id, str) and re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", execution_id
+        ) is not None and isinstance(execution.get("hostname"), str) and bool(execution["hostname"].strip()) and execution["hostname"] == execution["hostname"].strip()
+    else:
+        execution_valid = False
     recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
     checks = {
         "source_commit_recorded": isinstance(source, str) and re.fullmatch(r"[0-9a-f]{40}", source) is not None,
-        "ci_run_recorded": isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0,
+        "execution_recorded": execution_valid,
         "fingerprint_bound": recorded_fingerprint == fingerprint.get("sha256"),
         "junit_bound": junit_path.is_file() and authority.get("certified_regression_junit_sha256") == sha256_file(junit_path),
     }
@@ -140,6 +152,7 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
         "status": "PASS" if all(checks.values()) else "FAIL",
         "source_commit": source,
         "ci_run_id": run_id,
+        "execution": execution,
         "code_fingerprint_sha256": recorded_fingerprint,
         "junit_sha256": sha256_file(junit_path) if junit_path.is_file() else None,
         "checks": checks,

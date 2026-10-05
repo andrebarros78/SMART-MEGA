@@ -8,6 +8,8 @@ from datetime import datetime, timezone
 from pathlib import Path
 import re
 import shutil
+import socket
+import uuid
 import subprocess
 
 from smart_agent_runtime import sha256_file
@@ -28,12 +30,40 @@ ARTIFACTS = (
 )
 
 
-def refresh(root: Path, candidate: Path, source_commit: str, run_id: str) -> dict:
+def execution_provenance(root: Path, source_commit: str, run_id: str, executor_host: str | None = None) -> dict:
+    """Identify the real executor without impersonating a GitHub Actions run."""
+    if not isinstance(source_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_commit):
+        raise ValueError("invalid tested source commit")
+    if executor_host is None:
+        if os.environ.get("GITHUB_REPOSITORY") != "andrebarros78/SMART-MEGA":
+            raise PermissionError("certification requires canonical GitHub repository")
+        if not isinstance(run_id, str) or not run_id.isdecimal() or int(run_id) <= 0:
+            raise ValueError("invalid GitHub run identity")
+        return {"kind": "GITHUB_ACTIONS", "run_id": run_id}
+    if not isinstance(executor_host, str) or executor_host != socket.gethostname():
+        raise PermissionError("federated executor hostname does not match this machine")
+    try:
+        execution_id = str(uuid.UUID(run_id))
+    except (ValueError, TypeError, AttributeError) as exc:
+        raise ValueError("federated execution requires a UUID") from exc
+    if execution_id != run_id:
+        raise ValueError("federated execution UUID must be canonical")
+    origin = subprocess.run(["git", "remote", "get-url", "origin"], cwd=root,
+                            capture_output=True, text=True, check=True, timeout=30).stdout.strip()
+    if origin not in {
+        "https://github.com/andrebarros78/SMART-MEGA",
+        "https://github.com/andrebarros78/SMART-MEGA.git",
+        "git@github.com:andrebarros78/SMART-MEGA.git",
+        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+    }:
+        raise PermissionError("federated certification requires canonical Git origin")
+    return {"kind": "FEDERATED_PC", "execution_id": execution_id, "hostname": executor_host}
+
+
+def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
+            executor_host: str | None = None) -> dict:
     root = root.resolve()
-    if os.environ.get("GITHUB_REPOSITORY") != "andrebarros78/SMART-MEGA":
-        raise PermissionError("certification requires canonical GitHub Actions repository")
-    if not re.fullmatch(r"[0-9a-f]{40}", source_commit) or not run_id.isdecimal() or int(run_id) <= 0:
-        raise ValueError("invalid GitHub source commit/run identity")
+    execution = execution_provenance(root, source_commit, run_id, executor_host)
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True,
                           text=True, check=True).stdout.strip()
     if head != source_commit:
@@ -62,9 +92,10 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str) -> dic
         "git_ref_sha": source_commit,
         "git_head": f"commit: {source_commit}",
         "authority_refreshed_at": datetime.now(timezone.utc).isoformat(),
-        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE",
+        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE" if executor_host is None else "FEDERATED_EXECUTION_PROVENANCE",
+        "certified_execution": execution,
         "certified_source_commit": source_commit,
-        "certified_ci_run_id": run_id,
+        "certified_ci_run_id": run_id if executor_host is None else None,
         "certified_source_code_fingerprint_sha256": fp["sha256"],
         "certified_regression_junit": junit.name,
         "certified_regression_junit_sha256": sha256_file(junit),
@@ -119,7 +150,8 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str) -> dic
     if startup["status"] != "OK":
         raise RuntimeError(f"operator startup requires recovery: {startup['failed_checks']}")
     return {"status": cert["status"], "tests": regression["tests"],
-            "source_commit": source_commit, "ci_run_id": run_id,
+            "source_commit": source_commit, "ci_run_id": run_id if executor_host is None else None,
+            "execution": execution,
             "junit_sha256": sha256_file(junit), "certification_sha256": cert["sha256"],
             "governance_sha256": governance["sha256"],
             "global_integrity_sha256": global_proof["sha256"],
