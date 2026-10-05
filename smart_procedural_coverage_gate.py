@@ -58,4 +58,22 @@ def build():
     OUT.write_text(json.dumps(report,indent=2,ensure_ascii=False),encoding='utf-8')
     return report
 
-if __name__=='__main__': print(json.dumps(build(),indent=2,ensure_ascii=False))
+def main():
+    try:
+        report = build()
+    except (OSError, ValueError, KeyError, TypeError) as exc:
+        print(json.dumps({
+            'schema': 'SMART_PROCEDURAL_COVERAGE_GATE_V1',
+            'status': 'BLOCKED_MISSING_INPUT' if isinstance(exc, FileNotFoundError) else 'BLOCKED_INVALID_INPUT',
+            'predictive_weight_authorized': False,
+            'decision': 'BLOCK_PREDICTIVE_PROMOTION',
+            'erro': 'Não foi possível validar as fontes procedurais.',
+            'causa': f'{type(exc).__name__}: {exc}',
+            'acao_sugerida': 'Disponibilizar e validar as fontes declaradas antes de repetir a auditoria.',
+        }, indent=2, ensure_ascii=False))
+        return 1
+    print(json.dumps(report, indent=2, ensure_ascii=False))
+    return 0
+
+if __name__ == '__main__':
+    raise SystemExit(main())
