@@ -62,6 +62,8 @@ As descobertas anteriores estão preservadas no mesmo arquivo de evidências: c�
 
 ## Operação real preservada
 
+**Entrega em main verificada:** commit remoto `cee2b12d172f02c03b9e9ec97aa2c782b796e24e`, checkout de main atualizado do GitHub e inicialmente limpo. Status OK (30,41 s), preflight 3067 AWAITING_OPERATOR_AUTHORIZATION (41,51 s), exit 0 e stderr vazio em ambos. Certificação do código atual validada pelo preflight; nenhuma geração, epoch ativo ou mudança dos seis hashes operacionais. Main remoto permaneceu igual antes/depois. [Prova da entrega](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_DELIVERY_VERIFICATION.json). O commit que persiste esta prova só acrescenta evidência/documentação e preserva a fonte preditiva testada.
+
 [Consultas reais da fonte atual](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_OPERATIONAL_VERIFICATION.json): startup/status **OK**; preflight 3067 **AWAITING_OPERATOR_AUTHORIZATION**, phase OPERATOR_HOLD, mutated_state:false. Dataset, lifecycle, HOLD, missão, ledger e estado mantiveram os mesmos hashes antes/depois. Sem epoch ativo.
 
 Histórico oficial até **3066**, dataset SHA256 `107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4`. A recuperação histórica não criou previsão retrospectiva. O próximo concurso continua em HOLD e requer comando explícito de aplicar/gerar, conforme a baseline.

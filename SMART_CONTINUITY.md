@@ -11,6 +11,7 @@ Leia primeiro [baseline GitHub-native, §11](SMART_GITHUB_NATIVE_BASELINE_2026-0
 - [Ciclo integrado PASS](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_FULL_CYCLE_FIXTURE.json): geração, cartão persistido, freeze/replay, resultado sintético, adjudicação, aprendizado, avanço e previsão seguinte; funções centrais reais. Fixture TEST_ONLY não tem autoridade produtiva/científica.
 - Operação: `SMART_OPERATIONAL_LIFECYCLE.json` e `SMART_NEXT_CYCLE_HOLD.json`. HOLD, histórico oficial até 3066, próximo target 3067, sem epoch ativo. [Status/preflight sem mutação](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_OPERATIONAL_VERIFICATION.json).
 - Ciência: `SMART_MISSION_STATUS.json`: MISSION_ACTIVE, UNPROVEN / INSUFFICIENT_EVIDENCE. Construção aprovada não comprova vantagem prospectiva.
+- [Entrega em main verificada](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_DELIVERY_VERIFICATION.json): commit cee2b12d172f02c03b9e9ec97aa2c782b796e24e obtido do remoto, árvore inicialmente limpa, status OK e preflight HOLD sem mutação. A persistência posterior desta prova altera somente evidência/documentação, preservando o código da fonte testada.
 
 ## Operação
 
