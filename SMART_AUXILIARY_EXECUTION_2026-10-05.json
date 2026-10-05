@@ -1,0 +1,161 @@
+{
+  "schema": "SMART_AUXILIARY_EXECUTION_AUDIT_1",
+  "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+  "executor": "PC-ESCOLA",
+  "isolated": true,
+  "canonical_operation_mutated": false,
+  "results": [
+    {
+      "command": [
+        "smart_agent_ecosystem_governance.py"
+      ],
+      "input": "canonical main snapshot; isolated clone; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_agent_ecosystem_governance",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 36.008,
+      "stdout": "{\n  \"acquisition_status\": \"PASS\",\n  \"governance_status\": \"PASS\",\n  \"supervisory_agents\": 2,\n  \"checks\": {\n    \"two_supervisory_agents_active\": true,\n    \"all_supervisory_skills_executed\": true,\n    \"base_orchestration_build_pass\": true,\n    \"acquisition_manifest_pass\": true,\n    \"no_external_runtime_framework_added\": true,\n    \"external_methodologies_have_no_predictive_authority\": true,\n    \"architecture_gap_hunter_pass\": true,\n    \"capability_acquisition_guardian_pass\": true\n  }\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_canonical_root_rebind.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_canonical_root_rebind",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 0.696,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"authority_file\": \"SMART_CANONICAL_ROOT.json\",\n  \"authority_sha256\": \"c581ff5e35c3c61c0284b7dc7d762e17616e75449ad90183b3f27c6fee28da15\",\n  \"junit_file\": \"SMART_AUDIT_JUNIT_CURRENT.xml\",\n  \"junit_sha256\": \"1113b93a34252f36ae3409c6424571fdd7a45b1b5e76bea9aae2f03bebba9a75\",\n  \"tests\": 989,\n  \"failures\": 0,\n  \"errors\": 0,\n  \"skipped\": 0,\n  \"reason\": \"CURRENT_REGRESSION_PROMOTION\"\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_continuous_red_team.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_continuous_red_team",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 39.451,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"failed\": [],\n  \"checks\": {\n    \"iid\": true,\n    \"gradual_drift\": true,\n    \"abrupt_shift\": true,\n    \"false_signal_recovery\": true,\n    \"missing_corrupt_data\": true,\n    \"redundancy_false_consensus\": true,\n    \"online_anti_ranking\": true,\n    \"recurring_regimes\": true,\n    \"regime_recovery\": true,\n    \"full_stack_smoke\": true\n  },\n  \"report_sha256\": \"29b2b3a44bff55773c084bdab29c590a229551658b825438e137f60d2ed9b67f\",\n  \"scenario_count\": 10\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_github_certify.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_github_certify",
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 7.699,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-AUX-20261005\\smart_github_certify\\smart_github_certify.py\", line 162, in <module>\n    result = refresh(Path.cwd(), Path(\"SMART_AUDIT_JUNIT_GITHUB.xml\"),\n                     os.environ.get(\"GITHUB_SHA\", \"\"), os.environ.get(\"GITHUB_RUN_ID\", \"\"))\n  File \"C:\\SMART-MEGA-AUX-20261005\\smart_github_certify\\smart_github_certify.py\", line 66, in refresh\n    execution = execution_provenance(root, source_commit, run_id, executor_host)\n  File \"C:\\SMART-MEGA-AUX-20261005\\smart_github_certify\\smart_github_certify.py\", line 36, in execution_provenance\n    raise ValueError(\"invalid tested source commit\")\nValueError: invalid tested source commit\n",
+      "assessment": "EXPECTED_MISSING_ACTIONS_CONTEXT_REJECTION"
+    },
+    {
+      "command": [
+        "smart_procedural_coverage_gate.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_procedural_coverage_gate",
+      "returncode": 1,
+      "timeout": false,
+      "elapsed_seconds": 0.301,
+      "stdout": "",
+      "stderr": "Traceback (most recent call last):\n  File \"C:\\SMART-MEGA-AUX-20261005\\smart_procedural_coverage_gate\\smart_procedural_coverage_gate.py\", line 61, in <module>\n    if __name__=='__main__': print(json.dumps(build(),indent=2,ensure_ascii=False))\n                                              ~~~~~^^\n  File \"C:\\SMART-MEGA-AUX-20261005\\smart_procedural_coverage_gate\\smart_procedural_coverage_gate.py\", line 21, in build\n    man=json.loads(MANIFEST.read_text(encoding='utf-8-sig'))\n                   ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_local.py\", line 546, in read_text\n    return PathBase.read_text(self, encoding, errors, newline)\n           ~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_abc.py\", line 632, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors, newline=newline) as f:\n         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"C:\\Users\\andre\\P15Tools\\Python313\\Lib\\pathlib\\_local.py\", line 537, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nFileNotFoundError: [Errno 2] No such file or directory: 'runtime\\\\procedural_sources\\\\CRONOGRAM_ARCHIVE_MANIFEST.json'\n",
+      "assessment": "BLOCKED_MISSING_PROCEDURAL_INPUT"
+    },
+    {
+      "command": [
+        "smart_product_certification.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_product_certification",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 68.292,
+      "stdout": "{\n  \"status\": \"CONSTRUCTION_PROVEN\",\n  \"sha256\": \"0a0dcbd7fba6365e9a75df3745ba8df628a1d625852d0ccc26f47cbb318a5a44\",\n  \"checks\": {\n    \"full_regression_green\": true,\n    \"full_regression_fresh_for_current_code\": true,\n    \"canonical_root_authority_bound_to_current_regression\": true,\n    \"runtime_guard_pass\": true,\n    \"build_orchestration_pass\": true,\n    \"build_runtime_pass\": true,\n    \"build_functional_integration_pass\": true,\n    \"build_total_integration_pass\": true,\n    \"operator_contract_separates_construction_from_freeze\": true,\n    \"operator_target_is_explicit_and_generic\": true,\n    \"operator_target_fails_closed_without_complete_prior_history\": true,\n    \"zero_open_material_deficiencies\": true,\n    \"scientific_terminal_claim_not_required_for_product_completion\": true\n  }\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_prospective_authority_lock.py"
+      ],
+      "input": "canonical main snapshot; isolated clone; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_prospective_authority_lock",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 3.826,
+      "stdout": "{\n  \"status\": \"NO_UNRESOLVED_PROSPECTIVE_AUTHORITY\"\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_repository_integrity.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_repository_integrity",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 9.343,
+      "stdout": "REPOSITORY_INTEGRITY=PASS\nROOT=C:\\SMART-MEGA-AUX-20261005\\smart_repository_integrity\nPORTABLE_IDENTITY=PASS\nACTIVE_EPOCH=None\nTARGET=3067\nCUTOFF=3066\nCANONICAL_RUNTIME_HASHES=PASS\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_runtime_guard.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_runtime_guard",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 3.493,
+      "stdout": "{\n  \"schema\": \"SMART_RUNTIME_GUARD_V2\",\n  \"project_root\": \"C:\\\\SMART-MEGA-AUX-20261005\\\\smart_runtime_guard\",\n  \"canonical_python\": \"C:\\\\SMART-MEGA-AUDIT-20261005\\\\.venv\\\\Scripts\\\\python.exe\",\n  \"current_python\": \"C:\\\\SMART-MEGA-AUDIT-20261005\\\\.venv\\\\Scripts\\\\python.exe\",\n  \"python_version\": \"3.13.15\",\n  \"modules\": {\n    \"numpy\": {\n      \"ok\": true,\n      \"version\": \"2.4.6\"\n    },\n    \"pandas\": {\n      \"ok\": true,\n      \"version\": \"3.0.5\"\n    },\n    \"pytest\": {\n      \"ok\": true,\n      \"version\": \"9.1.1\"\n    },\n    \"river\": {\n      \"ok\": true,\n      \"version\": \"0.26.1\"\n    },\n    \"pypdf\": {\n      \"ok\": true,\n      \"version\": \"6.17.0\"\n    },\n    \"yt_dlp\": {\n      \"ok\": true,\n      \"version\": null\n    }\n  },\n  \"external_project_paths\": [],\n  \"unpinned_requirements\": [],\n  \"direct_lock_mismatch\": {},\n  \"checks\": {\n    \"canonical_python_exists\": true,\n    \"running_canonical_python\": true,\n    \"required_modules_available\": true,\n    \"no_external_project_path_in_sys_path\": true,\n    \"direct_requirements_fully_pinned\": true,\n    \"direct_requirements_match_lock_and_environment\": true\n  },\n  \"status\": \"PASS\"\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    },
+    {
+      "command": [
+        "smart_skill_runtime.py"
+      ],
+      "input": "canonical main snapshot; no synthetic Actions environment",
+      "source_commit": "23594f8c417c22f96950c15541cd9a5f4413f869",
+      "isolated_root": "C:\\SMART-MEGA-AUX-20261005\\smart_skill_runtime",
+      "returncode": 0,
+      "timeout": false,
+      "elapsed_seconds": 25.617,
+      "stdout": "{\n  \"status\": \"PASS\",\n  \"counts\": {\n    \"registered\": 41,\n    \"pertinent_callable\": 37,\n    \"nonpertinent_quarantined\": 4\n  },\n  \"checks\": {\n    \"all_41_registered\": true,\n    \"all_pertinent_callable\": true,\n    \"each_pertinent_invoked_individually\": true,\n    \"all_nonpertinent_explicitly_quarantined\": true,\n    \"external_source_never_executed\": true,\n    \"no_direct_named_skill_execution_is_claimed\": true,\n    \"pertinent_bindings_are_explicit_native_aliases\": true,\n    \"native_targets_present\": true,\n    \"canonical_state_unchanged\": true\n  }\n}\n",
+      "stderr": "",
+      "assessment": "PASS"
+    }
+  ],
+  "summary": {
+    "executed": 10,
+    "exit_zero": 8,
+    "expected_context_rejection": 1,
+    "blocked_missing_input": 1,
+    "remaining_direct_entries": 32
+  },
+  "limitations": [
+    "Standalone auxiliary entrypoints were exercised in isolated clones. This is not execution against production state.",
+    "GitHub certification main requires real Actions provenance. Its rejection without that context is expected; federated refresh API was separately proven.",
+    "Missing procedural inputs were not fabricated or replaced with another project's data."
+  ]
+}

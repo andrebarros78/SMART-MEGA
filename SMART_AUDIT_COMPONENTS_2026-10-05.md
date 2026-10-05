@@ -61,7 +61,7 @@ A regressão atual e a certificação federada executaram probes, aliases e hand
 
 ## 42 entradas sem parser: manutenção, pesquisa e histórico
 
-Identificadas estaticamente; não foram executadas indiscriminadamente contra estado canônico. A coluna funcional registra apenas casos associados por nome no JUnit. Entrada direta NÃO VERIFICADA, salvo integridade e API de certificação observadas separadamente. Não se afirma que funções sem associação nominal estejam sem cobertura indireta.
+Dez entradas exercitadas em clones isolados de main: oito exit 0; certificador Actions rejeita corretamente contexto ausente; gate procedural bloqueado por manifesto ausente. 32 entradas diretas restantes NÃO VERIFICADAS. A coluna funcional registra apenas casos associados por nome no JUnit; não implica ausência de cobertura indireta. Prova completa: SMART_AUXILIARY_EXECUTION_2026-10-05.json. Nenhum artefato produzido nos clones de teste foi promovido como estado operacional.
 
 | Script | Evidência funcional atual | Entrada direta |
 |---|---|---|
@@ -69,16 +69,16 @@ Identificadas estaticamente; não foram executadas indiscriminadamente contra es
 | smart_3054_full_cycle_sandbox.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
 | smart_50_round_simulation.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_adversarial_claim_audit.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
-| smart_agent_ecosystem_governance.py | ✅ 6 casos | ❌ NÃO VERIFICADA |
+| smart_agent_ecosystem_governance.py | ✅ 6 casos | ✅ exit 0 / 36.008 s; cópia isolada |
 | smart_canonical_result_store_reconcile.py | ✅ 3 casos | ❌ NÃO VERIFICADA |
-| smart_canonical_root_rebind.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
+| smart_canonical_root_rebind.py | ✅ 2 casos | ✅ exit 0 / 0.696 s; cópia isolada |
 | smart_capability_integration_v2.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_cartography_extended.py | ✅ 3 casos | ❌ NÃO VERIFICADA |
 | smart_causal_shadow_runner.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
 | smart_context_calibration_confirm.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_context_calibration_confirm_v2.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_continuity_consolidator.py | ✅ 3 casos | ❌ NÃO VERIFICADA |
-| smart_continuous_red_team.py | ✅ 5 casos | ❌ NÃO VERIFICADA |
+| smart_continuous_red_team.py | ✅ 5 casos | ✅ exit 0 / 39.451 s; cópia isolada |
 | smart_engineering_activation.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_execution_checkpoint.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
 | smart_extended_falsification.py | ✅ 3 casos | ❌ NÃO VERIFICADA |
@@ -86,27 +86,27 @@ Identificadas estaticamente; não foram executadas indiscriminadamente contra es
 | smart_finalize_capability_integration_v3.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_finalize_deployment.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_full_process_pipeline.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
-| smart_github_certify.py | ❌ NÃO ATRIBUÍDA | ✅ refresh(..., executor_host=...) PASS; __main__ Actions não exercitado aqui |
+| smart_github_certify.py | ❌ NÃO ATRIBUÍDA | ✅ API federada PASS; __main__ rejeita contexto Actions ausente / 7.699 s |
 | smart_hypothesis_state_reconciler.py | ✅ 4 casos | ❌ NÃO VERIFICADA |
 | smart_learning_epoch_reset.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_monte_carlo_convergence.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
 | smart_procedural_caption_extract.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
-| smart_procedural_coverage_gate.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
+| smart_procedural_coverage_gate.py | ❌ NÃO ATRIBUÍDA | ❌ BLOQUEADA: manifesto procedural ausente / 0.301 s; stack registrado |
 | smart_procedural_cronogram_acquire.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_procedural_cronogram_build_dataset.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_procedural_youtube_recent_acquire.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
-| smart_product_certification.py | ✅ 10 casos | ❌ NÃO VERIFICADA |
+| smart_product_certification.py | ✅ 10 casos | ✅ exit 0 / 68.292 s; cópia isolada |
 | smart_promote_cartography_1000.py | ✅ 1 casos | ❌ NÃO VERIFICADA |
 | smart_prospective_authority.py | ✅ 4 casos | ❌ NÃO VERIFICADA |
-| smart_prospective_authority_lock.py | ✅ 3 casos | ❌ NÃO VERIFICADA |
+| smart_prospective_authority_lock.py | ✅ 3 casos | ✅ exit 0 / 3.826 s; cópia isolada |
 | smart_refresh_falsification_report.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_regression_runner.py | ✅ 9 casos | ❌ NÃO VERIFICADA |
-| smart_repository_integrity.py | ✅ 6 casos | ✅ PASS, HOLD 3067 |
-| smart_runtime_guard.py | ✅ 2 casos | ❌ NÃO VERIFICADA |
+| smart_repository_integrity.py | ✅ 6 casos | ✅ exit 0 / 9.343 s; cópia isolada |
+| smart_runtime_guard.py | ✅ 2 casos | ✅ exit 0 / 3.493 s; cópia isolada |
 | smart_signal_2000_simulation.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_signal_50_round_simulation.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
 | smart_signal_drift_calibration.py | ❌ NÃO ATRIBUÍDA | ❌ NÃO VERIFICADA |
-| smart_skill_runtime.py | ✅ 4 casos | ❌ NÃO VERIFICADA |
+| smart_skill_runtime.py | ✅ 4 casos | ✅ exit 0 / 25.617 s; cópia isolada |
 
 ## Jobs, armazenamento e contratos
 

@@ -28,6 +28,7 @@ Stack: Python 3.13, NumPy/pandas, River, estatística e OR-Tools; batch, sem apl
 | D14 bloqueante Windows | `smart_github_operator.py:206`: C:/ comparado literalmente com C:\\ | `6f54d88`: comparar Paths resolvidos | falha original reproduzida; três testes Git corrigidos |
 | D15 alto | `smart_repository_integrity.py:235`: exigia epoch FROZEN mesmo em HOLD válido | `6262cdc`: reconciliar lifecycle; preservar validação estrita de freeze | HOLD sem mutação PASS; ausência/tampering/dataset incoerente rejeitados |
 | D16 médio documental | `SMART_CONTINUITY.md:3`: snapshot de setembro, path fixo e 863 testes | continuidade remete às autoridades atuais e ao relatório | texto atualizado / checkout novo PASS |
+| D17 médio / pendente auxiliar | smart_procedural_coverage_gate.py:20: manifesto CRONOGRAM_ARCHIVE_MANIFEST.json ausente no checkout; traceback sem erro padronizado | NÃO CORRIGIDO: dados não inventados; rotina procedural não é fonte obrigatória do cartão principal | execução real exit 1 / 0,301 s; stack em SMART_AUXILIARY_EXECUTION_2026-10-05.json |
 | EX01 externo | runners do GitHub não adquiridos | execução direta autorizada no PC Escola | 989 testes e certificação fora do Actions |
 
 ## Verificação
@@ -57,3 +58,7 @@ Sem nova chave, compra ou autorização de acesso necessária para este fechamen
 2. Conferir commit remoto e a correspondência do fingerprint com a fonte testada antes de qualquer nova alteração.
 3. Atualizar o estado acima somente com a prova observada; não usar certificados antigos como prova de alteração nova.
 4. Para auditoria exaustiva das 42 entradas auxiliares, usar o inventário e seus contratos/fixtures; ausência de execução direta continua explícita.
+
+## Continuação após integração em main
+
+PR #21 MERGED; main confirmado em 23594f8c417c22f96950c15541cd9a5f4413f869. Dez auxiliares foram executados em clones isolados desse commit: oito exit 0; __main__ do certificador rejeitou a ausência de proveniência Actions (esperado, sem fabricar run); gate procedural falhou por manifesto ausente. Entrada, saída, tempo e stack persistidos em [prova auxiliar](SMART_AUXILIARY_EXECUTION_2026-10-05.json). Restam 32 entradas diretas sem execução. Os 989 testes e a certificação do núcleo permanecem relativos à mesma fonte; esta continuação só acrescenta evidência/documentação, sem trocar código ou dados operacionais. D17 é pendência interna da auditoria auxiliar, não pedido de chave/acesso ao usuário.
