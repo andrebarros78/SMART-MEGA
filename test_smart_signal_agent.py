@@ -159,6 +159,8 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     assert response['run_id'] == 'fixture-121'
     assert response['numbers'] == card['numbers']
     assert response['confidence']['status'] == 'UNPROVEN_PROSPECTIVE'
+    assert response['confidence']['level'] == 'LOW'
+    assert response['confidence']['calibrated'] is False
     assert response['confidence']['probability_six_hits'] is None
     assert response['confidence']['guaranteed'] is False
     assert json.loads(primary_path.read_text(encoding='utf-8')) == bound_card

@@ -120,7 +120,7 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
         "product_role": "FINAL_SINGLE_CARD_PRODUCT",
         "freeze_sha256": "a" * 64, "numbers": [1, 2, 3, 7, 8, 9],
         "run_id": "epoch-3067",
-        "confidence": {"status": "UNPROVEN_PROSPECTIVE", "probability_six_hits": None, "guaranteed": False},
+        "confidence": {"status": "UNPROVEN_PROSPECTIVE", "level": "LOW", "calibrated": False, "probability_six_hits": None, "guaranteed": False},
     }
     card["sha256"] = hashlib.sha256(
         json.dumps(card, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode()
@@ -142,6 +142,8 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     result = github_operator._verified_freeze_publication(tmp_path, observation, [relative], "3067")
     assert result["numbers"] == card["numbers"]
     assert result["run_id"] == proof["epoch_id"]
+    assert result["confidence"]["level"] == "LOW"
+    assert result["confidence"]["calibrated"] is False
     assert result["confidence"]["probability_six_hits"] is None
     original_bytes = path.read_bytes()
     for mutation in (

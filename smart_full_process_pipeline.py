@@ -70,6 +70,8 @@ def _primary_card_artifact(primary_card: dict[str, Any], *, run_id: str,
         "generated_utc": frozen_utc,
         "confidence": {
             "status": "UNPROVEN_PROSPECTIVE",
+            "level": "LOW",
+            "calibrated": False,
             "probability_six_hits": None,
             "guaranteed": False,
         },

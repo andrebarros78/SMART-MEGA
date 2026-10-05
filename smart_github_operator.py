@@ -152,7 +152,7 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
     if (not isinstance(run_id, str) or not run_id or run_id != run_id.strip()
             or run_id != proof.get("epoch_id")):
         raise ValueError("frozen primary card execution identifier is missing or mismatched")
-    if confidence != {"status": "UNPROVEN_PROSPECTIVE", "probability_six_hits": None, "guaranteed": False}:
+    if confidence != {"status": "UNPROVEN_PROSPECTIVE", "level": "LOW", "calibrated": False, "probability_six_hits": None, "guaranteed": False}:
         raise ValueError("frozen primary card must expose its unproven joint confidence")
     numbers = card.get("numbers")
     if (not isinstance(numbers, list) or len(numbers) != 6
