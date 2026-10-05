@@ -147,6 +147,13 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
             or card.get("target_contest") != int(target)
             or card.get("product_role") != "FINAL_SINGLE_CARD_PRODUCT"):
         raise ValueError("frozen primary card/proof binding invalid")
+    run_id = card.get("run_id")
+    confidence = card.get("confidence")
+    if (not isinstance(run_id, str) or not run_id or run_id != run_id.strip()
+            or run_id != proof.get("epoch_id")):
+        raise ValueError("frozen primary card execution identifier is missing or mismatched")
+    if confidence != {"status": "UNPROVEN_PROSPECTIVE", "probability_six_hits": None, "guaranteed": False}:
+        raise ValueError("frozen primary card must expose its unproven joint confidence")
     numbers = card.get("numbers")
     if (not isinstance(numbers, list) or len(numbers) != 6
             or any(type(number) is not int or not 1 <= number <= 60 for number in numbers)
@@ -154,7 +161,8 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
         raise ValueError("frozen primary card must contain six distinct numbers")
     schedule = proof.get("target_schedule")
     assert_pre_draw_window(schedule)
-    return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule}
+    return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule,
+            "run_id": run_id, "confidence": confidence}
 
 
 def _pin_artifact_bytes(root: Path, changes: list[str]) -> bool:
@@ -262,7 +270,8 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     observed_status = nested_proof.get("status") if isinstance(nested_proof, dict) else observation.get("status")
     return {"operation": operation, "target": target, "changed_files": sorted(staged_expected),
             "observation_status": observed_status,
-            "primary_card": {key: frozen_card[key] for key in ("numbers", "file", "sha256")} if frozen_card else None,
+            "run_id": frozen_card["run_id"] if frozen_card else observation.get("epoch_id"),
+            "primary_card": {key: frozen_card[key] for key in ("numbers", "file", "sha256", "run_id", "confidence")} if frozen_card else None,
             "commit": commit}
 
 
