@@ -41,6 +41,14 @@ Uma execução que falha não publica estado. Uma operação concluída precisa 
 
 Testes devem ser proporcionais ao comportamento alterado. Regressão integral só é executada quando o impacto for sistêmico, quando um gate existente realmente a exigir para a mudança ou quando solicitada explicitamente.
 
+## Contrato do cartão
+
+O produto principal é um único cartão com seis dezenas distintas entre 1 e 60; o portfólio com vários jogos é auxiliar. Novos cartões persistidos incluem `run_id` (o identificador do epoch), `generated_utc`, estratégia/parâmetros do seletor e vínculos SHA-256 com o modelo congelado, o portfólio e os dados de origem. A resposta compacta de geração devolve o mesmo `run_id`, as seis dezenas e os hashes.
+
+A confiança do cartão é explícita: `UNPROVEN_PROSPECTIVE`, `probability_six_hits: null` e `guaranteed: false`. O sistema ainda não tem probabilidade conjunta calibrada de seis acertos. Probabilidades marginais de inclusão de cada dezena, quando disponíveis, somam seis; pesos da mistura de sinais somam um. A auditoria confronta previsões congeladas com resultados e calcula Brier e acertos, sem converter aprovação de engenharia em vantagem preditiva.
+
+Falhas do operador GitHub retornam JSON com `erro`, `causa` e `acao_sugerida`. As evidências da fixture ponta a ponta e de cada comando `--help` ficam nas propriedades do JUnit da regressão, com escopo de teste explícito.
+
 ## Operação autônoma
 
 O agente/IA deve descobrir o estado real, fazer a menor correção suficiente, executar a validação necessária, corrigir falhas recuperáveis e persistir o resultado no GitHub sem transferir trabalho técnico rotineiro ao usuário.
