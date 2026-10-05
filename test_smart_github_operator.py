@@ -49,7 +49,14 @@ def test_payload_cannot_escape_or_be_untracked(tmp_path: Path):
         _tracked_payload(tmp_path, "result.json")
 
 
-def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeypatch):
+@pytest.mark.parametrize("artifact_bytes,should_publish", [
+    (b"generated\n", True),
+    (b"generated\r\n", True),
+    (b"generated \r\n", False),
+])
+def test_successful_operation_publishes_its_state_to_git(
+    tmp_path: Path, monkeypatch, artifact_bytes: bytes, should_publish: bool
+):
     """Exercise the commit and remote verification path without touching main."""
     remote = tmp_path / "remote.git"
     root = tmp_path / "checkout"
@@ -77,13 +84,18 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         lambda *_: [
             sys.executable, "-c",
             "from pathlib import Path; import json; "
-            "Path('SMART_ACTIVE_EPOCH.json').write_text('generated' + chr(10)); "
+            f"Path('SMART_ACTIVE_EPOCH.json').write_bytes({artifact_bytes!r}); "
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
     monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
     monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
     monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    if not should_publish:
+        with pytest.raises(subprocess.CalledProcessError):
+            github_operator.execute("prepare", "3067")
+        assert git("ls-remote", "origin", "refs/heads/main").split()[0] == before
+        return
     proof = github_operator.execute("prepare", "3067")
     assert proof["commit"] != before
     assert git("ls-remote", "origin", "refs/heads/main").split()[0] == proof["commit"]
@@ -95,7 +107,7 @@ def test_successful_operation_publishes_its_state_to_git(tmp_path: Path, monkeyp
         ["git", "-c", "core.autocrlf=true", "clone", str(remote), str(checkout)],
         check=True, capture_output=True,
     )
-    assert (checkout / "SMART_ACTIVE_EPOCH.json").read_bytes() == b"generated" + bytes([10])
+    assert (checkout / "SMART_ACTIVE_EPOCH.json").read_bytes() == artifact_bytes
     assert "/SMART_ACTIVE_EPOCH.json -text" in (checkout / ".gitattributes").read_text()
 
 
@@ -134,3 +146,27 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     }}
     with pytest.raises(ValueError, match="freeze window closed"):
         github_operator._verified_freeze_publication(tmp_path, {"proof": expired}, [relative], "3067")
+
+def test_operator_cli_failure_returns_standardized_error(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", [
+        "smart_github_operator.py", "--operation", "prepare", "--target", "3067",
+    ])
+    def fail(*_):
+        raise ValueError("source dataset is missing")
+    monkeypatch.setattr(github_operator, "execute", fail)
+    assert github_operator.main() == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    error = json.loads(captured.err)
+    assert set(error) == {"erro", "causa", "acao_sugerida"}
+    assert error["erro"] == "OPERACAO_SMART_MEGA_FALHOU"
+    assert error["causa"] == "ValueError: source dataset is missing"
+    assert error["acao_sugerida"]
+
+def test_operator_git_timeout_is_bounded(monkeypatch, tmp_path):
+    def stalled(args, **kwargs):
+        assert kwargs["timeout"] == 60
+        raise subprocess.TimeoutExpired(args, kwargs["timeout"])
+    monkeypatch.setattr(github_operator.subprocess, "run", stalled)
+    with pytest.raises(subprocess.TimeoutExpired):
+        github_operator._git(tmp_path, "ls-remote", "origin", "refs/heads/main")
