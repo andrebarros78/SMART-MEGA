@@ -146,3 +146,27 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     }}
     with pytest.raises(ValueError, match="freeze window closed"):
         github_operator._verified_freeze_publication(tmp_path, {"proof": expired}, [relative], "3067")
+
+def test_operator_cli_failure_returns_standardized_error(monkeypatch, capsys):
+    monkeypatch.setattr(sys, "argv", [
+        "smart_github_operator.py", "--operation", "prepare", "--target", "3067",
+    ])
+    def fail(*_):
+        raise ValueError("source dataset is missing")
+    monkeypatch.setattr(github_operator, "execute", fail)
+    assert github_operator.main() == 1
+    captured = capsys.readouterr()
+    assert captured.out == ""
+    error = json.loads(captured.err)
+    assert set(error) == {"erro", "causa", "acao_sugerida"}
+    assert error["erro"] == "OPERACAO_SMART_MEGA_FALHOU"
+    assert error["causa"] == "ValueError: source dataset is missing"
+    assert error["acao_sugerida"]
+
+def test_operator_git_timeout_is_bounded(monkeypatch, tmp_path):
+    def stalled(args, **kwargs):
+        assert kwargs["timeout"] == 60
+        raise subprocess.TimeoutExpired(args, kwargs["timeout"])
+    monkeypatch.setattr(github_operator.subprocess, "run", stalled)
+    with pytest.raises(subprocess.TimeoutExpired):
+        github_operator._git(tmp_path, "ls-remote", "origin", "refs/heads/main")
