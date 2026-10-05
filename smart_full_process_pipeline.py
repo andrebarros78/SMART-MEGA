@@ -54,6 +54,33 @@ def _self_hash(doc: dict[str, Any]) -> dict[str, Any]:
     return payload
 
 
+
+def _primary_card_artifact(primary_card: dict[str, Any], *, run_id: str,
+                           frozen_utc: str, freeze_file: str,
+                           portfolio_file: str, portfolio_sha256: str) -> dict[str, Any]:
+    """Bind the existing prediction to its run without inventing joint confidence."""
+    if not isinstance(run_id, str) or not run_id or run_id != run_id.strip():
+        raise ValueError("primary card requires a nonempty execution identifier")
+    timestamp = datetime.fromisoformat(frozen_utc.replace("Z", "+00:00"))
+    if timestamp.utcoffset() is None:
+        raise ValueError("primary card timestamp must include its timezone")
+    return _self_hash({
+        **primary_card,
+        "run_id": run_id,
+        "generated_utc": frozen_utc,
+        "confidence": {
+            "status": "UNPROVEN_PROSPECTIVE",
+            "probability_six_hits": None,
+            "guaranteed": False,
+        },
+        "status": "FROZEN",
+        "result_used": False,
+        "freeze_file": freeze_file,
+        "portfolio_file": portfolio_file,
+        "portfolio_sha256": portfolio_sha256,
+    })
+
+
 def _resolve(root: Path, relative: str) -> Path:
     p = Path(relative)
     if not p.is_absolute():
@@ -346,14 +373,11 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     )
     primary_card_numbers = list(primary_card["numbers"])
     primary_card_path = epoch_dir / f"SMART_{target}_PRIMARY_CARD.json"
-    primary_card = _self_hash({
-        **primary_card,
-        "status": "FROZEN",
-        "result_used": False,
-        "freeze_file": _rel(root, actual_freeze_path),
-        "portfolio_file": _rel(root, portfolio_path),
-        "portfolio_sha256": portfolio_sha,
-    })
+    primary_card = _primary_card_artifact(
+        primary_card, run_id=active["epoch_id"], frozen_utc=freeze_obj["frozen_utc"],
+        freeze_file=_rel(root, actual_freeze_path),
+        portfolio_file=_rel(root, portfolio_path), portfolio_sha256=portfolio_sha,
+    )
     primary_card_path.write_text(json.dumps(primary_card, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     primary_card_sha = sha256_file(primary_card_path)
     activation_time = datetime.fromisoformat(str(activation["activated_utc"]).replace("Z", "+00:00"))
