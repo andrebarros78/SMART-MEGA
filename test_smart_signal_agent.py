@@ -126,6 +126,57 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     assert len(led['events'][0]['hashes']['redundancy_consensus']) == 64
     assert led['events'][0]['snapshot']['redundancy_consensus']['threshold'] == 0.90
 
+    # Exercise real generation, persisted primary card, replay and outcome scoring.
+    from adjudicate_signal_challenger import adjudicate
+    import pytest
+
+    portfolio = json.loads(Path(result['portfolio_file']).read_text(encoding='utf-8'))
+    card = portfolio['primary_card']
+    assert card['numbers'] == led['events'][0]['primary_card']['numbers']
+    assert len(set(card['numbers'])) == 6
+    assert all(1 <= n <= 60 for n in card['numbers'])
+    assert card['selector']['status'] == 'PASS'
+    assert card['freeze_sha256'] == result['freeze_sha256']
+    probabilities = led['events'][0]['snapshot']['rank_score_calibration']['probabilities_by_number']
+    assert len(probabilities) == 60
+    assert all(np.isfinite(p) and 0 <= p <= 1 for p in probabilities.values())
+    assert sum(probabilities.values()) == pytest.approx(6.0)
+
+    frozen_bytes = out.read_bytes()
+    ledger_bytes = ledger.read_bytes()
+    replay = freeze_champion_challenger(data, 121, out, ledger, state, start=30, enforce_temporal_guard=False)
+    assert replay['status'] == 'ALREADY_FROZEN_IDENTICAL_EVENT_PRESERVED'
+    assert out.read_bytes() == frozen_bytes
+    assert ledger.read_bytes() == ledger_bytes
+
+    actual = [4, 13, 22, 31, 40, 59]
+    result_row = {'Concurso': 121, 'Data do Sorteio': pd.Timestamp('2020-05-01')}
+    result_row.update({f'Bola{j}': n for j, n in enumerate(actual, start=1)})
+    result_data = tmp_path / 'official_result_fixture.xlsx'
+    pd.DataFrame([*rows, result_row]).to_excel(result_data, index=False)
+    scored = adjudicate(result_data, 121, ledger)
+    adjudicated = json.loads(ledger.read_text(encoding='utf-8'))
+    outcome = next(ev for ev in adjudicated['events'] if ev['event_type'] == 'ADJUDICATION')
+    calibration = next(ev for ev in adjudicated['events'] if ev['event_type'] == 'RANK_SCORE_CALIBRATION')
+    assert scored['actual_numbers'] == actual
+    assert outcome['freeze_sha256'] == card['freeze_sha256']
+    assert 0 <= scored['champion_hits'] <= 6
+    assert 0 <= scored['challenger_hits'] <= 6
+    assert 0 <= calibration['analysis']['brier'] <= 1
+    assert calibration['analysis']['uniform_brier'] == pytest.approx(0.09)
+    assert out.read_bytes() == frozen_bytes
+    assert adjudicated['events'][0] == led['events'][0]
+    after_bytes = ledger.read_bytes()
+    with pytest.raises(ValueError, match='already adjudicated'):
+        adjudicate(result_data, 121, ledger)
+    assert ledger.read_bytes() == after_bytes
+    print(json.dumps({'fixture_e2e': 'PASS', 'target': 121, 'card': card['numbers'],
+                      'freeze_sha256': card['freeze_sha256'], 'actual': actual,
+                      'primary_card_hits': len(set(card['numbers']) & set(actual)),
+                      'brier': calibration['analysis']['brier'],
+                      'uniform_brier': calibration['analysis']['uniform_brier'],
+                      'freeze_replay_unchanged': True, 'duplicate_outcome_rejected': True}))
+
 def test_profile_adwin_detects_signal_vector_regime_shift():
     state = SignalQualityState('profile', 'freq')
     a = np.zeros(60, dtype=float); a[:6] = 1.0
