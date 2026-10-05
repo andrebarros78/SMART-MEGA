@@ -147,3 +147,56 @@ def test_official_payload_batch_is_self_hashed_contiguous_and_endpoint_bound(tmp
     assert sorted(payloads) == [3, 4]
     assert evidence["document_sha256"] == batch["sha256"]
     assert evidence["targets"] == [3, 4]
+
+
+def test_catchup_finishes_adjudicated_learning_before_history_advance(tmp_path, monkeypatch):
+    """A frozen, adjudicated epoch must have its learning proof before rollover."""
+    import pytest
+
+    (tmp_path / "Mega-Sena.xlsx").write_bytes(b"unchanged")
+    (tmp_path / "SMART_ACTIVE_EPOCH.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "SMART_OPERATIONAL_LIFECYCLE.json").write_text("{}", encoding="utf-8")
+    active = {"target_contest": 3, "state_paths": {"ledger": "ledger.json"}}
+    monkeypatch.setattr(catchup, "verify_product_certification", lambda *a, **k: {"sha256": "c" * 64})
+    monkeypatch.setattr(catchup, "load_lifecycle", lambda root: {"state": "ADJUDICATED", "target_contest": 3})
+    monkeypatch.setattr(catchup, "verify_active_epoch", lambda path: active)
+    monkeypatch.setattr(catchup, "load_ledger", lambda path: {
+        "events": [{"event_type": "ADJUDICATION", "target_contest": 3}]
+    })
+    sequence = []
+    monkeypatch.setattr(catchup, "complete_adjudicated_sequence", lambda root, target: sequence.append(target))
+
+    def checked_advance(root, epoch):
+        assert sequence == [3]
+        assert epoch is active
+        raise RuntimeError("advance reached after learning")
+
+    monkeypatch.setattr(catchup, "advance_completed_epoch", checked_advance)
+    with pytest.raises(RuntimeError, match="advance reached after learning"):
+        catchup.catch_up_missed_results(tmp_path, 3)
+    assert (tmp_path / "Mega-Sena.xlsx").read_bytes() == b"unchanged"
+
+
+def test_catchup_never_advances_when_adjudicated_learning_fails(tmp_path, monkeypatch):
+    import pytest
+
+    (tmp_path / "Mega-Sena.xlsx").write_bytes(b"unchanged")
+    (tmp_path / "SMART_ACTIVE_EPOCH.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "SMART_OPERATIONAL_LIFECYCLE.json").write_text("{}", encoding="utf-8")
+    monkeypatch.setattr(catchup, "verify_product_certification", lambda *a, **k: {"sha256": "c" * 64})
+    monkeypatch.setattr(catchup, "load_lifecycle", lambda root: {"state": "ADJUDICATED", "target_contest": 3})
+    monkeypatch.setattr(catchup, "verify_active_epoch", lambda path: {
+        "target_contest": 3, "state_paths": {"ledger": "ledger.json"}
+    })
+    monkeypatch.setattr(catchup, "load_ledger", lambda path: {
+        "events": [{"event_type": "ADJUDICATION", "target_contest": 3}]
+    })
+
+    def invalid_sequence(root, target):
+        raise ValueError("official sequence invalid")
+
+    monkeypatch.setattr(catchup, "complete_adjudicated_sequence", invalid_sequence)
+    monkeypatch.setattr(catchup, "advance_completed_epoch", lambda *a: pytest.fail("advanced without a sequence proof"))
+    with pytest.raises(ValueError, match="official sequence invalid"):
+        catchup.catch_up_missed_results(tmp_path, 3)
+    assert (tmp_path / "Mega-Sena.xlsx").read_bytes() == b"unchanged"
