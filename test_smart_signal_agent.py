@@ -96,7 +96,7 @@ def test_promotion_requires_all_prospective_gates():
     assert p['decision'] == 'PROMOTE_SIGNAL_INTELLIGENCE_CHALLENGER'
 
 
-def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path):
+def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path, record_property):
     draws = _draws(seed=999, n=120)
     rows = []
     for i, d in enumerate(draws, start=1):
@@ -170,7 +170,7 @@ def test_freeze_creates_champion_challenger_and_append_only_event(tmp_path: Path
     with pytest.raises(ValueError, match='already adjudicated'):
         adjudicate(result_data, 121, ledger)
     assert ledger.read_bytes() == after_bytes
-    print(json.dumps({'fixture_e2e': 'PASS', 'target': 121, 'card': card['numbers'],
+    record_property('fixture_e2e', json.dumps({'fixture_e2e': 'PASS', 'target': 121, 'card': card['numbers'],
                       'freeze_sha256': card['freeze_sha256'], 'actual': actual,
                       'primary_card_hits': len(set(card['numbers']) & set(actual)),
                       'brier': calibration['analysis']['brier'],
