@@ -22,6 +22,7 @@ from smart_operational_lifecycle import load_lifecycle, recover_to_hold
 from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, verify_product_certification
 from smart_rollover import archive_completed_epoch
 from smart_storage_surfaces import evidence_path
+from smart_terminal_executor import complete_adjudicated_sequence
 
 RECOVERY_SCHEMA = "SMART_MISSED_TARGET_CATCHUP_1"
 OFFICIAL_BATCH_SCHEMA = "SMART_OFFICIAL_RESULT_BATCH_1"
@@ -206,6 +207,9 @@ def catch_up_missed_results(
         completed_active_target = _assert_completed_active(root, active, lifecycle_before)
         history_advance_path = root / f"SMART_CANONICAL_HISTORY_ADVANCE_{completed_active_target}.json"
         history_advance_preexisting = history_advance_path.exists()
+        # An adjudication is not a completed epoch until its official-result
+        # learning update and sequential proof have been recorded.
+        complete_adjudicated_sequence(root, completed_active_target)
         prior_advance = advance_completed_epoch(root, active)
     elif lifecycle_before.get("state") != "HOLD":
         raise ValueError("catch-up without active epoch requires lifecycle HOLD")
