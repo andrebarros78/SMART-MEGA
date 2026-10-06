@@ -39,12 +39,12 @@ def _project_path(root: Path, value: str, *, label: str) -> Path:
     return candidate
 
 
-def _read_self_hashed(path: Path, *, schema: str, label: str) -> dict[str, Any]:
+def _read_self_hashed(path: Path, *, schema: str, label: str, expected_status: str = "PASS") -> dict[str, Any]:
     try:
         obj = json.loads(path.read_text(encoding="utf-8-sig"))
     except Exception as exc:
         raise ValueError(f"{label} cannot be parsed") from exc
-    if not isinstance(obj, dict) or obj.get("schema") != schema or obj.get("status") != "PASS":
+    if not isinstance(obj, dict) or obj.get("schema") != schema or obj.get("status") != expected_status:
         raise ValueError(f"{label} schema/status invalid")
     observed = obj.get("sha256")
     canonical = dict(obj)
@@ -247,6 +247,8 @@ def _resolve_post_result_hold(root: Path) -> dict[str, Any] | None:
         "prepare_allowed": False,
         "generation_allowed": False,
         "next_cycle_authority_present": authority_present,
+        "operator_prepare_authorized": False,
+        "next_cycle_authority_sha256": None,
         "operator_command_required": True,
         "required_command_semantics": "USER_EXPLICIT_APPLY_OR_GENERATE",
         "post_result_review_file": review_file,
@@ -256,9 +258,53 @@ def _resolve_post_result_hold(root: Path) -> dict[str, Any] | None:
     }
 
 
+def _resolve_authorized_cycle(root: Path, lifecycle: dict[str, Any]) -> dict[str, Any]:
+    if (root / "SMART_ACTIVE_EPOCH.json").exists():
+        raise ValueError("lifecycle AUTHORIZED cannot contain an active operational epoch")
+    hold = _resolve_post_result_hold(root)
+    if hold is None:
+        raise ValueError("lifecycle AUTHORIZED requires valid post-result hold evidence")
+    target = hold["target_contest"]
+    completed = hold["cutoff_contest"]
+    if lifecycle.get("target_contest") != target or lifecycle.get("completed_contest") != completed:
+        raise ValueError("lifecycle AUTHORIZED hold target/cutoff binding mismatch")
+    authority_path = root / "SMART_NEXT_CYCLE_AUTHORITY.json"
+    authority = _read_self_hashed(
+        authority_path, schema="SMART_NEXT_CYCLE_AUTHORITY_1",
+        label="next-cycle authority", expected_status="AUTHORIZED",
+    )
+    if authority.get("consumed") is not False or authority.get("authorized_by") != "USER_EXPLICIT_APPLY_OR_GENERATE":
+        raise ValueError("next-cycle authority requires unconsumed explicit user authorization")
+    for field, expected in (("target_contest", target), ("completed_contest", completed)):
+        if type(authority.get(field)) is not int or authority[field] != expected:
+            raise ValueError(f"next-cycle authority {field} binding mismatch")
+    for field in ("prepared_epoch_id", "reservation_transaction_id", "consumption_transaction_id"):
+        if authority.get(field) is not None:
+            raise ValueError("next-cycle authority already prepared, reserved or consumed")
+    review_path = _project_path(root, hold["post_result_review_file"], label="post-result review")
+    bindings = {
+        "review_file": hold["post_result_review_file"],
+        "review_file_sha256": _sha(review_path),
+        "review_sha256": hold["post_result_review_sha256"],
+        "canonical_sha256": hold["data_sha256"],
+    }
+    if any(authority.get(field) != expected for field, expected in bindings.items()):
+        raise ValueError("next-cycle authority history/review binding mismatch")
+    return {
+        **hold,
+        "lifecycle_state": "AUTHORIZED",
+        "lifecycle_revision": lifecycle["revision"],
+        "lifecycle_sha256": lifecycle["sha256"],
+        "operator_prepare_authorized": True,
+        "next_cycle_authority_sha256": authority["sha256"],
+    }
+
+
 def resolve(root: str | Path = ".") -> dict[str, Any]:
     root = Path(root).resolve()
     lifecycle = load_lifecycle(root)
+    if lifecycle["state"] == "AUTHORIZED":
+        return _resolve_authorized_cycle(root, lifecycle)
     if lifecycle["state"] == "HOLD":
         hold = _resolve_post_result_hold(root)
         if hold is None:
