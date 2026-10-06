@@ -43,7 +43,8 @@ def _code_files(root: Path) -> list[Path]:
         p = root / name
         if p.is_file():
             files.append(p)
-    return sorted(set(files))
+    # Explicit name ordering keeps the fingerprint identical on Windows and POSIX.
+    return sorted(set(files), key=lambda path: path.name)
 
 
 def code_fingerprint(root: Path) -> dict[str, Any]:

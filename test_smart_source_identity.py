@@ -28,3 +28,28 @@ def test_source_hashes_rejects_duplicate_paths(tmp_path: Path):
         assert 'duplicate source identity path' in str(exc)
     else:
         raise AssertionError('duplicate source identity paths must fail closed')
+
+
+def test_product_fingerprint_orders_names_independently_of_host(tmp_path: Path):
+    from smart_product_certification import code_fingerprint
+
+    contents = {
+        "smart_example.py": b"x = 1\n",
+        "test_example.py": b"def test_example(): pass\n",
+        "requirements.lock.txt": b"example==1.0\n",
+        "SMART_DATA_CONTRACT.md": b"# Contract\n",
+    }
+    for name, raw in contents.items():
+        (tmp_path / name).write_bytes(raw)
+
+    expected_names = (
+        "SMART_DATA_CONTRACT.md",
+        "requirements.lock.txt",
+        "smart_example.py",
+        "test_example.py",
+    )
+    expected_rows = [
+        {"path": name, "sha256": sha256_source_bytes(contents[name])}
+        for name in expected_names
+    ]
+    assert code_fingerprint(tmp_path)["files"] == expected_rows
