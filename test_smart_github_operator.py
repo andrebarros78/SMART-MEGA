@@ -193,3 +193,55 @@ def test_operator_git_timeout_is_bounded(monkeypatch, tmp_path):
     monkeypatch.setattr(github_operator.subprocess, "run", stalled)
     with pytest.raises(subprocess.TimeoutExpired):
         github_operator._git(tmp_path, "ls-remote", "origin", "refs/heads/main")
+
+
+def test_native_transaction_journal_survives_git_publication(tmp_path: Path):
+    from smart_transaction_journal import (
+        JOURNAL_PATH, begin, prepared, committing, committed, read_entries,
+    )
+
+    remote, root = tmp_path / "remote.git", tmp_path / "checkout"
+    subprocess.run(["git", "init", "--bare", str(remote)], check=True, capture_output=True)
+    subprocess.run(
+        ["git", "init", "--initial-branch=main", str(root)],
+        check=True, capture_output=True,
+    )
+
+    def git(*args):
+        return subprocess.run(
+            ["git", *args], cwd=root, check=True, capture_output=True, text=True,
+        ).stdout.strip()
+
+    git("config", "user.name", "SMART test")
+    git("config", "user.email", "smart-test@example.invalid")
+    git("remote", "add", "origin", str(remote))
+    for phase in (begin, prepared, committing, committed):
+        phase(root, "PREPARE:3067:test", "PREPARE", target_contest=3067)
+
+    relative = JOURNAL_PATH.as_posix()
+    original = (root / JOURNAL_PATH).read_bytes()
+    entries = read_entries(root)
+    assert [entry["phase"] for entry in entries] == [
+        "BEGIN", "PREPARED", "COMMITTING", "COMMITTED",
+    ]
+    assert allowed_artifact(relative)
+    for rejected in (
+        "runtime/transactions/OTHER.jsonl",
+        "runtime/other/SMART_TRANSACTION_JOURNAL.jsonl",
+        "artifacts/SMART_TRANSACTION_JOURNAL.jsonl",
+        "../runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl",
+    ):
+        assert not allowed_artifact(rejected)
+
+    assert github_operator._pin_artifact_bytes(root, [relative])
+    git("add", "--", ".gitattributes", relative)
+    github_operator._verify_staged_bytes(root, [relative])
+    git("commit", "-m", "persist native transaction journal")
+    git("push", "origin", "main")
+    clone = tmp_path / "verified"
+    subprocess.run(
+        ["git", "-c", "core.autocrlf=true", "clone", "--branch", "main", str(remote), str(clone)],
+        check=True, capture_output=True,
+    )
+    assert (clone / JOURNAL_PATH).read_bytes() == original
+    assert read_entries(clone) == entries

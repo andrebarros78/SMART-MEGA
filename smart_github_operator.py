@@ -14,6 +14,8 @@ import re
 import subprocess
 import sys
 
+from smart_transaction_journal import JOURNAL_PATH
+
 REPOSITORY = "andrebarros78/SMART-MEGA"
 READ_ONLY = {"status", "preflight"}
 TARGET_ACTIONS = {
@@ -90,6 +92,8 @@ def allowed_artifact(raw: str) -> bool:
         if raw == "Mega-Sena.xlsx":
             return True
         return path.name.startswith("SMART_") and path.suffix.lower() in SUFFIXES
+    if raw == JOURNAL_PATH.as_posix():
+        return True
     if path.parts[0] == "SMART_STATE_ARCHIVE":
         return path.suffix.lower() in SUFFIXES | {".bak", ".pre", ".before", ".applied", ".archived", ".retired", ".pre-optimized", ".pre-strict", ".pre-strict-split", ".pre-d018", ".py"}
     return path.parts[0] in {"runtime", "artifacts"} and path.suffix.lower() in SUFFIXES
