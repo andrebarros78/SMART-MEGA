@@ -1,0 +1,177 @@
+{
+  "schema": "SMART_FECHAMENTO_1_PRE_COMMIT_VALIDATION_1",
+  "status": "APPROVED_FOR_GIT",
+  "checked_utc": "2026-10-06T08:11:51.515239+00:00",
+  "repository": "andrebarros78/SMART-MEGA",
+  "baseline_branch": "main",
+  "base_commit": "c48be2a159eb1657d179a4c09596f167f0614354",
+  "tested_source_tree_state": "UNCOMMITTED_SCOPED_CANDIDATE",
+  "code_fingerprint_sha256": "dbc7ccc31ce183eb7a60b54c5db28aa4704b59bde10613c726159bce9d3b64e9",
+  "dimensions": {
+    "technical": "PASS",
+    "functional": "PASS",
+    "operational": "PASS",
+    "security": "PASS"
+  },
+  "regression": {
+    "tests": 1077,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "sha256": "4e6e35da498d37dcf4103bc7cb2a59e68da119cc5fa40c493221103da832cfa2"
+  },
+  "executed_functional_test_cases": [
+    {
+      "class": "test_smart_3054_full_cycle_sandbox",
+      "name": "test_full_3054_sandbox_reaches_learning_sequence_without_current_state_mutation"
+    },
+    {
+      "class": "test_smart_3054_full_cycle_sandbox",
+      "name": "test_full_3054_sandbox_duplicate_guards_when_frozen"
+    },
+    {
+      "class": "test_smart_full_process_temporal_guard",
+      "name": "test_full_process_blocks_after_deadline_before_any_freeze"
+    },
+    {
+      "class": "test_smart_full_process_temporal_guard",
+      "name": "test_full_process_before_deadline_crosses_temporal_guard"
+    },
+    {
+      "class": "test_smart_operator_e2e_recovery",
+      "name": "test_preflight_hold_returns_operator_authorization_status"
+    },
+    {
+      "class": "test_smart_operator_e2e_recovery",
+      "name": "test_freeze_operation_recovers_before_retry"
+    },
+    {
+      "class": "test_smart_operator_e2e_recovery",
+      "name": "test_freeze_operation_is_idempotent_when_already_frozen"
+    },
+    {
+      "class": "test_smart_operator_e2e_recovery",
+      "name": "test_run_full_process_contains_exception_rollback"
+    },
+    {
+      "class": "test_smart_operator_real_freeze_recovery",
+      "name": "test_real_interrupted_freeze_recovery_restores_prepared_without_mutating_seed"
+    },
+    {
+      "class": "test_smart_operator_real_freeze_recovery",
+      "name": "test_real_recovery_rejects_material_artifacts_and_preserves_freezing"
+    },
+    {
+      "class": "test_smart_operator_real_freeze_recovery",
+      "name": "test_real_frozen_replay_resolves_bound_path_and_preserves_freeze"
+    },
+    {
+      "class": "test_smart_operator_real_freeze_recovery",
+      "name": "test_real_frozen_replay_rejects_changed_artifact"
+    }
+  ],
+  "native_roles": 9,
+  "capabilities_accounted": 41,
+  "known_vulnerable_dependencies": 0,
+  "secret_candidates_pending": 0,
+  "frozen_operational_files_preserved": 20,
+  "frozen_card_sha256": "e253f955d725aae7b6c069b312116b974a40cab00e023985f6b95f9b57ae880f",
+  "fixes": [
+    "Explicit UTF-8 child and capture in existing procedural gate tests",
+    "Patch GitPython 3.1.61 to 3.1.62, Mako 1.4.1 to 1.4.2, pypdf 6.17.0 to 6.19.0 and urllib3 2.7.0 to 2.8.0",
+    "Reconcile existing current dependency SBOM with the tested lock and installed versions",
+    "Reconcile continuity with real FROZEN 3067 and mark dated audit snapshots historical",
+    "Recover GitHub checkout using per-command Windows long-path option"
+  ],
+  "historical_sboms_preserved": [
+    "SMART_G07_DEPENDENCY_SBOM.json",
+    "SMART_RAG_EXCEL_SBOM_3059.json"
+  ],
+  "validated_root_files": [
+    {
+      "file": ".gitattributes",
+      "normalized_sha256": "6ca81169100bdf1908ebf71af654de572f19d65ee6fa44022124e307b2a5cb0d"
+    },
+    {
+      "file": "SMART_AUDIT_COMPONENTS_2026-10-05.md",
+      "normalized_sha256": "ee97322da43b9d983f4aba73d5f353d044ec4f391808ed61f17c7a510318087f"
+    },
+    {
+      "file": "SMART_AUDIT_HANDOFF_2026-10-05.md",
+      "normalized_sha256": "005a7f373e2b48af2dc68faa91a4f3d12b48954ca74b6e40d5ad39186b08a42c"
+    },
+    {
+      "file": "SMART_CONTINUITY.md",
+      "normalized_sha256": "856a488b98a5fa01ba824bd35c22b6ababf36777ffd914acde5c4e9c89430b11"
+    },
+    {
+      "file": "SMART_DEPENDENCY_SBOM_R3.json",
+      "normalized_sha256": "8e61dff2216d7797f52e583028f1c7420295b15ea6c5441aa80fad500449daaa"
+    },
+    {
+      "file": "SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md",
+      "normalized_sha256": "0dd0dedb74bf17f42f0ecc6b0b2cef6d0dd6d3cc14b20a4b7b22a93791578527"
+    },
+    {
+      "file": "requirements.lock.txt",
+      "normalized_sha256": "d40ecee308809974014f83a92caab9b5d8c05b0dd9a6c58d9d2f23d5e1d3092b"
+    },
+    {
+      "file": "requirements.txt",
+      "normalized_sha256": "969550b4e08c5f68eeeb70183050d2afec4c8e4fda36a0a175e4c12d2399f661"
+    },
+    {
+      "file": "test_smart_procedural_coverage_failure_contract.py",
+      "normalized_sha256": "9becbe6daf225c3edbaa4b2e0c40b9bd6fc48a258a79d27e73126b207b82138e"
+    }
+  ],
+  "evidence": [
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/DEPENDENCY_SECURITY.json",
+      "raw_sha256": "1e6cefa2fcfd8c3bc3e0f77b126c49eb92dab47b8b29ffd1700c88aa284f7807"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/FULL_REGRESSION.xml",
+      "raw_sha256": "4e6e35da498d37dcf4103bc7cb2a59e68da119cc5fa40c493221103da832cfa2"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/GENERATION_CERTIFICATE_3067.json",
+      "raw_sha256": "35609e12a8102bf551adc4912660d706b1971ec0bbdcb219059cbd30b365bb80"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/GENERATION_GLOBAL_INTEGRITY_3067.json",
+      "raw_sha256": "bccba8838846850fe15e8c05e0c5ab6672593cd7cfd896f129d8de1f0d1ed5ae"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/GITHUB_COLD_RECOVERY_BASELINE.json",
+      "raw_sha256": "287d083881b3ddcf1f4915fca98455e2c966ccdc3ee6cd3e8c6a572b292a8f0f"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/OPERATIONAL_VALIDATION.json",
+      "raw_sha256": "bb2a5ff9ec51fe050711c0c625718a4c2bf002a747de9c1475f922b818ec112f"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/REGRESSION_EXECUTION.json",
+      "raw_sha256": "7ab5e1d8ce26073e5c2824d3379b276c688b1167ecc4ff8228e918d8569713cb"
+    },
+    {
+      "file": "release_evidence/FECHAMENTO_1_20261006/SECRET_SCAN.json",
+      "raw_sha256": "e6851c6ec76c2608adcfb7c788537faf3b8e8819aa7b75bd4459e9a8a52fda4b"
+    }
+  ],
+  "approved_for_git_add_and_commit": true,
+  "final_scope_sealed": false,
+  "final_seal_requires": [
+    "Current-code certification and startup OK on the fully validated published source",
+    "Existing GitHub CI and repository/operator verification approved",
+    "Published baseline recovered and protected frozen artifacts preserved",
+    "Remote main, working HEAD and annotated version tag reconciled",
+    "git status clean with no pending changes"
+  ],
+  "planned_tag": "v6.3.2-fechamento-1-20261006",
+  "scientific_mission_status": "MISSION_ACTIVE",
+  "scientific_predictive_advantage": "UNPROVEN_PROSPECTIVE",
+  "six_hit_guarantee": false,
+  "sha256": "47390953d115c46ca9023bf725cae4b22153e608874a8b79fe6f2bf4469f384e"
+}

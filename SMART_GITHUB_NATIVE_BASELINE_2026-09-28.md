@@ -150,3 +150,13 @@ Corrigir as causas das falhas nas funções existentes. Verificar agentes e skil
 O fechamento exige os seis critérios da arquitetura com evidência atual: captação e qualidade; interpretação; conversão em pesos; calibração e adaptação; aprendizado e robustez; resultado comprovado. Registrar separadamente prontidão operacional e desempenho preditivo prospectivo. Não converter certificação de software em comprovação científica, nem gerar aprendizado ou cartão retrospectivo usando resultado conhecido.
 
 Prosseguir pelas falhas técnicas corrigíveis até a entrega comprovada ou dependência externa irredutível, preservando comandos, resultados, commits, hashes e ponto de continuidade.
+
+## 12. Fechamento 1 reconciliado — 06/10/2026
+
+Por ordem explícita de André, executar integralmente: **DESCOBRIR ESTADO REAL → RECONCILIAR → TESTAR → CORRIGIR → RETESTAR → CONSOLIDAR → FECHAMENTO TÉCNICO/FUNCIONAL/OPERACIONAL/SEGURANÇA → GIT ADD → GIT COMMIT → VERSIONAR/TAG, SE APLICÁVEL → COMPROVAR BASELINE LIMPA → SELAR ESCOPO.**
+
+Resolver primeiro conflitos, divergências, resíduos, duplicações e alterações incoerentes. Validar após reconciliação; corrigir falhas e retestar até aprovação. Somente consolidar, fechar e registrar no Git alterações já reconciliadas e validadas. A certificação deve vincular a regressão ao código efetivamente publicado e testado; metadados de certificação não substituem a validação anterior ao registro das correções.
+
+Criar versão/tag quando houver marco aplicável, confirmar main remoto e git status limpo, sem alterações pendentes. Commit isolado não autoriza MISSION_PROVEN ou SCOPE_SEALED: exigir funcionamento, integração, persistência, recuperação e integridade. O selo técnico/funcional/operacional/segurança tem escopo explícito; o objetivo científico prospectivo permanece separado conforme §8 e §11.
+
+Preservar a previsão real 3067 já FROZEN e sua prova causal original. Não reautorizar, regenerar, reescrever ou adjudicar usando resultado fictício. Renovação da certificação do software não altera a proveniência da geração original.

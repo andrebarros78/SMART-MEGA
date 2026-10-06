@@ -1,5 +1,7 @@
 # SMART-MEGA V6 — auditoria e retomada — 05/10/2026
 
+> Registro histórico da rodada de 05/10/2026. Fonte, 1.053 testes, HOLD e referências chamadas atuais abaixo descrevem somente essa rodada. Para a construção e a operação vigentes em GitHub main, consultar [SMART_CONTINUITY.md](SMART_CONTINUITY.md) e as autoridades nela vinculadas.
+
 **Construção: CONSTRUCTION_PROVEN; 1.053 testes aprovados; ciclo preditivo integrado PASS; startup OK.** A missão científica continua MISSION_ACTIVE, UNPROVEN / INSUFFICIENT_EVIDENCE. A execução sintética não comprova vantagem prospectiva.
 
 ## Ordens reconciliadas e produto

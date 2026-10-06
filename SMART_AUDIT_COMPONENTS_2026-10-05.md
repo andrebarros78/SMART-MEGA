@@ -1,5 +1,7 @@
 # Componentes e alcance da evidência — SMART-MEGA — 05/10/2026
 
+> Registro histórico da rodada de 05/10/2026. Fonte, 1.053 testes, HOLD e referências chamadas atuais abaixo descrevem somente essa rodada. Para a construção e a operação vigentes em GitHub main, consultar [SMART_CONTINUITY.md](SMART_CONTINUITY.md) e as autoridades nela vinculadas.
+
 Fonte atual testada: **3b3dfb52da1f7ebdffcc3a503496f6c32ae851d2; 1.053 testes aprovados** no PC Escola, UUID d195eea4-555f-4bdb-a505-b1e619da31a1. [Regressão/certificação](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_DEEP_REPAIR_EXECUTION.json); [processo integrado real PASS](SMART_STATE_ARCHIVE/DEEP_REPAIR_20261005/SMART_FULL_CYCLE_FIXTURE.json). Registro existente: smart_agent_skill_orchestration.py + SmartSkillRuntime.registrations(). Sem registro paralelo ou servidor HTTP/OpenAPI identificado. GitHub main é a autoridade única; [baseline §11](SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md) reconcilia as ordens.
 
 ## 28 comandos CLI com parser

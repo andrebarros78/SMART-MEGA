@@ -7,7 +7,10 @@ SCRIPT = Path(__file__).resolve().parent / "smart_procedural_coverage_gate.py"
 
 
 def run_gate(root):
-    return subprocess.run([sys.executable, str(SCRIPT)], cwd=root, capture_output=True, text=True, timeout=30)
+    return subprocess.run(
+        [sys.executable, "-E", "-B", "-X", "utf8", str(SCRIPT)],
+        cwd=root, capture_output=True, text=True, encoding="utf-8", timeout=30,
+    )
 
 
 def test_missing_procedural_inputs_fail_closed_with_structured_output(tmp_path):
