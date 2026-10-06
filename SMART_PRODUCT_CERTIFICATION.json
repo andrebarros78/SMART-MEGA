@@ -2,7 +2,7 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-06T08:14:48.284615+00:00",
+  "generated_utc": "2026-10-06T08:26:08.227938+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
@@ -1114,15 +1114,14 @@
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "2e3c9e762d748d910d1d5d6ce8358f352aaba6af",
-    "ci_run_id": null,
+    "source_commit": "ea84a407ea576b7d4774776de5dfa7cb5fdce314",
+    "ci_run_id": "37435255255",
     "execution": {
-      "kind": "FEDERATED_PC",
-      "execution_id": "b719dc1a-8946-4470-944e-14f481cca394",
-      "hostname": "PC-ESCOLA"
+      "kind": "GITHUB_ACTIONS",
+      "run_id": "37435255255"
     },
     "code_fingerprint_sha256": "dbc7ccc31ce183eb7a60b54c5db28aa4704b59bde10613c726159bce9d3b64e9",
-    "junit_sha256": "4e6e35da498d37dcf4103bc7cb2a59e68da119cc5fa40c493221103da832cfa2",
+    "junit_sha256": "550694fc1d10e264dd250ef4858e0c887b5a4d33a17ac6420fe5520a905a9542",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1275,15 +1274,15 @@
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "4e6e35da498d37dcf4103bc7cb2a59e68da119cc5fa40c493221103da832cfa2"
+    "sha256": "550694fc1d10e264dd250ef4858e0c887b5a4d33a17ac6420fe5520a905a9542"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "2d8e899cf91f03b9c622f7e5ce242bef5daa8d7a8c38cb797c7e2f67b411f78d",
-    "authority_sha256": "5b0da4bc05d3eb25e431c7ab64086cb97b85c526ba6405f3e1e16a5e9f20522f",
+    "file_sha256": "8f7a2b02fff42d049abcae79ae10fdf5b143b88605db139d88dc106d1bd45845",
+    "authority_sha256": "6f3629b286a202a6148cc27fbb00a1d66551fff76b5e7b396cfc6068d97a1539",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "4e6e35da498d37dcf4103bc7cb2a59e68da119cc5fa40c493221103da832cfa2",
+    "junit_sha256": "550694fc1d10e264dd250ef4858e0c887b5a4d33a17ac6420fe5520a905a9542",
     "tests": 1077,
     "failures": 0,
     "errors": 0,
@@ -1303,9 +1302,9 @@
   },
   "runtime_guard": {
     "schema": "SMART_RUNTIME_GUARD_V2",
-    "project_root": "C:\\SMART-MEGA-REPAIR-20261005",
-    "canonical_python": "C:\\SMART-MEGA-AUDIT-20261005\\FECHAMENTO-1-20261006\\.venv\\Scripts\\python.exe",
-    "current_python": "C:\\SMART-MEGA-AUDIT-20261005\\FECHAMENTO-1-20261006\\.venv\\Scripts\\python.exe",
+    "project_root": "/home/runner/work/SMART-MEGA/SMART-MEGA",
+    "canonical_python": "/opt/hostedtoolcache/Python/3.13.15/x64/bin/python3.13",
+    "current_python": "/opt/hostedtoolcache/Python/3.13.15/x64/bin/python3.13",
     "python_version": "3.13.15",
     "modules": {
       "numpy": {
@@ -1346,10 +1345,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "d5b84883d77537d23f7171f3dc8626f7a7fbcbf5ec84b5bd817e16bff2054ac5",
-  "build_runtime_sha256": "00d24e9164f88e6868e06a6ae4d3b423ba518585403f26c0e978d7bd14f87b78",
-  "build_functional_sha256": "5d76ec28ee018cef289a81de848b9946fef32b0100306d756a47adb2f0cbd2e2",
-  "build_total_integration_sha256": "66b9b2f9f66967b088170f682f10e2985355d3158d2c226f50dfbd7e7d9516a7",
+  "build_orchestration_sha256": "58711b6465ec6820cc924a939cfe983b263494410dc0af4d62d0d86e0952170f",
+  "build_runtime_sha256": "4d2b35ffc8c35d18b072fe25921fb1c77c5fcf73cf821986216033f17fc6763c",
+  "build_functional_sha256": "91862741b35f7eb28c0eb9f1aa0cf896fe3eaa1f8b11503612c07999be41101c",
+  "build_total_integration_sha256": "bb47862a6f01f3d7c32c1ba7429fb5fefc67f567d35d2d1d9d6e846e034ca9dc",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1415,5 +1414,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "b71a88296702f43f32610e5c70e97f6e8662b9b655d8ea00e8f211adc39eaab7"
+  "sha256": "dcce0880b643917d00517dd3fdb46b907f2a39fcfffa4390e3a6a165b21e9b38"
 }
