@@ -1,0 +1,82 @@
+{
+  "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+  "status": "RESET_READY",
+  "project": "SMART-MEGA",
+  "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z",
+  "created_utc": "2026-10-06T01:04:45.166362+00:00",
+  "product_certification_file": "SMART_PRODUCT_CERTIFICATION.json",
+  "product_certification_sha256": "e305750ba8e653ceda070f85220deeec85eab7169bdb528a97e424cf9a6f23ab",
+  "operator_selected_target": true,
+  "state_paths": {
+    "ledger": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+    "state": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_STATE.json",
+    "activation_authority": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+    "expansion_registry": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+    "freeze": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE.json"
+  },
+  "data_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+  "data_sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4",
+  "canonical_source_file": "Mega-Sena.xlsx",
+  "canonical_source_sha256_at_prepare": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4",
+  "immutable_history_snapshot": true,
+  "cutoff_contest": 3066,
+  "target_contest": 3067,
+  "authority_mode": "OPERATOR_SELECTED_TARGET",
+  "current_engineering_role": "PRODUCT_CERTIFIED_OPERATION",
+  "first_possible_authoritative_target_for_current_engineering": 3067,
+  "target_schedule": {
+    "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+    "target_contest": 3067,
+    "previous_contest": 3066,
+    "previous_contest_date": "03/10/2026",
+    "target_date": "06/10/2026",
+    "weekday": "terça-feira",
+    "scheduled_datetime": "2026-10-06T21:00:00-03:00",
+    "scheduled_timezone": "America/Sao_Paulo",
+    "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+    "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+    "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+    "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+    "source_sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+    "source_line": "06/10/2026 terça-feira 3798 7136 2451 3067 1316",
+    "source_count": 1,
+    "sources": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+        "sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+        "source_line": "06/10/2026 terça-feira 3798 7136 2451 3067 1316"
+      }
+    ],
+    "rejected_occurrences_before_cutoff": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2024-03.pdf",
+        "target_date": "01/04/2024",
+        "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+      }
+    ],
+    "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+    "schedule_consensus": true,
+    "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+    "result_used": false
+  },
+  "temporal_guard": {
+    "schema": "SMART_PRE_DRAW_TEMPORAL_GUARD_1",
+    "status": "PASS",
+    "target_contest": 3067,
+    "checked_at_utc": "2026-10-06T01:04:44.976815+00:00",
+    "scheduled_datetime": "2026-10-06T21:00:00-03:00",
+    "seconds_until_draw": 82515.023185,
+    "minimum_lead_seconds": 60,
+    "before_scheduled_draw": true,
+    "result_used": false
+  },
+  "result_used": false,
+  "freeze_authority": null,
+  "learning_state_authority": null,
+  "supersedes_active_epoch_sha256": null,
+  "canonical_ledger_seed_sha256": "ba835a476ac12f5e40443bddc9166fe1b2954b870517483e3336f0868e8c7e72",
+  "canonical_ledger_seed_event_count": 92,
+  "revision": 1,
+  "previous_active_sha256": null,
+  "sha256": "d45911ca74f1e2d481bbc8a6ba2ddd93c502db022a9fc5b7e6bf556ea911269f"
+}
