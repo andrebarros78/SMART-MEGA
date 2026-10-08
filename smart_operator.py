@@ -132,9 +132,41 @@ def _run_idempotent(root, operation, target, idempotency_key, payload, action):
     return result
 
 
+def _authorization_idempotency_payload(root, target, args, kwargs):
+    """Scope same-target reauthorization to its verified technical withdrawal.
+
+    The ordinary first-authorization key is preserved. A consumed authority
+    must never replay that prior success after a proven pre-freeze withdrawal.
+    """
+    payload = {"args": [str(x) for x in args],
+               "kwargs": {k: str(v) for k, v in sorted(kwargs.items())}}
+    root = Path(root).resolve()
+    lifecycle = load_lifecycle(root)
+    authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
+    if (lifecycle.get("state") != "HOLD"
+            or int(lifecycle.get("target_contest") or -1) != int(target)
+            or not authority_path.is_file()):
+        return payload
+    existing = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
+    if int(existing.get("target_contest", -1)) != int(target) or existing.get("consumed") is not True:
+        return payload
+    epoch_id = str(existing.get("prepared_epoch_id") or "")
+    proof = _find_valid_pre_freeze_withdrawal(root, int(target), epoch_id)
+    if proof is None:
+        raise FileExistsError("consumed next-cycle authority cannot be replayed without withdrawal proof")
+    proof_path, evidence = proof
+    payload["withdrawal_reauthorization"] = {
+        "prior_consumed_authority_sha256": existing["sha256"],
+        "withdrawal_proof_sha256": evidence["sha256"],
+        "withdrawn_epoch_id": epoch_id,
+        "withdrawal_proof_file": str(proof_path.relative_to(root)).replace("\\", "/"),
+    }
+    return payload
+
+
 @locked_operation("AUTHORIZE_NEXT_CYCLE")
 @startup_guarded("AUTHORIZE_NEXT_CYCLE")
-@idempotent_operation('AUTHORIZE')
+@idempotent_operation('AUTHORIZE', payload_builder=_authorization_idempotency_payload)
 def authorize_next_cycle_operation(root: str | Path, target: int, *, idempotency_key: str | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()

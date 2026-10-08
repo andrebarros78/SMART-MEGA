@@ -69,3 +69,58 @@ def test_consumed_authority_without_withdrawal_proof_is_rejected(tmp_path: Path,
 
 def test_operator_contract_declares_proof_bound_reauthorization() -> None:
     assert op.contract()["technical_withdrawal_allows_same_target_reauthorization_with_proof"] is True
+
+
+def test_consumed_previous_authorization_replay_cannot_block_proven_reauthorization(tmp_path: Path, monkeypatch) -> None:
+    """A prior idempotency record is not valid after a hash-bound withdrawal."""
+    from smart_idempotency import make_key, commit, load
+
+    monkeypatch.setattr(op, "canonical_root", lambda root=None: Path(root).resolve())
+    monkeypatch.setattr(op, "assert_lifecycle_state", lambda *a, **k: {"status": "PASS"})
+    monkeypatch.setattr(op, "transition_lifecycle", lambda *a, **k: {"status": "AUTHORIZED"})
+    monkeypatch.setattr(op, "load_lifecycle", lambda root: {"state": "HOLD", "target_contest": 3060})
+    review, hold = _base(tmp_path)
+    existing = _hashed(tmp_path / op.NEXT_CYCLE_AUTHORITY_PATH, {
+        "schema": op.NEXT_CYCLE_AUTHORITY_SCHEMA, "status": "CONSUMED_FOR_PREPARE",
+        "target_contest": 3060, "completed_contest": 3059, "review_file": review.name,
+        "review_file_sha256": op.sha256_file(review), "review_sha256": hold["review_sha256"],
+        "canonical_sha256": op.sha256_file(tmp_path / "Mega-Sena.xlsx"),
+        "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE", "authorized_utc": "x",
+        "consumed": True, "consumed_utc": "y", "prepared_epoch_id": "e3060",
+    })
+    old_key = make_key("AUTHORIZE", 3060, {"args": [], "kwargs": {}})
+    commit(tmp_path, "AUTHORIZE", old_key, 3060,
+           {"status": "AUTHORIZED", "consumed": False, "stale_old_authorization": True})
+    proof = _hashed(tmp_path / "SMART_STATE_ARCHIVE" / "operator_pre_freeze_withdrawal_valid.json", {
+        "schema": "SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1", "status": "WITHDRAWN_PRE_FREEZE",
+        "target_contest": 3060, "epoch_id": "e3060", "active_pointer_removed": True,
+        "reason": "PRE_FREEZE_TECHNICAL_CORRECTION",
+        "checks": {"reset_ready": True, "freeze_authority_absent": True},
+    })
+    out = op.authorize_next_cycle_operation.__wrapped__.__wrapped__(tmp_path, 3060)
+    assert out["status"] == "AUTHORIZED" and out["consumed"] is False
+    assert out["reauthorized_after_withdrawal"] is True
+    assert out["prior_consumed_authority_sha256"] == existing["sha256"]
+    assert out["withdrawal_proof_sha256"] == proof["sha256"]
+    assert not out.get("stale_old_authorization")
+    assert load(tmp_path, "AUTHORIZE", old_key)["result"]["stale_old_authorization"] is True
+
+
+def test_consumed_replay_without_withdrawal_proof_must_fail_closed(tmp_path: Path, monkeypatch) -> None:
+    import pytest
+    from smart_idempotency import make_key, commit
+
+    monkeypatch.setattr(op, "load_lifecycle", lambda root: {"state": "HOLD", "target_contest": 3060})
+    review, hold = _base(tmp_path)
+    _hashed(tmp_path / op.NEXT_CYCLE_AUTHORITY_PATH, {
+        "schema": op.NEXT_CYCLE_AUTHORITY_SCHEMA, "status": "CONSUMED_FOR_PREPARE",
+        "target_contest": 3060, "completed_contest": 3059, "review_file": review.name,
+        "review_file_sha256": op.sha256_file(review), "review_sha256": hold["review_sha256"],
+        "canonical_sha256": op.sha256_file(tmp_path / "Mega-Sena.xlsx"),
+        "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE", "authorized_utc": "x",
+        "consumed": True, "consumed_utc": "y", "prepared_epoch_id": "e3060",
+    })
+    old_key = make_key("AUTHORIZE", 3060, {"args": [], "kwargs": {}})
+    commit(tmp_path, "AUTHORIZE", old_key, 3060, {"status": "AUTHORIZED", "consumed": False})
+    with pytest.raises(FileExistsError, match="withdrawal proof"):
+        op.authorize_next_cycle_operation.__wrapped__.__wrapped__(tmp_path, 3060)
