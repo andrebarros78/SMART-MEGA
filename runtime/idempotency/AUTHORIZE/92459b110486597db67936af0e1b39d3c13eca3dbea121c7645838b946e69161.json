@@ -1,0 +1,117 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "AUTHORIZE",
+  "idempotency_key": "92459b110486597db67936af0e1b39d3c13eca3dbea121c7645838b946e69161",
+  "target": 3068,
+  "result": {
+    "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+    "status": "AUTHORIZED",
+    "target_contest": 3068,
+    "completed_contest": 3067,
+    "review_file": "SMART_POST_RESULT_REVIEW_3067.json",
+    "review_file_sha256": "57928e18be95b9505fe7e0b12a65d83b60f825499f0f0dc168e64a224d5c5f4a",
+    "review_sha256": "84013cc81070c005b8bf92f249c52b12af0d77b419c9a87db322ffb5e23b0a41",
+    "canonical_sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+    "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+    "authorized_utc": "2026-10-08T22:25:16.604737+00:00",
+    "consumed": false,
+    "consumed_utc": null,
+    "prepared_epoch_id": null,
+    "reservation_transaction_id": null,
+    "reserved_utc": null,
+    "consumption_transaction_id": null,
+    "reauthorized_after_withdrawal": true,
+    "prior_consumed_authority_sha256": "86d358868ef8d832c700fc53e13af4a2b76c99f20ce0ab9ded3ee74d708d0588",
+    "withdrawal_proof_file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+    "withdrawal_proof_sha256": "6f567fec6b47756fa850c72a3356fa21ba987ccdef786a42843cd9ffca2454b0",
+    "withdrawn_epoch_id": "operator-3068-2297cd4ad693-20261008T203258221485Z",
+    "revision": 13,
+    "previous_document_sha256": "86d358868ef8d832c700fc53e13af4a2b76c99f20ce0ab9ded3ee74d708d0588",
+    "sha256": "a8a314f494d8fc8a248d4ab6b02ea68783d2a492343bb53a1d8a508c3f8aeaf1",
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "AUTHORIZED",
+      "revision": 29,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3068,
+      "completed_contest": 3067,
+      "previous_state": "HOLD",
+      "transition": "HOLD_TO_AUTHORIZED",
+      "transition_actor": "operator_authorize_next_cycle",
+      "transition_utc": "2026-10-08T22:25:16.606778+00:00",
+      "previous_lifecycle_sha256": "21c15c68c98168ce500a1b6f6bc7367c306aa8ee34eb5b586a4d8dcf944b6705",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3066.json",
+          "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3068:operator-3068-2297cd4ad693-20261008T203258221485Z",
+        "reserved_authority_sha256": "a3d6a4e5aca28167635039298889d61f3bbacd10ceffbbad0902d697e98a9b5e",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "cfda1271082204df48c2cfe020e7192425f2ca7303995bfddc3ff4918ec8a21b",
+          "epoch_id": "operator-3068-2297cd4ad693-20261008T203258221485Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
+          "sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3063,
+          "through_target": 3066,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+              "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+              "target_contest": 3063
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+              "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+              "target_contest": 3064
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+              "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+              "target_contest": 3065
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+              "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+              "target_contest": 3066
+            }
+          ],
+          "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+          "official_result_batch": null
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "7e9f20ea4a9714d51d210fdeb32d51b75266f6a1d86aadfe9c6e4c775762b44d"
+    }
+  }
+}
