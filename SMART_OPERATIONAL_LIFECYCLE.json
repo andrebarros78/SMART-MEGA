@@ -1,16 +1,16 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "PREPARED",
-  "revision": 27,
+  "state": "HOLD",
+  "revision": 28,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
   "target_contest": 3068,
   "completed_contest": 3067,
-  "previous_state": "PREPARING",
-  "transition": "PREPARING_TO_PREPARED",
-  "transition_actor": "operator_prepare_complete",
-  "transition_utc": "2026-10-08T20:32:58.431290+00:00",
-  "previous_lifecycle_sha256": "2069f26f078f6725c13d58eebcd9ac000de30d60a24ad100c37a7c6ae91fa1a5",
+  "previous_state": "PREPARED",
+  "transition": "PREPARED_TO_HOLD",
+  "transition_actor": "operator_withdraw_pre_freeze",
+  "transition_utc": "2026-10-08T20:48:03.052024+00:00",
+  "previous_lifecycle_sha256": "d00b6be565d2b18081edfa553f4eb206686392aa91eb2dc0290d111a256b3e7d",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
@@ -75,7 +75,11 @@
       ],
       "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
       "official_result_batch": null
+    },
+    "pre_freeze_withdrawal": {
+      "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+      "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "d00b6be565d2b18081edfa553f4eb206686392aa91eb2dc0290d111a256b3e7d"
+  "sha256": "21c15c68c98168ce500a1b6f6bc7367c306aa8ee34eb5b586a4d8dcf944b6705"
 }
