@@ -31,6 +31,9 @@
     ],
     "smart_repository_integrity.py": [
       ".github/workflows/repository-integrity.yml"
+    ],
+    "smart_skill_adapter_registry.py": [
+      ".github/workflows/ci.yml"
     ]
   },
   "required_production_files": [
@@ -44,15 +47,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "6d71aa875dde9b10a2f27a353b5c5433c9c3e4554a02daeaf8e106361e9049d7",
+  "inventory_sha256": "327477b8212df3fc7164e4d8a4d284b100d39bbaa75fd4810e197a02d7f709df",
   "summary": {
-    "python_components": 467,
-    "workflow_entrypoints": 5,
-    "production_components": 94,
+    "python_components": 469,
+    "workflow_entrypoints": 6,
+    "production_components": 95,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 146,
+    "test_components": 147,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -128,6 +131,7 @@
       "smart_learning_epoch_reset.py",
       "smart_mission_status.py",
       "smart_product_certification.py",
+      "smart_skill_adapter_registry.py",
       "smart_skill_runtime.py",
       "smart_total_integration_gate.py"
     ]
@@ -3882,7 +3886,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -4121,7 +4126,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -4147,7 +4153,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_handoff_runtime",
@@ -4209,7 +4216,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -4245,7 +4253,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity",
@@ -4265,6 +4274,7 @@
         "smart_continuity_consolidator",
         "smart_engineering_activation",
         "smart_product_certification",
+        "smart_skill_adapter_registry",
         "smart_skill_runtime",
         "test_smart_agent_ecosystem_governance",
         "test_smart_agent_skill_orchestration",
@@ -4296,7 +4306,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_contextual_meta_weights",
@@ -4328,7 +4339,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_critical_code_manifest",
@@ -4363,7 +4375,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -4458,7 +4471,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -4581,7 +4595,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -4643,7 +4658,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "freeze_next_research",
@@ -4807,7 +4823,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -4844,7 +4861,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -4902,7 +4920,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_context_regime",
@@ -4972,7 +4991,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -5004,7 +5024,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_source_identity"
@@ -5034,7 +5055,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_learning_epoch_reset",
@@ -5085,7 +5107,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -5119,7 +5142,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_skill_orchestration",
@@ -5159,7 +5183,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_global_integrity"
@@ -5263,7 +5288,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -5289,7 +5315,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_cartography_extended",
@@ -5589,7 +5616,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_continuous_red_team",
@@ -5757,7 +5785,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "freeze_next_research",
@@ -5807,7 +5836,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -5839,7 +5869,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_learning_activation_gate",
@@ -5871,7 +5902,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -5901,7 +5933,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity",
@@ -5987,7 +6020,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6013,7 +6047,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6049,7 +6084,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_multi_challengers"
@@ -6121,7 +6157,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_authority_freshness"
@@ -6183,7 +6220,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6371,7 +6409,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_crash_safe_io"
@@ -6485,7 +6524,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6512,7 +6552,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6587,7 +6628,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6618,7 +6660,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity",
@@ -6676,7 +6719,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -6900,7 +6944,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -6980,7 +7025,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -7063,7 +7109,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity",
@@ -7150,7 +7197,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7185,7 +7233,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7239,7 +7288,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -7380,7 +7430,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity",
@@ -7437,7 +7488,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_path_semantics"
@@ -7529,7 +7581,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_bounded_online_learning",
@@ -7675,7 +7728,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -7711,7 +7765,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7742,7 +7797,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7774,7 +7830,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7810,7 +7867,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -7842,7 +7900,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -7872,6 +7931,37 @@
       "sha256": "0a360601d21f47038e1f2a2fd21bc2b5b4fe52fd9d66ec1d75d6678ad4852b09"
     },
     {
+      "component_id": "smart_skill_adapter_registry",
+      "source_file": "smart_skill_adapter_registry.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
+      ],
+      "producers": [
+        "smart_agent_skill_orchestration"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_skill_runtime",
+        "test_smart_f07_skill_adapters"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [
+        1
+      ],
+      "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148"
+    },
+    {
       "component_id": "smart_skill_runtime",
       "source_file": "smart_skill_runtime.py",
       "role": "PRODUCTION",
@@ -7879,16 +7969,19 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_runtime",
         "smart_agent_skill_orchestration",
-        "smart_canonical_identity"
+        "smart_canonical_identity",
+        "smart_skill_adapter_registry"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_skill_functional_gate",
+        "test_smart_f07_skill_adapters",
         "test_smart_skill_runtime"
       ],
       "reachable": true,
@@ -7901,7 +7994,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "d8ec67ef0a84be8ea11e6c34443f3bce5e881a6bc3fda1c0b618d3b2eeab499c"
+      "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f"
     },
     {
       "component_id": "smart_source_identity",
@@ -7911,7 +8004,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -8010,7 +8104,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -8145,7 +8240,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -8162,6 +8258,7 @@
         "smart_full_process_pipeline",
         "smart_product_certification",
         "test_smart_f06_agent_handoffs",
+        "test_smart_f07_skill_adapters",
         "test_smart_total_integration_gate"
       ],
       "reachable": true,
@@ -8174,7 +8271,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "1601455d57ba6cad2dacef4bbd5dfd776a2ef8b0a88af8cf7ad35b21a3cc68bf"
+      "sha256": "9455db564337bcfe031b54505bfde38d1ec8b2e3e9bb5b653477a701e0533748"
     },
     {
       "component_id": "smart_transaction_journal",
@@ -8213,7 +8310,8 @@
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
@@ -9551,6 +9649,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "6e4961bbfd50e923ada7eace655c148a04bf18170384ed88824d09f5d75deacf"
+    },
+    {
+      "component_id": "test_smart_f07_skill_adapters",
+      "source_file": "test_smart_f07_skill_adapters.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_skill_adapter_registry",
+        "smart_skill_runtime",
+        "smart_total_integration_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "42e555c1bc71fa8db72bc030ad619f061dd67ef40c2a40525ff0c27d80108178"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
