@@ -1,0 +1,62 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F03_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F03",
+  "phase_name": "EXECUTOR_LEGADO",
+  "status": "PHASE_PROVEN",
+  "baseline_head": "308d05391ec022930148d544dae04e39ec0db570",
+  "implementation_commits": [
+    "69ee69a32d4393f78ab418d8c7e4e5b03b28ff5d",
+    "699b3be57ce9f5e3c1ea01c9ad73089b13f63a2b"
+  ],
+  "certified_head": "63ff63d9fad102092eae098b57affcb8c8edcb63",
+  "registry": {
+    "blob_sha": "9631634b825193c21b09f067910efe22d5a9f95b",
+    "gate": {
+      "status": "PASS",
+      "parse_errors": [],
+      "execution_dependency_errors": [],
+      "unclassified": [],
+      "production_unreachable": [],
+      "required_production_missing": [],
+      "required_production_unreachable": []
+    },
+    "generic_terminal_engine_reachable": true,
+    "legacy_3054_terminal_executor_reachable": false,
+    "summary": {
+      "python_components": 461,
+      "workflow_entrypoints": 4,
+      "production_components": 91,
+      "shadow_components": 1,
+      "diagnostic_components": 27,
+      "validation_components": 23,
+      "test_components": 143,
+      "archive_components": 176,
+      "quarantine_components": 0,
+      "unclassified_components": 0,
+      "production_unreachable": 0,
+      "independent_entrypoints": 38,
+      "import_cycles": 1,
+      "parse_errors": 0,
+      "declared_execution_dependencies": 1,
+      "execution_dependency_errors": 0
+    }
+  },
+  "regression": {
+    "workflow_run_id": 37779324753,
+    "regression_job": "success",
+    "certification_job": "success",
+    "tests": 1089,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "auxiliary_gates": {
+    "operator_smoke_run_id": 37779324768,
+    "operator_smoke": "success",
+    "repository_integrity_run_id": 37779324868,
+    "repository_integrity": "success"
+  },
+  "proof_boundary": "F03 proves the canonical runtime no longer depends on smart_3054_terminal_executor.py. Historical/test compatibility may retain the legacy module, but it is not production-reachable.",
+  "next_phase": "F04_FINE_TUNING_NO_CICLO"
+}

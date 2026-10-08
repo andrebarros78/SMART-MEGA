@@ -7,13 +7,12 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T12:39:32Z",
+  "last_update_utc": "2026-10-08T12:54:00Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F03",
-  "last_proven_phase": "F02",
-  "last_proven_head": "d7009886f86849821b766ffc115a2e317145743c",
+  "current_phase": "F04",
+  "last_proven_phase": "F03",
+  "last_proven_head": "63ff63d9fad102092eae098b57affcb8c8edcb63",
   "open_deficiencies": [
-    "F03 legacy terminal executor not yet retired",
     "F04 fine-tuning lifecycle not yet integrated",
     "F05 canonical component registry not yet implemented",
     "F06 operational agent handoffs not yet implemented",
@@ -24,7 +23,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F03_GENERIC_TERMINAL_ENGINE",
+  "next_required_action": "EXECUTE_F04_FINE_TUNING_NO_CICLO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -87,13 +86,20 @@
     },
     "F03": {
       "name": "EXECUTOR_LEGADO",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F03 baseline rediscovered at 308d05391ec022930148d544dae04e39ec0db570",
-        "smart_terminal_executor production wrapper depended directly on smart_3054_terminal_executor",
-        "legacy engine already exposes active_epoch_context for dynamic target/cutoff binding",
-        "behavior-preserving migration prepared: generic engine copy + canonical wrapper retarget",
-        "legacy module retained only for historical/test compatibility pending validation"
+        "baseline head: 308d05391ec022930148d544dae04e39ec0db570",
+        "generic engine migration: 69ee69a32d4393f78ab418d8c7e4e5b03b28ff5d",
+        "facade test repair: 699b3be57ce9f5e3c1ea01c9ad73089b13f63a2b",
+        "certified head: 63ff63d9fad102092eae098b57affcb8c8edcb63",
+        "smart_terminal_executor imports smart_terminal_engine",
+        "smart_3054_terminal_executor production_reachable=false",
+        "smart_terminal_engine production_reachable=true",
+        "reachability gate PASS",
+        "GitHub Operator smoke=success",
+        "Repository Integrity=success",
+        "full regression=1089 tests, 0 failures, 0 errors, 0 skipped",
+        "legacy module retained only as historical/test compatibility surface"
       ]
     },
     "F04": {
