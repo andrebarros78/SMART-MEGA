@@ -9,6 +9,7 @@ from typing import Any
 
 from smart_agent_runtime import SmartAgentRuntime, sha256_file, sha256_json
 from smart_agent_skill_orchestration import AGENTS, LANES
+from smart_skill_adapter_registry import build_registry as build_adapter_registry
 
 SCHEMA = "SMART_SKILL_RUNTIME_V1"
 QUARANTINE_LANE = "retained_quarantine_no_current_lane"
@@ -61,6 +62,12 @@ class SmartSkillRuntime:
         self.agent_runtime = SmartAgentRuntime(self.root) if str(phase).upper() == "AUTO" else SmartAgentRuntime(self.root, phase=phase)
         self.phase = self.agent_runtime.phase
         self._registrations = self._build_registrations()
+        self.adapter_registry = build_adapter_registry(self.root)
+        if self.adapter_registry["gate"]["status"] != "PASS":
+            raise RuntimeError(f"skill adapter registry invalid: {self.adapter_registry['gate']}")
+        self._adapter_by_name = {
+            row["capability_id"]: row for row in self.adapter_registry["adapters"]
+        }
 
     def _build_registrations(self) -> dict[str, CapabilityRegistration]:
         registrations: dict[str, CapabilityRegistration] = {}
@@ -98,6 +105,16 @@ class SmartSkillRuntime:
 
     def invoke(self, capability: str, payload: dict[str, Any] | None = None) -> dict[str, Any]:
         registration = self.registration(capability)
+        binding = self._adapter_by_name[capability]
+        if (
+            binding["agent_owner"] != registration.agent_owner
+            or binding["callable"] != registration.callable
+            or binding["execution_mode"] != registration.execution_mode
+            or binding["binding_sha256"] != sha256_json({k: v for k, v in binding.items() if k != "binding_sha256"})
+        ):
+            raise RuntimeError(f"skill adapter binding mismatch: {capability}")
+        if binding["state"] not in {"NATIVE_ADAPTER", "REFERENCE_ONLY"}:
+            raise RuntimeError(f"unproved skill adapter state: {capability}")
         if not registration.callable:
             raise PermissionError(
                 f"capability is intentionally non-pertinent and quarantined: {capability}"
@@ -130,6 +147,14 @@ class SmartSkillRuntime:
             "direct_named_skill_execution": False,
             "semantic_binding_kind": registration.semantic_binding_kind,
             "payload_shape": sorted(payload.keys()) if payload else [],
+            "adapter_state": binding["state"],
+            "adapter_binding_sha256": binding["binding_sha256"],
+            "adapter_registry_sha256": self.adapter_registry["registry_sha256"],
+            "native_probe_result_sha256": sha256_json(probe),
+            "external_source_state": binding["external_source_state"],
+            "decision_effect": binding["decision_effect"],
+            "predictive_weight_authorized": False,
+            "freeze_mutation_authorized": False,
             "status": "PASS",
         }
         evidence["invocation_sha256"] = sha256_json(evidence)
@@ -164,6 +189,15 @@ class SmartSkillRuntime:
             "pertinent_bindings_are_explicit_native_aliases": all(r["semantic_binding_kind"] == "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE" for r in callable_rows),
             "native_targets_present": all(all((self.root / p).exists() for p in r["native_targets"]) for r in callable_rows),
             "canonical_state_unchanged": critical_before == critical_after,
+            "f07_adapter_registry_pass": self.adapter_registry["gate"]["status"] == "PASS",
+            "f07_external_sources_quarantined": self.adapter_registry["summary"]["external_quarantined_sources"] == 21 and self.adapter_registry["summary"]["external_executions"] == 0,
+            "f07_no_unproven_active_native": self.adapter_registry["summary"]["active_native"] == 0,
+            "f07_per_invocation_binding_consumed": all(
+                row["invocation"]["adapter_binding_sha256"] == self._adapter_by_name[row["capability"]]["binding_sha256"]
+                and row["invocation"]["adapter_state"] == "NATIVE_ADAPTER"
+                and row["invocation"]["native_probe_result_sha256"]
+                for row in callable_rows
+            ),
         }
         document: dict[str, Any] = {
             "schema": SCHEMA,
@@ -178,6 +212,7 @@ class SmartSkillRuntime:
                 "nonpertinent_quarantined": len(quarantined_rows),
             },
             "capabilities": rows,
+            "adapter_registry": self.adapter_registry,
             "critical_hashes_before": critical_before,
             "critical_hashes_after": critical_after,
         }

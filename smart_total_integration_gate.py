@@ -37,6 +37,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     functional = evaluate_functional(root, phase=phase)
     runtime = functional["runtime_proof"]
     skills = functional["skill_runtime_proof"]
+    adapter_registry = skills["adapter_registry"]
     matrix = functional["matrix"]
     executions = runtime["executions"]
     operational_handoffs = runtime["operational_handoff_ledger"]
@@ -113,6 +114,15 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
             "canonical_state_unchanged": runtime["checks"]["critical_canonical_files_unchanged"]
             and skills["checks"]["canonical_state_unchanged"],
         },
+        "G10_SKILL_ADAPTER_CONSUMPTION": {
+            "registry_pass": adapter_registry["gate"]["status"] == "PASS",
+            "thirty_seven_native_probe_aliases": adapter_registry["summary"]["native_adapters"] == 37,
+            "four_reference_only": adapter_registry["summary"]["reference_only"] == 4,
+            "twenty_one_external_quarantined": adapter_registry["summary"]["external_quarantined_sources"] == 21,
+            "no_unproven_active_native": adapter_registry["summary"]["active_native"] == 0,
+            "runtime_consumed_registry": skills["checks"]["f07_per_invocation_binding_consumed"],
+            "no_external_code_execution": adapter_registry["summary"]["external_executions"] == 0,
+        },
         "G9_SEMANTIC_TRUTH": {
             "agents_not_misrepresented_as_llm": all(
                 not agent["autonomous_ai_agent"] and not agent["llm_model"] for agent in agents
@@ -136,6 +146,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
         "agent_inventory": agents,
         "operational_handoff_ledger": operational_handoffs,
         "skill_inventory": matrix,
+        "skill_adapter_registry_sha256": adapter_registry["registry_sha256"],
         "file_audit": files,
         "native_invocations": [row["alias_invocation"] for row in calls],
         "agent_runtime_sha256": runtime["runtime_sha256"],

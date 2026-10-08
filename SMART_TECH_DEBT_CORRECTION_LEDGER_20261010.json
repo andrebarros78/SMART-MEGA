@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T14:27:36Z",
+  "last_update_utc": "2026-10-08T14:43:09Z",
   "mission_status": "ACTIVE",
   "current_phase": "F07",
   "last_proven_phase": "F06",
@@ -20,7 +20,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F07_SKILLS_E_ADAPTERS",
+  "next_required_action": "VALIDATE_F07_SKILL_ADAPTER_REGISTRY_AND_CONSUMPTION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -172,8 +172,17 @@
     },
     "F07": {
       "name": "SKILLS_E_ADAPTERS",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "baseline head 07ea4327716f5c576f877e618169a092cc895f7f",
+        "existing 37 named capability aliases execute native owner probes, not named external skills",
+        "four capabilities non-callable source references; 21 external source manifests quarantined",
+        "F07 separated NATIVE_ADAPTER, REFERENCE_ONLY and QUARANTINED_SOURCE in independent registry",
+        "unproven ACTIVE_NATIVE promotion forbidden; direct source execution remains false",
+        "skill runtime invocation now consumes hashed adapter binding and native probe evidence",
+        "total integration G10 checks adapter registry + consumption",
+        "GitHub CI must generate and certify SMART_SKILL_ADAPTER_REGISTRY.json"
+      ]
     },
     "F08": {
       "name": "COMPONENTES_PARALELOS",
@@ -218,5 +227,6 @@
   "f03_baseline_head": "308d05391ec022930148d544dae04e39ec0db570",
   "f04_baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
   "f05_baseline_head": "41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
-  "f06_baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee"
+  "f06_baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee",
+  "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f"
 }
