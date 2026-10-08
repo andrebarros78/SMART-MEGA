@@ -57,10 +57,16 @@ def test_canonical_rescue_rejects_tampered_lineage_without_score_promotion(tmp_p
     from smart_false_negative_rescue import sha256_json
     (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}",encoding="utf-8")
     ledger=tmp_path/"ledger.json"
-    ledger.write_text('{"schema":"SMART_SIGNAL_LEDGER_1","events":[]}',encoding="utf-8")
+    ledger.write_text(json.dumps({"schema":"SMART_SIGNAL_LEDGER_1","events":[
+        {"event_type":"FREEZE","target_contest":9,"freeze_sha256":"PLACEHOLDER"},
+        {"event_type":"ADJUDICATION","target_contest":9,"freeze_sha256":"PLACEHOLDER","actual_numbers":[1,2,3,4,5,6]}
+    ]}),encoding="utf-8")
     freeze=tmp_path/"freeze.json"
     freeze.write_text(json.dumps({"target_contest":9,"champion":{"top6":[1,2,3,7,8,9]}}),encoding="utf-8")
     digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    ledger_doc=json.loads(ledger.read_text(encoding="utf-8"))
+    for event in ledger_doc["events"]: event["freeze_sha256"]=digest(freeze)
+    ledger.write_text(json.dumps(ledger_doc),encoding="utf-8")
     audit={"freeze_artifact":"freeze.json","freeze_sha256":digest(freeze),"ledger":"ledger.json",
            "ledger_sha256":digest(ledger),"freeze_authority_present":True,"findings":[]}
     report={"schema":"SMART_POST_RESULT_REPORT_1","status":"PASS","contest_number":9,
@@ -78,3 +84,24 @@ def test_canonical_rescue_rejects_tampered_lineage_without_score_promotion(tmp_p
     freeze.write_text('{"target_contest":9,"champion":{"top6":[1,2,3,8,9,10]}}',encoding="utf-8")
     with pytest.raises(ValueError,match="freeze hash mismatch"):
         build_profile_from_reports(tmp_path,through_contest=9)
+
+
+def test_canonical_rescue_quarantines_orphaned_historical_report(tmp_path):
+    import json
+    from smart_false_negative_rescue import sha256_json
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}",encoding="utf-8")
+    actual=[1,2,3,4,5,6]
+    generated=[1,2,3,7,8,9]
+    audit={"freeze_artifact":"lost/freeze.json","freeze_sha256":"0"*64,
+           "ledger":"lost/ledger.json","ledger_sha256":"1"*64,
+           "freeze_authority_present":True,"findings":[]}
+    obj={"schema":"SMART_POST_RESULT_REPORT_1","status":"PASS","contest_number":9,
+         "official_result":actual,"generated_card":generated,"hit_count":3,"process_audit":audit}
+    obj["source_fingerprint"]="f"*64
+    obj["sha256"]=sha256_json(obj)
+    (tmp_path/"SMART_POST_RESULT_REPORT_9.json").write_text(json.dumps(obj),encoding="utf-8")
+    profile=build_profile_from_reports(tmp_path,through_contest=9)
+    assert profile["observations"]==0
+    assert profile["source_contests"]==[]
+    assert profile["quarantined_reports"]==["SMART_POST_RESULT_REPORT_9.json"]
+    assert profile["quarantined_count"]==1
