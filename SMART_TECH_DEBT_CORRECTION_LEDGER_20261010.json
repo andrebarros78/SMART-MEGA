@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T16:08:15Z",
+  "last_update_utc": "2026-10-08T16:21:00Z",
   "mission_status": "ACTIVE",
   "current_phase": "F10",
   "last_proven_phase": "F09",
@@ -17,7 +17,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F10_TESTES_DE_DESCONEXAO",
+  "next_required_action": "RUN_F10_DISCONNECTION_FAULT_INJECTION_CI_AND_CERTIFICATION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -222,8 +222,16 @@
     },
     "F10": {
       "name": "TESTES_DE_DESCONEXAO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F10 baseline verified as 5121b99b733cb32c483274efec430033bcd493b4",
+        "dynamic execution not inferred from static ACTIVE reachability",
+        "eight explicitly observed required production edges bound to workflow graph",
+        "historical terminal 3054 and residual operator reverse cycle explicitly prohibited",
+        "negative fault injection snapshots cannot mutate canonical source, Git HEAD, state, weights, freeze, or results",
+        "CI regression and certification both execute fail-closed F10 disconnection gate",
+        "nine F10 tests cover disconnected fine-tuning, false ACTIVE, restored legacy/cycle, forged skill promotions, wrong callable permission and missing component"
+      ]
     },
     "F11": {
       "name": "VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
@@ -256,5 +264,6 @@
   "f06_baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee",
   "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f",
   "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c",
-  "f09_baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b"
+  "f09_baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
+  "f10_baseline_head": "5121b99b733cb32c483274efec430033bcd493b4"
 }

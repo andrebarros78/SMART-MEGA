@@ -41,6 +41,10 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python smart_skill_adapter_registry.py --write SMART_SKILL_ADAPTER_REGISTRY.json
+      - name: Check F10 disconnected components and unproved authority
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python smart_disconnection_gate.py --write SMART_F10_DISCONNECTION_GATE.json
       - name: Full regression
         env:
           PYTHONDONTWRITEBYTECODE: "1"
@@ -84,6 +88,10 @@ jobs:
         env:
           PYTHONDONTWRITEBYTECODE: "1"
         run: python smart_skill_adapter_registry.py --write SMART_SKILL_ADAPTER_REGISTRY.json
+      - name: Check F10 disconnected components and unproved authority
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: python smart_disconnection_gate.py --write SMART_F10_DISCONNECTION_GATE.json
       - name: Generate same-commit JUnit for certification
         env:
           PYTHONDONTWRITEBYTECODE: "1"
@@ -94,9 +102,9 @@ jobs:
         run: python smart_github_certify.py
       - name: Persist only certified evidence to canonical main
         run: |
-          git add -- .gitattributes SMART_COMPONENT_REACHABILITY_REGISTRY.json SMART_CANONICAL_COMPONENT_REGISTRY.json SMART_SKILL_ADAPTER_REGISTRY.json SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json
+          git add -- .gitattributes SMART_COMPONENT_REACHABILITY_REGISTRY.json SMART_CANONICAL_COMPONENT_REGISTRY.json SMART_SKILL_ADAPTER_REGISTRY.json SMART_F10_DISCONNECTION_GATE.json SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json
           git diff --cached --check
-          for file in SMART_COMPONENT_REACHABILITY_REGISTRY.json SMART_CANONICAL_COMPONENT_REGISTRY.json SMART_SKILL_ADAPTER_REGISTRY.json SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json; do
+          for file in SMART_COMPONENT_REACHABILITY_REGISTRY.json SMART_CANONICAL_COMPONENT_REGISTRY.json SMART_SKILL_ADAPTER_REGISTRY.json SMART_F10_DISCONNECTION_GATE.json SMART_AUDIT_JUNIT_CURRENT.xml SMART_CANONICAL_ROOT.json SMART_PRODUCT_CERTIFICATION.json SMART_AGENT_ECOSYSTEM_GOVERNANCE.json SMART_GLOBAL_INTEGRITY_PROOF.json SMART_3052_IMPLEMENTATION_GATE.json SMART_P09_RED_TEAM_LATEST.json SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json; do
             git show ":$file" | cmp - "$file"
           done
           git -c user.name="SMART-MEGA GitHub Certification" -c user.email="smart-mega-certification@users.noreply.github.com" commit -m "certify: GitHub regression for ${{ github.sha }}"
