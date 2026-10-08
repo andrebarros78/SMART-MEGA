@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "e762a59344a27b707d4bb0814fce996be39c564d2dbabd293d8117ec07b5f25b",
+  "inventory_sha256": "b5894dff683afafccf98c76ae87d8b28a79c58a5bb88e2d2b19fbf66f7e6ef89",
   "summary": {
-    "python_components": 476,
+    "python_components": 478,
     "workflow_entrypoints": 8,
     "production_components": 97,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 152,
+    "test_components": 154,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6533,7 +6533,8 @@
         "test_smart_operational_lifecycle_reviewed_hold",
         "test_smart_operator_e2e_recovery",
         "test_smart_operator_real_freeze_recovery",
-        "test_smart_repository_integrity"
+        "test_smart_repository_integrity",
+        "test_smart_withdraw_lifecycle_recovery"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -6543,7 +6544,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "579f15c3a648655e1c83d2c23e52e987ff62f286543daeee221c463564a9e7c2"
+      "sha256": "d09c2a0fcfbb4de3224bf0015b5343135f4345956b82bab6cd745db06c036340"
     },
     {
       "component_id": "smart_operator",
@@ -6615,7 +6616,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "d656754c6fc7d4b18ed233ac4285eba1e14eab4c8ad99bfb52f507b66ce841b0"
+      "sha256": "241292c3865d20afc8535ef8698b8bfa171023a22d23120671d84771c4e51081"
     },
     {
       "component_id": "smart_operator_contract",
@@ -8182,7 +8183,8 @@
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
-        "test_smart_repository_integrity"
+        "test_smart_repository_integrity",
+        "test_smart_startup_withdraw_reconciliation"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8192,7 +8194,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "651a346bd1ff3b3c21141982c5c24a1fd2e11d07b8934ee0fda214ae4457b96a"
+      "sha256": "ecc090236fd4bc4705cc84edb80a942043eef6186049bd712f79bc1eb4faba5b"
     },
     {
       "component_id": "smart_storage_surfaces",
@@ -11729,6 +11731,27 @@
       "sha256": "b9bd276bd68b49560dff96325cc4ba6d3d8ce62607aae9c69ec306a03a6d5af5"
     },
     {
+      "component_id": "test_smart_startup_withdraw_reconciliation",
+      "source_file": "test_smart_startup_withdraw_reconciliation.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_startup_reconciler"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "be3f2d4f75a0a00f54906193227f127847a1ac8ad3d1b5cbf4618ffbc1741c25"
+    },
+    {
       "component_id": "test_smart_target_schedule",
       "source_file": "test_smart_target_schedule.py",
       "role": "TEST",
@@ -11922,6 +11945,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "c2d8a59c3b66f8fc48f2c0ce99605a3ad192925ebfcc0420ab3c2fbf2e884a02"
+    },
+    {
+      "component_id": "test_smart_withdraw_lifecycle_recovery",
+      "source_file": "test_smart_withdraw_lifecycle_recovery.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_operational_lifecycle"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "71830b1c741186c56082b7ef389d4f69006e97a58e7252aa5ec65fa7d8a3072c"
     },
     {
       "component_id": "test_supersede_chain_integrity",

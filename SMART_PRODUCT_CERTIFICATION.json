@@ -2,12 +2,12 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-08T20:19:50.908694+00:00",
+  "generated_utc": "2026-10-08T21:08:38.179488+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
   "code_fingerprint": {
-    "file_count": 297,
+    "file_count": 299,
     "files": [
       {
         "path": "SMART_DATA_CONTRACT.md",
@@ -343,11 +343,11 @@
       },
       {
         "path": "smart_operational_lifecycle.py",
-        "sha256": "f4cf700e0aaa4955fd84fe2fa6415911c6010e3305b173404ca748b0fcf76389"
+        "sha256": "fb9b475778b9df94517d5d4aa8966bb70255bf179b87682b6c17cab97f83436d"
       },
       {
         "path": "smart_operator.py",
-        "sha256": "41fb5804be9d711e10c79ac58d6297cc1437319b3ecab1153f3a6b8e3f32dfc2"
+        "sha256": "683f45b3bc851ff8f1cd0f3454d03691d544b5a3a0365d8cd87cd20972b4792c"
       },
       {
         "path": "smart_operator_contract.py",
@@ -555,7 +555,7 @@
       },
       {
         "path": "smart_startup_reconciler.py",
-        "sha256": "58d6eb4ef6652ce0cc97d0c4531ba2c1217b8899f26c8baf851a54c8e133fd5d"
+        "sha256": "21ee65723e016c4ab6d15d5db97314065dca83db502370ecd7a94815aac55687"
       },
       {
         "path": "smart_storage_surfaces.py",
@@ -1158,6 +1158,10 @@
         "sha256": "96cf31c745523a4aa7057420a635cb675f26a70288ba368f1ec42f787cca9222"
       },
       {
+        "path": "test_smart_startup_withdraw_reconciliation.py",
+        "sha256": "4f15097ef350dfdc0f5eab76fb30ce83f844f782578d2af7a8926ce3e52879b4"
+      },
+      {
         "path": "test_smart_target_schedule.py",
         "sha256": "87b00bc4d472b9b6b4d0736869bdd7b6742399f05c58daac20b84e0d347109c4"
       },
@@ -1194,22 +1198,26 @@
         "sha256": "4a22b8f0b2eac25b9b7dfc95d8bfb2e6d6bf0c460aa62d0f6fdeae65e194f60c"
       },
       {
+        "path": "test_smart_withdraw_lifecycle_recovery.py",
+        "sha256": "8482419b3ae2728176c6264bf8f2d9fde751c8fd3c0ff7a9eb5b57355824fa08"
+      },
+      {
         "path": "test_supersede_chain_integrity.py",
         "sha256": "9c81b6dc019609b958a0563048b4ea0bb04303244220dcd19bfa6e42dbb3bc1f"
       }
     ],
-    "sha256": "4aafd7ebe30681a6c0d16d181c4effa27a15237170723c1e04eb7979fc4f7814"
+    "sha256": "2a301c7bb33e0486e3993e07493dda8272feb1c6a029a26916ce705b9d57c92e"
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "b0616039ae80a4e8f366b30309fbe966a5b37462",
-    "ci_run_id": "37837123433",
+    "source_commit": "1a4f961b6120ebdda48dab229669c7682d18abcb",
+    "ci_run_id": "37843510301",
     "execution": {
       "kind": "GITHUB_ACTIONS",
-      "run_id": "37837123433"
+      "run_id": "37843510301"
     },
-    "code_fingerprint_sha256": "4aafd7ebe30681a6c0d16d181c4effa27a15237170723c1e04eb7979fc4f7814",
-    "junit_sha256": "3858041aed0b437479597fd88b1cafebd511ce3ccdf6c7ef997ec66c08105438",
+    "code_fingerprint_sha256": "2a301c7bb33e0486e3993e07493dda8272feb1c6a029a26916ce705b9d57c92e",
+    "junit_sha256": "f26921d70a2d72044be9de2c06bc7f93d296340a71796bf04e0893978c15d315",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1300,8 +1308,8 @@
       "smart_official_result_ingest.py": "8796d001f34fce13c69dd2c63a9e724a5d7d5f2d098913d44e53666ac4b73d50",
       "smart_operation_lock.py": "4b1df0ec6d9fa8d10497ae18f441f8390aeffc5a87052380aa2b865de5820a3a",
       "smart_operation_recovery.py": "a9ad05e75b2b316583200baeabe952031b580bda20e371dc3a7ae205fe97a1d4",
-      "smart_operational_lifecycle.py": "f4cf700e0aaa4955fd84fe2fa6415911c6010e3305b173404ca748b0fcf76389",
-      "smart_operator.py": "41fb5804be9d711e10c79ac58d6297cc1437319b3ecab1153f3a6b8e3f32dfc2",
+      "smart_operational_lifecycle.py": "fb9b475778b9df94517d5d4aa8966bb70255bf179b87682b6c17cab97f83436d",
+      "smart_operator.py": "683f45b3bc851ff8f1cd0f3454d03691d544b5a3a0365d8cd87cd20972b4792c",
       "smart_operator_contract.py": "74aa33a559e85d709d69f0f0cbf4c708b65056ca19d9b6d088a04ac2886c4101",
       "smart_path_semantics.py": "865875f02156029bd0b2fb2757071c62e7f13c3d24b8303ffde165ca2d36be73",
       "smart_portfolio_backtest.py": "57941508f182cb8bcbb779d2b969f3d1f680fb58c131c076fdf8bcc2dc262bdc",
@@ -1352,7 +1360,7 @@
       "smart_skill_adapter_registry.py": "df13c12a4b80215eaa84842927a39e61bb91eece9eaec65ab2d72a6f00ff1959",
       "smart_skill_runtime.py": "4332af6d363cac0ee0e60cca82269c8d25dc3e5b1d79634be18b6544e63f0ae1",
       "smart_source_identity.py": "7672b80c37be8976ea5bfea55818134322f4bdbcc5c177e518efaeceb5d4061a",
-      "smart_startup_reconciler.py": "58d6eb4ef6652ce0cc97d0c4531ba2c1217b8899f26c8baf851a54c8e133fd5d",
+      "smart_startup_reconciler.py": "21ee65723e016c4ab6d15d5db97314065dca83db502370ecd7a94815aac55687",
       "smart_storage_surfaces.py": "f455b76e2a907013debe39affbcd1f2fe399aa346e415ced6b5855b87a7b8fce",
       "smart_target_schedule.py": "4d96ce7a3d9455c8618a07889dcc41a39ea3029599f758f6e8074b3b224b4d29",
       "smart_terminal_engine.py": "46fd70f3ef2838f6239ddefba4b35692f905ec008bd7cf174ffedb3c5f1f3f1f",
@@ -1364,24 +1372,24 @@
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "138ebc364a89c4fe830ec601be8fcfc30697feb11ff9ed754c23914be1734764"
+    "fingerprint_sha256": "6b9b0ca5a050af8a07f456ccfd0f1d1ce302a05d59b6957d69d951867e44144b"
   },
   "regression": {
-    "tests": 1145,
+    "tests": 1152,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "3858041aed0b437479597fd88b1cafebd511ce3ccdf6c7ef997ec66c08105438"
+    "sha256": "f26921d70a2d72044be9de2c06bc7f93d296340a71796bf04e0893978c15d315"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "086008782a0f5f9c88f9e11aa4735ff9e2db71fe58b08836d8b32363a5b1e3df",
-    "authority_sha256": "6bea3faa43fceef89945d5a19bc8e31812eaf890177eac32fb32925fce0fa05e",
+    "file_sha256": "89f98da6dfc62cb95e7742d51fb7273d8063395667dcf79ce249a1cf65047a02",
+    "authority_sha256": "6d6b6b62921f0023e460472169958404a39d3fc3c210096787b66a3188807a22",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "3858041aed0b437479597fd88b1cafebd511ce3ccdf6c7ef997ec66c08105438",
-    "tests": 1145,
+    "junit_sha256": "f26921d70a2d72044be9de2c06bc7f93d296340a71796bf04e0893978c15d315",
+    "tests": 1152,
     "failures": 0,
     "errors": 0,
     "checks": {
@@ -1443,10 +1451,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "0f8fb1c8193ccc2df37624dbef19111856918b52ed8a7e47ad45451ce63b9b3c",
-  "build_runtime_sha256": "0c2bb81c5e490a2e140ede551fe6a1c460ea9115bda254b0b620c4653236b543",
-  "build_functional_sha256": "aa260c4b696e84ec39cdb70f729d9ffb11cb793f35cd630083edf2ac2735bf00",
-  "build_total_integration_sha256": "e282544dd95d3790bfef74ce69eea74a20b4a05396ebe87dc29a7cee8f591771",
+  "build_orchestration_sha256": "a5ed844d236627b29c322847311ed3b8af1c8f8fe584c9b97c46539a69228058",
+  "build_runtime_sha256": "6078184bc71cf95437504d5b304d7cda63a7a4d9b996f935a2f8035a895a8903",
+  "build_functional_sha256": "d7108eb823ea92e6d18caa727061f1b0dccf87b8f5d8f208189a05ccd4c92548",
+  "build_total_integration_sha256": "f8901649011cdf569befb084fe338e13e070f510e103b2e055ace54879981627",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1512,5 +1520,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "2297cd4ad693c85109da971cfaeab6fdbd438fdb6f47faed3c144bdd489f8ceb"
+  "sha256": "f578452fe78146a0a6c248f1f3c4fdbcf3433fc72db1a0e3b36902dd96841131"
 }

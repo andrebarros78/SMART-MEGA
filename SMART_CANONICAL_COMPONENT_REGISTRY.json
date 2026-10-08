@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "e762a59344a27b707d4bb0814fce996be39c564d2dbabd293d8117ec07b5f25b",
+  "source_reachability_inventory_sha256": "b5894dff683afafccf98c76ae87d8b28a79c58a5bb88e2d2b19fbf66f7e6ef89",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 476,
+    "component_count": 478,
     "active": 97,
     "shadow": 1,
-    "diagnostic": 178,
+    "diagnostic": 180,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -6896,7 +6896,7 @@
       "component_id": "smart_operational_lifecycle",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operational_lifecycle.py",
-      "implementation_sha256": "579f15c3a648655e1c83d2c23e52e987ff62f286543daeee221c463564a9e7c2",
+      "implementation_sha256": "d09c2a0fcfbb4de3224bf0015b5343135f4345956b82bab6cd745db06c036340",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6919,7 +6919,8 @@
         "test_smart_operational_lifecycle_reviewed_hold",
         "test_smart_operator_e2e_recovery",
         "test_smart_operator_real_freeze_recovery",
-        "test_smart_repository_integrity"
+        "test_smart_repository_integrity",
+        "test_smart_withdraw_lifecycle_recovery"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -6943,7 +6944,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "d656754c6fc7d4b18ed233ac4285eba1e14eab4c8ad99bfb52f507b66ce841b0",
+      "implementation_sha256": "241292c3865d20afc8535ef8698b8bfa171023a22d23120671d84771c4e51081",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8652,7 +8653,7 @@
       "component_id": "smart_startup_reconciler",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_startup_reconciler.py",
-      "implementation_sha256": "651a346bd1ff3b3c21141982c5c24a1fd2e11d07b8934ee0fda214ae4457b96a",
+      "implementation_sha256": "ecc090236fd4bc4705cc84edb80a942043eef6186049bd712f79bc1eb4faba5b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8668,7 +8669,8 @@
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
-        "test_smart_repository_integrity"
+        "test_smart_repository_integrity",
+        "test_smart_startup_withdraw_reconciliation"
       ],
       "entrypoints": [
         "smart_github_certify",
@@ -12521,6 +12523,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_startup_withdraw_reconciliation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_startup_withdraw_reconciliation.py",
+      "implementation_sha256": "be3f2d4f75a0a00f54906193227f127847a1ac8ad3d1b5cbf4618ffbc1741c25",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_startup_reconciler"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_target_schedule",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_target_schedule.py",
@@ -12734,6 +12759,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_withdraw_lifecycle_recovery",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_withdraw_lifecycle_recovery.py",
+      "implementation_sha256": "71830b1c741186c56082b7ef389d4f69006e97a58e7252aa5ec65fa7d8a3072c",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operational_lifecycle"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_supersede_chain_integrity",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_supersede_chain_integrity.py",
@@ -12878,5 +12926,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "0e1ea490c785738badee2f172755ee9aee42c6ba64b0504cb828b97428d939a1"
+  "registry_sha256": "0e36bc7b419a693332a1ac8ee37b5dd36a2dc23bde8b97c67a850eb2505fbc92"
 }
