@@ -1,0 +1,92 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F01_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F01",
+  "phase_name": "GRAFO_E_REACHABILITY",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T08:38:55-03:00",
+  "baseline_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
+  "implementation_commits": [
+    "96ff4ec4f0bc236bf0ddb835b53f35bfce02759f",
+    "d1300281c71e61e96d5cec28a4800b51bddd6eb6"
+  ],
+  "certified_head": "5f9baa0efd958bb7cf1413f8e95f8293e10f10cd",
+  "certification_commit_message": "certify: GitHub regression for d1300281c71e61e96d5cec28a4800b51bddd6eb6",
+  "registry": {
+    "path": "SMART_COMPONENT_REACHABILITY_REGISTRY.json",
+    "blob_sha": "da6a7a35485721b432b87b5899b7737aee166645",
+    "schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
+    "inventory_sha256": "2f97c4a19dab0ad2d49ffa5bd3ae81987a4b981b72e32858a1ee18fbc563c353",
+    "scope": "STATIC_PYTHON_REACHABILITY_FROM_CANONICAL_GITHUB_WORKFLOWS",
+    "summary": {
+      "python_components": 456,
+      "workflow_entrypoints": 4,
+      "production_components": 89,
+      "shadow_components": 1,
+      "diagnostic_components": 26,
+      "validation_components": 23,
+      "test_components": 141,
+      "archive_components": 176,
+      "quarantine_components": 0,
+      "unclassified_components": 0,
+      "production_unreachable": 0,
+      "independent_entrypoints": 37,
+      "import_cycles": 1,
+      "parse_errors": 0
+    },
+    "gate": {
+      "status": "PASS",
+      "parse_errors": [],
+      "unclassified": [],
+      "production_unreachable": [],
+      "required_production_missing": [],
+      "required_production_unreachable": []
+    },
+    "workflow_entrypoints": {
+      "smart_component_reachability.py": [
+        ".github/workflows/ci.yml"
+      ],
+      "smart_github_certify.py": [
+        ".github/workflows/ci.yml"
+      ],
+      "smart_github_operator.py": [
+        ".github/workflows/operator.yml"
+      ],
+      "smart_repository_integrity.py": [
+        ".github/workflows/repository-integrity.yml"
+      ]
+    }
+  },
+  "regression": {
+    "workflow_run_id": 37770444808,
+    "workflow_name": "SMART-MEGA CI",
+    "regression_job": "success",
+    "certification_job": "success",
+    "junit_path": "SMART_AUDIT_JUNIT_CURRENT.xml",
+    "tests": 1082,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "auxiliary_gates": {
+    "repository_integrity_run_id": 37770444942,
+    "repository_integrity": "success",
+    "operator_smoke_run_id": 37770444921,
+    "operator_smoke": "success"
+  },
+  "deferred_known_debt": {
+    "f02_operator_pipeline_cycle_detected": true,
+    "f03_legacy_3054_terminal_executor_reachable": true,
+    "independent_entrypoints_count": 37
+  },
+  "f01_gate_requirements": {
+    "exclusive_component_classification": true,
+    "unclassified_zero": true,
+    "production_unreachable_zero": true,
+    "parse_errors_zero": true,
+    "required_production_reachable": true,
+    "registry_persisted_on_canonical_main": true
+  },
+  "next_phase": "F02_DEPENDENCIA_CIRCULAR",
+  "proof_boundary": "F01 proves static Python reachability and classification from canonical GitHub workflow entrypoints. It does not claim dynamic runtime execution or predictive improvement."
+}

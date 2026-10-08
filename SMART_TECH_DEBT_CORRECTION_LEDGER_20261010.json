@@ -7,13 +7,12 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T11:24:10Z",
+  "last_update_utc": "2026-10-08T11:38:55Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F01",
-  "last_proven_phase": "F00",
-  "last_proven_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
+  "current_phase": "F02",
+  "last_proven_phase": "F01",
+  "last_proven_head": "5f9baa0efd958bb7cf1413f8e95f8293e10f10cd",
   "open_deficiencies": [
-    "F01 reachability not yet executed",
     "F02 dependency cycle not yet corrected",
     "F03 legacy terminal executor not yet retired",
     "F04 fine-tuning lifecycle not yet integrated",
@@ -26,7 +25,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "BUILD_VALIDATE_PERSIST_F01_REACHABILITY",
+  "next_required_action": "EXECUTE_F02_DEPENDENCIA_CIRCULAR",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -41,11 +40,23 @@
     },
     "F01": {
       "name": "GRAFO_E_REACHABILITY",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F01 baseline rediscovered at 422ebd32cadd8af2af9be7a493029b6c63658452",
-        "canonical workflow entrypoints inspected",
-        "implementation commit pending CI validation and registry certification"
+        "baseline head: 422ebd32cadd8af2af9be7a493029b6c63658452",
+        "implementation head: d1300281c71e61e96d5cec28a4800b51bddd6eb6",
+        "certified head: 5f9baa0efd958bb7cf1413f8e95f8293e10f10cd",
+        "registry blob: da6a7a35485721b432b87b5899b7737aee166645",
+        "registry gate PASS",
+        "python_components=456",
+        "production_components=89",
+        "unclassified_components=0",
+        "production_unreachable=0",
+        "parse_errors=0",
+        "full regression=1082 tests, 0 failures, 0 errors, 0 skipped",
+        "Repository Integrity=success",
+        "GitHub Operator smoke=success",
+        "operator/pipeline import cycle observed for F02",
+        "legacy smart_3054_terminal_executor reachable for F03"
       ]
     },
     "F02": {
