@@ -7,13 +7,12 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T12:12:00Z",
+  "last_update_utc": "2026-10-08T12:26:16Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F02",
-  "last_proven_phase": "F01",
-  "last_proven_head": "5f9baa0efd958bb7cf1413f8e95f8293e10f10cd",
+  "current_phase": "F03",
+  "last_proven_phase": "F02",
+  "last_proven_head": "d7009886f86849821b766ffc115a2e317145743c",
   "open_deficiencies": [
-    "F02 dependency cycle not yet corrected",
     "F03 legacy terminal executor not yet retired",
     "F04 fine-tuning lifecycle not yet integrated",
     "F05 canonical component registry not yet implemented",
@@ -25,7 +24,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "RETEST_F02_AFTER_EXECUTION_EDGE_MODEL",
+  "next_required_action": "EXECUTE_F03_EXECUTOR_LEGADO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -61,15 +60,29 @@
     },
     "F02": {
       "name": "DEPENDENCIA_CIRCULAR",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F02 baseline rediscovered at 06aa686788111a6bcdec4f960340615574b754a3",
-        "direct smart_full_process_pipeline -> smart_operator recovery edge identified",
-        "smart_product_certification -> smart_operator contract edge identified as indirect return path",
-        "neutral recovery and operator-contract extraction prepared",
-        "correction commit pending canonical CI validation",
-        "F02 retry 1 exposed reachability blind spot: smart_github_operator executes smart_operator via subprocess",
-        "reachability model extended with explicit STATIC_EXECUTION_DEPENDENCIES"
+        "baseline head: 06aa686788111a6bcdec4f960340615574b754a3",
+        "initial correction: fb118f3acb57629c16cc9bf22dd5616e7535f0eb",
+        "syntax repair after first failed retry: 1d73db8e025e761dd50c945ae3dc5bfe3fb84d9f",
+        "execution-edge model: fabfb1c90fef5ddf8da2337943f5ad156ebeae6b",
+        "residual pipeline import removal: 0458a55b6d158420daf2f01905df26f8691eaec2",
+        "certified head: d7009886f86849821b766ffc115a2e317145743c",
+        "operator/pipeline cycle detected=false",
+        "smart_operator -> smart_full_process_pipeline remains one-way production dependency",
+        "smart_full_process_pipeline -> smart_operator edge removed",
+        "smart_product_certification -> smart_operator edge removed via smart_operator_contract extraction",
+        "smart_operation_recovery is lower-level and independent of operator/pipeline",
+        "explicit smart_github_operator -> smart_operator execution edge modeled by STATIC_EXECUTION_DEPENDENCIES",
+        "reachability gate PASS",
+        "unclassified_components=0",
+        "production_unreachable=0",
+        "execution_dependency_errors=0",
+        "full regression=1085 tests, 0 failures, 0 errors, 0 skipped",
+        "Repository Integrity=success",
+        "GitHub Operator smoke=success",
+        "remaining import SCC excludes smart_operator and smart_full_process_pipeline; outside F02 scope",
+        "legacy smart_3054_terminal_executor remains reachable and is reserved for F03"
       ]
     },
     "F03": {
