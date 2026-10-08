@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "077d3c17504521a46d8a79330aaa9a6c6bc31058013888b5fabee190cc9dfc86",
+  "source_reachability_inventory_sha256": "58d9d8abe1fe7e0e3f866d7e39ee19dcbfdcc07878372a81566a1da5066d15ab",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6240,7 +6240,8 @@
         "smart_crash_safe_io"
       ],
       "consumers": [
-        "smart_operator"
+        "smart_operator",
+        "test_smart_operator_reauthorization"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -6974,7 +6975,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "241292c3865d20afc8535ef8698b8bfa171023a22d23120671d84771c4e51081",
+      "implementation_sha256": "90f58e746022f1c25291290b59b02316e3ea935c437d958660cc7d1a43244430",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -11582,10 +11583,11 @@
       "component_id": "test_smart_operator_reauthorization",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_reauthorization.py",
-      "implementation_sha256": "0862004c8154eb154315141d8dbfd44b8c6b835d50c761cf0c16695138cfefe5",
+      "implementation_sha256": "a53993f7db3fb8563d3bfd62b77e314c2def7290d3d831a99be2d0fb6a439522",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_idempotency",
         "smart_operator"
       ],
       "consumers": [],
@@ -13003,5 +13005,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "5b95711ef4953874e574e645d62e090c8ef05997ecf4d38b982ecd6bf64612f9"
+  "registry_sha256": "6faeec305880725edb1e307f9522b4afb1c73590d1ebda81003d8fc7b7779cc8"
 }

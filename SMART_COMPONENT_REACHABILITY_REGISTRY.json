@@ -53,7 +53,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "077d3c17504521a46d8a79330aaa9a6c6bc31058013888b5fabee190cc9dfc86",
+  "inventory_sha256": "58d9d8abe1fe7e0e3f866d7e39ee19dcbfdcc07878372a81566a1da5066d15ab",
   "summary": {
     "python_components": 481,
     "workflow_entrypoints": 8,
@@ -5882,7 +5882,8 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "smart_operator"
+        "smart_operator",
+        "test_smart_operator_reauthorization"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -6644,7 +6645,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "241292c3865d20afc8535ef8698b8bfa171023a22d23120671d84771c4e51081"
+      "sha256": "90f58e746022f1c25291290b59b02316e3ea935c437d958660cc7d1a43244430"
     },
     {
       "component_id": "smart_operator_contract",
@@ -10871,6 +10872,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
+        "smart_idempotency",
         "smart_operator"
       ],
       "declared_execution_dependencies": [],
@@ -10883,7 +10885,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "0862004c8154eb154315141d8dbfd44b8c6b835d50c761cf0c16695138cfefe5"
+      "sha256": "a53993f7db3fb8563d3bfd62b77e314c2def7290d3d831a99be2d0fb6a439522"
     },
     {
       "component_id": "test_smart_operator_result_materialization",
