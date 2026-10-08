@@ -1,0 +1,93 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F11_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F11",
+  "phase_name": "VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T14:21:12-03:00",
+  "baseline_head": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
+  "implementation_commits": [
+    "dfca807819f7603a020ce15b95db7532092b978d",
+    "5a7e26ecd760ad41c62a3519eb48a53ed2080f8f"
+  ],
+  "certified_source_head": "e0ec25117ad57cf8fac811cf2996524f0be7a9dd",
+  "gate": {
+    "file": "SMART_F11_PREDICTIVE_NONREGRESSION.json",
+    "blob_sha": "3f4c46fecaccd409d14417d77d2f2074d116e6bc",
+    "hash": "fec891a00170d52e607a367ebfccceaf9525e312be8cf22b417b4d5432b2a2fb",
+    "status": "PASS",
+    "checks": {
+      "production_prediction_source_unchanged_from_F10": true,
+      "historical_artifacts_git_blob_identical_to_F10": true,
+      "historical_evaluation_cutoffs_valid": true,
+      "p10_baseline_vs_candidate_nonregression": true,
+      "p05_historical_holdout_nonregression": true,
+      "p06_holdout_brier_loss_not_misrepresented": true,
+      "fine_tuning_promotion_requires_causal_nonregression": true,
+      "no_holdout_selection_or_future_result_leakage": true,
+      "no_unproven_prospective_superiority_claim": true
+    },
+    "check_count": 9,
+    "historical_source_git_blobs_bound": true,
+    "production_scoring_hashes_unchanged": true
+  },
+  "baseline_comparison": {
+    "p10": {
+      "reference_total_hits": 1271,
+      "candidate_total_hits": 1271,
+      "total_delta": 0,
+      "holdout_reference_hits": 150,
+      "holdout_candidate_hits": 150,
+      "holdout_delta": 0,
+      "interpretation": "HISTORICAL_TIE_NOT_PROSPECTIVE_PROOF"
+    },
+    "p05": {
+      "baseline_holdout_hits": 150,
+      "candidate_holdout_hits": 150,
+      "holdout_delta": 0,
+      "intermediate_validation_delta": -1,
+      "interpretation": "HISTORICAL_HOLDOUT_NONREGRESSION_NO_SUPERIORITY"
+    },
+    "p06": {
+      "candidate_holdout_mean_brier": 0.09001357670052432,
+      "uniform_holdout_mean_brier": 0.08999999999999989,
+      "candidate_minus_uniform_holdout_brier": 0.000013576700524431384,
+      "interpretation": "HISTORICAL_HOLDOUT_BRIER_REGRESSION",
+      "approved_for_predictive_promotion": false
+    },
+    "fine_tuning": {
+      "target_contest": 3055,
+      "cutoff_contest": 3054,
+      "selection_validation_gain": -1,
+      "non_regressive_all_partitions": false,
+      "promotion_authorized": false,
+      "effective_candidate_id": "baseline",
+      "interpretation": "BASELINE_RETAINED_NOT_PROVEN_SUPERIOR"
+    }
+  },
+  "scientific_boundary": {
+    "scientific_status": "UNPROVEN_PROSPECTIVE_6_OF_6",
+    "prospective_advantage_proven": false,
+    "six_of_six_proven": false,
+    "no_future_leakage_claimed": true,
+    "candidate_promotion_with_regression_allowed": false,
+    "p06_holdout_brier_regression_is_visible": true,
+    "source_hash_identity_not_independent_predictive_replay": true
+  },
+  "validation": {
+    "ci_run_id": 37814565250,
+    "operator_smoke_run_id": 37814565273,
+    "integrity_run_id": 37814565286,
+    "tests": 1134,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success",
+    "f11_targeted_test_count": 9
+  },
+  "proof_boundary": "F11 proves F10-to-F11 unchanged predictive implementation plus hash-bound historical comparisons and fail-closed non-regression rejection. It does not prove prospective improvement over chance, nor predictive 6/6.",
+  "next_phase": "F12_RECONCILIACAO_CONSOLIDACAO_SELO"
+}

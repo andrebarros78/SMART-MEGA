@@ -7,16 +7,15 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T16:56:00Z",
+  "last_update_utc": "2026-10-08T17:21:12Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F11",
-  "last_proven_phase": "F10",
-  "last_proven_head": "e1fb71ba4c745d9340d316d50695d647a3df4c7e",
+  "current_phase": "F12",
+  "last_proven_phase": "F11",
+  "last_proven_head": "e0ec25117ad57cf8fac811cf2996524f0be7a9dd",
   "open_deficiencies": [
-    "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "RUN_F11_CAUSAL_BASELINE_COMPARISON_AND_REGRESSION",
+  "next_required_action": "EXECUTE_F12_RECONCILIACAO_CONSOLIDACAO_SELO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -239,17 +238,23 @@
     },
     "F11": {
       "name": "VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F10 certified baseline d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
-        "14 actively consumed predictive/score/calibration/freeze modules bound to exact F10 source SHA256",
-        "four historical evaluation artifacts bound to F10 Git blob SHA before F11 gate",
-        "P10 historic 2050 evaluations 1271 hits vs 1271 baseline; final holdout 150 vs 150 (no demonstrated gain)",
-        "P05 historic holdout 150 vs 150 but intermediate validation -1; no superiority claim",
-        "P06 holdout Brier loss +0.0000135767 vs uniform: historically regressive and not eligible for promotion",
-        "historic fine-tuning selected eta_050x validation gain -1; promotion refused and baseline retained",
-        "F11 rejects tampering, historical deterioration, future leakage and unsupported prospective advantage",
-        "separate engineering non-regression and unproven 6/6 scientific evidence"
+        "baseline F10 certified HEAD d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
+        "F11 initial implementation dfca807819f7603a020ce15b95db7532092b978d",
+        "Git clean-filter-aware historical blob comparison repair 5a7e26ecd760ad41c62a3519eb48a53ed2080f8f",
+        "F11 implementation certified HEAD e0ec25117ad57cf8fac811cf2996524f0be7a9dd",
+        "SMART_F11_PREDICTIVE_NONREGRESSION.json blob 3f4c46fecaccd409d14417d77d2f2074d116e6bc",
+        "F11 nine checks PASS: 14 predictive source hashes unchanged from F10 and four historical evidence blob hashes match",
+        "P10 1271 vs baseline 1271 hits across 2050 historical predictions; holdout 150 vs 150",
+        "P05 historical holdout 150 vs 150; intermediate validation delta=-1; gain not demonstrated",
+        "P06 final holdout Brier delta versus uniform +0.000013576700524431384, regressive and NOT promoted",
+        "fine-tuning target 3055 validation gain=-1; effective=baseline; promotion_authorized=false",
+        "causal holdout selection forbidden; future_result_used=false; no fabricated prospective advantage",
+        "nine F11 targeted negative/positive regression tests present in certified JUnit",
+        "CI 1134 tests, failures=0, errors=0, skipped=0; GitHub Operator smoke and Repository Integrity success",
+        "F11 PHASE_PROVEN means engineering non-regression and fail-closed rejection, not 6/6 scientific superiority",
+        "scientific status UNPROVEN_PROSPECTIVE_6_OF_6"
       ]
     },
     "F12": {
