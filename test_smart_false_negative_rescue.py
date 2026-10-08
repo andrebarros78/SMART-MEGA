@@ -82,8 +82,9 @@ def test_canonical_rescue_rejects_tampered_lineage_without_score_promotion(tmp_p
     approved=build_profile_from_reports(tmp_path,through_contest=9)
     assert approved["observations"]==1 and approved["source_contests"]==[9]
     freeze.write_text('{"target_contest":9,"champion":{"top6":[1,2,3,8,9,10]}}',encoding="utf-8")
-    with pytest.raises(ValueError,match="freeze hash mismatch"):
-        build_profile_from_reports(tmp_path,through_contest=9)
+    quarantined=build_profile_from_reports(tmp_path,through_contest=9)
+    assert quarantined["observations"]==0
+    assert quarantined["quarantined_reports"]==["SMART_POST_RESULT_REPORT_9.json"]
 
 
 def test_canonical_rescue_quarantines_orphaned_historical_report(tmp_path):
@@ -128,5 +129,21 @@ def test_canonical_rescue_rejects_report_without_matching_adjudication(tmp_path)
         "portfolio_hits_per_game":None})
     obj["sha256"]=sha256_json(obj)
     (tmp_path/"SMART_POST_RESULT_REPORT_9.json").write_text(json.dumps(obj),encoding="utf-8")
-    with pytest.raises(ValueError,match="not bound to adjudicated ledger evidence"):
-        build_profile_from_reports(tmp_path,through_contest=9)
+    quarantined=build_profile_from_reports(tmp_path,through_contest=9)
+    assert quarantined["observations"]==0
+    assert quarantined["quarantined_count"]==1
+
+
+def test_canonical_production_reports_only_count_traceable_lineage():
+    from pathlib import Path
+    root=Path(__file__).resolve().parent
+    if not (root/"SMART_CANONICAL_ROOT.json").is_file():
+        return  # Only meaningful in the real canonical GitHub repository.
+    profile=build_profile_from_reports(root,through_contest=3066)
+    current=[p for p in root.glob("SMART_POST_RESULT_REPORT_*.json")
+             if int(__import__("json").loads(p.read_text(encoding="utf-8-sig"))["contest_number"])<=3066]
+    assert profile["observations"]+profile["quarantined_count"]==len(current)
+    assert len(profile["source_contests"])==len(set(profile["source_contests"]))
+    assert not set(profile["source_contests"]) & {
+        int(p.stem.split("_")[-1]) for p in current if p.name in profile["quarantined_reports"]
+    }

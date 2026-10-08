@@ -48,11 +48,11 @@ def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,
             raise MissingCanonicalLineage(f"post-result report {name} evidence absent: {path.name}")
         actual_sha=hashlib.sha256(candidate.read_bytes()).hexdigest()
         if actual_sha != sha:
-            raise ValueError(f"post-result report {name} hash mismatch: {path.name}")
+            raise MissingCanonicalLineage(f"post-result report {name} hash mismatch: {path.name}")
         trusted[name]=candidate
     freeze=json.loads(trusted["freeze"].read_text(encoding="utf-8-sig"))
     if int(freeze.get("target_contest",-1))!=contest:
-        raise ValueError(f"post-result report target differs from frozen contest: {path.name}")
+        raise MissingCanonicalLineage(f"post-result report target differs from frozen contest: {path.name}")
     ledger=json.loads(trusted["ledger"].read_text(encoding="utf-8-sig"))
     if not isinstance(ledger,dict) or not isinstance(ledger.get("events"),list):
         raise ValueError(f"post-result report ledger event structure invalid: {path.name}")
@@ -63,16 +63,16 @@ def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,
         or freeze_events[0].get("freeze_sha256")!=audit["freeze_sha256"]
         or adjudications[0].get("freeze_sha256")!=audit["freeze_sha256"]
         or sorted(adjudications[0].get("actual_numbers") or [])!=sorted(actual)):
-        raise ValueError(f"post-result report is not bound to adjudicated ledger evidence: {path.name}")
+        raise MissingCanonicalLineage(f"post-result report is not bound to adjudicated ledger evidence: {path.name}")
     champion=sorted(int(x) for x in (freeze.get("champion") or {}).get("top6",[]))
     frozen_primary=(freeze_events[0].get("primary_card") or {}).get("numbers") or []
     trusted_cards=[champion]
     if isinstance(frozen_primary,list) and len(frozen_primary)==6:
         trusted_cards.append(sorted(int(x) for x in frozen_primary))
     if sorted(generated) not in trusted_cards:
-        raise ValueError(f"post-result report card differs from its immutable freeze: {path.name}")
+        raise MissingCanonicalLineage(f"post-result report card differs from its immutable freeze: {path.name}")
     if int(obj.get("hit_count",-1))!=len(set(actual)&set(generated)):
-        raise ValueError(f"post-result report hit count mismatch: {path.name}")
+        raise MissingCanonicalLineage(f"post-result report hit count mismatch: {path.name}")
     portfolio=obj.get("portfolio_adjudication") or {}
     fingerprint=sha256_json({
         "target":contest,"official_result":actual,"generated_card":generated,
