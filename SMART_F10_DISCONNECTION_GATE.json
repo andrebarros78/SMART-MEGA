@@ -1,0 +1,61 @@
+{
+  "schema": "SMART_F10_DISCONNECTION_GATE_V1",
+  "status": "PASS",
+  "claim_boundary": "Proves static route integrity and fail-closed disconnection mutations. Dynamic execution is validated separately by F06/F07/F09 integration tests; static ACTIVE alone is not dynamic-execution evidence.",
+  "checks": {
+    "source_registries_pass": true,
+    "registry_component_identity": true,
+    "registry_source_inventory_bound": true,
+    "registry_self_hashes_valid": true,
+    "active_labels_match_reachability": true,
+    "no_non_active_material_authority": true,
+    "required_production_edges_connected": true,
+    "legacy_executor_disconnected": true,
+    "forbidden_reverse_edges_absent": true,
+    "no_unproved_active_skills": true,
+    "capability_aliases_match_owners_and_permissions": true
+  },
+  "errors": [],
+  "required_edges": {
+    "smart_github_operator.py": [
+      "smart_operator"
+    ],
+    "smart_operator.py": [
+      "smart_full_process_pipeline",
+      "smart_terminal_executor"
+    ],
+    "smart_full_process_pipeline.py": [
+      "smart_fine_tuning_lifecycle",
+      "smart_champion_challenger",
+      "smart_total_integration_gate"
+    ],
+    "smart_fine_tuning_lifecycle.py": [
+      "smart_ai_fine_tuning"
+    ],
+    "smart_terminal_executor.py": [
+      "smart_terminal_engine"
+    ],
+    "smart_agent_runtime.py": [
+      "smart_agent_handoff_runtime"
+    ],
+    "smart_skill_runtime.py": [
+      "smart_skill_adapter_registry",
+      "smart_agent_runtime"
+    ],
+    "smart_total_integration_gate.py": [
+      "smart_agent_skill_functional_gate"
+    ]
+  },
+  "prohibited_edges": {
+    "smart_terminal_executor.py": [
+      "smart_3054_terminal_executor"
+    ],
+    "smart_full_process_pipeline.py": [
+      "smart_operator"
+    ]
+  },
+  "reachability_inventory_sha256": "96b855ebd1aed75e7fed52d821c61c0ce24d733176ac70ef7fed657e788f72f9",
+  "canonical_registry_sha256": "7509f454507c0cd5393c951d5596f82f0bf7ed806b3d6b62db7cf42ce88e6510",
+  "skill_registry_sha256": "ebee6dfc97828710760525ee8278c26a03f4e6f8f7f5f4dcfe8e4c63c8396faa",
+  "sha256": "e06dff0245839e3e4688413fd6da67a06eb7e5cf4afe58e1b8ac282defd5be82"
+}
