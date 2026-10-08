@@ -88,8 +88,9 @@ def test_execute_waits_fail_closed_when_official_result_unavailable(tmp_path, mo
 
 def test_facade_delegates_to_active_epoch_engine(tmp_path, monkeypatch):
     seen={}
-    monkeypatch.setattr(legacy,"probe_active_epoch",lambda root,target,fetcher=legacy.official_consensus.fetch_consensus: seen.setdefault("probe",(Path(root),target)) or {})
-    monkeypatch.setattr(legacy,"execute_active_epoch",lambda root,target,fetcher=legacy.official_consensus.fetch_consensus,allow_terminal_write=True: {"target":target,"allow":allow_terminal_write})
+    engine=terminal._engine
+    monkeypatch.setattr(engine,"probe_active_epoch",lambda root,target,fetcher=engine.official_consensus.fetch_consensus: seen.setdefault("probe",(Path(root),target)) or {})
+    monkeypatch.setattr(engine,"execute_active_epoch",lambda root,target,fetcher=engine.official_consensus.fetch_consensus,allow_terminal_write=True: {"target":target,"allow":allow_terminal_write})
     assert terminal.probe(tmp_path,9001)[1]==9001
     assert terminal.execute(tmp_path,9001,allow_terminal_write=False)=={"target":9001,"allow":False}
 
