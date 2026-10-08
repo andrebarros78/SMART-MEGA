@@ -150,8 +150,20 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         raise ValueError("post-result report could not resolve official result")
     if card is None:
         raise ValueError("post-result report could not resolve frozen generated card")
+    champion_card = _extract_numbers(freeze, ("frozen_top6", "top6", "champion_top6"))
+    if champion_card is None:
+        raise ValueError("post-result report champion freeze card unavailable")
+    primary_record = freezes[0].get("primary_card")
+    primary_card = _numbers(primary_record) if primary_record is not None else None
+    if primary_record is not None and primary_card is None:
+        raise ValueError("frozen primary card evidence invalid")
+    # Preserve byte-compatible legacy reports if the selected primary and champion
+    # use the same six numbers. Otherwise evaluate the actual primary product.
+    if primary_card is not None and set(primary_card) != set(champion_card):
+        card = primary_card
 
     official_set, card_set = set(official), set(card)
+    champion_hits = len(official_set & set(champion_card))
     matched = sorted(official_set & card_set)
     missed = sorted(official_set - card_set)
     extra = sorted(card_set - official_set)
@@ -168,6 +180,8 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         if isinstance(portfolio_sha_expected, str) and portfolio_sha != portfolio_sha_expected:
             raise ValueError("portfolio hash mismatch")
         package = _load_json(portfolio_path)
+        if primary_card is not None and _numbers(package.get("primary_card")) != primary_card:
+            raise ValueError("frozen primary card differs from bound portfolio")
         games = package.get("games") or package.get("portfolio", {}).get("games")
         if not isinstance(games, list) or not games:
             raise ValueError("portfolio games invalid")
@@ -187,8 +201,8 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         reported_hits = adjudications[0].get("hits")
 
     process_findings: list[str] = []
-    if isinstance(reported_hits, int) and reported_hits != hits:
-        process_findings.append(f"Divergência de contabilização: adjudicação informou {reported_hits} acertos, recomputação independente encontrou {hits}.")
+    if isinstance(reported_hits, int) and reported_hits != champion_hits:
+        process_findings.append(f"Divergência de contabilização: adjudicação informou {reported_hits} acertos do champion, recomputação independente encontrou {champion_hits}.")
 
     authority = active.get("freeze_authority")
     freeze_sha = _sha256_file(freeze_path)
@@ -241,7 +255,7 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "matched_numbers": matched,
         "missed_result_numbers": missed,
         "card_numbers_not_drawn": extra,
-        "champion_hits": hits,
+        "champion_hits": champion_hits,
         "portfolio_adjudication": portfolio_metrics,
         "process_audit": {
             "freeze_artifact": str(freeze_path.relative_to(root)).replace("\\", "/"),

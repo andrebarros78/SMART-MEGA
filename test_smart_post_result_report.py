@@ -73,3 +73,29 @@ from smart_post_result_report import _numbers
 def test_numbers_accepts_portfolio_game_records():
     assert _numbers({"game_id": "G1", "numbers": [1, 2, 3, 4, 5, 6]}) == [1, 2, 3, 4, 5, 6]
     assert _numbers({"game_id": "BAD", "numbers": [1, 1, 3, 4, 5, 6]}) is None
+
+
+def test_post_result_uses_frozen_primary_when_it_differs_from_champion(tmp_path):
+    active=_fixture(tmp_path,reported_hits=2)
+    ledger=tmp_path/active["state_paths"]["ledger"]
+    doc=json.loads(ledger.read_text(encoding="utf-8"))
+    doc["events"][0]["primary_card"]={"numbers":[1,2,7,8,9,10]}
+    ledger.write_text(json.dumps(doc),encoding="utf-8")
+    result=pr.emit_post_result_report(tmp_path,active)
+    report=result["report"]
+    assert report["status"]=="PASS"
+    assert report["generated_card"]==[1,2,7,8,9,10]
+    assert report["hit_count"]==6
+    assert report["champion_hits"]==2
+    assert report["matched_numbers"]==[1,2,7,8,9,10]
+
+
+def test_post_result_rejects_invalid_frozen_primary_evidence(tmp_path):
+    import pytest
+    active=_fixture(tmp_path)
+    ledger=tmp_path/active["state_paths"]["ledger"]
+    doc=json.loads(ledger.read_text(encoding="utf-8"))
+    doc["events"][0]["primary_card"]={"numbers":[1,1,2,3,4,5]}
+    ledger.write_text(json.dumps(doc),encoding="utf-8")
+    with pytest.raises(ValueError,match="frozen primary card evidence invalid"):
+        pr.emit_post_result_report(tmp_path,active)

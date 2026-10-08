@@ -105,3 +105,28 @@ def test_canonical_rescue_quarantines_orphaned_historical_report(tmp_path):
     assert profile["source_contests"]==[]
     assert profile["quarantined_reports"]==["SMART_POST_RESULT_REPORT_9.json"]
     assert profile["quarantined_count"]==1
+
+
+def test_canonical_rescue_rejects_report_without_matching_adjudication(tmp_path):
+    import json,hashlib,pytest
+    from smart_false_negative_rescue import sha256_json
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}",encoding="utf-8")
+    freeze=tmp_path/"freeze.json"
+    freeze.write_text(json.dumps({"target_contest":9,"champion":{"top6":[1,2,3,7,8,9]}}),encoding="utf-8")
+    ledger=tmp_path/"ledger.json"
+    ledger.write_text(json.dumps({"schema":"SMART_SIGNAL_LEDGER_1","events":[]}),encoding="utf-8")
+    digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    audit={"freeze_artifact":"freeze.json","freeze_sha256":digest(freeze),
+           "ledger":"ledger.json","ledger_sha256":digest(ledger),
+           "freeze_authority_present":True,"findings":[]}
+    actual=[1,2,3,4,5,6]; generated=[1,2,3,7,8,9]
+    obj={"schema":"SMART_POST_RESULT_REPORT_1","status":"PASS","contest_number":9,
+         "official_result":actual,"generated_card":generated,"hit_count":3,"process_audit":audit}
+    obj["source_fingerprint"]=sha256_json({"target":9,"official_result":actual,
+        "generated_card":generated,"freeze_sha256":audit["freeze_sha256"],
+        "ledger_sha256":audit["ledger_sha256"],"portfolio_sha256":None,
+        "portfolio_hits_per_game":None})
+    obj["sha256"]=sha256_json(obj)
+    (tmp_path/"SMART_POST_RESULT_REPORT_9.json").write_text(json.dumps(obj),encoding="utf-8")
+    with pytest.raises(ValueError,match="not bound to adjudicated ledger evidence"):
+        build_profile_from_reports(tmp_path,through_contest=9)
