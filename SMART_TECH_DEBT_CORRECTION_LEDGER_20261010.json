@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T14:54:35Z",
+  "last_update_utc": "2026-10-08T15:08:17Z",
   "mission_status": "ACTIVE",
   "current_phase": "F08",
   "last_proven_phase": "F07",
@@ -19,7 +19,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F08_COMPONENTES_PARALELOS",
+  "next_required_action": "RETEST_F08_NONPRODUCTION_DISPOSITION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -194,8 +194,16 @@
     },
     "F08": {
       "name": "COMPONENTES_PARALELOS",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "47 top-level parallel Python files accounted for from F01 reachability + F05 authority registry",
+        "38 standalone entrypoints explicitly identified; historical, validation, research and shadow boundaries preserved",
+        "7 retired-from-production historical entrypoints retained for test compatibility, no physical move",
+        "one causal shadow component held non-authoritative",
+        "eight procedural/RAG/research intake paths held isolated from ranking/freeze without causal proof",
+        "25 validation and six maintenance/diagnostic scripts retained outside production",
+        "F08 explicit nonproduction dispositions and fail-closed tests added; no unsafe merge or predictive promotion"
+      ]
     },
     "F09": {
       "name": "SDK_LLM_SELETIVO",
@@ -236,5 +244,6 @@
   "f04_baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
   "f05_baseline_head": "41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
   "f06_baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee",
-  "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f"
+  "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f",
+  "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c"
 }

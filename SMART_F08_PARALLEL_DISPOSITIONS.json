@@ -1,0 +1,83 @@
+{
+  "schema": "SMART_F08_PARALLEL_DISPOSITIONS_V1",
+  "source": "SMART_COMPONENT_REACHABILITY_REGISTRY.json",
+  "production_entrypoint_policy": "CANONICAL_WORKFLOWS_ONLY",
+  "classification": "EXPLICIT_STATIC_NONPRODUCTION_BOUNDARY",
+  "decision": "RETIRE_UNREACHABLE_LEGACY_KEEP_TEST_COMPAT; PRESERVE_SHADOW; ISOLATE_RESEARCH_INPUTS; KEEP_VALIDATION; KEEP_DIAGNOSTICS",
+  "rules": {
+    "all_root_nonproduction_accounted": true,
+    "duplicate_mapping_forbidden": true,
+    "no_parallel_runtime_promotion": true,
+    "no_predictive_or_freeze_authority": true,
+    "no_external_source_execution": true,
+    "no_retrospective_claim": true,
+    "no_unverified_merge_or_physical_move": true
+  },
+  "groups": {
+    "RETIRED_FROM_PRODUCTION": [
+      "fix_patch_e2e_20260920.py",
+      "smart_3054_full_cycle_sandbox.py",
+      "smart_3054_terminal_executor.py",
+      "smart_capability_integration_v2.py",
+      "smart_finalize_capability_integration_v3.py",
+      "smart_v2_production.py",
+      "smartmega_apply_post_result_report_20260920.py"
+    ],
+    "SHADOW_ONLY": [
+      "smart_causal_shadow_runner.py"
+    ],
+    "RESEARCH_ISOLATED": [
+      "smart_historical_training_intake.py",
+      "smart_rag_excel.py",
+      "smart_procedural_signal_intake.py",
+      "smart_procedural_caption_extract.py",
+      "smart_procedural_cronogram_acquire.py",
+      "smart_procedural_cronogram_build_dataset.py",
+      "smart_procedural_youtube_batch.py",
+      "smart_procedural_youtube_recent_acquire.py"
+    ],
+    "VALIDATION_ONLY": [
+      "p14_coverage_plugin.py",
+      "smart_50_round_simulation.py",
+      "smart_adversarial_claim_audit.py",
+      "smart_canonical_result_store_reconcile.py",
+      "smart_context_calibration_confirm.py",
+      "smart_context_calibration_confirm_v2.py",
+      "smart_experiment_lab.py",
+      "smart_extended_falsification.py",
+      "smart_falsification_power_audit.py",
+      "smart_finalize_deployment.py",
+      "smart_hypothesis_state_reconciler.py",
+      "smart_monte_carlo_convergence.py",
+      "smart_official_dataset_reconcile.py",
+      "smart_portfolio_backtest.py",
+      "smart_portfolio_backtest_merge.py",
+      "smart_probability_audit.py",
+      "smart_procedural_coverage_gate.py",
+      "smart_promote_cartography_1000.py",
+      "smart_refresh_falsification_report.py",
+      "smart_regression_runner.py",
+      "smart_signal_2000_simulation.py",
+      "smart_signal_50_round_simulation.py",
+      "smart_signal_drift_calibration.py",
+      "smart_test_helpers.py",
+      "smart_validation_gate.py"
+    ],
+    "DIAGNOSTIC_ONLY": [
+      "smart_canonical_root_rebind.py",
+      "smart_continuity_consolidator.py",
+      "smart_contract_registry.py",
+      "smart_execution_checkpoint.py",
+      "smart_frontier_adjudicator.py",
+      "smart_release_attestation.py"
+    ]
+  },
+  "reasoning": {
+    "RETIRED_FROM_PRODUCTION": "Historical/legacy executables unreachable from canonical workflows; retain in place for audited compatibility only.",
+    "SHADOW_ONLY": "Explicit shadow comparison; no effect on champion, weights, ranking or freeze.",
+    "RESEARCH_ISOLATED": "Procedural and historical/RAG acquisition research remains outside production until causal evaluation.",
+    "VALIDATION_ONLY": "Synthetic simulations and backtests remain non-authoritative testing evidence, not predictive promotion.",
+    "DIAGNOSTIC_ONLY": "Separate maintenance diagnostics are not production decision paths."
+  },
+  "scope_boundary": "F08 classifies and enforces nonproduction routing; does not claim dynamic execution, physical relocation or scientific superiority."
+}
