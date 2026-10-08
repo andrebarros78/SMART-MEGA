@@ -26,7 +26,7 @@
     "smart_disconnection_gate.py": [
       ".github/workflows/ci.yml"
     ],
-    "smart_f11_predictive_nonregression.py": [
+    "smart_f12_scientific_successor.py": [
       ".github/workflows/ci.yml"
     ],
     "smart_github_certify.py": [
@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "b5894dff683afafccf98c76ae87d8b28a79c58a5bb88e2d2b19fbf66f7e6ef89",
+  "inventory_sha256": "077d3c17504521a46d8a79330aaa9a6c6bc31058013888b5fabee190cc9dfc86",
   "summary": {
-    "python_components": 478,
+    "python_components": 481,
     "workflow_entrypoints": 8,
-    "production_components": 97,
+    "production_components": 98,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 154,
+    "test_components": 156,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5349,12 +5349,14 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_f11_predictive_nonregression"
+        "smart_f12_scientific_successor"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_f11_predictive_nonregression"
+        "smart_f12_scientific_successor",
+        "test_smart_f11_predictive_nonregression",
+        "test_smart_f12_scientific_successor"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -5365,6 +5367,31 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "f369d6cedc5f8786d71e94253fa55cb039f5f39719975fa5bbb41ecd98f4f59b"
+    },
+    {
+      "component_id": "smart_f12_scientific_successor",
+      "source_file": "smart_f12_scientific_successor.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_f12_scientific_successor"
+      ],
+      "producers": [
+        "smart_f11_predictive_nonregression"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_f12_scientific_successor"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "4ebf5f9405ef3f856224737382d6894ef446e09ecc75e997a3974f1e163e8e74"
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -5616,6 +5643,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
         "smart_operator",
+        "test_smart_full_process_fine_tuning_consumer",
         "test_smart_full_process_temporal_guard",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_primary_card_contract",
@@ -5630,7 +5658,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "f154252a116604941e6ce05adac0e5b52acba62e4ccb516a642f8be921e3c9cc"
+      "sha256": "4055182f086b5d05519ae4d3707541e7a7bd4ad15d9abf871a8d4a155901be6b"
     },
     {
       "component_id": "smart_github_certify",
@@ -9893,7 +9921,29 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "4bc85eee72f48a801a5710c8dc5c9ce0e597d9d790b629bdbd5d6a6f83091a28"
+      "sha256": "4bef9e7ebd75f2898aff63a4952e8fa4505a08cd792afd38eebabe12b5863552"
+    },
+    {
+      "component_id": "test_smart_f12_scientific_successor",
+      "source_file": "test_smart_f12_scientific_successor.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_f11_predictive_nonregression",
+        "smart_f12_scientific_successor"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "f52b07ef32f89de9b87c82a0a4bdafef87cd087f51469dffa4cc85a5ffe806d8"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
@@ -10049,6 +10099,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "cc6d317295a4ad95978104d8b29c592e8b13b366ddcc496b46cbccf217ce661b"
+    },
+    {
+      "component_id": "test_smart_full_process_fine_tuning_consumer",
+      "source_file": "test_smart_full_process_fine_tuning_consumer.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_full_process_pipeline"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4ff4ba07c40de8b9dce5aaae554cf216c062c0b8cc00d6c4041e9e882d27ce0a"
     },
     {
       "component_id": "test_smart_full_process_temporal_guard",

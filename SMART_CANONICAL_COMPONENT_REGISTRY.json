@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "b5894dff683afafccf98c76ae87d8b28a79c58a5bb88e2d2b19fbf66f7e6ef89",
+  "source_reachability_inventory_sha256": "077d3c17504521a46d8a79330aaa9a6c6bc31058013888b5fabee190cc9dfc86",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 478,
-    "active": 97,
+    "component_count": 481,
+    "active": 98,
     "shadow": 1,
-    "diagnostic": 180,
+    "diagnostic": 182,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -5678,10 +5678,39 @@
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
-        "test_smart_f11_predictive_nonregression"
+        "smart_f12_scientific_successor",
+        "test_smart_f11_predictive_nonregression",
+        "test_smart_f12_scientific_successor"
       ],
       "entrypoints": [
+        "smart_f12_scientific_successor"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_f12_scientific_successor",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_f12_scientific_successor.py",
+      "implementation_sha256": "4ebf5f9405ef3f856224737382d6894ef446e09ecc75e997a3974f1e163e8e74",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
         "smart_f11_predictive_nonregression"
+      ],
+      "consumers": [
+        "test_smart_f12_scientific_successor"
+      ],
+      "entrypoints": [
+        "smart_f12_scientific_successor"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5927,7 +5956,7 @@
       "component_id": "smart_full_process_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_full_process_pipeline.py",
-      "implementation_sha256": "f154252a116604941e6ce05adac0e5b52acba62e4ccb516a642f8be921e3c9cc",
+      "implementation_sha256": "4055182f086b5d05519ae4d3707541e7a7bd4ad15d9abf871a8d4a155901be6b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -5958,6 +5987,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
         "smart_operator",
+        "test_smart_full_process_fine_tuning_consumer",
         "test_smart_full_process_temporal_guard",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_primary_card_contract",
@@ -10504,11 +10534,35 @@
       "component_id": "test_smart_f11_predictive_nonregression",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f11_predictive_nonregression.py",
-      "implementation_sha256": "4bc85eee72f48a801a5710c8dc5c9ce0e597d9d790b629bdbd5d6a6f83091a28",
+      "implementation_sha256": "4bef9e7ebd75f2898aff63a4952e8fa4505a08cd792afd38eebabe12b5863552",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_f11_predictive_nonregression"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_f12_scientific_successor",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_f12_scientific_successor.py",
+      "implementation_sha256": "f52b07ef32f89de9b87c82a0a4bdafef87cd087f51469dffa4cc85a5ffe806d8",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_f11_predictive_nonregression",
+        "smart_f12_scientific_successor"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -10678,6 +10732,29 @@
         "smart_engineering_activation",
         "smart_learning_epoch_reset",
         "smart_regression_evidence"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_full_process_fine_tuning_consumer",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_full_process_fine_tuning_consumer.py",
+      "implementation_sha256": "4ff4ba07c40de8b9dce5aaae554cf216c062c0b8cc00d6c4041e9e882d27ce0a",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_full_process_pipeline"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -12926,5 +13003,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "0e36bc7b419a693332a1ac8ee37b5dd36a2dc23bde8b97c67a850eb2505fbc92"
+  "registry_sha256": "5b95711ef4953874e574e645d62e090c8ef05997ecf4d38b982ecd6bf64612f9"
 }
