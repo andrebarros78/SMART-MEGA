@@ -7,13 +7,12 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T13:46:40Z",
+  "last_update_utc": "2026-10-08T13:56:53Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F05",
-  "last_proven_phase": "F04",
-  "last_proven_head": "078fe4e0f49ec9b0c0b2c8a5059a00b13670f438",
+  "current_phase": "F06",
+  "last_proven_phase": "F05",
+  "last_proven_head": "d30b1c04397256f9de2b774b43fafe8a5fe5aa83",
   "open_deficiencies": [
-    "F05 canonical component registry not yet implemented",
     "F06 operational agent handoffs not yet implemented",
     "F07 skill/adapters semantics not yet reconciled",
     "F08 parallel components not yet reconciled",
@@ -22,7 +21,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F05_CANONICAL_COMPONENT_REGISTRY",
+  "next_required_action": "EXECUTE_F06_AGENTES_E_HANDOFFS_REAIS",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -126,15 +125,27 @@
     },
     "F05": {
       "name": "REGISTRY_CANONICA",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F05 baseline rediscovered at 41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
-        "F01 reachability registry is the mechanical source of component inventory",
-        "canonical state model constrained to ACTIVE/SHADOW/DIAGNOSTIC/VALIDATION_ONLY/QUARANTINED/DEPRECATED/ARCHIVED",
-        "material predictive/weight/freeze authority requires explicit allowlist",
-        "non-ACTIVE material authority is forbidden",
-        "smart_3054_terminal_executor classified DEPRECATED and retired from canonical runtime",
-        "CI integration prepared to regenerate and certify canonical component registry"
+        "baseline head: 41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
+        "implementation commit: 27418f7b525cbb1004b47e1057eb9b23750694f2",
+        "certified head: d30b1c04397256f9de2b774b43fafe8a5fe5aa83",
+        "canonical registry blob: 8246d1ab1c5978d913e01b36691defb9510ea72a",
+        "registry gate PASS",
+        "component_count=465",
+        "active=93",
+        "shadow=1",
+        "diagnostic=171",
+        "validation_only=23",
+        "deprecated=1",
+        "archived=176",
+        "material_authority_components=7",
+        "material predictive/weight/freeze authority restricted to explicit ACTIVE allowlist",
+        "non-ACTIVE material authority forbidden by registry gate",
+        "smart_3054_terminal_executor=DEPRECATED and RETIRED_FROM_CANONICAL_RUNTIME",
+        "full regression=1097 tests, 0 failures, 0 errors, 0 skipped",
+        "Repository Integrity=success",
+        "GitHub Operator smoke=success"
       ]
     },
     "F06": {

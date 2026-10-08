@@ -1,0 +1,141 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F05_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F05",
+  "phase_name": "REGISTRY_CANONICA",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T10:56:53-03:00",
+  "baseline_head": "41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
+  "implementation_commit": "27418f7b525cbb1004b47e1057eb9b23750694f2",
+  "certified_head": "d30b1c04397256f9de2b774b43fafe8a5fe5aa83",
+  "registry": {
+    "path": "SMART_CANONICAL_COMPONENT_REGISTRY.json",
+    "blob_sha": "8246d1ab1c5978d913e01b36691defb9510ea72a",
+    "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
+    "registry_sha256": "173a232c52968cb7f62d568b7b52cfc4d87cfeac658c7620928e5ae10aac1b85",
+    "source_reachability_inventory_sha256": "22f5b31ab08d41421f5b538ea90a4833750120eb2dc6d6788e9b0c0ec7a30c23",
+    "summary": {
+      "component_count": 465,
+      "active": 93,
+      "shadow": 1,
+      "diagnostic": 171,
+      "validation_only": 23,
+      "quarantined": 0,
+      "deprecated": 1,
+      "archived": 176,
+      "material_authority_components": 7
+    },
+    "gate": {
+      "status": "PASS",
+      "errors": []
+    }
+  },
+  "state_model": [
+    "ACTIVE",
+    "ARCHIVED",
+    "DEPRECATED",
+    "DIAGNOSTIC",
+    "QUARANTINED",
+    "SHADOW",
+    "VALIDATION_ONLY"
+  ],
+  "authority_policy": {
+    "default": {
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY"
+    },
+    "explicit_allowlist_required": true,
+    "non_active_material_authority_forbidden": true,
+    "static_registry_does_not_prove_predictive_advantage": true
+  },
+  "material_authority_components": [
+    {
+      "implementation": "smart_ai_fine_tuning.py",
+      "state": "ACTIVE",
+      "decision_effect": "BOUNDED_HYPERPARAMETER_SELECTION",
+      "predictive_authority": "INDIRECT_BOUNDED_HYPERPARAMETER_EFFECT",
+      "weight_authority": "INDIRECT_BOUNDED_HYPERPARAMETER_GOVERNANCE",
+      "freeze_authority": "NONE",
+      "evidence_gate": "F04_CAUSAL_PARTITION_AND_NON_REGRESSION_GATE"
+    },
+    {
+      "implementation": "smart_champion_challenger.py",
+      "state": "ACTIVE",
+      "decision_effect": "PREDICTION_PACKAGE_AND_PRE_RESULT_FREEZE",
+      "predictive_authority": "DIRECT_CHAMPION_CHALLENGER_SELECTION",
+      "weight_authority": "CONSUMES_SIGNAL_WEIGHT_AUTHORITY",
+      "freeze_authority": "PRE_RESULT_FREEZE_WRITER",
+      "evidence_gate": "TEMPORAL_GUARD_CAUSAL_CUTOFF_AND_FREEZE_LEDGER"
+    },
+    {
+      "implementation": "smart_fine_tuning_lifecycle.py",
+      "state": "ACTIVE",
+      "decision_effect": "PRE_FREEZE_HYPERPARAMETER_AUTHORITY_BINDING",
+      "predictive_authority": "INDIRECT_BOUNDED_HYPERPARAMETER_EFFECT",
+      "weight_authority": "INDIRECT_BOUNDED_HYPERPARAMETER_GOVERNANCE",
+      "freeze_authority": "NONE",
+      "evidence_gate": "F04_EPOCH_TARGET_CUTOFF_DATA_HASH_BINDING"
+    },
+    {
+      "implementation": "smart_full_process_pipeline.py",
+      "state": "ACTIVE",
+      "decision_effect": "OPERATIONAL_PRE_FREEZE_ORCHESTRATION",
+      "predictive_authority": "ORCHESTRATION_ONLY",
+      "weight_authority": "NONE",
+      "freeze_authority": "ORCHESTRATES_AUTHORIZED_FREEZE",
+      "evidence_gate": "FULL_PROCESS_PRE_AND_POST_INTEGRATION_GATES"
+    },
+    {
+      "implementation": "smart_portfolio_pipeline.py",
+      "state": "ACTIVE",
+      "decision_effect": "FINAL_SINGLE_CARD_SELECTION_FROM_FROZEN_SCORES",
+      "predictive_authority": "POST_SCORING_CARD_SELECTION",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "evidence_gate": "FROZEN_SCORE_ONLY_RESULT_UNUSED"
+    },
+    {
+      "implementation": "smart_primary_card_selector.py",
+      "state": "ACTIVE",
+      "decision_effect": "FINAL_SINGLE_CARD_COMBINATORIAL_SELECTOR",
+      "predictive_authority": "POST_SCORING_CARD_SELECTION",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "evidence_gate": "PURE_FROZEN_SCORE_SELECTOR_RESULT_UNUSED"
+    },
+    {
+      "implementation": "smart_signal_agent.py",
+      "state": "ACTIVE",
+      "decision_effect": "DIRECT_SIGNAL_SCORING_AND_RANKING",
+      "predictive_authority": "DIRECT_PREDICTIVE_SCORING",
+      "weight_authority": "DIRECT_DYNAMIC_WEIGHT_COMPUTATION",
+      "freeze_authority": "NONE",
+      "evidence_gate": "CAUSAL_BACKTEST_AND_PRE_FREEZE_RUNTIME"
+    }
+  ],
+  "invariants": {
+    "active_requires_production_reachable": true,
+    "non_active_production_reachable_forbidden": true,
+    "material_authority_requires_explicit_allowlist": true,
+    "non_active_material_authority_forbidden": true,
+    "deprecated_3054_retired_from_canonical_runtime": true
+  },
+  "regression": {
+    "ci_run_id": 37787302992,
+    "smoke_run_id": 37787302910,
+    "integrity_run_id": 37787303352,
+    "tests": 1097,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success"
+  },
+  "proof_boundary": "F05 proves canonical component classification, reachability binding and explicit authority semantics. It does not prove dynamic agent handoff consumption, third-party skill execution, LLM integration, or predictive superiority; those belong to F06-F11.",
+  "next_phase": "F06_AGENTES_E_HANDOFFS_REAIS"
+}
