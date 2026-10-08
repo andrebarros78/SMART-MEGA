@@ -7,17 +7,16 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T16:21:00Z",
+  "last_update_utc": "2026-10-08T16:35:29Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F10",
-  "last_proven_phase": "F09",
-  "last_proven_head": "ae44ff931dabdad229b95ac29024fdda4b93b4df",
+  "current_phase": "F11",
+  "last_proven_phase": "F10",
+  "last_proven_head": "e1fb71ba4c745d9340d316d50695d647a3df4c7e",
   "open_deficiencies": [
-    "F10 disconnection tests not yet implemented",
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "RUN_F10_DISCONNECTION_FAULT_INJECTION_CI_AND_CERTIFICATION",
+  "next_required_action": "EXECUTE_F11_VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -222,15 +221,20 @@
     },
     "F10": {
       "name": "TESTES_DE_DESCONEXAO",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F10 baseline verified as 5121b99b733cb32c483274efec430033bcd493b4",
-        "dynamic execution not inferred from static ACTIVE reachability",
-        "eight explicitly observed required production edges bound to workflow graph",
-        "historical terminal 3054 and residual operator reverse cycle explicitly prohibited",
-        "negative fault injection snapshots cannot mutate canonical source, Git HEAD, state, weights, freeze, or results",
-        "CI regression and certification both execute fail-closed F10 disconnection gate",
-        "nine F10 tests cover disconnected fine-tuning, false ACTIVE, restored legacy/cycle, forged skill promotions, wrong callable permission and missing component"
+        "baseline HEAD 5121b99b733cb32c483274efec430033bcd493b4",
+        "implementation commit fc92058fc59e66d8a51c250e5f79888e9cc94c1b",
+        "certified HEAD e1fb71ba4c745d9340d316d50695d647a3df4c7e",
+        "SMART_F10_DISCONNECTION_GATE.json blob f3d8c89d45c9fab591d668dfde18e2509519b307",
+        "11 structural and alias disconnection checks PASS",
+        "negative tests simulate missing fine-tuning producer edge, false ACTIVE, legacy executor edge, operator pipeline cycle, unproved active-native skill, callable quarantined alias, and missing component",
+        "fail-closed comparisons use in-memory snapshots, no alteration to predictive runtime or real freeze",
+        "static ACTIVE is explicitly not proof of dynamic runtime execution",
+        "GitHub regression tests=1124, failures=0, errors=0, skipped=0",
+        "F10-specific 9 tests present in certified JUnit",
+        "GitHub Operator smoke=success and Repository Integrity=success",
+        "GitHub certification=success"
       ]
     },
     "F11": {
