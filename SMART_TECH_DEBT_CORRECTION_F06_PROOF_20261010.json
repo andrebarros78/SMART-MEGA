@@ -1,0 +1,73 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F06_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F06",
+  "phase_name": "AGENTES_E_HANDOFFS_REAIS",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T11:27:36-03:00",
+  "baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee",
+  "implementation_commits": [
+    "4a1964215db1871e0348e1cb2ead902084b1613e",
+    "b8e551fe148c1e842ace71bb4926a75fe4c87110"
+  ],
+  "certified_head": "53cf3fe4b4ee91ede84983163d5dfdb17bc8521c",
+  "architecture": {
+    "validation_runtime": "SmartAgentRuntime deterministic native probes",
+    "operational_handoff_component": "smart_agent_handoff_runtime.py",
+    "total_integration_consumer": "smart_total_integration_gate.py",
+    "handoff_schema": "SMART_AGENT_HANDOFF_V1",
+    "ledger_schema": "SMART_AGENT_OPERATIONAL_HANDOFF_LEDGER_V1",
+    "agent_model": "DETERMINISTIC_ROLE_EXECUTOR",
+    "autonomous_ai_agents": false,
+    "llm_agents": false
+  },
+  "handoff_contract": {
+    "required_fields": [
+      "producer",
+      "consumer",
+      "artifact",
+      "artifact_sha256",
+      "created_sequence",
+      "consumed",
+      "consumption_result",
+      "decision_effect"
+    ],
+    "route_validation": true,
+    "schema_validation": true,
+    "artifact_hash_validation": true,
+    "exact_once_consumption": true,
+    "wrong_consumer_rejected": true,
+    "tamper_rejected": true,
+    "unconsumed_status": "FAIL",
+    "decision_effect": "EVIDENCE_GATE_INPUT_ONLY",
+    "predictive_weight_authorized": false,
+    "freeze_mutation_authorized": false
+  },
+  "canonical_registry": {
+    "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
+    "gate": "PASS",
+    "component_count": 467,
+    "active": 94
+  },
+  "regression": {
+    "ci_run_id": 37791407468,
+    "smoke_run_id": 37791407443,
+    "integrity_run_id": 37791407484,
+    "tests": 1101,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success",
+    "f06_tests": [
+      "test_f06_runtime_materializes_and_consumes_every_handoff",
+      "test_f06_handoff_rejects_wrong_consumer_and_tampering",
+      "test_f06_total_integration_consumes_operational_handoff_ledger",
+      "test_f06_unconsumed_handoff_is_fail_closed"
+    ]
+  },
+  "proof_boundary": "F06 proves real schema/hash/route-validated evidence handoffs between deterministic SMART role executors, with exact consumption accounting. It does not convert these executors into autonomous/LLM agents and does not grant predictive-weight or freeze authority. Skill adapter semantics remain F07.",
+  "next_phase": "F07_SKILLS_E_ADAPTERS"
+}
