@@ -47,13 +47,17 @@ def _sha256_json(value: Any) -> str:
 
 def _tracked_blob_sha(root: Path, path: str) -> str | None:
     """Read-only Git clean-filter-aware hash of checked out evidence."""
-    proc = subprocess.run(
-        ["git", "hash-object", "--path=" + path, "--", path],
+    tracked = subprocess.run(
+        ["git", "rev-parse", "HEAD:" + path],
         cwd=root, capture_output=True, text=True, check=False,
     )
-    if proc.returncode != 0:
+    clean = subprocess.run(
+        ["git", "diff", "--quiet", "HEAD", "--", path],
+        cwd=root, capture_output=True, text=True, check=False,
+    )
+    if tracked.returncode != 0 or clean.returncode != 0:
         return None
-    return proc.stdout.strip()
+    return tracked.stdout.strip()
 
 
 def evaluate(
