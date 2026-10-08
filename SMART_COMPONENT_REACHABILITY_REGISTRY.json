@@ -26,6 +26,9 @@
     "smart_disconnection_gate.py": [
       ".github/workflows/ci.yml"
     ],
+    "smart_f11_predictive_nonregression.py": [
+      ".github/workflows/ci.yml"
+    ],
     "smart_github_certify.py": [
       ".github/workflows/ci.yml"
     ],
@@ -50,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "96b855ebd1aed75e7fed52d821c61c0ce24d733176ac70ef7fed657e788f72f9",
+  "inventory_sha256": "ea19ba5707a4b58f2b689b95ca04f96e9a44c93fa50b044210f2b3fd86a35272",
   "summary": {
-    "python_components": 473,
-    "workflow_entrypoints": 7,
-    "production_components": 96,
+    "python_components": 475,
+    "workflow_entrypoints": 8,
+    "production_components": 97,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 150,
+    "test_components": 151,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5341,6 +5344,29 @@
       "sha256": "acabb5cfa768d11eba9298aeb5450eeca037241cd30b94a87ef6e18b32b600df"
     },
     {
+      "component_id": "smart_f11_predictive_nonregression",
+      "source_file": "smart_f11_predictive_nonregression.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_f11_predictive_nonregression"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_f11_predictive_nonregression"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "f369d6cedc5f8786d71e94253fa55cb039f5f39719975fa5bbb41ecd98f4f59b"
+    },
+    {
       "component_id": "smart_false_negative_rescue",
       "source_file": "smart_false_negative_rescue.py",
       "role": "PRODUCTION",
@@ -9844,6 +9870,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "af6fc2eeed1241789c145f9a8e62c6f9f04b826a6b07e3dbc41f2dbc51fcdcc8"
+    },
+    {
+      "component_id": "test_smart_f11_predictive_nonregression",
+      "source_file": "test_smart_f11_predictive_nonregression.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_f11_predictive_nonregression"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4bc85eee72f48a801a5710c8dc5c9ce0e597d9d790b629bdbd5d6a6f83091a28"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
