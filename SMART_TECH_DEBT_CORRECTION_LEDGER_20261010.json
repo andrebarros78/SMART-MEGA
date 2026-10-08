@@ -7,11 +7,11 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T09:57:15Z",
+  "last_update_utc": "2026-10-08T11:24:10Z",
   "mission_status": "ACTIVE",
   "current_phase": "F01",
   "last_proven_phase": "F00",
-  "last_proven_head": "PERSISTENCE_COMMIT_TO_BE_VERIFIED_EXTERNALLY",
+  "last_proven_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
   "open_deficiencies": [
     "F01 reachability not yet executed",
     "F02 dependency cycle not yet corrected",
@@ -26,7 +26,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F01_GRAFO_E_REACHABILITY",
+  "next_required_action": "BUILD_VALIDATE_PERSIST_F01_REACHABILITY",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -41,8 +41,12 @@
     },
     "F01": {
       "name": "GRAFO_E_REACHABILITY",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F01 baseline rediscovered at 422ebd32cadd8af2af9be7a493029b6c63658452",
+        "canonical workflow entrypoints inspected",
+        "implementation commit pending CI validation and registry certification"
+      ]
     },
     "F02": {
       "name": "DEPENDENCIA_CIRCULAR",
@@ -110,5 +114,7 @@
     "runtime_changed_by_f00": false,
     "predictive_state_changed_by_f00": false,
     "early_registration_authorized": true
-  }
+  },
+  "f01_baseline_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
+  "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452"
 }
