@@ -12,6 +12,7 @@ from typing import Any, Callable
 import numpy as np
 
 from smart_agent_skill_orchestration import AGENTS, LANES, build_orchestration, resolve_runtime_phase
+from smart_agent_handoff_runtime import create_handoff, consume_handoff, build_operational_handoff_ledger
 from smart_source_identity import sha256_source_file
 
 SCHEMA = "SMART_AGENT_RUNTIME_V2"
@@ -236,15 +237,32 @@ class SmartAgentRuntime:
             consumed: list[dict[str, Any]] = []
             for producer, handoffs in produced_by_agent.items():
                 if name in AGENTS[producer]["handoff_to"]:
-                    consumed.extend(handoffs)
-                    acknowledged_ids.extend(h["handoff_id"] for h in handoffs)
+                    for handoff in handoffs:
+                        receipt = consume_handoff(
+                            handoff,
+                            consumer=name,
+                            consumer_sequence=ORDER.index(name) + 1,
+                        )
+                        consumed.append(receipt)
+                        acknowledged_ids.append(receipt["handoff_id"])
             artifacts = self.artifact_records(name)
             if not artifacts:
                 raise RuntimeError(f"{name} has no verifiable runtime evidence")
             probe_result = self._probe_for(name)
             payload = {"agent": name, "capabilities": capabilities, "native_targets": targets, "artifacts": artifacts, "consumed_handoff_ids": sorted(h["handoff_id"] for h in consumed), "probe_result": probe_result}
             digest = sha256_json(payload)
-            produced = [{"handoff_id": f"{name}->{dst}:{digest[:16]}", "producer": name, "consumer": dst, "payload_sha256": digest, "probe_id": probe_result["probe_id"]} for dst in config["handoff_to"]]
+            produced = [
+                create_handoff(
+                    producer=name,
+                    consumer=dst,
+                    producer_sequence=ORDER.index(name) + 1,
+                    probe_id=str(probe_result["probe_id"]),
+                    probe_result=probe_result,
+                    evidence_artifacts=artifacts,
+                    payload_sha256=digest,
+                )
+                for dst in config["handoff_to"]
+            ]
             produced_by_agent[name] = produced
             verdict = str(probe_result.get("mission_status", "PASS"))
             executions[name] = asdict(AgentExecution(name, "PASS", capabilities, targets, artifacts, consumed, produced, str(probe_result["probe_id"]), probe_result, verdict))
@@ -254,18 +272,21 @@ class SmartAgentRuntime:
         inv = self.orchestration["inventory"]
         acquired = sorted(set(inv["source_only_skills"] + inv["v2_capabilities"] + inv["v3_capabilities"] + inv["native_scientific_libraries"]))
         hashes_after = self._critical_hashes()
+        operational_handoffs = build_operational_handoff_ledger(executions)
         checks = {
             "all_9_agents_native_probed": len(executions) == 9 and all(e["status"] == "PASS" and e["probe_result"].get("pass") for e in executions.values()),
             "all_41_capabilities_owned": owned == acquired and len(owned) == 41,
             "all_native_targets_verified": all(all((self.root / t).exists() for t in e["native_targets"]) for e in executions.values()),
             "all_declared_handoffs_acknowledged": not unacknowledged,
+            "all_handoffs_schema_hash_route_valid": operational_handoffs["status"] == "PASS",
+            "all_handoffs_consumed_exactly_once": operational_handoffs["checks"]["all_consumed_exactly_once"],
             "all_agents_have_runtime_evidence": all(e["artifacts"] for e in executions.values()),
             "all_agents_have_executed_function_evidence": all(e["probe_result"].get("executed_functions") for e in executions.values()),
             "mission_governor_reads_canonical_status": executions["mission_governor"]["verdict"] in {"MISSION_ACTIVE", "MISSION_PROVEN"},
             "no_agent_predictive_or_freeze_authority": all(not self.orchestration["agents"][n]["predictive_weight_authorized"] and not self.orchestration["agents"][n]["freeze_mutation_authorized"] for n in ORDER),
             "critical_canonical_files_unchanged": hashes_before == hashes_after,
         }
-        doc: dict[str, Any] = {"schema": SCHEMA, "phase": self.phase, "status": "PASS" if all(checks.values()) else "FAIL", "claim_scope": "The nine named agents are deterministic SMART role executors validated by read-only/synthetic native probes; they are not autonomous AI/LLM agents. External skill source code remains quarantined and is not executed.", "checks": checks, "executions": executions, "unacknowledged_handoffs": unacknowledged, "capability_count": len(owned), "agent_count": len(executions), "critical_hashes_before": hashes_before, "critical_hashes_after": hashes_after, "declarative_orchestration_sha256": self.orchestration["orchestration_sha256"]}
+        doc: dict[str, Any] = {"schema": SCHEMA, "phase": self.phase, "status": "PASS" if all(checks.values()) else "FAIL", "claim_scope": "The nine named agents are deterministic SMART role executors. Native probes validate role behavior; operational handoffs are schema/hash/route validated evidence artifacts consumed exactly once. They are not autonomous AI/LLM agents and have no predictive-weight or freeze authority. External skill source code remains quarantined and is not executed.", "checks": checks, "executions": executions, "operational_handoff_ledger": operational_handoffs, "unacknowledged_handoffs": unacknowledged, "capability_count": len(owned), "agent_count": len(executions), "critical_hashes_before": hashes_before, "critical_hashes_after": hashes_after, "declarative_orchestration_sha256": self.orchestration["orchestration_sha256"]}
         doc["runtime_sha256"] = sha256_json(doc)
         return doc
 

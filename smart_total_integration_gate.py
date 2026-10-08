@@ -39,6 +39,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     skills = functional["skill_runtime_proof"]
     matrix = functional["matrix"]
     executions = runtime["executions"]
+    operational_handoffs = runtime["operational_handoff_ledger"]
     calls = [row for row in matrix if row["pertinent"]]
     quarantine = [row for row in matrix if not row["pertinent"]]
     files = _file_audit(root, matrix)
@@ -91,6 +92,8 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
                 and row["probe_pass"] is True for row in calls
             ),
             "all_handoffs_consumed": runtime["unacknowledged_handoffs"] == [],
+            "operational_handoff_ledger_pass": operational_handoffs["status"] == "PASS",
+            "all_operational_handoffs_consumed_exactly_once": operational_handoffs["checks"]["all_consumed_exactly_once"],
         },
         "G6_FUNCTIONAL_PATH": {
             "each_pertinent_invoked": all(
@@ -131,6 +134,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
         "service_model": "BATCH_EXECUTION_WITH_PERSISTENT_CANONICAL_ARTIFACTS",
         "gates": gates,
         "agent_inventory": agents,
+        "operational_handoff_ledger": operational_handoffs,
         "skill_inventory": matrix,
         "file_audit": files,
         "native_invocations": [row["alias_invocation"] for row in calls],
@@ -140,7 +144,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
         "restart": {"status": "NOT_EVALUATED"},
         "parallel_stress": {"status": "NOT_EVALUATED"},
         "scientific_mission_status": "MISSION_ACTIVE",
-        "claim_boundary": "Executed native role probes and methodology aliases only; no third-party skill execution, process restart proof, parallel stress proof or predictive advantage claim.",
+        "claim_boundary": "Executed deterministic native role probes plus schema/hash/route-validated operational evidence handoffs. Handoffs have evidence-gate effect only and no predictive-weight or freeze authority. No autonomous/LLM agent claim, third-party skill execution, process restart proof, parallel stress proof or predictive advantage claim.",
     }
     document["sha256"] = sha256_json(document)
     return document
