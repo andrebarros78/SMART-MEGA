@@ -1,6 +1,6 @@
 {
   "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
-  "status": "RESET_READY",
+  "status": "FROZEN",
   "project": "SMART-MEGA",
   "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z",
   "created_utc": "2026-10-08T22:26:52.815164+00:00",
@@ -71,12 +71,72 @@
     "result_used": false
   },
   "result_used": false,
-  "freeze_authority": null,
-  "learning_state_authority": null,
+  "freeze_authority": {
+    "file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json",
+    "sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733",
+    "target_contest": 3068,
+    "cutoff_contest": 3067
+  },
+  "learning_state_authority": {
+    "file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_SIGNAL_STATE.json",
+    "sha256": "2b7c498db9278dbc2bfd9386e9ac102ec1f14ac192621c69af98ca68bbe6bc15",
+    "rebuilt_from_zero": true
+  },
   "supersedes_active_epoch_sha256": null,
   "canonical_ledger_seed_sha256": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
   "canonical_ledger_seed_event_count": 102,
-  "revision": 1,
-  "previous_active_sha256": null,
-  "sha256": "791b63093914ca8d0180378dba857f4e1323ca1682f83ac85a3fd47606ef0828"
+  "revision": 2,
+  "previous_active_sha256": "791b63093914ca8d0180378dba857f4e1323ca1682f83ac85a3fd47606ef0828",
+  "frozen_utc": "2026-10-08T22:35:40.297741+00:00",
+  "prospective_registration": {
+    "target_date": "08/10/2026",
+    "schedule_authority": {
+      "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+      "target_contest": 3068,
+      "previous_contest": 3067,
+      "previous_contest_date": "06/10/2026",
+      "target_date": "08/10/2026",
+      "weekday": "quinta-feira",
+      "scheduled_datetime": "2026-10-08T21:00:00-03:00",
+      "scheduled_timezone": "America/Sao_Paulo",
+      "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+      "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+      "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+      "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+      "source_sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+      "source_line": "08/10/2026 quinta-feira 3800 7138 2452 3068 1318",
+      "source_count": 1,
+      "sources": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+          "sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+          "source_line": "08/10/2026 quinta-feira 3800 7138 2452 3068 1318"
+        }
+      ],
+      "rejected_occurrences_before_cutoff": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2024-03.pdf",
+          "target_date": "02/04/2024",
+          "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+        }
+      ],
+      "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+      "schedule_consensus": true,
+      "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+      "result_used": false
+    },
+    "frontier_report_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_FRONTIER_HISTORICAL.json",
+    "frontier_report_sha256": "f0331e4dcf710f6d374a2ad29b80841b2ec01d49db19fc5b93d7871f9d81d2df",
+    "frontier_freeze_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_FRONTIER_SHADOW_FREEZE.json",
+    "frontier_freeze_sha256": "5cc6b59304297dbf3395fec9d7c2beeb76935b344f963fd103966ecfe472b506",
+    "probability_ledger_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
+    "probability_ledger_sha256": "309682d65f618b84932361b0b73a4277d1d7c22b072e3e02c12645f43f49e001",
+    "probability_entry_sha256": "b65bcdd29331d2d4e23af7bafd894b65f72290a3123d99f8d22f9717f7889dfe",
+    "candidate_count": 5,
+    "all_60_probabilities_retained": true,
+    "result_used": false,
+    "production_authority": false
+  },
+  "ledger_sha256": "42df14031e81ce46b6076b0be4e78b8a251f6668b13cb427a3ad80cc9346aa2d",
+  "sha256": "ca8dd10db43930191037153b37a8e3c351841561aba39c6c99da28a1ce27baf0"
 }
