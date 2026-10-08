@@ -1,0 +1,208 @@
+{
+  "schema": "SMART_3067_POST_RESULT_OBSERVATIONAL_RECONCILIATION_1",
+  "project": "SMART-MEGA",
+  "repository": "andrebarros78/SMART-MEGA",
+  "reference_branch": "main",
+  "status": "OBSERVATION_RECONCILED__CANONICAL_ADJUDICATION_PENDING",
+  "intent": "Read-only comparison of official draw result with the already frozen prediction and canonical ledger; NOT an adjudication, official result ingest, history advance, card regeneration, or authority transition.",
+  "observed_at_utc": "2026-10-08T19:13:55.913Z",
+  "audited_source_head": "efc38bfc3150c4c0676ec1dee6c0b993b5fe00b4",
+  "integrity_evidence": {
+    "active_epoch": {
+      "file": "SMART_ACTIVE_EPOCH.json",
+      "git_blob_sha": "43b80cd3c55c7a9d9eb24eb6b1ca4355d9445a71",
+      "self_sha256": "0ed6ddb36a543786a6ac8c9fd12fba72b5b2de598002553edb8cdd138dec8acb",
+      "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z",
+      "status": "FROZEN",
+      "cutoff_contest": 3066,
+      "target_contest": 3067
+    },
+    "lifecycle": {
+      "file": "SMART_OPERATIONAL_LIFECYCLE.json",
+      "git_blob_sha": "2648f520254c21839a223074c47a1005be6f21fb",
+      "sha256": "87036a70c0366e6606d2e80281c01cd8f3fd7613370c3a27c8d8a96e921a7ad2",
+      "state": "FROZEN",
+      "completed_contest": 3066
+    },
+    "full_process": {
+      "file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/FULL_PROCESS_PROOF.json",
+      "git_blob_sha": "ee2dfa08f242bc8a66b1ca77c18b27764d3001c8",
+      "generated_utc": "2026-10-06T01:08:19.065003+00:00",
+      "checks_total": 24,
+      "all_checks_pass": true
+    },
+    "freeze": {
+      "file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_file_sha256": "a12433d7c8fb80af3c64c4faa89af554f07e8a150ddec9bff44548ef8f25be9f",
+      "confirmed_equal_to_process_and_ledger": true,
+      "frozen_utc": "2026-10-06T01:08:11.728483+00:00"
+    },
+    "primary_card": {
+      "file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_PRIMARY_CARD.json",
+      "git_blob_sha": "2647261be41ba408a72bd5150bf8644f29bda4cd",
+      "sha256": "e253f955d725aae7b6c069b312116b974a40cab00e023985f6b95f9b57ae880f",
+      "numbers": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+      "confidence": {
+        "status": "UNPROVEN_PROSPECTIVE",
+        "level": "LOW",
+        "calibrated": false,
+        "probability_six_hits": null,
+        "guaranteed": false
+      }
+    },
+    "portfolio": {
+      "file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+      "git_blob_sha": "2996b8098254c630db2d04388bb2e98839a62aa6",
+      "status": "PASS",
+      "portfolio_only": true
+    },
+    "ledger": {
+      "file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+      "git_blob_sha": "4d0de5ae2703d6892a51c3777696d3626efb074c",
+      "verified_raw_file_sha256": "965a991c15152dd032a9685455895e992b258a0db724af891e66a6b2c64446eb",
+      "sha256_matches_epoch": true,
+      "schema": "SMART_SIGNAL_LEDGER_1",
+      "total_events": 93,
+      "target_events": 1,
+      "freeze_events": 1,
+      "adjudication_events": 0,
+      "strict_json_compatible": false,
+      "nonstandard_neg_infinity_count": 5,
+      "nonstandard_values_origin_contest": 3054,
+      "nonstandard_values_json_path_prefix": "events[31].snapshot.signal_expansion_governance.candidates"
+    },
+    "journal": {
+      "file": "runtime/transactions/SMART_TRANSACTION_JOURNAL.jsonl",
+      "git_blob_sha": "c9cefd5038864555315457614ec2535808752001",
+      "entries": 4,
+      "open_transactions": 0
+    }
+  },
+  "official_result": {
+    "contest": 3067,
+    "draw_date": "06/10/2026",
+    "numbers": [
+      1,
+      4,
+      17,
+      33,
+      41,
+      52
+    ],
+    "accumulated": true,
+    "confirmation_type": "PUBLISHED_CAIXA_WEBSITE_RESULT_OBSERVED; API_RESPONSE_NOT_FETCHED",
+    "source_url": "https://loterias.caixa.gov.br/Paginas/default.aspx",
+    "expected_machine_ingestion_endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3067",
+    "official_endpoint_directly_consumed": false
+  },
+  "comparison": {
+    "primary_card_numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "primary_hits": 0,
+    "primary_matched_numbers": [],
+    "auxiliary_games": [
+      {
+        "game_id": "3067-G01",
+        "numbers": [
+          10,
+          11,
+          14,
+          35,
+          38,
+          48
+        ],
+        "hits": 0,
+        "matched_numbers": []
+      },
+      {
+        "game_id": "3067-G02",
+        "numbers": [
+          10,
+          30,
+          37,
+          38,
+          43,
+          46
+        ],
+        "hits": 0,
+        "matched_numbers": []
+      },
+      {
+        "game_id": "3067-G03",
+        "numbers": [
+          11,
+          27,
+          30,
+          35,
+          46,
+          53
+        ],
+        "hits": 0,
+        "matched_numbers": []
+      },
+      {
+        "game_id": "3067-G04",
+        "numbers": [
+          14,
+          27,
+          37,
+          43,
+          48,
+          53
+        ],
+        "hits": 0,
+        "matched_numbers": []
+      }
+    ],
+    "auxiliary_best_hits": 0,
+    "result_used_to_choose_original_card": false,
+    "comparison_is_retrospective": true
+  },
+  "checks": {
+    "canonical_head_expected": true,
+    "target_epoch_3067": true,
+    "epoch_status_frozen": true,
+    "epoch_and_lifecycle_targets_consistent": true,
+    "freeze_sha_proof_consistent": true,
+    "proof_and_card_bound": true,
+    "card_portfolio_bound": true,
+    "manual_epoch_id_bound": true,
+    "pre_result_cutoff": true,
+    "all_full_process_checks_pass": true,
+    "authority_consumed": true,
+    "journal_no_open_transactions": true,
+    "official_numbers_well_formed": true,
+    "frozen_primary_well_formed": true
+  },
+  "remaining_work": [
+    "Execute canonical GitHub operator adjudication with a tracked and verified XLSX dataset containing official contest 3067, using the existing operator dispatch; no changes to historic freeze or prediction.",
+    "Obtain and persist official ingest provenance from CAIXA API through the existing bounded ingestion path; do not present this observational record as canonical ingestion proof.",
+    "Verify ledger gains exactly one adjudication for contest 3067 and transitions to ADJUDICATED, then perform review, rollover and hold under existing lifecycle rules.",
+    "Address the five legacy non-standard -Infinity literals without rewriting the currently frozen ledger or invalidating historical hashes; establish separate tested migration after canonical adjudication."
+  ],
+  "not_authorized_actions": [
+    "NO_REFREEZE_3067",
+    "NO_RETROSPECTIVE_GENERATION",
+    "NO_STATE_TRANSITION_BY_STATIC_PROOF",
+    "NO_HISTORIC_LEDGER_REWRITE"
+  ],
+  "adjudication_executed": false,
+  "official_result_ingested": false,
+  "operational_cycle_closed": false,
+  "six_of_six_proven": false,
+  "evidence_scope": "GITHUB_CANONICAL_READ_ONLY_AUDIT_PLUS_EXTERNAL_OFFICIAL_RESULT_PUBLICATION"
+}
