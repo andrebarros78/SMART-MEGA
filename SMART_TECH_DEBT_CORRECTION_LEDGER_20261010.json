@@ -7,13 +7,12 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T13:11:16Z",
+  "last_update_utc": "2026-10-08T13:24:55Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F04",
-  "last_proven_phase": "F03",
-  "last_proven_head": "63ff63d9fad102092eae098b57affcb8c8edcb63",
+  "current_phase": "F05",
+  "last_proven_phase": "F04",
+  "last_proven_head": "078fe4e0f49ec9b0c0b2c8a5059a00b13670f438",
   "open_deficiencies": [
-    "F04 fine-tuning lifecycle not yet integrated",
     "F05 canonical component registry not yet implemented",
     "F06 operational agent handoffs not yet implemented",
     "F07 skill/adapters semantics not yet reconciled",
@@ -23,7 +22,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F04_FINE_TUNING_LIFECYCLE",
+  "next_required_action": "EXECUTE_F05_REGISTRY_CANONICA",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -104,14 +103,25 @@
     },
     "F04": {
       "name": "FINE_TUNING_NO_CICLO",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F04 baseline rediscovered at cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
-        "smart_ai_fine_tuning already enforces calibration/validation selection without holdout selection",
-        "promotion requires non-regression across calibration, validation, holdout and global partitions plus positive validation gain",
-        "no canonical fine-tuning report/authority exists at repository root",
-        "champion_challenger previously only consumed optional authority if externally pre-created",
-        "F04 integrates epoch-scoped pre-freeze fine-tuning authority generation/validation and explicit freeze consumption"
+        "baseline head: cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
+        "implementation commit: 9c12b1287b16ff88a22184eb9d4d0dfa4fe53887",
+        "certified head: 078fe4e0f49ec9b0c0b2c8a5059a00b13670f438",
+        "smart_fine_tuning_lifecycle.py production_reachable=true",
+        "smart_ai_fine_tuning.py production_reachable=true",
+        "smart_full_process_pipeline consumes smart_fine_tuning_lifecycle before freeze",
+        "fine-tuning artifacts are epoch-scoped, not global-root mutable authority",
+        "authority validation binds target_contest, cutoff_contest and data_sha256",
+        "selection guard requires holdout_used_for_selection=false",
+        "future_result_used=false enforced in report and authority",
+        "promotion remains baseline-retaining unless non-regression and positive validation gain are proven",
+        "freeze_champion_challenger receives explicit epoch ai_hyperparameter_authority_path",
+        "full-process trace verifies fine-tuning authority was consumed by challenger",
+        "reachability gate PASS",
+        "GitHub Operator smoke=success",
+        "Repository Integrity=success",
+        "full regression=1092 tests, 0 failures, 0 errors, 0 skipped"
       ]
     },
     "F05": {

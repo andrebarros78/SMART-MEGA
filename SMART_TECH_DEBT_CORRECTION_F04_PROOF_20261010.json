@@ -1,0 +1,54 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F04_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F04",
+  "phase_name": "FINE_TUNING_NO_CICLO",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T10:24:55-03:00",
+  "baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
+  "implementation_commit": "9c12b1287b16ff88a22184eb9d4d0dfa4fe53887",
+  "certified_head": "078fe4e0f49ec9b0c0b2c8a5059a00b13670f438",
+  "architecture": {
+    "lifecycle_component": "smart_fine_tuning_lifecycle.py",
+    "trainer_component": "smart_ai_fine_tuning.py",
+    "consumer_component": "smart_full_process_pipeline.py",
+    "downstream_component": "smart_champion_challenger.py",
+    "lifecycle": "immutable epoch data -> fine-tuning -> report/authority validation -> explicit authority path -> challenger -> freeze",
+    "authority_scope": "EPOCH_SCOPED_PRE_FREEZE",
+    "global_root_authority_required": false
+  },
+  "causal_guards": {
+    "target_equals_cutoff_plus_one": true,
+    "data_sha256_bound": true,
+    "future_result_used": false,
+    "holdout_used_for_selection": false,
+    "calibration_validation_selection_before_holdout": true,
+    "promotion_requires_non_regression_all_partitions": true,
+    "promotion_requires_positive_validation_gain": true,
+    "baseline_retained_without_proven_gain": true
+  },
+  "reachability": {
+    "registry_blob_sha": "5edb8af08fb825ce65d0e6a3ba7798b0756a9c41",
+    "gate": "PASS",
+    "production_unreachable": 0,
+    "unclassified_components": 0,
+    "parse_errors": 0,
+    "fine_tuning_lifecycle_production_reachable": true,
+    "ai_fine_tuning_production_reachable": true
+  },
+  "regression": {
+    "ci_run_id": 37782842239,
+    "smoke_run_id": 37782842482,
+    "integrity_run_id": 37782842497,
+    "tests": 1092,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success"
+  },
+  "proof_boundary": "F04 proves that causal fine-tuning authority is generated/validated in the pre-freeze production path and explicitly consumed by the challenger. It does not claim predictive superiority; that requires F11 prospective/non-regression evidence.",
+  "next_phase": "F05_REGISTRY_CANONICA"
+}
