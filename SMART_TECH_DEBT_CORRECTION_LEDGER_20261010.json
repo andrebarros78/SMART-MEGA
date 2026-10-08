@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T16:35:29Z",
+  "last_update_utc": "2026-10-08T16:56:00Z",
   "mission_status": "ACTIVE",
   "current_phase": "F11",
   "last_proven_phase": "F10",
@@ -16,7 +16,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F11_VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
+  "next_required_action": "RUN_F11_CAUSAL_BASELINE_COMPARISON_AND_REGRESSION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -239,8 +239,18 @@
     },
     "F11": {
       "name": "VALIDACAO_PREDITIVA_E_NAO_REGRESSAO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F10 certified baseline d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
+        "14 actively consumed predictive/score/calibration/freeze modules bound to exact F10 source SHA256",
+        "four historical evaluation artifacts bound to F10 Git blob SHA before F11 gate",
+        "P10 historic 2050 evaluations 1271 hits vs 1271 baseline; final holdout 150 vs 150 (no demonstrated gain)",
+        "P05 historic holdout 150 vs 150 but intermediate validation -1; no superiority claim",
+        "P06 holdout Brier loss +0.0000135767 vs uniform: historically regressive and not eligible for promotion",
+        "historic fine-tuning selected eta_050x validation gain -1; promotion refused and baseline retained",
+        "F11 rejects tampering, historical deterioration, future leakage and unsupported prospective advantage",
+        "separate engineering non-regression and unproven 6/6 scientific evidence"
+      ]
     },
     "F12": {
       "name": "RECONCILIACAO_CONSOLIDACAO_SELO",
@@ -269,5 +279,6 @@
   "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f",
   "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c",
   "f09_baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
-  "f10_baseline_head": "5121b99b733cb32c483274efec430033bcd493b4"
+  "f10_baseline_head": "5121b99b733cb32c483274efec430033bcd493b4",
+  "f11_baseline_head": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77"
 }
