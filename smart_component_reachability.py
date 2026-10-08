@@ -27,7 +27,7 @@ REQUIRED_PRODUCTION_FILES = {
     "smart_portfolio_pipeline.py",
     "smart_primary_card_selector.py",
     "smart_terminal_executor.py",
-    "smart_3054_terminal_executor.py",
+    "smart_terminal_engine.py",
 }
 KNOWN_OPERATOR_PIPELINE_CYCLE = {"smart_operator.py", "smart_full_process_pipeline.py"}
 
@@ -339,6 +339,10 @@ def build_registry(root: Path) -> dict:
         "smart_3054_terminal_executor.py" in by_path
         and by_path["smart_3054_terminal_executor.py"] in reachable
     )
+    terminal_engine_reachable = (
+        "smart_terminal_engine.py" in by_path
+        and by_path["smart_terminal_engine.py"] in reachable
+    )
     inventory_material = "\n".join(
         f"{path}:{content_hashes[path]}" for path in sorted(content_hashes)
     ).encode("utf-8")
@@ -391,6 +395,7 @@ def build_registry(root: Path) -> dict:
         "known_debt_observations": {
             "operator_pipeline_cycle_detected": known_cycle_detected,
             "legacy_3054_terminal_executor_reachable": legacy_3054_reachable,
+            "generic_terminal_engine_reachable": terminal_engine_reachable,
             "independent_entrypoints": sorted(independent_entrypoints),
         },
         "import_cycles": [

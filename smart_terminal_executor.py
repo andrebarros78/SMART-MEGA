@@ -3,7 +3,7 @@ from __future__ import annotations
 from pathlib import Path
 from typing import Any, Callable
 
-import smart_3054_terminal_executor as _engine
+import smart_terminal_engine as _engine
 
 SCHEMA = "SMART_TERMINAL_EXECUTOR_ACTIVE_EPOCH_1"
 Fetcher = Callable[[int], tuple[dict[str, Any], dict[str, Any]]]

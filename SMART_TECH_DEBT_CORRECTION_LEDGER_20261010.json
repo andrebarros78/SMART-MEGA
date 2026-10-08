@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T12:26:16Z",
+  "last_update_utc": "2026-10-08T12:39:32Z",
   "mission_status": "ACTIVE",
   "current_phase": "F03",
   "last_proven_phase": "F02",
@@ -24,7 +24,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F03_EXECUTOR_LEGADO",
+  "next_required_action": "VALIDATE_F03_GENERIC_TERMINAL_ENGINE",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -87,8 +87,14 @@
     },
     "F03": {
       "name": "EXECUTOR_LEGADO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F03 baseline rediscovered at 308d05391ec022930148d544dae04e39ec0db570",
+        "smart_terminal_executor production wrapper depended directly on smart_3054_terminal_executor",
+        "legacy engine already exposes active_epoch_context for dynamic target/cutoff binding",
+        "behavior-preserving migration prepared: generic engine copy + canonical wrapper retarget",
+        "legacy module retained only for historical/test compatibility pending validation"
+      ]
     },
     "F04": {
       "name": "FINE_TUNING_NO_CICLO",
@@ -149,5 +155,6 @@
   },
   "f01_baseline_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
   "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
-  "f02_baseline_head": "06aa686788111a6bcdec4f960340615574b754a3"
+  "f02_baseline_head": "06aa686788111a6bcdec4f960340615574b754a3",
+  "f03_baseline_head": "308d05391ec022930148d544dae04e39ec0db570"
 }

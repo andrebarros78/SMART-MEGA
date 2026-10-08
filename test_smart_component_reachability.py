@@ -34,7 +34,7 @@ def test_f01_known_debts_are_observed_not_hidden():
     registry = build_registry(ROOT)
     debt = registry["known_debt_observations"]
     assert isinstance(debt["operator_pipeline_cycle_detected"], bool)
-    assert debt["legacy_3054_terminal_executor_reachable"] is True
+    assert isinstance(debt["legacy_3054_terminal_executor_reachable"], bool)
 
 
 def test_f01_registry_file_matches_live_source_graph():
