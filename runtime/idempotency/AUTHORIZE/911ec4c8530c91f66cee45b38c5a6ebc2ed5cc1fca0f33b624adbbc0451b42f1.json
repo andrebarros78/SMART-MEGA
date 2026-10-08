@@ -1,0 +1,112 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "AUTHORIZE",
+  "idempotency_key": "911ec4c8530c91f66cee45b38c5a6ebc2ed5cc1fca0f33b624adbbc0451b42f1",
+  "target": 3068,
+  "result": {
+    "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+    "status": "AUTHORIZED",
+    "target_contest": 3068,
+    "completed_contest": 3067,
+    "review_file": "SMART_POST_RESULT_REVIEW_3067.json",
+    "review_file_sha256": "57928e18be95b9505fe7e0b12a65d83b60f825499f0f0dc168e64a224d5c5f4a",
+    "review_sha256": "84013cc81070c005b8bf92f249c52b12af0d77b419c9a87db322ffb5e23b0a41",
+    "canonical_sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+    "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+    "authorized_utc": "2026-10-08T20:27:41.140349+00:00",
+    "consumed": false,
+    "consumed_utc": null,
+    "prepared_epoch_id": null,
+    "reservation_transaction_id": null,
+    "reserved_utc": null,
+    "consumption_transaction_id": null,
+    "supersedes_completed_cycle_authority": true,
+    "prior_consumed_authority_sha256": "af1e7af2f7f0665c1aeb25f541da5d16b2433a3060933d03759a2d59d9be2436",
+    "prior_consumed_target_contest": 3067,
+    "prior_consumed_status": "CONSUMED",
+    "revision": 10,
+    "previous_document_sha256": "af1e7af2f7f0665c1aeb25f541da5d16b2433a3060933d03759a2d59d9be2436",
+    "sha256": "04fbf60513f925f38ed5db312a31afd5899d60b249fe4005b8943390803f024d",
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "AUTHORIZED",
+      "revision": 25,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3068,
+      "completed_contest": 3067,
+      "previous_state": "HOLD",
+      "transition": "HOLD_TO_AUTHORIZED",
+      "transition_actor": "operator_authorize_next_cycle",
+      "transition_utc": "2026-10-08T20:27:41.141861+00:00",
+      "previous_lifecycle_sha256": "864173612041ee1805a37e632f141d0696048138d056296aa0c9e2069a5f426b",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3066.json",
+          "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3067:operator-3067-e305750ba8e6-20261006T010444976861Z",
+        "reserved_authority_sha256": "65f332b4f6bf02c812e13abcbe528c115cea47496dc51ecc7ebf159e40cddef6",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "d45911ca74f1e2d481bbc8a6ba2ddd93c502db022a9fc5b7e6bf556ea911269f",
+          "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
+          "sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3063,
+          "through_target": 3066,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+              "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+              "target_contest": 3063
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+              "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+              "target_contest": 3064
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+              "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+              "target_contest": 3065
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+              "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+              "target_contest": 3066
+            }
+          ],
+          "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+          "official_result_batch": null
+        }
+      },
+      "sha256": "8fcb2ad5489e2b75d84050f820a3f595f8d23b41e394164dc5dcdbf450bfbfdd"
+    }
+  }
+}
