@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "327477b8212df3fc7164e4d8a4d284b100d39bbaa75fd4810e197a02d7f709df",
+  "source_reachability_inventory_sha256": "f41f9c4cf7489ded6b23a0555c8441e0e371e2c7cb59bd290c31f051971750ca",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 469,
+    "component_count": 470,
     "active": 95,
     "shadow": 1,
-    "diagnostic": 173,
+    "diagnostic": 174,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4692,7 +4692,8 @@
         "smart_component_reachability"
       ],
       "consumers": [
-        "test_smart_f05_canonical_component_registry"
+        "test_smart_f05_canonical_component_registry",
+        "test_smart_f08_parallel_components"
       ],
       "entrypoints": [
         "smart_canonical_component_registry"
@@ -5056,7 +5057,8 @@
         "smart_canonical_component_registry",
         "test_smart_component_reachability",
         "test_smart_f02_dependency_direction",
-        "test_smart_f03_terminal_engine_migration"
+        "test_smart_f03_terminal_engine_migration",
+        "test_smart_f08_parallel_components"
       ],
       "entrypoints": [
         "smart_canonical_component_registry",
@@ -10296,6 +10298,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_f08_parallel_components",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_f08_parallel_components.py",
+      "implementation_sha256": "fa88c460f04cc2f3d1dea7bdc6b2b08fc77f85315504f6899260111607d735c8",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_canonical_component_registry",
+        "smart_component_reachability"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_false_negative_rescue",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_false_negative_rescue.py",
@@ -12629,5 +12655,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "559d7d9567626579ec8697a060cbc348c66661391def29b4b140c5e02b4df86a"
+  "registry_sha256": "56e02cdbbc79572e9807f1865fe23fd40f3e4256e8cec902d1dd6c559d734174"
 }
