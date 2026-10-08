@@ -311,7 +311,6 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             raise RuntimeError("prospective probability registration used target result")
     except Exception:
         _restore_fresh_epoch(epoch_dir, files_before, ledger_path, ledger_bytes)
-        from smart_operator import recover_interrupted_freeze_operation
         recover_interrupted_freeze_operation(root, target, reason="run_full_process_exception_rollback")
         raise
 
