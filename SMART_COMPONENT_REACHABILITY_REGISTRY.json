@@ -17,6 +17,9 @@
     "runtime_execution_claimed": false
   },
   "workflow_entrypoints": {
+    "smart_canonical_component_registry.py": [
+      ".github/workflows/ci.yml"
+    ],
     "smart_component_reachability.py": [
       ".github/workflows/ci.yml"
     ],
@@ -41,15 +44,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "911a17759f94e8fa161be8b168eb59bbb6523f59ab3ac3887c97a32cee7f8bd5",
+  "inventory_sha256": "22f5b31ab08d41421f5b538ea90a4833750120eb2dc6d6788e9b0c0ec7a30c23",
   "summary": {
-    "python_components": 463,
-    "workflow_entrypoints": 4,
-    "production_components": 92,
+    "python_components": 465,
+    "workflow_entrypoints": 5,
+    "production_components": 93,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 144,
+    "test_components": 145,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4356,6 +4359,31 @@
       "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
     },
     {
+      "component_id": "smart_canonical_component_registry",
+      "source_file": "smart_canonical_component_registry.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_canonical_component_registry"
+      ],
+      "producers": [
+        "smart_component_reachability"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_f05_canonical_component_registry"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "6576430705d2bb90557db51040b98bee35d960bc80ff035aac112ba183e9d453"
+    },
+    {
       "component_id": "smart_canonical_history_advance",
       "source_file": "smart_canonical_history_advance.py",
       "role": "PRODUCTION",
@@ -4678,11 +4706,13 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
+        "smart_canonical_component_registry",
         "smart_component_reachability"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_canonical_component_registry",
         "test_smart_component_reachability",
         "test_smart_f02_dependency_direction",
         "test_smart_f03_terminal_engine_migration"
@@ -9448,6 +9478,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "d9bf1dbf3a9987b90f6c4d43e13222d97a8bed6ac04fbcb7e7222b4fff168d15"
+    },
+    {
+      "component_id": "test_smart_f05_canonical_component_registry",
+      "source_file": "test_smart_f05_canonical_component_registry.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_canonical_component_registry"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "64ca866e0bc9f6f39b0a514ad126dc15d13374a5141c96579206b990c6941876"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
