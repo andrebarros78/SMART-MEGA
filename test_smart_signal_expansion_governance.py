@@ -178,3 +178,18 @@ def test_unknown_authorization_and_missing_registry_and_bad_schema(tmp_path: Pat
     assert missing.candidates=={}
     bad=tmp_path/'bad.json'; bad.write_text(json.dumps({'schema':'BAD','registry_schema':'BAD'}))
     with pytest.raises(ValueError): load_registry(bad,())
+
+
+def test_insufficient_signal_evidence_serializes_as_strict_json(tmp_path):
+    import json
+    from smart_signal_expansion_governance import SignalExpansionGovernance, write_registry
+    gov=SignalExpansionGovernance(("freq25",))
+    state=gov.register_candidate("strict-json-candidate","novel",registered_cutoff=100)
+    evidence=state.evaluation()
+    assert evidence["validation_lcb95_delta_hits"] is None
+    assert evidence["checks"]["validation_lcb_positive"] is False
+    path=tmp_path/"strict-registry.json"
+    write_registry(path,gov)
+    raw=path.read_text(encoding="utf-8")
+    assert "-Infinity" not in raw and "NaN" not in raw
+    json.loads(raw,parse_constant=lambda x: (_ for _ in ()).throw(ValueError(x)))

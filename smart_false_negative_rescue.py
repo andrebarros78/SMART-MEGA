@@ -15,12 +15,60 @@ def band(n:int)->str:
     if 21<=n<=40: return "mid"
     if 41<=n<=60: return "high"
     raise ValueError(f"number out of range: {n}")
+def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,actual:list[int],generated:list[int])->None:
+    """Reject tampered, foreign, or unbound evidence before it affects predictive scores."""
+    if path.name != f"SMART_POST_RESULT_REPORT_{contest}.json":
+        raise ValueError(f"untrusted post-result report filename: {path.name}")
+    if obj.get("schema") != "SMART_POST_RESULT_REPORT_1" or obj.get("status") != "PASS":
+        raise ValueError(f"untrusted post-result report schema/status: {path.name}")
+    observed=obj.get("sha256")
+    signed=dict(obj); signed.pop("sha256",None)
+    if not isinstance(observed,str) or observed != sha256_json(signed):
+        raise ValueError(f"post-result report self-hash mismatch: {path.name}")
+    audit=obj.get("process_audit")
+    if not isinstance(audit,dict) or audit.get("findings") or audit.get("freeze_authority_present") is not True:
+        raise ValueError(f"post-result report missing verified process audit: {path.name}")
+    trusted={}
+    for name,source_key,digest_key in (
+        ("freeze","freeze_artifact","freeze_sha256"),
+        ("ledger","ledger","ledger_sha256"),
+    ):
+        rel=audit.get(source_key)
+        sha=audit.get(digest_key)
+        if not isinstance(rel,str) or not isinstance(sha,str) or len(sha)!=64:
+            raise ValueError(f"post-result report missing {name} lineage: {path.name}")
+        candidate=(root/rel).resolve()
+        if not candidate.is_relative_to(root) or not candidate.is_file():
+            raise ValueError(f"post-result report {name} escapes or is absent: {path.name}")
+        actual_sha=hashlib.sha256(candidate.read_bytes()).hexdigest()
+        if actual_sha != sha:
+            raise ValueError(f"post-result report {name} hash mismatch: {path.name}")
+        trusted[name]=candidate
+    freeze=json.loads(trusted["freeze"].read_text(encoding="utf-8-sig"))
+    if int(freeze.get("target_contest",-1))!=contest or (
+        sorted(int(x) for x in (freeze.get("champion") or {}).get("top6",[]))!=sorted(generated)
+    ):
+        raise ValueError(f"post-result report card differs from its immutable freeze: {path.name}")
+    if int(obj.get("hit_count",-1))!=len(set(actual)&set(generated)):
+        raise ValueError(f"post-result report hit count mismatch: {path.name}")
+    portfolio=obj.get("portfolio_adjudication") or {}
+    fingerprint=sha256_json({
+        "target":contest,"official_result":actual,"generated_card":generated,
+        "freeze_sha256":audit["freeze_sha256"],"ledger_sha256":audit["ledger_sha256"],
+        "portfolio_sha256":portfolio.get("portfolio_sha256"),
+        "portfolio_hits_per_game":portfolio.get("hits_per_game"),
+    })
+    if obj.get("source_fingerprint")!=fingerprint:
+        raise ValueError(f"post-result report evidence fingerprint mismatch: {path.name}")
+
+
 def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|None=None,through_contest:int|None=None)->dict[str,Any]:
-    root=Path(root); cfg=config or FalseNegativeRescueConfig()
+    root=Path(root).resolve(); cfg=config or FalseNegativeRescueConfig()
+    strict=(root/'SMART_CANONICAL_ROOT.json').is_file()
     cutoff=None if through_contest is None else int(through_contest)
     fn={str(n):0 for n in range(1,61)}; fp={str(n):0 for n in range(1,61)}; band_fn={"low":0,"mid":0,"high":0}; obs=[]
     seen:dict[int,tuple[tuple[int,...],tuple[int,...]]]={}; duplicates_ignored=0
-    for path in sorted(root.rglob('SMART_POST_RESULT_REPORT_*.json')):
+    for path in sorted(root.glob('SMART_POST_RESULT_REPORT_*.json')):
         try:
             obj=json.loads(path.read_text(encoding='utf-8-sig'))
             actual=[int(x) for x in obj.get('official_result') or obj.get('actual_numbers') or []]
@@ -29,7 +77,10 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
         except Exception:
             continue
         if contest<=0 or (cutoff is not None and contest>cutoff): continue
-        if len(actual)!=6 or len(set(actual))!=6 or len(generated)!=6 or len(set(generated))!=6: continue
+        if len(actual)!=6 or len(set(actual))!=6 or len(generated)!=6 or len(set(generated))!=6 or any(n<1 or n>60 for n in actual+generated):
+            if strict: raise ValueError(f'invalid canonical post-result numbers: {path.name}')
+            continue
+        if strict: _trusted_canonical_report(root,path,obj,contest,actual,generated)
         signature=(tuple(sorted(actual)),tuple(sorted(generated)))
         previous=seen.get(contest)
         if previous is not None:

@@ -41,3 +41,40 @@ def test_profile_conflicting_duplicate_fails_closed(tmp_path):
     (tmp_path/'SMART_POST_RESULT_REPORT_X2.json').write_text(json.dumps({"contest_number":3061,"official_result":[1,2,3,4,5,6],"generated_card":[1,2,3,10,11,12]}),encoding='utf-8')
     with pytest.raises(ValueError,match='conflicting post-result reports'):
         build_profile_from_reports(tmp_path,through_contest=3061)
+
+
+def test_canonical_rescue_rejects_unsigned_report(tmp_path):
+    import json, pytest
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}",encoding="utf-8")
+    report=tmp_path/"SMART_POST_RESULT_REPORT_9.json"
+    report.write_text(json.dumps({"contest_number":9,"official_result":[1,2,3,4,5,6],"generated_card":[1,2,3,7,8,9]}),encoding="utf-8")
+    with pytest.raises(ValueError,match="untrusted post-result report schema/status"):
+        build_profile_from_reports(tmp_path,through_contest=9)
+
+
+def test_canonical_rescue_rejects_tampered_lineage_without_score_promotion(tmp_path):
+    import json, hashlib, pytest
+    from smart_false_negative_rescue import sha256_json
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}",encoding="utf-8")
+    ledger=tmp_path/"ledger.json"
+    ledger.write_text('{"schema":"SMART_SIGNAL_LEDGER_1","events":[]}',encoding="utf-8")
+    freeze=tmp_path/"freeze.json"
+    freeze.write_text(json.dumps({"target_contest":9,"champion":{"top6":[1,2,3,7,8,9]}}),encoding="utf-8")
+    digest=lambda p:hashlib.sha256(p.read_bytes()).hexdigest()
+    audit={"freeze_artifact":"freeze.json","freeze_sha256":digest(freeze),"ledger":"ledger.json",
+           "ledger_sha256":digest(ledger),"freeze_authority_present":True,"findings":[]}
+    report={"schema":"SMART_POST_RESULT_REPORT_1","status":"PASS","contest_number":9,
+            "official_result":[1,2,3,4,5,6],"generated_card":[1,2,3,7,8,9],
+            "hit_count":3,"process_audit":audit}
+    report["source_fingerprint"]=sha256_json({
+        "target":9,"official_result":report["official_result"],"generated_card":report["generated_card"],
+        "freeze_sha256":audit["freeze_sha256"],"ledger_sha256":audit["ledger_sha256"],
+        "portfolio_sha256":None,"portfolio_hits_per_game":None})
+    report["sha256"]=sha256_json(report)
+    path=tmp_path/"SMART_POST_RESULT_REPORT_9.json"
+    path.write_text(json.dumps(report),encoding="utf-8")
+    approved=build_profile_from_reports(tmp_path,through_contest=9)
+    assert approved["observations"]==1 and approved["source_contests"]==[9]
+    freeze.write_text('{"target_contest":9,"champion":{"top6":[1,2,3,8,9,10]}}',encoding="utf-8")
+    with pytest.raises(ValueError,match="freeze hash mismatch"):
+        build_profile_from_reports(tmp_path,through_contest=9)

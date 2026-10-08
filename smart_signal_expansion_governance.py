@@ -147,7 +147,7 @@ class CandidateSignalState:
         mean = self.sum_delta_hits / n if n else 0.0
         val_mean = self.validation_sum_delta_hits / vn if vn else 0.0
         val_std = math.sqrt(self.validation_m2_delta_hits / (vn - 1)) if vn > 1 else 0.0
-        val_lcb = val_mean - LCB_Z * val_std / math.sqrt(vn) if vn > 1 else float('-inf')
+        val_lcb = val_mean - LCB_Z * val_std / math.sqrt(vn) if vn > 1 else None
         novelty = self.novelty_sum / n if n else 0.0
         checks = {
             'minimum_total_oos': n >= MIN_TOTAL_OOS,
@@ -155,7 +155,7 @@ class CandidateSignalState:
             'minimum_validation_oos': vn >= MIN_VALIDATION_OOS,
             'positive_total_marginal_utility': mean > MIN_MEAN_DELTA_HITS,
             'positive_validation_marginal_utility': val_mean > MIN_MEAN_DELTA_HITS,
-            'validation_lcb_positive': val_lcb > MIN_VALIDATION_LCB,
+            'validation_lcb_positive': val_lcb is not None and val_lcb > MIN_VALIDATION_LCB,
             'novelty_sufficient': novelty >= MIN_MEAN_NOVELTY,
         }
         eligible = all(checks.values())
@@ -307,6 +307,9 @@ def _validate_rehydrated_candidate(st: CandidateSignalState, row: dict[str, Any]
     for key in comparable:
         if key not in row:
             raise ValueError(f'candidate registry missing evidence field: {key}')
+        if key == 'validation_lcb95_delta_hits' and ev[key] is None and row[key] == float('-inf'):
+            # Read-only compatibility for hash-bound legacy registry evidence.
+            continue
         if isinstance(ev[key], float):
             if not _float_equal(row[key], ev[key]):
                 raise ValueError(f'candidate registry evidence mismatch: {key}')
