@@ -41,15 +41,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "5b437a2de36e10ef92fcc950be86670ccfd742d877d462f89d6bc14cd1a70222",
+  "inventory_sha256": "911a17759f94e8fa161be8b168eb59bbb6523f59ab3ac3887c97a32cee7f8bd5",
   "summary": {
-    "python_components": 461,
+    "python_components": 463,
     "workflow_entrypoints": 4,
-    "production_components": 91,
+    "production_components": 92,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 143,
+    "test_components": 144,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4276,6 +4276,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_champion_challenger",
+        "smart_fine_tuning_lifecycle",
         "test_smart_ai_fine_tuning"
       ],
       "reachable": true,
@@ -5324,6 +5325,32 @@
       "sha256": "45ba7de380872fe1104b7d879e1a885cb7cf889ae90dabe3ea9d38e001cbfefb"
     },
     {
+      "component_id": "smart_fine_tuning_lifecycle",
+      "source_file": "smart_fine_tuning_lifecycle.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "test_smart_f04_fine_tuning_lifecycle"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "c0a205b40e53be54176e2c8d1764cee08819c1b64048d9f96477db722b47cc9a"
+    },
+    {
       "component_id": "smart_frontier_adjudicator",
       "source_file": "smart_frontier_adjudicator.py",
       "role": "DIAGNOSTIC",
@@ -5392,6 +5419,7 @@
         "smart_canonical_identity",
         "smart_champion_challenger",
         "smart_engineering_activation",
+        "smart_fine_tuning_lifecycle",
         "smart_frontier_signal_lab",
         "smart_learning_epoch_reset",
         "smart_manual_generation_authority",
@@ -5429,7 +5457,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "eeb01783f01b4a3c724711ee194040ee0d2da6056ffcbd001b4496dca8589f42"
+      "sha256": "f154252a116604941e6ce05adac0e5b52acba62e4ccb516a642f8be921e3c9cc"
     },
     {
       "component_id": "smart_github_certify",
@@ -9399,6 +9427,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "305622059beb5175088a4eff456e98502c11013a88517f19567b3905d870e699"
+    },
+    {
+      "component_id": "test_smart_f04_fine_tuning_lifecycle",
+      "source_file": "test_smart_f04_fine_tuning_lifecycle.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_fine_tuning_lifecycle"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "d9bf1dbf3a9987b90f6c4d43e13222d97a8bed6ac04fbcb7e7222b4fff168d15"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
