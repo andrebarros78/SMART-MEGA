@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T12:03:05Z",
+  "last_update_utc": "2026-10-08T12:12:00Z",
   "mission_status": "ACTIVE",
   "current_phase": "F02",
   "last_proven_phase": "F01",
@@ -25,7 +25,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F02_DEPENDENCY_DIRECTION",
+  "next_required_action": "RETEST_F02_AFTER_EXECUTION_EDGE_MODEL",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -67,7 +67,9 @@
         "direct smart_full_process_pipeline -> smart_operator recovery edge identified",
         "smart_product_certification -> smart_operator contract edge identified as indirect return path",
         "neutral recovery and operator-contract extraction prepared",
-        "correction commit pending canonical CI validation"
+        "correction commit pending canonical CI validation",
+        "F02 retry 1 exposed reachability blind spot: smart_github_operator executes smart_operator via subprocess",
+        "reachability model extended with explicit STATIC_EXECUTION_DEPENDENCIES"
       ]
     },
     "F03": {

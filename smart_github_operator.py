@@ -35,6 +35,8 @@ TRANSIENT_IGNORED = (
     "runtime/locks/",
 )
 
+STATIC_EXECUTION_DEPENDENCIES = ("smart_operator.py",)
+
 
 def command_args(operation: str, target: str = "", payload: str = "") -> list[str]:
     if operation not in ACTIONS:

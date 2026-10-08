@@ -86,6 +86,30 @@ def _resolve_imports(tree: ast.AST, current: str, known: set[str], is_package: b
     return edges
 
 
+def _declared_execution_paths(tree: ast.AST) -> list[str]:
+    values: list[str] = []
+    for node in getattr(tree, "body", []):
+        value = None
+        matched = False
+        if isinstance(node, ast.Assign):
+            matched = any(isinstance(target, ast.Name) and target.id == "STATIC_EXECUTION_DEPENDENCIES" for target in node.targets)
+            value = node.value
+        elif isinstance(node, ast.AnnAssign):
+            matched = isinstance(node.target, ast.Name) and node.target.id == "STATIC_EXECUTION_DEPENDENCIES"
+            value = node.value
+        if not matched or value is None:
+            continue
+        elements = value.elts if isinstance(value, (ast.Tuple, ast.List, ast.Set)) else [value]
+        for element in elements:
+            if not isinstance(element, ast.Constant) or not isinstance(element.value, str):
+                raise ValueError("STATIC_EXECUTION_DEPENDENCIES must contain only literal string paths")
+            normalized = element.value.replace("\\", "/").lstrip("./")
+            if not normalized.endswith(".py"):
+                raise ValueError("STATIC_EXECUTION_DEPENDENCIES entries must be Python file paths")
+            values.append(normalized)
+    return sorted(set(values))
+
+
 def _has_main_guard(tree: ast.AST) -> bool:
     for node in ast.walk(tree):
         if not isinstance(node, ast.If):
@@ -206,6 +230,8 @@ def build_registry(root: Path) -> dict:
     parsed: dict[str, ast.AST] = {}
     main_guards: dict[str, bool] = {}
     content_hashes: dict[str, str] = {}
+    execution_paths: dict[str, list[str]] = {}
+    execution_dependency_errors: list[dict[str, str]] = []
 
     for path in files:
         rel = path.relative_to(root).as_posix()
@@ -227,12 +253,32 @@ def build_registry(root: Path) -> dict:
     known = set(by_module)
     graph: dict[str, set[str]] = {m: set() for m in known}
     for module, tree in parsed.items():
-        graph[module] = _resolve_imports(
+        imports = _resolve_imports(
             tree,
             module,
             known,
             by_module[module].name == "__init__.py",
         )
+        try:
+            declared_paths = _declared_execution_paths(tree)
+        except ValueError as exc:
+            declared_paths = []
+            execution_dependency_errors.append({
+                "path": by_module[module].relative_to(root).as_posix(),
+                "error": str(exc),
+            })
+        execution_paths[module] = declared_paths
+        execution_edges: set[str] = set()
+        for declared in declared_paths:
+            target = by_path.get(declared)
+            if target is None:
+                execution_dependency_errors.append({
+                    "path": by_module[module].relative_to(root).as_posix(),
+                    "error": f"declared execution dependency missing: {declared}",
+                })
+            else:
+                execution_edges.add(target)
+        graph[module] = imports | execution_edges
 
     workflow_paths = _workflow_entrypoints(root, by_path)
     roots = sorted(by_path[p] for p in workflow_paths)
@@ -259,6 +305,7 @@ def build_registry(root: Path) -> dict:
             "classification_reason": reason,
             "entrypoints": roots_by_node.get(module, []),
             "producers": sorted(graph.get(module, ())),
+            "declared_execution_dependencies": execution_paths.get(module, []),
             "consumers": sorted(consumers.get(module, ())),
             "reachable": module in reachable,
             "production_reachable": cls == "PRODUCTION" and module in reachable,
@@ -296,7 +343,7 @@ def build_registry(root: Path) -> dict:
         f"{path}:{content_hashes[path]}" for path in sorted(content_hashes)
     ).encode("utf-8")
     gate_pass = not (
-        parse_errors or unclassified or production_unreachable or required_missing or required_unreachable
+        parse_errors or execution_dependency_errors or unclassified or production_unreachable or required_missing or required_unreachable
     )
 
     return {
@@ -329,10 +376,13 @@ def build_registry(root: Path) -> dict:
             "independent_entrypoints": len(independent_entrypoints),
             "import_cycles": len(cycles),
             "parse_errors": len(parse_errors),
+            "declared_execution_dependencies": sum(len(v) for v in execution_paths.values()),
+            "execution_dependency_errors": len(execution_dependency_errors),
         },
         "gate": {
             "status": "PASS" if gate_pass else "FAIL",
             "parse_errors": parse_errors,
+            "execution_dependency_errors": execution_dependency_errors,
             "unclassified": unclassified,
             "production_unreachable": production_unreachable,
             "required_production_missing": required_missing,

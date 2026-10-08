@@ -14,6 +14,7 @@ def test_f01_reachability_gate_is_fail_closed():
     registry = build_registry(ROOT)
     assert registry["gate"]["status"] == "PASS"
     assert registry["gate"]["parse_errors"] == []
+    assert registry["gate"]["execution_dependency_errors"] == []
     assert registry["gate"]["unclassified"] == []
     assert registry["gate"]["production_unreachable"] == []
     assert registry["gate"]["required_production_missing"] == []
