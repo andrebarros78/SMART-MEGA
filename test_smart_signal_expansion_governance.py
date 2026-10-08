@@ -184,7 +184,7 @@ def test_insufficient_signal_evidence_serializes_as_strict_json(tmp_path):
     import json
     from smart_signal_expansion_governance import SignalExpansionGovernance, write_registry
     gov=SignalExpansionGovernance(("freq25",))
-    state=gov.register_candidate("strict-json-candidate","novel",registered_cutoff=100)
+    state=gov.register("strict-json-candidate","novel",registered_cutoff=100)
     evidence=state.evaluation()
     assert evidence["validation_lcb95_delta_hits"] is None
     assert evidence["checks"]["validation_lcb_positive"] is False
