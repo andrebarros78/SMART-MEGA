@@ -507,9 +507,28 @@ def preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     }
 
 
+def _prepare_idempotency_payload(root, target, args, kwargs):
+    """A new authorized cycle must not replay an old, withdrawn prepare."""
+    payload = {"args": [str(x) for x in args],
+               "kwargs": {k: str(v) for k, v in sorted(kwargs.items())}}
+    root = Path(root).resolve()
+    lifecycle = load_lifecycle(root)
+    authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
+    if (lifecycle.get("state") != "AUTHORIZED"
+            or int(lifecycle.get("target_contest") or -1) != int(target)
+            or not authority_path.is_file()):
+        return payload
+    authority = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
+    if (authority.get("status") != "AUTHORIZED" or authority.get("consumed") is not False
+            or int(authority.get("target_contest", -1)) != int(target)):
+        return payload
+    payload["authorized_cycle_sha256"] = authority["sha256"]
+    return payload
+
+
 @locked_operation("PREPARE")
 @startup_guarded("PREPARE")
-@idempotent_operation('PREPARE')
+@idempotent_operation('PREPARE', payload_builder=_prepare_idempotency_payload)
 def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool = False, idempotency_key: str | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()

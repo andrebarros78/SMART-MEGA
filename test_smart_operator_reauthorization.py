@@ -124,3 +124,22 @@ def test_consumed_replay_without_withdrawal_proof_must_fail_closed(tmp_path: Pat
     commit(tmp_path, "AUTHORIZE", old_key, 3060, {"status": "AUTHORIZED", "consumed": False})
     with pytest.raises(FileExistsError, match="withdrawal proof"):
         op.authorize_next_cycle_operation.__wrapped__.__wrapped__(tmp_path, 3060)
+
+
+def test_reauthorized_prepare_uses_new_authority_not_withdrawn_previous_replay(tmp_path: Path, monkeypatch) -> None:
+    from smart_idempotency import make_key, commit, load
+    monkeypatch.setattr(op, "load_lifecycle", lambda root: {"state": "AUTHORIZED", "target_contest": 3060})
+    original_key = make_key("PREPARE", 3060, {"args": [], "kwargs": {}})
+    commit(tmp_path, "PREPARE", original_key, 3060,
+           {"status": "RESET_READY", "stale_withdrawn_epoch": "operator-old"})
+    authority = _hashed(tmp_path / op.NEXT_CYCLE_AUTHORITY_PATH, {
+        "schema": op.NEXT_CYCLE_AUTHORITY_SCHEMA, "status": "AUTHORIZED",
+        "target_contest": 3060, "consumed": False,
+        "reauthorized_after_withdrawal": True,
+    })
+    payload = op._prepare_idempotency_payload(tmp_path, 3060, (), {})
+    assert payload["authorized_cycle_sha256"] == authority["sha256"]
+    new_key = make_key("PREPARE", 3060, payload)
+    assert new_key != original_key
+    assert load(tmp_path, "PREPARE", new_key) is None
+    assert load(tmp_path, "PREPARE", original_key)["result"]["stale_withdrawn_epoch"] == "operator-old"
