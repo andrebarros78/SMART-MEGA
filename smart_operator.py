@@ -1038,17 +1038,66 @@ def adjudicate_operation(root: str | Path, target: int, result_data: str | Path,
 
 
 
+def _materialize_adjudicated_result_dataset(root: Path, active: dict[str, Any], target: int) -> dict[str, Any]:
+    """Copy the independently adjudicated result to the epoch without changing its bytes."""
+    paths = active.get("state_paths") or {}
+    ledger_value = paths.get("ledger") if isinstance(paths, dict) else None
+    if not isinstance(ledger_value, str) or not ledger_value:
+        raise ValueError("adjudicated epoch ledger path missing")
+    ledger_path = (root / ledger_value).resolve()
+    ledger_path.relative_to(root)
+    ledger = load_ledger(ledger_path)
+    rows = [event for event in ledger.get("events", [])
+            if event.get("event_type") == "ADJUDICATION" and int(event.get("target_contest", -1)) == int(target)]
+    if len(rows) != 1:
+        raise ValueError("exactly one adjudication required for result materialization")
+    record = rows[0]
+    source_value = record.get("result_data_file")
+    expected = record.get("result_data_sha256")
+    if not isinstance(source_value, str) or not source_value or not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError("adjudication result path/hash missing")
+    source = (root / source_value).resolve()
+    source.relative_to(root)
+    if not source.is_file() or sha256_file(source) != expected:
+        raise ValueError("adjudicated result file integrity mismatch")
+    destination = (ledger_path.parent / f"Mega-Sena_through_{int(target)}.xlsx").resolve()
+    destination.relative_to(root)
+    if not destination.exists():
+        fd, name = tempfile.mkstemp(prefix=f".result-{target}-", suffix=".xlsx", dir=destination.parent)
+        os.close(fd)
+        temporary = Path(name)
+        try:
+            shutil.copyfile(source, temporary)
+            if sha256_file(temporary) != expected or destination.exists():
+                raise ValueError("adjudicated result copy failed integrity or exclusivity")
+            os.replace(temporary, destination)
+        finally:
+            temporary.unlink(missing_ok=True)
+    if not destination.is_file() or sha256_file(destination) != expected:
+        raise ValueError("epoch result dataset differs from adjudication")
+    return {"status": "PASS", "target_contest": int(target),
+            "file": str(destination.relative_to(root)).replace("\\", "/"), "sha256": expected}
+
+
 @locked_operation("POST_RESULT_REPORT")
 @startup_guarded("POST_RESULT_REPORT")
 def post_result_report_operation(root: str | Path, target: int) -> dict[str, Any]:
-    root = canonical_root(root)
-    root = Path(root).resolve()
-    assert_lifecycle_state(root, "ADJUDICATED", target_contest=int(target))
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    assert_lifecycle_state(root, "ADJUDICATED", target_contest=target)
     active = verify_active_epoch(root / ACTIVE_PATH)
-    if int(active.get("target_contest", -1)) != int(target):
+    if int(active.get("target_contest", -1)) != target:
         raise ValueError("active operational epoch does not match report target")
     from smart_post_result_report import emit_post_result_report
-    return emit_post_result_report(root, active, None)
+    # Capture the pre-learning ledger fingerprint once; preserve its original report.
+    report = emit_post_result_report(root, active, None)
+    dataset = _materialize_adjudicated_result_dataset(root, active, target)
+    # These existing gates refuse missing adjudication, wrong cutoff and unbound learning.
+    learning = terminal_executor.complete_adjudicated_sequence(root, target)
+    history = advance_completed_epoch(root, active)
+    return {"status": "POST_RESULT_SEQUENCE_COMPLETED", "target_contest": target,
+            "post_result_report": report, "result_dataset": dataset,
+            "learning": learning, "canonical_history": history}
 
 
 
