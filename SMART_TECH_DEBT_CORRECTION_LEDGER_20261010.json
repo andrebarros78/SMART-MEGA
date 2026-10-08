@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T13:24:55Z",
+  "last_update_utc": "2026-10-08T13:46:40Z",
   "mission_status": "ACTIVE",
   "current_phase": "F05",
   "last_proven_phase": "F04",
@@ -22,7 +22,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F05_REGISTRY_CANONICA",
+  "next_required_action": "VALIDATE_F05_CANONICAL_COMPONENT_REGISTRY",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -126,8 +126,16 @@
     },
     "F05": {
       "name": "REGISTRY_CANONICA",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F05 baseline rediscovered at 41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
+        "F01 reachability registry is the mechanical source of component inventory",
+        "canonical state model constrained to ACTIVE/SHADOW/DIAGNOSTIC/VALIDATION_ONLY/QUARANTINED/DEPRECATED/ARCHIVED",
+        "material predictive/weight/freeze authority requires explicit allowlist",
+        "non-ACTIVE material authority is forbidden",
+        "smart_3054_terminal_executor classified DEPRECATED and retired from canonical runtime",
+        "CI integration prepared to regenerate and certify canonical component registry"
+      ]
     },
     "F06": {
       "name": "AGENTES_E_HANDOFFS_REAIS",
@@ -180,5 +188,6 @@
   "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
   "f02_baseline_head": "06aa686788111a6bcdec4f960340615574b754a3",
   "f03_baseline_head": "308d05391ec022930148d544dae04e39ec0db570",
-  "f04_baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3"
+  "f04_baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
+  "f05_baseline_head": "41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa"
 }
