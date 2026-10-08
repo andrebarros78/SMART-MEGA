@@ -12,6 +12,7 @@ from smart_agent_runtime import SmartAgentRuntime, sha256_file
 from smart_champion_challenger import freeze_champion_challenger, load_ledger
 from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
+from smart_fine_tuning_lifecycle import ensure_pre_freeze_authority
 from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch, write_active_epoch
 from smart_operational_lifecycle import assert_state as assert_lifecycle_state, transition as transition_lifecycle
 from smart_operation_recovery import recover_interrupted_freeze_operation
@@ -272,6 +273,12 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     files_before = _files_under(epoch_dir)
     ledger_bytes = ledger_path.read_bytes()
     try:
+        fine_tuning = ensure_pre_freeze_authority(
+            data_path,
+            target,
+            epoch_dir,
+            start=int(start),
+        )
         freeze_result = freeze_champion_challenger(
             data_path,
             target,
@@ -281,6 +288,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             start=int(start),
             allow_pre_result_supersede=False,
             activation_authority_path=activation_authority_path,
+            ai_hyperparameter_authority_path=Path(fine_tuning["authority_file"]),
             expansion_registry_path=expansion_registry_path,
             schedule_authority=schedule,
         )
@@ -408,6 +416,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "prospective_probability_registration_bound_to_current_freeze": probability_registration.get("main_freeze_file_sha256") == freeze_result["freeze_sha256"],
         "prospective_probability_registration_result_unused": probability_registration.get("result_used") is False and probability_registration.get("result_available_at_registration") is False,
         "all_60_frontier_probabilities_retained": probability_registration.get("all_60_probabilities_retained") is True,
+        "fine_tuning_authority_bound_to_epoch_data": fine_tuning["data_sha256"] == active["data_sha256"] and int(fine_tuning["target_contest"]) == target and int(fine_tuning["cutoff_contest"]) == cutoff,
+        "fine_tuning_future_result_unused": fine_tuning["future_result_used"] is False and fine_tuning["holdout_used_for_selection"] is False,
+        "fine_tuning_consumed_by_challenger": challenger.get("ai_hyperparameter_authority", {}).get("sha256") == fine_tuning["authority_sha256"],
         "official_schedule_bound": schedule.get("authority") == "CAIXA_ARCHIVED_CRONOGRAM_PDF" and schedule.get("result_used") is False,
     }
     if not all(trace_checks.values()):
@@ -434,6 +445,18 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "freeze_file": _rel(root, actual_freeze_path),
         "freeze_sha256": freeze_result["freeze_sha256"],
         "manual_generation_authority": {"schema": manual_generation_authority.get("schema"), "target_contest": manual_generation_authority.get("target_contest"), "epoch_id": manual_generation_authority.get("epoch_id"), "data_sha256": manual_generation_authority.get("data_sha256")},
+        "fine_tuning": {
+            "status": fine_tuning["status"],
+            "promotion_authorized": fine_tuning["promotion_authorized"],
+            "effective_candidate_id": fine_tuning["effective_candidate_id"],
+            "report_file": _rel(root, Path(fine_tuning["report_file"])),
+            "report_sha256": fine_tuning["report_file_sha256"],
+            "authority_file": _rel(root, Path(fine_tuning["authority_file"])),
+            "authority_sha256": fine_tuning["authority_file_sha256"],
+            "authority_self_sha256": fine_tuning["authority_sha256"],
+            "holdout_used_for_selection": fine_tuning["holdout_used_for_selection"],
+            "future_result_used": fine_tuning["future_result_used"],
+        },
         "frontier_freeze_file": _rel(root, frontier_freeze_path),
         "frontier_freeze_sha256": sha256_file(frontier_freeze_path),
         "probability_ledger_file": _rel(root, probability_ledger_path),

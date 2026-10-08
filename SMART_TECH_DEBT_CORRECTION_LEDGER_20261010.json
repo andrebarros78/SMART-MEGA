@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T12:54:00Z",
+  "last_update_utc": "2026-10-08T13:11:16Z",
   "mission_status": "ACTIVE",
   "current_phase": "F04",
   "last_proven_phase": "F03",
@@ -23,7 +23,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F04_FINE_TUNING_NO_CICLO",
+  "next_required_action": "VALIDATE_F04_FINE_TUNING_LIFECYCLE",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -104,8 +104,15 @@
     },
     "F04": {
       "name": "FINE_TUNING_NO_CICLO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F04 baseline rediscovered at cb45e4f794ebd2c7d80cf8fed35b98805412aac3",
+        "smart_ai_fine_tuning already enforces calibration/validation selection without holdout selection",
+        "promotion requires non-regression across calibration, validation, holdout and global partitions plus positive validation gain",
+        "no canonical fine-tuning report/authority exists at repository root",
+        "champion_challenger previously only consumed optional authority if externally pre-created",
+        "F04 integrates epoch-scoped pre-freeze fine-tuning authority generation/validation and explicit freeze consumption"
+      ]
     },
     "F05": {
       "name": "REGISTRY_CANONICA",
@@ -162,5 +169,6 @@
   "f01_baseline_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
   "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
   "f02_baseline_head": "06aa686788111a6bcdec4f960340615574b754a3",
-  "f03_baseline_head": "308d05391ec022930148d544dae04e39ec0db570"
+  "f03_baseline_head": "308d05391ec022930148d544dae04e39ec0db570",
+  "f04_baseline_head": "cb45e4f794ebd2c7d80cf8fed35b98805412aac3"
 }
