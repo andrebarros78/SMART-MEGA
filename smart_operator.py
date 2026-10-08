@@ -581,13 +581,13 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
 def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
-    assert_lifecycle_state(root, "PREPARED", target_contest=int(target))
     active_path = root / ACTIVE_PATH
     active = verify_active_epoch(active_path)
     if active.get("operator_selected_target") is not True:
         raise ValueError("withdrawal is limited to operator-selected epochs")
     if int(active["target_contest"]) != int(target):
         raise ValueError("active operational epoch does not match withdrawal target")
+    assert_lifecycle_state(root, "PREPARED", target_contest=int(target))
     paths = active["state_paths"]
     ledger_path = root / paths["ledger"]
     data_path = root / active["data_file"]
