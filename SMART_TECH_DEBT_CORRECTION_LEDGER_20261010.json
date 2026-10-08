@@ -7,19 +7,18 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T15:08:17Z",
+  "last_update_utc": "2026-10-08T15:25:31Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F08",
-  "last_proven_phase": "F07",
-  "last_proven_head": "f947fcfccad8b0c54744f34bcf531979e2ad1c60",
+  "current_phase": "F09",
+  "last_proven_phase": "F08",
+  "last_proven_head": "33a39a1d3ebd3f920107de9d6b5f4680c98460b6",
   "open_deficiencies": [
-    "F08 parallel components not yet reconciled",
     "F09 SDK/LLM selective evaluation not yet executed",
     "F10 disconnection tests not yet implemented",
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "RETEST_F08_NONPRODUCTION_DISPOSITION",
+  "next_required_action": "EXECUTE_F09_SDK_LLM_SELETIVO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -194,15 +193,15 @@
     },
     "F08": {
       "name": "COMPONENTES_PARALELOS",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "47 top-level parallel Python files accounted for from F01 reachability + F05 authority registry",
-        "38 standalone entrypoints explicitly identified; historical, validation, research and shadow boundaries preserved",
-        "7 retired-from-production historical entrypoints retained for test compatibility, no physical move",
-        "one causal shadow component held non-authoritative",
-        "eight procedural/RAG/research intake paths held isolated from ranking/freeze without causal proof",
-        "25 validation and six maintenance/diagnostic scripts retained outside production",
-        "F08 explicit nonproduction dispositions and fail-closed tests added; no unsafe merge or predictive promotion"
+        "F08 baseline 2b652c796cebd84e463c3b9d39e1d8360811074c",
+        "F08 implementation ed3b890bfcb4ccf9f747a412dd7640889f50f78f",
+        "certified source 33a39a1d3ebd3f920107de9d6b5f4680c98460b6",
+        "47 nonproduction components reconciled, 38 independent entrypoints",
+        "7 retired in place, 1 shadow, 8 isolated research, 25 validation, 6 diagnostics",
+        "two F08 tests passed; GitHub CI 1110 tests, 0 failures/errors/skipped",
+        "integrity, smoke, certification successful"
       ]
     },
     "F09": {
