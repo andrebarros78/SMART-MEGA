@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "c7b596e8a78f30347ce22e168930ff34da577b017b80f60221b15c774faaab5e",
+  "source_reachability_inventory_sha256": "e762a59344a27b707d4bb0814fce996be39c564d2dbabd293d8117ec07b5f25b",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 475,
+    "component_count": 476,
     "active": 97,
     "shadow": 1,
-    "diagnostic": 177,
+    "diagnostic": 178,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -6943,7 +6943,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "89508f8218b108376000278b86dc0a31bd8d5e09f56994897f52cf97566e2ec2",
+      "implementation_sha256": "d656754c6fc7d4b18ed233ac4285eba1e14eab4c8ad99bfb52f507b66ce841b0",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6994,6 +6994,7 @@
         "test_smart_operator_preflight",
         "test_smart_operator_real_freeze_recovery",
         "test_smart_operator_reauthorization",
+        "test_smart_operator_result_materialization",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_operator_unprepared_missed_recovery_20260915",
         "test_smart_terminal_executor_active_epoch"
@@ -11522,6 +11523,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_operator_result_materialization",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_operator_result_materialization.py",
+      "implementation_sha256": "34d792dbee872796acd213cb22a1c08759583b4daddf762e81907debd0094b21",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operator"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_operator_seed_rollover_20260910",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_seed_rollover_20260910.py",
@@ -12854,5 +12878,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "28cffb5e63513b0299a5eb5cf6d51dfba07e0aef72a453495bf92ef9ef177ac3"
+  "registry_sha256": "0e1ea490c785738badee2f172755ee9aee42c6ba64b0504cb828b97428d939a1"
 }

@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "c7b596e8a78f30347ce22e168930ff34da577b017b80f60221b15c774faaab5e",
+  "inventory_sha256": "e762a59344a27b707d4bb0814fce996be39c564d2dbabd293d8117ec07b5f25b",
   "summary": {
-    "python_components": 475,
+    "python_components": 476,
     "workflow_entrypoints": 8,
     "production_components": 97,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 151,
+    "test_components": 152,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6602,6 +6602,7 @@
         "test_smart_operator_preflight",
         "test_smart_operator_real_freeze_recovery",
         "test_smart_operator_reauthorization",
+        "test_smart_operator_result_materialization",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_operator_unprepared_missed_recovery_20260915",
         "test_smart_terminal_executor_active_epoch"
@@ -6614,7 +6615,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "89508f8218b108376000278b86dc0a31bd8d5e09f56994897f52cf97566e2ec2"
+      "sha256": "d656754c6fc7d4b18ed233ac4285eba1e14eab4c8ad99bfb52f507b66ce841b0"
     },
     {
       "component_id": "smart_operator_contract",
@@ -10810,6 +10811,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "0862004c8154eb154315141d8dbfd44b8c6b835d50c761cf0c16695138cfefe5"
+    },
+    {
+      "component_id": "test_smart_operator_result_materialization",
+      "source_file": "test_smart_operator_result_materialization.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "34d792dbee872796acd213cb22a1c08759583b4daddf762e81907debd0094b21"
     },
     {
       "component_id": "test_smart_operator_seed_rollover_20260910",
