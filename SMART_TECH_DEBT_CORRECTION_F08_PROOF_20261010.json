@@ -1,0 +1,58 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F08_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F08",
+  "phase_name": "COMPONENTES_PARALELOS",
+  "status": "PHASE_PROVEN",
+  "baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c",
+  "implementation_commit": "ed3b890bfcb4ccf9f747a412dd7640889f50f78f",
+  "certified_source_head": "33a39a1d3ebd3f920107de9d6b5f4680c98460b6",
+  "observed_at_local": "2026-10-08T12:25:31-03:00",
+  "classification": {
+    "manifest": "SMART_F08_PARALLEL_DISPOSITIONS.json",
+    "scope": "All root-level non-production Python components, excluding tests",
+    "total": 47,
+    "independent_entrypoints": 38,
+    "dispositions": {
+      "RETIRED_FROM_PRODUCTION": 7,
+      "SHADOW_ONLY": 1,
+      "RESEARCH_ISOLATED": 8,
+      "VALIDATION_ONLY": 25,
+      "DIAGNOSTIC_ONLY": 6
+    },
+    "test_files": [
+      "test_smart_f08_parallel_components.py"
+    ],
+    "canonical_production_changed": false,
+    "historical_sources_physically_moved": false,
+    "no_unverified_merge": true,
+    "prospective_predictive_proof_claimed": false
+  },
+  "gates": {
+    "classification_exhaustive": true,
+    "duplicate_classification_rejected": true,
+    "nonproduction_reachability_enforced": true,
+    "zero_predictive_or_freeze_authority_on_parallel": true,
+    "shadow_and_research_isolated": true,
+    "existing_canonical_registry_pass": true
+  },
+  "verification": {
+    "ci_run_id": 37798929312,
+    "smoke_run_id": 37798929431,
+    "integrity_run_id": 37798929250,
+    "junit_tests": 1110,
+    "junit_failures": 0,
+    "junit_errors": 0,
+    "junit_skipped": 0,
+    "regression": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success",
+    "f08_tests": [
+      "test_f08_all_parallel_root_components_are_explicitly_triaged",
+      "test_f08_parallel_scientific_boundaries_are_preserved"
+    ]
+  },
+  "proof_boundary": "F08 proves inventory/disposition and nonproduction isolation in current code and CI. It does not claim direct migration/merger, use of independent research data in the predictive engine, prospective scientific advantage, or completion of F09-F12.",
+  "next_phase": "F09_SDK_LLM_SELETIVO"
+}
