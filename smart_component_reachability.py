@@ -112,7 +112,7 @@ def _workflow_entrypoints(root: Path, known_by_path: dict[str, str]) -> dict[str
     workflow_dir = root / ".github" / "workflows"
     if not workflow_dir.exists():
         return {}
-    rx = re.compile(r"\\bpython(?:\\s+-[A-Za-z]+)*\\s+([A-Za-z0-9_./\\\\-]+\\.py)\\b")
+    rx = re.compile(r"\bpython(?:\s+-[A-Za-z]+)*\s+([A-Za-z0-9_./-]+\.py)\b")
     for wf in sorted(workflow_dir.glob("*.y*ml")):
         text = wf.read_text(encoding="utf-8")
         for raw in rx.findall(text):
