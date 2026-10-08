@@ -78,7 +78,7 @@
     "smart_portfolio_optimizer.py": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104",
     "smart_portfolio_pipeline.py": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a",
     "smart_agent_skill_orchestration.py": "abd86e0bf5b9f356e149d286cfddb281b9a40b2910ea1026a0b422c3c627ec48",
-    "smart_agent_runtime.py": "37d9d81b35d1291cf5a241294f108dd6370e1dda5936aced30c795408164e592",
+    "smart_agent_runtime.py": "b6669b0a506662af02511c090b286235404e2b0a494758757e7aaac145ff955f",
     "smart_agent_skill_functional_gate.py": "d7b39fea1759d2c810d8f879fcac486faeb13c1966edbe3ab40f544975318b90",
     "smart_learning_activation_gate.py": "e0b50355f5299fcca89b508f751c6c46c0a5a0eed2ede5086f2cc25bf1b13141",
     "smart_learning_activation_authority.py": "a50f39ec820e40a15ed04e6a371317fce16b43fefbf1eef638fa767ecb7410b4",
@@ -92,7 +92,7 @@
   },
   "critical_code_manifest": {
     "schema": "SMART_CRITICAL_CODE_MANIFEST_1",
-    "file_count": 136,
+    "file_count": 137,
     "files": {
       "adjudicate_signal_challenger.py": "3552e2ffb83bb177f6da65897e95580b2ae0be8636c2c66d3839c7d7837c4b31",
       "smart_3054_adjudication_preflight.py": "118a82d5c47840a9c2f9533d5d32bd2ac6708bbe9029c0f43aea1d73e01c03c9",
@@ -101,7 +101,8 @@
       "smart_50_round_simulation.py": "2ff0c3d36ebd709d5ed6d7b11c039c5ac6a5a45e596c4594439610a302ad0e2e",
       "smart_adversarial_claim_audit.py": "7d08a582db730069271abb60db92a8b336415b55326b50e566e2356ee8afe5a9",
       "smart_agent_ecosystem_governance.py": "2b795ad237791426d6d8289b7523ac2d2a44133e751a27967927bf7532011c12",
-      "smart_agent_runtime.py": "37d9d81b35d1291cf5a241294f108dd6370e1dda5936aced30c795408164e592",
+      "smart_agent_handoff_runtime.py": "5f8dc63bbae94c5496ee4179ada09d11a41195a8d248c67e22aa20b40ec75bee",
+      "smart_agent_runtime.py": "b6669b0a506662af02511c090b286235404e2b0a494758757e7aaac145ff955f",
       "smart_agent_skill_functional_gate.py": "d7b39fea1759d2c810d8f879fcac486faeb13c1966edbe3ab40f544975318b90",
       "smart_agent_skill_orchestration.py": "abd86e0bf5b9f356e149d286cfddb281b9a40b2910ea1026a0b422c3c627ec48",
       "smart_ai_fine_tuning.py": "242e10a04b16ff5789ee7465d76a42f0cbd901ca803e9ec4e7346e15496db4aa",
@@ -225,13 +226,13 @@
       "smart_terminal_engine.py": "46fd70f3ef2838f6239ddefba4b35692f905ec008bd7cf174ffedb3c5f1f3f1f",
       "smart_terminal_executor.py": "9d8e7afd0ada513caeec7c2083b8982eccd4d3dcb13b094cefedc27983a59bed",
       "smart_test_helpers.py": "b4619caa72d6281bbca1390ea50e46a06a5179e5f3e5eac768c7bf2c1cf577ed",
-      "smart_total_integration_gate.py": "213b35772bc13925ea307a265449ba8a85a9f305c7eb4f5ed7846da562a7dea0",
+      "smart_total_integration_gate.py": "17b1ca1258ad0582f12001d3565c3d75d3f17843a3c68989c85619f31f3a522e",
       "smart_transaction_journal.py": "ae3c7e1156471b956ceeb630e7c11db8f2437a315f3a90b59cf4d8581d988667",
       "smart_v2_engine.py": "cb2caf140f9c090de9c621ac946251d006e7a3c30d0a3df305669dbcdd5998e2",
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "558b3abdcc58ac1fe0853dcddb1df978078fbb08c0663c1bdca84de204c317e8"
+    "fingerprint_sha256": "2fa66bae4c74be78ca29e747c490dd90b8e3b98360221c533876897d915846ab"
   },
   "coverage": [
     {
@@ -444,12 +445,12 @@
   ],
   "red_team": {
     "status": "PASS",
-    "report_sha256": "a29c44c886e0983b61dcf9df311563250683d9bf2eb253ca4d2bdf9b7779594c",
+    "report_sha256": "562676569507e76f67acc85843ed40e57caff263d54ccc6687163989c69558df",
     "behavioral_hashes_current": true,
     "self_hash_valid": true,
     "scenario_count": 10,
     "file": "SMART_P09_RED_TEAM_LATEST.json",
-    "file_sha256": "a29c44c886e0983b61dcf9df311563250683d9bf2eb253ca4d2bdf9b7779594c"
+    "file_sha256": "562676569507e76f67acc85843ed40e57caff263d54ccc6687163989c69558df"
   },
   "independent_audit": {
     "status": "PASS",
@@ -484,12 +485,12 @@
   },
   "full_regression": {
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "b62e598e98f031edb45221d689425a553ff7c3c4e5a46af2f7b5137be2cc693d",
-    "tests": 1097,
+    "junit_sha256": "122796fff641c088b6abe0dc0dbe3832f63b643a685d2c772b942f7cf60c5e07",
+    "tests": 1101,
     "failures": 0,
     "errors": 0,
     "skipped": 0
   },
   "material_deficiencies": [],
-  "sha256": "edc228bdfbb7268c5c4656a3dfb72f6baf60483781f3b4d0ad0b86c8f65205de"
+  "sha256": "667a2ef540ffe4a0257d61ebee1f624e3f11ff12900a9350a7640c83f4db08b0"
 }

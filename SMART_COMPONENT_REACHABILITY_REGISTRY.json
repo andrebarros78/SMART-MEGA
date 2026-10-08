@@ -44,15 +44,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "22f5b31ab08d41421f5b538ea90a4833750120eb2dc6d6788e9b0c0ec7a30c23",
+  "inventory_sha256": "6d71aa875dde9b10a2f27a353b5c5433c9c3e4554a02daeaf8e106361e9049d7",
   "summary": {
-    "python_components": 465,
+    "python_components": 467,
     "workflow_entrypoints": 5,
-    "production_components": 93,
+    "production_components": 94,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 145,
+    "test_components": 146,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4114,6 +4114,32 @@
       "sha256": "196e5e3110a92ad2a51bac289bfca437503f752e1feba3d1c8bbab4bf81c8021"
     },
     {
+      "component_id": "smart_agent_handoff_runtime",
+      "source_file": "smart_agent_handoff_runtime.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_agent_runtime",
+        "test_smart_f06_agent_handoffs"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "77ff1bbb26ca5d5e9690316af4e4d9e9f6f504d1ee8ba1b1da6d8426348f6e7b"
+    },
+    {
       "component_id": "smart_agent_runtime",
       "source_file": "smart_agent_runtime.py",
       "role": "PRODUCTION",
@@ -4124,6 +4150,7 @@
         "smart_repository_integrity"
       ],
       "producers": [
+        "smart_agent_handoff_runtime",
         "smart_agent_skill_orchestration",
         "smart_bounded_online_learning",
         "smart_canonical_identity",
@@ -4155,6 +4182,7 @@
         "smart_total_integration_gate",
         "test_smart_agent_runtime",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_f06_agent_handoffs",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_orchestration_guard_coverage_20260906",
         "test_smart_pre_freeze_causality",
@@ -4171,7 +4199,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "dc0fe2dc5567890c3508a67d5ad65cf2ab5fb29ba8cfacec1b508f1ea7c169c9"
+      "sha256": "c35a59f418063e744cf04ac8ba7cd3b86ad59700d2cc9961c0b33972a15a949d"
     },
     {
       "component_id": "smart_agent_skill_functional_gate",
@@ -8133,6 +8161,7 @@
         "smart_engineering_activation",
         "smart_full_process_pipeline",
         "smart_product_certification",
+        "test_smart_f06_agent_handoffs",
         "test_smart_total_integration_gate"
       ],
       "reachable": true,
@@ -8145,7 +8174,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "e73dacd684337e8467f0585bec2840c49f999b54892cd081a5aba3ab5762696f"
+      "sha256": "1601455d57ba6cad2dacef4bbd5dfd776a2ef8b0a88af8cf7ad35b21a3cc68bf"
     },
     {
       "component_id": "smart_transaction_journal",
@@ -9499,6 +9528,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "64ca866e0bc9f6f39b0a514ad126dc15d13374a5141c96579206b990c6941876"
+    },
+    {
+      "component_id": "test_smart_f06_agent_handoffs",
+      "source_file": "test_smart_f06_agent_handoffs.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_agent_handoff_runtime",
+        "smart_agent_runtime",
+        "smart_total_integration_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "6e4961bbfd50e923ada7eace655c148a04bf18170384ed88824d09f5d75deacf"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
