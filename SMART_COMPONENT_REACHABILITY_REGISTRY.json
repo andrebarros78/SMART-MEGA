@@ -41,33 +41,36 @@
     "smart_signal_agent.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2f97c4a19dab0ad2d49ffa5bd3ae81987a4b981b72e32858a1ee18fbc563c353",
+  "inventory_sha256": "2240ecedea737086861d5b4341d0c400e6091a5882cade355d5d9f0e8ccaf438",
   "summary": {
-    "python_components": 456,
+    "python_components": 459,
     "workflow_entrypoints": 4,
-    "production_components": 89,
+    "production_components": 91,
     "shadow_components": 1,
     "diagnostic_components": 26,
     "validation_components": 23,
-    "test_components": 141,
+    "test_components": 142,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
     "independent_entrypoints": 37,
     "import_cycles": 1,
-    "parse_errors": 0
+    "parse_errors": 0,
+    "declared_execution_dependencies": 1,
+    "execution_dependency_errors": 0
   },
   "gate": {
     "status": "PASS",
     "parse_errors": [],
+    "execution_dependency_errors": [],
     "unclassified": [],
     "production_unreachable": [],
     "required_production_missing": [],
     "required_production_unreachable": []
   },
   "known_debt_observations": {
-    "operator_pipeline_cycle_detected": true,
+    "operator_pipeline_cycle_detected": false,
     "legacy_3054_terminal_executor_reachable": true,
     "independent_entrypoints": [
       "smart_3054_full_cycle_sandbox.py",
@@ -111,25 +114,16 @@
   },
   "import_cycles": [
     [
-      "smart_3054_adjudication_preflight.py",
-      "smart_3054_terminal_executor.py",
       "smart_agent_runtime.py",
       "smart_agent_skill_functional_gate.py",
       "smart_agent_skill_orchestration.py",
       "smart_authority_freshness.py",
-      "smart_canonical_history_advance.py",
       "smart_current_epoch_contract.py",
       "smart_engineering_activation.py",
-      "smart_full_process_pipeline.py",
       "smart_learning_epoch_reset.py",
-      "smart_missed_catchup.py",
       "smart_mission_status.py",
-      "smart_operator.py",
       "smart_product_certification.py",
-      "smart_rollover.py",
       "smart_skill_runtime.py",
-      "smart_startup_reconciler.py",
-      "smart_terminal_executor.py",
       "smart_total_integration_gate.py"
     ]
   ],
@@ -157,6 +151,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -187,6 +182,7 @@
         "smart_total_integration_gate",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -217,6 +213,7 @@
         "smart_target_schedule",
         "smart_terminal_executor"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -248,6 +245,7 @@
         "smart_terminal_executor",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -279,6 +277,7 @@
         "smart_terminal_executor",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -310,6 +309,7 @@
         "smart_terminal_executor",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -328,6 +328,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -345,8 +346,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_champion_challenger",
@@ -358,6 +358,7 @@
         "smart_signal_marginal_utility",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -402,6 +403,7 @@
         "smart_signal_marginal_utility",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -423,6 +425,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -441,6 +444,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -459,6 +463,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -477,6 +482,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -495,6 +501,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -513,6 +520,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -531,6 +539,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -549,6 +558,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -567,6 +577,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -585,6 +596,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -603,6 +615,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -625,6 +638,7 @@
         "smart_rank_score_calibration",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -643,6 +657,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -663,6 +678,7 @@
       "producers": [
         "smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -685,6 +701,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -703,6 +720,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -721,6 +739,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -741,6 +760,7 @@
       "producers": [
         "smart_continuous_red_team"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -759,6 +779,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -777,6 +798,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -798,6 +820,7 @@
         "smart_champion_challenger",
         "smart_promotion_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -819,6 +842,7 @@
         "smart_champion_challenger",
         "smart_evidence_only_promotion"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -837,6 +861,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -855,6 +880,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -873,6 +899,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -891,6 +918,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -909,6 +937,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -927,6 +956,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -945,6 +975,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -963,6 +994,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -981,6 +1013,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -999,6 +1032,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1017,6 +1051,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1035,6 +1070,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1053,6 +1089,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1071,6 +1108,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1089,6 +1127,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1107,6 +1146,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1125,6 +1165,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1143,6 +1184,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1161,6 +1203,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1179,6 +1222,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1199,6 +1243,7 @@
       "producers": [
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1219,6 +1264,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1239,6 +1285,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1259,6 +1306,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1279,6 +1327,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1300,6 +1349,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1318,6 +1368,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1336,6 +1387,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1354,6 +1406,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1376,6 +1429,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1397,6 +1451,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1418,6 +1473,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1436,6 +1492,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1458,6 +1515,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1480,6 +1538,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1502,6 +1561,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1520,6 +1580,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1541,6 +1602,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1559,6 +1621,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1577,6 +1640,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1595,6 +1659,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1613,6 +1678,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1631,6 +1697,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1649,6 +1716,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1667,6 +1735,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1685,6 +1754,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1703,6 +1773,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1721,6 +1792,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1739,6 +1811,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1757,6 +1830,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1775,6 +1849,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1793,6 +1868,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1811,6 +1887,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1829,6 +1906,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1847,6 +1925,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1865,6 +1944,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1883,6 +1963,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1901,6 +1982,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1919,6 +2001,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1937,6 +2020,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1955,6 +2039,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1973,6 +2058,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -1991,6 +2077,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2009,6 +2096,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2027,6 +2115,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2045,6 +2134,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2066,6 +2156,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2084,6 +2175,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2102,6 +2194,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2120,6 +2213,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2138,6 +2232,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2156,6 +2251,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2174,6 +2270,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2192,6 +2289,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2210,6 +2308,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2228,6 +2327,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2246,6 +2346,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2264,6 +2365,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2282,6 +2384,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2300,6 +2403,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2318,6 +2422,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2336,6 +2441,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2354,6 +2460,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2372,6 +2479,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2390,6 +2498,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2408,6 +2517,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2426,6 +2536,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2448,6 +2559,7 @@
         "smart_champion_challenger",
         "smart_learning_epoch_reset"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2468,6 +2580,7 @@
       "producers": [
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2489,6 +2602,7 @@
         "smart_context_regime",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2509,6 +2623,7 @@
       "producers": [
         "smart_context_regime"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2527,6 +2642,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2548,6 +2664,7 @@
         "smart_signal_agent",
         "smart_signal_weights"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2569,6 +2686,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2590,6 +2708,7 @@
         "smart_signal_agent",
         "smart_signal_weights"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2608,6 +2727,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2626,6 +2746,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2646,6 +2767,7 @@
       "producers": [
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2668,6 +2790,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2686,6 +2809,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2704,6 +2828,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2722,6 +2847,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2740,6 +2866,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2766,6 +2893,7 @@
         "smart_runtime_guard",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2794,6 +2922,7 @@
         "smart_runtime_guard",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2818,6 +2947,7 @@
         "smart_learning_epoch_reset",
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2836,6 +2966,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2854,6 +2985,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2872,6 +3004,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2890,6 +3023,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2908,6 +3042,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2926,6 +3061,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2946,6 +3082,7 @@
       "producers": [
         "smart_global_integrity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2966,6 +3103,7 @@
       "producers": [
         "smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -2986,6 +3124,7 @@
       "producers": [
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3004,6 +3143,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3030,6 +3170,7 @@
         "smart_runtime_guard",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3048,6 +3189,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3066,6 +3208,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3084,6 +3227,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3102,6 +3246,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3120,6 +3265,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3138,6 +3284,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3158,6 +3305,7 @@
       "producers": [
         "smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3180,6 +3328,7 @@
         "smart_continuous_red_team",
         "smart_global_integrity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3200,6 +3349,7 @@
       "producers": [
         "smart_champion_challenger"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3218,6 +3368,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3246,6 +3397,7 @@
         "smart_signal_expansion_governance",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3275,6 +3427,7 @@
         "smart_signal_expansion_governance",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3303,6 +3456,7 @@
         "smart_signal_expansion_governance",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3321,6 +3475,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3348,6 +3503,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3375,6 +3531,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3402,6 +3559,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3420,6 +3578,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3438,6 +3597,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3456,6 +3616,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3476,6 +3637,7 @@
       "producers": [
         "smart_continuous_red_team"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3498,6 +3660,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3520,6 +3683,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3538,6 +3702,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3569,6 +3734,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3587,6 +3753,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3605,6 +3772,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3623,6 +3791,7 @@
       "classification_reason": "historical/evidence namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3643,6 +3812,7 @@
       "producers": [
         "smart_champion_challenger"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3667,6 +3837,7 @@
         "smart_learning_epoch_reset",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3685,6 +3856,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3703,11 +3875,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.smart_champion_challenger.pre_integral_hardening_v2",
         "archive.smart_champion_challenger.pre_ledger_contract",
@@ -3736,6 +3910,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3753,8 +3928,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "adjudicate_signal_challenger",
@@ -3764,6 +3938,7 @@
         "smart_sequential_prospective_proof",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "archive.reconciliation_runtime_residue_20260911.runtime.smart_50_round_validation",
@@ -3778,9 +3953,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "b028959fb205086445c6f9bca0a93e61d557ed3641d1e876f485b85a0c78566a"
     },
     {
@@ -3799,6 +3972,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_3054_full_cycle_sandbox"
       ],
@@ -3818,8 +3992,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "adjudicate_signal_challenger",
@@ -3839,6 +4012,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
@@ -3855,9 +4029,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "e080c0c0389d978b853cf0e522d3cdddff0da1d43748e9a12866c9bb039a0a22"
     },
     {
@@ -3869,6 +4041,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -3891,6 +4064,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_adversarial_claim_audit"
       ],
@@ -3920,6 +4094,7 @@
         "smart_material_deficiency_registry",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_github_certify",
         "test_smart_agent_ecosystem_governance"
@@ -3941,6 +4116,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -3957,6 +4133,7 @@
         "smart_rank_score_calibration",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -3999,6 +4176,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4006,6 +4184,7 @@
         "smart_canonical_identity",
         "smart_skill_runtime"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_continuity_consolidator",
         "smart_product_certification",
@@ -4033,6 +4212,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4043,6 +4223,7 @@
         "smart_operational_lifecycle",
         "smart_path_semantics"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v2",
@@ -4082,6 +4263,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4090,6 +4272,7 @@
         "smart_signal_redundancy_consensus",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_champion_challenger",
         "test_smart_ai_fine_tuning"
@@ -4111,6 +4294,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4119,6 +4303,7 @@
         "smart_material_deficiency_registry",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_github_certify",
         "smart_mission_status",
@@ -4144,9 +4329,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.calibrate_p10_active_guard",
         "archive.p10_historical_nonregression",
@@ -4172,8 +4359,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -4181,6 +4367,7 @@
         "smart_path_semantics",
         "smart_sequential_prospective_proof"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -4201,9 +4388,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "dfffe2d46795b60e77d332f2bd55a1a3d52b0defe87d91e121b1297e45494f34"
     },
     {
@@ -4213,9 +4398,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_3054_terminal_executor",
         "smart_agent_ecosystem_governance",
@@ -4231,6 +4418,7 @@
         "smart_missed_catchup",
         "smart_official_result_ingest",
         "smart_operation_lock",
+        "smart_operation_recovery",
         "smart_operator",
         "smart_portfolio_pipeline",
         "smart_product_certification",
@@ -4262,6 +4450,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_canonical_result_store_reconcile"
       ],
@@ -4286,6 +4475,7 @@
         "smart_crash_safe_io",
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_canonical_root_rebind"
       ],
@@ -4311,6 +4501,7 @@
         "smart_portfolio_optimizer",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -4329,11 +4520,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
         "smart_extended_falsification",
@@ -4368,6 +4561,7 @@
         "smart_target_schedule",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_causal_shadow_runner"
       ],
@@ -4388,6 +4582,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4409,6 +4604,7 @@
         "smart_target_schedule",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
@@ -4480,8 +4676,10 @@
         "smart_component_reachability"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_component_reachability"
+        "test_smart_component_reachability",
+        "test_smart_f02_dependency_direction"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4491,7 +4689,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "ef379c161a4566e5d25c92ad61a68acf834e31c2fe50e46f15833036a60d70bd"
+      "sha256": "22a76f1490562277292b1e246786332554333ef8d2f8dcf76492eca7bda46e3e"
     },
     {
       "component_id": "smart_context_calibration_confirm",
@@ -4503,6 +4701,7 @@
         "smart_context_regime",
         "smart_signal_50_round_simulation"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -4524,6 +4723,7 @@
         "smart_context_regime",
         "smart_signal_50_round_simulation"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -4542,9 +4742,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.historical_training_shadow.context_adwin_ablation",
         "archive.reconciliation_runtime_residue_20260911.runtime.historical_training_shadow.context_detector_diagnostic",
@@ -4577,9 +4779,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_ai_fine_tuning",
@@ -4610,6 +4814,7 @@
         "smart_mission_status",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_finalize_deployment",
         "test_smart_continuity_consolidator",
@@ -4632,6 +4837,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4645,6 +4851,7 @@
         "smart_source_identity",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.finalize_p09_p14_current",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v3",
@@ -4681,6 +4888,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -4699,9 +4907,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_canonical_root_rebind",
         "smart_historical_binding",
@@ -4729,11 +4939,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_ecosystem_governance",
         "smart_authority_freshness",
@@ -4757,6 +4969,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4764,6 +4977,7 @@
         "smart_operational_lifecycle",
         "smart_prospective_authority_lock"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -4805,9 +5019,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v2",
@@ -4837,6 +5053,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -4848,6 +5065,7 @@
         "smart_target_schedule",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v2",
@@ -4875,11 +5093,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_global_integrity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.finalize_p15_gate",
         "archive.smart_champion_challenger.pre_integral_hardening_v2",
@@ -4910,6 +5130,7 @@
       "producers": [
         "smart_mission_status"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -4928,6 +5149,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_capability_integration_v2",
         "smart_finalize_capability_integration_v3",
@@ -4954,6 +5176,7 @@
         "smart_cartography_extended",
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_extended_falsification"
       ],
@@ -4974,9 +5197,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_portfolio_pipeline",
         "test_smart_false_negative_rescue"
@@ -4998,6 +5223,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -5005,6 +5231,7 @@
         "smart_randomness_cartography",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
         "smart_probability_audit",
@@ -5027,6 +5254,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -5049,6 +5277,7 @@
         "smart_experiment_lab",
         "smart_validation_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -5073,6 +5302,7 @@
         "smart_mission_status",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_current_continuity_generation",
         "test_smart_mission_status_governance"
@@ -5098,6 +5328,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_frontier_adjudicator"
       ],
@@ -5117,14 +5348,14 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_signal_agent",
         "smart_signal_expansion_governance",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "smart_frontier_adjudicator",
@@ -5148,8 +5379,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -5160,8 +5390,8 @@
         "smart_learning_epoch_reset",
         "smart_manual_generation_authority",
         "smart_operation_lock",
+        "smart_operation_recovery",
         "smart_operational_lifecycle",
-        "smart_operator",
         "smart_procedural_actionability_gate",
         "smart_product_certification",
         "smart_prospective_cycle",
@@ -5171,6 +5401,7 @@
         "smart_total_integration_gate",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
@@ -5191,10 +5422,8 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
-      "cycle_ids": [
-        1
-      ],
-      "sha256": "eb44d35e7d72221b72a9f96271beed352ba033142c68049ec5d4c531929c6725"
+      "cycle_ids": [],
+      "sha256": "eeb01783f01b4a3c724711ee194040ee0d2da6056ffcbd001b4496dca8589f42"
     },
     {
       "component_id": "smart_github_certify",
@@ -5213,6 +5442,7 @@
         "smart_product_certification",
         "smart_startup_reconciler"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_federated_certification"
       ],
@@ -5235,8 +5465,12 @@
         "smart_github_operator"
       ],
       "producers": [
+        "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
+      ],
+      "declared_execution_dependencies": [
+        "smart_operator.py"
       ],
       "consumers": [
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
@@ -5253,7 +5487,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "8b637b03fd58d27eb9b6c5d8b27705eabc308c7f3795d99fad7441380df79f2e"
+      "sha256": "b4fcd9fbd79514483cb2586d8d8e36801ae9a6d785d84cf7c6b4afbab5b8bca6"
     },
     {
       "component_id": "smart_global_integrity",
@@ -5262,6 +5496,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -5270,6 +5505,7 @@
         "smart_material_deficiency_registry",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.rebuild_global_current",
         "archive.seal_mission_proven_6of6_current",
@@ -5305,12 +5541,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_crash_safe_io"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator"
       ],
@@ -5331,6 +5567,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.historical_training_shadow.run_shadow_training",
         "smart_rag_excel",
@@ -5352,10 +5589,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_official_evidence_consensus",
         "smart_official_result_ingest",
@@ -5380,6 +5617,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_falsification_power_audit",
         "test_smart_hypothesis_state_reconciler"
@@ -5400,12 +5638,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_crash_safe_io"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator"
       ],
@@ -5426,6 +5664,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -5437,6 +5676,7 @@
         "smart_source_identity",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "archive.build_p14_legacy_continuity_3051",
@@ -5473,9 +5713,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_causal_shadow_runner",
         "smart_independent_audit",
@@ -5503,12 +5745,14 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_learning_activation_gate",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
@@ -5533,9 +5777,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_learning_activation_authority",
         "smart_signal_agent",
@@ -5561,6 +5807,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -5572,6 +5819,7 @@
         "smart_regression_evidence",
         "smart_target_schedule"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
@@ -5591,6 +5839,7 @@
         "smart_current_epoch_contract",
         "smart_full_process_pipeline",
         "smart_missed_catchup",
+        "smart_operation_recovery",
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
@@ -5618,10 +5867,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_full_process_pipeline",
         "smart_operator"
@@ -5643,9 +5892,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_ecosystem_governance",
         "smart_product_certification"
@@ -5667,9 +5918,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.debug_registry_load",
         "archive.reconciliation_runtime_residue_20260911.runtime.revoke_invalid_3054_authority",
@@ -5701,11 +5954,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_multi_challengers"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -5733,8 +5988,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_agent_runtime",
@@ -5750,6 +6004,7 @@
         "smart_storage_surfaces",
         "smart_terminal_executor"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
         "test_smart_missed_catchup_chain"
@@ -5761,9 +6016,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "c9c1877c662b87d8f58c2c47c5f732f000ea5783df8936f80d6bec2083477173"
     },
     {
@@ -5773,11 +6026,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_authority_freshness"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "smart_3054_terminal_executor",
@@ -5811,6 +6066,7 @@
         "smart_randomness_cartography",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_monte_carlo_convergence"
       ],
@@ -5831,9 +6087,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -5868,6 +6126,7 @@
       "producers": [
         "smart_official_result_ingest"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_official_dataset_reconcile"
       ],
@@ -5887,13 +6146,13 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_http_guard",
         "smart_official_result_ingest"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "smart_3054_terminal_executor",
@@ -5915,13 +6174,13 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_canonical_identity",
         "smart_http_guard"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -5953,11 +6212,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_canonical_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_full_process_pipeline",
         "smart_operator",
@@ -5977,17 +6238,48 @@
       "sha256": "8deef763f3d334feffd85e7cb080afad1e57d3a8c986c5f8d467341139a9de51"
     },
     {
+      "component_id": "smart_operation_recovery",
+      "source_file": "smart_operation_recovery.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_canonical_identity",
+        "smart_learning_epoch_reset",
+        "smart_operational_lifecycle"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "smart_operator",
+        "test_smart_f02_dependency_direction"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "ef2b83da8351b235fef52b06643860186d75c6cd98e0aaf3a73d5ccb822e510f"
+    },
+    {
       "component_id": "smart_operational_lifecycle",
       "source_file": "smart_operational_lifecycle.py",
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_crash_safe_io"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
@@ -5996,6 +6288,7 @@
         "smart_current_epoch_contract",
         "smart_full_process_pipeline",
         "smart_missed_catchup",
+        "smart_operation_recovery",
         "smart_operator",
         "smart_rollover",
         "smart_startup_reconciler",
@@ -6022,8 +6315,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "adjudicate_signal_challenger",
@@ -6041,7 +6333,9 @@
         "smart_missed_catchup",
         "smart_official_result_ingest",
         "smart_operation_lock",
+        "smart_operation_recovery",
         "smart_operational_lifecycle",
+        "smart_operator_contract",
         "smart_post_result_report",
         "smart_product_certification",
         "smart_proof_chain",
@@ -6053,16 +6347,17 @@
         "smart_terminal_executor",
         "smart_transaction_journal"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
-        "smart_full_process_pipeline",
-        "smart_product_certification",
+        "smart_github_operator",
         "test_smart_b2_evolution_20260909",
         "test_smart_current_continuity_generation",
         "test_smart_d015_critical_operational_coverage",
+        "test_smart_f02_dependency_direction",
         "test_smart_generation_proof_guard",
         "test_smart_missed_catchup_chain",
         "test_smart_operator_adjudicate_atomicity",
@@ -6082,10 +6377,35 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
-      "cycle_ids": [
-        1
+      "cycle_ids": [],
+      "sha256": "89508f8218b108376000278b86dc0a31bd8d5e09f56994897f52cf97566e2ec2"
+    },
+    {
+      "component_id": "smart_operator_contract",
+      "source_file": "smart_operator_contract.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity"
       ],
-      "sha256": "0f39ffe6f5a9f05b715ad5b8e91b48ddd57eac170d31fc015a64318698acb38b"
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_operator",
+        "smart_product_certification",
+        "test_smart_f02_dependency_direction"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "65732a296a7245761db1fa900ea6e4b5c0884313489b96285624b371e8e51d89"
     },
     {
       "component_id": "smart_path_semantics",
@@ -6094,9 +6414,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_skill_orchestration",
         "smart_canonical_history_advance",
@@ -6124,6 +6446,7 @@
         "smart_portfolio_optimizer",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_portfolio_backtest_merge",
         "test_smart_portfolio_pipeline"
@@ -6147,6 +6470,7 @@
       "producers": [
         "smart_portfolio_backtest"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6165,9 +6489,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
         "smart_capability_integration_v2",
@@ -6194,6 +6520,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -6203,6 +6530,7 @@
         "smart_primary_card_selector",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_champion_challenger",
         "test_smart_11of10_critical_path_coverage",
@@ -6225,10 +6553,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
         "test_smart_post_result_report"
@@ -6250,9 +6578,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_portfolio_pipeline",
         "test_smart_primary_card_selector"
@@ -6278,6 +6608,7 @@
         "smart_falsification_lab",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_probability_audit",
         "test_smart_probability_audit_numeric_contracts"
@@ -6298,10 +6629,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "smart_causal_shadow_runner",
@@ -6325,6 +6656,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_procedural_youtube_batch",
         "smart_procedural_youtube_recent_acquire",
@@ -6347,6 +6679,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6367,6 +6700,7 @@
       "producers": [
         "smart_http_guard"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6385,6 +6719,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6403,6 +6738,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_procedural_signal_intake"
       ],
@@ -6425,6 +6761,7 @@
       "producers": [
         "smart_procedural_caption_extract"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6446,6 +6783,7 @@
         "smart_http_guard",
         "smart_procedural_caption_extract"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6464,6 +6802,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -6475,12 +6814,13 @@
         "smart_global_integrity",
         "smart_material_deficiency_policy",
         "smart_material_deficiency_registry",
-        "smart_operator",
+        "smart_operator_contract",
         "smart_regression_evidence",
         "smart_runtime_guard",
         "smart_source_identity",
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -6512,7 +6852,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "c486cea0f2c5fe4748a91592307b3725d347bcaa24b4ad0319474a3e059b67cd"
+      "sha256": "5ddaad9c1c6025722f2e32f4ce744c8fa104da34d98a8ab4411645a2dbcf3e2d"
     },
     {
       "component_id": "smart_promote_cartography_1000",
@@ -6521,6 +6861,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_promote_cartography_1000"
       ],
@@ -6541,9 +6882,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.finalize_p13",
         "archive.smart_champion_challenger.pre_integral_hardening_v2",
@@ -6570,10 +6913,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator"
       ],
@@ -6593,12 +6936,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_canonical_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "smart_3054_terminal_executor",
@@ -6621,6 +6964,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -6628,6 +6972,7 @@
         "smart_champion_challenger",
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "archive.reconciliation_runtime_residue_20260911.runtime.smart_50_round_validation",
@@ -6654,10 +6999,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "smart_full_process_pipeline",
@@ -6684,6 +7029,7 @@
         "smart_historical_training_intake",
         "tools.wmcp_scientific"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_rag_excel"
       ],
@@ -6704,11 +7050,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.legacy_entrypoints_20260905.smart_repair_p1p2_binding",
         "smart_agent_runtime",
@@ -6737,11 +7085,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -6770,6 +7120,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6788,9 +7139,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v2",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v3",
@@ -6827,6 +7180,7 @@
         "smart_regression_evidence",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_regression_runner"
       ],
@@ -6847,6 +7201,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -6871,6 +7226,7 @@
         "smart_learning_epoch_reset",
         "smart_startup_reconciler"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_repository_integrity"
       ],
@@ -6890,8 +7246,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_champion_challenger",
@@ -6903,6 +7258,7 @@
         "smart_storage_surfaces",
         "smart_transaction_journal"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_missed_catchup",
         "smart_operator"
@@ -6914,9 +7270,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "e69fd350bb05c7fe2551a964b81dfb7acdbd3121e670e8e9e9db85d12224ea47"
     },
     {
@@ -6926,12 +7280,14 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_canonical_identity",
         "smart_path_semantics"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v2",
@@ -6956,10 +7312,10 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
         "smart_storage_surfaces"
@@ -6981,11 +7337,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_path_semantics"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "archive.smart_champion_challenger.pre_integral_hardening_v2",
@@ -7024,6 +7382,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7045,6 +7404,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_context_calibration_confirm",
         "smart_context_calibration_confirm_v2",
@@ -7068,6 +7428,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -7085,6 +7446,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "archive.analyze_p10_baseline",
@@ -7161,12 +7523,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -7192,6 +7554,7 @@
         "smart_signal_50_round_simulation",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7210,9 +7573,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.migrate_p11_registry",
         "archive.p11_validation",
@@ -7244,11 +7609,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -7273,11 +7640,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
@@ -7303,11 +7672,13 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.smart_continuous_red_team.pre_integral_hardening",
         "archive.smart_continuous_red_team.pre_integral_hardening_v2",
@@ -7337,9 +7708,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.smart_continuous_red_team.pre_integral_hardening",
         "archive.smart_continuous_red_team.pre_integral_hardening_v2",
@@ -7367,9 +7740,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "archive.reconciliation_runtime_residue_20260911.runtime.historical_training_shadow.expert_cap_ablation",
         "archive.reconciliation_runtime_residue_20260911.runtime.historical_training_shadow.marginal_weight_ablation",
@@ -7402,6 +7777,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -7409,6 +7785,7 @@
         "smart_agent_skill_orchestration",
         "smart_canonical_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_skill_functional_gate",
         "test_smart_skill_runtime"
@@ -7432,9 +7809,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
         "smart_champion_challenger",
@@ -7465,6 +7844,7 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
@@ -7474,6 +7854,7 @@
         "smart_operational_lifecycle",
         "smart_transaction_journal"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_full_process_pipeline",
         "smart_github_certify",
@@ -7489,9 +7870,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "651a346bd1ff3b3c21141982c5c24a1fd2e11d07b8934ee0fda214ae4457b96a"
     },
     {
@@ -7500,12 +7879,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_scientific_state_guard"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_full_process_pipeline",
         "smart_missed_catchup",
@@ -7533,6 +7912,7 @@
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
@@ -7564,12 +7944,12 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_certify",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "producers": [
         "smart_3054_terminal_executor"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
@@ -7586,9 +7966,7 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
-      "cycle_ids": [
-        1
-      ],
+      "cycle_ids": [],
       "sha256": "c97421accd0579d9f4aecbab4f46ba5cd5be798517d81839c70d9f89ce107432"
     },
     {
@@ -7598,6 +7976,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_meta_governor",
         "test_smart_multi_challengers",
@@ -7622,12 +8001,14 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [
         "smart_agent_runtime",
         "smart_agent_skill_functional_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055",
@@ -7662,6 +8043,7 @@
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_github_operator",
         "smart_operator",
@@ -7686,9 +8068,11 @@
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
         "smart_github_certify",
+        "smart_github_operator",
         "smart_repository_integrity"
       ],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
@@ -7780,6 +8164,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_11of10_critical_path_coverage",
         "test_smart_coverage_governance",
@@ -7802,6 +8187,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_finalize_capability_integration_v3",
         "test_smart_validation_gate"
@@ -7823,6 +8209,7 @@
       "classification_reason": "unreachable validation/diagnostic component",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7845,6 +8232,7 @@
         "smart_champion_challenger",
         "test_smart_coverage_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7865,6 +8253,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7886,6 +8275,7 @@
         "smart_bounded_online_learning",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7906,6 +8296,7 @@
       "producers": [
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7931,6 +8322,7 @@
         "smart_sequential_prospective_proof",
         "test_smart_evidence_only_promotion"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7954,6 +8346,7 @@
         "smart_promotion_gate",
         "test_smart_evidence_only_promotion"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7972,6 +8365,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -7995,6 +8389,7 @@
         "smart_portfolio_pipeline",
         "smart_v2_production"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8016,6 +8411,7 @@
         "smart_3054_adjudication_preflight",
         "smart_current_epoch_contract"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8037,6 +8433,7 @@
         "smart_3054_full_cycle_sandbox",
         "smart_current_epoch_contract"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8057,6 +8454,7 @@
       "producers": [
         "smart_3054_terminal_executor"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8077,6 +8475,7 @@
       "producers": [
         "smart_adversarial_claim_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8099,6 +8498,7 @@
         "smart_agent_skill_orchestration",
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8119,6 +8519,7 @@
       "producers": [
         "smart_agent_runtime"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8139,6 +8540,7 @@
       "producers": [
         "smart_agent_skill_functional_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8159,6 +8561,7 @@
       "producers": [
         "smart_agent_skill_orchestration"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8179,6 +8582,7 @@
       "producers": [
         "smart_ai_fine_tuning"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8197,6 +8601,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8221,6 +8626,7 @@
         "smart_signal_quality",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8247,6 +8653,7 @@
         "smart_current_epoch_contract",
         "smart_global_integrity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8268,6 +8675,7 @@
         "smart_champion_challenger",
         "smart_learning_activation_authority"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8292,6 +8700,7 @@
         "smart_sequential_prospective_proof",
         "test_smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_b2_failclosed_coverage_20260909"
       ],
@@ -8318,6 +8727,7 @@
         "test_smart_b2_evolution_20260909",
         "test_smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8340,6 +8750,7 @@
         "smart_champion_challenger",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8360,6 +8771,7 @@
       "producers": [
         "smart_canonical_history_advance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_d015_critical_operational_coverage"
       ],
@@ -8382,6 +8794,7 @@
       "producers": [
         "smart_canonical_history_advance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8403,6 +8816,7 @@
         "smart_canonical_result_store_reconcile",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8421,6 +8835,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8441,6 +8856,7 @@
       "producers": [
         "smart_canonical_root_rebind"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8462,6 +8878,7 @@
         "smart_cartography_extended",
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8482,6 +8899,7 @@
       "producers": [
         "smart_causal_shadow_runner"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8503,6 +8921,7 @@
         "smart_independent_oracle",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8521,6 +8940,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8541,6 +8961,7 @@
       "producers": [
         "smart_component_reachability"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8550,7 +8971,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "7b213d87ca0db44e8cc8607fda44661e6ad3a9b916ba52c237809adfd6860106"
+      "sha256": "a6df9b577811b4d9e29276ab9412d5d4497042aece100d05f0a18b0eb6c437b2"
     },
     {
       "component_id": "test_smart_context_regime_adwin",
@@ -8561,6 +8982,7 @@
       "producers": [
         "smart_context_regime"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8583,6 +9005,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8603,6 +9026,7 @@
       "producers": [
         "smart_continuity_consolidator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8623,6 +9047,7 @@
       "producers": [
         "smart_continuous_red_team"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8647,6 +9072,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8672,6 +9098,7 @@
         "smart_v2_engine",
         "smart_v2_production"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_adjudication_integrity"
       ],
@@ -8698,6 +9125,7 @@
         "smart_operator",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8719,6 +9147,7 @@
         "smart_current_epoch_contract",
         "smart_operational_lifecycle"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8743,6 +9172,7 @@
         "smart_product_certification",
         "test_smart_canonical_history_advance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8763,6 +9193,7 @@
       "producers": [
         "smart_data_quality_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8786,6 +9217,7 @@
         "smart_global_integrity",
         "smart_promotion_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_p14_critical_branch_coverage",
         "test_p15_contract_strictness",
@@ -8808,6 +9240,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8828,6 +9261,7 @@
       "producers": [
         "smart_experiment_lab"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8849,6 +9283,7 @@
         "smart_extended_falsification",
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8861,6 +9296,30 @@
       "sha256": "d578fc47d50eba5d6ccc97b91fdd546f165ff6c240fa87394753d9ffdeeb97db"
     },
     {
+      "component_id": "test_smart_f02_dependency_direction",
+      "source_file": "test_smart_f02_dependency_direction.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_component_reachability",
+        "smart_operation_recovery",
+        "smart_operator",
+        "smart_operator_contract"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "ed4da72014b45d501ef716f602bf3e11fc8bd75123410293442b82eeabbf2bee"
+    },
+    {
       "component_id": "test_smart_false_negative_rescue",
       "source_file": "test_smart_false_negative_rescue.py",
       "role": "TEST",
@@ -8869,6 +9328,7 @@
       "producers": [
         "smart_false_negative_rescue"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8890,6 +9350,7 @@
         "smart_falsification_lab",
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8910,6 +9371,7 @@
       "producers": [
         "smart_hypothesis_state_reconciler"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8931,6 +9393,7 @@
         "smart_github_certify",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8954,6 +9417,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8974,6 +9438,7 @@
       "producers": [
         "smart_frontier_signal_lab"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -8997,6 +9462,7 @@
         "smart_learning_epoch_reset",
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9017,6 +9483,7 @@
       "producers": [
         "smart_full_process_pipeline"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9039,6 +9506,7 @@
         "smart_learning_epoch_reset",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9060,6 +9528,7 @@
         "smart_github_operator",
         "smart_transaction_journal"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9082,6 +9551,7 @@
         "smart_global_integrity",
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_mission_coverage_closure_20260906"
       ],
@@ -9102,6 +9572,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9122,6 +9593,7 @@
       "producers": [
         "smart_historical_training_intake"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9142,6 +9614,7 @@
       "producers": [
         "smart_http_guard"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9162,6 +9635,7 @@
       "producers": [
         "smart_hypothesis_state_reconciler"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9184,6 +9658,7 @@
         "smart_independent_audit",
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
@@ -9208,6 +9683,7 @@
       "producers": [
         "smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9230,6 +9706,7 @@
         "smart_learning_activation_authority",
         "smart_learning_activation_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9250,6 +9727,7 @@
       "producers": [
         "smart_learning_activation_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9272,6 +9750,7 @@
         "smart_signal_marginal_utility",
         "smart_signal_quality"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9292,6 +9771,7 @@
       "producers": [
         "smart_material_deficiency_registry"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9313,6 +9793,7 @@
         "smart_learning_activation_gate",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9338,6 +9819,7 @@
         "smart_signal_agent",
         "smart_test_helpers"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9361,6 +9843,7 @@
         "smart_operational_lifecycle",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9397,6 +9880,7 @@
         "test_smart_global_integrity",
         "test_smart_independent_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9417,6 +9901,7 @@
       "producers": [
         "smart_finalize_deployment"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9437,6 +9922,7 @@
       "producers": [
         "smart_mission_status"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9457,6 +9943,7 @@
       "producers": [
         "smart_monte_carlo_convergence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9481,6 +9968,7 @@
         "smart_signal_agent",
         "smart_test_helpers"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9501,6 +9989,7 @@
       "producers": [
         "smart_target_schedule"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9521,6 +10010,7 @@
       "producers": [
         "smart_official_dataset_reconcile"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9541,6 +10031,7 @@
       "producers": [
         "smart_official_evidence_consensus"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9561,6 +10052,7 @@
       "producers": [
         "smart_official_result_ingest"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9581,6 +10073,7 @@
       "producers": [
         "smart_operation_lock"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9601,6 +10094,7 @@
       "producers": [
         "smart_operational_lifecycle"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9621,6 +10115,7 @@
       "producers": [
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9643,6 +10138,7 @@
         "smart_operator",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9664,6 +10160,7 @@
         "smart_learning_epoch_reset",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9685,6 +10182,7 @@
         "smart_authority_freshness",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9707,6 +10205,7 @@
         "smart_operational_lifecycle",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9727,6 +10226,7 @@
       "producers": [
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9749,6 +10249,7 @@
         "smart_learning_epoch_reset",
         "smart_operator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9770,6 +10271,7 @@
         "smart_operator",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9792,6 +10294,7 @@
         "smart_agent_skill_orchestration",
         "smart_independent_oracle"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9812,6 +10315,7 @@
       "producers": [
         "smart_portfolio_optimizer"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9834,6 +10338,7 @@
         "smart_portfolio_optimizer",
         "smart_portfolio_pipeline"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9854,6 +10359,7 @@
       "producers": [
         "smart_post_result_report"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9872,6 +10378,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9893,6 +10400,7 @@
         "smart_agent_runtime",
         "smart_agent_skill_orchestration"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9914,6 +10422,7 @@
         "smart_full_process_pipeline",
         "smart_portfolio_pipeline"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9934,6 +10443,7 @@
       "producers": [
         "smart_primary_card_selector"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9954,6 +10464,7 @@
       "producers": [
         "smart_probability_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_probability_audit_numeric_contracts"
       ],
@@ -9977,6 +10488,7 @@
         "smart_probability_audit",
         "test_smart_probability_audit"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -9997,6 +10509,7 @@
       "producers": [
         "smart_procedural_actionability_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10017,6 +10530,7 @@
       "producers": [
         "smart_procedural_caption_extract"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10035,6 +10549,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10055,6 +10570,7 @@
       "producers": [
         "smart_procedural_signal_intake"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10077,6 +10593,7 @@
         "smart_global_integrity",
         "smart_product_certification"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10097,6 +10614,7 @@
       "producers": [
         "smart_promote_cartography_1000"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10118,6 +10636,7 @@
         "smart_champion_challenger",
         "smart_promotion_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10140,6 +10659,7 @@
         "smart_prospective_authority_lock",
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10160,6 +10680,7 @@
       "producers": [
         "smart_prospective_authority"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10180,6 +10701,7 @@
       "producers": [
         "smart_prospective_cycle"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10200,6 +10722,7 @@
       "producers": [
         "smart_rag_excel"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10220,6 +10743,7 @@
       "producers": [
         "smart_randomness_cartography"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10246,6 +10770,7 @@
         "smart_v2_engine",
         "test_smart_signal_interactions"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10268,6 +10793,7 @@
         "smart_independent_oracle",
         "smart_signal_agent"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10288,6 +10814,7 @@
       "producers": [
         "smart_regression_evidence"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10309,6 +10836,7 @@
         "smart_regression_evidence",
         "smart_regression_runner"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10331,6 +10859,7 @@
         "smart_repository_integrity",
         "smart_startup_reconciler"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10351,6 +10880,7 @@
       "producers": [
         "smart_runtime_guard"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10377,6 +10907,7 @@
         "smart_signal_agent",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10403,6 +10934,7 @@
         "smart_signal_quality",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10423,6 +10955,7 @@
       "producers": [
         "smart_signal_attribution"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10445,6 +10978,7 @@
         "smart_signal_agent",
         "smart_signal_expansion_governance"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10468,6 +11002,7 @@
         "smart_signal_interactions",
         "smart_test_helpers"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_rank_score_calibration"
       ],
@@ -10495,6 +11030,7 @@
         "smart_test_helpers",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10518,6 +11054,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10541,6 +11078,7 @@
         "smart_signal_weights",
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10561,6 +11099,7 @@
       "producers": [
         "smart_skill_runtime"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10582,6 +11121,7 @@
         "smart_product_certification",
         "smart_source_identity"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10602,6 +11142,7 @@
       "producers": [
         "smart_target_schedule"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10624,6 +11165,7 @@
         "smart_full_process_pipeline",
         "smart_target_schedule"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10646,6 +11188,7 @@
         "smart_operator",
         "smart_terminal_executor"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10666,6 +11209,7 @@
       "producers": [
         "smart_total_integration_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10686,6 +11230,7 @@
       "producers": [
         "smart_v2_engine"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10706,6 +11251,7 @@
       "producers": [
         "smart_v2_production"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10728,6 +11274,7 @@
         "smart_agent_skill_orchestration",
         "smart_champion_challenger"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10748,6 +11295,7 @@
       "producers": [
         "smart_continuity_consolidator"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10768,6 +11316,7 @@
       "producers": [
         "smart_validation_gate"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10789,6 +11338,7 @@
         "smart_independent_audit",
         "smart_sequential_prospective_proof"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10809,6 +11359,7 @@
       "producers": [
         "tools.wmcp_scientific"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
       "production_reachable": false,
@@ -10831,6 +11382,7 @@
         "tools.wmcp_scientific.scientific_evidence_rag",
         "tools.wmcp_scientific.scientific_memory"
       ],
+      "declared_execution_dependencies": [],
       "consumers": [
         "smart_rag_excel",
         "tests.test_wmcp_scientific_tools"
@@ -10852,6 +11404,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "tools.wmcp_scientific"
       ],
@@ -10872,6 +11425,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "tools.wmcp_scientific"
       ],
@@ -10892,6 +11446,7 @@
       "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
       "entrypoints": [],
       "producers": [],
+      "declared_execution_dependencies": [],
       "consumers": [
         "tools.wmcp_scientific"
       ],
