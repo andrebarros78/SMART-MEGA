@@ -31,7 +31,6 @@
     ]
   },
   "required_production_files": [
-    "smart_3054_terminal_executor.py",
     "smart_champion_challenger.py",
     "smart_full_process_pipeline.py",
     "smart_github_operator.py",
@@ -39,22 +38,23 @@
     "smart_portfolio_pipeline.py",
     "smart_primary_card_selector.py",
     "smart_signal_agent.py",
+    "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2240ecedea737086861d5b4341d0c400e6091a5882cade355d5d9f0e8ccaf438",
+  "inventory_sha256": "5b437a2de36e10ef92fcc950be86670ccfd742d877d462f89d6bc14cd1a70222",
   "summary": {
-    "python_components": 459,
+    "python_components": 461,
     "workflow_entrypoints": 4,
     "production_components": 91,
     "shadow_components": 1,
-    "diagnostic_components": 26,
+    "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 142,
+    "test_components": 143,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 37,
+    "independent_entrypoints": 38,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -71,9 +71,11 @@
   },
   "known_debt_observations": {
     "operator_pipeline_cycle_detected": false,
-    "legacy_3054_terminal_executor_reachable": true,
+    "legacy_3054_terminal_executor_reachable": false,
+    "generic_terminal_engine_reachable": true,
     "independent_entrypoints": [
       "smart_3054_full_cycle_sandbox.py",
+      "smart_3054_terminal_executor.py",
       "smart_50_round_simulation.py",
       "smart_adversarial_claim_audit.py",
       "smart_canonical_result_store_reconcile.py",
@@ -366,6 +368,7 @@
         "smart_3054_full_cycle_sandbox",
         "smart_3054_terminal_executor",
         "smart_operator",
+        "smart_terminal_engine",
         "test_adjudication_integrity",
         "test_smart_11of10_critical_path_coverage",
         "test_smart_coverage_governance",
@@ -3944,6 +3947,7 @@
         "archive.reconciliation_runtime_residue_20260911.runtime.smart_50_round_validation",
         "smart_3054_full_cycle_sandbox",
         "smart_3054_terminal_executor",
+        "smart_terminal_engine",
         "test_smart_3054_adjudication_preflight"
       ],
       "reachable": true,
@@ -3989,11 +3993,9 @@
     {
       "component_id": "smart_3054_terminal_executor",
       "source_file": "smart_3054_terminal_executor.py",
-      "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
-      "entrypoints": [
-        "smart_github_operator"
-      ],
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
       "producers": [
         "adjudicate_signal_challenger",
         "smart_3054_adjudication_preflight",
@@ -4018,12 +4020,11 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
-        "smart_terminal_executor",
         "test_smart_3054_terminal_executor",
         "test_smart_terminal_executor_active_epoch"
       ],
-      "reachable": true,
-      "production_reachable": true,
+      "reachable": false,
+      "production_reachable": false,
       "runtime_executed": null,
       "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
@@ -4377,6 +4378,7 @@
         "smart_3054_terminal_executor",
         "smart_missed_catchup",
         "smart_operator",
+        "smart_terminal_engine",
         "test_smart_canonical_history_advance",
         "test_smart_canonical_history_advance_dtype",
         "test_smart_d015_critical_operational_coverage"
@@ -4429,7 +4431,8 @@
         "smart_repository_integrity",
         "smart_runtime_guard",
         "smart_skill_runtime",
-        "smart_startup_reconciler"
+        "smart_startup_reconciler",
+        "smart_terminal_engine"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4632,6 +4635,7 @@
         "smart_operator",
         "smart_prospective_authority_lock",
         "smart_rollover",
+        "smart_terminal_engine",
         "test_adjudication_integrity",
         "test_p14_critical_branch_coverage",
         "test_smart_architecture_hardening_20260905",
@@ -4679,7 +4683,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_component_reachability",
-        "test_smart_f02_dependency_direction"
+        "test_smart_f02_dependency_direction",
+        "test_smart_f03_terminal_engine_migration"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4689,7 +4694,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "22a76f1490562277292b1e246786332554333ef8d2f8dcf76492eca7bda46e3e"
+      "sha256": "a87d3f894f273cb438c7253375b8383df28012a2e361d27d1fa47960b1243338"
     },
     {
       "component_id": "smart_context_calibration_confirm",
@@ -4992,6 +4997,7 @@
         "smart_continuity_consolidator",
         "smart_finalize_deployment",
         "smart_operator",
+        "smart_terminal_engine",
         "test_smart_3054_adjudication_preflight",
         "test_smart_3054_full_cycle_sandbox",
         "test_smart_architecture_hardening_20260905",
@@ -5689,6 +5695,7 @@
         "archive.smart_champion_challenger.pre_lineage_fix",
         "smart_3054_terminal_executor",
         "smart_champion_challenger",
+        "smart_terminal_engine",
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
         "test_smart_independent_audit",
@@ -5843,6 +5850,7 @@
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
+        "smart_terminal_engine",
         "test_smart_full_activation_epoch",
         "test_smart_generation_proof_guard",
         "test_smart_operator_missed_recovery_20260910",
@@ -6041,6 +6049,7 @@
         "smart_continuity_consolidator",
         "smart_execution_checkpoint",
         "smart_finalize_deployment",
+        "smart_terminal_engine",
         "test_smart_current_continuity_generation",
         "test_smart_mission_status_integrity"
       ],
@@ -6156,6 +6165,7 @@
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "smart_3054_terminal_executor",
+        "smart_terminal_engine",
         "test_smart_official_evidence_consensus"
       ],
       "reachable": true,
@@ -6193,6 +6203,7 @@
         "smart_official_dataset_reconcile",
         "smart_official_evidence_consensus",
         "smart_operator",
+        "smart_terminal_engine",
         "test_smart_official_result_ingest"
       ],
       "reachable": true,
@@ -6945,6 +6956,7 @@
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
         "smart_3054_terminal_executor",
+        "smart_terminal_engine",
         "test_smart_prospective_authority_module"
       ],
       "reachable": true,
@@ -6981,6 +6993,7 @@
         "smart_current_epoch_contract",
         "smart_engineering_activation",
         "smart_learning_epoch_reset",
+        "smart_terminal_engine",
         "test_smart_prospective_authority_lock"
       ],
       "reachable": true,
@@ -7354,6 +7367,7 @@
         "smart_3054_terminal_executor",
         "smart_canonical_history_advance",
         "smart_champion_challenger",
+        "smart_terminal_engine",
         "test_p14_critical_branch_coverage",
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
@@ -7488,6 +7502,7 @@
         "smart_signal_2000_simulation",
         "smart_signal_50_round_simulation",
         "smart_signal_drift_calibration",
+        "smart_terminal_engine",
         "test_p10_active_guard_hardening",
         "test_smart_architecture_corrections_20260905",
         "test_smart_bounded_online_learning",
@@ -7939,6 +7954,47 @@
       "sha256": "c5a2bb2845735e6ca97175e5a358631e50c681d1d6edc22e5fccac4e953001aa"
     },
     {
+      "component_id": "smart_terminal_engine",
+      "source_file": "smart_terminal_engine.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "adjudicate_signal_challenger",
+        "smart_3054_adjudication_preflight",
+        "smart_canonical_history_advance",
+        "smart_canonical_identity",
+        "smart_champion_challenger",
+        "smart_current_epoch_contract",
+        "smart_independent_audit",
+        "smart_learning_epoch_reset",
+        "smart_mission_status",
+        "smart_official_evidence_consensus",
+        "smart_official_result_ingest",
+        "smart_prospective_authority",
+        "smart_prospective_authority_lock",
+        "smart_sequential_prospective_proof",
+        "smart_signal_agent",
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_terminal_executor",
+        "test_smart_f03_terminal_engine_migration"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "12b5599e52273450d5bdc1ee4fa6085e3cfc52dc8b74539750148197204ca71f"
+    },
+    {
       "component_id": "smart_terminal_executor",
       "source_file": "smart_terminal_executor.py",
       "role": "PRODUCTION",
@@ -7947,7 +8003,7 @@
         "smart_github_operator"
       ],
       "producers": [
-        "smart_3054_terminal_executor"
+        "smart_terminal_engine"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
@@ -7957,6 +8013,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_missed_catchup",
         "smart_operator",
+        "test_smart_f03_terminal_engine_migration",
         "test_smart_terminal_executor_active_epoch"
       ],
       "reachable": true,
@@ -7967,7 +8024,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "c97421accd0579d9f4aecbab4f46ba5cd5be798517d81839c70d9f89ce107432"
+      "sha256": "eba9a2f876187aea9a10eda5348506feafbafd2a0d05cb6ad473d650f46af86a"
     },
     {
       "component_id": "smart_test_helpers",
@@ -8133,6 +8190,7 @@
         "smart_signal_interactions",
         "smart_signal_marginal_utility",
         "smart_signal_quality",
+        "smart_terminal_engine",
         "test_data_integrity",
         "test_smart_architecture_corrections_20260905",
         "test_smart_canonical_result_store_reconcile",
@@ -8971,7 +9029,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "a6df9b577811b4d9e29276ab9412d5d4497042aece100d05f0a18b0eb6c437b2"
+      "sha256": "885a529c9ad5a5e1edc54f6e40755601698053ab2db28e56edfd7b923542c19c"
     },
     {
       "component_id": "test_smart_context_regime_adwin",
@@ -9318,6 +9376,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "ed4da72014b45d501ef716f602bf3e11fc8bd75123410293442b82eeabbf2bee"
+    },
+    {
+      "component_id": "test_smart_f03_terminal_engine_migration",
+      "source_file": "test_smart_f03_terminal_engine_migration.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_component_reachability",
+        "smart_terminal_engine",
+        "smart_terminal_executor"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "305622059beb5175088a4eff456e98502c11013a88517f19567b3905d870e699"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
@@ -11198,7 +11279,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "8e252c1991985e2b5ac7ce8a4ecdfb913ea83245478f717bfb6357ecf149ab10"
+      "sha256": "1b3f6946c4ae467d313e383548862a8d21e2e355c5bd1b9fef950c0bc89b6ffb"
     },
     {
       "component_id": "test_smart_total_integration_gate",

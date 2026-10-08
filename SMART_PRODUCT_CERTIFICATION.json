@@ -2,12 +2,12 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-08T12:36:19.492881+00:00",
+  "generated_utc": "2026-10-08T12:55:42.105789+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
   "code_fingerprint": {
-    "file_count": 280,
+    "file_count": 282,
     "files": [
       {
         "path": "SMART_DATA_CONTRACT.md",
@@ -119,7 +119,7 @@
       },
       {
         "path": "smart_component_reachability.py",
-        "sha256": "920f7de2145fdad4c64ed5ba76f376d07130384e031c954088fd71e21ac96662"
+        "sha256": "875c5bff495e871191b1d4bcbce598f15a5cfab8315ce3845b256cac8bcfc107"
       },
       {
         "path": "smart_context_calibration_confirm.py",
@@ -542,8 +542,12 @@
         "sha256": "4d96ce7a3d9455c8618a07889dcc41a39ea3029599f758f6e8074b3b224b4d29"
       },
       {
+        "path": "smart_terminal_engine.py",
+        "sha256": "46fd70f3ef2838f6239ddefba4b35692f905ec008bd7cf174ffedb3c5f1f3f1f"
+      },
+      {
         "path": "smart_terminal_executor.py",
-        "sha256": "c004b7935b28f0115419b56fe75cbce5ff2816ae0f4ff3d3d250b114f91681dc"
+        "sha256": "9d8e7afd0ada513caeec7c2083b8982eccd4d3dcb13b094cefedc27983a59bed"
       },
       {
         "path": "smart_test_helpers.py",
@@ -703,7 +707,7 @@
       },
       {
         "path": "test_smart_component_reachability.py",
-        "sha256": "75f79496fb9367ce51456aa62bae146413b02bdac64298d67ed2e75864087ca4"
+        "sha256": "df07960c4b5bffe02dfe47e74d1a9f1b924fd37b0c50bb45716070135342317e"
       },
       {
         "path": "test_smart_context_regime_adwin.py",
@@ -764,6 +768,10 @@
       {
         "path": "test_smart_f02_dependency_direction.py",
         "sha256": "4e049346d3bf41cc987e5fd0f1a259784436e34645e83230a3889e88347eb516"
+      },
+      {
+        "path": "test_smart_f03_terminal_engine_migration.py",
+        "sha256": "c6eb84f86c7439b2eb93b2243659d7a48fbeb04d87e85b3e88f6f51ed27eb779"
       },
       {
         "path": "test_smart_false_negative_rescue.py",
@@ -1099,7 +1107,7 @@
       },
       {
         "path": "test_smart_terminal_executor_active_epoch.py",
-        "sha256": "c056bdb0dae64bc70365bee2f476c3aadd0ddce9b1a1a4403b290bbac560cd3b"
+        "sha256": "212119c669eee06bb5781618477d622cd6a1de732e14ff73bdcd6d4cab06125a"
       },
       {
         "path": "test_smart_total_integration_gate.py",
@@ -1130,18 +1138,18 @@
         "sha256": "9c81b6dc019609b958a0563048b4ea0bb04303244220dcd19bfa6e42dbb3bc1f"
       }
     ],
-    "sha256": "e256646388685f2927090cddf2cbf1dd8799f4244cc3d15132103895818751e6"
+    "sha256": "d9db83de1118035416297a1228d2181fb82e566c5dee0a924e772477f7e87b78"
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "5a9119202e20f40567c83a642a478340bae9ed69",
-    "ci_run_id": "37776961338",
+    "source_commit": "699b3be57ce9f5e3c1ea01c9ad73089b13f63a2b",
+    "ci_run_id": "37779324753",
     "execution": {
       "kind": "GITHUB_ACTIONS",
-      "run_id": "37776961338"
+      "run_id": "37779324753"
     },
-    "code_fingerprint_sha256": "e256646388685f2927090cddf2cbf1dd8799f4244cc3d15132103895818751e6",
-    "junit_sha256": "aa753b4ca915fcebdcc9b8e422e15c3bcd61213a88dc96b561f0375f9daad828",
+    "code_fingerprint_sha256": "d9db83de1118035416297a1228d2181fb82e566c5dee0a924e772477f7e87b78",
+    "junit_sha256": "67365ea1ec821cceb2215809728830bfc9c51dc25c1c4ec909f1e4337fb0080d",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1153,7 +1161,7 @@
   },
   "critical_code_manifest": {
     "schema": "SMART_CRITICAL_CODE_MANIFEST_1",
-    "file_count": 133,
+    "file_count": 134,
     "files": {
       "adjudicate_signal_challenger.py": "3552e2ffb83bb177f6da65897e95580b2ae0be8636c2c66d3839c7d7837c4b31",
       "smart_3054_adjudication_preflight.py": "118a82d5c47840a9c2f9533d5d32bd2ac6708bbe9029c0f43aea1d73e01c03c9",
@@ -1176,7 +1184,7 @@
       "smart_cartography_extended.py": "83b32f04a80edccb3d116039183cf13a17336c0c129945882c2027e02f2ed498",
       "smart_causal_shadow_runner.py": "e12bcbba56cf15401652d7c7ee61ac944de921f4c45ea2adf7752b4d66d1e533",
       "smart_champion_challenger.py": "8230a5ba604e6f4f708ce7f3e03a7df69119b471fe1d0695f45c5dbbd197a996",
-      "smart_component_reachability.py": "920f7de2145fdad4c64ed5ba76f376d07130384e031c954088fd71e21ac96662",
+      "smart_component_reachability.py": "875c5bff495e871191b1d4bcbce598f15a5cfab8315ce3845b256cac8bcfc107",
       "smart_context_calibration_confirm.py": "c5b32a9eb22db9ea52023636b4e4f8d9e1dfc934248ea05b3eddcea5a3685605",
       "smart_context_calibration_confirm_v2.py": "01fa1d70fc1757b64782a694546cced99961324c8f55b0d5f87ad912c8a7bd39",
       "smart_context_regime.py": "eebeaff39193cf6ef35ae3405b832ae635c6ed84558447fc64751825ddc84814",
@@ -1281,7 +1289,8 @@
       "smart_startup_reconciler.py": "58d6eb4ef6652ce0cc97d0c4531ba2c1217b8899f26c8baf851a54c8e133fd5d",
       "smart_storage_surfaces.py": "f455b76e2a907013debe39affbcd1f2fe399aa346e415ced6b5855b87a7b8fce",
       "smart_target_schedule.py": "4d96ce7a3d9455c8618a07889dcc41a39ea3029599f758f6e8074b3b224b4d29",
-      "smart_terminal_executor.py": "c004b7935b28f0115419b56fe75cbce5ff2816ae0f4ff3d3d250b114f91681dc",
+      "smart_terminal_engine.py": "46fd70f3ef2838f6239ddefba4b35692f905ec008bd7cf174ffedb3c5f1f3f1f",
+      "smart_terminal_executor.py": "9d8e7afd0ada513caeec7c2083b8982eccd4d3dcb13b094cefedc27983a59bed",
       "smart_test_helpers.py": "b4619caa72d6281bbca1390ea50e46a06a5179e5f3e5eac768c7bf2c1cf577ed",
       "smart_total_integration_gate.py": "213b35772bc13925ea307a265449ba8a85a9f305c7eb4f5ed7846da562a7dea0",
       "smart_transaction_journal.py": "ae3c7e1156471b956ceeb630e7c11db8f2437a315f3a90b59cf4d8581d988667",
@@ -1289,24 +1298,24 @@
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "ca8099915a16b4351c1cedc7bc9e7ef8f95025ebfee21f4c13d66ba50c0d1e5f"
+    "fingerprint_sha256": "e785c30a5d6bbe66dd89cc4214745c9909d32e2bb040316a5da24d19b03e8dfd"
   },
   "regression": {
-    "tests": 1085,
+    "tests": 1089,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "aa753b4ca915fcebdcc9b8e422e15c3bcd61213a88dc96b561f0375f9daad828"
+    "sha256": "67365ea1ec821cceb2215809728830bfc9c51dc25c1c4ec909f1e4337fb0080d"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "575b166447f2d047f6f9054a36333befc83d8af7a4b1b213f9cf1407859ca52b",
-    "authority_sha256": "84e16362285aab7230d03a6e43ba680be46ee128b0c78d6b79d15c6e2fe289ee",
+    "file_sha256": "952627e4f6b90e8a0aab48392cae828dde134a9a1f2da29e3d41d0fcd09a559b",
+    "authority_sha256": "38e285a35122e1ad281320a548b80c1b177950900eec0567ea4d66d22f2fa8df",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "aa753b4ca915fcebdcc9b8e422e15c3bcd61213a88dc96b561f0375f9daad828",
-    "tests": 1085,
+    "junit_sha256": "67365ea1ec821cceb2215809728830bfc9c51dc25c1c4ec909f1e4337fb0080d",
+    "tests": 1089,
     "failures": 0,
     "errors": 0,
     "checks": {
@@ -1326,9 +1335,9 @@
   "runtime_guard": {
     "schema": "SMART_RUNTIME_GUARD_V2",
     "project_root": "/home/runner/work/SMART-MEGA/SMART-MEGA",
-    "canonical_python": "/opt/hostedtoolcache/Python/3.13.15/x64/bin/python3.13",
-    "current_python": "/opt/hostedtoolcache/Python/3.13.15/x64/bin/python3.13",
-    "python_version": "3.13.15",
+    "canonical_python": "/opt/hostedtoolcache/Python/3.13.16/x64/bin/python3.13",
+    "current_python": "/opt/hostedtoolcache/Python/3.13.16/x64/bin/python3.13",
+    "python_version": "3.13.16",
     "modules": {
       "numpy": {
         "ok": true,
@@ -1368,10 +1377,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "5e40a6e15461a632120bf83fba59f23c66df319fbfc126933c29123e0fe9167d",
-  "build_runtime_sha256": "b89fb28fdbaf9baf3100dd517401b1cd1497c57f6eb9776496fed6295f9c2cbe",
-  "build_functional_sha256": "37c76d0e549a689116e6e0670affa8b57ed6ca7e2f0bcf13a082e05a005019d6",
-  "build_total_integration_sha256": "8a3c0c25f21e9fa2f97ceca4839ab86a964c949b141cacf629ab40fc8b909303",
+  "build_orchestration_sha256": "b9481b9638c36cf89dc6af39de2925d64f178471d31802c9c221e69667f5cdb3",
+  "build_runtime_sha256": "dd78e1b7591ef979c26a8d543251af1647e6b56acd2820633943fbe7e590dffa",
+  "build_functional_sha256": "5214de72d93990055911e17d04aae18400f0434b04ddc378851a1fd1eaf99e5b",
+  "build_total_integration_sha256": "8c6660b7880b661c9eddbc172a0c7e82274593f18645b714d84d1cf2f3b7d534",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1437,5 +1446,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "76156346c6800cda925363c2586b65b4c414ecd753d75bcd3ebc7c63753d9b69"
+  "sha256": "564452ee89c261114237d64bc8cfd6b153ca18c0675732a3ff4446bc99901ebe"
 }
