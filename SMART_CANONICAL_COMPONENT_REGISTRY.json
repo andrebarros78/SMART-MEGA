@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "f41f9c4cf7489ded6b23a0555c8441e0e371e2c7cb59bd290c31f051971750ca",
+  "source_reachability_inventory_sha256": "b0b0505014abc5bd49c5ea53489e786cc5cf9bbacbf59ef326e06bc0c0820231",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 470,
+    "component_count": 471,
     "active": 95,
     "shadow": 1,
-    "diagnostic": 174,
+    "diagnostic": 175,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4398,13 +4398,14 @@
       "component_id": "smart_agent_handoff_runtime",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_agent_handoff_runtime.py",
-      "implementation_sha256": "77ff1bbb26ca5d5e9690316af4e4d9e9f6f504d1ee8ba1b1da6d8426348f6e7b",
+      "implementation_sha256": "d029ccdef69c4e706ee87e740266633c0c1a16b1ad3339971a3b220369f8aea7",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
         "smart_agent_runtime",
-        "test_smart_f06_agent_handoffs"
+        "test_smart_f06_agent_handoffs",
+        "test_smart_f09_sdk_llm_selective"
       ],
       "entrypoints": [
         "smart_github_certify",
@@ -4463,6 +4464,7 @@
         "test_smart_agent_runtime",
         "test_smart_architecture_hardening_20260905",
         "test_smart_f06_agent_handoffs",
+        "test_smart_f09_sdk_llm_selective",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_orchestration_guard_coverage_20260906",
         "test_smart_pre_freeze_causality",
@@ -8742,7 +8744,7 @@
       "component_id": "smart_total_integration_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_total_integration_gate.py",
-      "implementation_sha256": "9455db564337bcfe031b54505bfde38d1ec8b2e3e9bb5b653477a701e0533748",
+      "implementation_sha256": "bdb45da12125318c21854ee456490a989cd091a5e45a9f3745b90257810fa7b9",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8760,6 +8762,7 @@
         "smart_product_certification",
         "test_smart_f06_agent_handoffs",
         "test_smart_f07_skill_adapters",
+        "test_smart_f09_sdk_llm_selective",
         "test_smart_total_integration_gate"
       ],
       "entrypoints": [
@@ -10307,6 +10310,31 @@
       "producers": [
         "smart_canonical_component_registry",
         "smart_component_reachability"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_f09_sdk_llm_selective",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_f09_sdk_llm_selective.py",
+      "implementation_sha256": "3b94f4f4fc4977088ea0258afe9cb58acfa0605cbf040137573a504e367e7d42",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_agent_handoff_runtime",
+        "smart_agent_runtime",
+        "smart_total_integration_gate"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -12655,5 +12683,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "56e02cdbbc79572e9807f1865fe23fd40f3e4256e8cec902d1dd6c559d734174"
+  "registry_sha256": "720249992ae31e938947fb8e64a0b28521607d0ec92a1f1dfc784cbea412939a"
 }

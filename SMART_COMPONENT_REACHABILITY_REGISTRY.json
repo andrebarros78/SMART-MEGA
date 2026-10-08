@@ -47,15 +47,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "f41f9c4cf7489ded6b23a0555c8441e0e371e2c7cb59bd290c31f051971750ca",
+  "inventory_sha256": "b0b0505014abc5bd49c5ea53489e786cc5cf9bbacbf59ef326e06bc0c0820231",
   "summary": {
-    "python_components": 470,
+    "python_components": 471,
     "workflow_entrypoints": 6,
     "production_components": 95,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 148,
+    "test_components": 149,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4133,7 +4133,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
-        "test_smart_f06_agent_handoffs"
+        "test_smart_f06_agent_handoffs",
+        "test_smart_f09_sdk_llm_selective"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4143,7 +4144,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "77ff1bbb26ca5d5e9690316af4e4d9e9f6f504d1ee8ba1b1da6d8426348f6e7b"
+      "sha256": "d029ccdef69c4e706ee87e740266633c0c1a16b1ad3339971a3b220369f8aea7"
     },
     {
       "component_id": "smart_agent_runtime",
@@ -4190,6 +4191,7 @@
         "test_smart_agent_runtime",
         "test_smart_architecture_hardening_20260905",
         "test_smart_f06_agent_handoffs",
+        "test_smart_f09_sdk_llm_selective",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_orchestration_guard_coverage_20260906",
         "test_smart_pre_freeze_causality",
@@ -8261,6 +8263,7 @@
         "smart_product_certification",
         "test_smart_f06_agent_handoffs",
         "test_smart_f07_skill_adapters",
+        "test_smart_f09_sdk_llm_selective",
         "test_smart_total_integration_gate"
       ],
       "reachable": true,
@@ -8273,7 +8276,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "9455db564337bcfe031b54505bfde38d1ec8b2e3e9bb5b653477a701e0533748"
+      "sha256": "bdb45da12125318c21854ee456490a989cd091a5e45a9f3745b90257810fa7b9"
     },
     {
       "component_id": "smart_transaction_journal",
@@ -9696,6 +9699,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "fa88c460f04cc2f3d1dea7bdc6b2b08fc77f85315504f6899260111607d735c8"
+    },
+    {
+      "component_id": "test_smart_f09_sdk_llm_selective",
+      "source_file": "test_smart_f09_sdk_llm_selective.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_agent_handoff_runtime",
+        "smart_agent_runtime",
+        "smart_total_integration_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "3b94f4f4fc4977088ea0258afe9cb58acfa0605cbf040137573a504e367e7d42"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
