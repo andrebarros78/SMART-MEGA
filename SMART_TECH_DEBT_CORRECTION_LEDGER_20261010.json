@@ -7,15 +7,13 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T17:21:12Z",
-  "mission_status": "ACTIVE",
+  "last_update_utc": "2026-10-08T18:30:54.112Z",
+  "mission_status": "CORRECTION_PROVEN",
   "current_phase": "F12",
-  "last_proven_phase": "F11",
-  "last_proven_head": "e0ec25117ad57cf8fac811cf2996524f0be7a9dd",
-  "open_deficiencies": [
-    "F12 final reconciliation and seal not yet executed"
-  ],
-  "next_required_action": "EXECUTE_F12_RECONCILIACAO_CONSOLIDACAO_SELO",
+  "last_proven_phase": "F12",
+  "last_proven_head": "0d1ba216ff461d6d91761296373d4334107957f6",
+  "open_deficiencies": [],
+  "next_required_action": "TECHNICAL_CORRECTION_SCOPE_SEALED__SCIENTIFIC_6_OF_6_UNPROVEN",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -259,8 +257,20 @@
     },
     "F12": {
       "name": "RECONCILIACAO_CONSOLIDACAO_SELO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "PHASE_PROVEN",
+      "certified_source_head": "552cbd65d22e727e443a561029c7ca6b64cf81dd",
+      "certification_commit": "0d1ba216ff461d6d91761296373d4334107957f6",
+      "final_proof_file": "SMART_TECH_DEBT_CORRECTION_FINAL_PROOF_20261010.json",
+      "final_proof_blob_sha": "e7562682671249e97c4e87118b327a5a1d0eae55",
+      "evidence": [
+        "main baseline a41b1540c9618551e4c2426adf6bf79237d05614 unchanged functional code during F12",
+        "github-only candidate commit 552cbd65d22e727e443a561029c7ca6b64cf81dd",
+        "same-source CI + certify 37822990022 success; 1134/1134 tests; JUnit blob dce05faa9a15de567ef6ec2d4fbacc740bc3cf9e",
+        "GitHub Operator 37822990198 success; Repository Integrity 37822990059 success",
+        "F01-F11 certifications reconciled with IANE, ledger, F10/F11 gates and registries",
+        "Scientific 6/6 NOT PROVEN; no candidate with P06 holdout Brier regression promoted",
+        "Residual non-operator import SCC documented, not concealed"
+      ]
     }
   },
   "f00_checks": {
@@ -285,5 +295,13 @@
   "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c",
   "f09_baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
   "f10_baseline_head": "5121b99b733cb32c483274efec430033bcd493b4",
-  "f11_baseline_head": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77"
+  "f11_baseline_head": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
+  "current_head": "0d1ba216ff461d6d91761296373d4334107957f6",
+  "known_nonblocking_observations": [
+    "Residual 12-module import SCC outside F02 operator/pipeline cycle"
+  ],
+  "scientific_open_deficiencies": [
+    "UNPROVEN_PROSPECTIVE_6_OF_6; P06 candidate Brier worse than uniform and rejected"
+  ],
+  "scientific_status": "UNPROVEN_PROSPECTIVE_6_OF_6"
 }
