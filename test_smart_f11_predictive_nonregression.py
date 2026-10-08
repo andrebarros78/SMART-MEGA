@@ -23,7 +23,8 @@ def _historical():
 
 
 def test_f11_real_baseline_vs_candidate_and_explicit_scientific_boundary():
-    result = evaluate(ROOT)
+    # F11 remains an immutable historical benchmark. F12 owns current-code review.
+    result = evaluate(ROOT, source_hashes=BASELINE_SOURCE_SHA256)
     assert result["status"] == "PASS", result["errors"]
     assert all(result["checks"].values())
     assert result["comparison"]["p10"]["total_delta"] == 0
@@ -41,7 +42,7 @@ def test_f11_real_baseline_vs_candidate_and_explicit_scientific_boundary():
 
 def test_f11_certified_report_recomputes_bitwise():
     persisted = json.loads((ROOT / "SMART_F11_PREDICTIVE_NONREGRESSION.json").read_text(encoding="utf-8"))
-    assert persisted == evaluate(ROOT)
+    assert persisted == evaluate(ROOT, source_hashes=BASELINE_SOURCE_SHA256)
 
 
 def test_f11_tampered_material_scoring_hash_fails_closed():
