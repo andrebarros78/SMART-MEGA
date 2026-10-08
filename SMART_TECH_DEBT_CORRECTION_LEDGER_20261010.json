@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T14:10:10Z",
+  "last_update_utc": "2026-10-08T14:22:00Z",
   "mission_status": "ACTIVE",
   "current_phase": "F06",
   "last_proven_phase": "F05",
@@ -21,7 +21,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F06_OPERATIONAL_HANDOFF_CONSUMPTION",
+  "next_required_action": "RETEST_F06_EXACT_ROUTE_CONSUMPTION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -157,7 +157,9 @@
         "F06 introduces explicit handoff artifact schema, artifact hash, production sequence, consumption receipt, consumption result and evidence-only decision effect",
         "unconsumed or multiply consumed handoffs fail closed",
         "agent handoffs explicitly forbid predictive-weight and freeze authority",
-        "deterministic role executors remain non-LLM and non-autonomous"
+        "deterministic role executors remain non-LLM and non-autonomous",
+        "initial F06 candidate 4a196421 failed regression because consumer loop attempted every producer handoff when producer had multiple destinations",
+        "root cause fixed by consuming only handoffs whose explicit consumer equals current executor"
       ]
     },
     "F07": {

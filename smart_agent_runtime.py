@@ -238,6 +238,8 @@ class SmartAgentRuntime:
             for producer, handoffs in produced_by_agent.items():
                 if name in AGENTS[producer]["handoff_to"]:
                     for handoff in handoffs:
+                        if handoff.get("consumer") != name:
+                            continue
                         receipt = consume_handoff(
                             handoff,
                             consumer=name,
