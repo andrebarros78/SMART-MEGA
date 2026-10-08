@@ -1,0 +1,157 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "REVIEW",
+  "idempotency_key": "84eb5d47c67cabfca3206bcdef496ffdda04d54c1a60bf914f09c4b56f712fff",
+  "target": 3067,
+  "result": {
+    "status": "REVIEWED",
+    "review": {
+      "schema": "SMART_POST_RESULT_REVIEW_1",
+      "status": "POST_RESULT_REVIEW_COMPLETE",
+      "target_contest": 3067,
+      "next_target": 3068,
+      "created_utc": "2026-10-08T20:22:36.589204+00:00",
+      "source": "CANONICAL_ADJUDICATED_3067_POST_RESULT_SEQUENCE",
+      "canonical_history": {
+        "file": "Mega-Sena.xlsx",
+        "sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+        "history_max": 3067,
+        "row_count": 3067
+      },
+      "adjudication": {
+        "actual_numbers": [
+          1,
+          4,
+          17,
+          33,
+          41,
+          52
+        ],
+        "frozen_card": [
+          10,
+          11,
+          27,
+          35,
+          38,
+          53
+        ],
+        "hits": 0,
+        "post_result_report_file": "SMART_POST_RESULT_REPORT_3067.json",
+        "post_result_report_sha256": "3635c90a295b56e4479b41bb2c8c1af97f56cfc04172c70e4a744de0beea09bb",
+        "ledger_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+        "ledger_sha256": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
+        "event_counts": {
+          "FREEZE": 1,
+          "ADJUDICATION": 1,
+          "LEARNING_UPDATE": 1,
+          "SEQUENTIAL_PROOF": 1
+        },
+        "source_provenance": "CAIXA_PUBLISHED_OBSERVED_RESULT;NO_DIRECT_API_INGEST_PROOF"
+      },
+      "learning": {
+        "source_freeze_preserved": true,
+        "state_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_STATE_3067_LEARNED.json",
+        "state_sha256": "d34024073373f3c9a320e4707c94d806506c376795618ab43c58038a62ec19c3",
+        "canonical_history_advance_file": "SMART_CANONICAL_HISTORY_ADVANCE_3067.json",
+        "canonical_history_advance_sha256": "973e97b9f4bdcf09f6250ee51996816103f9407d5fae864fee1afe9cabf714bd",
+        "sequence_sha256": "302e0ebae7917976ae8366a738222fd4cd284d89c9320c4df2657eac3f0af92f",
+        "after_adjudication": true,
+        "retrospective_forecast_generated": false
+      },
+      "learning_policy": {
+        "prospective_nonregression_required_for_weight_promotion": true,
+        "automatic_weight_promotion_authorized_by_this_review": false,
+        "future_information_used_for_3067_prediction": false
+      },
+      "operator_next_action": "HOLD_THEN_AUTHORIZE_NEXT_CYCLE_3068",
+      "stop_required": true,
+      "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+      "result_used_for_prediction": false,
+      "no_future_leakage": true,
+      "reviewed_utc": "2026-10-08T20:22:36.597960+00:00",
+      "parecer": "3067_ADJUDICATED_LEARNED_HISTORY_ADVANCED;NO_SIX_OF_SIX;3068_REQUIRES_NEW_PRE_DRAW_GENERATION",
+      "sha256": "84013cc81070c005b8bf92f249c52b12af0d77b419c9a87db322ffb5e23b0a41"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "REVIEWED",
+      "revision": 23,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3067,
+      "completed_contest": 3066,
+      "previous_state": "ADJUDICATED",
+      "transition": "ADJUDICATED_TO_REVIEWED",
+      "transition_actor": "operator_review_complete",
+      "transition_utc": "2026-10-08T20:23:57.328072+00:00",
+      "previous_lifecycle_sha256": "8a316ce5a11458fc0e6b32d51f6a29006849def695f262a546d9a78d50df2b99",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "09da3eded9b6c70d786b94863a894c2a9006e7d438c377f503db3c434e6b00be"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3066.json",
+          "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3067:operator-3067-e305750ba8e6-20261006T010444976861Z",
+        "reserved_authority_sha256": "65f332b4f6bf02c812e13abcbe528c115cea47496dc51ecc7ebf159e40cddef6",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "d45911ca74f1e2d481bbc8a6ba2ddd93c502db022a9fc5b7e6bf556ea911269f",
+          "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3062/operator-3062-dce4e8ec9118-20260924T180535590187Z/ARCHIVE_MANIFEST.json",
+          "sha256": "cab7010147cba9a9a9dc59bc921ac268459e8dfceade5203da94c56c7c905142"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3063,
+          "through_target": 3066,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+              "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+              "target_contest": 3063
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+              "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+              "target_contest": 3064
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+              "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+              "target_contest": 3065
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+              "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+              "target_contest": 3066
+            }
+          ],
+          "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+          "official_result_batch": null
+        }
+      },
+      "sha256": "777b1171fedca4f702459b8f70f9208d0e9459fd484658ab60853f60c786e11d"
+    }
+  }
+}
