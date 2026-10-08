@@ -306,8 +306,10 @@ def _consume_reserved_next_cycle_authority(root: Path, target: int, transaction_
         "consumption_transaction_id": str(transaction_id),
         "prepared_epoch_id": str(prepared_epoch_id),
         "active_epoch_sha256_at_consumption": active["sha256"],
-        "authority_sha256_beftest {cutoff}; observed max={ordered[-1]}")
-    return {"target_contest": int(target), "cutoff_contest": cutoff, "history_max": ordered[-1]}
+        "authority_sha256_before_consumption": reservation_sha,
+    })
+    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=reservation_sha)
+
 
 
 def validate_target_against_history(data_path: str | Path, target: int) -> dict[str, Any]:
