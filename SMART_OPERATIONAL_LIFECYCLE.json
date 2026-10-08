@@ -1,16 +1,16 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "AUTHORIZED",
-  "revision": 29,
+  "state": "PREPARED",
+  "revision": 31,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
   "target_contest": 3068,
   "completed_contest": 3067,
-  "previous_state": "HOLD",
-  "transition": "HOLD_TO_AUTHORIZED",
-  "transition_actor": "operator_authorize_next_cycle",
-  "transition_utc": "2026-10-08T22:25:16.606778+00:00",
-  "previous_lifecycle_sha256": "21c15c68c98168ce500a1b6f6bc7367c306aa8ee34eb5b586a4d8dcf944b6705",
+  "previous_state": "PREPARING",
+  "transition": "PREPARING_TO_PREPARED",
+  "transition_actor": "operator_prepare_complete",
+  "transition_utc": "2026-10-08T22:26:52.818549+00:00",
+  "previous_lifecycle_sha256": "812373398a00bb8abe2a4b68e76b544db5299021ce680e9d7b0f96062e0f3167",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
@@ -35,12 +35,12 @@
       "status": "CONSUMED_FOR_PREPARE",
       "target_contest": 3060
     },
-    "prepare_transaction_id": "PREPARE:3068:operator-3068-2297cd4ad693-20261008T203258221485Z",
-    "reserved_authority_sha256": "a3d6a4e5aca28167635039298889d61f3bbacd10ceffbbad0902d697e98a9b5e",
+    "prepare_transaction_id": "PREPARE:3068:operator-3068-acc6a34c9e27-20261008T222652499219Z",
+    "reserved_authority_sha256": "1c37bea8eb30ac71019c8da88a3bda70ec8deec2cbe38a47b724459683d15a10",
     "active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
-      "sha256": "cfda1271082204df48c2cfe020e7192425f2ca7303995bfddc3ff4918ec8a21b",
-      "epoch_id": "operator-3068-2297cd4ad693-20261008T203258221485Z"
+      "sha256": "791b63093914ca8d0180378dba857f4e1323ca1682f83ac85a3fd47606ef0828",
+      "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z"
     },
     "rollover_archive": {
       "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
@@ -81,5 +81,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "7e9f20ea4a9714d51d210fdeb32d51b75266f6a1d86aadfe9c6e4c775762b44d"
+  "sha256": "34593512a4727a7e32e3b74f450493a117beaffd4522b5a26307fdd0bd5e340f"
 }
