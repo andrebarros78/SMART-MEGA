@@ -1,0 +1,380 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "ADJUDICATE",
+  "idempotency_key": "71bc9eb2e87a05eb7e06b081893c84fbc005fc25f3a6c12ec772c9b9692d3cbb",
+  "target": 3067,
+  "result": {
+    "target_contest": 3067,
+    "actual_numbers": [
+      1,
+      4,
+      17,
+      33,
+      41,
+      52
+    ],
+    "champion_hits": 0,
+    "challenger_hits": 0,
+    "e_value_after": 1.0416666666666667,
+    "ledger_sha256": "4d9c64681580ca421c9fa3dcaa8293d7c811ae68cec2ed23623930945945079d",
+    "attribution_sha256": "4f0dd302c35dde40b86230af21c677578fbe2ad4aceddd54a3e376f6add345ae",
+    "marginal_utility_sha256": "128a997f8df735d36c6b690a199346a077483fdb3aa9593611351fb2354caf11",
+    "interaction_sha256": "c80762d8c780f5ef6fadbc254a365c21442f8964cfc41f20ef39ebc564cf2a16",
+    "multi_challenger_sha256": "f22b035d3fc5a85a33badfebe90bb1f46b70070621d8c3dc9ecd135f9de052e9",
+    "meta_governor_sha256": "0c178da2c352efa0977433c11a94ae294b5c42e0dc8de76d7719a56b782a5f96",
+    "rank_score_calibration_evaluation_sha256": "b7f941bbca21bca639efb8e09a333f0c950ffa6da63ca8a266450f026d416fc9",
+    "promotion": {
+      "schema": "SMART_EVIDENCE_ONLY_PROMOTION_AUTHORIZATION_1",
+      "decision": "KEEP_CHAMPION",
+      "authorized": false,
+      "production_switch_may_proceed": false,
+      "champion_remains_active": true,
+      "p13_eligible": false,
+      "p13_gate": {
+        "decision": "KEEP_CHAMPION",
+        "eligible": false,
+        "n": 1,
+        "challenger_hits": 0,
+        "champion_hits": 0,
+        "advantage_hits": 0,
+        "mean_hit_advantage": 0.0,
+        "cumulative_regret": 0,
+        "e_value": 1.0,
+        "inputs_validated": true,
+        "base_min_prospective_contests": 20,
+        "required_prospective_contests": 20,
+        "adaptive_sample_escalated": false,
+        "enough_contests": false,
+        "superior_to_champion": false,
+        "favorable_regret": false,
+        "sequential_evidence": false,
+        "blockers": [
+          "no_cumulative_superiority",
+          "regret_not_favorable",
+          "insufficient_adaptive_sample",
+          "insufficient_sequential_evidence"
+        ],
+        "reason": "prospective promotion conditions not met",
+        "candidate_fingerprint": "a20d1153e4e97698ec2329f3975b530ca1ae28637494bb44eae2c522c8d7d525",
+        "lineage_pair_count": 1,
+        "total_versioned_causal_pairs": 6,
+        "unversioned_causal_pairs_ignored": 4,
+        "discarded_prior_version_pairs": 5,
+        "lineage_e_value": 1.0,
+        "stored_global_e_value_trusted_for_promotion": false,
+        "lineage_reset_on_predictive_architecture_change": true,
+        "promotion_lineage_components": [
+          "engine",
+          "champion_engine",
+          "signal_agent",
+          "signal_quality",
+          "signal_weights",
+          "context_regime",
+          "redundancy_consensus",
+          "marginal_utility",
+          "contextual_meta_weights",
+          "rank_score_calibration",
+          "multi_challengers",
+          "meta_governor",
+          "bounded_online_learning",
+          "signal_interactions",
+          "signal_expansion_governance",
+          "learning_activation_gate",
+          "learning_activation_authority",
+          "ai_fine_tuning",
+          "data_quality_gate"
+        ]
+      },
+      "implementation_gate": {
+        "available": false
+      },
+      "independent_audit": {
+        "available": false
+      },
+      "global_integrity": {
+        "available": false,
+        "verified": false
+      },
+      "global_integrity_verified": false,
+      "known_material_deficiencies": [
+        "p13_not_eligible"
+      ],
+      "known_material_deficiency_count": 1,
+      "blockers": [
+        "p13_not_eligible"
+      ],
+      "reason": "evidence-only promotion requirements not met",
+      "policy": {
+        "schema": "SMART_EVIDENCE_ONLY_PROMOTION_POLICY_1",
+        "p13_statistical_eligibility_required": true,
+        "p14_independent_audit_pass_required": true,
+        "all_15_implementation_items_proven_required": true,
+        "implementation_gate_exact_contract_required": true,
+        "implementation_gate_freeze_allowed_required": true,
+        "current_global_integrity_proof_required": true,
+        "audit_report_self_hash_required": true,
+        "audit_promotion_authority_must_be_false": true,
+        "audit_independence_flag_required": true,
+        "audit_coverage_lines_and_branches_required": true,
+        "audit_hash_integrity_required": true,
+        "audit_deterministic_replay_required": true,
+        "audit_future_leakage_absent_required": true,
+        "audit_full_champion_comparison_required": true,
+        "p13_p14_metric_identity_required": true,
+        "known_material_deficiency_count_must_be_zero": true,
+        "missing_or_invalid_evidence_keeps_champion": true,
+        "manual_override_prohibited": true,
+        "historical_or_synthetic_evidence_cannot_authorize_real_promotion": true,
+        "production_switch_requires_explicit_p15_authorization": true,
+        "required_audit_checks": [
+          "coverage_lines_and_branches",
+          "hash_integrity",
+          "deterministic_replay",
+          "future_leakage_absent",
+          "full_champion_comparison",
+          "promotion_lineage_recomputed",
+          "independence_no_forbidden_dependencies",
+          "independent_freeze_decision_oracle"
+        ],
+        "sha256": "7c898823b70b67e1e3dc5f63506ef9a35e5d6bbcbb321cb6d1b0d726a3d1ed96"
+      },
+      "sha256": "165f6782a0b89f5ee7c1982e27fc433a56da15a9a0dcf7c2632ad9214a5dbcd0"
+    },
+    "post_result_report": {
+      "status": "EMITTED",
+      "report_file": "SMART_POST_RESULT_REPORT_3067.json",
+      "report_sha256": "3635c90a295b56e4479b41bb2c8c1af97f56cfc04172c70e4a744de0beea09bb",
+      "markdown_file": "SMART_POST_RESULT_REPORT_3067.md",
+      "markdown_sha256": "d385f25febac35f4898d99d9aee530dcccefde1b289ae80f1be73923ab2f0689",
+      "report": {
+        "schema": "SMART_POST_RESULT_REPORT_1",
+        "status": "PASS",
+        "contest_number": 3067,
+        "official_result": [
+          1,
+          4,
+          17,
+          33,
+          41,
+          52
+        ],
+        "generated_card": [
+          11,
+          38,
+          10,
+          27,
+          53,
+          35
+        ],
+        "hit_count": 0,
+        "matched_numbers": [],
+        "missed_result_numbers": [
+          1,
+          4,
+          17,
+          33,
+          41,
+          52
+        ],
+        "card_numbers_not_drawn": [
+          10,
+          11,
+          27,
+          35,
+          38,
+          53
+        ],
+        "champion_hits": 0,
+        "portfolio_adjudication": {
+          "portfolio_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+          "portfolio_sha256": "3cf3f89dded6a27a9c606717ddbff9b67ee668b60177c9a193990db25b676c70",
+          "portfolio_id": "21eaa34e0abc199be04cbb69",
+          "artifact_type": "SMART_PORTFOLIO_ARTIFACT",
+          "games": [
+            [
+              10,
+              11,
+              14,
+              35,
+              38,
+              48
+            ],
+            [
+              10,
+              30,
+              37,
+              38,
+              43,
+              46
+            ],
+            [
+              11,
+              27,
+              30,
+              35,
+              46,
+              53
+            ],
+            [
+              14,
+              27,
+              37,
+              43,
+              48,
+              53
+            ]
+          ],
+          "hits_per_game": [
+            0,
+            0,
+            0,
+            0
+          ],
+          "best_game_hits": 0,
+          "union_numbers": [
+            10,
+            11,
+            14,
+            27,
+            30,
+            35,
+            37,
+            38,
+            43,
+            46,
+            48,
+            53
+          ],
+          "union_hits": 0,
+          "number_exposure": {
+            "10": 2,
+            "11": 2,
+            "14": 2,
+            "35": 2,
+            "38": 2,
+            "48": 2,
+            "30": 2,
+            "37": 2,
+            "43": 2,
+            "46": 2,
+            "27": 2,
+            "53": 2
+          }
+        },
+        "process_audit": {
+          "freeze_artifact": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+          "freeze_sha256": "a12433d7c8fb80af3c64c4faa89af554f07e8a150ddec9bff44548ef8f25be9f",
+          "ledger": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+          "ledger_sha256": "4d9c64681580ca421c9fa3dcaa8293d7c811ae68cec2ed23623930945945079d",
+          "freeze_authority_present": true,
+          "reported_hits": null,
+          "recomputed_hits": 0,
+          "findings": []
+        },
+        "self_analysis": {
+          "summary": "Concurso 3067: 0/6 acertos. A análise separa desempenho observado, integridade do processo e recomendações de melhoria.",
+          "what_worked": [
+            "O cartão cobriu 0 das 6 dezenas sorteadas.",
+            "A comparação usa o cartão congelado, preservando previsão × resultado real e evitando reescrita retroativa."
+          ],
+          "errors_and_failures": [
+            "O cartão não cobriu 6 dezenas do resultado: 01, 04, 17, 33, 41, 52."
+          ],
+          "recommended_actions": [
+            "Executar atribuição causal por família e sinal para identificar contribuição correta, excesso de peso, atraso, ruído e redundância.",
+            "Comparar o comportamento com a janela histórica e com evidência prospectiva acumulada; não recalibrar pesos por um único concurso.",
+            "Registrar falsos positivos e falsos negativos por sinal e procurar recorrência antes de promover, penalizar ou neutralizar influência.",
+            "Validar qualquer ajuste em dados não usados na calibração e aplicar a regra medir antes -> alterar -> medir depois -> comparar.",
+            "Se uma mudança melhorar métrica local mas piorar resultado global, reverter/corrigir e retestar."
+          ],
+          "single_contest_weight_change_prohibited": true,
+          "oos_validation_required_for_material_changes": true
+        },
+        "source_fingerprint": "1018d8bd6548f23d04e653521b55a7e579ea35f64d3b40accc110ac59c028025",
+        "generated_utc": "2026-10-08T20:01:56.764674+00:00",
+        "sha256": "3e50cb356252cbda81fb90395af3511681ede92fa245c5eddfe944d66fd0e63a"
+      }
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "ADJUDICATED",
+      "revision": 22,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3067,
+      "completed_contest": 3066,
+      "previous_state": "FROZEN",
+      "transition": "FROZEN_TO_ADJUDICATED",
+      "transition_actor": "operator_adjudicate_complete",
+      "transition_utc": "2026-10-08T20:01:56.605524+00:00",
+      "previous_lifecycle_sha256": "87036a70c0366e6606d2e80281c01cd8f3fd7613370c3a27c8d8a96e921a7ad2",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "09da3eded9b6c70d786b94863a894c2a9006e7d438c377f503db3c434e6b00be"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3066.json",
+          "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3067:operator-3067-e305750ba8e6-20261006T010444976861Z",
+        "reserved_authority_sha256": "65f332b4f6bf02c812e13abcbe528c115cea47496dc51ecc7ebf159e40cddef6",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "d45911ca74f1e2d481bbc8a6ba2ddd93c502db022a9fc5b7e6bf556ea911269f",
+          "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3062/operator-3062-dce4e8ec9118-20260924T180535590187Z/ARCHIVE_MANIFEST.json",
+          "sha256": "cab7010147cba9a9a9dc59bc921ac268459e8dfceade5203da94c56c7c905142"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3063,
+          "through_target": 3066,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+              "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+              "target_contest": 3063
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+              "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+              "target_contest": 3064
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+              "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+              "target_contest": 3065
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+              "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+              "target_contest": 3066
+            }
+          ],
+          "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+          "official_result_batch": null
+        }
+      },
+      "sha256": "8a316ce5a11458fc0e6b32d51f6a29006849def695f262a546d9a78d50df2b99"
+    }
+  }
+}

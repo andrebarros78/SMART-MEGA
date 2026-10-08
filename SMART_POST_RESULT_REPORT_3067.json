@@ -1,0 +1,148 @@
+{
+  "schema": "SMART_POST_RESULT_REPORT_1",
+  "status": "PASS",
+  "contest_number": 3067,
+  "official_result": [
+    1,
+    4,
+    17,
+    33,
+    41,
+    52
+  ],
+  "generated_card": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "hit_count": 0,
+  "matched_numbers": [],
+  "missed_result_numbers": [
+    1,
+    4,
+    17,
+    33,
+    41,
+    52
+  ],
+  "card_numbers_not_drawn": [
+    10,
+    11,
+    27,
+    35,
+    38,
+    53
+  ],
+  "champion_hits": 0,
+  "portfolio_adjudication": {
+    "portfolio_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+    "portfolio_sha256": "3cf3f89dded6a27a9c606717ddbff9b67ee668b60177c9a193990db25b676c70",
+    "portfolio_id": "21eaa34e0abc199be04cbb69",
+    "artifact_type": "SMART_PORTFOLIO_ARTIFACT",
+    "games": [
+      [
+        10,
+        11,
+        14,
+        35,
+        38,
+        48
+      ],
+      [
+        10,
+        30,
+        37,
+        38,
+        43,
+        46
+      ],
+      [
+        11,
+        27,
+        30,
+        35,
+        46,
+        53
+      ],
+      [
+        14,
+        27,
+        37,
+        43,
+        48,
+        53
+      ]
+    ],
+    "hits_per_game": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "best_game_hits": 0,
+    "union_numbers": [
+      10,
+      11,
+      14,
+      27,
+      30,
+      35,
+      37,
+      38,
+      43,
+      46,
+      48,
+      53
+    ],
+    "union_hits": 0,
+    "number_exposure": {
+      "10": 2,
+      "11": 2,
+      "14": 2,
+      "35": 2,
+      "38": 2,
+      "48": 2,
+      "30": 2,
+      "37": 2,
+      "43": 2,
+      "46": 2,
+      "27": 2,
+      "53": 2
+    }
+  },
+  "process_audit": {
+    "freeze_artifact": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+    "freeze_sha256": "a12433d7c8fb80af3c64c4faa89af554f07e8a150ddec9bff44548ef8f25be9f",
+    "ledger": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "4d9c64681580ca421c9fa3dcaa8293d7c811ae68cec2ed23623930945945079d",
+    "freeze_authority_present": true,
+    "reported_hits": null,
+    "recomputed_hits": 0,
+    "findings": []
+  },
+  "self_analysis": {
+    "summary": "Concurso 3067: 0/6 acertos. A análise separa desempenho observado, integridade do processo e recomendações de melhoria.",
+    "what_worked": [
+      "O cartão cobriu 0 das 6 dezenas sorteadas.",
+      "A comparação usa o cartão congelado, preservando previsão × resultado real e evitando reescrita retroativa."
+    ],
+    "errors_and_failures": [
+      "O cartão não cobriu 6 dezenas do resultado: 01, 04, 17, 33, 41, 52."
+    ],
+    "recommended_actions": [
+      "Executar atribuição causal por família e sinal para identificar contribuição correta, excesso de peso, atraso, ruído e redundância.",
+      "Comparar o comportamento com a janela histórica e com evidência prospectiva acumulada; não recalibrar pesos por um único concurso.",
+      "Registrar falsos positivos e falsos negativos por sinal e procurar recorrência antes de promover, penalizar ou neutralizar influência.",
+      "Validar qualquer ajuste em dados não usados na calibração e aplicar a regra medir antes -> alterar -> medir depois -> comparar.",
+      "Se uma mudança melhorar métrica local mas piorar resultado global, reverter/corrigir e retestar."
+    ],
+    "single_contest_weight_change_prohibited": true,
+    "oos_validation_required_for_material_changes": true
+  },
+  "source_fingerprint": "1018d8bd6548f23d04e653521b55a7e579ea35f64d3b40accc110ac59c028025",
+  "generated_utc": "2026-10-08T20:01:56.764674+00:00",
+  "sha256": "3e50cb356252cbda81fb90395af3511681ede92fa245c5eddfe944d66fd0e63a"
+}
