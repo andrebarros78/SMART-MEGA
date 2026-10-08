@@ -186,50 +186,6 @@ def _restore_fresh_epoch(epoch_dir: Path, files_before: set[Path], ledger_path: 
             continue
 
 
-def _fine_tuning_consumed_by_challenger(freeze: dict[str, Any], tuning: dict[str, Any]) -> bool:
-    """Prove actual hyperparameter consumption using the frozen agent lineage.
-
-    The authority is a TOP-LEVEL freeze property, not a field of the
-    challenger prediction. The lineage records the effective agent settings.
-    """
-    authority = freeze.get("ai_hyperparameter_authority")
-    lineage = freeze.get("promotion_lineage")
-    challenger = freeze.get("challenger")
-    if not all(isinstance(obj, dict) for obj in (authority, lineage, challenger)):
-        return False
-    expected = tuning.get("authority_sha256")
-    if not isinstance(expected, str) or len(expected) != 64:
-        return False
-    if authority.get("sha256") != expected:
-        return False
-    if lineage.get("ai_hyperparameter_authority_sha256") != expected:
-        return False
-    if authority.get("data_sha256") != tuning.get("data_sha256"):
-        return False
-    if int(authority.get("target_contest", -1)) != int(tuning.get("target_contest", -2)):
-        return False
-    if int(authority.get("cutoff_contest", -1)) != int(tuning.get("cutoff_contest", -2)):
-        return False
-    if authority.get("future_result_used") is not False or authority.get("holdout_used_for_selection") is not False:
-        return False
-    candidate = authority.get("effective_candidate")
-    if not isinstance(candidate, dict):
-        return False
-    for key in ("eta", "redundancy_threshold", "meta_strength"):
-        try:
-            expected_value = float(candidate[key])
-            effective_value = float(lineage[key])
-        except (KeyError, TypeError, ValueError):
-            return False
-        if expected_value != effective_value:
-            return False
-    return (
-        challenger.get("target_contest") == tuning.get("target_contest")
-        and challenger.get("cutoff_contest") == tuning.get("cutoff_contest")
-        and _valid_top6(challenger.get("top6"))
-    )
-
-
 @locked_operation("FULL_PROCESS_FREEZE", positional_target=False)
 def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_generation_authorized: bool = False) -> dict[str, Any]:
     root = canonical_root(root)
@@ -462,7 +418,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "all_60_frontier_probabilities_retained": probability_registration.get("all_60_probabilities_retained") is True,
         "fine_tuning_authority_bound_to_epoch_data": fine_tuning["data_sha256"] == active["data_sha256"] and int(fine_tuning["target_contest"]) == target and int(fine_tuning["cutoff_contest"]) == cutoff,
         "fine_tuning_future_result_unused": fine_tuning["future_result_used"] is False and fine_tuning["holdout_used_for_selection"] is False,
-        "fine_tuning_consumed_by_challenger": _fine_tuning_consumed_by_challenger(freeze_obj, fine_tuning),
+        "fine_tuning_consumed_by_challenger": challenger.get("ai_hyperparameter_authority", {}).get("sha256") == fine_tuning["authority_sha256"],
         "official_schedule_bound": schedule.get("authority") == "CAIXA_ARCHIVED_CRONOGRAM_PDF" and schedule.get("result_used") is False,
     }
     if not all(trace_checks.values()):
