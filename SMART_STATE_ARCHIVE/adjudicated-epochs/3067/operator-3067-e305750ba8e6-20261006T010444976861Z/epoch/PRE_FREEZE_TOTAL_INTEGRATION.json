@@ -1,0 +1,4800 @@
+{
+  "schema": "SMART_TOTAL_INTEGRATION_GATE_V3",
+  "phase": "PRE_FREEZE",
+  "status": "PASS",
+  "health": "HEALTHY",
+  "service_model": "BATCH_EXECUTION_WITH_PERSISTENT_CANONICAL_ARTIFACTS",
+  "gates": {
+    "G1_ROLE_EXECUTORS": {
+      "nine_executed": true,
+      "all_native_probes_pass": true,
+      "handoffs_acknowledged": true
+    },
+    "G2_CAPABILITY_BINDINGS": {
+      "forty_one_registered": true,
+      "thirty_seven_native_invocations": true,
+      "four_quarantined": true
+    },
+    "G3_FILES": {
+      "native_targets_present": true,
+      "native_targets_nonempty": true
+    },
+    "G4_RUNTIME": {
+      "agent_runtime_pass": true,
+      "skill_runtime_pass": true,
+      "functional_gate_pass": true
+    },
+    "G5_INTEGRATION": {
+      "phase_consistent": true,
+      "every_alias_bound_to_executed_owner": true,
+      "all_handoffs_consumed": true
+    },
+    "G6_FUNCTIONAL_PATH": {
+      "each_pertinent_invoked": true,
+      "nonpertinent_not_invoked": true
+    },
+    "G7_STATE_SAFETY": {
+      "agent_probe_read_only": true,
+      "skill_probe_read_only": true,
+      "freeze_authority_reserved_for_operator": true
+    },
+    "G8_SECURITY_STATE": {
+      "external_sources_quarantined": true,
+      "canonical_state_unchanged": true
+    },
+    "G9_SEMANTIC_TRUTH": {
+      "agents_not_misrepresented_as_llm": true,
+      "skills_not_misrepresented_as_direct_execution": true,
+      "external_sources_remain_quarantined": true
+    }
+  },
+  "agent_inventory": [
+    {
+      "name": "quarantine_curator",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "quarantine_manifest_integrity",
+      "probe_result": {
+        "probe_id": "quarantine_manifest_integrity",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "items": 21,
+        "invalid_items": [],
+        "source_payload_required_at_runtime": false,
+        "optional_source_payload_present": false,
+        "external_code_executed": false,
+        "pass": true
+      },
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ]
+    },
+    {
+      "name": "research_scout",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "research_registry_read_validation",
+      "probe_result": {
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "documents": [
+          "SMART_HYPOTHESIS_REGISTRY.json",
+          "SMART_EXPERIMENT_LEDGER.json"
+        ],
+        "hashes": [
+          "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a",
+          "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        ],
+        "pass": true
+      },
+      "consumed_handoffs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        }
+      ]
+    },
+    {
+      "name": "data_guardian",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "canonical_draw_quality_audit",
+      "probe_result": {
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "data_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+        "target_contest": 3067,
+        "status": "PASS",
+        "rows": 3066,
+        "contest_max": 3066,
+        "checks": {
+          "required_columns": true,
+          "no_nulls": true,
+          "unique_contests": true,
+          "strictly_increasing_contests": true,
+          "contiguous_contests": true,
+          "integer_values": true,
+          "valid_six_unique_numbers_1_to_60": true,
+          "cutoff_respected": true
+        },
+        "pass": true
+      },
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ]
+    },
+    {
+      "name": "null_model_cartographer",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "synthetic_cartography_execution",
+      "probe_result": {
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "descriptor_count": 14,
+        "regime_method": "ruptures.Binseg(l2)",
+        "regime_diagnostic_only": true,
+        "pass": true
+      },
+      "consumed_handoffs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ]
+    },
+    {
+      "name": "falsification_auditor",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "synthetic_falsification_execution",
+      "probe_result": {
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "cusum": 1.064642860778754,
+        "holm_adjusted": [
+          0.03,
+          0.4,
+          0.5
+        ],
+        "pass": true
+      },
+      "consumed_handoffs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        },
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ]
+    },
+    {
+      "name": "learning_calibration_governor",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "probe_result": {
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "weights_changed": true,
+        "update_after_result_only": true,
+        "probability_sum": 6.0,
+        "brier_delta": 0.0,
+        "calibration_mode": "SHRUNK_ISOTONIC",
+        "pass": true
+      },
+      "consumed_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "produced_handoffs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ]
+    },
+    {
+      "name": "robustness_red_team",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "red_team_safety_execution",
+      "probe_result": {
+        "probe_id": "red_team_safety_execution",
+        "executed_functions": [
+          "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+          "smart_continuous_red_team.scenario_false_signal_and_recovery"
+        ],
+        "corrupt_input_pass": true,
+        "false_signal_recovery_pass": true,
+        "pass": true
+      },
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "robustness_red_team->mission_governor:4c1fc91cf914952b",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "4c1fc91cf914952b9cc02694e57d3d260f7e7bd9a452e34d0657932a67922f37",
+          "probe_id": "red_team_safety_execution"
+        }
+      ]
+    },
+    {
+      "name": "combinatorial_solver",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "or_tools_portfolio_execution",
+      "probe_result": {
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "solver_status": "OPTIMAL",
+        "games": [
+          [
+            1,
+            2,
+            3,
+            4,
+            5,
+            6
+          ],
+          [
+            1,
+            2,
+            3,
+            4,
+            7,
+            8
+          ]
+        ],
+        "pairwise_overlap": 4,
+        "pass": true
+      },
+      "consumed_handoffs": [],
+      "produced_handoffs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ]
+    },
+    {
+      "name": "mission_governor",
+      "runtime": "DETERMINISTIC_ROLE_EXECUTOR",
+      "autonomous_ai_agent": false,
+      "llm_model": false,
+      "prompt_driven": false,
+      "probe_id": "canonical_mission_status_resolution",
+      "probe_result": {
+        "probe_id": "canonical_mission_status_resolution",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "mission_status": "MISSION_ACTIVE",
+        "terminal_6of6_proven": false,
+        "pass": true
+      },
+      "consumed_handoffs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        },
+        {
+          "handoff_id": "robustness_red_team->mission_governor:4c1fc91cf914952b",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "4c1fc91cf914952b9cc02694e57d3d260f7e7bd9a452e34d0657932a67922f37",
+          "probe_id": "red_team_safety_execution"
+        },
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "produced_handoffs": []
+    }
+  ],
+  "skill_inventory": [
+    {
+      "capability": "bridging-online-offline-rl",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "quarantine_curator",
+      "realization": "SOURCE_ONLY_QUARANTINE_CURATED",
+      "native_targets": [],
+      "probe_id": "quarantine_manifest_integrity",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json",
+          "sha256": "ce7e6c1b474acbcb3934794cfb78b62e5ad8f1524050ea0b9fac0dd5714a9ec1"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "pertinent": false,
+      "callable": false,
+      "execution_mode": "SOURCE_ONLY_QUARANTINE",
+      "alias_invocation": null,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "growth-experimenter",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "quarantine_curator",
+      "realization": "SOURCE_ONLY_QUARANTINE_CURATED",
+      "native_targets": [],
+      "probe_id": "quarantine_manifest_integrity",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json",
+          "sha256": "ce7e6c1b474acbcb3934794cfb78b62e5ad8f1524050ea0b9fac0dd5714a9ec1"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "pertinent": false,
+      "callable": false,
+      "execution_mode": "SOURCE_ONLY_QUARANTINE",
+      "alias_invocation": null,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "kaggle-learner",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "quarantine_curator",
+      "realization": "SOURCE_ONLY_QUARANTINE_CURATED",
+      "native_targets": [],
+      "probe_id": "quarantine_manifest_integrity",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json",
+          "sha256": "ce7e6c1b474acbcb3934794cfb78b62e5ad8f1524050ea0b9fac0dd5714a9ec1"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "pertinent": false,
+      "callable": false,
+      "execution_mode": "SOURCE_ONLY_QUARANTINE",
+      "alias_invocation": null,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "visiontrim-unified-vision-token",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "quarantine_curator",
+      "realization": "SOURCE_ONLY_QUARANTINE_CURATED",
+      "native_targets": [],
+      "probe_id": "quarantine_manifest_integrity",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json",
+          "sha256": "ce7e6c1b474acbcb3934794cfb78b62e5ad8f1524050ea0b9fac0dd5714a9ec1"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "quarantine_curator->research_scout:4f0fe88d1b306596",
+          "producer": "quarantine_curator",
+          "consumer": "research_scout",
+          "payload_sha256": "4f0fe88d1b306596e49b4d62ca75e34a2a2959be3ca27c9e2b1b42145c6bca1f",
+          "probe_id": "quarantine_manifest_integrity"
+        }
+      ],
+      "pertinent": false,
+      "callable": false,
+      "execution_mode": "SOURCE_ONLY_QUARANTINE",
+      "alias_invocation": null,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "SOURCE_REFERENCE_ONLY",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "dianoia",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "research_scout",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "dianoia",
+        "agent_owner": "research_scout",
+        "lane": "multi_expert_research",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "native_targets": [
+          {
+            "path": "SMART_HYPOTHESIS_REGISTRY.json",
+            "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+          },
+          {
+            "path": "SMART_EXPERIMENT_LEDGER.json",
+            "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "66b33867e574c14f84c9f5f2b41c2c77e3047d535c1e672c8e434de9bc8b9e70"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "thinktank-me-multi-expert-framework-middle",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "research_scout",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "thinktank-me-multi-expert-framework-middle",
+        "agent_owner": "research_scout",
+        "lane": "multi_expert_research",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "native_targets": [
+          {
+            "path": "SMART_HYPOTHESIS_REGISTRY.json",
+            "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+          },
+          {
+            "path": "SMART_EXPERIMENT_LEDGER.json",
+            "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "fe71365ddb4bd9575ee51f2fcad488518db0c41a321ca27042a2d4532abdb2f8"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "ml-engineer",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "research_scout",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "ml-engineer",
+        "agent_owner": "research_scout",
+        "lane": "multi_expert_research",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "native_targets": [
+          {
+            "path": "SMART_HYPOTHESIS_REGISTRY.json",
+            "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+          },
+          {
+            "path": "SMART_EXPERIMENT_LEDGER.json",
+            "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "d1900bba79848ff2503d83ca1c3b5e2e4980d8b8bc061682f8170fa3a5a3010a"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "pymc",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "research_scout",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "SMART_HYPOTHESIS_REGISTRY.json",
+        "SMART_EXPERIMENT_LEDGER.json"
+      ],
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "research_scout->falsification_auditor:4349f1358151d823",
+          "producer": "research_scout",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "4349f1358151d82348428b348e0836d607b28afaf867d555b08c2fc254f3e5c9",
+          "probe_id": "research_registry_read_validation"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "pymc",
+        "agent_owner": "research_scout",
+        "lane": "multi_expert_research",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "research_registry_read_validation",
+        "executed_functions": [
+          "json.loads"
+        ],
+        "native_targets": [
+          {
+            "path": "SMART_HYPOTHESIS_REGISTRY.json",
+            "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+          },
+          {
+            "path": "SMART_EXPERIMENT_LEDGER.json",
+            "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "6f5cedc8515e173abb7ae526d6170c8e9474df22cc2a3fed8cdf5ccb51059041"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "openai-analyze-data-quality",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "data_guardian",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+          "sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "openai-analyze-data-quality",
+        "agent_owner": "data_guardian",
+        "lane": "data_quality_and_contracts",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_data_quality_gate.py",
+            "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          },
+          {
+            "path": "SMART_DATA_CONTRACT.md",
+            "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "a10ac09c488bdb44a372f63f5fbcbf4e84af0efb616153a4e32daeaba69afeab"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "openai-validate-data",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "data_guardian",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+          "sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "openai-validate-data",
+        "agent_owner": "data_guardian",
+        "lane": "data_quality_and_contracts",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_data_quality_gate.py",
+            "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          },
+          {
+            "path": "SMART_DATA_CONTRACT.md",
+            "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "55ee8c005e3db65cf1c693d8d52abeb2b2c2ccacaaf92eb16b4cfdfec9991a31"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "pandera-data-contracts",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "data_guardian",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+          "sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "pandera-data-contracts",
+        "agent_owner": "data_guardian",
+        "lane": "data_quality_and_contracts",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_data_quality_gate.py",
+            "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          },
+          {
+            "path": "SMART_DATA_CONTRACT.md",
+            "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "d5f01685df6e45ead4ac30915320691e4b9aa5be11ea57a1641d06a214f4c7d7"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "data-analysis",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "data_guardian",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_data_quality_gate.py",
+        "smart_validation_gate.py",
+        "SMART_DATA_CONTRACT.md"
+      ],
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/Mega-Sena_cutoff_3066.xlsx",
+          "sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "data_guardian->null_model_cartographer:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "null_model_cartographer",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        },
+        {
+          "handoff_id": "data_guardian->falsification_auditor:d2a6b1e2e9b06565",
+          "producer": "data_guardian",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "d2a6b1e2e9b06565f8a5e02f861286400f3bdb5a2ae2649b76b0102db54f1f30",
+          "probe_id": "canonical_draw_quality_audit"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "data-analysis",
+        "agent_owner": "data_guardian",
+        "lane": "data_quality_and_contracts",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "canonical_draw_quality_audit",
+        "executed_functions": [
+          "smart_data_quality_gate.audit_draw_file"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_data_quality_gate.py",
+            "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          },
+          {
+            "path": "SMART_DATA_CONTRACT.md",
+            "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "b5333d880f09f196e2468f6a314afd5887d8547b1ef3f7283dcc5cbd5a2e83b4"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "aeon",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "null_model_cartographer",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "aeon",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "e2fd3c798a0fe7bf9bb38262440b2b36d1e49204fd86ca0f9301daa0878347d9"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "regime-detection",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "null_model_cartographer",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "regime-detection",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "da051cd29490396fd2c0775314d05dfd995b35690b4e831c8c6dca396b064425"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "time-series-forecasting",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "null_model_cartographer",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "time-series-forecasting",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "0b0e701f15a90030dc818fedf71fe13dc872ce19bd855df0a85011b4434daa23"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "networkx",
+      "origin": "NATIVE_SCIENTIFIC_LIBRARY",
+      "agent_owner": "null_model_cartographer",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "networkx",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "da8e31183f0a502f5956a2c7401e0fec00b6a3208794fd42381ba28c1a41d3f4"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "statsmodels",
+      "origin": "NATIVE_SCIENTIFIC_LIBRARY",
+      "agent_owner": "null_model_cartographer",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "statsmodels",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "5e44f136ebcefde4db67b6b9b4ecaa4cf2fbd69ad88c7b033c283d058064c3ca"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "ruptures",
+      "origin": "NATIVE_SCIENTIFIC_LIBRARY",
+      "agent_owner": "null_model_cartographer",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_randomness_cartography.py",
+        "smart_cartography_extended.py"
+      ],
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_1000.json",
+          "sha256": "abaa0f3701292ffe1d35082573249f3f3211d5555de21321347e9edf9847c132"
+        },
+        {
+          "path": "SMART_RANDOMNESS_ATLAS_EXTENDED.json",
+          "sha256": "0123ac7725871cf474ee9b4cdb90c61b2891469b4f36e666d2bf7e5c20dbb045"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "null_model_cartographer->falsification_auditor:33bf547c88f753f0",
+          "producer": "null_model_cartographer",
+          "consumer": "falsification_auditor",
+          "payload_sha256": "33bf547c88f753f072d73c48102e0c4a25f11c8a09252459cfc107840da4fd5c",
+          "probe_id": "synthetic_cartography_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "ruptures",
+        "agent_owner": "null_model_cartographer",
+        "lane": "time_series_regime_and_structure",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_cartography_execution",
+        "executed_functions": [
+          "smart_randomness_cartography.atlas_descriptors",
+          "smart_cartography_extended.regime_structure"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_randomness_cartography.py",
+            "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+          },
+          {
+            "path": "smart_cartography_extended.py",
+            "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "fde6bf7cfbda550514bf98e0701dfa1e6f1ceb28d9bfb6f8344308139a2f0320"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "experiment-design",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "falsification_auditor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "experiment-design",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "15835d080fb86a462fb9d4a9ff95a02a0c84f62fbfb174bd10cec72017609003"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "simulation",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "falsification_auditor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "simulation",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "1cca3b85509f070a2186449f268b851ce63f6db2d86ab36b2ac53229566dec29"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "statistical-analysis",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "falsification_auditor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "statistical-analysis",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "5293e5d8d994b614c47395b121f044dad1a0600ef472ee929e73acc9487c2e46"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "multiple-testing-fdr-statsmodels",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "falsification_auditor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "multiple-testing-fdr-statsmodels",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "b519e16f8d0cec4a7f0924578b058b367f1dfd38172b79b17c67acf34a1664ca"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "bayesian-workflow",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "falsification_auditor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "bayesian-workflow",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "a002d1dcc135c2d3a9e65e88d654ad0102115a210b76a8fde9c6ec6b055dc39f"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "machine-learning-model-validation",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "falsification_auditor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "machine-learning-model-validation",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "d15264b4d4b94b3f863d9b174e610323b413eaa7ea64745612f52e966a941055"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "mlflow",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "falsification_auditor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_falsification_power_audit.py",
+        "smart_probability_audit.py"
+      ],
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_FALSIFICATION_REPORT.json",
+          "sha256": "c04ac112165f3c9b66f579a64f6a2de5b95feacd74d64effcd6b1c3e594f5952"
+        },
+        {
+          "path": "SMART_FALSIFICATION_POWER_AUDIT.json",
+          "sha256": "473d2b21d4f90c60601deefc9a946ab81c562adcbd30aaaf9c7b29bf433fe9c9"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "falsification_auditor->learning_calibration_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "learning_calibration_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        },
+        {
+          "handoff_id": "falsification_auditor->mission_governor:6f3806ce7bd157fa",
+          "producer": "falsification_auditor",
+          "consumer": "mission_governor",
+          "payload_sha256": "6f3806ce7bd157fae4eb7aad57a7edd343ebca5e575d23ebe7767f7c040121bf",
+          "probe_id": "synthetic_falsification_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "mlflow",
+        "agent_owner": "falsification_auditor",
+        "lane": "experiment_design_and_falsification",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "synthetic_falsification_execution",
+        "executed_functions": [
+          "smart_falsification_lab.regime_max_cusum",
+          "smart_falsification_lab.holm_adjust"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_experiment_lab.py",
+            "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+          },
+          {
+            "path": "smart_falsification_lab.py",
+            "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+          },
+          {
+            "path": "smart_falsification_power_audit.py",
+            "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+          },
+          {
+            "path": "smart_probability_audit.py",
+            "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "a606bf2b7a718b4d654a78f93390ca240fb014703a2008664f8aa3c31ab431d0"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "evo-memory",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "evo-memory",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "46d6a03927aa1a6db586e91f2031b21025b49ac23157676f668d8c966b0afe02"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "model-drift-management",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "model-drift-management",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "e222bdc1f2c9ca3e4efcda769822478a3904dde0429fbea3e6b976d67e234f23"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "hyperparameter-tuning-optuna",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "hyperparameter-tuning-optuna",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "47869cd19c3285dcb9f15159844d031aa7fac819e7d4f0cc278cd10c3a639989"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "conformal-risk-control-mapie",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "conformal-risk-control-mapie",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "76883f6ba6eceb42b894e6c88783af2a19bab10df29e0b3f6e664a2f04571ffb"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "live-evo-online-evolution-agentic",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "live-evo-online-evolution-agentic",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "a24866ce4fe99c5d3b6a59bb0c810ed40aee25653e93a7b55456b82aef5b870b"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "benchmarking-uncertainty-calibration-long-form",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "benchmarking-uncertainty-calibration-long-form",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "ad448e05c0040048cacc6e1350aa14c9959cc3e4efa6158860d2189c538a1773"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "superforecasting",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "superforecasting",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "b122b5eef0280851902667904f266e17f61d1f55082aaa1a22a28f0d1dc18215"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "extremizing-forecasts",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "learning_calibration_governor",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_bounded_online_learning.py",
+        "smart_contextual_meta_weights.py",
+        "smart_rank_score_calibration.py",
+        "smart_meta_governor.py",
+        "SMART_EXPERIMENT_REGISTRY"
+      ],
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "learning_calibration_governor->mission_governor:9e182837dafaa947",
+          "producer": "learning_calibration_governor",
+          "consumer": "mission_governor",
+          "payload_sha256": "9e182837dafaa947735d33a7165cff369a69a4da533d38f023395a1c97dde439",
+          "probe_id": "bounded_learning_and_calibration_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "extremizing-forecasts",
+        "agent_owner": "learning_calibration_governor",
+        "lane": "learning_calibration_and_drift",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "bounded_learning_and_calibration_execution",
+        "executed_functions": [
+          "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+          "smart_rank_score_calibration.RankScoreCalibrator.predict",
+          "smart_rank_score_calibration.RankScoreCalibrator.update"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_bounded_online_learning.py",
+            "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+          },
+          {
+            "path": "smart_contextual_meta_weights.py",
+            "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+          },
+          {
+            "path": "smart_rank_score_calibration.py",
+            "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+          },
+          {
+            "path": "smart_meta_governor.py",
+            "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+          },
+          {
+            "path": "SMART_EXPERIMENT_REGISTRY",
+            "kind": "directory"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "513a77166ed161342c039c02f69c49f4023cf920966ef5bb44abc0bfcfebca85"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "property-based-testing-hypothesis",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "robustness_red_team",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_P09_RED_TEAM_LATEST.json",
+          "sha256": "a29c44c886e0983b61dcf9df311563250683d9bf2eb253ca4d2bdf9b7779594c"
+        },
+        {
+          "path": "smart_continuous_red_team.py",
+          "sha256": "a76dbb3b7361bb4ce8aaccee6a613e226093c49bac75ec204800f219e390f671"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "robustness_red_team->mission_governor:4c1fc91cf914952b",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "4c1fc91cf914952b9cc02694e57d3d260f7e7bd9a452e34d0657932a67922f37",
+          "probe_id": "red_team_safety_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "property-based-testing-hypothesis",
+        "agent_owner": "robustness_red_team",
+        "lane": "testing_and_robustness",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "red_team_safety_execution",
+        "executed_functions": [
+          "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+          "smart_continuous_red_team.scenario_false_signal_and_recovery"
+        ],
+        "native_targets": [
+          {
+            "path": "test_smart_architecture_alignment.py",
+            "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+          },
+          {
+            "path": "test_smart_global_integrity.py",
+            "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+          },
+          {
+            "path": "test_smart_continuous_red_team.py",
+            "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "a32544e124ff0f0973e24ac3fd8c2a680f95039a078e3543c500aebb2ba2ac99"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "test-gap-analysis",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "robustness_red_team",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_P09_RED_TEAM_LATEST.json",
+          "sha256": "a29c44c886e0983b61dcf9df311563250683d9bf2eb253ca4d2bdf9b7779594c"
+        },
+        {
+          "path": "smart_continuous_red_team.py",
+          "sha256": "a76dbb3b7361bb4ce8aaccee6a613e226093c49bac75ec204800f219e390f671"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "robustness_red_team->mission_governor:4c1fc91cf914952b",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "4c1fc91cf914952b9cc02694e57d3d260f7e7bd9a452e34d0657932a67922f37",
+          "probe_id": "red_team_safety_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "test-gap-analysis",
+        "agent_owner": "robustness_red_team",
+        "lane": "testing_and_robustness",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "red_team_safety_execution",
+        "executed_functions": [
+          "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+          "smart_continuous_red_team.scenario_false_signal_and_recovery"
+        ],
+        "native_targets": [
+          {
+            "path": "test_smart_architecture_alignment.py",
+            "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+          },
+          {
+            "path": "test_smart_global_integrity.py",
+            "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+          },
+          {
+            "path": "test_smart_continuous_red_team.py",
+            "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "1b36947332b5a20fafb127aeca7a122839cd73fe66a21121d00e4bf42bf9fc54"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "mutmut-mutation",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "robustness_red_team",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "test_smart_architecture_alignment.py",
+        "test_smart_global_integrity.py",
+        "test_smart_continuous_red_team.py"
+      ],
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "SMART_P09_RED_TEAM_LATEST.json",
+          "sha256": "a29c44c886e0983b61dcf9df311563250683d9bf2eb253ca4d2bdf9b7779594c"
+        },
+        {
+          "path": "smart_continuous_red_team.py",
+          "sha256": "a76dbb3b7361bb4ce8aaccee6a613e226093c49bac75ec204800f219e390f671"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "robustness_red_team->mission_governor:4c1fc91cf914952b",
+          "producer": "robustness_red_team",
+          "consumer": "mission_governor",
+          "payload_sha256": "4c1fc91cf914952b9cc02694e57d3d260f7e7bd9a452e34d0657932a67922f37",
+          "probe_id": "red_team_safety_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "mutmut-mutation",
+        "agent_owner": "robustness_red_team",
+        "lane": "testing_and_robustness",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "red_team_safety_execution",
+        "executed_functions": [
+          "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+          "smart_continuous_red_team.scenario_false_signal_and_recovery"
+        ],
+        "native_targets": [
+          {
+            "path": "test_smart_architecture_alignment.py",
+            "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+          },
+          {
+            "path": "test_smart_global_integrity.py",
+            "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+          },
+          {
+            "path": "test_smart_continuous_red_team.py",
+            "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "dd3d13e3ba78e65d473e5c95369b3f9975ef932971ff2029a8848aba130b71e2"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "combinatorialist",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "combinatorial_solver",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "combinatorialist",
+        "agent_owner": "combinatorial_solver",
+        "lane": "combinatorial_and_formal",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_portfolio_optimizer.py",
+            "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+          },
+          {
+            "path": "smart_portfolio_pipeline.py",
+            "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "51a48e17679f45cce29fe1a752eba395b419a4ab01ac0be19839d00a5951976d"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "operations-research-algorithm-developer",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "combinatorial_solver",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "operations-research-algorithm-developer",
+        "agent_owner": "combinatorial_solver",
+        "lane": "combinatorial_and_formal",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_portfolio_optimizer.py",
+            "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+          },
+          {
+            "path": "smart_portfolio_pipeline.py",
+            "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "d26d6a41ef7dcb7b1dcb898b307e3a6f161279b7efb10bb3ee80b707a5d8f47e"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "google-or-tools",
+      "origin": "ACQUIRED_CAPABILITY_V2",
+      "agent_owner": "combinatorial_solver",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "google-or-tools",
+        "agent_owner": "combinatorial_solver",
+        "lane": "combinatorial_and_formal",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_portfolio_optimizer.py",
+            "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+          },
+          {
+            "path": "smart_portfolio_pipeline.py",
+            "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "2ac079a7993194c337d40f298de1a70e27652daa61826119e49872bfe9dd666b"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "z3-formal-verification",
+      "origin": "ACQUIRED_CAPABILITY_V3",
+      "agent_owner": "combinatorial_solver",
+      "realization": "NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "z3-formal-verification",
+        "agent_owner": "combinatorial_solver",
+        "lane": "combinatorial_and_formal",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_portfolio_optimizer.py",
+            "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+          },
+          {
+            "path": "smart_portfolio_pipeline.py",
+            "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "960c1335ac7043a4f528e73a34f5945d1fcc4b5d154fa4479aac29447e49e9b3"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    },
+    {
+      "capability": "nisan-et-al-2007-algorithmic-game-theory",
+      "origin": "SOURCE_ONLY_SKILL",
+      "agent_owner": "combinatorial_solver",
+      "realization": "METHODOLOGY_DISTILLED_TO_NATIVE_LANE_PROBE",
+      "native_targets": [
+        "smart_portfolio_optimizer.py",
+        "smart_portfolio_pipeline.py",
+        "smart_validation_gate.py"
+      ],
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "probe_pass": true,
+      "runtime_evidence": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a"
+        }
+      ],
+      "handoff_outputs": [
+        {
+          "handoff_id": "combinatorial_solver->mission_governor:c24940a40378bfa8",
+          "producer": "combinatorial_solver",
+          "consumer": "mission_governor",
+          "payload_sha256": "c24940a40378bfa8938853a884ad51a1301f09f1081d236b002dfb9b0992176a",
+          "probe_id": "or_tools_portfolio_execution"
+        }
+      ],
+      "pertinent": true,
+      "callable": true,
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "alias_invocation": {
+        "capability": "nisan-et-al-2007-algorithmic-game-theory",
+        "agent_owner": "combinatorial_solver",
+        "lane": "combinatorial_and_formal",
+        "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+        "probe_id": "or_tools_portfolio_execution",
+        "executed_functions": [
+          "smart_portfolio_optimizer.optimize_portfolio"
+        ],
+        "native_targets": [
+          {
+            "path": "smart_portfolio_optimizer.py",
+            "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+          },
+          {
+            "path": "smart_portfolio_pipeline.py",
+            "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+          },
+          {
+            "path": "smart_validation_gate.py",
+            "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+          }
+        ],
+        "external_source_executed": false,
+        "direct_named_skill_execution": false,
+        "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "payload_shape": [
+          "gate"
+        ],
+        "status": "PASS",
+        "invocation_sha256": "71823a14c7be2e6719f8747e4ace7351227b91d7cf7941c5995da161fd7938b0"
+      },
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "external_skill_source_executed": false,
+      "status": "PASS"
+    }
+  ],
+  "file_audit": {
+    "required": 25,
+    "missing": [],
+    "empty": [],
+    "pass": true
+  },
+  "native_invocations": [
+    {
+      "capability": "dianoia",
+      "agent_owner": "research_scout",
+      "lane": "multi_expert_research",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "native_targets": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "66b33867e574c14f84c9f5f2b41c2c77e3047d535c1e672c8e434de9bc8b9e70"
+    },
+    {
+      "capability": "thinktank-me-multi-expert-framework-middle",
+      "agent_owner": "research_scout",
+      "lane": "multi_expert_research",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "native_targets": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "fe71365ddb4bd9575ee51f2fcad488518db0c41a321ca27042a2d4532abdb2f8"
+    },
+    {
+      "capability": "ml-engineer",
+      "agent_owner": "research_scout",
+      "lane": "multi_expert_research",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "native_targets": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "d1900bba79848ff2503d83ca1c3b5e2e4980d8b8bc061682f8170fa3a5a3010a"
+    },
+    {
+      "capability": "pymc",
+      "agent_owner": "research_scout",
+      "lane": "multi_expert_research",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "research_registry_read_validation",
+      "executed_functions": [
+        "json.loads"
+      ],
+      "native_targets": [
+        {
+          "path": "SMART_HYPOTHESIS_REGISTRY.json",
+          "sha256": "1ab83584f39729246e14584a053fa326bb510a5cf23261878cc13b289249ea5a"
+        },
+        {
+          "path": "SMART_EXPERIMENT_LEDGER.json",
+          "sha256": "f59ae9856db96949e868372659fac19fe3b9fa65e1dc6e3e73606d4be7e7adbd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "6f5cedc8515e173abb7ae526d6170c8e9474df22cc2a3fed8cdf5ccb51059041"
+    },
+    {
+      "capability": "openai-analyze-data-quality",
+      "agent_owner": "data_guardian",
+      "lane": "data_quality_and_contracts",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_data_quality_gate.py",
+          "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "a10ac09c488bdb44a372f63f5fbcbf4e84af0efb616153a4e32daeaba69afeab"
+    },
+    {
+      "capability": "openai-validate-data",
+      "agent_owner": "data_guardian",
+      "lane": "data_quality_and_contracts",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_data_quality_gate.py",
+          "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "55ee8c005e3db65cf1c693d8d52abeb2b2c2ccacaaf92eb16b4cfdfec9991a31"
+    },
+    {
+      "capability": "pandera-data-contracts",
+      "agent_owner": "data_guardian",
+      "lane": "data_quality_and_contracts",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_data_quality_gate.py",
+          "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "d5f01685df6e45ead4ac30915320691e4b9aa5be11ea57a1641d06a214f4c7d7"
+    },
+    {
+      "capability": "data-analysis",
+      "agent_owner": "data_guardian",
+      "lane": "data_quality_and_contracts",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "canonical_draw_quality_audit",
+      "executed_functions": [
+        "smart_data_quality_gate.audit_draw_file"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_data_quality_gate.py",
+          "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        },
+        {
+          "path": "SMART_DATA_CONTRACT.md",
+          "sha256": "59aa2ad8a79fe8da03cf0cab4b2ba36a6d19717392b96b093fa18a26c2d89edd"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "b5333d880f09f196e2468f6a314afd5887d8547b1ef3f7283dcc5cbd5a2e83b4"
+    },
+    {
+      "capability": "aeon",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "e2fd3c798a0fe7bf9bb38262440b2b36d1e49204fd86ca0f9301daa0878347d9"
+    },
+    {
+      "capability": "regime-detection",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "da051cd29490396fd2c0775314d05dfd995b35690b4e831c8c6dca396b064425"
+    },
+    {
+      "capability": "time-series-forecasting",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "0b0e701f15a90030dc818fedf71fe13dc872ce19bd855df0a85011b4434daa23"
+    },
+    {
+      "capability": "networkx",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "da8e31183f0a502f5956a2c7401e0fec00b6a3208794fd42381ba28c1a41d3f4"
+    },
+    {
+      "capability": "statsmodels",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "5e44f136ebcefde4db67b6b9b4ecaa4cf2fbd69ad88c7b033c283d058064c3ca"
+    },
+    {
+      "capability": "ruptures",
+      "agent_owner": "null_model_cartographer",
+      "lane": "time_series_regime_and_structure",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_cartography_execution",
+      "executed_functions": [
+        "smart_randomness_cartography.atlas_descriptors",
+        "smart_cartography_extended.regime_structure"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f"
+        },
+        {
+          "path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "fde6bf7cfbda550514bf98e0701dfa1e6f1ceb28d9bfb6f8344308139a2f0320"
+    },
+    {
+      "capability": "experiment-design",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "15835d080fb86a462fb9d4a9ff95a02a0c84f62fbfb174bd10cec72017609003"
+    },
+    {
+      "capability": "simulation",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "1cca3b85509f070a2186449f268b851ce63f6db2d86ab36b2ac53229566dec29"
+    },
+    {
+      "capability": "statistical-analysis",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "5293e5d8d994b614c47395b121f044dad1a0600ef472ee929e73acc9487c2e46"
+    },
+    {
+      "capability": "multiple-testing-fdr-statsmodels",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "b519e16f8d0cec4a7f0924578b058b367f1dfd38172b79b17c67acf34a1664ca"
+    },
+    {
+      "capability": "bayesian-workflow",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "a002d1dcc135c2d3a9e65e88d654ad0102115a210b76a8fde9c6ec6b055dc39f"
+    },
+    {
+      "capability": "machine-learning-model-validation",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "d15264b4d4b94b3f863d9b174e610323b413eaa7ea64745612f52e966a941055"
+    },
+    {
+      "capability": "mlflow",
+      "agent_owner": "falsification_auditor",
+      "lane": "experiment_design_and_falsification",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "synthetic_falsification_execution",
+      "executed_functions": [
+        "smart_falsification_lab.regime_max_cusum",
+        "smart_falsification_lab.holm_adjust"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+        },
+        {
+          "path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99"
+        },
+        {
+          "path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+        },
+        {
+          "path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "a606bf2b7a718b4d654a78f93390ca240fb014703a2008664f8aa3c31ab431d0"
+    },
+    {
+      "capability": "evo-memory",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "46d6a03927aa1a6db586e91f2031b21025b49ac23157676f668d8c966b0afe02"
+    },
+    {
+      "capability": "model-drift-management",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "e222bdc1f2c9ca3e4efcda769822478a3904dde0429fbea3e6b976d67e234f23"
+    },
+    {
+      "capability": "hyperparameter-tuning-optuna",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "47869cd19c3285dcb9f15159844d031aa7fac819e7d4f0cc278cd10c3a639989"
+    },
+    {
+      "capability": "conformal-risk-control-mapie",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "76883f6ba6eceb42b894e6c88783af2a19bab10df29e0b3f6e664a2f04571ffb"
+    },
+    {
+      "capability": "live-evo-online-evolution-agentic",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "a24866ce4fe99c5d3b6a59bb0c810ed40aee25653e93a7b55456b82aef5b870b"
+    },
+    {
+      "capability": "benchmarking-uncertainty-calibration-long-form",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "ad448e05c0040048cacc6e1350aa14c9959cc3e4efa6158860d2189c538a1773"
+    },
+    {
+      "capability": "superforecasting",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "b122b5eef0280851902667904f266e17f61d1f55082aaa1a22a28f0d1dc18215"
+    },
+    {
+      "capability": "extremizing-forecasts",
+      "agent_owner": "learning_calibration_governor",
+      "lane": "learning_calibration_and_drift",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "bounded_learning_and_calibration_execution",
+      "executed_functions": [
+        "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+        "smart_rank_score_calibration.RankScoreCalibrator.predict",
+        "smart_rank_score_calibration.RankScoreCalibrator.update"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
+        },
+        {
+          "path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+        },
+        {
+          "path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333"
+        },
+        {
+          "path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5"
+        },
+        {
+          "path": "SMART_EXPERIMENT_REGISTRY",
+          "kind": "directory"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "513a77166ed161342c039c02f69c49f4023cf920966ef5bb44abc0bfcfebca85"
+    },
+    {
+      "capability": "property-based-testing-hypothesis",
+      "agent_owner": "robustness_red_team",
+      "lane": "testing_and_robustness",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "native_targets": [
+        {
+          "path": "test_smart_architecture_alignment.py",
+          "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+        },
+        {
+          "path": "test_smart_global_integrity.py",
+          "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+        },
+        {
+          "path": "test_smart_continuous_red_team.py",
+          "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "a32544e124ff0f0973e24ac3fd8c2a680f95039a078e3543c500aebb2ba2ac99"
+    },
+    {
+      "capability": "test-gap-analysis",
+      "agent_owner": "robustness_red_team",
+      "lane": "testing_and_robustness",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "native_targets": [
+        {
+          "path": "test_smart_architecture_alignment.py",
+          "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+        },
+        {
+          "path": "test_smart_global_integrity.py",
+          "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+        },
+        {
+          "path": "test_smart_continuous_red_team.py",
+          "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "1b36947332b5a20fafb127aeca7a122839cd73fe66a21121d00e4bf42bf9fc54"
+    },
+    {
+      "capability": "mutmut-mutation",
+      "agent_owner": "robustness_red_team",
+      "lane": "testing_and_robustness",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "red_team_safety_execution",
+      "executed_functions": [
+        "smart_continuous_red_team.scenario_missing_and_corrupt_data",
+        "smart_continuous_red_team.scenario_false_signal_and_recovery"
+      ],
+      "native_targets": [
+        {
+          "path": "test_smart_architecture_alignment.py",
+          "sha256": "ecd9ae75829bd6f33f7e914298d4167e8a19fa64461234eff1d4c8a2f97e8f46"
+        },
+        {
+          "path": "test_smart_global_integrity.py",
+          "sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236"
+        },
+        {
+          "path": "test_smart_continuous_red_team.py",
+          "sha256": "2b3451d4bf653be9a3e0ee4fa6d4d021ddb2f1e80da35b19d2d0aa109180f640"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "dd3d13e3ba78e65d473e5c95369b3f9975ef932971ff2029a8848aba130b71e2"
+    },
+    {
+      "capability": "combinatorialist",
+      "agent_owner": "combinatorial_solver",
+      "lane": "combinatorial_and_formal",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "51a48e17679f45cce29fe1a752eba395b419a4ab01ac0be19839d00a5951976d"
+    },
+    {
+      "capability": "operations-research-algorithm-developer",
+      "agent_owner": "combinatorial_solver",
+      "lane": "combinatorial_and_formal",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "d26d6a41ef7dcb7b1dcb898b307e3a6f161279b7efb10bb3ee80b707a5d8f47e"
+    },
+    {
+      "capability": "google-or-tools",
+      "agent_owner": "combinatorial_solver",
+      "lane": "combinatorial_and_formal",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "2ac079a7993194c337d40f298de1a70e27652daa61826119e49872bfe9dd666b"
+    },
+    {
+      "capability": "z3-formal-verification",
+      "agent_owner": "combinatorial_solver",
+      "lane": "combinatorial_and_formal",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "960c1335ac7043a4f528e73a34f5945d1fcc4b5d154fa4479aac29447e49e9b3"
+    },
+    {
+      "capability": "nisan-et-al-2007-algorithmic-game-theory",
+      "agent_owner": "combinatorial_solver",
+      "lane": "combinatorial_and_formal",
+      "execution_mode": "BOUNDED_NATIVE_ADAPTER",
+      "probe_id": "or_tools_portfolio_execution",
+      "executed_functions": [
+        "smart_portfolio_optimizer.optimize_portfolio"
+      ],
+      "native_targets": [
+        {
+          "path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8"
+        },
+        {
+          "path": "smart_portfolio_pipeline.py",
+          "sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c"
+        },
+        {
+          "path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+        }
+      ],
+      "external_source_executed": false,
+      "direct_named_skill_execution": false,
+      "semantic_binding_kind": "METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+      "payload_shape": [
+        "gate"
+      ],
+      "status": "PASS",
+      "invocation_sha256": "71823a14c7be2e6719f8747e4ace7351227b91d7cf7941c5995da161fd7938b0"
+    }
+  ],
+  "agent_runtime_sha256": "0d1c8b68b5abcf558430430c8d0705dc95803f8c4965b12b78622be24201b27a",
+  "skill_runtime_sha256": "eb261593f8168b251cb554a5e1f1a070441d16ac5a13f26df666719ac8804194",
+  "functional_integration_sha256": "657d8ca96c23d45edb0706b5c05565dd7b4de72a6ea56763fb5a8a35b1cad78e",
+  "restart": {
+    "status": "NOT_EVALUATED"
+  },
+  "parallel_stress": {
+    "status": "NOT_EVALUATED"
+  },
+  "scientific_mission_status": "MISSION_ACTIVE",
+  "claim_boundary": "Executed native role probes and methodology aliases only; no third-party skill execution, process restart proof, parallel stress proof or predictive advantage claim.",
+  "sha256": "dda943653275c8a7dd0e52e42bcf66f993548c8d257f1122cb7607f467c0b392"
+}

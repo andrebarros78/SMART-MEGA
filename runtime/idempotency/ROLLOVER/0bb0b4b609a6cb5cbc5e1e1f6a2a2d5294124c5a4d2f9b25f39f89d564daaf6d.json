@@ -1,0 +1,135 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "ROLLOVER",
+  "idempotency_key": "0bb0b4b609a6cb5cbc5e1e1f6a2a2d5294124c5a4d2f9b25f39f89d564daaf6d",
+  "target": 3067,
+  "result": {
+    "status": "ROLLOVER_COMMITTED",
+    "transaction_id": "ROLLOVER:3067:3068",
+    "completed_contest": 3067,
+    "next_target": 3068,
+    "archive": {
+      "status": "ARCHIVED",
+      "archive_manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
+      "archive_manifest_sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963",
+      "reconciliation": {
+        "schema": "SMART_CANONICAL_SIGNAL_LEDGER_RECONCILIATION_1",
+        "status": "PASS",
+        "target_contest": 3067,
+        "source_epoch_ledger": "/home/runner/work/SMART-MEGA/SMART-MEGA/runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+        "source_epoch_ledger_sha256": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
+        "canonical_sha256_before": "ba835a476ac12f5e40443bddc9166fe1b2954b870517483e3336f0868e8c7e72",
+        "canonical_sha256_after": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
+        "canonical_backup": "SMART_STATE_ARCHIVE/canonical-ledger/SMART_SIGNAL_LEDGER.ba835a476ac12f5e40443bddc9166fe1b2954b870517483e3336f0868e8c7e72.json",
+        "appended_event_count": 10,
+        "event_count_after": 102,
+        "all_prior_events_preserved": true,
+        "source_events_preserved_exactly": true,
+        "completed_sequence_required": true,
+        "retroactive_rewrite": false,
+        "sha256": "2988dedf0eeed932fb5336a15851e909a1a075a759a6e8d03c9e69cd34023979"
+      }
+    },
+    "hold": {
+      "schema": "SMART_NEXT_CYCLE_HOLD_1",
+      "status": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+      "completed_contest": 3067,
+      "next_target": 3068,
+      "created_utc": "2026-10-08T20:24:32.858311+00:00",
+      "review_file": "SMART_POST_RESULT_REVIEW_3067.json",
+      "review_file_sha256": "57928e18be95b9505fe7e0b12a65d83b60f825499f0f0dc168e64a224d5c5f4a",
+      "review_sha256": "84013cc81070c005b8bf92f249c52b12af0d77b419c9a87db322ffb5e23b0a41",
+      "canonical_sha256_at_review": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+      "automatic_prepare_forbidden": true,
+      "prepare_allowed": false,
+      "reason": "CONTEST_3067_ADJUDICATED_REVIEWED_OPERATOR_REQUIRED",
+      "generation_allowed": false,
+      "operator_command_required": true,
+      "required_command_semantics": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "revision": 5,
+      "previous_document_sha256": "09da3eded9b6c70d786b94863a894c2a9006e7d438c377f503db3c434e6b00be",
+      "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "HOLD",
+      "revision": 24,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3068,
+      "completed_contest": 3067,
+      "previous_state": "REVIEWED",
+      "transition": "REVIEWED_TO_HOLD",
+      "transition_actor": "smart_rollover.canonical_rollover",
+      "transition_utc": "2026-10-08T20:25:51.139760+00:00",
+      "previous_lifecycle_sha256": "777b1171fedca4f702459b8f70f9208d0e9459fd484658ab60853f60c786e11d",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3066.json",
+          "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3067:operator-3067-e305750ba8e6-20261006T010444976861Z",
+        "reserved_authority_sha256": "65f332b4f6bf02c812e13abcbe528c115cea47496dc51ecc7ebf159e40cddef6",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "d45911ca74f1e2d481bbc8a6ba2ddd93c502db022a9fc5b7e6bf556ea911269f",
+          "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
+          "sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3063,
+          "through_target": 3066,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
+              "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
+              "target_contest": 3063
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
+              "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
+              "target_contest": 3064
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
+              "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
+              "target_contest": 3065
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
+              "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
+              "target_contest": 3066
+            }
+          ],
+          "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
+          "official_result_batch": null
+        }
+      },
+      "sha256": "864173612041ee1805a37e632f141d0696048138d056296aa0c9e2069a5f426b"
+    }
+  }
+}

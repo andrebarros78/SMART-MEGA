@@ -1,0 +1,693 @@
+{
+  "schema": "SMART_PORTFOLIO_ARTIFACT_1",
+  "artifact_type": "SMART_PORTFOLIO_ARTIFACT",
+  "portfolio_id": "21eaa34e0abc199be04cbb69",
+  "source_data_sha256": "107da17eb2ba8e6d412dbfb1916540d1d715139fef076552229e81abd55301f4",
+  "config_sha256": "61d2bc4b4a547bc439105c06f00c2418b9bdac3b099f5bc339a3afe8b8680f2c",
+  "solver": {
+    "status": "OPTIMAL",
+    "objective_value": 9597904000.0,
+    "best_objective_bound": 9597904000.0
+  },
+  "games": [
+    {
+      "game_id": "3067-G01",
+      "numbers": [
+        10,
+        11,
+        14,
+        35,
+        38,
+        48
+      ],
+      "game_sha256": "6ef352be2030ebc2b589cad37575b17673cfaf4fdc9574f7a2f3617d7d128c58"
+    },
+    {
+      "game_id": "3067-G02",
+      "numbers": [
+        10,
+        30,
+        37,
+        38,
+        43,
+        46
+      ],
+      "game_sha256": "11df852b265026bafaaa826bc19112c660a2b944b71fa8a0093ac4f3f1cf2a95"
+    },
+    {
+      "game_id": "3067-G03",
+      "numbers": [
+        11,
+        27,
+        30,
+        35,
+        46,
+        53
+      ],
+      "game_sha256": "0dc455d07427fadfd22658b34bca8201b9b76880d8e3662918ac1755d45bb41c"
+    },
+    {
+      "game_id": "3067-G04",
+      "numbers": [
+        14,
+        27,
+        37,
+        43,
+        48,
+        53
+      ],
+      "game_sha256": "59048ae24c1dda189e04b9de75b4aed0d8a9d9a1da238af16c194f3eaf24a0d1"
+    }
+  ],
+  "metrics": {
+    "unique_numbers": [
+      10,
+      11,
+      14,
+      27,
+      30,
+      35,
+      37,
+      38,
+      43,
+      46,
+      48,
+      53
+    ],
+    "unique_number_count": 12,
+    "average_pairwise_overlap": 2.0,
+    "max_pairwise_overlap_observed": 2,
+    "raw_selection_score": 17.490404516167988,
+    "raw_unique_score": 8.745202258083994,
+    "exposure_counts": {
+      "11": 2,
+      "38": 2,
+      "10": 2,
+      "27": 2,
+      "53": 2,
+      "35": 2,
+      "30": 2,
+      "43": 2,
+      "37": 2,
+      "46": 2,
+      "48": 2,
+      "14": 2
+    },
+    "exposure_mean": 2.0,
+    "exposure_stddev": 0.0,
+    "min_number_exposure_observed": 2,
+    "max_number_exposure_observed": 2
+  },
+  "product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
+  "primary_card_role": "FINAL_SINGLE_CARD_PRODUCT",
+  "primary_card": {
+    "schema": "SMART_PRIMARY_SINGLE_CARD_2",
+    "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
+    "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+    "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+    "selection_strategy": "HYBRID_SCORE_RECALL_DIVERSITY_FALSE_NEGATIVE_RESCUE",
+    "target_contest": 3067,
+    "cutoff_contest": 3066,
+    "numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "source_head": "champion",
+    "source_top6_ordered": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35
+    ],
+    "selector": {
+      "schema": "SMART_PRIMARY_CARD_SELECTOR_2",
+      "status": "PASS",
+      "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+      "result_used": false,
+      "pure_champion_top6_sorted": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "selected_numbers": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "selected_band_counts": {
+        "low": 2,
+        "mid": 3,
+        "high": 1
+      },
+      "pure_top6_band_counts": {
+        "low": 2,
+        "mid": 3,
+        "high": 1
+      },
+      "objective_value": 4.527352535707007,
+      "fallback_used": false,
+      "adaptive_attempts": [
+        {
+          "pool_size": 18,
+          "feasible": 9475,
+          "evaluated": 18564
+        }
+      ],
+      "config": {
+        "candidate_pool_size": 18,
+        "max_candidate_pool_size": 30,
+        "numbers_per_card": 6,
+        "min_low_band": 2,
+        "max_low_band": 4,
+        "min_mid_band": 1,
+        "max_mid_band": 3,
+        "min_high_band": 0,
+        "max_high_band": 2,
+        "require_top3_presence": true,
+        "score_weight": 1.0,
+        "rank_weight": 0.035,
+        "band_balance_weight": 0.08,
+        "concentration_penalty": 0.18
+      },
+      "candidate_pool": [
+        11,
+        38,
+        10,
+        27,
+        53,
+        35,
+        30,
+        43,
+        37,
+        17,
+        46,
+        48,
+        14,
+        6,
+        16,
+        9,
+        25,
+        42
+      ],
+      "candidate_pool_size": 18,
+      "evaluated_combinations": 18564,
+      "feasible_combinations": 9475,
+      "rejected_combinations": {
+        "band_guard": 6314,
+        "top3_guard": 2775
+      },
+      "sha256": "0ecd43db8af2a5ce348039103cdb923aed8bc4e4f3fa64c4af335e7ff5f40029"
+    },
+    "false_negative_rescue": {
+      "schema": "SMART_FALSE_NEGATIVE_RESCUE_1",
+      "status": "PASS",
+      "observations": 3,
+      "result_used": false,
+      "profile_sha256": "424ad81d371f087deef45de0f7dc53e4fafbbbaaca279dbda6f98cd2c4657b0e",
+      "nonzero_deltas": {
+        "1": 0.013499999999999998,
+        "2": 0.013499999999999998,
+        "3": 0.013499999999999998,
+        "4": 0.013499999999999998,
+        "5": 0.025166666666666664,
+        "6": 0.025166666666666664,
+        "7": 0.013499999999999998,
+        "8": 0.013499999999999998,
+        "9": 0.025166666666666664,
+        "10": 0.013499999999999998,
+        "11": 0.005499999999999998,
+        "12": 0.013499999999999998,
+        "13": 0.013499999999999998,
+        "14": 0.005499999999999998,
+        "15": 0.025166666666666664,
+        "16": 0.013499999999999998,
+        "17": 0.025166666666666664,
+        "18": 0.025166666666666664,
+        "19": 0.013499999999999998,
+        "20": 0.013499999999999998,
+        "21": 0.009,
+        "22": 0.009,
+        "23": 0.020666666666666667,
+        "24": 0.020666666666666667,
+        "25": 0.020666666666666667,
+        "26": 0.009,
+        "27": -0.003000000000000001,
+        "28": 0.020666666666666667,
+        "29": 0.009,
+        "30": 0.009,
+        "31": 0.009,
+        "32": 0.009,
+        "33": 0.009,
+        "34": 0.009,
+        "35": -0.003000000000000001,
+        "36": 0.020666666666666667,
+        "37": 0.028333333333333332,
+        "38": 0.016666666666666666,
+        "39": 0.009,
+        "40": 0.009,
+        "41": 0.00225,
+        "42": 0.00225,
+        "43": -0.0017500000000000003,
+        "44": 0.00225,
+        "45": 0.00225,
+        "46": 0.00225,
+        "47": 0.013916666666666667,
+        "48": 0.00225,
+        "49": 0.00225,
+        "50": 0.00225,
+        "51": 0.00225,
+        "52": 0.00225,
+        "53": -0.00975,
+        "54": 0.00225,
+        "55": 0.013916666666666667,
+        "56": 0.00225,
+        "57": 0.00225,
+        "58": 0.00225,
+        "59": 0.00225,
+        "60": 0.00225
+      },
+      "sha256": "238f55ba91ab032509d6590a739ad8e0dea5eca4625c2f0b4a9d143eb7ab1835"
+    },
+    "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+    "freeze_sha256": "a12433d7c8fb80af3c64c4faa89af554f07e8a150ddec9bff44548ef8f25be9f"
+  },
+  "false_negative_rescue": {
+    "schema": "SMART_FALSE_NEGATIVE_RESCUE_1",
+    "status": "PASS",
+    "observations": 3,
+    "result_used": false,
+    "profile_sha256": "424ad81d371f087deef45de0f7dc53e4fafbbbaaca279dbda6f98cd2c4657b0e",
+    "nonzero_deltas": {
+      "1": 0.013499999999999998,
+      "2": 0.013499999999999998,
+      "3": 0.013499999999999998,
+      "4": 0.013499999999999998,
+      "5": 0.025166666666666664,
+      "6": 0.025166666666666664,
+      "7": 0.013499999999999998,
+      "8": 0.013499999999999998,
+      "9": 0.025166666666666664,
+      "10": 0.013499999999999998,
+      "11": 0.005499999999999998,
+      "12": 0.013499999999999998,
+      "13": 0.013499999999999998,
+      "14": 0.005499999999999998,
+      "15": 0.025166666666666664,
+      "16": 0.013499999999999998,
+      "17": 0.025166666666666664,
+      "18": 0.025166666666666664,
+      "19": 0.013499999999999998,
+      "20": 0.013499999999999998,
+      "21": 0.009,
+      "22": 0.009,
+      "23": 0.020666666666666667,
+      "24": 0.020666666666666667,
+      "25": 0.020666666666666667,
+      "26": 0.009,
+      "27": -0.003000000000000001,
+      "28": 0.020666666666666667,
+      "29": 0.009,
+      "30": 0.009,
+      "31": 0.009,
+      "32": 0.009,
+      "33": 0.009,
+      "34": 0.009,
+      "35": -0.003000000000000001,
+      "36": 0.020666666666666667,
+      "37": 0.028333333333333332,
+      "38": 0.016666666666666666,
+      "39": 0.009,
+      "40": 0.009,
+      "41": 0.00225,
+      "42": 0.00225,
+      "43": -0.0017500000000000003,
+      "44": 0.00225,
+      "45": 0.00225,
+      "46": 0.00225,
+      "47": 0.013916666666666667,
+      "48": 0.00225,
+      "49": 0.00225,
+      "50": 0.00225,
+      "51": 0.00225,
+      "52": 0.00225,
+      "53": -0.00975,
+      "54": 0.00225,
+      "55": 0.013916666666666667,
+      "56": 0.00225,
+      "57": 0.00225,
+      "58": 0.00225,
+      "59": 0.00225,
+      "60": 0.00225
+    },
+    "sha256": "238f55ba91ab032509d6590a739ad8e0dea5eca4625c2f0b4a9d143eb7ab1835"
+  },
+  "champion_top6_role": "PRIMARY_SINGLE_CARD_SOURCE",
+  "generated_utc": "2026-10-06T01:08:11.803731+00:00",
+  "status": "PASS",
+  "target_contest": 3067,
+  "cutoff_contest": 3066,
+  "freeze_file": "SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256": "a12433d7c8fb80af3c64c4faa89af554f07e8a150ddec9bff44548ef8f25be9f",
+  "optimizer_file": "smart_portfolio_optimizer.py",
+  "optimizer_sha256": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104",
+  "pipeline_sha256": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a",
+  "config": {
+    "game_count": 4,
+    "candidate_pool_size": 12,
+    "numbers_per_game": 6,
+    "max_pairwise_overlap": 2,
+    "coverage_bonus": 0.0,
+    "rank_bonus": 0.02,
+    "time_limit_seconds": 30.0,
+    "random_seed": 42,
+    "require_full_candidate_coverage": true,
+    "min_number_exposure": 2,
+    "max_number_exposure": 2
+  },
+  "champion_top6": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "primary_card_selector": {
+    "schema": "SMART_PRIMARY_CARD_SELECTOR_2",
+    "status": "PASS",
+    "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+    "result_used": false,
+    "pure_champion_top6_sorted": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "selected_numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "selected_band_counts": {
+      "low": 2,
+      "mid": 3,
+      "high": 1
+    },
+    "pure_top6_band_counts": {
+      "low": 2,
+      "mid": 3,
+      "high": 1
+    },
+    "objective_value": 4.527352535707007,
+    "fallback_used": false,
+    "adaptive_attempts": [
+      {
+        "pool_size": 18,
+        "feasible": 9475,
+        "evaluated": 18564
+      }
+    ],
+    "config": {
+      "candidate_pool_size": 18,
+      "max_candidate_pool_size": 30,
+      "numbers_per_card": 6,
+      "min_low_band": 2,
+      "max_low_band": 4,
+      "min_mid_band": 1,
+      "max_mid_band": 3,
+      "min_high_band": 0,
+      "max_high_band": 2,
+      "require_top3_presence": true,
+      "score_weight": 1.0,
+      "rank_weight": 0.035,
+      "band_balance_weight": 0.08,
+      "concentration_penalty": 0.18
+    },
+    "candidate_pool": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35,
+      30,
+      43,
+      37,
+      17,
+      46,
+      48,
+      14,
+      6,
+      16,
+      9,
+      25,
+      42
+    ],
+    "candidate_pool_size": 18,
+    "evaluated_combinations": 18564,
+    "feasible_combinations": 9475,
+    "rejected_combinations": {
+      "band_guard": 6314,
+      "top3_guard": 2775
+    },
+    "sha256": "0ecd43db8af2a5ce348039103cdb923aed8bc4e4f3fa64c4af335e7ff5f40029"
+  },
+  "single_game_control": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "OPTIMAL",
+    "objective_value": 2329926000.0,
+    "best_objective_bound": 2329926000.0,
+    "config": {
+      "game_count": 1,
+      "candidate_pool_size": 6,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 4,
+      "coverage_bonus": 0.0,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 5.0,
+      "random_seed": 42,
+      "require_full_candidate_coverage": false,
+      "min_number_exposure": null,
+      "max_number_exposure": null
+    },
+    "candidate_pool": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35
+    ],
+    "games": [
+      [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "unique_number_count": 6,
+      "average_pairwise_overlap": 0.0,
+      "max_pairwise_overlap_observed": 0,
+      "raw_selection_score": 4.758717961325328,
+      "raw_unique_score": 4.758717961325328,
+      "exposure_counts": {
+        "11": 1,
+        "38": 1,
+        "10": 1,
+        "27": 1,
+        "53": 1,
+        "35": 1
+      },
+      "exposure_mean": 1.0,
+      "exposure_stddev": 0.0,
+      "min_number_exposure_observed": 1,
+      "max_number_exposure_observed": 1
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3067,
+      "cutoff_contest": 3066,
+      "head": "champion"
+    }
+  },
+  "portfolio": {
+    "schema": "SMART_PORTFOLIO_OPTIMIZER_V1",
+    "solver": "OR-Tools CP-SAT",
+    "solver_status": "OPTIMAL",
+    "objective_value": 9597904000.0,
+    "best_objective_bound": 9597904000.0,
+    "config": {
+      "game_count": 4,
+      "candidate_pool_size": 12,
+      "numbers_per_game": 6,
+      "max_pairwise_overlap": 2,
+      "coverage_bonus": 0.0,
+      "rank_bonus": 0.02,
+      "time_limit_seconds": 30.0,
+      "random_seed": 42,
+      "require_full_candidate_coverage": true,
+      "min_number_exposure": 2,
+      "max_number_exposure": 2
+    },
+    "candidate_pool": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35,
+      30,
+      43,
+      37,
+      46,
+      48,
+      14
+    ],
+    "games": [
+      [
+        10,
+        11,
+        14,
+        35,
+        38,
+        48
+      ],
+      [
+        10,
+        30,
+        37,
+        38,
+        43,
+        46
+      ],
+      [
+        11,
+        27,
+        30,
+        35,
+        46,
+        53
+      ],
+      [
+        14,
+        27,
+        37,
+        43,
+        48,
+        53
+      ]
+    ],
+    "metrics": {
+      "unique_numbers": [
+        10,
+        11,
+        14,
+        27,
+        30,
+        35,
+        37,
+        38,
+        43,
+        46,
+        48,
+        53
+      ],
+      "unique_number_count": 12,
+      "average_pairwise_overlap": 2.0,
+      "max_pairwise_overlap_observed": 2,
+      "raw_selection_score": 17.490404516167988,
+      "raw_unique_score": 8.745202258083994,
+      "exposure_counts": {
+        "11": 2,
+        "38": 2,
+        "10": 2,
+        "27": 2,
+        "53": 2,
+        "35": 2,
+        "30": 2,
+        "43": 2,
+        "37": 2,
+        "46": 2,
+        "48": 2,
+        "14": 2
+      },
+      "exposure_mean": 2.0,
+      "exposure_stddev": 0.0,
+      "min_number_exposure_observed": 2,
+      "max_number_exposure_observed": 2
+    },
+    "contract": {
+      "predictive_scores_unchanged": true,
+      "portfolio_only": true,
+      "no_claim_of_draw_predictability_gain": true
+    },
+    "source": {
+      "freeze_file": "SMART_3067_CHAMPION_CHALLENGER_FREEZE.json",
+      "target_contest": 3067,
+      "cutoff_contest": 3066,
+      "head": "champion"
+    }
+  },
+  "checks": {
+    "pre_result_freeze": true,
+    "causal_cutoff": true,
+    "single_game_preserved": true,
+    "single_game_control_valid": true,
+    "primary_card_is_single_game": true,
+    "primary_card_selector_pass": true,
+    "primary_card_not_forced_to_champion_top6": true,
+    "portfolio_not_primary_product": true,
+    "solver_optimal": true,
+    "objective_gap_zero": true,
+    "overlap_within_contract": true,
+    "portfolio_only": true,
+    "scores_unchanged": true,
+    "canonical_full_candidate_coverage": true,
+    "canonical_balanced_exposure": true,
+    "canonical_minimum_overlap_bound": true
+  },
+  "contract": {
+    "post_scoring_component": true,
+    "predictive_model_unchanged": true,
+    "primary_selector_replaces_raw_top6": true,
+    "primary_output_is_single_card": true,
+    "portfolio_requires_explicit_multicard_request": true,
+    "no_retroactive_result_use": true,
+    "no_claim_of_predictability_gain": true
+  }
+}

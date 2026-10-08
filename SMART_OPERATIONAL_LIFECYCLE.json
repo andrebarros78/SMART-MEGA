@@ -1,23 +1,23 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "REVIEWED",
-  "revision": 23,
+  "state": "HOLD",
+  "revision": 24,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3067,
-  "completed_contest": 3066,
-  "previous_state": "ADJUDICATED",
-  "transition": "ADJUDICATED_TO_REVIEWED",
-  "transition_actor": "operator_review_complete",
-  "transition_utc": "2026-10-08T20:23:57.328072+00:00",
-  "previous_lifecycle_sha256": "8a316ce5a11458fc0e6b32d51f6a29006849def695f262a546d9a78d50df2b99",
+  "target_contest": 3068,
+  "completed_contest": 3067,
+  "previous_state": "REVIEWED",
+  "transition": "REVIEWED_TO_HOLD",
+  "transition_actor": "smart_rollover.canonical_rollover",
+  "transition_utc": "2026-10-08T20:25:51.139760+00:00",
+  "previous_lifecycle_sha256": "777b1171fedca4f702459b8f70f9208d0e9459fd484658ab60853f60c786e11d",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "09da3eded9b6c70d786b94863a894c2a9006e7d438c377f503db3c434e6b00be"
+      "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
     },
     "post_result_review": {
       "file": "SMART_POST_RESULT_REVIEW_3066.json",
@@ -43,8 +43,8 @@
       "epoch_id": "operator-3067-e305750ba8e6-20261006T010444976861Z"
     },
     "rollover_archive": {
-      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3062/operator-3062-dce4e8ec9118-20260924T180535590187Z/ARCHIVE_MANIFEST.json",
-      "sha256": "cab7010147cba9a9a9dc59bc921ac268459e8dfceade5203da94c56c7c905142"
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
+      "sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963"
     },
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
@@ -77,5 +77,5 @@
       "official_result_batch": null
     }
   },
-  "sha256": "777b1171fedca4f702459b8f70f9208d0e9459fd484658ab60853f60c786e11d"
+  "sha256": "864173612041ee1805a37e632f141d0696048138d056296aa0c9e2069a5f426b"
 }
