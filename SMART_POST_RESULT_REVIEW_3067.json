@@ -1,0 +1,67 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3067,
+  "next_target": 3068,
+  "created_utc": "2026-10-08T20:22:36.589204+00:00",
+  "source": "CANONICAL_ADJUDICATED_3067_POST_RESULT_SEQUENCE",
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+    "history_max": 3067,
+    "row_count": 3067
+  },
+  "adjudication": {
+    "actual_numbers": [
+      1,
+      4,
+      17,
+      33,
+      41,
+      52
+    ],
+    "frozen_card": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "hits": 0,
+    "post_result_report_file": "SMART_POST_RESULT_REPORT_3067.json",
+    "post_result_report_sha256": "3635c90a295b56e4479b41bb2c8c1af97f56cfc04172c70e4a744de0beea09bb",
+    "ledger_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
+    "event_counts": {
+      "FREEZE": 1,
+      "ADJUDICATION": 1,
+      "LEARNING_UPDATE": 1,
+      "SEQUENTIAL_PROOF": 1
+    },
+    "source_provenance": "CAIXA_PUBLISHED_OBSERVED_RESULT;NO_DIRECT_API_INGEST_PROOF"
+  },
+  "learning": {
+    "source_freeze_preserved": true,
+    "state_file": "runtime/learning_epochs/operator-3067-e305750ba8e6-20261006T010444976861Z/SMART_SIGNAL_STATE_3067_LEARNED.json",
+    "state_sha256": "d34024073373f3c9a320e4707c94d806506c376795618ab43c58038a62ec19c3",
+    "canonical_history_advance_file": "SMART_CANONICAL_HISTORY_ADVANCE_3067.json",
+    "canonical_history_advance_sha256": "973e97b9f4bdcf09f6250ee51996816103f9407d5fae864fee1afe9cabf714bd",
+    "sequence_sha256": "302e0ebae7917976ae8366a738222fd4cd284d89c9320c4df2657eac3f0af92f",
+    "after_adjudication": true,
+    "retrospective_forecast_generated": false
+  },
+  "learning_policy": {
+    "prospective_nonregression_required_for_weight_promotion": true,
+    "automatic_weight_promotion_authorized_by_this_review": false,
+    "future_information_used_for_3067_prediction": false
+  },
+  "operator_next_action": "HOLD_THEN_AUTHORIZE_NEXT_CYCLE_3068",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "reviewed_utc": "2026-10-08T20:22:36.597960+00:00",
+  "parecer": "3067_ADJUDICATED_LEARNED_HISTORY_ADVANCED;NO_SIX_OF_SIX;3068_REQUIRES_NEW_PRE_DRAW_GENERATION",
+  "sha256": "84013cc81070c005b8bf92f249c52b12af0d77b419c9a87db322ffb5e23b0a41"
+}
