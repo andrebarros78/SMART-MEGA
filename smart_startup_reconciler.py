@@ -61,6 +61,43 @@ def _record(checks: dict[str, bool], details: dict[str, Any], name: str, ok: boo
         details[name] = detail
 
 
+def _valid_withdrawn_cycle_hold(root: Path, lifecycle: dict[str, Any], authority: dict[str, Any]) -> bool:
+    """Allow same-target consumed authority only with authenticated pre-freeze withdrawal."""
+    target = int(lifecycle.get("target_contest", -1))
+    completed = int(lifecycle.get("completed_contest", -1))
+    if (lifecycle.get("state") != "HOLD"
+            or lifecycle.get("previous_state") != "PREPARED"
+            or lifecycle.get("transition_actor") != "operator_withdraw_pre_freeze"
+            or target != completed + 1
+            or authority.get("consumed") is not True
+            or int(authority.get("target_contest", -1)) != target):
+        return False
+    record = (lifecycle.get("evidence") or {}).get("pre_freeze_withdrawal")
+    if not isinstance(record, dict) or not isinstance(record.get("file"), str):
+        return False
+    proof_path = (root / record["file"]).resolve()
+    try:
+        proof_path.relative_to(root.resolve())
+    except ValueError:
+        return False
+    if not proof_path.is_file():
+        return False
+    if hashlib.sha256(proof_path.read_bytes()).hexdigest() != record.get("sha256"):
+        return False
+    proof = _read_hashed(proof_path, "SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1")
+    checks = proof.get("checks") if isinstance(proof, dict) else None
+    return (
+        proof.get("status") == "WITHDRAWN_PRE_FREEZE"
+        and int(proof.get("target_contest", -1)) == target
+        and proof.get("active_pointer_removed") is True
+        and authority.get("prepared_epoch_id") == proof.get("epoch_id")
+        and isinstance(checks, dict)
+        and bool(checks)
+        and all(value is True for value in checks.values())
+        and not (root / "SMART_ACTIVE_EPOCH.json").exists()
+    )
+
+
 def reconcile(root: str | Path, target: int | None = None, *, include_authority_freshness: bool = False) -> dict[str, Any]:
     root = Path(root).resolve()
     checks: dict[str, bool] = {}
@@ -132,8 +169,12 @@ def reconcile(root: str | Path, target: int | None = None, *, include_authority_
                 consistency = consistency and int(hold.get("next_target", -1)) == int(life_target)
                 consistency = consistency and int(hold.get("completed_contest", -1)) == int(completed)
             if authority is not None:
-                consistency = consistency and bool(authority.get("consumed") is True)
-                consistency = consistency and int(authority.get("target_contest", -1)) <= int(completed)
+                ordinary_completed_hold = (
+                    authority.get("consumed") is True
+                    and int(authority.get("target_contest", -1)) <= int(completed)
+                )
+                withdrawn_pre_freeze_hold = _valid_withdrawn_cycle_hold(root, lifecycle, authority)
+                consistency = consistency and (ordinary_completed_hold or withdrawn_pre_freeze_hold)
         elif state == "AUTHORIZED":
             consistency = consistency and active is None and hold is not None and authority is not None
             if authority is not None:
