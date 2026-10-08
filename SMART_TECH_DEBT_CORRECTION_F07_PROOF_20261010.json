@@ -1,0 +1,66 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F07_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F07",
+  "phase_name": "SKILLS_E_ADAPTERS",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T11:54:35-03:00",
+  "baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f",
+  "implementation_commit": "4bf2c8805e76a87692a9b8d45098d08d49afb504",
+  "certified_head": "f947fcfccad8b0c54744f34bcf531979e2ad1c60",
+  "registry": {
+    "path": "SMART_SKILL_ADAPTER_REGISTRY.json",
+    "blob_sha": "becda39113d7c3d4e0dbdbfe77c6d0c53d2d29f3",
+    "schema": "SMART_SKILL_ADAPTER_REGISTRY_V1",
+    "registry_sha256": "ebee6dfc97828710760525ee8278c26a03f4e6f8f7f5f4dcfe8e4c63c8396faa",
+    "summary": {
+      "capabilities": 41,
+      "native_adapters": 37,
+      "reference_only": 4,
+      "external_quarantined_sources": 21,
+      "active_native": 0,
+      "external_executions": 0
+    },
+    "gate": {
+      "status": "PASS",
+      "errors": []
+    }
+  },
+  "runtime_binding": {
+    "file": "smart_skill_runtime.py",
+    "alias_state": "NATIVE_ADAPTER",
+    "reference_state": "REFERENCE_ONLY",
+    "external_state": "QUARANTINED_SOURCE",
+    "per_invocation_adapter_binding_sha256": true,
+    "per_invocation_native_probe_result_sha256": true,
+    "total_integration_gate": "G10_SKILL_ADAPTER_CONSUMPTION",
+    "direct_named_skill_execution": false,
+    "external_source_code_executed": false,
+    "predictive_weight_authorized": false,
+    "freeze_mutation_authorized": false,
+    "active_native_promotion_authorized": false
+  },
+  "validation": {
+    "ci_run_id": 37795149687,
+    "smoke_run_id": 37795149589,
+    "integrity_run_id": 37795149747,
+    "tests": 1108,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success",
+    "specific_tests": [
+      "test_f07_separates_native_aliases_reference_and_external_sources",
+      "test_f07_registry_is_reproducible_from_current_sources",
+      "test_f07_skill_runtime_consumes_exact_certified_native_binding",
+      "test_f07_unauthorized_state_and_binding_tampering_fail_closed",
+      "test_f07_manifest_policy_tampering_rejected",
+      "test_f07_total_integration_gate_checks_adapter_consumption"
+    ]
+  },
+  "proof_boundary": "F07 proves precise separation of sources, non-callable references and native probe aliases, hashed bindings consumed in runtime and fail-closed adapter registry. It does not prove direct execution of third-party named skills, autonomous/LLM agency, predictive gain or active-native promotion.",
+  "next_phase": "F08_COMPONENTES_PARALELOS"
+}

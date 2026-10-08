@@ -7,20 +7,19 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T14:43:09Z",
+  "last_update_utc": "2026-10-08T14:54:35Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F07",
-  "last_proven_phase": "F06",
-  "last_proven_head": "53cf3fe4b4ee91ede84983163d5dfdb17bc8521c",
+  "current_phase": "F08",
+  "last_proven_phase": "F07",
+  "last_proven_head": "f947fcfccad8b0c54744f34bcf531979e2ad1c60",
   "open_deficiencies": [
-    "F07 skill/adapters semantics not yet reconciled",
     "F08 parallel components not yet reconciled",
     "F09 SDK/LLM selective evaluation not yet executed",
     "F10 disconnection tests not yet implemented",
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F07_SKILL_ADAPTER_REGISTRY_AND_CONSUMPTION",
+  "next_required_action": "EXECUTE_F08_COMPONENTES_PARALELOS",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -172,16 +171,25 @@
     },
     "F07": {
       "name": "SKILLS_E_ADAPTERS",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "baseline head 07ea4327716f5c576f877e618169a092cc895f7f",
-        "existing 37 named capability aliases execute native owner probes, not named external skills",
-        "four capabilities non-callable source references; 21 external source manifests quarantined",
-        "F07 separated NATIVE_ADAPTER, REFERENCE_ONLY and QUARANTINED_SOURCE in independent registry",
-        "unproven ACTIVE_NATIVE promotion forbidden; direct source execution remains false",
-        "skill runtime invocation now consumes hashed adapter binding and native probe evidence",
-        "total integration G10 checks adapter registry + consumption",
-        "GitHub CI must generate and certify SMART_SKILL_ADAPTER_REGISTRY.json"
+        "baseline head: 07ea4327716f5c576f877e618169a092cc895f7f",
+        "implementation commit: 4bf2c8805e76a87692a9b8d45098d08d49afb504",
+        "certified head: f947fcfccad8b0c54744f34bcf531979e2ad1c60",
+        "skill adapter registry blob: becda39113d7c3d4e0dbdbfe77c6d0c53d2d29f3",
+        "adapter registry sha256: ebee6dfc97828710760525ee8278c26a03f4e6f8f7f5f4dcfe8e4c63c8396faa",
+        "41 capabilities classified: 37 NATIVE_ADAPTER + 4 REFERENCE_ONLY",
+        "21 external skill sources explicitly QUARANTINED_SOURCE",
+        "ACTIVE_NATIVE=0; external code executions=0",
+        "all native aliases remain METHODOLOGY_ALIAS_TO_NATIVE_ROLE_PROBE",
+        "skill invoke consumes hashed adapter binding and native probe result",
+        "total integration G10 checks adapter registry and actual invocation binding",
+        "tampered adapter binding and external quarantine policy fail closed",
+        "CI skill adapter registry gate PASS",
+        "regression=1108 tests 0 failures 0 errors 0 skipped",
+        "Repository Integrity=success",
+        "GitHub Operator smoke=success",
+        "GitHub certification=success"
       ]
     },
     "F08": {
