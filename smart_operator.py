@@ -581,6 +581,7 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
 def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
+    assert_lifecycle_state(root, "PREPARED", target_contest=int(target))
     active_path = root / ACTIVE_PATH
     active = verify_active_epoch(active_path)
     if active.get("operator_selected_target") is not True:
@@ -647,7 +648,15 @@ def withdraw_pre_freeze_operation(root: str | Path, target: int) -> dict[str, An
     temporary = proof_path.with_suffix(".json.tmp")
     temporary.write_text(json.dumps(proof, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     temporary.replace(proof_path)
-    return {**proof, "proof_file": str(proof_path.relative_to(root)).replace("\\", "/")}
+    lifecycle = transition_lifecycle(
+        root, "PREPARED", "HOLD", target_contest=int(target),
+        completed_contest=int(target) - 1, actor="operator_withdraw_pre_freeze",
+        evidence={"pre_freeze_withdrawal": {
+            "file": str(proof_path.relative_to(root)).replace("\\", "/"),
+            "sha256": sha256_file(proof_path),
+        }},
+    )
+    return {**proof, "proof_file": str(proof_path.relative_to(root)).replace("\\", "/"), "operational_lifecycle": lifecycle}
 
 
 @locked_operation("RECOVER_MISSED_UNPREPARED")

@@ -11,7 +11,7 @@ STATE_FILE = "SMART_OPERATIONAL_LIFECYCLE.json"
 STATES = ("IDLE","AUTHORIZED","PREPARING","PREPARED","FREEZING","FROZEN","ADJUDICATED","REVIEWED","HOLD")
 ALLOWED = {
     "IDLE":{"AUTHORIZED"},"HOLD":{"AUTHORIZED"},"AUTHORIZED":{"PREPARING"},
-    "PREPARING":{"PREPARED"},"PREPARED":{"FREEZING"},"FREEZING":{"FROZEN"},
+    "PREPARING":{"PREPARED"},"PREPARED":{"FREEZING","HOLD"},"FREEZING":{"FROZEN"},
     "FROZEN":{"ADJUDICATED"},"ADJUDICATED":{"REVIEWED"},"REVIEWED":{"HOLD"},
 }
 
@@ -165,7 +165,7 @@ def transition(root: str | Path, expected: str | Iterable[str], new_state: str, 
     # to the next contest.  Validate the pre-transition document against the
     # completed contest, not against the post-transition target.
     precondition_target = target_contest
-    if new_state == "HOLD" and target_contest is not None:
+    if new_state == "HOLD" and target_contest is not None and expected == "REVIEWED":
         precondition_target = completed_contest if completed_contest is not None else int(target_contest) - 1
     current=assert_state(root,expected,target_contest=precondition_target)
     if current.get("authority") == "PYTEST_SANDBOX_ONLY":
@@ -181,6 +181,28 @@ def transition(root: str | Path, expected: str | Iterable[str], new_state: str, 
         if completed_contest is None: completed_contest=int(current_target)
         if target_contest is None or int(target_contest)!=int(completed_contest)+1:
             raise LifecycleError("REVIEWED -> HOLD requires next target = completed + 1")
+    elif old=="PREPARED" and new_state=="HOLD":
+        if actor != "operator_withdraw_pre_freeze":
+            raise LifecycleError("PREPARED -> HOLD requires the pre-freeze withdrawal actor")
+        if (target_contest is None or int(target_contest)!=int(current_target)
+                or completed_contest is None or int(completed_contest)!=int(current_target)-1
+                or int(current.get("completed_contest", -1)) != int(completed_contest)):
+            raise LifecycleError("withdrawal cannot alter the target or completed contest")
+        proof_ref = (evidence or {}).get("pre_freeze_withdrawal")
+        if not isinstance(proof_ref, dict) or not isinstance(proof_ref.get("file"), str):
+            raise LifecycleError("withdrawal requires a bound proof")
+        proof_path=(root/proof_ref["file"]).resolve()
+        try: proof_path.relative_to(root)
+        except ValueError as exc: raise LifecycleError("withdrawal proof escapes root") from exc
+        proof=_read_hashed(proof_path,"SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1")
+        checks=proof.get("checks")
+        if (proof.get("status")!="WITHDRAWN_PRE_FREEZE"
+                or int(proof.get("target_contest",-1))!=int(current_target)
+                or proof.get("active_pointer_removed") is not True
+                or not isinstance(checks,dict) or not checks or not all(v is True for v in checks.values())
+                or proof_ref.get("sha256")!=_sha_file(proof_path)
+                or (root/"SMART_ACTIVE_EPOCH.json").exists()):
+            raise LifecycleError("withdrawal proof or active pointer is invalid")
     elif completed_contest is None:
         completed_contest=current.get("completed_contest")
 
