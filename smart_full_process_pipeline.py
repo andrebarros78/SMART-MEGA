@@ -14,6 +14,7 @@ from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
 from smart_learning_epoch_reset import ACTIVE_PATH, verify_active_epoch, write_active_epoch
 from smart_operational_lifecycle import assert_state as assert_lifecycle_state, transition as transition_lifecycle
+from smart_operation_recovery import recover_interrupted_freeze_operation
 from smart_operation_lock import locked_operation, update_current_process_lock
 from smart_startup_reconciler import assert_reconciled
 from smart_storage_surfaces import require_within

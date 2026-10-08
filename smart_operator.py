@@ -28,6 +28,8 @@ from smart_champion_challenger import active_freeze, load_ledger, reconcile_comp
 from smart_canonical_history_advance import advance_completed_epoch
 from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import _rel, _resolve, run_full_process
+from smart_operation_recovery import recover_interrupted_freeze_operation
+from smart_operator_contract import contract, validate_target_sequence
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
 from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
@@ -304,26 +306,7 @@ def _consume_reserved_next_cycle_authority(root: Path, target: int, transaction_
         "consumption_transaction_id": str(transaction_id),
         "prepared_epoch_id": str(prepared_epoch_id),
         "active_epoch_sha256_at_consumption": active["sha256"],
-        "authority_sha256_before_consumption": reservation_sha,
-    })
-    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=reservation_sha)
-
-
-
-def validate_target_sequence(contests: Iterable[int], target: int) -> dict[str, int]:
-    values = [int(x) for x in contests]
-    if isinstance(target, bool) or not isinstance(target, int) or target <= 1:
-        raise ValueError("operator target must be a positive contest integer greater than 1")
-    if not values:
-        raise ValueError("canonical contest history is empty")
-    if len(values) != len(set(values)):
-        raise ValueError("canonical contest history contains duplicates")
-    ordered = sorted(values)
-    if ordered != list(range(ordered[0], ordered[-1] + 1)):
-        raise ValueError("canonical contest history contains gaps")
-    cutoff = int(target) - 1
-    if ordered[-1] != cutoff:
-        raise ValueError(f"operator target requires canonical history through contest {cutoff}; observed max={ordered[-1]}")
+        "authority_sha256_beftest {cutoff}; observed max={ordered[-1]}")
     return {"target_contest": int(target), "cutoff_contest": cutoff, "history_max": ordered[-1]}
 
 
@@ -338,41 +321,6 @@ def validate_target_against_history(data_path: str | Path, target: int) -> dict[
     result = validate_target_sequence(contests, int(target))
     result.update({"data_file": str(path), "data_sha256": sha256_file(path), "row_count": len(contests)})
     return result
-
-
-def contract() -> dict[str, Any]:
-    return {
-        "schema": SCHEMA,
-        "product_completion_independent_of_operation": True,
-        "operator_selects_target": True,
-        "target_required_for_prepare_and_freeze": True,
-        "supported_actions": ["status", "preflight", "prepare", "withdraw", "recover-missed", "catch-up", "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "post-result-report", "review", "hold", "terminal"],
-        "post_result_review_required_before_next_prepare": True,
-        "prepare_requires_explicit_next_cycle_authority": True,
-        "automatic_next_target_prepare_forbidden": True,
-        "post_result_terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
-        "pre_freeze_withdrawal_preserves_failed_preparation": True,
-        "missed_unfrozen_recovery_is_non_predictive": True,
-        "missed_unfrozen_recovery_requires_post_draw_official_result": True,
-        "missed_unprepared_recovery_is_non_predictive": True,
-        "missed_unprepared_recovery_requires_completed_prior_epoch": True,
-        "missed_result_catchup_is_non_predictive_and_chainable": True,
-        "freeze_is_operational_not_construction_gate": True,
-        "manual_generation_authority_required_for_prospective_freeze": True,
-        "analysis_calibration_and_testing_do_not_require_generation_authority": True,
-        "adjudication_is_operational_not_construction_gate": True,
-        "generic_active_epoch_terminal_executor": True,
-        "terminal_action_revalidates_official_consensus_and_scientific_guards": True,
-        "arbitrary_future_target_supported_when_history_is_complete_through_target_minus_one": True,
-        "fail_closed_on_history_gap_or_target_result_present": True,
-        "scientific_terminal_claim_independent_of_product_completion": True,
-        "all_attempts_preserved_across_epochs": True,
-        "supersede_requires_completed_epoch_or_explicit_withdrawal": True,
-        "preflight_is_read_only": True,
-        "preflight_fails_closed_on_stale_certification": True,
-        "preflight_validates_active_epoch_integrity": True,
-        "technical_withdrawal_allows_same_target_reauthorization_with_proof": True,
-    }
 
 
 def _archive_active(root: Path, active_path: Path) -> str | None:
@@ -1006,24 +954,6 @@ def _existing_frozen_freeze_summary(root: str | Path, target: int) -> dict[str, 
     if active.get("status")!="FROZEN" or int(active.get("target_contest",-1))!=int(target) or fp is None or not fp.is_file() or sha256_file(fp)!=fs:
         raise ValueError("existing frozen epoch is not bound to requested target")
     return {"schema":"SMART_FREEZE_OPERATION_1","status":"FROZEN","idempotent_replay":True,"target_contest":int(target),"cutoff_contest":int(active.get("cutoff_contest",target-1)),"epoch_id":active.get("epoch_id"),"freeze_file":_rel(root,fp),"freeze_sha256":fs,"active_epoch_sha256":active.get("sha256"),"result_used":False,"mutated_state":False}
-
-def recover_interrupted_freeze_operation(root: str | Path, target: int, *, reason: str="operator_recovery") -> dict[str, Any]:
-    root=Path(canonical_root(root)).resolve()
-    from smart_operational_lifecycle import load_lifecycle,lifecycle_path,_atomic_write
-    cur=load_lifecycle(root); st=str(cur.get("state") or "")
-    if st=="FROZEN" and int(cur.get("target_contest",-1))==int(target): return {"status":"ALREADY_FROZEN","target_contest":int(target),"lifecycle_sha256":cur.get("sha256")}
-    if st!="FREEZING" or int(cur.get("target_contest",-1))!=int(target): return {"status":"NOOP","target_contest":int(target),"lifecycle_state":st,"lifecycle_sha256":cur.get("sha256")}
-    active=verify_active_epoch(root / ACTIVE_PATH)
-    if active.get("status")!="RESET_READY" or int(active.get("target_contest",-1))!=int(target): raise RuntimeError("cannot recover interrupted freeze: active epoch is not RESET_READY")
-    paths=active.get("state_paths") or {}; ledger=_resolve(root,paths["ledger"]); epoch=ledger.parent
-    guarded=[_resolve(root,paths[k]) for k in ("state","activation_authority","expansion_registry","freeze")]+[epoch/f"SMART_{int(target)}_FRONTIER_SHADOW_FREEZE.json",epoch/"SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",epoch/"POST_FREEZE_TOTAL_INTEGRATION.json"]
-    existing=[_rel(root,x) for x in guarded if x.exists()]
-    if existing: raise RuntimeError(f"cannot recover interrupted freeze: material artifacts exist: {existing}")
-    if not ledger.is_file() or sha256_file(ledger)!=active.get("canonical_ledger_seed_sha256"): raise RuntimeError("cannot recover interrupted freeze: ledger seed mismatch")
-    ev={**(cur.get("evidence") or {}),"interrupted_freeze_recovery":{"reason":str(reason),"target_contest":int(target),"active_epoch_sha256":active.get("sha256"),"ledger_sha256":sha256_file(ledger),"material_artifacts_absent":True}}
-    nxt={"schema":cur.get("schema","SMART_OPERATIONAL_LIFECYCLE_1"),"state":"PREPARED","revision":int(cur["revision"])+1,"project":cur.get("project","SMART-MEGA"),"effective_version":cur.get("effective_version","6.3.2"),"target_contest":int(target),"completed_contest":cur.get("completed_contest"),"previous_state":st,"transition":"FREEZING_TO_PREPARED_RECOVERY","transition_actor":"interrupted_freeze_recovery","transition_utc":datetime.now(timezone.utc).isoformat(),"previous_lifecycle_sha256":cur["sha256"],"authority":"SINGLE_OPERATIONAL_LIFECYCLE","legacy_documents_are_evidence_not_authority":True,"migration_mode":cur.get("migration_mode"),"evidence":ev}
-    out=_atomic_write(lifecycle_path(root),nxt,expected_revision=int(cur["revision"]),expected_sha256=cur["sha256"])
-    return {"status":"RECOVERED_INTERRUPTED_FREEZE","target_contest":int(target),"lifecycle_sha256":out["sha256"],"result_used":False}
 
 @startup_guarded("FREEZE")
 @idempotent_operation('FREEZE')

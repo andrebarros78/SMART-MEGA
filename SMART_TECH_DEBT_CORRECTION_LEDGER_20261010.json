@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T11:38:55Z",
+  "last_update_utc": "2026-10-08T12:03:05Z",
   "mission_status": "ACTIVE",
   "current_phase": "F02",
   "last_proven_phase": "F01",
@@ -25,7 +25,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F02_DEPENDENCIA_CIRCULAR",
+  "next_required_action": "VALIDATE_F02_DEPENDENCY_DIRECTION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -61,8 +61,14 @@
     },
     "F02": {
       "name": "DEPENDENCIA_CIRCULAR",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F02 baseline rediscovered at 06aa686788111a6bcdec4f960340615574b754a3",
+        "direct smart_full_process_pipeline -> smart_operator recovery edge identified",
+        "smart_product_certification -> smart_operator contract edge identified as indirect return path",
+        "neutral recovery and operator-contract extraction prepared",
+        "correction commit pending canonical CI validation"
+      ]
     },
     "F03": {
       "name": "EXECUTOR_LEGADO",
@@ -127,5 +133,6 @@
     "early_registration_authorized": true
   },
   "f01_baseline_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
-  "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452"
+  "f00_certified_head": "422ebd32cadd8af2af9be7a493029b6c63658452",
+  "f02_baseline_head": "06aa686788111a6bcdec4f960340615574b754a3"
 }

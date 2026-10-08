@@ -20,7 +20,7 @@ from smart_agent_skill_orchestration import build_orchestration
 from smart_material_deficiency_registry import load_registry
 from smart_material_deficiency_policy import material_blockers
 from smart_global_integrity import CRITICAL_SOURCE_FILES
-from smart_operator import contract as operator_contract, validate_target_sequence
+from smart_operator_contract import contract as operator_contract, validate_target_sequence
 from smart_regression_evidence import junit_summary
 from smart_runtime_guard import audit as runtime_audit
 from smart_total_integration_gate import evaluate as total_integration_evaluate
