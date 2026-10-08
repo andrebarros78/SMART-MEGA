@@ -7,18 +7,17 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T15:51:11Z",
+  "last_update_utc": "2026-10-08T16:08:15Z",
   "mission_status": "ACTIVE",
-  "current_phase": "F09",
-  "last_proven_phase": "F08",
-  "last_proven_head": "33a39a1d3ebd3f920107de9d6b5f4680c98460b6",
+  "current_phase": "F10",
+  "last_proven_phase": "F09",
+  "last_proven_head": "ae44ff931dabdad229b95ac29024fdda4b93b4df",
   "open_deficiencies": [
-    "F09 SDK/LLM selective evaluation not yet executed",
     "F10 disconnection tests not yet implemented",
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "VALIDATE_F09_TYPED_SDK_HANDOFF_AND_NO_LLM_PROMOTION",
+  "next_required_action": "EXECUTE_F10_TESTES_DE_DESCONEXAO",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -206,16 +205,19 @@
     },
     "F09": {
       "name": "SDK_LLM_SELETIVO",
-      "status": "IN_PROGRESS",
+      "status": "PHASE_PROVEN",
       "evidence": [
-        "F09 baseline head: f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
-        "actual lacuna: nested handoff evidence field shape/type missing from F06 hash/route checks",
-        "pydantic 2.13.5 already present in pinned requirements.lock.txt selected for strict typed contract",
-        "no external LLM SDK chosen; no measured causal predictive gain or required provider call",
-        "databricks-sdk and mlflow-skinny retained without new consumption until use case justified",
-        "native F06 handoff creation, consumption and G11 use typed Pydantic SDK validation",
-        "adversarial tests reject missing evidence hash, unexpected field, malformed hash, unauthorized decision and forged id",
-        "no inference, weight, ranking, freeze, card changes; existing deterministic execution retained"
+        "baseline f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
+        "implementation commit 5967fcce4b6a60b62e1791e90ab0839068e8be44",
+        "certified commit ae44ff931dabdad229b95ac29024fdda4b93b4df",
+        "existing pydantic==2.13.5 selected for strict evidence-handoff validation; no dependency installation",
+        "typed Pydantic contract consumed by production agent handoff creation and consumption",
+        "SDK failure on missing evidence fields, malformed hashes, unexpected metadata, changed authority, forged id and invalid sequence",
+        "G11_SDK_LLM_SELECTIVE in total-integration gate; no external LLM, no provider requests or predictive/freeze authority",
+        "Databricks and MLflow SDKs not consumed: no verified gap requiring their remote APIs or tracking service",
+        "full regression: 1114 tests, 0 failures, 0 errors, 0 skips; four F09 focused tests",
+        "operator smoke and repository integrity success",
+        "GitHub CI and certification success"
       ]
     },
     "F10": {

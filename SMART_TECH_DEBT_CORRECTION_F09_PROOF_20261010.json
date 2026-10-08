@@ -1,0 +1,56 @@
+{
+  "schema": "SMART_TECH_DEBT_CORRECTION_F09_PROOF_V1",
+  "iane_id": "IANE-SMART-MEGA-TECH-DEBT-CORRECTION-20261010",
+  "phase": "F09",
+  "phase_name": "SDK_LLM_SELETIVO",
+  "status": "PHASE_PROVEN",
+  "observed_at_local": "2026-10-08T13:08:15-03:00",
+  "baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
+  "implementation_commit": "5967fcce4b6a60b62e1791e90ab0839068e8be44",
+  "certified_source_head": "ae44ff931dabdad229b95ac29024fdda4b93b4df",
+  "consumed_sdk": {
+    "library": "pydantic",
+    "installed_locked_version": "2.13.5",
+    "function": "strict typed handoff validation at producer and consumer",
+    "producer": "smart_agent_handoff_runtime.py/create_handoff",
+    "consumer": "smart_agent_handoff_runtime.py/consume_handoff",
+    "certification_gate": "smart_total_integration_gate.py/G11_SDK_LLM_SELECTIVE",
+    "runtime_contract": "PYDANTIC_STRICT_V2",
+    "code_executed_in_canonical_production": true,
+    "new_dependency": false,
+    "decision_effect": "EVIDENCE_GATE_INPUT_ONLY"
+  },
+  "withheld": {
+    "llm_provider": "NOT_ACTIVATED",
+    "reason": "No objective causal superiority, independent validation or necessity for probabilistic decision; no provider credential or API invoked.",
+    "databricks_sdk": "NOT_CONSUMED_NO_JUSTIFIED_REMOTE_GAP",
+    "mlflow_skinny": "NOT_CONSUMED_EXISTING_EPOCH_HASHED_REPORT_SUFFICIENT",
+    "external_llm_sdk_installation": false,
+    "direct_llm_predictive_authority": false,
+    "weight_mutation_authorized": false,
+    "freeze_mutation_authorized": false
+  },
+  "regression": {
+    "run_id": 37804668155,
+    "smoke_run_id": 37804668170,
+    "integrity_run_id": 37804667861,
+    "tests": 1114,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "ci": "success",
+    "certification": "success",
+    "operator_smoke": "success",
+    "repository_integrity": "success",
+    "f09_tests": [
+      "test_f09_existing_sdk_validates_live_agent_handoffs",
+      "test_f09_sdk_rejects_bad_evidence_structure_even_with_rehashed_payload",
+      "test_f09_sdk_rejects_forged_handoff_id_and_invalid_sequence",
+      "test_f09_live_consumption_proves_sdk_and_no_llm_authority"
+    ],
+    "canonical_registry_gate": "PASS",
+    "material_authority_components": 7
+  },
+  "proof_boundary": "F09 certifies Pydantic strict typed validation consumed by actual deterministic handoff runtime and objective decision not to adopt an unproven LLM or unused remote SDK. It does not claim LLM invocation, predictive gain, or completion of F10-F12.",
+  "next_phase": "F10_TESTES_DE_DESCONEXAO"
+}
