@@ -2,11 +2,62 @@ from __future__ import annotations
 
 import hashlib
 import json
-from typing import Any
+from typing import Any, Literal
+
+from pydantic import BaseModel, ConfigDict, Field, ValidationError
 
 HANDOFF_SCHEMA = "SMART_AGENT_HANDOFF_V1"
 LEDGER_SCHEMA = "SMART_AGENT_OPERATIONAL_HANDOFF_LEDGER_V1"
 DECISION_EFFECT = "EVIDENCE_GATE_INPUT_ONLY"
+SDK_CONTRACT = "PYDANTIC_STRICT_V2"
+
+
+class _EvidenceArtifact(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
+
+    path: str = Field(min_length=1)
+    sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+
+
+class _HandoffArtifact(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
+
+    producer: str = Field(min_length=1)
+    consumer: str = Field(min_length=1)
+    probe_id: str = Field(min_length=1)
+    probe_result_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    evidence_artifacts: list[_EvidenceArtifact] = Field(min_length=1)
+    source_payload_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    decision_effect: Literal["EVIDENCE_GATE_INPUT_ONLY"]
+    predictive_weight_authorized: Literal[False]
+    freeze_mutation_authorized: Literal[False]
+
+
+class _HandoffEnvelope(BaseModel):
+    model_config = ConfigDict(strict=True, extra="forbid")
+
+    schema: Literal["SMART_AGENT_HANDOFF_V1"]
+    handoff_id: str = Field(min_length=1)
+    producer: str = Field(min_length=1)
+    consumer: str = Field(min_length=1)
+    artifact: _HandoffArtifact
+    artifact_sha256: str = Field(pattern=r"^[a-f0-9]{64}$")
+    created_sequence: int = Field(gt=0)
+    consumed: bool
+    consumption_result: dict[str, Any] | None
+    decision_effect: Literal["EVIDENCE_GATE_INPUT_ONLY"]
+
+
+def validate_sdk_handoff(handoff: dict[str, Any]) -> None:
+    """Validate exact SDK contract without granting AI or decision authority."""
+    try:
+        model = _HandoffEnvelope.model_validate(handoff)
+    except ValidationError as exc:
+        raise ValueError("agent handoff typed SDK contract invalid") from exc
+    if model.handoff_id != f"{model.producer}->{model.consumer}:{model.artifact_sha256[:16]}":
+        raise ValueError("agent handoff id does not bind to artifact")
+    if model.artifact.producer != model.producer or model.artifact.consumer != model.consumer:
+        raise ValueError("agent handoff typed SDK route mismatch")
 
 
 def _sha256_json(value: Any) -> str:
@@ -36,7 +87,7 @@ def create_handoff(
         "freeze_mutation_authorized": False,
     }
     artifact_sha = _sha256_json(artifact_payload)
-    return {
+    result = {
         "schema": HANDOFF_SCHEMA,
         "handoff_id": f"{producer}->{consumer}:{artifact_sha[:16]}",
         "producer": str(producer),
@@ -48,6 +99,8 @@ def create_handoff(
         "consumption_result": None,
         "decision_effect": DECISION_EFFECT,
     }
+    validate_sdk_handoff(result)
+    return result
 
 
 def consume_handoff(
@@ -74,9 +127,11 @@ def consume_handoff(
         raise ValueError("agent handoff cannot carry predictive or freeze authority")
     if int(consumer_sequence) <= int(handoff.get("created_sequence", 0)):
         raise ValueError("agent handoff must be consumed after production")
+    validate_sdk_handoff(handoff)
     result = {
         "status": "CONSUMED",
         "validation": "SCHEMA_HASH_ROUTE_AUTHORITY_VALID",
+        "sdk_contract": SDK_CONTRACT,
         "consumer": str(consumer),
         "consumed_sequence": int(consumer_sequence),
         "artifact_sha256": observed,
@@ -148,11 +203,19 @@ def build_operational_handoff_ledger(executions: dict[str, dict[str, Any]]) -> d
             for r in records
         ),
         "decision_effect_evidence_only": all(r.get("decision_effect") == DECISION_EFFECT for r in records),
+        "sdk_contract_consumed": all(
+            isinstance(r.get("consumption_result"), dict)
+            and r["consumption_result"].get("sdk_contract") == SDK_CONTRACT
+            for r in records
+        ),
     }
     document = {
         "schema": LEDGER_SCHEMA,
         "status": "PASS" if not errors and all(checks.values()) else "FAIL",
         "execution_model": "DETERMINISTIC_ROLE_HANDOFF_CONSUMPTION",
+        "sdk_contract": SDK_CONTRACT,
+        "llm_provider": None,
+        "sdk_external_network_calls": 0,
         "autonomous_ai_agents": False,
         "llm_agents": False,
         "records": records,

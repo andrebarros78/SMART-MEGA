@@ -123,6 +123,13 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
             "runtime_consumed_registry": skills["checks"]["f07_per_invocation_binding_consumed"],
             "no_external_code_execution": adapter_registry["summary"]["external_executions"] == 0,
         },
+        "G11_SDK_LLM_SELECTIVE": {
+            "existing_structural_sdk_consumed": operational_handoffs["sdk_contract"] == "PYDANTIC_STRICT_V2",
+            "all_consumers_typed_validated": operational_handoffs["checks"]["sdk_contract_consumed"],
+            "no_external_provider_invoked": operational_handoffs["sdk_external_network_calls"] == 0,
+            "no_llm_provider_configured": operational_handoffs["llm_provider"] is None,
+            "no_agent_predictive_or_freeze_authority": runtime["checks"]["no_agent_predictive_or_freeze_authority"],
+        },
         "G9_SEMANTIC_TRUTH": {
             "agents_not_misrepresented_as_llm": all(
                 not agent["autonomous_ai_agent"] and not agent["llm_model"] for agent in agents
@@ -145,6 +152,15 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
         "gates": gates,
         "agent_inventory": agents,
         "operational_handoff_ledger": operational_handoffs,
+        "sdk_llm_selection": {
+            "structural_sdk": "pydantic",
+            "contract": operational_handoffs["sdk_contract"],
+            "provider": None,
+            "external_network_calls": 0,
+            "decision_effect": "EVIDENCE_GATE_INPUT_ONLY",
+            "predictive_weight_authorized": False,
+            "freeze_mutation_authorized": False,
+        },
         "skill_inventory": matrix,
         "skill_adapter_registry_sha256": adapter_registry["registry_sha256"],
         "file_audit": files,

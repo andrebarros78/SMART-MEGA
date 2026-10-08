@@ -1,0 +1,43 @@
+{
+  "schema": "SMART_F09_SDK_LLM_SELECTION_V1",
+  "phase": "F09_SDK_LLM_SELETIVO",
+  "source_commit": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
+  "assessment": {
+    "objective_gap": "F06 handoff validation checked schema label, route and artifact checksum but did not validate required nested evidence fields and strict JSON-compatible types when a payload was recomputed.",
+    "controlled_capability": "Strict Pydantic v2 schema validation of the existing deterministic F06 agent handoff boundary.",
+    "accepted_dependency": "pydantic==2.13.5",
+    "dependency_already_locked": true,
+    "new_dependency_installation": false,
+    "native_consumer": "smart_agent_handoff_runtime.py",
+    "downstream_gate": "smart_total_integration_gate.py/G11_SDK_LLM_SELECTIVE",
+    "evidence": "test_smart_f09_sdk_llm_selective.py",
+    "effect": "EVIDENCE_GATE_INPUT_ONLY"
+  },
+  "withheld": [
+    {
+      "name": "external LLM provider SDK",
+      "reason": "No validated causal benefit, provider contract, independent evaluation or prospective safeguard; no credentials or API calls introduced."
+    },
+    {
+      "name": "databricks-sdk==0.134.0",
+      "reason": "Present in dependency lock, but no verified operational dependency requiring remote Databricks API."
+    },
+    {
+      "name": "mlflow-skinny==3.15.2",
+      "reason": "Present in dependency lock; existing fine-tuning already provides epoch-scoped, hash-bound reports; tracking service or mutable run store adds unproven complexity."
+    }
+  ],
+  "execution_limits": {
+    "local_only": true,
+    "external_llm_invoked": false,
+    "third_party_llm_sdk_installed": false,
+    "llm_predictive_authority": false,
+    "dynamic_weight_mutation_authorized": false,
+    "freeze_mutation_authorized": false,
+    "predicted_card_mutation_authorized": false,
+    "no_leakage_or_future_result_access": true,
+    "standalone_pydantic_validation_only": true
+  },
+  "promotion_requirements": "LLM SDK may be adopted only after a specific gap, measured improvement versus deterministic baseline, causal validation and fail-closed provider/authority boundary are established.",
+  "status": "IMPLEMENTED_PENDING_CI"
+}

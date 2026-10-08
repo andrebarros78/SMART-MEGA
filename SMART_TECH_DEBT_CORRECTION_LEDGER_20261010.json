@@ -7,7 +7,7 @@
   "formal_start_date": "2026-10-10",
   "baseline_head": "44964a0c1f0133a034a3700614266bc1ad79ac42",
   "registration_local": "2026-10-08T06:57:15-03:00",
-  "last_update_utc": "2026-10-08T15:25:31Z",
+  "last_update_utc": "2026-10-08T15:51:11Z",
   "mission_status": "ACTIVE",
   "current_phase": "F09",
   "last_proven_phase": "F08",
@@ -18,7 +18,7 @@
     "F11 predictive non-regression not yet proven",
     "F12 final reconciliation and seal not yet executed"
   ],
-  "next_required_action": "EXECUTE_F09_SDK_LLM_SELETIVO",
+  "next_required_action": "VALIDATE_F09_TYPED_SDK_HANDOFF_AND_NO_LLM_PROMOTION",
   "phases": {
     "F00": {
       "name": "REGISTRO_CANONICO_E_IANE",
@@ -206,8 +206,17 @@
     },
     "F09": {
       "name": "SDK_LLM_SELETIVO",
-      "status": "PLANNED_NOT_STARTED",
-      "evidence": []
+      "status": "IN_PROGRESS",
+      "evidence": [
+        "F09 baseline head: f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b",
+        "actual lacuna: nested handoff evidence field shape/type missing from F06 hash/route checks",
+        "pydantic 2.13.5 already present in pinned requirements.lock.txt selected for strict typed contract",
+        "no external LLM SDK chosen; no measured causal predictive gain or required provider call",
+        "databricks-sdk and mlflow-skinny retained without new consumption until use case justified",
+        "native F06 handoff creation, consumption and G11 use typed Pydantic SDK validation",
+        "adversarial tests reject missing evidence hash, unexpected field, malformed hash, unauthorized decision and forged id",
+        "no inference, weight, ranking, freeze, card changes; existing deterministic execution retained"
+      ]
     },
     "F10": {
       "name": "TESTES_DE_DESCONEXAO",
@@ -244,5 +253,6 @@
   "f05_baseline_head": "41fd78eb88c0c1342bcae5bf8553f8cef8ea32fa",
   "f06_baseline_head": "6e8144a130e13ba324ff9a0aa083293abf1e37ee",
   "f07_baseline_head": "07ea4327716f5c576f877e618169a092cc895f7f",
-  "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c"
+  "f08_baseline_head": "2b652c796cebd84e463c3b9d39e1d8360811074c",
+  "f09_baseline_head": "f2fd70d6e5dd795d7cba3cb659cae29eb6d8fa7b"
 }
