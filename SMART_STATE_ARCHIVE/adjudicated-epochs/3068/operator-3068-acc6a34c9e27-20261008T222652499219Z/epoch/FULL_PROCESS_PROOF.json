@@ -1,0 +1,308 @@
+{
+  "schema": "SMART_FULL_PROCESS_PROOF_2",
+  "status": "PASS",
+  "project": "SMART-MEGA",
+  "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z",
+  "generated_utc": "2026-10-08T22:35:55.385524+00:00",
+  "engineering_activation_sha256": "acc6a34c9e270e14e82620eccd3810d301bc03316f6d797d78dcfbc2b18b2144",
+  "construction_authority_kind": "PRODUCT_CERTIFICATION",
+  "active_epoch_sha256": "ca8dd10db43930191037153b37a8e3c351841561aba39c6c99da28a1ce27baf0",
+  "target_contest": 3068,
+  "cutoff_contest": 3067,
+  "target_schedule": {
+    "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+    "target_contest": 3068,
+    "previous_contest": 3067,
+    "previous_contest_date": "06/10/2026",
+    "target_date": "08/10/2026",
+    "weekday": "quinta-feira",
+    "scheduled_datetime": "2026-10-08T21:00:00-03:00",
+    "scheduled_timezone": "America/Sao_Paulo",
+    "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+    "draw_time_policy_sha256": "443c8e77f10ec9c929b0d6dc6e96dc1b0d9facf0800ba9dc55fa86ebdd10e655",
+    "draw_time_policy_authority": "CAIXA_LOTERIAS_OFFICIAL_DRAW_RULES",
+    "source_file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+    "source_sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+    "source_line": "08/10/2026 quinta-feira 3800 7138 2452 3068 1318",
+    "source_count": 1,
+    "sources": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2026-10.pdf",
+        "sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+        "source_line": "08/10/2026 quinta-feira 3800 7138 2452 3068 1318"
+      }
+    ],
+    "rejected_occurrences_before_cutoff": [
+      {
+        "file": "runtime/procedural_sources/cronogramas_caixa/2024-03.pdf",
+        "target_date": "02/04/2024",
+        "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+      }
+    ],
+    "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+    "schedule_consensus": true,
+    "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+    "result_used": false
+  },
+  "freeze_window": {
+    "status": "PASS",
+    "scheduled_datetime": "2026-10-08T21:00:00-03:00",
+    "observed_at": "2026-10-08T22:29:56.146572+00:00",
+    "before_draw": true,
+    "freeze_authority_allowed": true,
+    "reason": "freeze authority is inside the pre-draw window"
+  },
+  "data_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/Mega-Sena_cutoff_3067.xlsx",
+  "data_sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8",
+  "reset_ledger_sha256": "7aa1d619c62ccfa036417f754c7bf61a9bc61d3552f3020a7800bada44616d88",
+  "final_ledger_sha256": "42df14031e81ce46b6076b0be4e78b8a251f6668b13cb427a3ad80cc9346aa2d",
+  "state_sha256": "2b7c498db9278dbc2bfd9386e9ac102ec1f14ac192621c69af98ca68bbe6bc15",
+  "freeze_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733",
+  "manual_generation_authority": {
+    "schema": "SMART_MANUAL_GENERATION_AUTHORITY_V1",
+    "target_contest": 3068,
+    "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z",
+    "data_sha256": "3ad2a43bd2806ec6963854b616e66c1a35f2772e1aa6777a2094025996fa48f8"
+  },
+  "fine_tuning": {
+    "status": "BASELINE_RETAINED",
+    "promotion_authorized": false,
+    "effective_candidate_id": "baseline",
+    "report_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_AI_FINE_TUNING_CURRENT.json",
+    "report_sha256": "f063b41b584b588b87529f8c69f8f796e5100454f071d059f093c8d374a81c9b",
+    "authority_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_AI_HYPERPARAMETERS.json",
+    "authority_sha256": "819739f80aba118cc977e8d46d870337cb72f1140096aaf30c90ec907fd9760a",
+    "authority_self_sha256": "56786124829c53ca23488b597f95803559603f575d1030ec63340ff8fdd031c2",
+    "holdout_used_for_selection": false,
+    "future_result_used": false
+  },
+  "frontier_freeze_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_FRONTIER_SHADOW_FREEZE.json",
+  "frontier_freeze_sha256": "5cc6b59304297dbf3395fec9d7c2beeb76935b344f963fd103966ecfe472b506",
+  "probability_ledger_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_PROBABILITY_PROSPECTIVE_LEDGER.json",
+  "probability_ledger_sha256": "309682d65f618b84932361b0b73a4277d1d7c22b072e3e02c12645f43f49e001",
+  "pre_freeze_total_integration_sha256": "4e539c0b733f6edc70f4520bf32c37063643d72a3bdbd25aca899a7a4eabccef",
+  "post_freeze_total_integration_sha256": "01a45c343196cec54f33bdc116b306e7ec0dae67c6d8cc3ebe1e4ac64334e81f",
+  "primary_card": {
+    "schema": "SMART_PRIMARY_SINGLE_CARD_2",
+    "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
+    "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+    "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+    "selection_strategy": "HYBRID_SCORE_RECALL_DIVERSITY_FALSE_NEGATIVE_RESCUE",
+    "target_contest": 3068,
+    "cutoff_contest": 3067,
+    "numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "source_head": "champion",
+    "source_top6_ordered": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35
+    ],
+    "selector": {
+      "schema": "SMART_PRIMARY_CARD_SELECTOR_2",
+      "status": "PASS",
+      "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+      "result_used": false,
+      "pure_champion_top6_sorted": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "selected_numbers": [
+        10,
+        11,
+        27,
+        35,
+        38,
+        53
+      ],
+      "selected_band_counts": {
+        "low": 2,
+        "mid": 3,
+        "high": 1
+      },
+      "pure_top6_band_counts": {
+        "low": 2,
+        "mid": 3,
+        "high": 1
+      },
+      "objective_value": 4.527737489739622,
+      "fallback_used": false,
+      "adaptive_attempts": [
+        {
+          "pool_size": 18,
+          "feasible": 9881,
+          "evaluated": 18564
+        }
+      ],
+      "config": {
+        "candidate_pool_size": 18,
+        "max_candidate_pool_size": 30,
+        "numbers_per_card": 6,
+        "min_low_band": 2,
+        "max_low_band": 4,
+        "min_mid_band": 1,
+        "max_mid_band": 3,
+        "min_high_band": 0,
+        "max_high_band": 2,
+        "require_top3_presence": true,
+        "score_weight": 1.0,
+        "rank_weight": 0.035,
+        "band_balance_weight": 0.08,
+        "concentration_penalty": 0.18
+      },
+      "candidate_pool": [
+        11,
+        38,
+        10,
+        27,
+        53,
+        35,
+        30,
+        17,
+        43,
+        37,
+        46,
+        48,
+        14,
+        16,
+        6,
+        25,
+        33,
+        9
+      ],
+      "candidate_pool_size": 18,
+      "evaluated_combinations": 18564,
+      "feasible_combinations": 9881,
+      "rejected_combinations": {
+        "band_guard": 5628,
+        "top3_guard": 3055
+      },
+      "sha256": "1bcf7ec63112e5b63e5f6b7382b3d135c01829096149c3d18e87aa26c60f7f5f"
+    },
+    "false_negative_rescue": {
+      "schema": "SMART_FALSE_NEGATIVE_RESCUE_1",
+      "status": "PASS",
+      "observations": 0,
+      "result_used": false,
+      "profile_sha256": "b04fe7c07c88df6b777e98d257336ca790ea0d094dd014695041c680a6cb4c46",
+      "nonzero_deltas": {},
+      "sha256": "4fca6170bd2e28e6fd80f91a8140351a880f7d3cef6bda7ec3b5abb78d3c7422"
+    },
+    "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+    "freeze_sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733",
+    "run_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z",
+    "generated_utc": "2026-10-08T22:35:40.297741+00:00",
+    "confidence": {
+      "status": "UNPROVEN_PROSPECTIVE",
+      "level": "LOW",
+      "calibrated": false,
+      "probability_six_hits": null,
+      "guaranteed": false
+    },
+    "status": "FROZEN",
+    "result_used": false,
+    "freeze_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json",
+    "portfolio_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+    "portfolio_sha256": "97da72dbdad95ecf5f133a9f05048d0aecc3b39ac924ce13e4f56a82ff7f5ecf",
+    "sha256": "1df66479fa44f5780fe8c65b7128291f9201bf3b784a98992348e3a35b615aec"
+  },
+  "primary_card_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_PRIMARY_CARD.json",
+  "primary_card_sha256": "af510ad8cf5880aadf8ad88f9769f155f5ea49d3805790ea2f695e87c45cf586",
+  "portfolio_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+  "portfolio_sha256": "97da72dbdad95ecf5f133a9f05048d0aecc3b39ac924ce13e4f56a82ff7f5ecf",
+  "optimization_contract": {
+    "primary_output": "SINGLE_CARD",
+    "numbers_per_card": 6,
+    "objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+    "portfolio_is_auxiliary": true,
+    "portfolio_must_not_replace_primary_card": true,
+    "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard"
+  },
+  "champion_top6": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "challenger_top6": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "governed_challenger_top6": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "trace_fields": [
+    "raw_signals",
+    "quality_metrics",
+    "weight_components",
+    "weights",
+    "aggregate_scores",
+    "ranking60",
+    "river_state",
+    "redundancy_consensus",
+    "signal_interactions",
+    "contextual_meta_weights",
+    "rank_score_calibration",
+    "multi_challengers",
+    "meta_governor",
+    "bounded_online_learning"
+  ],
+  "trace_checks": {
+    "freeze_created_after_full_activation": true,
+    "freeze_bound_to_immutable_epoch_data": true,
+    "state_bound_to_freeze": true,
+    "one_freeze_event_in_new_epoch": true,
+    "no_adjudication_or_result_used": true,
+    "all_required_signal_trace_fields_present": true,
+    "champion_top6_valid": true,
+    "primary_card_single_game_valid": true,
+    "primary_card_matches_frozen_portfolio": true,
+    "primary_card_bound_to_freeze_and_portfolio": true,
+    "primary_card_selection_used_no_target_result": true,
+    "primary_card_objective_is_six_hit": true,
+    "challenger_top6_valid": true,
+    "pre_freeze_integration_pass": true,
+    "post_freeze_integration_pass": true,
+    "all_9_agents_operational_after_freeze": true,
+    "all_41_capabilities_accounted_after_freeze": true,
+    "fresh_epoch_did_not_import_old_activation_authority": true,
+    "fresh_epoch_started_without_old_signal_expansion_registry": true,
+    "frontier_candidates_registered_shadow_only_after_main_freeze": true,
+    "prospective_probability_registration_bound_to_current_freeze": true,
+    "prospective_probability_registration_result_unused": true,
+    "all_60_frontier_probabilities_retained": true,
+    "fine_tuning_authority_bound_to_epoch_data": true,
+    "fine_tuning_future_result_unused": true,
+    "fine_tuning_consumed_by_challenger": true,
+    "official_schedule_bound": true
+  },
+  "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
+  "terminal_mission_authority": false,
+  "result_used": false,
+  "sha256": "71efe38efff599fa27c462ecd104dd6bb14453e3d592fb9f10c0a8fb9c113f20"
+}

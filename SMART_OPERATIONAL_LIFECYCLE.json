@@ -1,23 +1,23 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "FROZEN",
-  "revision": 33,
+  "state": "HOLD",
+  "revision": 36,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3068,
-  "completed_contest": 3067,
-  "previous_state": "FREEZING",
-  "transition": "FREEZING_TO_FROZEN",
-  "transition_actor": "full_process_freeze_complete",
-  "transition_utc": "2026-10-08T22:35:47.988589+00:00",
-  "previous_lifecycle_sha256": "a28d26f4bf267ab547eb33b68e25ce150828afee51857f58ea50266b86a56851",
+  "target_contest": 3069,
+  "completed_contest": 3068,
+  "previous_state": "REVIEWED",
+  "transition": "REVIEWED_TO_HOLD",
+  "transition_actor": "smart_rollover.canonical_rollover",
+  "transition_utc": "2026-10-09T23:13:41.488177+00:00",
+  "previous_lifecycle_sha256": "c2573a76ec04260d48f3169d7d5a72d8b6e58583b4128eec66ac4153c6933f11",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "8d7e4376a2ba587e77df1cb4b46f63ed2af68095768b6e45c0da92c0aef0567f"
+      "sha256": "b60157f8b7c0fbfc81e237b5c10a3e393f0ab6d455e37ba29930d4aeb9db9a43"
     },
     "post_result_review": {
       "file": "SMART_POST_RESULT_REVIEW_3066.json",
@@ -43,8 +43,8 @@
       "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z"
     },
     "rollover_archive": {
-      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3067/operator-3067-e305750ba8e6-20261006T010444976861Z/ARCHIVE_MANIFEST.json",
-      "sha256": "591f63ebd1c61e2d3b7dc0d3b970fd6ae09afddb07084606a1333db593304963"
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/ARCHIVE_MANIFEST.json",
+      "sha256": "c6f5a8b286604f366a868291d261880bb1c0847ba5fa800c090df661e281c67a"
     },
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
@@ -81,5 +81,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "e31fa5758c4a4e2d6367bbcdc7e210ea5e7fbad821c8486accc8c1d626d81952"
+  "sha256": "92e9adbb473a07bf175d6a0d145bf3fe347aabbd4012cd48e2cac17945d26a9b"
 }

@@ -1,0 +1,137 @@
+{
+  "schema": "SMART_PRIMARY_SINGLE_CARD_2",
+  "artifact_type": "SMART_PRIMARY_SINGLE_CARD",
+  "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+  "optimization_objective": "MAXIMIZE_SIX_HIT_SINGLE_CARD",
+  "selection_strategy": "HYBRID_SCORE_RECALL_DIVERSITY_FALSE_NEGATIVE_RESCUE",
+  "target_contest": 3068,
+  "cutoff_contest": 3067,
+  "numbers": [
+    10,
+    11,
+    27,
+    35,
+    38,
+    53
+  ],
+  "source_head": "champion",
+  "source_top6_ordered": [
+    11,
+    38,
+    10,
+    27,
+    53,
+    35
+  ],
+  "selector": {
+    "schema": "SMART_PRIMARY_CARD_SELECTOR_2",
+    "status": "PASS",
+    "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+    "result_used": false,
+    "pure_champion_top6_sorted": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "selected_numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "selected_band_counts": {
+      "low": 2,
+      "mid": 3,
+      "high": 1
+    },
+    "pure_top6_band_counts": {
+      "low": 2,
+      "mid": 3,
+      "high": 1
+    },
+    "objective_value": 4.527737489739622,
+    "fallback_used": false,
+    "adaptive_attempts": [
+      {
+        "pool_size": 18,
+        "feasible": 9881,
+        "evaluated": 18564
+      }
+    ],
+    "config": {
+      "candidate_pool_size": 18,
+      "max_candidate_pool_size": 30,
+      "numbers_per_card": 6,
+      "min_low_band": 2,
+      "max_low_band": 4,
+      "min_mid_band": 1,
+      "max_mid_band": 3,
+      "min_high_band": 0,
+      "max_high_band": 2,
+      "require_top3_presence": true,
+      "score_weight": 1.0,
+      "rank_weight": 0.035,
+      "band_balance_weight": 0.08,
+      "concentration_penalty": 0.18
+    },
+    "candidate_pool": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35,
+      30,
+      17,
+      43,
+      37,
+      46,
+      48,
+      14,
+      16,
+      6,
+      25,
+      33,
+      9
+    ],
+    "candidate_pool_size": 18,
+    "evaluated_combinations": 18564,
+    "feasible_combinations": 9881,
+    "rejected_combinations": {
+      "band_guard": 5628,
+      "top3_guard": 3055
+    },
+    "sha256": "1bcf7ec63112e5b63e5f6b7382b3d135c01829096149c3d18e87aa26c60f7f5f"
+  },
+  "false_negative_rescue": {
+    "schema": "SMART_FALSE_NEGATIVE_RESCUE_1",
+    "status": "PASS",
+    "observations": 0,
+    "result_used": false,
+    "profile_sha256": "b04fe7c07c88df6b777e98d257336ca790ea0d094dd014695041c680a6cb4c46",
+    "nonzero_deltas": {},
+    "sha256": "4fca6170bd2e28e6fd80f91a8140351a880f7d3cef6bda7ec3b5abb78d3c7422"
+  },
+  "selection_rule": "hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard",
+  "freeze_sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733",
+  "run_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z",
+  "generated_utc": "2026-10-08T22:35:40.297741+00:00",
+  "confidence": {
+    "status": "UNPROVEN_PROSPECTIVE",
+    "level": "LOW",
+    "calibrated": false,
+    "probability_six_hits": null,
+    "guaranteed": false
+  },
+  "status": "FROZEN",
+  "result_used": false,
+  "freeze_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json",
+  "portfolio_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+  "portfolio_sha256": "97da72dbdad95ecf5f133a9f05048d0aecc3b39ac924ce13e4f56a82ff7f5ecf",
+  "sha256": "1df66479fa44f5780fe8c65b7128291f9201bf3b784a98992348e3a35b615aec"
+}

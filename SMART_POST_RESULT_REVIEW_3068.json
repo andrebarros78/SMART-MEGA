@@ -1,0 +1,70 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3068,
+  "next_target": 3069,
+  "created_utc": "2026-10-09T23:11:24.435235+00:00",
+  "source": "CANONICAL_ADJUDICATED_3068_POST_RESULT_SEQUENCE",
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "208aff8a3c1c33293f4f903ae02fe03f6c1ca9ad4e57e5bb4265de35a345c6fd",
+    "history_max": 3068,
+    "row_count": 3068
+  },
+  "adjudication": {
+    "actual_numbers": [
+      7,
+      10,
+      39,
+      40,
+      43,
+      57
+    ],
+    "frozen_card": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "hits": 1,
+    "post_result_report_file": "SMART_POST_RESULT_REPORT_3068.json",
+    "post_result_report_sha256": "ba828194af6a28d19f7567ce2638b5fadddb7045b398f3fdea9845641fd56397",
+    "ledger_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_SIGNAL_LEDGER.json",
+    "ledger_sha256": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a",
+    "event_counts": {
+      "FREEZE": 1,
+      "ADJUDICATION": 1,
+      "LEARNING_UPDATE": 1,
+      "SEQUENTIAL_PROOF": 1
+    },
+    "source_provenance": "CAIXA_CONTEST_API_OBSERVED_HTTP_200_PC_VENDAS;SECONDARY_OFFICIAL_XLSX_UNAVAILABLE",
+    "official_receipt_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_3068_CAIXA_SOURCE_RECEIPT.json",
+    "official_receipt_file_sha256": "aaa2dd49b40fbcce4b32826578171fcc066fb1a4fcbdc01d40959ed76ffa7271",
+    "source_sha256": "22baec9f2d61ff121b747223131672a83390e132b792d9e16d3ff159b9b95a91"
+  },
+  "learning": {
+    "source_freeze_preserved": true,
+    "state_file": "runtime/learning_epochs/operator-3068-acc6a34c9e27-20261008T222652499219Z/SMART_SIGNAL_STATE_3068_LEARNED.json",
+    "state_sha256": "8c87eb53cac0542c309e4fa3ceac68fd2edb7a0bbc25f7edb407ad1ff08d352a",
+    "canonical_history_advance_file": "SMART_CANONICAL_HISTORY_ADVANCE_3068.json",
+    "canonical_history_advance_sha256": "d16101baeeafa9191b1cfcd903afcb5bcfec4da9fadccbfabe7c8290ab356aec",
+    "sequence_sha256": "7e806b333c95c5a42b3bbe7eb15d44782acb8546ad0cd2c7f0e5b0b911e26ae0",
+    "after_adjudication": true,
+    "retrospective_forecast_generated": false
+  },
+  "learning_policy": {
+    "prospective_nonregression_required_for_weight_promotion": true,
+    "automatic_weight_promotion_authorized_by_this_review": false,
+    "future_information_used_for_3068_prediction": false
+  },
+  "operator_next_action": "HOLD_THEN_AUTHORIZE_NEXT_CYCLE_3069",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "reviewed_utc": "2026-10-09T23:11:24.435235+00:00",
+  "parecer": "3068_ADJUDICATED_LEARNED_HISTORY_ADVANCED_1OF6;NO_WEIGHT_PROMOTION;SCIENTIFIC_TERMINAL_UNPROVEN;3069_REQUIRES_PRE_DRAW_GENERATION",
+  "sha256": "742536ca280a79298c29368d11567ba588df4e21f4ec2d496663d427aecc7017"
+}
