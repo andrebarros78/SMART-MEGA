@@ -1,6 +1,6 @@
 
 from __future__ import annotations
-import hashlib,json
+import gzip,hashlib,json,re
 from dataclasses import asdict,dataclass
 from pathlib import Path
 from typing import Any,Mapping
@@ -19,7 +19,51 @@ class MissingCanonicalLineage(ValueError):
     """Historical evidence is unavailable; it must not influence current scores."""
 
 
-def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,actual:list[int],generated:list[int])->None:
+MAX_LEDGER_BYTES = 16 * 1024 * 1024
+
+
+def _read_bound_source(root:Path, rel:str, sha:str, contest:int, name:str)->tuple[bytes,bool]:
+    """Recover only a SHA-256-identical ledger recorded by a signed report.
+
+    The archive path is derived from the *already signed* contest and digest.
+    A newer ledger is never treated as identical after it has changed.
+    """
+    if not isinstance(rel,str) or not isinstance(sha,str) or re.fullmatch(r"[0-9a-f]{64}",sha) is None:
+        raise ValueError("invalid historical lineage reference")
+    candidate=(root/rel).resolve()
+    if not candidate.is_relative_to(root):
+        raise ValueError("historical source escapes canonical root")
+    if candidate.is_file() and not candidate.is_symlink():
+        data=candidate.read_bytes()
+        if hashlib.sha256(data).hexdigest()==sha:
+            return data,False
+    if (name=="freeze"
+            and re.fullmatch(rf"runtime/learning_epochs/operator-{contest}-[^/]+/SMART_{contest}_CHAMPION_CHALLENGER_FREEZE\.json",rel)):
+        archive=root/"SMART_STATE_ARCHIVE"/"adjudicated-epochs"/str(contest)
+        for copy in sorted(archive.glob(f"operator-{contest}-*/epoch/SMART_{contest}_CHAMPION_CHALLENGER_FREEZE.json")):
+            if (copy.is_file() and not copy.is_symlink()
+                    and copy.resolve().is_relative_to(root)):
+                data=copy.read_bytes()
+                if hashlib.sha256(data).hexdigest()==sha:
+                    return data,True
+    if (name=="ledger"
+            and re.fullmatch(rf"runtime/learning_epochs/operator-{contest}-[^/]+/SMART_SIGNAL_LEDGER\.json",rel)):
+        recovered=root/"SMART_STATE_ARCHIVE"/"hash-bound-learning"/str(contest)/f"SMART_SIGNAL_LEDGER.{sha}.json.gz"
+        if recovered.is_file() and not recovered.is_symlink() and recovered.resolve().is_relative_to(root):
+            try:
+                with gzip.open(recovered,"rb") as stream:
+                    data=stream.read(MAX_LEDGER_BYTES+1)
+                if len(data)>MAX_LEDGER_BYTES:
+                    raise MissingCanonicalLineage(f"oversized authenticated ledger: {contest}")
+            except (OSError,EOFError) as exc:
+                raise MissingCanonicalLineage(f"corrupt archived ledger: {contest}") from exc
+            if hashlib.sha256(data).hexdigest()==sha:
+                return data,True
+            raise MissingCanonicalLineage(f"archived ledger hash mismatch: {contest}")
+    raise MissingCanonicalLineage(f"post-result report {name} evidence unavailable or hash-divergent: {contest}")
+
+
+def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,actual:list[int],generated:list[int])->list[str]:
     """Reject tampered, foreign, or unbound evidence before it affects predictive scores."""
     if path.name != f"SMART_POST_RESULT_REPORT_{contest}.json":
         raise ValueError(f"untrusted post-result report filename: {path.name}")
@@ -32,28 +76,22 @@ def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,
     audit=obj.get("process_audit")
     if not isinstance(audit,dict) or audit.get("findings") or audit.get("freeze_authority_present") is not True:
         raise ValueError(f"post-result report missing verified process audit: {path.name}")
-    trusted={}
+    trusted={}; recovered=[]
     for name,source_key,digest_key in (
         ("freeze","freeze_artifact","freeze_sha256"),
         ("ledger","ledger","ledger_sha256"),
     ):
         rel=audit.get(source_key)
         sha=audit.get(digest_key)
-        if not isinstance(rel,str) or not isinstance(sha,str) or len(sha)!=64:
+        if not isinstance(rel,str) or not isinstance(sha,str):
             raise ValueError(f"post-result report missing {name} lineage: {path.name}")
-        candidate=(root/rel).resolve()
-        if not candidate.is_relative_to(root):
-            raise ValueError(f"post-result report {name} escapes canonical root: {path.name}")
-        if not candidate.is_file():
-            raise MissingCanonicalLineage(f"post-result report {name} evidence absent: {path.name}")
-        actual_sha=hashlib.sha256(candidate.read_bytes()).hexdigest()
-        if actual_sha != sha:
-            raise MissingCanonicalLineage(f"post-result report {name} hash mismatch: {path.name}")
-        trusted[name]=candidate
-    freeze=json.loads(trusted["freeze"].read_text(encoding="utf-8-sig"))
+        blob,from_archive=_read_bound_source(root,rel,sha,contest,name)
+        trusted[name]=blob
+        if from_archive: recovered.append(name)
+    freeze=json.loads(trusted["freeze"].decode("utf-8-sig"))
     if int(freeze.get("target_contest",-1))!=contest:
         raise MissingCanonicalLineage(f"post-result report target differs from frozen contest: {path.name}")
-    ledger=json.loads(trusted["ledger"].read_text(encoding="utf-8-sig"))
+    ledger=json.loads(trusted["ledger"].decode("utf-8-sig"))
     if not isinstance(ledger,dict) or not isinstance(ledger.get("events"),list):
         raise ValueError(f"post-result report ledger event structure invalid: {path.name}")
     events=[x for x in ledger["events"] if isinstance(x,dict) and x.get("target_contest")==contest]
@@ -82,6 +120,7 @@ def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,
     })
     if obj.get("source_fingerprint")!=fingerprint:
         raise ValueError(f"post-result report evidence fingerprint mismatch: {path.name}")
+    return recovered
 
 
 def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|None=None,through_contest:int|None=None)->dict[str,Any]:
@@ -89,7 +128,7 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
     strict=(root/'SMART_CANONICAL_ROOT.json').is_file()
     cutoff=None if through_contest is None else int(through_contest)
     fn={str(n):0 for n in range(1,61)}; fp={str(n):0 for n in range(1,61)}; band_fn={"low":0,"mid":0,"high":0}; obs=[]
-    quarantined=[]
+    quarantined=[]; quarantined_reasons={}; recovered_evidence={}
     seen:dict[int,tuple[tuple[int,...],tuple[int,...]]]={}; duplicates_ignored=0
     for path in sorted(root.glob('SMART_POST_RESULT_REPORT_*.json')):
         try:
@@ -106,9 +145,11 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
             continue
         if strict:
             try:
-                _trusted_canonical_report(root,path,obj,contest,actual,generated)
-            except MissingCanonicalLineage:
+                recovered=_trusted_canonical_report(root,path,obj,contest,actual,generated)
+                if recovered: recovered_evidence[str(contest)]=recovered
+            except MissingCanonicalLineage as exc:
                 quarantined.append(path.name)
+                quarantined_reasons[path.name]=str(exc)
                 continue
         signature=(tuple(sorted(actual)),tuple(sorted(generated)))
         previous=seen.get(contest)
@@ -121,7 +162,20 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
         for n in fps: fp[str(n)]+=1
         obs.append({"contest":contest,"false_negatives":fns,"false_positives":fps,"hit_count":len(aset&gset)})
     obs.sort(key=lambda x:int(x["contest"])); total=len(obs)
-    profile={"schema":SCHEMA,"status":"PASS","result_used_for_future_only":True,"through_contest":cutoff,"causal_cutoff_enforced":cutoff is not None,"observations":total,"source_contests":[int(x["contest"]) for x in obs],"duplicates_ignored":duplicates_ignored,"quarantined_reports":quarantined,"quarantined_count":len(quarantined),"config":asdict(cfg),"false_negative_counts":fn,"false_positive_counts":fp,"band_false_negative_counts":band_fn,"recent_observations":obs[-20:],"activation":{"number_specific_active":total>=cfg.min_observations,"band_level_active":total>=1}}
+    coverage="DEGRADED_PARTIAL_EVIDENCE" if quarantined else "COMPLETE"
+    profile={"schema":SCHEMA,"status":"DEGRADED_PARTIAL_EVIDENCE" if quarantined else "PASS",
+             "evidence_coverage":coverage,
+             "recovered_verified_evidence":recovered_evidence,
+             "quarantined_reasons":quarantined_reasons,
+             "result_used_for_future_only":True,"through_contest":cutoff,
+             "causal_cutoff_enforced":cutoff is not None,
+             "observations":total,"source_contests":[int(x["contest"]) for x in obs],
+             "duplicates_ignored":duplicates_ignored,"quarantined_reports":quarantined,
+             "quarantined_count":len(quarantined),"config":asdict(cfg),
+             "false_negative_counts":fn,"false_positive_counts":fp,
+             "band_false_negative_counts":band_fn,"recent_observations":obs[-20:],
+             "activation":{"number_specific_active":total>=cfg.min_observations,
+                           "band_level_active":total>=1}}
     profile["sha256"]=sha256_json(profile); return profile
 def write_profile(root:str|Path,out:str|Path|None=None,through_contest:int|None=None)->dict[str,Any]:
     root=Path(root); out=Path(out) if out else root/'SMART_FALSE_NEGATIVE_RESCUE_PROFILE.json'
@@ -144,6 +198,16 @@ def apply_rescue(aggregate_scores:Mapping[int|str,float],profile:Mapping[str,Any
             delta-=min(cfg.false_positive_penalty,cfg.false_positive_penalty*(float(fp.get(k,0))/max(1,obs)))
         adjusted[k]=float(scores[k]+delta)
         if abs(delta)>1e-15: deltas[k]=delta
+    incomplete=profile.get("evidence_coverage")=="DEGRADED_PARTIAL_EVIDENCE"
+    if incomplete:
+        # Never promote partly restored historical feedback to decision weights.
+        audit={"schema":SCHEMA,"status":"DEGRADED_SHADOW_ONLY","observations":obs,
+               "result_used":False,"profile_sha256":profile.get("sha256"),
+               "evidence_coverage":profile["evidence_coverage"],
+               "quarantined_count":profile.get("quarantined_count",0),
+               "shadow_nonzero_deltas":deltas,"nonzero_deltas":{}}
+        audit["sha256"]=sha256_json(audit)
+        return scores,audit
     audit={"schema":SCHEMA,"status":"PASS","observations":obs,"result_used":False,"profile_sha256":profile.get('sha256'),"nonzero_deltas":deltas}
     audit['sha256']=sha256_json(audit); return adjusted,audit
 def load_profile(root:str|Path)->dict[str,Any]|None:
