@@ -407,6 +407,37 @@ def preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
         active = verify_active_epoch(active_path)
         if active.get("operator_selected_target") is not True or int(active.get("target_contest", -1)) != target:
             raise ValueError("active operational epoch does not match preflight target")
+        # A frozen contest is a completed generation. Re-preflight must not
+        # parse changing external draw schedules or reopen its temporal window.
+        # Verify immutable evidence instead; adjudication is the next lifecycle step.
+        if active.get("status") == "FROZEN":
+            try:
+                lifecycle = assert_lifecycle_state(root, "FROZEN", target_contest=target)
+                frozen = _existing_frozen_freeze_summary(root, target)
+            except (RuntimeError, ValueError, FileNotFoundError, KeyError) as exc:
+                return {
+                    "schema": "SMART_OPERATOR_PREFLIGHT_2",
+                    "status": "BLOCKED_INTEGRITY",
+                    "target_contest": target,
+                    "phase": "FROZEN_EPOCH",
+                    "reason": "FROZEN_EPOCH_LINEAGE_INVALID",
+                    "error_type": type(exc).__name__,
+                    "result_used": False, "mutated_state": False,
+                }
+            return {
+                "schema": "SMART_OPERATOR_PREFLIGHT_2",
+                "status": "ALREADY_FROZEN",
+                "target_contest": target,
+                "phase": "FROZEN_EPOCH",
+                "reason": "TARGET_IMMUTABLY_FROZEN_AWAITING_ADJUDICATION",
+                "epoch_id": frozen["epoch_id"],
+                "active_epoch_sha256": frozen["active_epoch_sha256"],
+                "freeze_sha256": frozen["freeze_sha256"],
+                "freeze_file": frozen["freeze_file"],
+                "lifecycle_sha256": lifecycle["sha256"],
+                "next_permitted_phase": "ADJUDICATE",
+                "result_used": False, "mutated_state": False,
+            }
         schedule = resolve_target_schedule(root, target)
         temporal = assert_pre_draw_window(schedule)
         active_certification_sha256 = str(active.get("product_certification_sha256") or "")

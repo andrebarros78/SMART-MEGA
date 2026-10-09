@@ -164,3 +164,49 @@ def test_authority_freshness_uses_bound_global_integrity_gate(monkeypatch, tmp_p
     assert result["authorities"]["global_integrity"]["current"] is True
     assert observed["gate_path"] == "SMART_3052_IMPLEMENTATION_GATE.json"
     assert observed["proof_path"] == "SMART_GLOBAL_INTEGRITY_PROOF.json"
+
+def test_preflight_frozen_epoch_returns_verified_terminal_generation_without_schedule(tmp_path, monkeypatch):
+    _allow_isolated_root(monkeypatch)
+    monkeypatch.setattr("smart_product_certification.verify_product_certification",
+                        lambda *a, **k: {"sha256": "c" * 64, "status": "CONSTRUCTION_PROVEN"})
+    (tmp_path / op.ACTIVE_PATH).write_text("{}", encoding="utf-8")
+    active = _active(tmp_path)
+    active["status"] = "FROZEN"
+    monkeypatch.setattr(op, "verify_active_epoch", lambda path: active)
+    monkeypatch.setattr(op, "assert_lifecycle_state",
+                        lambda *a, **k: {"state": "FROZEN", "sha256": "d" * 64})
+    monkeypatch.setattr(op, "_existing_frozen_freeze_summary",
+                        lambda *a, **k: {"status": "FROZEN", "epoch_id": "e3060",
+                                         "active_epoch_sha256": "e" * 64, "freeze_sha256": "f" * 64,
+                                         "freeze_file": "runtime/learning_epochs/e3060/freeze.json"})
+    monkeypatch.setattr(op, "resolve_target_schedule",
+                        lambda *a, **k: (_ for _ in ()).throw(AssertionError("do not read PDF for frozen contest")))
+    before = sorted((str(x.relative_to(tmp_path)), x.read_bytes()) for x in tmp_path.rglob("*") if x.is_file())
+    result = op.preflight_operation(tmp_path, 3060)
+    after = sorted((str(x.relative_to(tmp_path)), x.read_bytes()) for x in tmp_path.rglob("*") if x.is_file())
+    assert result["status"] == "ALREADY_FROZEN"
+    assert result["next_permitted_phase"] == "ADJUDICATE"
+    assert result["freeze_sha256"] == "f" * 64
+    assert result["result_used"] is False and result["mutated_state"] is False
+    assert before == after
+
+
+def test_preflight_frozen_epoch_blocks_broken_hash_lineage(tmp_path, monkeypatch):
+    _allow_isolated_root(monkeypatch)
+    monkeypatch.setattr("smart_product_certification.verify_product_certification",
+                        lambda *a, **k: {"sha256": "c" * 64, "status": "CONSTRUCTION_PROVEN"})
+    (tmp_path / op.ACTIVE_PATH).write_text("{}", encoding="utf-8")
+    active = _active(tmp_path)
+    active["status"] = "FROZEN"
+    monkeypatch.setattr(op, "verify_active_epoch", lambda path: active)
+    monkeypatch.setattr(op, "assert_lifecycle_state",
+                        lambda *a, **k: {"state": "FROZEN", "sha256": "d" * 64})
+    def invalid_freeze(*args, **kwargs):
+        raise ValueError("existing frozen epoch is not bound to requested target")
+    monkeypatch.setattr(op, "_existing_frozen_freeze_summary", invalid_freeze)
+    monkeypatch.setattr(op, "resolve_target_schedule",
+                        lambda *a, **k: (_ for _ in ()).throw(AssertionError("no schedule access")))
+    result = op.preflight_operation(tmp_path, 3060)
+    assert result["status"] == "BLOCKED_INTEGRITY"
+    assert result["reason"] == "FROZEN_EPOCH_LINEAGE_INVALID"
+    assert result["result_used"] is False and result["mutated_state"] is False
