@@ -32,6 +32,16 @@ REQUIRED_PRODUCTION_FILES = {
 KNOWN_OPERATOR_PIPELINE_CYCLE = {"smart_operator.py", "smart_full_process_pipeline.py"}
 
 
+def _portable_python_sha256(raw: bytes) -> str:
+    """F01 source fingerprint independent of Windows/Unix newline checkout.
+
+    This is a component-inventory digest only. Byte-exact artifact/epoch
+    authority hashes continue to use their strict SHA-256 checks elsewhere.
+    """
+    normalized = raw.replace(b"\r\n", b"\n").replace(b"\n", b"\r\n")
+    return hashlib.sha256(normalized).hexdigest()
+
+
 def _python_files(root: Path) -> list[Path]:
     out = []
     for path in root.rglob("*.py"):
@@ -241,7 +251,7 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        content_hashes[rel] = hashlib.sha256(raw).hexdigest()
+        content_hashes[rel] = _portable_python_sha256(raw)
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
         except (SyntaxError, UnicodeDecodeError) as exc:
