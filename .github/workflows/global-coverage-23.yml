@@ -1,0 +1,66 @@
+name: Global Coverage 23
+
+on:
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  coverage:
+    runs-on: windows-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.13"
+          cache: pip
+          cache-dependency-path: requirements.lock.txt
+      - name: Install dependencies
+        shell: pwsh
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.lock.txt
+      - name: Dependency integrity
+        run: python -m pip check
+      - name: Full regression under branch coverage
+        id: regression
+        continue-on-error: true
+        env:
+          PYTHONDONTWRITEBYTECODE: "1"
+        run: |
+          python -m coverage erase
+          python -m coverage run --branch -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_AUDIT_JUNIT_COVERAGE_GITHUB.xml
+      - name: Emit coverage JSON
+        if: always()
+        run: python -m coverage json --pretty-print -o SMART_COVERAGE_GLOBAL_CURRENT.json
+      - name: Strict 23-surface coverage audit
+        id: coverage_gate
+        if: always()
+        continue-on-error: true
+        run: python scripts/check_global_coverage_23.py
+      - name: Upload coverage evidence
+        if: always()
+        continue-on-error: true
+        uses: actions/upload-artifact@v4
+        with:
+          name: smart-mega-global-coverage-23
+          path: |
+            SMART_COVERAGE_GLOBAL_CURRENT.json
+            SMART_COVERAGE_23_AUDIT.json
+            SMART_AUDIT_JUNIT_COVERAGE_GITHUB.xml
+      - name: Enforce regression and coverage gates
+        if: always()
+        shell: pwsh
+        run: |
+          if ("${{ steps.regression.outcome }}" -ne "success") {
+            Write-Error "Full regression under coverage failed"
+            exit 1
+          }
+          if ("${{ steps.coverage_gate.outcome }}" -ne "success") {
+            Write-Error "Strict 23-surface coverage audit failed"
+            exit 1
+          }
