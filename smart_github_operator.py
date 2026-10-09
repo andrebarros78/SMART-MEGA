@@ -17,9 +17,9 @@ import sys
 from smart_transaction_journal import JOURNAL_PATH
 
 REPOSITORY = "andrebarros78/SMART-MEGA"
-READ_ONLY = {"status", "preflight"}
+READ_ONLY = {"status", "preflight", "result-preflight"}
 TARGET_ACTIONS = {
-    "preflight", "prepare", "withdraw", "recover-missed", "catch-up",
+    "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
     "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate",
     "post-result-report", "review", "hold", "terminal",
 }
@@ -234,7 +234,33 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     if operation in READ_ONLY:
         if changes:
             raise RuntimeError(f"read-only operation changed canonical files: {changes[:20]}")
-        return {"operation": operation, "target": target or None, "observation": observation, "commit": None}
+        result_readiness = None
+        if operation == "preflight" and observation.get("status") == "ALREADY_FROZEN":
+            # Reuse the existing GitHub workflow choice; OAuth credentials may
+            # not edit workflow dispatch definitions. Keep F15 frozen semantics.
+            readiness_run = subprocess.run(
+                command_args("result-preflight", target),
+                cwd=root, text=True, capture_output=True, check=False, timeout=180,
+            )
+            if readiness_run.returncode != 0:
+                raise RuntimeError(
+                    f"read-only result preflight failed ({readiness_run.returncode}): "
+                    f"{readiness_run.stderr[-1000:]}"
+                )
+            try:
+                result_readiness = json.loads(readiness_run.stdout)
+            except json.JSONDecodeError as exc:
+                raise RuntimeError("result preflight did not return one JSON document") from exc
+            if (not isinstance(result_readiness, dict)
+                    or result_readiness.get("target_contest") != int(target)
+                    or result_readiness.get("canonical_writes_performed") is not False
+                    or result_readiness.get("result_used_for_learning") is not False):
+                raise ValueError("result preflight violates read-only target contract")
+            if _changes(root):
+                raise RuntimeError("result preflight modified canonical files")
+            _require_no_unpersisted_state(root)
+        return {"operation": operation, "target": target or None,
+                "observation": observation, "result_preflight": result_readiness, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
     frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation == "freeze" else None
@@ -309,6 +335,8 @@ def main() -> int:
         proof["observation_status"] = observation.get("status")
         proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest")
         proof["reconciled_state"] = (observation.get("reconciled_state") or {}).get("status")
+        if isinstance(proof.get("result_preflight"), dict):
+            proof["result_readiness_status"] = proof["result_preflight"].get("status")
     print(json.dumps(proof, ensure_ascii=False, sort_keys=True))
     return 0
 

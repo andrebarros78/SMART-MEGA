@@ -1063,6 +1063,88 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
     return run_full_process(root, manual_generation_authorized=True)
 
 
+
+def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Read-only official-result readiness gate for the immutable frozen epoch.
+
+    The terminal operation remains an independent, explicit mutation.
+    Fetching an official observation here never adjudicates or learns from it.
+    """
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    base = {
+        "schema": "SMART_RESULT_CONSUMPTION_PREFLIGHT_1",
+        "target_contest": target,
+        "result_used_for_learning": False,
+        "canonical_writes_performed": False,
+        "next_mutating_operation": "terminal",
+    }
+    reconciliation = reconcile_startup(root, target, include_authority_freshness=True)
+    if reconciliation.get("status") != "OK":
+        return {**base, "status": "RECOVERY_REQUIRED",
+                "failed_checks": reconciliation.get("failed_checks", [])}
+    try:
+        lifecycle = assert_lifecycle_state(root, "FROZEN", target_contest=target)
+        active = verify_active_epoch(root / ACTIVE_PATH)
+        if active.get("status") != "FROZEN" or int(active.get("target_contest", -1)) != target:
+            raise ValueError("active epoch is not the requested FROZEN target")
+        frozen = _existing_frozen_freeze_summary(root, target)
+        schedule = active.get("target_schedule")
+        if not isinstance(schedule, dict) or int(schedule.get("target_contest", -1)) != target:
+            raise ValueError("active epoch target schedule is invalid")
+        expected_date = str(schedule.get("target_date", ""))
+        datetime.strptime(expected_date, "%d/%m/%Y")
+    except (ValueError, RuntimeError, KeyError, TypeError, FileNotFoundError) as exc:
+        return {**base, "status": "BLOCKED_INTEGRITY",
+                "error_type": type(exc).__name__, "reason": str(exc)}
+    try:
+        observation = terminal_executor.probe(root, target)
+    except (ValueError, RuntimeError, KeyError, TypeError, FileNotFoundError) as exc:
+        return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                "error_type": type(exc).__name__, "reason": str(exc),
+                "freeze_sha256": frozen["freeze_sha256"]}
+    status = observation.get("status")
+    if (observation.get("target_contest") != target
+            or observation.get("canonical_writes_performed") is not False):
+        return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                "reason": "probe violates target or read-only contract"}
+    if status == "WAITING_OFFICIAL_RESULT":
+        error_type = observation.get("error_type")
+        if error_type in {"ValueError", "AssertionError"}:
+            return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                    "freeze_sha256": frozen["freeze_sha256"],
+                    "reason": "official channel validation or consensus conflict",
+                    "error_type": error_type}
+        return {**base, "status": status,
+                "freeze_sha256": frozen["freeze_sha256"],
+                "error_type": error_type}
+    if status != "OFFICIAL_RESULT_AVAILABLE" or observation.get("official_result_available") is not True:
+        return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                "reason": f"unexpected official probe status: {status!r}"}
+    if observation.get("preflight_status") != "PASS":
+        return {**base, "status": "BLOCKED_INTEGRITY",
+                "reason": "terminal prospective freeze preflight did not pass"}
+    if observation.get("draw_date") != expected_date:
+        return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                "reason": "official result date differs from frozen schedule"}
+    numbers = observation.get("actual_numbers")
+    if (not isinstance(numbers, list) or len(numbers) != 6
+            or any(type(n) is not int or n < 1 or n > 60 for n in numbers)
+            or len(set(numbers)) != 6):
+        return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
+                "reason": "official result numbers invalid"}
+    return {
+        **base, "status": "READY_TO_CONSUME",
+        "freeze_sha256": frozen["freeze_sha256"],
+        "lifecycle_sha256": lifecycle["sha256"],
+        "cutoff_contest": target - 1, "draw_date": expected_date,
+        "official_numbers": numbers,
+        "dual_channel_corroborated": observation.get("terminal_source_corroboration_authorized") is True,
+        "primary_official_channel_validated": True,
+        "mutation_requires_explicit_dispatch": True,
+    }
+
+
 @locked_operation("ADJUDICATE")
 @startup_guarded("ADJUDICATE")
 @idempotent_operation('ADJUDICATE')
@@ -1286,6 +1368,7 @@ def main(argv: list[str] | None = None) -> None:
     sub = parser.add_subparsers(dest="action", required=True)
     sub.add_parser("status")
     pf = sub.add_parser("preflight"); pf.add_argument("--target", type=int, required=True)
+    rp = sub.add_parser("result-preflight"); rp.add_argument("--target", type=int, required=True)
     p = sub.add_parser("prepare"); p.add_argument("--target", type=int, required=True); p.add_argument("--supersede", action="store_true")
     w = sub.add_parser("withdraw"); w.add_argument("--target", type=int, required=True)
     m = sub.add_parser("recover-missed"); m.add_argument("--target", type=int, required=True)
@@ -1302,6 +1385,7 @@ def main(argv: list[str] | None = None) -> None:
     root = canonical_root()
     if args.action == "status": out = status(root)
     elif args.action == "preflight": out = preflight_operation(root, args.target)
+    elif args.action == "result-preflight": out = result_preflight_operation(root, args.target)
     elif args.action == "prepare": out = prepare_operation(root, args.target, supersede_existing=args.supersede)
     elif args.action == "withdraw": out = withdraw_pre_freeze_operation(root, args.target)
     elif args.action == "recover-missed": out = recover_missed_unfrozen_operation(root, args.target)
