@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "58d9d8abe1fe7e0e3f866d7e39ee19dcbfdcc07878372a81566a1da5066d15ab",
+  "inventory_sha256": "46603d584834c0c5d515a9a11cb36c297e8d2e81d8b4c94b2b5034edf627af4a",
   "summary": {
-    "python_components": 481,
+    "python_components": 483,
     "workflow_entrypoints": 8,
-    "production_components": 98,
+    "production_components": 99,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 156,
+    "test_components": 157,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4416,6 +4416,30 @@
       "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07"
     },
     {
+      "component_id": "smart_calibration_safety_gate",
+      "source_file": "smart_calibration_safety_gate.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_github_operator",
+        "test_smart_calibration_safety_gate"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "eb64874111da1b77e9d1e7692d7ef016075433def331f24fed79707b3a6d8484"
+    },
+    {
       "component_id": "smart_canonical_component_registry",
       "source_file": "smart_canonical_component_registry.py",
       "role": "PRODUCTION",
@@ -5700,6 +5724,7 @@
         "smart_github_operator"
       ],
       "producers": [
+        "smart_calibration_safety_gate",
         "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -5722,7 +5747,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "b4fcd9fbd79514483cb2586d8d8e36801ae9a6d785d84cf7c6b4afbab5b8bca6"
+      "sha256": "855caf343776770f2b86103716134aab345582b244b52e5656634511158f7476"
     },
     {
       "component_id": "smart_global_integrity",
@@ -9165,6 +9190,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "67208e187e4b527511cfa96068b72decdd0b679ce9b9875bff5bf621d3e41de3"
+    },
+    {
+      "component_id": "test_smart_calibration_safety_gate",
+      "source_file": "test_smart_calibration_safety_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_calibration_safety_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4fc861d4797de7bedc1ad08acda6c390bbcb258c5a18cf2d4c9e7489b51e6e4a"
     },
     {
       "component_id": "test_smart_canonical_history_advance",

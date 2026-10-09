@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "58d9d8abe1fe7e0e3f866d7e39ee19dcbfdcc07878372a81566a1da5066d15ab",
+  "source_reachability_inventory_sha256": "46603d584834c0c5d515a9a11cb36c297e8d2e81d8b4c94b2b5034edf627af4a",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 481,
-    "active": 98,
+    "component_count": 483,
+    "active": 99,
     "shadow": 1,
-    "diagnostic": 182,
+    "diagnostic": 183,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4692,6 +4692,32 @@
       "production_reachable": true
     },
     {
+      "component_id": "smart_calibration_safety_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_calibration_safety_gate.py",
+      "implementation_sha256": "eb64874111da1b77e9d1e7692d7ef016075433def331f24fed79707b3a6d8484",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [],
+      "consumers": [
+        "smart_github_operator",
+        "test_smart_calibration_safety_gate"
+      ],
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
       "component_id": "smart_canonical_component_registry",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_canonical_component_registry.py",
@@ -6045,10 +6071,11 @@
       "component_id": "smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_operator.py",
-      "implementation_sha256": "b4fcd9fbd79514483cb2586d8d8e36801ae9a6d785d84cf7c6b4afbab5b8bca6",
+      "implementation_sha256": "855caf343776770f2b86103716134aab345582b244b52e5656634511158f7476",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
+        "smart_calibration_safety_gate",
         "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -9729,6 +9756,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_calibration_safety_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_calibration_safety_gate.py",
+      "implementation_sha256": "4fc861d4797de7bedc1ad08acda6c390bbcb258c5a18cf2d4c9e7489b51e6e4a",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_calibration_safety_gate"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_canonical_history_advance",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_canonical_history_advance.py",
@@ -13005,5 +13055,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "6faeec305880725edb1e307f9522b4afb1c73590d1ebda81003d8fc7b7779cc8"
+  "registry_sha256": "83921b9ee4f1aeb17b35b3c09cdaf8863f18bd6181989c461c0c0108951befbf"
 }
