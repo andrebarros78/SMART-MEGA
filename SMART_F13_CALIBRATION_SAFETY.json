@@ -1,0 +1,32 @@
+{
+  "schema": "SMART_CALIBRATION_SAFETY_GATE_1",
+  "status": "PASS",
+  "purpose": "REJECT_P06_HOLDOUT_REGRESSION_AND_ENFORCE_PRODUCTION_NEUTRALIZATION",
+  "historical_evidence": {
+    "rejected_candidate_strength": 0.5,
+    "rejected_final_holdout_n": 250,
+    "rejected_final_holdout_brier": 0.09001357670052432,
+    "uniform_final_holdout_brier": 0.08999999999999989,
+    "rejected_delta_vs_uniform": 1.3576700524431384e-05,
+    "adopted_strength": 0.0,
+    "adopted_final_holdout_brier": 0.08999999999999989,
+    "adopted_delta_vs_uniform": 0.0
+  },
+  "production_evidence": {
+    "target_contest": 3068,
+    "cutoff_contest": 3067,
+    "production_policy": "P06_NEUTRALIZED_AFTER_FINAL_HOLDOUT_20260830",
+    "production_calibration_strength": 0.0,
+    "production_brier_reference": 0.09,
+    "all_60_probabilities_uniform": true,
+    "future_result_used": false,
+    "freeze_sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733"
+  },
+  "historical_candidate_still_rejected": true,
+  "historical_holdout_not_reoptimized": true,
+  "ranking_and_card_unmodified": true,
+  "prospective_superiority_proven": false,
+  "six_of_six_proven": false,
+  "next_policy": "POSITIVE_CALIBRATION_REQUIRES_NEW_INDEPENDENT_PROSPECTIVE_PROOF",
+  "sha256": "23918eb3ef7a7333f4333082ef9e2369784c542782f15be464a8444eeab40148"
+}

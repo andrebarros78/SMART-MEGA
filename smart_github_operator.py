@@ -238,6 +238,10 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
     frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation == "freeze" else None
+    if operation == "freeze":
+        from smart_calibration_safety_gate import historical_baseline, verify_freeze_calibration
+        historical_baseline(root)
+        verify_freeze_calibration(root, observation["proof"])
     rejected = [path for path in changes if not allowed_artifact(path)]
     if rejected:
         raise RuntimeError(f"operator changed non-operational files: {rejected[:20]}")
