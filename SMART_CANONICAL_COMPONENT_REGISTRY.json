@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "1c388a2f70c106eec1073c66d89b66bc856bd06793125721c971520cd5db8490",
+  "source_reachability_inventory_sha256": "3c291ed5ca1a44f8b8d9a94054e68534b6d4ded6684eddb7a6d57111297622ec",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 484,
+    "component_count": 485,
     "active": 99,
     "shadow": 1,
-    "diagnostic": 184,
+    "diagnostic": 185,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -8689,6 +8689,8 @@
         "smart_portfolio_pipeline",
         "smart_product_certification",
         "smart_regression_runner",
+        "smart_terminal_engine",
+        "test_smart_f17_terminal_stale_coverage",
         "test_smart_source_identity"
       ],
       "entrypoints": [
@@ -8823,7 +8825,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "12b5599e52273450d5bdc1ee4fa6085e3cfc52dc8b74539750148197204ca71f",
+      "implementation_sha256": "198cdce8f19e40fb5d0a6c899975e435c6f3aead18b492042c9cb3407e02593b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8842,11 +8844,13 @@
         "smart_prospective_authority_lock",
         "smart_sequential_prospective_proof",
         "smart_signal_agent",
+        "smart_source_identity",
         "smart_v2_engine"
       ],
       "consumers": [
         "smart_terminal_executor",
-        "test_smart_f03_terminal_engine_migration"
+        "test_smart_f03_terminal_engine_migration",
+        "test_smart_f17_terminal_stale_coverage"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -10616,6 +10620,30 @@
       "producers": [
         "smart_f11_predictive_nonregression",
         "smart_f12_scientific_successor"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_f17_terminal_stale_coverage",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_f17_terminal_stale_coverage.py",
+      "implementation_sha256": "eb462c5b893f5f7411edf12c179839f119b3dd113198bb326f8c2a794ab61a4f",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_source_identity",
+        "smart_terminal_engine"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -13081,5 +13109,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "32f61e48a374d74ab605e2645d26323aaa3c13716942f9877f5304b1a8824ff0"
+  "registry_sha256": "d5881fccdfe7de6eea4d76231b20104eb603395671d73a261eee140bb35d3b40"
 }

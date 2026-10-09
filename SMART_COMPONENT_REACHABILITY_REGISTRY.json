@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "1c388a2f70c106eec1073c66d89b66bc856bd06793125721c971520cd5db8490",
+  "inventory_sha256": "3c291ed5ca1a44f8b8d9a94054e68534b6d4ded6684eddb7a6d57111297622ec",
   "summary": {
-    "python_components": 484,
+    "python_components": 485,
     "workflow_entrypoints": 8,
     "production_components": 99,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 158,
+    "test_components": 159,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8203,6 +8203,8 @@
         "smart_portfolio_pipeline",
         "smart_product_certification",
         "smart_regression_runner",
+        "smart_terminal_engine",
+        "test_smart_f17_terminal_stale_coverage",
         "test_smart_source_identity"
       ],
       "reachable": true,
@@ -8343,12 +8345,14 @@
         "smart_prospective_authority_lock",
         "smart_sequential_prospective_proof",
         "smart_signal_agent",
+        "smart_source_identity",
         "smart_v2_engine"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_terminal_executor",
-        "test_smart_f03_terminal_engine_migration"
+        "test_smart_f03_terminal_engine_migration",
+        "test_smart_f17_terminal_stale_coverage"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8358,7 +8362,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "12b5599e52273450d5bdc1ee4fa6085e3cfc52dc8b74539750148197204ca71f"
+      "sha256": "198cdce8f19e40fb5d0a6c899975e435c6f3aead18b492042c9cb3407e02593b"
     },
     {
       "component_id": "smart_terminal_executor",
@@ -9993,6 +9997,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "f52b07ef32f89de9b87c82a0a4bdafef87cd087f51469dffa4cc85a5ffe806d8"
+    },
+    {
+      "component_id": "test_smart_f17_terminal_stale_coverage",
+      "source_file": "test_smart_f17_terminal_stale_coverage.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_source_identity",
+        "smart_terminal_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "eb462c5b893f5f7411edf12c179839f119b3dd113198bb326f8c2a794ab61a4f"
     },
     {
       "component_id": "test_smart_false_negative_rescue",
