@@ -18,3 +18,9 @@ Repositório: GitHub `andrebarros78/SMART-MEGA`, branch `main`. A raiz de execu�
 A tentativa de auditoria histórica P14 identificou originais de freezes antigos ausentes (3055, 3057, 3060 e 3061). O resultado não foi mascarado nem a auditoria científica declarada PASS. A via operacional nativa independente realizou adjudicação, atualização de estado e rollover; a prova de vantagem preditiva continua não comprovada.
 
 Para retomar, validar as três autoridades vivas (ciclo, HOLD, missão) e executar `python -E -B -X utf8 smart_operator.py preflight --target 3069` em checkout com dependências. Só autorizar preparar/gerar 3069 mediante ordem explícita; nunca reconstruir cartões já congelados após conhecer sorteios. Registro histórico de 3067 permanece disponível no Git.
+
+## Aprendizado do YouTube: decisao auditada pre-3069
+
+Auditoria: SMART_YOUTUBE_LEARNING_AUDIT_PRE3069.json. Os scripts de coleta do YouTube e o canal procedimental existem, mas os registros de legendas e seus manifestos nao estao presentes no checkout canonico. O observador visual v1.3.1 e seus testes estao na branch learning/video-observation-v131-20261009, ainda sem consumo preditivo no main. Foi testado isoladamente (29 testes aprovados); a via procedimental e testes adjacentes passaram (44). A integracao ja proposta na branch integration/video-authority-f01-20261009 o classifica como DIAGNOSTIC; nao ha ganho preditivo real comprovado. Os 13 checkpoints B2 citados anteriormente nao foram revalidados nesta auditoria.
+
+Decisao operacional: manter Youtube em SHADOW_ONLY, nao usar videos posteriores ao fechamento de apostas para pesar o mesmo sorteio e nao alterar os pesos campeoes sem amostra observacional autentica, cutoff e validacao fora da amostra. O 3069 continua HOLD e nenhum cartao novo foi gerado.
