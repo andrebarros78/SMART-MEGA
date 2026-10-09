@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from smart_component_reachability import build_registry
+from smart_component_reachability import build_registry, _portable_python_sha256
 
 
 ROOT = Path(__file__).resolve().parent
@@ -43,3 +43,16 @@ def test_f01_registry_file_matches_live_source_graph():
     import json
     persisted = json.loads(registry_path.read_text(encoding="utf-8"))
     assert persisted == build_registry(ROOT)
+
+
+
+def test_f01_portable_hash_preserves_line_ending_equivalence():
+    windows = b"import sys\r\nprint(sys.version)\r\n"
+    unix = b"import sys\nprint(sys.version)\n"
+    assert _portable_python_sha256(windows) == _portable_python_sha256(unix)
+
+
+def test_f01_portable_hash_detects_semantic_text_changes():
+    original = b"x = 1\n"
+    altered = b"x = 2\r\n"
+    assert _portable_python_sha256(original) != _portable_python_sha256(altered)
