@@ -743,6 +743,12 @@ def test_state_evidence_archive_and_legacy_contracts(tmp_path, monkeypatch):
     }
     out = ia.audit_frozen_state_evidence(tmp_path, 4000, fr, frozen, sha)
     assert out['mode'] == 'IMMUTABLE_HASH_ARCHIVE'
+    # Historical freezes may use Windows separators, even in Linux CI.
+    archive_dir = tmp_path / 'SMART_STATE_ARCHIVE'
+    archive_dir.mkdir()
+    (archive_dir / 'state.json').write_bytes(state.read_bytes())
+    portable = dict(frozen, signal_state_archive_file=r'SMART_STATE_ARCHIVE\state.json')
+    assert ia.audit_frozen_state_evidence(tmp_path, 4000, fr, portable, sha)['mode'] == 'IMMUTABLE_HASH_ARCHIVE'
 
     bad = dict(frozen); bad['signal_state_archive_sha256'] = None
     with pytest.raises(ValueError, match='metadata invalid'):
