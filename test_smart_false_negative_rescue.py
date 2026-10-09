@@ -147,3 +147,100 @@ def test_canonical_production_reports_only_count_traceable_lineage():
     assert not set(profile["source_contests"]) & {
         int(p.stem.split("_")[-1]) for p in current if p.name in profile["quarantined_reports"]
     }
+
+
+def test_recover_hash_bound_3067_ledger_from_committed_archive(tmp_path):
+    """A mutable ledger must never erase independently verified old feedback."""
+    import hashlib
+    import shutil
+    import json
+    from pathlib import Path
+
+    project = Path(__file__).resolve().parent
+    report = json.loads((project / "SMART_POST_RESULT_REPORT_3067.json").read_text(encoding="utf-8-sig"))
+    audit = report["process_audit"]
+    assert audit["freeze_sha256"] and audit["ledger_sha256"]
+    (tmp_path / "SMART_CANONICAL_ROOT.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "SMART_POST_RESULT_REPORT_3067.json").write_text(
+        json.dumps(report, ensure_ascii=False), encoding="utf-8"
+    )
+    frozen = tmp_path / audit["freeze_artifact"]
+    frozen.parent.mkdir(parents=True)
+    shutil.copyfile(project / audit["freeze_artifact"], frozen)
+    assert hashlib.sha256(frozen.read_bytes()).hexdigest() == audit["freeze_sha256"]
+    # Present-day ledger diverged, but archive is the exact post-result signed version.
+    ledger_path = tmp_path / audit["ledger"]
+    ledger_path.parent.mkdir(parents=True, exist_ok=True)
+    ledger_path.write_text('{"schema":"SMART_SIGNAL_LEDGER_1","events":[]}', encoding="utf-8")
+    recovered = Path("SMART_STATE_ARCHIVE/hash-bound-learning/3067") / (
+        f"SMART_SIGNAL_LEDGER.{audit['ledger_sha256']}.json.gz"
+    )
+    (tmp_path / recovered).parent.mkdir(parents=True)
+    shutil.copyfile(project / recovered, tmp_path / recovered)
+
+    profile = build_profile_from_reports(tmp_path, through_contest=3067)
+    assert profile["observations"] == 1
+    assert profile["source_contests"] == [3067]
+    assert profile["quarantined_count"] == 0
+    assert profile["evidence_coverage"] == "COMPLETE"
+    assert profile["recovered_verified_evidence"] == {"3067": ["ledger"]}
+    assert profile["recent_observations"][0]["hit_count"] == 0
+
+
+def test_archive_corruption_quarantined_and_never_promoted(tmp_path):
+    import shutil
+    import json
+    from pathlib import Path
+
+    project = Path(__file__).resolve().parent
+    report = json.loads((project / "SMART_POST_RESULT_REPORT_3067.json").read_text(encoding="utf-8-sig"))
+    audit = report["process_audit"]
+    (tmp_path / "SMART_CANONICAL_ROOT.json").write_text("{}", encoding="utf-8")
+    (tmp_path / "SMART_POST_RESULT_REPORT_3067.json").write_text(
+        json.dumps(report, ensure_ascii=False), encoding="utf-8"
+    )
+    frozen = tmp_path / audit["freeze_artifact"]
+    frozen.parent.mkdir(parents=True)
+    shutil.copyfile(project / audit["freeze_artifact"], frozen)
+    recovered = Path("SMART_STATE_ARCHIVE/hash-bound-learning/3067") / (
+        f"SMART_SIGNAL_LEDGER.{audit['ledger_sha256']}.json.gz"
+    )
+    (tmp_path / recovered).parent.mkdir(parents=True)
+    (tmp_path / recovered).write_bytes(b"not a valid gzip archive")
+    profile = build_profile_from_reports(tmp_path, through_contest=3067)
+    assert profile["observations"] == 0
+    assert profile["quarantined_count"] == 1
+    assert profile["recovered_verified_evidence"] == {}
+    assert "corrupt archived ledger" in profile["quarantined_reasons"]["SMART_POST_RESULT_REPORT_3067.json"]
+
+
+def test_partial_authenticated_feedback_only_moves_shadow_scores():
+    from pathlib import Path
+    import json
+
+    root = Path(__file__).resolve().parent
+    if not (root / "SMART_CANONICAL_ROOT.json").is_file():
+        return
+    profile = build_profile_from_reports(root, through_contest=3067)
+    assert profile["source_contests"] == [3067]
+    assert profile["quarantined_count"] == 3
+    assert profile["evidence_coverage"] == "DEGRADED_PARTIAL_EVIDENCE"
+    assert profile["status"] == "DEGRADED_PARTIAL_EVIDENCE"
+    scores = {str(n): 0.5 for n in range(1, 61)}
+    after, audit = apply_rescue(scores, profile)
+    assert after == scores
+    assert audit["status"] == "DEGRADED_SHADOW_ONLY"
+    assert audit["nonzero_deltas"] == {}
+    assert audit["shadow_nonzero_deltas"]
+    assert audit["result_used"] is False
+
+
+def test_bogus_same_name_archive_cannot_authorize_foreign_contest(tmp_path):
+    """A digest-matching archive must not bypass the signed contest/path boundary."""
+    from smart_false_negative_rescue import _read_bound_source, MissingCanonicalLineage
+    import pytest
+    with pytest.raises(MissingCanonicalLineage):
+        _read_bound_source(
+            tmp_path, "runtime/learning_epochs/operator-3069-other/SMART_SIGNAL_LEDGER.json",
+            "a" * 64, 3067, "ledger"
+        )
