@@ -2,7 +2,7 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-09T12:11:35.963493+00:00",
+  "generated_utc": "2026-10-09T14:27:35.288004+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
@@ -355,7 +355,7 @@
       },
       {
         "path": "smart_operator.py",
-        "sha256": "7d3ade5441262be72f248e4ee4b7a1cfc959b9a99132f3c78bfffcbab7d42eac"
+        "sha256": "e3432b72e5f38a758d98db73fd44d6855a695aeed3a4e304860128ccd10316fd"
       },
       {
         "path": "smart_operator_contract.py",
@@ -1003,7 +1003,7 @@
       },
       {
         "path": "test_smart_operator_preflight.py",
-        "sha256": "aca1ef066e004e50f43587d9e31860b24483b4eadc403f512522df61e84f4d0f"
+        "sha256": "4f7eec284b3d880cc4fc7e37ae04dabae65132363fdaad9d5fc20d8e472a7a3b"
       },
       {
         "path": "test_smart_operator_real_freeze_recovery.py",
@@ -1226,18 +1226,18 @@
         "sha256": "9c81b6dc019609b958a0563048b4ea0bb04303244220dcd19bfa6e42dbb3bc1f"
       }
     ],
-    "sha256": "87b4135c573e651f50e5460d2354172d62dddc08e9517446f4daf5dd2f395d07"
+    "sha256": "fe31bff5161c3347e22af045187ad630a2f1c01822b2ab79e245819bfdabefe4"
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "58ca1814d6ecc3d7e3d959cb1d57595fe26f4ce9",
-    "ci_run_id": "37927134065",
+    "source_commit": "c64399b12c0da6031e1482e203ee81b5287bcc80",
+    "ci_run_id": "37942908333",
     "execution": {
       "kind": "GITHUB_ACTIONS",
-      "run_id": "37927134065"
+      "run_id": "37942908333"
     },
-    "code_fingerprint_sha256": "87b4135c573e651f50e5460d2354172d62dddc08e9517446f4daf5dd2f395d07",
-    "junit_sha256": "934972b738e8ed75e231ee01e046f1257aefa547d18bb882460ab4abb69cd0fc",
+    "code_fingerprint_sha256": "fe31bff5161c3347e22af045187ad630a2f1c01822b2ab79e245819bfdabefe4",
+    "junit_sha256": "a790ec8cb0940fb156ccdd9de5f8c9b1dc96edcb58d6c24558d84669a40c4720",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1331,7 +1331,7 @@
       "smart_operation_lock.py": "4b1df0ec6d9fa8d10497ae18f441f8390aeffc5a87052380aa2b865de5820a3a",
       "smart_operation_recovery.py": "a9ad05e75b2b316583200baeabe952031b580bda20e371dc3a7ae205fe97a1d4",
       "smart_operational_lifecycle.py": "fb9b475778b9df94517d5d4aa8966bb70255bf179b87682b6c17cab97f83436d",
-      "smart_operator.py": "7d3ade5441262be72f248e4ee4b7a1cfc959b9a99132f3c78bfffcbab7d42eac",
+      "smart_operator.py": "e3432b72e5f38a758d98db73fd44d6855a695aeed3a4e304860128ccd10316fd",
       "smart_operator_contract.py": "74aa33a559e85d709d69f0f0cbf4c708b65056ca19d9b6d088a04ac2886c4101",
       "smart_path_semantics.py": "865875f02156029bd0b2fb2757071c62e7f13c3d24b8303ffde165ca2d36be73",
       "smart_portfolio_backtest.py": "57941508f182cb8bcbb779d2b969f3d1f680fb58c131c076fdf8bcc2dc262bdc",
@@ -1394,24 +1394,24 @@
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "7d64f28b398a0deb56dd3615fa7fa47f8bcdb342e5b67184e652bd55521ae533"
+    "fingerprint_sha256": "87c3663450c3e11fc2507e51bc88e1fca58765277e49d372caf4ff750dbeb7ac"
   },
   "regression": {
-    "tests": 1182,
+    "tests": 1184,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "934972b738e8ed75e231ee01e046f1257aefa547d18bb882460ab4abb69cd0fc"
+    "sha256": "a790ec8cb0940fb156ccdd9de5f8c9b1dc96edcb58d6c24558d84669a40c4720"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "2d4c57dc39f5466720dba5ef8c42bfaa55a9e6a8bff0d9c9af3a4d3d890a3f52",
-    "authority_sha256": "56174cb1d1ef3cdb67ddf194afd95f96a7134351577fc4a01ec598dca8a7be82",
+    "file_sha256": "37e11057deabf69eb14ce802ddf397480651df1c9d6becfc2049c08aa252a5f2",
+    "authority_sha256": "0a44ea54bd0a8cf094d7eae9defe816da94f532b1b97e06b7132140b6cca9154",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "934972b738e8ed75e231ee01e046f1257aefa547d18bb882460ab4abb69cd0fc",
-    "tests": 1182,
+    "junit_sha256": "a790ec8cb0940fb156ccdd9de5f8c9b1dc96edcb58d6c24558d84669a40c4720",
+    "tests": 1184,
     "failures": 0,
     "errors": 0,
     "checks": {
@@ -1473,10 +1473,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "e265fc7268542edfdd648ebc34dd7aea5bb973b25f679165b935ced75950214e",
-  "build_runtime_sha256": "7aa5560d8a1695f37cebd7ed580a0cb9ae6b74b9d947b2abb5a5f375a423d6cc",
-  "build_functional_sha256": "3d9152c5cf19ac2a1be0503c2447ea1b1da73acac5eea9023d2d1e95a5aa3a83",
-  "build_total_integration_sha256": "68c4aaf77e8f1088cde748549fcb85db4f5fa93756420bb886d959a314361098",
+  "build_orchestration_sha256": "2eae961729c1688288b0f1d5a8c8d5ffdc84d238a8d21cbf81d24d4411ed2b66",
+  "build_runtime_sha256": "9516acd948bdc7845b3fe6e76adb2ab031dfd481daf0ef337a3f7af64b87d09b",
+  "build_functional_sha256": "7de1878b601657b7a3959a093d0ff41d5ae4a2a11c63f7ee3fab3cb5c9e3a972",
+  "build_total_integration_sha256": "8f51e84c8ae061b41a194f086e458a65c0bb2385e032eaa60e486cb72fd8b5ee",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1542,5 +1542,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "4bce88fe02a06bde32bb918f625be25c9f6c5dad9f52d4dc897d05a1e8351dfb"
+  "sha256": "9624629866eb4ab58b4889ce11fccdfffad5645fde8f747191952fed8f3526ef"
 }
