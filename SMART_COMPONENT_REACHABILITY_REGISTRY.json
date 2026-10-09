@@ -53,20 +53,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "5f07bf9f12bce68805d38c0b5c592a04d9792398dd248fdafbb6b14b8c2e59de",
+  "inventory_sha256": "8b078702e3054156429190d45a7c4fca82cf096e55620031f551b471e931afd8",
   "summary": {
-    "python_components": 485,
+    "python_components": 487,
     "workflow_entrypoints": 8,
     "production_components": 99,
     "shadow_components": 1,
-    "diagnostic_components": 27,
+    "diagnostic_components": 28,
     "validation_components": 23,
-    "test_components": 159,
+    "test_components": 160,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 38,
+    "independent_entrypoints": 39,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -123,7 +123,8 @@
       "smart_signal_2000_simulation.py",
       "smart_signal_50_round_simulation.py",
       "smart_signal_drift_calibration.py",
-      "smart_v2_production.py"
+      "smart_v2_production.py",
+      "smart_video_observation.py"
     ]
   },
   "import_cycles": [
@@ -5861,6 +5862,7 @@
         "smart_official_result_ingest",
         "smart_procedural_cronogram_acquire",
         "smart_procedural_youtube_recent_acquire",
+        "smart_video_observation",
         "test_smart_http_guard"
       ],
       "reachable": true,
@@ -8636,6 +8638,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c"
+    },
+    {
+      "component_id": "smart_video_observation",
+      "source_file": "smart_video_observation.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_http_guard"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "tests.test_smart_video_observation"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "b46c8e7a5a2a40bd702899f8d1cf5bbbbe741c25bef18e552abb7698ac28dd8f"
     },
     {
       "component_id": "smartmega_apply_post_result_report_20260920",
@@ -12157,6 +12182,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "9acb2446732f41dcb13fa37ae213b9d4877df1889472c9bdd33c5e4d2d8db6ec"
+    },
+    {
+      "component_id": "tests.test_smart_video_observation",
+      "source_file": "tests/test_smart_video_observation.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_video_observation"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "867d6451e2bfe406fc43ae222ed32e1e80c54944b2fba28405599526d513bab7"
     },
     {
       "component_id": "tests.test_wmcp_scientific_tools",
