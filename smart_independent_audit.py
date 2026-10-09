@@ -851,7 +851,7 @@ def audit_frozen_state_evidence(root: Path, target: int, fr: dict[str, Any], fro
 
             raise ValueError('immutable state archive metadata invalid')
 
-        archive_path = _resolve(root, archive_raw)
+        archive_path = _resolve(root, archive_raw.replace('\\', '/'))
 
         if not archive_path.is_file() or sha256_file(archive_path) != state_sha:
 
