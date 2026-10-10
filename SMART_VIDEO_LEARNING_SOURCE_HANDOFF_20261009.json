@@ -1,0 +1,63 @@
+{
+  "schema": "SMART_VIDEO_LEARNING_SOURCE_HANDOFF_V1",
+  "project": "SMART-MEGA",
+  "created_utc": "2026-10-10T00:22:36.018013+00:00",
+  "status": "PARTIALLY_VERIFIED_PC_ESCOLA_CHECKPOINTS_NOT_READ",
+  "scope": "EXISTING_YOUTUBE_VISUAL_LEARNING_READ_ONLY_PROVENANCE",
+  "authority": {
+    "repository": "andrebarros78/SMART-MEGA",
+    "branch": "learning/video-observation-v131-20261009",
+    "commit": "f0734dfb18efd07703f7aeb18b4184c00630e65b",
+    "code_path": "smart_video_observation.py",
+    "engineering_evidence_path": "release_evidence/VIDEO_OBSERVATION_20261009/EVIDENCE.json",
+    "engineering_evidence_sha256_raw": "a7b5381674851ad4382d62ef8a91058924c29ce3451060e27dc9e2c0bb544b30",
+    "engineering_status": "MISSION_ACTIVE",
+    "visual_module_version": "1.3.1",
+    "predictive_evidence": "NOT_ESTABLISHED"
+  },
+  "checkpoint_source": {
+    "reported_host": "PC Escola",
+    "reported_root": "C:\\SMART-MEGA\\runtime\\video_observation",
+    "reported_filename_pattern": "contest_XXXX.json",
+    "discovery_glob": "contest_*.json",
+    "reported_checkpoint_count": 13,
+    "count_verified_by_this_audit": null,
+    "files_read_by_this_audit": 0,
+    "source_told_by_operator": true,
+    "live_pc_escola_access": "UNAVAILABLE_S_WMCP_SESSION_TERMINATED",
+    "github_publication_verified": false,
+    "safe_policy": "READ_ONLY_AT_SOURCE_UNTIL_HASH_AND_TEMPORAL_VERIFICATION"
+  },
+  "ingestion_contract": {
+    "first_step": "VERIFY_13_REAL_CHECKPOINTS_READ_ONLY_WITH_FILE_SHA256_AND_FILE_PROVENANCE",
+    "required_checks": [
+      "contest_identity",
+      "source_video_url",
+      "checkpoint_version_and_fingerprint",
+      "status_and_errors",
+      "event_timestamps_and_observation_scope",
+      "file_sha256",
+      "result_label_separation",
+      "observation_available_before_prediction_cutoff"
+    ],
+    "knowledge_transfer_mode": "SCIENTIFIC_SHADOW_HYPOTHESES_WITH_PROVENANCE",
+    "same_contest_after_bet_close_influence": false,
+    "direct_weight_or_card_mutation": false,
+    "only_validated_oos_gain_may_trigger_separate_candidate_calibration": true
+  },
+  "baseline": {
+    "main_commit": "b7f617ad22a4705ba72c871642865af2ad079d1c",
+    "reference_audit": "SMART_YOUTUBE_LEARNING_AUDIT_PRE3069.json",
+    "production_3069_status": "HOLD_UNCHANGED",
+    "predictive_weights_changed": false,
+    "learning_branch_touched": false,
+    "checkpoint_files_touched": false
+  },
+  "engineering_tests_previous_audit": {
+    "visual_contracts_passed": 29,
+    "procedural_adjacent_passed": 44
+  },
+  "conclusion": "SOURCE_LOCATION_RECONCILED_NO_RUNTIME_INGESTION_PROVEN",
+  "mission_proven": false,
+  "sha256": "028a3f0088cfc4fed0fd8a99b2a44ab3dda95ba03daff598dfdf428c32885c59"
+}
