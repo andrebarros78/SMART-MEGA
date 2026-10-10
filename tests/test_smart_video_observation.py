@@ -7,6 +7,8 @@ from smart_video_observation import (
     ObservationConfig,
     _is_youtube_source,
     _segment_from_caption_events,
+    _observation_fingerprint,
+    learned_motion_prior,
     _validate_public_https,
     _atomic_json,
     analyze_contest,
@@ -584,3 +586,159 @@ def test_atomic_checkpoint_writer_survives_concurrent_calls(tmp_path):
     assert isinstance(saved["writer"], int)
     assert saved["large"] == str(saved["writer"]) * 4096
     assert list(tmp_path.glob("*.tmp")) == []
+
+
+
+def _past_video_checkpoint(folder, contest, *, center=0.5, status="CANDIDATE",
+                           hypothesis_id=None, source_host="youtube.com"):
+    cfg = ObservationConfig()
+    source = f"https://{source_host}/watch?v={contest}"
+    start_s, end_s = 100.0, 200.0
+    events = [start_s + (center + offset) * (end_s - start_s)
+              for offset in (-0.02, 0.0, 0.02)]
+    doc = {
+        "schema": "smart.video_observation.v1",
+        "contest_id": str(contest),
+        "status": status,
+        "source": source,
+        "extractor_version": EXTRACTOR_VERSION,
+        "hypothesis_id": hypothesis_id,
+        "checkpoint_fingerprint": _observation_fingerprint(str(contest), source, cfg, hypothesis_id),
+        "main_params": vars(cfg),
+        "spatial_consensus": {"recurrent": True},
+        "analysis_scope": {"start_s": start_s, "end_s": end_s, "segment_guard_passed": True},
+        "event_timestamps_s": events,
+        "predictive_evidence": "NOT_ESTABLISHED",
+    }
+    (folder / f"contest_{contest}.json").write_text(json.dumps(doc), encoding="utf-8")
+    return doc
+
+
+def test_incremental_video_learning_prior_uses_three_proven_past_contests_only(tmp_path):
+    for n, center in ((3060, 0.48), (3061, 0.50), (3062, 0.52)):
+        _past_video_checkpoint(tmp_path, n, center=center)
+    _past_video_checkpoint(tmp_path, 3063, center=0.9)  # future of 3063
+    prior = learned_motion_prior(tmp_path, "3063", source_url="https://youtube.com/watch?v=3063")
+    assert prior["status"] == "ACTIVE"
+    assert prior["eligible_observations"] == 3
+    assert prior["training_contests"] == [3060, 3061, 3062]
+    assert 0.49 <= prior["normalized_event_center"] <= 0.51
+    assert prior["training_sha256"] and all(len(x) == 64 for x in prior["training_sha256"].values())
+    assert prior["predictive_evidence"] == "NOT_ESTABLISHED"
+
+
+def test_visual_learning_rejects_poisoned_foreign_or_inconsistent_checkpoints(tmp_path):
+    _past_video_checkpoint(tmp_path, 3055, center=0.5)
+    _past_video_checkpoint(tmp_path, 3056, center=0.5, source_host="example.org")
+    _past_video_checkpoint(tmp_path, 3057, center=0.5, hypothesis_id="other")
+    bad = _past_video_checkpoint(tmp_path, 3058, center=0.5)
+    bad["checkpoint_fingerprint"] = "0" * 64
+    (tmp_path / "contest_3058.json").write_text(json.dumps(bad), encoding="utf-8")
+    _past_video_checkpoint(tmp_path, 3060, center=0.5)
+    prior = learned_motion_prior(tmp_path, "3060", source_url="https://youtube.com/watch?v=3060")
+    assert prior["status"] == "SHADOW_INSUFFICIENT_CONSENSUS"
+    assert prior["training_contests"] == [3055]
+    assert prior["active"] is False
+
+
+def test_learned_prior_changes_only_bounded_visual_refinement_priority(tmp_path):
+    for n in (3040, 3041, 3042):
+        _past_video_checkpoint(tmp_path, n, center=0.51)
+    prior = learned_motion_prior(tmp_path, "3043", source_url="https://youtube.com/watch?v=3043")
+    cfg = ObservationConfig(max_refined_regions=1)
+    # A modest 5% stronger baseline sample occurs far from previously
+    # repeated observed motion. The bounded <=15% prior boosts only the
+    # visual refinement priority, never probabilities of lottery numbers.
+    far = {"status": "OK", "start_s": 10.0, "mean_motion": 0.052,
+           "global_motion_fraction": 0.0, "grid_energy": [0.01] * 12}
+    near = {"status": "OK", "start_s": 49.0, "mean_motion": 0.05,
+            "global_motion_fraction": 0.0, "grid_energy": [0.01] * 12}
+    baseline = select_promising_regions([far, near], cfg, 100.0)
+    learned = select_promising_regions([far, near], cfg, 100.0, learning_prior=prior)
+    assert baseline[0] < 30.0
+    assert learned[0] > 30.0
+    assert prior["predictive_evidence"] == "NOT_ESTABLISHED"
+
+
+def test_visual_learning_is_attached_to_next_checkpoint_without_rewriting_previous(tmp_path):
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    previous_bytes = (tmp_path / "contest_3010.json").read_bytes()
+    result = analyze_contest(
+        "3013", "https://example.org/video.mp4", tmp_path,
+        ObservationConfig(coarse_points=5, max_refined_regions=1),
+        resolver=fake_resolver, sampler=fake_sampler,
+    )
+    assert result["status"] == "CANDIDATE"
+    assert result["learning_context"]["status"] == "INACTIVE"  # different source host
+    assert (tmp_path / "contest_3010.json").read_bytes() == previous_bytes
+    assert result["predictive_evidence"] == "NOT_ESTABLISHED"
+    assert not any("winning" in key or "drawn" in key for key in result)
+
+
+def test_visual_learning_does_not_turn_inconsistent_or_only_two_contests_into_authority(tmp_path):
+    for n, center in ((3020, .1), (3021, .9), (3022, .1)):
+        _past_video_checkpoint(tmp_path, n, center=center)
+    prior = learned_motion_prior(tmp_path, "3023", source_url="https://youtube.com/watch?v=x")
+    assert prior["eligible_observations"] == 3
+    assert prior["active"] is False
+    assert prior["status"] == "SHADOW_INSUFFICIENT_CONSENSUS"
+
+
+
+def test_learn_only_cli_persists_real_checkpoint_derived_state(tmp_path):
+    import subprocess
+    import sys
+    from pathlib import Path
+    module = Path(__file__).resolve().parents[1] / "smart_video_observation.py"
+    for contest in (3065, 3066, 3067):
+        _past_video_checkpoint(tmp_path, contest, center=0.48)
+    before = {p.name: p.read_bytes() for p in tmp_path.glob("contest_*.json")}
+    proc = subprocess.run(
+        [sys.executable, "-B", str(module), "--learn-only", "--contest", "3068",
+         "--checkpoint-dir", str(tmp_path), "--url", "https://youtube.com/watch?v=test"],
+        capture_output=True, text=True, timeout=20,
+    )
+    assert proc.returncode == 0, proc.stderr
+    published = json.loads((tmp_path / "SMART_VISUAL_LEARNING_STATE.json").read_text())
+    assert published["schema"] == "SMART_VISUAL_LEARNING_STATE_V1"
+    assert published["observation_prior"]["active"] is True
+    assert published["training_contests"] == [3065, 3066, 3067]
+    assert published["promotion_authorized"] is False
+    assert published["same_contest_predictive_weight_authorized"] is False
+    assert all(p.read_bytes() == before[p.name] for p in tmp_path.glob("contest_*.json"))
+    assert not (tmp_path / "contest_3068.json").exists()
+
+
+def test_new_checkpoint_automatically_updates_incremental_learning(tmp_path):
+    for contest in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, contest, center=0.5)
+    result = analyze_contest(
+        "3013", "https://youtube.com/watch?v=3013", tmp_path,
+        ObservationConfig(coarse_points=5, max_refined_regions=1),
+        resolver=fake_resolver, sampler=fake_sampler,
+        segment_locator=lambda *_: {
+            "status": "PASS", "candidate_eligible": True,
+            "segment_start_s": 0.0, "segment_end_s": 120.0,
+        },
+    )
+    assert result["learning_context"]["status"] == "ACTIVE"
+    state = json.loads((tmp_path / "SMART_VISUAL_LEARNING_STATE.json").read_text())
+    assert state["next_contest"] == "3014"
+    assert state["training_contests"] == [3010, 3011, 3012, 3013]
+    assert state["promotion_authorized"] is False
+    assert result["predictive_evidence"] == "NOT_ESTABLISHED"
+
+
+def test_incremental_learning_uses_thirteen_distinct_real_shape_checkpoints_without_results(tmp_path):
+    for contest in range(3001, 3014):
+        _past_video_checkpoint(tmp_path, contest, center=0.49 + (contest % 3) * 0.01)
+    future = _past_video_checkpoint(tmp_path, 3014, center=0.9)
+    future['winning_numbers'] = [1, 2, 3, 4, 5, 6]
+    (tmp_path / 'contest_3014.json').write_text(json.dumps(future), encoding='utf-8')
+    prior = learned_motion_prior(tmp_path, '3014', source_url='https://www.youtube.com/watch?v=future')
+    assert prior['active'] is True
+    assert prior['eligible_observations'] == 13
+    assert len(prior['training_sha256']) == 13
+    assert 3014 not in prior['training_contests']
+    assert prior['predictive_evidence'] == 'NOT_ESTABLISHED'

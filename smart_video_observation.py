@@ -378,7 +378,7 @@ def run_samples(specs: Iterable[dict[str, Any]], sampler: Callable[[dict[str, An
     return sorted(results, key=lambda row: float(row.get("start_s") or 0.0))
 
 
-def select_promising_regions(coarse: list[dict[str, Any]], cfg: ObservationConfig, duration_s: float, window_start_s: float = 0.0, window_end_s: float | None = None) -> list[float]:
+def select_promising_regions(coarse: list[dict[str, Any]], cfg: ObservationConfig, duration_s: float, window_start_s: float = 0.0, window_end_s: float | None = None, learning_prior: dict[str, Any] | None = None) -> list[float]:
     valid = [row for row in coarse if row.get("status") == "OK" and float(row.get("mean_motion") or 0.0) >= cfg.motion_floor]
     def priority(row: dict[str, Any]) -> float:
         motion = float(row.get("mean_motion") or 0.0)
@@ -391,7 +391,18 @@ def select_promising_regions(coarse: list[dict[str, Any]], cfg: ObservationConfi
             max_cell = max(grid)
             spread = sum(1 for value in grid if value >= max_cell * 0.35) / float(len(grid))
             locality = dominant * max(0.0, 1.0 - spread)
-        return motion * (0.25 + 0.75 * (1.0 - global_fraction)) * (1.0 + 2.0 * locality)
+        baseline = motion * (0.25 + 0.75 * (1.0 - global_fraction)) * (1.0 + 2.0 * locality)
+        if not learning_prior or learning_prior.get("active") is not True:
+            return baseline
+        lo = max(0.0, float(window_start_s))
+        hi = duration_s if window_end_s is None else min(duration_s, float(window_end_s))
+        if hi <= lo:
+            return baseline
+        middle = (float(row.get("start_s") or 0.0) + cfg.coarse_sample_s / 2.0 - lo) / (hi - lo)
+        center = float(learning_prior["normalized_event_center"])
+        proximity = max(0.0, 1.0 - abs(middle - center) / 0.20)
+        # No suppression of observed motion: at most 15% bounded priority bonus.
+        return baseline * (1.0 + 0.15 * proximity)
     valid.sort(key=priority, reverse=True)
     selected: list[float] = []
     separation = max(cfg.refine_window_s * 0.75, cfg.coarse_sample_s)
@@ -648,6 +659,144 @@ def _observation_fingerprint(contest_id: str, source_url: str, cfg: ObservationC
     return hashlib.sha256(canonical).hexdigest()
 
 
+
+def learned_motion_prior(
+    checkpoint_dir: str | Path,
+    contest_id: str,
+    hypothesis_id: str | None = None,
+    *,
+    source_url: str | None = None,
+) -> dict[str, Any]:
+    """Causal, bounded cross-contest *observation* learning.
+
+    Uses only earlier checkpointed video-motion observations. No lottery results,
+    downstream predictions, audio contents, or later/same-contest files are read.
+    A checkpoint must match its recorded extractor fingerprint and video source.
+    """
+    root = Path(checkpoint_dir)
+    target = str(contest_id)
+    empty = {
+        "schema": "SMART_VISUAL_OBSERVATION_PRIOR_V1",
+        "status": "INACTIVE",
+        "target_contest": target,
+        "training_contests": [],
+        "training_sha256": {},
+        "eligible_observations": 0,
+        "active": False,
+        "normalized_event_center": None,
+        "observed_spread": None,
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+        "scope": "SCIENTIFIC_VIDEO_MOTION_ONLY",
+    }
+    if not target.isascii() or not target.isdecimal() or not root.is_dir():
+        return empty
+    target_n = int(target)
+    same_host = (
+        "youtube.com" if _is_youtube_source(source_url or "")
+        else (urlparse(source_url).hostname or "").lower()
+    ) if source_url else None
+    medians: list[float] = []
+    digests: dict[str, str] = {}
+    seen_videos: set[str] = set()
+    forbidden_labels = {"winning_numbers", "drawn_numbers", "result_numbers", "dezenas_sorteadas", "hit_count"}
+    # Bounded reads: checkpoints can be large, untrusted and concurrently written.
+    for path in sorted(root.glob("contest_[0-9]*.json"))[:512]:
+        try:
+            if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
+                continue
+        except OSError:
+            continue
+        stem = path.stem.removeprefix("contest_")
+        if not stem.isascii() or not stem.isdecimal() or int(stem) >= target_n:
+            continue
+        raw = path.read_bytes()
+        try:
+            row = json.loads(raw)
+            if (not isinstance(row, dict) or str(row.get("contest_id")) != stem
+                    or forbidden_labels.intersection(row)
+                    or row.get("extractor_version") != EXTRACTOR_VERSION
+                    or row.get("hypothesis_id") != hypothesis_id
+                    or row.get("status") != "CANDIDATE"
+                    or row.get("predictive_evidence") != PREDICTIVE_EVIDENCE
+                    or row.get("spatial_consensus", {}).get("recurrent") is not True):
+                continue
+            source = row.get("source")
+            params = row.get("main_params")
+            if not isinstance(source, str) or not isinstance(params, dict):
+                continue
+            source_host = "youtube.com" if _is_youtube_source(source) else (urlparse(source).hostname or "").lower()
+            if same_host and source_host != same_host:
+                continue
+            if source in seen_videos:
+                continue
+            cfg = ObservationConfig(**params).validated()
+            if row.get("checkpoint_fingerprint") != _observation_fingerprint(stem, source, cfg, hypothesis_id):
+                continue
+            if _is_youtube_source(source) and row.get("analysis_scope", {}).get("segment_guard_passed") is not True:
+                continue
+            scope = row.get("analysis_scope") or {}
+            lo, hi = float(scope["start_s"]), float(scope["end_s"])
+            if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
+                continue
+            events = [float(t) for t in row.get("event_timestamps_s") or []]
+            if len(events) < cfg.min_candidate_events or not all(math.isfinite(t) and lo <= t <= hi for t in events):
+                continue
+            medians.append(statistics.median((t - lo) / (hi - lo) for t in events))
+            seen_videos.add(source)
+            digests[stem] = hashlib.sha256(raw).hexdigest()
+        except (ValueError, KeyError, TypeError, OverflowError, OSError, json.JSONDecodeError):
+            continue
+    if medians:
+        center = statistics.median(medians)
+        spread = statistics.pstdev(medians)
+        # Do not promote 1-2 noisy videos or inconsistent broadcast edits.
+        active = len(medians) >= 3 and spread <= 0.18
+        empty.update(
+            status="ACTIVE" if active else "SHADOW_INSUFFICIENT_CONSENSUS",
+            training_contests=sorted(int(k) for k in digests),
+            training_sha256=digests,
+            eligible_observations=len(medians),
+            active=active,
+            normalized_event_center=round(center, 6),
+            observed_spread=round(spread, 6),
+        )
+    return empty
+
+
+def persist_visual_learning_state(
+    checkpoint_dir: str | Path,
+    next_contest: str,
+    hypothesis_id: str | None = None,
+    *,
+    source_url: str | None = None,
+) -> dict[str, Any]:
+    """Incrementally publish the next-contest visual observation memory.
+
+    Checkpoint files are never rewritten or treated as winning-number labels.
+    Previous artifacts remain as immutable training references by SHA-256.
+    """
+    root = Path(checkpoint_dir)
+    profile = learned_motion_prior(root, next_contest, hypothesis_id, source_url=source_url)
+    memory = {
+        "schema": "SMART_VISUAL_LEARNING_STATE_V1",
+        "next_contest": str(next_contest),
+        "extractor_version": EXTRACTOR_VERSION,
+        "source_host": (urlparse(source_url).hostname or "").lower() if source_url else None,
+        "hypothesis_id": hypothesis_id,
+        "observation_prior": profile,
+        "training_contests": profile["training_contests"],
+        "training_sha256": profile["training_sha256"],
+        "training_observations": profile["eligible_observations"],
+        "promotion_authorized": False,
+        "same_contest_predictive_weight_authorized": False,
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+    }
+    memory["sha256"] = hashlib.sha256(json.dumps(
+        memory, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")).hexdigest()
+    _atomic_json(root / "SMART_VISUAL_LEARNING_STATE.json", memory)
+    return memory
+
 def should_reuse_checkpoint(existing: dict[str, Any] | None, extractor_version: str, hypothesis_id: str | None, force: bool, expected_fingerprint: str | None = None) -> bool:
     if force or not existing:
         return False
@@ -703,6 +852,7 @@ def analyze_contest(
         reused["checkpoint_reused"] = True
         return reused
 
+    learned_prior = learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url)
     started = time.monotonic()
     resources_before = _resource_snapshot()
     base: dict[str, Any] = {
@@ -729,6 +879,7 @@ def analyze_contest(
         ],
         "media_persisted_bytes": 0,
         "checkpoint_reused": False,
+        "learning_context": learned_prior,
     }
 
     def finish(status: str, **extra: Any) -> dict[str, Any]:
@@ -737,6 +888,15 @@ def analyze_contest(
         base["resource_metrics"] = _resource_delta(resources_before, _resource_snapshot())
         base["elapsed_s"] = round(time.monotonic() - started, 6)
         _atomic_json(cp_path, base)
+        if str(contest_id).isascii() and str(contest_id).isdecimal():
+            # A failed video cannot teach motion, but it still produces a
+            # checkpoint and an explicit unchanged learning state.
+            try:
+                persist_visual_learning_state(
+                    checkpoint_dir, str(int(contest_id) + 1), hypothesis_id, source_url=source_url
+                )
+            except (OSError, ValueError, TypeError) as exc:
+                base["limitations"].append(f"visual learning state unavailable: {type(exc).__name__}")
         return base
 
     try:
@@ -780,7 +940,7 @@ def analyze_contest(
     if not ok_coarse:
         return finish("TIMEOUT" if any(row.get("status") == "TIMEOUT" for row in coarse) else "UNOBSERVABLE")
 
-    regions = select_promising_regions(coarse, cfg, duration_s, analysis_start, analysis_end)
+    regions = select_promising_regions(coarse, cfg, duration_s, analysis_start, analysis_end, learned_prior)
     if not regions:
         total_observed = sum(float(row.get("duration_s") or cfg.coarse_sample_s) for row in ok_coarse)
         return finish("INSUFFICIENT_EVIDENCE", observed_seconds_requested=round(total_observed, 6), video_duration_s=round(duration_s, 6), coverage_ratio=round(min(1.0, total_observed / duration_s), 6))
@@ -921,12 +1081,24 @@ def analyze_queue(
 def _main() -> int:
     parser = argparse.ArgumentParser(description="SMART stream-first physical video observation extractor")
     parser.add_argument("--contest", required=True)
-    parser.add_argument("--url", required=True)
+    parser.add_argument("--url")
+    parser.add_argument("--learn-only", action="store_true",
+                        help="Learn from existing checkpoints for --contest; do not fetch video")
     parser.add_argument("--checkpoint-dir", default="runtime/video_observation")
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--hypothesis-id")
     args = parser.parse_args()
+    if args.learn_only:
+        if not str(args.contest).isascii() or not str(args.contest).isdecimal():
+            parser.error("--learn-only requires numeric --contest (next contest)")
+        result = persist_visual_learning_state(
+            args.checkpoint_dir, args.contest, args.hypothesis_id, source_url=args.url
+        )
+        print(json.dumps(result, ensure_ascii=False, indent=2))
+        return 0
+    if not args.url:
+        parser.error("--url is required for observation")
     result = analyze_contest(
         args.contest,
         args.url,

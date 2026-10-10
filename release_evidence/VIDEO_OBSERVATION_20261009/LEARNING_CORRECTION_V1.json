@@ -1,0 +1,50 @@
+{
+  "schema": "SMART_VIDEO_INCREMENTAL_LEARNING_CORRECTION_V1",
+  "mission": "FIX_EXISTING_VISUAL_OBSERVER_LEARNING_NO_RECONSTRUCTION",
+  "project": "andrebarros78/SMART-MEGA",
+  "branch": "learning/video-observation-v131-20261009",
+  "baseline_head": "f0734dfb18efd07703f7aeb18b4184c00630e65b",
+  "created_utc": "2026-10-10T00:31:41.835236+00:00",
+  "status": "CODE_CORRECTED_AND_CONTRACT_TESTED",
+  "root_cause": "V1.3.1 previously extracted independent per-contest motion checkpoints but did not consume previous checkpoints to adapt later observation; single-contest CLI could not learn-only from existing storage.",
+  "changes": [
+    "Bounded, causal reading of prior numeric checkpoint files with filename, fingerprint, source-host, extractor-schema, hypothesis, spatial-consensus and data-quality checks",
+    "Incremental learned visual event-timing prior using only past unique videos and >=3 validated prior candidate observations, bounded <=15 percent visual refinement priority change",
+    "Persist the observational learning state in SMART_VISUAL_LEARNING_STATE.json after each new numeric-contest observation",
+    "Add --learn-only --contest N --checkpoint-dir PATH to learn from existing checkpoints without re-downloading videos or rewriting past files",
+    "Fail closed on future and same-contest evidence, output-label keys, duplicate videos, bad hashes/versions, wrong hypothesis, too-few examples or unstable observations"
+  ],
+  "changed_existing_modules_only": true,
+  "source_files_sha256": {
+    "smart_video_observation.py": "675b9ecbb88816b8b954915fc497b560685f3b2c4cd892dc6d50decbbff275a0",
+    "tests/test_smart_video_observation.py": "bb104574b2fd1f18c25fccdd6397914fad65f27fbb6a67b45ce36f49db3f3cae"
+  },
+  "target_13_checkpoint_files": {
+    "reported_location": "PC Escola / C:\\SMART-MEGA\\runtime\\video_observation\\contest_XXXX.json",
+    "live_host_read_proven": false,
+    "live_training_executed": false,
+    "unit_fixture_thirteen_unique_historical_records": "PASSED_SYNTHETIC_ONLY",
+    "migration_of_older_checkpoint_schema": "NOT_CLAIMED",
+    "note": "13 production checkpoint contents remain unverified because PC Escola connector session was terminated; do not call synthetic training a real contest evaluation."
+  },
+  "validation": {
+    "video_observer_tests": 37,
+    "combined_video_procedural_f08_http_tests": 59,
+    "failed": 0,
+    "dependency_pip_check": "PASS",
+    "baseline_true_predictive_gain": "NOT_ESTABLISHED",
+    "observational_refinement_benefit": "SYNTHETIC_CONTROLLED_PRIORITY_COMPARISON_ONLY"
+  },
+  "safety": {
+    "production_champion_model_changed": false,
+    "lottery_weights_changed": false,
+    "same_contest_video_as_predictive_signal": false,
+    "existing_checkpoint_rewritten": false,
+    "actions_used": false,
+    "main_branch_changed": false,
+    "learning_gate_only_scientific_observation": true
+  },
+  "next_operational_proof": "ONCE_PC_ESCOLA_CONNECTED_RUN_THE_EXISTING_BRANCH_MODULE_IN_LEARN_ONLY_MODE_AGAINST_C_SMART_MEGA_RUNTIME_VIDEO_OBSERVATION_AND_COMPARE_REAL_PRIOR_STATUS_AND_COVERAGE",
+  "mission_proven": false,
+  "sha256": "f4b09cc055f1afec915a5f3916ab60e7b51722b7bd2cb7f3001157cf8c9714e6"
+}
