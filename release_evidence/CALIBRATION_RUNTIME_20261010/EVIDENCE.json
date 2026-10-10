@@ -1,0 +1,49 @@
+{
+  "schema": "SMART_F04_RUNTIME_CORRECTION_EVIDENCE_V1",
+  "status": "CORRECTED_ISOLATED_BRANCH_NOT_YET_DEPLOYED",
+  "date_utc": "2026-10-10T07:10:56.092745+00:00",
+  "branch": "fix/smart-mega-v6-calibration-stall-20261010",
+  "causes": [
+    "unbounded multiprocessing worker wait",
+    "no durable candidate progress",
+    "unverified visual observation availability",
+    "CRLF/LF source-hash drift across clean checkout"
+  ],
+  "fixes": [
+    "20-minute global calibration deadline; worker pool termination",
+    "atomic progress and no partial promotion",
+    "provenance-only visual shadow link after card selection",
+    "F05/F10 source-derived registries match clean checkout"
+  ],
+  "focused_tests_clean_checkout": {
+    "passed": 22,
+    "failed": 0
+  },
+  "integrity_clean_checkout": {
+    "F05": "PASS",
+    "F10": "PASS"
+  },
+  "original_broad_suite": {
+    "passed": 63,
+    "failed": 7,
+    "note": "five identity tests rejected existing competing roots; two persisted registries were corrected and retested in clean checkout"
+  },
+  "scoring_selection_functions_unchanged": true,
+  "live_3069": {
+    "status": "FROZEN",
+    "card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "card_sha256": "dd36988116fa8f9f69418d82ee414a47d730995be053ef51914a06719cd3b5df",
+    "proof_sha256": "7d20ede8301dba6a048553eb79e639d44732f820e17c37ff8c41e26142eb7b92",
+    "main_head_unchanged": true
+  },
+  "production_code_deployed": false,
+  "predictive_uplift_proven": false,
+  "mission_proven": false
+}
