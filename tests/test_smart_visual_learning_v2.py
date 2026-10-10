@@ -155,3 +155,45 @@ def test_snapshot_tampering_aborts_publish(tmp_path):
     path.write_text('{"tampered":true}')
     with pytest.raises(ValueError, match="content changed"):
         publish(obs, store, 3001)
+
+
+def test_learning_classifies_camera_artifact_without_false_candidate(tmp_path):
+    p = _fixture(tmp_path, 3000)
+    row = json.loads(p.read_text())
+    row["limitations"] = [
+        "motion pattern is spatially consistent with global motion/camera change",
+        "recurrent region was not stable across spatial grid resolutions",
+    ]
+    p.write_text(json.dumps(row))
+    report = analyze(tmp_path, 3001)
+    assert report["failure_modes_counts"] == {
+        "GLOBAL_CAMERA_MOTION": 1,
+        "SPATIAL_GRID_DISAGREEMENT": 1,
+    }
+    assert report["candidate_observations"] == 0
+
+
+def test_real_2978_failed_stream_is_consumed_only_as_negative_evidence(tmp_path):
+    original = (
+        Path(__file__).resolve().parents[1]
+        / "release_evidence/VIDEO_OBSERVATION_20261009/CONTEST_2978_FAIL_CLOSED.json"
+    )
+    assert original.is_file()
+    sample = tmp_path / "contest_2978.json"
+    sample.write_bytes(original.read_bytes())
+    report = analyze(tmp_path, 2979, "mega-visual-segment-guard-v131")
+    assert report["eligible_observations"] == 1
+    assert report["candidate_observations"] == 0
+    assert report["status_counts"] == {"STREAM_FAILED": 1}
+    assert report["failure_modes_counts"] == {"UNAVAILABLE_VISUAL_INPUT": 1}
+    assert report["predictive_weight_authorized"] is False
+
+
+def test_corrupt_candidate_structure_fails_closed(tmp_path):
+    p = _fixture(tmp_path, 3000, status="CANDIDATE")
+    row = json.loads(p.read_text())
+    row["spatial_consensus"] = None
+    p.write_text(json.dumps(row))
+    report = analyze(tmp_path, 3001)
+    assert report["eligible_observations"] == 0
+    assert report["rejected_counts"] == {"CANDIDATE_UNVERIFIED": 1}
