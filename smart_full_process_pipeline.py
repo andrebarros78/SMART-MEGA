@@ -21,6 +21,7 @@ from smart_startup_reconciler import assert_reconciled
 from smart_storage_surfaces import require_within
 from smart_manual_generation_authority import validate as validate_manual_generation, consume as consume_manual_generation
 from smart_prospective_cycle import register as register_prospective_cycle
+from smart_visual_learning_shadow import inspect_visual_learning_shadow
 from smart_procedural_actionability_gate import evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
@@ -525,6 +526,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "governed_challenger_top6": freeze_obj.get("governed_challenger_top6"),
         "trace_fields": list(TRACE_FIELDS),
         "trace_checks": trace_checks,
+        # Evidence only: called after frozen card selection, never used by
+        # prediction, ranking, calibration or champion/challenger weights.
+        "visual_learning_observation": inspect_visual_learning_shadow(root, target, cutoff),
         "scientific_claim_status": "UNPROVEN_PROSPECTIVE",
         "terminal_mission_authority": False,
         "result_used": False,
