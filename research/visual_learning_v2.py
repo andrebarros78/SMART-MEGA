@@ -118,6 +118,8 @@ def _read_row(path: Path, target: int, hypothesis_id: str | None) -> tuple[dict 
     status = str(row["status"])
     if status == "CANDIDATE":
         scope = row.get("analysis_scope") or {}
+        if not isinstance(scope, dict) or not isinstance(row.get("spatial_consensus"), dict):
+            return None, "CANDIDATE_UNVERIFIED"
         try:
             lo, hi = float(scope["start_s"]), float(scope["end_s"])
             times = [float(t) for t in row["event_timestamps_s"]]
@@ -139,8 +141,22 @@ def _read_row(path: Path, target: int, hypothesis_id: str | None) -> tuple[dict 
             return None, "INVALID_COVERAGE"
         if not math.isfinite(coverage) or not 0 <= coverage <= 1:
             return None, "INVALID_COVERAGE"
+    limitations = row.get("limitations")
+    notes = [str(x).lower() for x in limitations if isinstance(x, str)] if isinstance(limitations, list) else []
+    failure_modes: list[str] = []
+    if status in {"STREAM_FAILED", "TIMEOUT", "UNOBSERVABLE"}:
+        failure_modes.append("UNAVAILABLE_VISUAL_INPUT")
+    if any("global motion/camera change" in x for x in notes):
+        failure_modes.append("GLOBAL_CAMERA_MOTION")
+    if any("stable across spatial grid resolutions" in x for x in notes):
+        failure_modes.append("SPATIAL_GRID_DISAGREEMENT")
+    if any("too few recurrent events" in x for x in notes):
+        failure_modes.append("LOW_EVENT_COUNT")
+    if any("segment locator" in x or "segment guard" in x for x in notes):
+        failure_modes.append("SEGMENT_GUARD_UNPROVEN")
     return {
         "contest": contest,
+        "failure_modes": sorted(set(failure_modes)),
         "sha256": _digest(raw),
         "source_sha256": _digest(source.encode("utf-8")),
         "source_host": "youtube.com" if _is_youtube_source(source) else url.hostname.lower(),
@@ -200,6 +216,9 @@ def analyze(checkpoint_dir: Path, next_contest: int, hypothesis_id: str | None =
         "eligible_observations": n,
         "candidate_observations": counts["CANDIDATE"],
         "status_counts": dict(sorted(counts.items())),
+        "failure_modes_counts": dict(sorted(Counter(
+            mode for r in rows for mode in r["failure_modes"]
+        ).items())),
         "rejected_counts": dict(sorted(Counter(r["reason"] for r in rejected).items())),
         "rejected": rejected,
         "technical_availability_posterior_mean": availability,
