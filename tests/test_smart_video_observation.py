@@ -742,3 +742,46 @@ def test_incremental_learning_uses_thirteen_distinct_real_shape_checkpoints_with
     assert len(prior['training_sha256']) == 13
     assert 3014 not in prior['training_contests']
     assert prior['predictive_evidence'] == 'NOT_ESTABLISHED'
+
+
+
+def test_visual_learning_prior_recent_records_not_starved(tmp_path):
+    for n in range(1000, 1513):
+        (tmp_path / f"contest_{n}.json").write_text(
+            json.dumps({"contest_id": str(n), "status": "UNRESOLVED"}),
+            encoding="utf-8",
+        )
+    for n in (3060, 3061, 3062):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    prior = learned_motion_prior(
+        tmp_path, "3063", source_url="https://youtube.com/watch?v=3063"
+    )
+    assert prior["status"] == "ACTIVE"
+    assert prior["training_contests"] == [3060, 3061, 3062]
+
+
+def test_visual_learning_old_replay_does_not_regress_memory(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    initial = persist_visual_learning_state(
+        tmp_path, "3020", source_url="https://youtube.com/watch?v=3020"
+    )
+    assert initial["next_contest"] == "3020"
+    _past_video_checkpoint(tmp_path, 3019, center=0.5)
+    state = persist_visual_learning_state(
+        tmp_path, "3014", source_url="https://youtube.com/watch?v=3014"
+    )
+    assert state["next_contest"] == "3020"
+    assert state["training_contests"] == [3010, 3011, 3012, 3019]
+    assert state["promotion_authorized"] is False
+
+
+def test_visual_learning_corrupted_memory_not_silently_overwritten(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    state_path = tmp_path / "SMART_VISUAL_LEARNING_STATE.json"
+    state_path.write_text('{"schema":"SMART_VISUAL_LEARNING_STATE_V1","sha256":"bad"}')
+    prior_bytes = state_path.read_bytes()
+    with pytest.raises(ValueError, match="checksum invalid"):
+        persist_visual_learning_state(tmp_path, "3069")
+    assert state_path.read_bytes() == prior_bytes

@@ -700,7 +700,16 @@ def learned_motion_prior(
     seen_videos: set[str] = set()
     forbidden_labels = {"winning_numbers", "drawn_numbers", "result_numbers", "dezenas_sorteadas", "hit_count"}
     # Bounded reads: checkpoints can be large, untrusted and concurrently written.
-    for path in sorted(root.glob("contest_[0-9]*.json"))[:512]:
+    # Prefer the most recent eligible past contests. Old/future files must
+    # never consume the bounded reading budget.
+    prior_files: list[tuple[int, Path]] = []
+    for path in root.glob("contest_[0-9]*.json"):
+        part = path.stem.removeprefix("contest_")
+        if part.isascii() and part.isdecimal() and 1 <= len(part) <= 12:
+            order = int(part)
+            if order < target_n:
+                prior_files.append((order, path))
+    for _order, path in sorted(prior_files, key=lambda pair: pair[0], reverse=True)[:512]:
         try:
             if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
                 continue
@@ -776,6 +785,24 @@ def persist_visual_learning_state(
     Previous artifacts remain as immutable training references by SHA-256.
     """
     root = Path(checkpoint_dir)
+    state_path = root / "SMART_VISUAL_LEARNING_STATE.json"
+    next_contest = str(next_contest)
+    if not next_contest.isascii() or not next_contest.isdecimal():
+        raise ValueError("next_contest must be numeric")
+    if state_path.exists():
+        previous = json.loads(state_path.read_text(encoding="utf-8"))
+        if not isinstance(previous, dict):
+            raise ValueError("visual learning state is invalid")
+        previous_copy = dict(previous)
+        stored_digest = previous_copy.pop("sha256", None)
+        calculated_digest = hashlib.sha256(json.dumps(
+            previous_copy, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+        ).encode("utf-8")).hexdigest()
+        if previous.get("schema") != "SMART_VISUAL_LEARNING_STATE_V1" or stored_digest != calculated_digest:
+            raise ValueError("visual learning state checksum invalid; refusing to overwrite")
+        previous_target = str(previous.get("next_contest", ""))
+        if previous_target.isascii() and previous_target.isdecimal():
+            next_contest = str(max(int(next_contest), int(previous_target)))
     profile = learned_motion_prior(root, next_contest, hypothesis_id, source_url=source_url)
     memory = {
         "schema": "SMART_VISUAL_LEARNING_STATE_V1",
@@ -794,7 +821,7 @@ def persist_visual_learning_state(
     memory["sha256"] = hashlib.sha256(json.dumps(
         memory, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")).hexdigest()
-    _atomic_json(root / "SMART_VISUAL_LEARNING_STATE.json", memory)
+    _atomic_json(state_path, memory)
     return memory
 
 def should_reuse_checkpoint(existing: dict[str, Any] | None, extractor_version: str, hypothesis_id: str | None, force: bool, expected_fingerprint: str | None = None) -> bool:
