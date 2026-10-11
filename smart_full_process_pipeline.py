@@ -24,6 +24,7 @@ from smart_prospective_cycle import register as register_prospective_cycle
 from smart_procedural_actionability_gate import evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
+from smart_agent_skill_consumer_contract import verify_consumer_gate
 
 SCHEMA = "SMART_FULL_PROCESS_PROOF_2"
 TRACE_FIELDS = (
@@ -311,6 +312,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     pre_gate = write_total_integration(root, pre_gate_path, phase="PRE_FREEZE")
     if pre_gate.get("status") != "PASS":
         raise RuntimeError("PRE_FREEZE total integration failed")
+    pre_consumer = verify_consumer_gate(pre_gate, pre_gate_path, phase="PRE_FREEZE")
 
     lifecycle_freezing = transition_lifecycle(root, "PREPARED", "FREEZING", target_contest=target, actor="full_process_freeze_begin")
     reset_ledger_sha = sha256_file(ledger_path)
@@ -418,6 +420,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     post_runtime = SmartAgentRuntime(root, phase="POST_FREEZE").run()
     post_gate_path = epoch_dir / "POST_FREEZE_TOTAL_INTEGRATION.json"
     post_gate = write_total_integration(root, post_gate_path, phase="POST_FREEZE")
+    post_consumer = verify_consumer_gate(post_gate, post_gate_path, phase="POST_FREEZE")
 
     challenger = freeze_obj.get("challenger", {})
     champion_top6 = [int(x) for x in freeze_obj["champion"]["top6"]]
@@ -452,6 +455,10 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "challenger_top6_valid": _valid_top6(challenger.get("top6")),
         "pre_freeze_integration_pass": pre_gate.get("status") == "PASS" and pre_gate.get("phase") == "PRE_FREEZE",
         "post_freeze_integration_pass": post_gate.get("status") == "PASS" and post_gate.get("phase") == "POST_FREEZE",
+        "pre_freeze_agents_skills_consumed": pre_consumer["status"] == "PASS" and pre_consumer["agents_executed"] == 9 and pre_consumer["skills_native_invoked"] == 37 and pre_consumer["skills_quarantined"] == 4,
+        "post_freeze_agents_skills_consumed": post_consumer["status"] == "PASS" and post_consumer["agents_executed"] == 9 and post_consumer["skills_native_invoked"] == 37 and post_consumer["skills_quarantined"] == 4,
+        "agent_skill_registry_consistent_between_phases": pre_consumer["skill_adapter_registry_sha256"] == post_consumer["skill_adapter_registry_sha256"],
+        "agent_skill_consumer_no_external_or_llm_authority": pre_consumer["llm_provider"] is None and post_consumer["llm_provider"] is None and pre_consumer["prediction_or_weight_influence"] is False and post_consumer["prediction_or_weight_influence"] is False,
         "all_9_agents_operational_after_freeze": post_runtime.get("status") == "PASS" and post_runtime.get("agent_count") == 9,
         "all_41_capabilities_accounted_after_freeze": post_runtime.get("capability_count") == 41,
         "fresh_epoch_did_not_import_old_activation_authority": freeze_obj.get("learning_activation_authority", {}).get("status") == "FAIL_CLOSED_INACTIVE",
@@ -507,6 +514,14 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "probability_ledger_sha256": sha256_file(probability_ledger_path),
         "pre_freeze_total_integration_sha256": pre_gate["sha256"],
         "post_freeze_total_integration_sha256": post_gate["sha256"],
+        "agent_skill_consumer": {
+            "pre_freeze": pre_consumer,
+            "post_freeze": post_consumer,
+            "authority": "EVIDENCE_ONLY",
+            "llm_required": False,
+            "predictive_weight_authorized": False,
+            "freeze_mutation_authorized": False,
+        },
         "primary_card": primary_card,
         "primary_card_file": _rel(root, primary_card_path),
         "primary_card_sha256": primary_card_sha,
