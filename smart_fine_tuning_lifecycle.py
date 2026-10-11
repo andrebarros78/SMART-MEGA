@@ -1,6 +1,9 @@
 from __future__ import annotations
 
 import json
+import os
+import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
@@ -104,12 +107,52 @@ def ensure_pre_freeze_authority(
         result = _validate_pair(data_file, int(target_contest), report_path, authority_path)
         return {**result, "reused_existing_authority": True}
 
+    progress_path = epoch_dir / "SMART_AI_FINE_TUNING_PROGRESS.json"
+
+    def progress(state: dict[str, Any]) -> None:
+        # Progress never grants authority; only a complete, hash-bound report does.
+        payload = {
+            **state, "target_contest": int(target_contest),
+            "cutoff_contest": int(target_contest) - 1,
+        }
+        with tempfile.NamedTemporaryFile(
+            mode="w", encoding="utf-8", dir=epoch_dir,
+            prefix=".fine-tuning-progress-", suffix=".tmp", delete=False,
+        ) as handle:
+            tmp = Path(handle.name)
+            try:
+                json.dump(payload, handle, ensure_ascii=False, indent=2)
+                handle.write("\n")
+                handle.flush()
+                os.fsync(handle.fileno())
+            except BaseException:
+                tmp.unlink(missing_ok=True)
+                raise
+        os.replace(tmp, progress_path)
+        print(
+            f"FINE_TUNING_PROGRESS target={target_contest} "
+            f"status={state['status']} completed={state['completed']}/{state['total']}",
+            file=sys.stderr, flush=True,
+        )
+
     report = run_fine_tuning(
         data_file,
         int(target_contest),
         start=int(start),
         max_workers=int(max_workers),
+        progress=progress,
     )
-    write_report_and_authority(report, report_path=report_path, authority_path=authority_path)
-    result = _validate_pair(data_file, int(target_contest), report_path, authority_path)
+    try:
+        write_report_and_authority(report, report_path=report_path, authority_path=authority_path)
+        result = _validate_pair(data_file, int(target_contest), report_path, authority_path)
+    except BaseException:
+        progress({"status": "FAILED", "completed": 0, "total": 0,
+                  "candidate_ids": [], "elapsed_seconds": 0.0})
+        raise
+    progress({"status": "COMPLETE", "completed": int(report["candidate_count"]),
+              "total": int(report["candidate_count"]),
+              "candidate_ids": [item["candidate"]["candidate_id"] for item in report["results"]],
+              "elapsed_seconds": 0.0,
+              "report_file_sha256": result["report_file_sha256"],
+              "authority_file_sha256": result["authority_file_sha256"]})
     return {**result, "reused_existing_authority": False}
