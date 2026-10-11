@@ -1,0 +1,66 @@
+{
+  "schema": "SMART_V6_AGENT_SKILL_CONSUMER_EVIDENCE_20261011",
+  "status": "ISOLATED_CONSUMER_INTEGRATION_VERIFIED_NOT_DEPLOYED",
+  "generated_utc": "2026-10-11T18:09:57.380465+00:00",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "fix/smart-v6-agent-skill-consumer-20261011",
+  "base_main": "141c31d339e03dec24054581685c6b7244c825ad",
+  "scope": "Orchestration evidence consumed by card freeze without LLM or scoring changes",
+  "agents": 9,
+  "capabilities_registered": 41,
+  "native_methodology_aliases_executed": 37,
+  "quarantined_capabilities": 4,
+  "standalone_third_party_skills_executed": 0,
+  "llm_provider": null,
+  "weights_changed": false,
+  "external_skill_code_executed": false,
+  "integration_tests": {
+    "passed": 47,
+    "failed": 0,
+    "warnings": 1,
+    "log_sha256": "1b757f102f4fc0fc33f63c933ed755158573191245e7c28c791592cad750b3f5"
+  },
+  "F05_F10": "PASS",
+  "real_3069_existing_proof_readonly": {
+    "PRE_FREEZE": {
+      "status": "PASS",
+      "agents_executed": 9,
+      "skills_native_invoked": 37,
+      "skills_quarantined": 4,
+      "handoffs_consumed": 10,
+      "llm_provider": null,
+      "gate_file_sha256": "edd03e6b0cc6c84b32ef18a5854f750c4f87d7029574aec513606b716050dcb6"
+    },
+    "POST_FREEZE": {
+      "status": "PASS",
+      "agents_executed": 9,
+      "skills_native_invoked": 37,
+      "skills_quarantined": 4,
+      "handoffs_consumed": 10,
+      "llm_provider": null,
+      "gate_file_sha256": "a4fa57a05892d505ed26db2941147fa79d8cfca08a6549153e832182237af4ec"
+    }
+  },
+  "live_3069_unchanged": {
+    "status": "FROZEN",
+    "card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "card_sha256": "dd36988116fa8f9f69418d82ee414a47d730995be053ef51914a06719cd3b5df",
+    "proof_sha256": "7d20ede8301dba6a048553eb79e639d44732f820e17c37ff8c41e26142eb7b92",
+    "productive_main_head": "231f0080fe7a804df6d61b506e5d72ad825654b0"
+  },
+  "release": {
+    "published_isolated_branch": true,
+    "merged_to_main": false,
+    "live_generation_with_new_code_proven": false,
+    "certification_reissued": false
+  },
+  "predictive_six_of_six_proven": false,
+  "mission_proven": false
+}
