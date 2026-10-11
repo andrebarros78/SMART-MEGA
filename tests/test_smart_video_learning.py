@@ -100,7 +100,7 @@ def test_invalid_batch_never_writes(tmp_path):
     with pytest.raises(ValueError,match="follow"):
         observe_batch(items[:1],tmp_path,next_contest="4501")
     with pytest.raises(ValueError,match="between"):
-        observe_batch(items[:1],tmp_path,batch_workers=5)
+        observe_batch(items[:1],tmp_path,batch_workers=9)
     assert list(tmp_path.iterdir())==[]
 
 
@@ -155,3 +155,24 @@ def test_study_bad_pointer_fails_closed(tmp_path):
     with pytest.raises(ValueError,match="checksum invalid"):
         publish_visual_study(tmp_path,features)
     assert current.read_bytes()==before
+
+def test_eight_parallel_workers_are_capacity_limited(tmp_path):
+    cfg=ObservationConfig(workers=1,coarse_points=8)
+    result=observe_batch(records(),tmp_path,cfg,batch_workers=8,
+                         resolver=resolver,sampler=sampler)
+    assert result["processed"]==4
+    assert result["study_examples"]==4
+    with pytest.raises(ValueError,match="must not exceed 8"):
+        observe_batch(records(),tmp_path,ObservationConfig(workers=2),
+                      batch_workers=8,resolver=resolver,sampler=sampler)
+
+
+def test_study_missing_archive_fails_closed(tmp_path):
+    cfg=ObservationConfig(coarse_points=8)
+    observe_batch(records(),tmp_path,cfg,batch_workers=2,
+                  resolver=resolver,sampler=sampler)
+    archive=next((tmp_path/"study_history").glob("*.json"))
+    archive.unlink()
+    with pytest.raises(ValueError,match="history missing or corrupt"):
+        observe_batch(records(),tmp_path,cfg,batch_workers=2,
+                      resolver=resolver,sampler=sampler)
