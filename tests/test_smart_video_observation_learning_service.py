@@ -1,5 +1,8 @@
 """Standard-library regression tests for the incremental visual learning service."""
 import json
+import io
+import sys
+from contextlib import redirect_stdout
 import tempfile
 import threading
 import time
@@ -140,6 +143,81 @@ class VisualLearningServiceTests(unittest.TestCase):
             self.assertEqual(result["status_counts"], {"STREAM_FAILED": 1})
             self.assertEqual(result["memory_state"], "PERSISTED")
             self.assertEqual(result["predictive_evidence"], "NOT_ESTABLISHED")
+
+
+    def test_consumer_cli_exports_reproducible_json_without_rewatch(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            for c in (3000, 3001, 3002):
+                candidate(root, c, "2026-10-09T00:00:00+00:00")
+            report = root / "derived_visual_features.json"
+            argv = [
+                "smart_video_observation.py", "--features-contest", "3003",
+                "--cutoff-utc", "2026-10-10T00:00:00Z",
+                "--checkpoint-dir", str(root), "--output-json", str(report),
+            ]
+            out = io.StringIO()
+            with mock.patch.object(sys, "argv", argv), redirect_stdout(out):
+                self.assertEqual(observation._main(), 0)
+            printed = json.loads(out.getvalue())
+            self.assertEqual(printed, json.loads(report.read_text(encoding="utf-8")))
+            self.assertEqual(printed["source_contests"], [3000, 3001, 3002])
+            self.assertEqual(printed["predictive_weight"], 0.0)
+            self.assertTrue((root / "contest_3000.json").exists())
+
+    def test_batch_cli_reuses_checkpoints_without_video_network(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            for c in (3000, 3001, 3002):
+                candidate(root, c, "2026-10-09T00:00:00+00:00")
+            inputs = [{"contest_id": str(c), "url": f"https://example.org/video_{c}.mp4"} for c in (3000, 3001, 3002)]
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps({"schema": "SMART_VISUAL_BATCH_MANIFEST_V1",
+                                            "next_contest": "3003", "items": inputs}), encoding="utf-8")
+            snapshot = {c: (root / f"contest_{c}.json").read_bytes() for c in (3000, 3001, 3002)}
+            report = root / "batch_report.json"
+            argv = ["smart_video_observation.py", "--batch-manifest", str(manifest),
+                    "--checkpoint-dir", str(root), "--output-json", str(report)]
+            out = io.StringIO()
+            with mock.patch.object(sys, "argv", argv), redirect_stdout(out):
+                self.assertEqual(observation._main(), 0)
+            data = json.loads(out.getvalue())
+            self.assertEqual(data["checkpoint_reused"], 3)
+            self.assertEqual(data["memory_state"], "PERSISTED")
+            self.assertEqual(data["total"], 3)
+            self.assertEqual(data, json.loads(report.read_text(encoding="utf-8")))
+            for c, raw in snapshot.items():
+                self.assertEqual(raw, (root / f"contest_{c}.json").read_bytes())
+            self.assertTrue((root / "SMART_VISUAL_LEARNING_STATE.json").exists())
+
+    def test_cli_refuses_to_overwrite_immutable_checkpoint_report(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            candidate(root, 3000, "2026-10-09T00:00:00+00:00")
+            protected = root / "contest_3000.json"
+            before = protected.read_bytes()
+            argv = ["smart_video_observation.py", "--features-contest", "3001",
+                    "--cutoff-utc", "2026-10-10T00:00:00Z",
+                    "--checkpoint-dir", str(root), "--output-json", str(protected)]
+            with mock.patch.object(sys, "argv", argv), redirect_stdout(io.StringIO()):
+                with self.assertRaises(SystemExit) as cm:
+                    observation._main()
+            self.assertEqual(cm.exception.code, 2)
+            self.assertEqual(before, protected.read_bytes())
+
+    def test_invalid_manifest_does_not_trigger_observation(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            manifest = root / "manifest.json"
+            manifest.write_text(json.dumps({"schema": "wrong", "items": []}), encoding="utf-8")
+            argv = ["smart_video_observation.py", "--batch-manifest", str(manifest),
+                    "--checkpoint-dir", str(root)]
+            with mock.patch.object(sys, "argv", argv), redirect_stdout(io.StringIO()):
+                with self.assertRaises(SystemExit) as cm:
+                    observation._main()
+            self.assertEqual(cm.exception.code, 2)
+            self.assertEqual(sorted(p.name for p in root.iterdir()), ["manifest.json"])
+
 
 if __name__ == "__main__":
     unittest.main()

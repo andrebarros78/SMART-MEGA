@@ -1444,34 +1444,93 @@ def observe_batch(
 
 
 def _main() -> int:
-    parser = argparse.ArgumentParser(description="SMART stream-first physical video observation extractor")
-    parser.add_argument("--contest", required=True)
-    parser.add_argument("--url")
+    parser = argparse.ArgumentParser(description="SMART physical-video observation and consumable learning")
+    parser.add_argument("--contest", help="single contest; with --learn-only, the next target contest")
+    parser.add_argument("--url", help="source URL for single observation or optional consumer host filter")
     parser.add_argument("--learn-only", action="store_true",
-                        help="Learn from existing checkpoints for --contest; do not fetch video")
+                        help="rebuild visual memory from checkpoints without fetching video")
+    parser.add_argument("--batch-manifest", type=Path,
+                        help="SMART_VISUAL_BATCH_MANIFEST_V1 JSON file with items and next_contest")
+    parser.add_argument("--max-concurrent-contests", type=int, default=2,
+                        help="number of concurrently observed contests (1..4)")
+    parser.add_argument("--features-contest",
+                        help="read-only consumer target; requires --cutoff-utc")
+    parser.add_argument("--cutoff-utc",
+                        help="ISO-8601 timestamp with timezone; excludes future observations")
+    parser.add_argument("--output-json", type=Path,
+                        help="optional derived report; cannot overwrite checkpoints or learning state")
     parser.add_argument("--checkpoint-dir", default="runtime/video_observation")
     parser.add_argument("--workers", type=int, default=2)
     parser.add_argument("--force", action="store_true")
     parser.add_argument("--hypothesis-id")
     args = parser.parse_args()
-    if args.learn_only:
-        if not str(args.contest).isascii() or not str(args.contest).isdecimal():
+
+    mode_count = sum(bool(x) for x in (args.contest, args.batch_manifest, args.features_contest))
+    if mode_count != 1:
+        parser.error("specify exactly one: --contest, --batch-manifest, --features-contest")
+    if args.learn_only and not args.contest:
+        parser.error("--learn-only requires --contest")
+    if args.cutoff_utc and not args.features_contest:
+        parser.error("--cutoff-utc is only valid with --features-contest")
+    if args.features_contest and not args.cutoff_utc:
+        parser.error("--features-contest requires --cutoff-utc")
+    if args.batch_manifest:
+        if args.url or args.force or args.learn_only:
+            parser.error("batch URL/force/learn-only must be specified in the manifest or omitted")
+        try:
+            manifest_path = args.batch_manifest
+            if manifest_path.is_symlink() or manifest_path.stat().st_size > 1024 * 1024:
+                raise ValueError("manifest must be a regular file of at most 1 MiB")
+            manifest = json.loads(manifest_path.read_text(encoding="utf-8"))
+            if (not isinstance(manifest, dict) or
+                    manifest.get("schema") != "SMART_VISUAL_BATCH_MANIFEST_V1" or
+                    not isinstance(manifest.get("items"), list)):
+                raise ValueError("invalid SMART_VISUAL_BATCH_MANIFEST_V1 manifest")
+            result = observe_batch(
+                manifest["items"], args.checkpoint_dir, ObservationConfig(workers=args.workers),
+                max_concurrent_contests=args.max_concurrent_contests,
+                next_contest=manifest.get("next_contest"), hypothesis_id=args.hypothesis_id,
+            )
+        except (ValueError, OSError, json.JSONDecodeError) as exc:
+            parser.error(f"invalid batch manifest: {exc}")
+    elif args.features_contest:
+        if args.force or args.learn_only:
+            parser.error("consumer is read-only; --force/--learn-only are not valid")
+        try:
+            result = get_visual_features(
+                args.checkpoint_dir, args.features_contest, args.cutoff_utc,
+                args.hypothesis_id, source_url=args.url,
+            )
+        except ValueError as exc:
+            parser.error(str(exc))
+    elif args.learn_only:
+        if not args.contest.isascii() or not args.contest.isdecimal():
             parser.error("--learn-only requires numeric --contest (next contest)")
         result = persist_visual_learning_state(
-            args.checkpoint_dir, args.contest, args.hypothesis_id, source_url=args.url
+            args.checkpoint_dir, args.contest, args.hypothesis_id, source_url=args.url,
         )
-        print(json.dumps(result, ensure_ascii=False, indent=2))
-        return 0
-    if not args.url:
-        parser.error("--url is required for observation")
-    result = analyze_contest(
-        args.contest,
-        args.url,
-        args.checkpoint_dir,
-        ObservationConfig(workers=args.workers),
-        force=args.force,
-        hypothesis_id=args.hypothesis_id,
-    )
+    else:
+        if not args.url:
+            parser.error("--url is required for observation")
+        result = analyze_contest(
+            args.contest, args.url, args.checkpoint_dir,
+            ObservationConfig(workers=args.workers),
+            force=args.force, hypothesis_id=args.hypothesis_id,
+        )
+
+    if args.output_json is not None:
+        target = args.output_json
+        forbidden = (
+            target.name.startswith("contest_") or
+            target.name == "SMART_VISUAL_LEARNING_STATE.json" or
+            "learning_history" in target.parts or
+            target.suffix.lower() != ".json" or
+            target.is_symlink() or
+            (args.batch_manifest is not None and target.resolve() == args.batch_manifest.resolve())
+        )
+        if forbidden:
+            parser.error("--output-json must be a derived .json path outside protected checkpoint names")
+        _atomic_json(target, result)
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0
 
