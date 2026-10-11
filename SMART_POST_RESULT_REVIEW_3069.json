@@ -1,0 +1,36 @@
+{
+  "schema": "SMART_POST_RESULT_REVIEW_1",
+  "status": "POST_RESULT_REVIEW_COMPLETE",
+  "target_contest": 3069,
+  "next_target": 3070,
+  "created_utc": "2026-10-11T15:39:42.133845+00:00",
+  "source": "MISSED_RESULT_CATCHUP_THROUGH_3069",
+  "canonical_history": {
+    "file": "Mega-Sena.xlsx",
+    "sha256": "b38ca2f75877cc16869a12f14baa65758359d49dd5e3f1ddde769165bcde5db2",
+    "history_max": 3069,
+    "row_count": 3069
+  },
+  "recovery_chain": [
+    {
+      "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+      "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+      "target_contest": 3069
+    }
+  ],
+  "learning_policy": {
+    "automatic_weight_change": false,
+    "requires_out_of_sample_validation": true,
+    "future_information_used": false
+  },
+  "operator_next_action": "HOLD_OR_AUTHORIZE_NEXT_CYCLE",
+  "stop_required": true,
+  "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+  "automatic_weight_change_performed": false,
+  "statistical_adjustment_authorized": false,
+  "result_used_for_prediction": false,
+  "no_future_leakage": true,
+  "reviewed_utc": "2026-10-11T15:39:42.133884+00:00",
+  "parecer": "MISSED_RESULTS_RECONCILED; CANONICAL_ADVANCED; NO_RETROACTIVE_GENERATION",
+  "sha256": "3cf051bc774bb1ecdebbdc6d93e5065f45408c967e8961c8e27a5d4433b64121"
+}

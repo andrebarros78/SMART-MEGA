@@ -1,27 +1,27 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
   "state": "HOLD",
-  "revision": 36,
+  "revision": 37,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3069,
-  "completed_contest": 3068,
-  "previous_state": "REVIEWED",
-  "transition": "REVIEWED_TO_HOLD",
-  "transition_actor": "smart_rollover.canonical_rollover",
-  "transition_utc": "2026-10-09T23:13:41.488177+00:00",
-  "previous_lifecycle_sha256": "c2573a76ec04260d48f3169d7d5a72d8b6e58583b4128eec66ac4153c6933f11",
+  "target_contest": 3070,
+  "completed_contest": 3069,
+  "previous_state": "HOLD",
+  "transition": "HOLD_TO_HOLD_MISSED_RESULT_RECOVERY",
+  "transition_actor": "smart_missed_catchup",
+  "transition_utc": "2026-10-11T15:39:42.141781+00:00",
+  "previous_lifecycle_sha256": "92e9adbb473a07bf175d6a0d145bf3fe347aabbd4012cd48e2cac17945d26a9b",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "b60157f8b7c0fbfc81e237b5c10a3e393f0ab6d455e37ba29930d4aeb9db9a43"
+      "sha256": "168e98140480d9b3e80cd0fe51dfbd01af27334a04fe78b97268f994e7fe9191"
     },
     "post_result_review": {
-      "file": "SMART_POST_RESULT_REVIEW_3066.json",
-      "sha256": "309a316be5fd0603ad673a41d1f03a9d91e61b24096543db32d6f9c02d71c131"
+      "file": "SMART_POST_RESULT_REVIEW_3069.json",
+      "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
     },
     "legacy_active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
@@ -49,37 +49,33 @@
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
     "missed_result_catchup": {
-      "start_target": 3063,
-      "through_target": 3066,
+      "start_target": 3069,
+      "through_target": 3069,
       "proofs": [
         {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3063.json",
-          "sha256": "986628da69b4259cd8ef9cbca043d4bd5bc8e39a21722eb7f7b65751704d2c76",
-          "target_contest": 3063
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3064.json",
-          "sha256": "9ca1b124f12002b9ee8ccf5f49333c2e5619939a4225c7875f420b25d021498a",
-          "target_contest": 3064
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3065.json",
-          "sha256": "f84b35125b328dc98a76bcd4a3f0bd941c832e4ed9b350c347959ba09566fa7a",
-          "target_contest": 3065
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3066.json",
-          "sha256": "51f76ce285811339bf1db72921ed19f3d32fdabc69430829fdca166711261ecb",
-          "target_contest": 3066
+          "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+          "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+          "target_contest": 3069
         }
       ],
-      "product_certification_sha256": "38507f3c94e74d192513b7245917523cbac12e249d4c5088479dd351a69c5200",
-      "official_result_batch": null
+      "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+      "official_result_batch": {
+        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+        "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
+        "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
+        "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
+        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+        "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
+        "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+        "targets": [
+          3069
+        ]
+      }
     },
     "pre_freeze_withdrawal": {
       "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "92e9adbb473a07bf175d6a0d145bf3fe347aabbd4012cd48e2cac17945d26a9b"
+  "sha256": "ac8053b61007e654ea5fd7dda110510ef213c8cadf336dd3dbc56d522e58ad58"
 }
