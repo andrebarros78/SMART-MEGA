@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "edc36ce801ed2ed71d3549f6234d4bbe19d50e7a494864d19a16b4f9c8c9db07",
+  "source_reachability_inventory_sha256": "6635d74349b4549511fcb2ebcf22608cab136f6f2af2a216289a3be6e9f181e4",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 486,
-    "active": 99,
+    "component_count": 488,
+    "active": 100,
     "shadow": 1,
-    "diagnostic": 186,
+    "diagnostic": 187,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4453,6 +4453,7 @@
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
         "archive.reconciliation_runtime_residue_20260911.runtime.create_temporal_recovery_epoch",
         "archive.reconciliation_runtime_residue_20260911.runtime.smart_50_round_validation",
+        "smart_agent_skill_consumer_contract",
         "smart_agent_skill_functional_gate",
         "smart_canonical_history_advance",
         "smart_continuity_consolidator",
@@ -4464,6 +4465,7 @@
         "smart_skill_runtime",
         "smart_total_integration_gate",
         "test_smart_agent_runtime",
+        "test_smart_agent_skill_consumer_contract",
         "test_smart_architecture_hardening_20260905",
         "test_smart_f06_agent_handoffs",
         "test_smart_f09_sdk_llm_selective",
@@ -4479,6 +4481,34 @@
         "smart_github_operator",
         "smart_repository_integrity",
         "smart_skill_adapter_registry"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_agent_skill_consumer_contract",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_agent_skill_consumer_contract.py",
+      "implementation_sha256": "9e7ae19d59d5894900acedf65d7c648abe30d2a59eaa782b8888032c55686bcb",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
+        "smart_agent_runtime"
+      ],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "test_smart_agent_skill_consumer_contract"
+      ],
+      "entrypoints": [
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5982,11 +6012,12 @@
       "component_id": "smart_full_process_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_full_process_pipeline.py",
-      "implementation_sha256": "4055182f086b5d05519ae4d3707541e7a7bd4ad15d9abf871a8d4a155901be6b",
+      "implementation_sha256": "d4114e239690a22171d4fa1495ef066f4668ee36fdbdf11e9800ac7e0e39ddc2",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_agent_runtime",
+        "smart_agent_skill_consumer_contract",
         "smart_canonical_identity",
         "smart_champion_challenger",
         "smart_engineering_activation",
@@ -8947,6 +8978,7 @@
         "smart_engineering_activation",
         "smart_full_process_pipeline",
         "smart_product_certification",
+        "test_smart_agent_skill_consumer_contract",
         "test_smart_f06_agent_handoffs",
         "test_smart_f07_skill_adapters",
         "test_smart_f09_sdk_llm_selective",
@@ -9496,6 +9528,31 @@
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_agent_runtime"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_agent_skill_consumer_contract",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_agent_skill_consumer_contract.py",
+      "implementation_sha256": "5e6dba2386dd03223ed1480c668ca5e3a01d401bba35503d5caca68eb3652fee",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_agent_runtime",
+        "smart_agent_skill_consumer_contract",
+        "smart_total_integration_gate"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -13130,5 +13187,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "5ee6edf9f2b91ede31cfa2ef99e2e8ab090ce614a84dadcdab1ef464ba7cf3c9"
+  "registry_sha256": "c00f0b7a03a6a7bf7400454b4feaf92ebbe1a59b36a44dcd692fbe5da9465244"
 }
