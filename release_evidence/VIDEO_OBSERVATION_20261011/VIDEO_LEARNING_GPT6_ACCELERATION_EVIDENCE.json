@@ -1,0 +1,70 @@
+{
+  "schema": "SMART_VIDEO_LEARNING_ACCELERATION_PROOF_V1",
+  "recorded_at_utc": "2026-10-11T19:01:52.690Z",
+  "repository": "andrebarros78/SMART-MEGA",
+  "work_branch": "design/video-learning-gpt6-sol-20261011",
+  "code_head_tested": "5e5d28a9f7bf41b5933152fa445bb6b0535df340",
+  "product_authority_branch": "main",
+  "mission": "Build reusable, concurrent, cumulative visual observation learning and a verified downstream consumption interface",
+  "outcome": "ENGINEERING_IMPLEMENTED_ISOLATED_TESTED_NOT_YET_PRODUCTION_PROVEN",
+  "work": [
+    "New smart_video_learning.py batch orchestration, frozen initial observational priors and strictly bounded concurrent workers",
+    "Single shared learning-memory consolidation after all batch checkpoints, preserving history and avoiding intra-batch memory races",
+    "Public get_visual_features() read-only API with contest+timestamp cutoff and SHA256 source provenance",
+    "Immutable consumer study corpus with explicit observed motion timestamps, spatial/cadence metadata, source hashes, integrity checks and idempotent replay",
+    "Retain original smart_video_observation.py single-contest API and checkpoint format; permit suppressed per-contest memory writes only when batched",
+    "CLI --manifest / --target-contest with verified independent-process restart and consumption"
+  ],
+  "fresh_focused_tests": {
+    "runner": "pytest",
+    "pytest_version": "8.4.2",
+    "executor": "wmcp-cloud-01 via connected SentinelX, isolated temporary Python 3.12.3 workspace",
+    "installation_scope": "temporary --target directory removed after test",
+    "command": "python -B -m pytest -q -p no:cacheprovider --disable-warnings tests/test_smart_video_observation.py tests/test_smart_video_learning.py",
+    "passed": 55,
+    "failed": 0,
+    "result": "PASS",
+    "stdout": "55 passed in 2.52s"
+  },
+  "integration": {
+    "mode": "13 simulated video stream URLs with fixed 90ms network delays and deterministic injected video sampler, not official draw footage",
+    "serial_seconds": 1.8565,
+    "four_way_seconds": 0.6025,
+    "four_way_speedup": 3.081,
+    "serial_single_worker_seconds": 1.8207,
+    "eight_way_seconds": 0.3749,
+    "eight_way_speedup": 4.857,
+    "eight_way_workers": 8,
+    "cap_total_sampling_workers": 8,
+    "matched_candidate_counts_8way": 13,
+    "resumability": "PASS; 13/13 checkpoints reused from a new Python process with identical extraction configuration",
+    "study_revision_hash_replay": "PASS",
+    "independent_process_consumer": "PASS; 13 earlier sources returned with zero predictive weight",
+    "immutable_corpus_sha_validation": "PASS",
+    "evidence_class": "SYNTHETIC_BENCHMARK_NOT_REAL_VIDEO_PERFORMANCE"
+  },
+  "source_sha256": {
+    "smart_video_observation.py": "9a1d4b284b0bd8a8a52a4d3044d32b7d30217f2b659f7206ff9d8de727d48955",
+    "smart_video_learning.py": "d0d8fa89cd0c7866b586f23a5b046be28fad36c3620a0034e561647d740b78d7",
+    "tests/test_smart_video_observation.py": "ebd0537e84b9556443fe616de777e00d9dadc1ef890fc824a2b577f18e7abdb7",
+    "tests/test_smart_video_learning.py": "5db870859a835191518fcd7291aab464c718881f047634bad3d97e0c13f4cee7"
+  },
+  "constraints": {
+    "pc_escola_real_checkpoints_verified": false,
+    "pc_escola_checkpoints_claimed_by_user": 13,
+    "pc_escola_connection_status": "BLOCKED_EXTERNAL_CONNECTION",
+    "pc_escola_failure": "federated_external_operation_requires_modern_transport",
+    "failing_command_id": "netcmd_01f153500cfb47e585181898b700ad15",
+    "real_official_videos_observed_this_run": 0,
+    "actual_ten_day_baseline_measured": false,
+    "real_speedup_validated": false,
+    "predictive_advantage": "NOT_ESTABLISHED",
+    "predictive_weight_in_consumer": 0,
+    "main_promoted": false
+  },
+  "terminal": {
+    "mission_proven": false,
+    "status": "MISSION_ACTIVE",
+    "next_required": "Revalidate 13 B2 PC Escola checkpoints and actual video batch throughput on the target executor; then verify consumer integration against main signal flow and promote by scoped release after acceptance"
+  }
+}

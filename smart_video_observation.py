@@ -13,6 +13,7 @@ import socket
 import statistics
 import tempfile
 import time
+from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from dataclasses import asdict, dataclass
 from pathlib import Path
@@ -666,6 +667,7 @@ def learned_motion_prior(
     hypothesis_id: str | None = None,
     *,
     source_url: str | None = None,
+    cutoff_utc: str | None = None,
 ) -> dict[str, Any]:
     """Causal, bounded cross-contest *observation* learning.
 
@@ -675,6 +677,17 @@ def learned_motion_prior(
     """
     root = Path(checkpoint_dir)
     target = str(contest_id)
+    cutoff = None
+    if cutoff_utc is not None:
+        if not isinstance(cutoff_utc, str):
+            raise ValueError("cutoff_utc must be a timezone-aware ISO-8601 timestamp")
+        try:
+            cutoff = datetime.fromisoformat(cutoff_utc.replace("Z", "+00:00"))
+        except ValueError as exc:
+            raise ValueError("invalid cutoff_utc timestamp") from exc
+        if cutoff.tzinfo is None or cutoff.utcoffset() is None:
+            raise ValueError("cutoff_utc requires timezone")
+        cutoff = cutoff.astimezone(timezone.utc)
     empty = {
         "schema": "SMART_VISUAL_OBSERVATION_PRIOR_V1",
         "status": "INACTIVE",
@@ -729,6 +742,18 @@ def learned_motion_prior(
                     or row.get("predictive_evidence") != PREDICTIVE_EVIDENCE
                     or row.get("spatial_consensus", {}).get("recurrent") is not True):
                 continue
+            if cutoff is not None:
+                observed_at = row.get("created_at_utc")
+                if not isinstance(observed_at, str):
+                    continue
+                try:
+                    observed_dt = datetime.fromisoformat(observed_at.replace("Z", "+00:00"))
+                    if observed_dt.tzinfo is None or observed_dt.utcoffset() is None:
+                        continue
+                    if observed_dt.astimezone(timezone.utc) > cutoff:
+                        continue
+                except ValueError:
+                    continue
             source = row.get("source")
             params = row.get("main_params")
             if not isinstance(source, str) or not isinstance(params, dict):
@@ -922,6 +947,8 @@ def analyze_contest(
     resolver: Callable[[str, float], dict[str, Any]] = resolve_stream,
     sampler: Callable[[dict[str, Any], float], dict[str, Any]] = observe_short_sample,
     segment_locator: Callable[[str, str, float], dict[str, Any]] = locate_mega_segment,
+    persist_memory: bool = True,
+    frozen_learning_prior: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cfg = (config or ObservationConfig()).validated()
     checkpoint_dir = Path(checkpoint_dir)
@@ -931,7 +958,7 @@ def analyze_contest(
     if should_reuse_checkpoint(existing, EXTRACTOR_VERSION, hypothesis_id, force, fingerprint):
         reused = dict(existing)
         reused["checkpoint_reused"] = True
-        if str(contest_id).isascii() and str(contest_id).isdecimal():
+        if persist_memory and str(contest_id).isascii() and str(contest_id).isdecimal():
             # A valid checkpoint may outlive a deleted/interrupted state export.
             # Rebuild the consumer memory without fetching video or mutating
             # this checkpoint (its SHA-256 may already be referenced).
@@ -949,7 +976,10 @@ def analyze_contest(
                 )
         return reused
 
-    learned_prior = learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url)
+    learned_prior = (
+        frozen_learning_prior if frozen_learning_prior is not None
+        else learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url)
+    )
     started = time.monotonic()
     resources_before = _resource_snapshot()
     base: dict[str, Any] = {
@@ -985,7 +1015,7 @@ def analyze_contest(
         base["resource_metrics"] = _resource_delta(resources_before, _resource_snapshot())
         base["elapsed_s"] = round(time.monotonic() - started, 6)
         _atomic_json(cp_path, base)
-        if str(contest_id).isascii() and str(contest_id).isdecimal():
+        if persist_memory and str(contest_id).isascii() and str(contest_id).isdecimal():
             # A failed video cannot teach motion, but it still produces a
             # checkpoint and an explicit unchanged learning state.
             try:
