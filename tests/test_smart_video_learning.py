@@ -116,3 +116,42 @@ def test_batch_failure_isolated_without_fake_learning(tmp_path):
     assert result["learning_training_observations"]==1
     assert result["consumer_features"]["predictive_weight_authorized"] is False
     assert (tmp_path/"contest_4501.json").exists()
+
+def test_study_archive_is_verifiable_and_replay_idempotent(tmp_path):
+    from smart_video_learning import _digest, publish_visual_study
+    cfg=ObservationConfig(coarse_points=8)
+    result=observe_batch(records(),tmp_path,cfg,batch_workers=2,
+                         resolver=resolver,sampler=sampler)
+    assert result["study_examples"]==4
+    snapshot=json.loads((tmp_path/"SMART_VISUAL_STUDY_CURRENT.json").read_text())
+    digest=snapshot.pop("sha256")
+    assert _digest(snapshot)==digest
+    assert len(snapshot["examples"])==4
+    assert all(row["semantic_label"]=="MOTION_EVENT_CANDIDATE" for row in snapshot["examples"])
+    assert all("winning_numbers" not in row for row in snapshot["examples"])
+    assert len(list((tmp_path/"study_history").glob("*.json")))==1
+    second=observe_batch(records(),tmp_path,cfg,batch_workers=2,
+                         resolver=resolver,sampler=sampler)
+    assert second["study_sha256"]==result["study_sha256"]
+    assert len(list((tmp_path/"study_history").glob("*.json")))==1
+    cp=tmp_path/"contest_4504.json"
+    corrupted=json.loads(cp.read_text())
+    corrupted["event_timestamps_s"].append(90.0)
+    cp.write_text(json.dumps(corrupted))
+    with pytest.raises(ValueError,match="hash mismatch"):
+        publish_visual_study(tmp_path,result["consumer_features"])
+
+
+def test_study_bad_pointer_fails_closed(tmp_path):
+    from smart_video_learning import publish_visual_study
+    observe_batch(records()[:3],tmp_path,ObservationConfig(coarse_points=8),
+                  batch_workers=2,resolver=resolver,sampler=sampler)
+    current=tmp_path/"SMART_VISUAL_STUDY_CURRENT.json"
+    state=json.loads(current.read_text())
+    state["studied_contests"]=9999
+    current.write_text(json.dumps(state))
+    before=current.read_bytes()
+    features=get_visual_features("4505","2099-01-01T00:00:00Z",tmp_path)
+    with pytest.raises(ValueError,match="checksum invalid"):
+        publish_visual_study(tmp_path,features)
+    assert current.read_bytes()==before
