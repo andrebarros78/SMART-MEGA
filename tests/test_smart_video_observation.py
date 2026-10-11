@@ -785,3 +785,67 @@ def test_visual_learning_corrupted_memory_not_silently_overwritten(tmp_path):
     with pytest.raises(ValueError, match="checksum invalid"):
         persist_visual_learning_state(tmp_path, "3069")
     assert state_path.read_bytes() == prior_bytes
+
+
+def test_visual_learning_history_archives_every_changed_revision(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    old = persist_visual_learning_state(
+        tmp_path, "3013", source_url="https://youtube.com/watch?v=3013"
+    )
+    archive = tmp_path / "learning_history"
+    older = archive / f"{old['sha256']}.json"
+    assert older.exists()
+    assert json.loads(older.read_text(encoding="utf-8")) == old
+    old_bytes = older.read_bytes()
+
+    _past_video_checkpoint(tmp_path, 3013, center=0.5)
+    new = persist_visual_learning_state(
+        tmp_path, "3014", source_url="https://youtube.com/watch?v=3014"
+    )
+    newer = archive / f"{new['sha256']}.json"
+    assert new["previous_state_sha256"] == old["sha256"]
+    assert new["sha256"] != old["sha256"]
+    assert older.read_bytes() == old_bytes
+    assert new["training_contests"] == [3010, 3011, 3012, 3013]
+    assert json.loads(newer.read_text(encoding="utf-8")) == new
+    assert new["promotion_authorized"] is False
+
+
+def test_visual_learning_history_replay_is_idempotent(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    state = persist_visual_learning_state(tmp_path, "3013")
+    again = persist_visual_learning_state(tmp_path, "3013")
+    assert again == state
+    assert len(list((tmp_path / "learning_history").glob("*.json"))) == 1
+
+
+def test_visual_learning_history_tampering_fails_closed(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    state = persist_visual_learning_state(tmp_path, "3013")
+    latest = tmp_path / "SMART_VISUAL_LEARNING_STATE.json"
+    before = latest.read_bytes()
+    archived = tmp_path / "learning_history" / f"{state['sha256']}.json"
+    archived.write_text('{"tampered":true}', encoding="utf-8")
+    _past_video_checkpoint(tmp_path, 3013, center=0.5)
+    with pytest.raises(ValueError, match="history collision or corruption"):
+        persist_visual_learning_state(tmp_path, "3014")
+    assert latest.read_bytes() == before
+    assert not (tmp_path / "learning_history" / "wrong.json").exists()
+
+
+def test_visual_learning_history_rejects_symlink_directory(tmp_path):
+    from smart_video_observation import persist_visual_learning_state
+    for n in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, n, center=0.5)
+    somewhere = tmp_path / "outside"
+    somewhere.mkdir()
+    (tmp_path / "learning_history").symlink_to(somewhere, target_is_directory=True)
+    with pytest.raises(ValueError, match="directory cannot be a symlink"):
+        persist_visual_learning_state(tmp_path, "3013")
+    assert not (tmp_path / "SMART_VISUAL_LEARNING_STATE.json").exists()

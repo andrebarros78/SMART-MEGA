@@ -772,6 +772,47 @@ def learned_motion_prior(
     return empty
 
 
+
+def _archive_visual_learning_state(root: Path, memory: dict[str, Any]) -> None:
+    """Preserve a validated memory revision as an immutable, digest-addressed file."""
+    digest = memory.get("sha256")
+    payload = dict(memory)
+    payload.pop("sha256", None)
+    expected = hashlib.sha256(json.dumps(
+        payload, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode("utf-8")).hexdigest()
+    if not isinstance(digest, str) or digest != expected:
+        raise ValueError("visual learning history checksum invalid")
+    history = root / "learning_history"
+    if history.is_symlink():
+        raise ValueError("visual learning history directory cannot be a symlink")
+    history.mkdir(parents=True, exist_ok=True)
+    destination = history / f"{digest}.json"
+    serialized = json.dumps(memory, ensure_ascii=False, indent=2, sort_keys=True).encode("utf-8")
+    if destination.exists() or destination.is_symlink():
+        if destination.is_symlink() or destination.read_bytes() != serialized:
+            raise ValueError("visual learning history collision or corruption")
+        return
+    temp_path: Path | None = None
+    try:
+        with tempfile.NamedTemporaryFile(
+            mode="wb", dir=history, prefix=f"{digest}.", suffix=".tmp", delete=False
+        ) as handle:
+            temp_path = Path(handle.name)
+            handle.write(serialized)
+            handle.flush()
+            os.fsync(handle.fileno())
+        # The atomic hard link fails rather than replacing an existing revision.
+        try:
+            os.link(temp_path, destination)
+        except FileExistsError:
+            if destination.is_symlink() or destination.read_bytes() != serialized:
+                raise ValueError("visual learning history collision or corruption")
+    finally:
+        if temp_path is not None:
+            temp_path.unlink(missing_ok=True)
+
+
 def persist_visual_learning_state(
     checkpoint_dir: str | Path,
     next_contest: str,
@@ -789,6 +830,7 @@ def persist_visual_learning_state(
     next_contest = str(next_contest)
     if not next_contest.isascii() or not next_contest.isdecimal():
         raise ValueError("next_contest must be numeric")
+    previous = None
     if state_path.exists():
         previous = json.loads(state_path.read_text(encoding="utf-8"))
         if not isinstance(previous, dict):
@@ -818,9 +860,21 @@ def persist_visual_learning_state(
         "same_contest_predictive_weight_authorized": False,
         "predictive_evidence": PREDICTIVE_EVIDENCE,
     }
+    # Repeated learning with unchanged input must not manufacture new history.
+    if previous is not None and all(
+        previous.get(key) == value for key, value in memory.items()
+    ) and set(previous).issubset(set(memory) | {"sha256", "previous_state_sha256"}):
+        _archive_visual_learning_state(root, previous)
+        return previous
+    if previous is not None:
+        # Archive the last good state before publishing its replacement.
+        _archive_visual_learning_state(root, previous)
+    memory["previous_state_sha256"] = previous["sha256"] if previous else None
     memory["sha256"] = hashlib.sha256(json.dumps(
         memory, ensure_ascii=False, sort_keys=True, separators=(",", ":")
     ).encode("utf-8")).hexdigest()
+    # Durable archive is written first, then the latest pointer is replaced.
+    _archive_visual_learning_state(root, memory)
     _atomic_json(state_path, memory)
     return memory
 
