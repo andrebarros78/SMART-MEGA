@@ -785,3 +785,78 @@ def test_visual_learning_corrupted_memory_not_silently_overwritten(tmp_path):
     with pytest.raises(ValueError, match="checksum invalid"):
         persist_visual_learning_state(tmp_path, "3069")
     assert state_path.read_bytes() == prior_bytes
+
+def test_reusing_valid_checkpoint_recovers_missing_visual_learning_memory(tmp_path):
+    for contest in (3010, 3011, 3012):
+        _past_video_checkpoint(tmp_path, contest, center=0.5)
+    cfg = ObservationConfig(coarse_points=5, max_refined_regions=1)
+    kwargs = dict(
+        segment_locator=lambda *_: {
+            "status": "PASS", "candidate_eligible": True,
+            "segment_start_s": 0.0, "segment_end_s": 120.0,
+        }
+    )
+    first = analyze_contest(
+        "3013", "https://youtube.com/watch?v=3013", tmp_path, cfg,
+        resolver=fake_resolver, sampler=fake_sampler, **kwargs,
+    )
+    assert first["learning_state_status"] == "PERSISTED"
+    checkpoint = tmp_path / "contest_3013.json"
+    before = checkpoint.read_bytes()
+    state_path = tmp_path / "SMART_VISUAL_LEARNING_STATE.json"
+    assert state_path.exists()
+    state_path.unlink()
+
+    def resolver_must_not_run(*_args):
+        raise AssertionError("existing valid checkpoint must not fetch video again")
+
+    second = analyze_contest(
+        "3013", "https://youtube.com/watch?v=3013", tmp_path, cfg,
+        resolver=resolver_must_not_run, sampler=fake_sampler, **kwargs,
+    )
+    assert second["checkpoint_reused"] is True
+    assert second["learning_state_status"] == "PERSISTED"
+    recovered = json.loads(state_path.read_text(encoding="utf-8"))
+    assert recovered["next_contest"] == "3014"
+    assert set(recovered["training_contests"]) >= {3010, 3011, 3012}
+    assert checkpoint.read_bytes() == before
+    assert recovered["promotion_authorized"] is False
+
+
+def test_reused_checkpoint_reports_corrupt_visual_memory_without_overwrite(tmp_path):
+    cfg = ObservationConfig(coarse_points=8)
+    first = analyze_contest(
+        "3013", "https://example.org/v.mp4", tmp_path, cfg,
+        resolver=fake_resolver, sampler=fake_sampler,
+    )
+    assert first["learning_state_status"] == "PERSISTED"
+    state_path = tmp_path / "SMART_VISUAL_LEARNING_STATE.json"
+    state_path.write_text('{"sha256": "corrupt", "schema": "SMART_VISUAL_LEARNING_STATE_V1"}')
+    corrupted = state_path.read_bytes()
+    cp_path = tmp_path / "contest_3013.json"
+    before = cp_path.read_bytes()
+    second = analyze_contest(
+        "3013", "https://example.org/v.mp4", tmp_path, cfg,
+        resolver=lambda *_: (_ for _ in ()).throw(AssertionError("unexpected fetch")),
+        sampler=fake_sampler,
+    )
+    assert second["checkpoint_reused"] is True
+    assert second["learning_state_status"] == "UNAVAILABLE"
+    assert any("visual learning state unavailable" in x for x in second["limitations"])
+    assert cp_path.read_bytes() == before
+    assert state_path.read_bytes() == corrupted
+
+
+def test_new_checkpoint_persists_visual_memory_failure_in_checkpoint(tmp_path):
+    state_path = tmp_path / "SMART_VISUAL_LEARNING_STATE.json"
+    state_path.write_text('{"sha256": "corrupt", "schema": "SMART_VISUAL_LEARNING_STATE_V1"}')
+    result = analyze_contest(
+        "3013", "https://example.org/v.mp4", tmp_path,
+        ObservationConfig(coarse_points=8),
+        resolver=fake_resolver, sampler=fake_sampler,
+    )
+    saved = json.loads((tmp_path / "contest_3013.json").read_text())
+    assert result["learning_state_status"] == "UNAVAILABLE"
+    assert saved["learning_state_status"] == "UNAVAILABLE"
+    assert any("visual learning state unavailable" in x for x in saved["limitations"])
+    assert saved["predictive_evidence"] == "NOT_ESTABLISHED"

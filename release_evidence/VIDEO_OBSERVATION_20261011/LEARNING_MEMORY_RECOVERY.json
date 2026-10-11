@@ -1,0 +1,32 @@
+{
+  "base_commit": "009692cd390648c5dba84d06df701a794c78b3d7",
+  "changes": [
+    "Regenerate SMART_VISUAL_LEARNING_STATE.json when valid checkpoint is reused and consolidated memory is absent",
+    "Do not re-download video or rewrite immutable checkpoint on reused state recovery",
+    "Fail closed and expose UNAVAILABLE if consolidated memory checksum is corrupt",
+    "Persist unavailable-memory limitation in newly created checkpoint for audit"
+  ],
+  "mission_id": "smartmega-physical-observation-learning-20260929",
+  "mission_proven": false,
+  "observed_utc": "2026-10-11T18:17:01.051449+00:00",
+  "physical_observation": {
+    "physical_b2_checkpoints_revalidated": false,
+    "real_video_checkpoints_newly_consumed": 0,
+    "vps_checkpoint_folder_exists": false
+  },
+  "predictive_evidence": "NOT_ESTABLISHED",
+  "repository": "andrebarros78/SMART-MEGA",
+  "schema": "SMART_VISUAL_LEARNING_RECOVERY_EVIDENCE_V1",
+  "scope": "RECOVER_CONSUMABLE_MEMORY_FROM_REUSED_VALID_CHECKPOINTS",
+  "sha256": {
+    "smart_video_observation.py": "26b6d6a9b7903c43fbd2c65c4f20e1834081efaa9bc65b23ef4a57aaaeba71d2",
+    "tests/test_smart_video_observation.py": "c4c26ee9fb58ec666d1315732b86a7639bdc36d5ceed5af95a4bfb413a2acf94"
+  },
+  "status": "CODE_CORRECTED_TESTED_LOCAL_NOT_PROMOTED_TO_MAIN",
+  "validation": {
+    "focused_and_adjacent_test_cases_passed": 99,
+    "focused_test_cases_passed": 43,
+    "new_regression_tests": 3,
+    "pip_check": "PASS"
+  }
+}
