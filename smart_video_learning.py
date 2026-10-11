@@ -152,6 +152,14 @@ def publish_visual_study(
         if (previous["target_contest"] == body["target_contest"]
                 and previous["features"]["source_sha256"] == features["source_sha256"]
                 and previous["features"]["observational_features"] == features["observational_features"]):
+            history_dir = root / "study_history"
+            archived = history_dir / (previous["sha256"] + ".json")
+            canonical_bytes = json.dumps(
+                previous, ensure_ascii=False, sort_keys=True, indent=2,
+            ).encode("utf-8")
+            if (history_dir.is_symlink() or archived.is_symlink()
+                    or not archived.is_file() or archived.read_bytes() != canonical_bytes):
+                raise ValueError("visual study immutable history missing or corrupt")
             return previous
     body["previous_sha256"] = previous["sha256"] if previous else None
     body["sha256"] = _digest(body)
@@ -204,8 +212,8 @@ def observe_batch(
 ) -> dict[str, Any]:
     """Concurrent independent checkpoints; one deterministic memory commit."""
     cfg = (config or ObservationConfig()).validated()
-    if type(batch_workers) is not int or not 1 <= batch_workers <= 4:
-        raise ValueError("batch_workers must be between 1 and 4")
+    if type(batch_workers) is not int or not 1 <= batch_workers <= 8:
+        raise ValueError("batch_workers must be between 1 and 8")
     if batch_workers * cfg.workers > 8:
         raise ValueError("batch_workers * per-contest workers must not exceed 8")
     manifest = list(items)
