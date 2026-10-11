@@ -2,7 +2,7 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-11T19:21:56.162530+00:00",
+  "generated_utc": "2026-10-11T19:35:52.487741+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
@@ -1242,15 +1242,14 @@
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "09081465b320aaff6544bc3cebc04187fb350944",
-    "ci_run_id": null,
+    "source_commit": "ca56f7297a276b90a18f437bbc5d78440c1e8669",
+    "ci_run_id": "38167867746",
     "execution": {
-      "kind": "FEDERATED_PC",
-      "execution_id": "f6347f2f-66bc-43c4-a35b-3bbdd05fd52d",
-      "hostname": "wmcp-cloud-01"
+      "kind": "GITHUB_ACTIONS",
+      "run_id": "38167867746"
     },
     "code_fingerprint_sha256": "ac60090156bc115f3134d65c7ef2fc9475ce74df5fb054d412307a56771eed48",
-    "junit_sha256": "975a7bf0640e70f344322cf9452c72ef0c66ac8cff4f4a88789715f44ec96bfd",
+    "junit_sha256": "6069eaba53b729bb6b29f7983fac044254dcbc8be79b98fd0c097d9792dd4d69",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1415,15 +1414,15 @@
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "975a7bf0640e70f344322cf9452c72ef0c66ac8cff4f4a88789715f44ec96bfd"
+    "sha256": "6069eaba53b729bb6b29f7983fac044254dcbc8be79b98fd0c097d9792dd4d69"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "83b8b73b48dff563a40ad7cbd705f2439dbcff21fc181937d71124e33f94a140",
-    "authority_sha256": "251e3558f47980edc4fca1f417da05e11f33be8ba509b28da0a234c57bd7d6a4",
+    "file_sha256": "2726885235b468e018951fde81a4824c099ae415d82fb63e92031f7999ed9397",
+    "authority_sha256": "e583af3a1581577c206a51222ae9cdbfcfc762f1701d7bf04e50548ae90c264a",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "975a7bf0640e70f344322cf9452c72ef0c66ac8cff4f4a88789715f44ec96bfd",
+    "junit_sha256": "6069eaba53b729bb6b29f7983fac044254dcbc8be79b98fd0c097d9792dd4d69",
     "tests": 1208,
     "failures": 0,
     "errors": 0,
@@ -1443,10 +1442,10 @@
   },
   "runtime_guard": {
     "schema": "SMART_RUNTIME_GUARD_V2",
-    "project_root": "/tmp/smartmega-audit-final-check",
-    "canonical_python": "/usr/bin/python3.12",
-    "current_python": "/usr/bin/python3.12",
-    "python_version": "3.12.3",
+    "project_root": "/home/runner/work/SMART-MEGA/SMART-MEGA",
+    "canonical_python": "/opt/hostedtoolcache/Python/3.13.16/x64/bin/python3.13",
+    "current_python": "/opt/hostedtoolcache/Python/3.13.16/x64/bin/python3.13",
+    "python_version": "3.13.16",
     "modules": {
       "numpy": {
         "ok": true,
@@ -1486,10 +1485,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "3a5b91bda2e02154a4e20cb25d29ed0ba15cc0f9444057ea21096f7e8160c901",
-  "build_runtime_sha256": "a988de008b9c0133caf82e24d0288473f3d1e247779bbc7737421e6424d8b66a",
-  "build_functional_sha256": "8d25bf016a0d0bcab587e44df8e65dfbb9f055920396814e4823f3418a74594b",
-  "build_total_integration_sha256": "d197e416a0947775b79a8dc07743ce7ae51c84dad69376cd5b21f03ac12494fe",
+  "build_orchestration_sha256": "4299b61fbe69d48bd3af7cba78da473df5e7a548885c7dbdeabe33929db70103",
+  "build_runtime_sha256": "cf324176ef004d36c43bb532c895d99256354783693d6f8d25852cce83550b5a",
+  "build_functional_sha256": "66da074ecab508d61f3c09a1846af8c9907d4e132b5afa57be3fffbb03e4dcf3",
+  "build_total_integration_sha256": "db9fec4c23dfd5190448f2525cb9fd9b63283115b16dc245dbecd7dd8a634567",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1558,5 +1557,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "cec5fa0d81e3126deff07ab37d6600134ef79841804f9c1a553b4ceed8614573"
+  "sha256": "ee1bc13734e4d4f57a83bff7c838f68bd78282b33c33de9ddc9373320df7f234"
 }
