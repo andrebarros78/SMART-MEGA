@@ -922,6 +922,8 @@ def analyze_contest(
     resolver: Callable[[str, float], dict[str, Any]] = resolve_stream,
     sampler: Callable[[dict[str, Any], float], dict[str, Any]] = observe_short_sample,
     segment_locator: Callable[[str, str, float], dict[str, Any]] = locate_mega_segment,
+    update_memory: bool = True,
+    learning_prior_override: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     cfg = (config or ObservationConfig()).validated()
     checkpoint_dir = Path(checkpoint_dir)
@@ -931,7 +933,7 @@ def analyze_contest(
     if should_reuse_checkpoint(existing, EXTRACTOR_VERSION, hypothesis_id, force, fingerprint):
         reused = dict(existing)
         reused["checkpoint_reused"] = True
-        if str(contest_id).isascii() and str(contest_id).isdecimal():
+        if update_memory and str(contest_id).isascii() and str(contest_id).isdecimal():
             # A valid checkpoint may outlive a deleted/interrupted state export.
             # Rebuild the consumer memory without fetching video or mutating
             # this checkpoint (its SHA-256 may already be referenced).
@@ -949,7 +951,8 @@ def analyze_contest(
                 )
         return reused
 
-    learned_prior = learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url)
+    learned_prior = (learning_prior_override if learning_prior_override is not None else
+                     learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url))
     started = time.monotonic()
     resources_before = _resource_snapshot()
     base: dict[str, Any] = {
@@ -985,7 +988,7 @@ def analyze_contest(
         base["resource_metrics"] = _resource_delta(resources_before, _resource_snapshot())
         base["elapsed_s"] = round(time.monotonic() - started, 6)
         _atomic_json(cp_path, base)
-        if str(contest_id).isascii() and str(contest_id).isdecimal():
+        if update_memory and str(contest_id).isascii() and str(contest_id).isdecimal():
             # A failed video cannot teach motion, but it still produces a
             # checkpoint and an explicit unchanged learning state.
             try:
@@ -1179,6 +1182,261 @@ def analyze_queue(
             _atomic_json(_checkpoint_path(root, contest_id), result)
         results.append(result)
     return results
+
+
+
+# Incremental, read-only consumer and bounded cross-contest batch service.
+# These APIs intentionally do not promote physical motion to lottery predictions.
+def get_visual_features(
+    checkpoint_dir: str | Path,
+    target_contest: str,
+    cutoff_utc: str,
+    hypothesis_id: str | None = None,
+    *,
+    source_url: str | None = None,
+) -> dict[str, Any]:
+    """Read validated earlier visual checkpoints as a cutoff-bound consumer.
+
+    Never reads lottery outcomes. Files created after cutoff or from the target
+    contest are excluded, regardless of filename order. Does not write state.
+    """
+    from datetime import datetime, timezone
+
+    target = str(target_contest)
+    if not target.isascii() or not target.isdecimal() or int(target) <= 0:
+        raise ValueError("target_contest must be a positive integer string")
+    if not isinstance(cutoff_utc, str):
+        raise ValueError("cutoff_utc must be an aware ISO-8601 timestamp")
+    try:
+        cutoff = datetime.fromisoformat(cutoff_utc.replace("Z", "+00:00"))
+    except ValueError as exc:
+        raise ValueError("cutoff_utc must be an aware ISO-8601 timestamp") from exc
+    if cutoff.tzinfo is None or cutoff.utcoffset() is None:
+        raise ValueError("cutoff_utc must include a timezone")
+    cutoff = cutoff.astimezone(timezone.utc)
+    root = Path(checkpoint_dir)
+    base = {
+        "schema": "SMART_VISUAL_FEATURES_V1",
+        "target_contest": target,
+        "as_of_utc": cutoff.isoformat(),
+        "status": "INSUFFICIENT_EVIDENCE",
+        "extractor_version": EXTRACTOR_VERSION,
+        "hypothesis_id": hypothesis_id,
+        "source_contests": [],
+        "source_sha256": {},
+        "observation_count": 0,
+        "observational_features": {},
+        "quality": {"eligible_observations": 0, "eligible_event_count": 0},
+        "limitations": ["visual observations are not confirmed ball events"],
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+        "predictive_weight_authorized": False,
+        "predictive_weight": 0.0,
+    }
+    if not root.is_dir():
+        return base
+    target_n = int(target)
+    expected_host = None
+    if source_url:
+        expected_host = "youtube.com" if _is_youtube_source(source_url) else (urlparse(source_url).hostname or "").lower()
+    possible: list[tuple[int, Path]] = []
+    for p in root.glob("contest_[0-9]*.json"):
+        stem = p.stem.removeprefix("contest_")
+        if stem.isascii() and stem.isdecimal() and 1 <= len(stem) <= 12 and int(stem) < target_n:
+            possible.append((int(stem), p))
+    forbidden = {"winning_numbers", "drawn_numbers", "result_numbers", "dezenas_sorteadas", "hit_count"}
+    unique_sources: set[str] = set()
+    relative_centers: list[float] = []
+    coverage: list[float] = []
+    events_total = 0
+    for _, path in sorted(possible, key=lambda item: item[0], reverse=True)[:512]:
+        try:
+            if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
+                continue
+            raw = path.read_bytes()
+            row = json.loads(raw)
+            stem = path.stem.removeprefix("contest_")
+            if not isinstance(row, dict) or row.get("contest_id") != stem or forbidden.intersection(row):
+                continue
+            if (row.get("status") != "CANDIDATE" or
+                    row.get("semantic_label") != "MOTION_EVENT_CANDIDATE" or
+                    row.get("extractor_version") != EXTRACTOR_VERSION or
+                    row.get("hypothesis_id") != hypothesis_id or
+                    row.get("predictive_evidence") != PREDICTIVE_EVIDENCE or
+                    row.get("spatial_consensus", {}).get("recurrent") is not True):
+                continue
+            source = row.get("source")
+            if not isinstance(source, str) or source in unique_sources:
+                continue
+            parsed = urlparse(source)
+            if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+                continue
+            host = "youtube.com" if _is_youtube_source(source) else parsed.hostname.lower()
+            if expected_host and host != expected_host:
+                continue
+            if _is_youtube_source(source) and row.get("analysis_scope", {}).get("segment_guard_passed") is not True:
+                continue
+            created = datetime.fromisoformat(str(row["created_at_utc"]).replace("Z", "+00:00"))
+            if created.tzinfo is None or created.utcoffset() is None or created.astimezone(timezone.utc) > cutoff:
+                continue
+            cfg = ObservationConfig(**row["main_params"]).validated()
+            if row.get("checkpoint_fingerprint") != _observation_fingerprint(stem, source, cfg, hypothesis_id):
+                continue
+            scope = row["analysis_scope"]
+            lo, hi = float(scope["start_s"]), float(scope["end_s"])
+            if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
+                continue
+            events = [float(x) for x in row["event_timestamps_s"]]
+            if len(events) < cfg.min_candidate_events or not all(math.isfinite(x) and lo <= x <= hi for x in events):
+                continue
+            cov = float(row.get("coverage_ratio", 0.0))
+            if not math.isfinite(cov) or not 0 <= cov <= 1:
+                continue
+            relative_centers.append(statistics.median((x - lo) / (hi - lo) for x in events))
+            events_total += len(events)
+            coverage.append(cov)
+            unique_sources.add(source)
+            base["source_sha256"][stem] = hashlib.sha256(raw).hexdigest()
+        except (OSError, ValueError, TypeError, KeyError, OverflowError, json.JSONDecodeError):
+            continue
+    base["source_contests"] = sorted(map(int, base["source_sha256"]))
+    n = len(relative_centers)
+    base["observation_count"] = n
+    base["quality"] = {
+        "eligible_observations": n,
+        "eligible_event_count": events_total,
+        "mean_coverage_ratio": round(statistics.fmean(coverage), 6) if n else None,
+    }
+    if n:
+        center = statistics.median(relative_centers)
+        spread = statistics.pstdev(relative_centers)
+        consensus = n >= 3 and spread <= 0.18
+        base["observational_features"] = {
+            "normalized_event_center": round(center, 6),
+            "cross_contest_spread": round(spread, 6),
+            "stable_observational_consensus": consensus,
+        }
+        base["status"] = "OBSERVATIONAL_CONSENSUS" if consensus else "SHADOW_INSUFFICIENT_CONSENSUS"
+    return base
+
+
+def observe_batch(
+    items: Iterable[dict[str, Any]],
+    checkpoint_dir: str | Path = "runtime/video_observation",
+    config: ObservationConfig | None = None,
+    *,
+    max_concurrent_contests: int = 2,
+    next_contest: str | None = None,
+    hypothesis_id: str | None = None,
+    resolver: Callable[[str, float], dict[str, Any]] = resolve_stream,
+    sampler: Callable[[dict[str, Any], float], dict[str, Any]] = observe_short_sample,
+    segment_locator: Callable[[str, str, float], dict[str, Any]] = locate_mega_segment,
+) -> dict[str, Any]:
+    """Parallel contest study with deterministic single-writer learning.
+
+    Worker threads may write only distinct contest checkpoints. All priors are
+    computed BEFORE starting any worker; the shared immutable learning history
+    is reconciled once, after every worker has stopped.
+    """
+    cfg = (config or ObservationConfig()).validated()
+    if not isinstance(max_concurrent_contests, int) or not 1 <= max_concurrent_contests <= 4:
+        raise ValueError("max_concurrent_contests must be 1..4")
+    manifest = list(items)
+    if not manifest:
+        raise ValueError("batch manifest cannot be empty")
+    normalized: list[tuple[str, str, str | None, bool]] = []
+    seen_contests: set[int] = set()
+    for item in manifest:
+        if not isinstance(item, dict):
+            raise ValueError("every batch item must be a mapping")
+        contest = str(item.get("contest_id") or item.get("contest") or "").strip()
+        url = str(item.get("source_url") or item.get("url") or "").strip()
+        if not contest.isascii() or not contest.isdecimal() or int(contest) <= 0:
+            raise ValueError("each contest_id must be a positive integer")
+        if int(contest) in seen_contests:
+            raise ValueError("duplicate contest_id in batch")
+        parsed = urlparse(url)
+        if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+            raise ValueError("batch sources must be credential-free HTTPS")
+        seen_contests.add(int(contest))
+        normalized.append((contest, url, item.get("hypothesis_id", hypothesis_id), bool(item.get("force", False))))
+    target = next_contest or str(max(seen_contests) + 1)
+    if not str(target).isascii() or not str(target).isdecimal() or int(target) <= max(seen_contests):
+        raise ValueError("next_contest must be later than every batch contest")
+    root = Path(checkpoint_dir)
+    prior_snapshot = {
+        contest: learned_motion_prior(root, contest, hyp, source_url=url)
+        for contest, url, hyp, _ in normalized
+    }
+    memory_path = root / "SMART_VISUAL_LEARNING_STATE.json"
+    before_hash = hashlib.sha256(memory_path.read_bytes()).hexdigest() if memory_path.exists() else None
+    started = time.monotonic()
+    def run_one(record: tuple[str, str, str | None, bool]) -> dict[str, Any]:
+        contest, url, hyp, force = record
+        try:
+            return analyze_contest(
+                contest, url, root, cfg,
+                force=force, hypothesis_id=hyp,
+                resolver=resolver, sampler=sampler, segment_locator=segment_locator,
+                update_memory=False, learning_prior_override=prior_snapshot[contest],
+            )
+        except Exception as exc:
+            # Failure of one contest cannot cancel unrelated observations.
+            failed = {
+                "schema": "smart.video_observation.v1",
+                "contest_id": contest, "source": url,
+                "extractor_version": EXTRACTOR_VERSION,
+                "hypothesis_id": hyp,
+                "predictive_evidence": PREDICTIVE_EVIDENCE,
+                "status": "UNRESOLVED", "confidence": 0.0,
+                "errors": [f"{type(exc).__name__}: {exc}"],
+                "event_timestamps_s": [], "created_at_utc": _utc_now(),
+                "media_persisted_bytes": 0,
+                "limitations": ["batch worker error; other items continued"],
+            }
+            _atomic_json(_checkpoint_path(root, contest), failed)
+            return failed
+    with ThreadPoolExecutor(max_workers=max_concurrent_contests) as pool:
+        # map preserves manifest order even when worker completion order differs.
+        results = list(pool.map(run_one, normalized))
+    try:
+        memory = persist_visual_learning_state(
+            root, str(target), hypothesis_id,
+            source_url=normalized[0][1] if all(
+                ("youtube.com" if _is_youtube_source(url) else (urlparse(url).hostname or "").lower()) ==
+                ("youtube.com" if _is_youtube_source(normalized[0][1]) else (urlparse(normalized[0][1]).hostname or "").lower())
+                for _, url, _, _ in normalized
+            ) else None,
+        )
+        memory_state = "PERSISTED"
+        memory_sha = memory["sha256"]
+        memory_error = None
+    except (OSError, ValueError, TypeError, KeyError) as exc:
+        memory_state = "UNAVAILABLE"
+        memory_sha = None
+        memory_error = f"{type(exc).__name__}: {exc}"
+    counts: dict[str, int] = {}
+    for row in results:
+        status = str(row.get("status", "UNRESOLVED"))
+        counts[status] = counts.get(status, 0) + 1
+    return {
+        "schema": "SMART_VISUAL_BATCH_V1",
+        "status": "COMPLETED" if memory_state == "PERSISTED" and
+                  all(row.get("status") not in {"UNRESOLVED", "STREAM_FAILED", "TIMEOUT", "UNOBSERVABLE"} for row in results)
+                  else "PARTIAL",
+        "next_contest": str(target),
+        "total": len(results),
+        "max_concurrent_contests": max_concurrent_contests,
+        "checkpoint_reused": sum(bool(row.get("checkpoint_reused")) for row in results),
+        "status_counts": counts,
+        "results": results,
+        "memory_state": memory_state,
+        "memory_previous_file_sha256": before_hash,
+        "memory_sha256": memory_sha,
+        "memory_error": memory_error,
+        "elapsed_s": round(time.monotonic() - started, 6),
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+        "predictive_weight_authorized": False,
+    }
 
 
 def _main() -> int:
