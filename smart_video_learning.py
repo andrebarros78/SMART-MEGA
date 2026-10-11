@@ -7,6 +7,9 @@ consumer view with a strict contest/time cutoff. No lottery weights are promoted
 from __future__ import annotations
 
 import argparse
+import hashlib
+import os
+import tempfile
 import json
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -79,6 +82,111 @@ def get_visual_features(
         "predictive_weight": 0.0,
         "predictive_evidence": PREDICTIVE_EVIDENCE,
     }
+
+
+
+def _digest(payload: dict[str, Any]) -> str:
+    return hashlib.sha256(json.dumps(
+        payload, sort_keys=True, ensure_ascii=False, separators=(",", ":"),
+    ).encode("utf-8")).hexdigest()
+
+
+def _verify_study_snapshot(value: dict[str, Any]) -> None:
+    if not isinstance(value, dict) or value.get("schema") != "SMART_VISUAL_STUDY_V1":
+        raise ValueError("invalid visual study schema")
+    document = dict(value)
+    saved_sha = document.pop("sha256", None)
+    if not isinstance(saved_sha, str) or saved_sha != _digest(document):
+        raise ValueError("visual study checksum invalid")
+
+
+def publish_visual_study(
+    checkpoint_dir: str | Path,
+    features: dict[str, Any],
+) -> dict[str, Any]:
+    """Materialize verifiable observation examples without result labels.
+
+    Immutable per-content revisions preserve historical study. The latest
+    pointer is monotonic across contest backfills and replays are idempotent.
+    """
+    root = Path(checkpoint_dir)
+    if features.get("schema") != "SMART_VISUAL_FEATURES_V1":
+        raise ValueError("study requires validated visual features")
+    examples = []
+    for n in features["source_contests"]:
+        path = _checkpoint_path(root, str(n))
+        raw = path.read_bytes()
+        if hashlib.sha256(raw).hexdigest() != features["source_sha256"][str(n)]:
+            raise ValueError("study source checkpoint hash mismatch")
+        row = json.loads(raw)
+        if row.get("contest_id") != str(n) or row.get("status") != "CANDIDATE":
+            raise ValueError("study source checkpoint is incompatible")
+        examples.append({
+            "contest_id": str(n),
+            "checkpoint_sha256": features["source_sha256"][str(n)],
+            "recorded_at_utc": row.get("created_at_utc"),
+            "source_host": (urlparse(row.get("source", "")).hostname or "").lower(),
+            "events_s": row.get("event_timestamps_s") or [],
+            "observed_coverage_ratio": row.get("coverage_ratio"),
+            "spatial": row.get("spatial"),
+            "cadence": row.get("cadence"),
+            "semantic_label": "MOTION_EVENT_CANDIDATE",
+        })
+    body: dict[str, Any] = {
+        "schema": "SMART_VISUAL_STUDY_V1",
+        "target_contest": features["target_contest"],
+        "as_of_utc": features["as_of_utc"],
+        "features": features,
+        "studied_contests": len(examples),
+        "examples": examples,
+        "predictive_weight_authorized": False,
+        "predictive_weight": 0.0,
+    }
+    current = root / "SMART_VISUAL_STUDY_CURRENT.json"
+    previous = None
+    if current.exists() or current.is_symlink():
+        if current.is_symlink():
+            raise ValueError("visual study current pointer cannot be a symlink")
+        previous = json.loads(current.read_text(encoding="utf-8"))
+        _verify_study_snapshot(previous)
+        if (previous["target_contest"] == body["target_contest"]
+                and previous["features"]["source_sha256"] == features["source_sha256"]
+                and previous["features"]["observational_features"] == features["observational_features"]):
+            return previous
+    body["previous_sha256"] = previous["sha256"] if previous else None
+    body["sha256"] = _digest(body)
+    _verify_study_snapshot(body)
+    archive = root / "study_history"
+    if archive.is_symlink():
+        raise ValueError("visual study history directory cannot be a symlink")
+    archive.mkdir(parents=True, exist_ok=True)
+    destination = archive / (body["sha256"] + ".json")
+    encoded = json.dumps(body, ensure_ascii=False, sort_keys=True, indent=2).encode("utf-8")
+    if destination.exists() or destination.is_symlink():
+        if destination.is_symlink() or destination.read_bytes() != encoded:
+            raise ValueError("visual study history collision or corruption")
+    else:
+        temp = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="wb", prefix="study.", suffix=".tmp",
+                dir=archive, delete=False,
+            ) as handle:
+                temp = Path(handle.name)
+                handle.write(encoded)
+                handle.flush()
+                os.fsync(handle.fileno())
+            try:
+                os.link(temp, destination)
+            except FileExistsError:
+                if destination.is_symlink() or destination.read_bytes() != encoded:
+                    raise ValueError("visual study history collision or corruption")
+        finally:
+            if temp is not None:
+                temp.unlink(missing_ok=True)
+    if previous is None or int(body["target_contest"]) >= int(previous["target_contest"]):
+        _atomic_json(current, body)
+    return body
 
 
 def observe_batch(
@@ -176,6 +284,7 @@ def observe_batch(
     features = get_visual_features(
         target, _utc_now(), root, hypothesis_id, source_url=common_url,
     )
+    study = publish_visual_study(root, features)
     return {
         "schema": "SMART_VISUAL_BATCH_V1",
         "status": "COMPLETE" if all(r["status"] in {"CANDIDATE", "INSUFFICIENT_EVIDENCE"} for r in results) else "PARTIAL",
@@ -188,6 +297,8 @@ def observe_batch(
         "learning_state_sha256": memory["sha256"],
         "learning_training_observations": memory["training_observations"],
         "consumer_features": features,
+        "study_sha256": study["sha256"],
+        "study_examples": study["studied_contests"],
         "elapsed_s": round(time.monotonic() - start, 6),
     }
 
