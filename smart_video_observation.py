@@ -931,6 +931,22 @@ def analyze_contest(
     if should_reuse_checkpoint(existing, EXTRACTOR_VERSION, hypothesis_id, force, fingerprint):
         reused = dict(existing)
         reused["checkpoint_reused"] = True
+        if str(contest_id).isascii() and str(contest_id).isdecimal():
+            # A valid checkpoint may outlive a deleted/interrupted state export.
+            # Rebuild the consumer memory without fetching video or mutating
+            # this checkpoint (its SHA-256 may already be referenced).
+            try:
+                memory = persist_visual_learning_state(
+                    checkpoint_dir, str(int(contest_id) + 1), hypothesis_id,
+                    source_url=source_url,
+                )
+                reused["learning_state_status"] = "PERSISTED"
+                reused["learning_state_observations"] = memory["training_observations"]
+            except (OSError, ValueError, TypeError) as exc:
+                reused["learning_state_status"] = "UNAVAILABLE"
+                reused.setdefault("limitations", []).append(
+                    f"visual learning state unavailable: {type(exc).__name__}"
+                )
         return reused
 
     learned_prior = learned_motion_prior(checkpoint_dir, str(contest_id), hypothesis_id, source_url=source_url)
@@ -973,11 +989,17 @@ def analyze_contest(
             # A failed video cannot teach motion, but it still produces a
             # checkpoint and an explicit unchanged learning state.
             try:
-                persist_visual_learning_state(
+                memory = persist_visual_learning_state(
                     checkpoint_dir, str(int(contest_id) + 1), hypothesis_id, source_url=source_url
                 )
+                base["learning_state_status"] = "PERSISTED"
+                base["learning_state_observations"] = memory["training_observations"]
             except (OSError, ValueError, TypeError) as exc:
+                base["learning_state_status"] = "UNAVAILABLE"
                 base["limitations"].append(f"visual learning state unavailable: {type(exc).__name__}")
+                # On failure no valid memory points at this checkpoint, so
+                # persist the failure explicitly for later incident diagnosis.
+                _atomic_json(cp_path, base)
         return base
 
     try:
