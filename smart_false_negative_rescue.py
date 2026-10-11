@@ -48,6 +48,15 @@ def _read_bound_source(root:Path, rel:str, sha:str, contest:int, name:str)->tupl
                     return data,True
     if (name=="ledger"
             and re.fullmatch(rf"runtime/learning_epochs/operator-{contest}-[^/]+/SMART_SIGNAL_LEDGER\.json",rel)):
+        snapshot=root/"SMART_STATE_ARCHIVE"/"hash-bound-learning"/str(contest)/f"SMART_SIGNAL_LEDGER.{sha}.json"
+        if snapshot.exists() or snapshot.is_symlink():
+            if (snapshot.is_symlink() or not snapshot.is_file()
+                    or snapshot.stat().st_size > MAX_LEDGER_BYTES):
+                raise MissingCanonicalLineage(f"invalid immutable ledger snapshot: {contest}")
+            data=snapshot.read_bytes()
+            if hashlib.sha256(data).hexdigest()!=sha:
+                raise MissingCanonicalLineage(f"immutable ledger snapshot hash mismatch: {contest}")
+            return data,True
         recovered=root/"SMART_STATE_ARCHIVE"/"hash-bound-learning"/str(contest)/f"SMART_SIGNAL_LEDGER.{sha}.json.gz"
         if recovered.is_file() and not recovered.is_symlink() and recovered.resolve().is_relative_to(root):
             try:

@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "edc36ce801ed2ed71d3549f6234d4bbe19d50e7a494864d19a16b4f9c8c9db07",
+  "source_reachability_inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -5753,13 +5753,14 @@
       "component_id": "smart_false_negative_rescue",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_false_negative_rescue.py",
-      "implementation_sha256": "0c3bffc63d1571c4572f2798be321c6abec915e9f1f3eecb597a335428a78228",
+      "implementation_sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
         "smart_portfolio_pipeline",
-        "test_smart_false_negative_rescue"
+        "test_smart_false_negative_rescue",
+        "test_smart_post_result_report"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -7265,7 +7266,7 @@
       "component_id": "smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_post_result_report.py",
-      "implementation_sha256": "8de59a698f1157c1aee9bc1952b01d45b54e720c3529d9ca06a34fc0ce0dc7ad",
+      "implementation_sha256": "88615f41e7c4a7de4306f642aabac81150147e74b9e0f6f34e45fefa36442659",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -11853,10 +11854,11 @@
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
-      "implementation_sha256": "1c6bd5940ecab9c61e8590e65e5f173e4e3c2ae34dd56db28aecffbf9bb9dfd6",
+      "implementation_sha256": "05e0b2bc581067be084a6db46455f34dc27ce3627f063657fc749b8a5468390c",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_false_negative_rescue",
         "smart_post_result_report"
       ],
       "consumers": [],
@@ -13130,5 +13132,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "5ee6edf9f2b91ede31cfa2ef99e2e8ab090ce614a84dadcdab1ef464ba7cf3c9"
+  "registry_sha256": "4e26edd2a307dfbfba85e9821653619c0d1e3222de6e3f45ced785ebb1e06932"
 }

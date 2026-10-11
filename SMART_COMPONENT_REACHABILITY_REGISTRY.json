@@ -53,7 +53,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "edc36ce801ed2ed71d3549f6234d4bbe19d50e7a494864d19a16b4f9c8c9db07",
+  "inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
   "summary": {
     "python_components": 486,
     "workflow_entrypoints": 8,
@@ -5433,7 +5433,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_portfolio_pipeline",
-        "test_smart_false_negative_rescue"
+        "test_smart_false_negative_rescue",
+        "test_smart_post_result_report"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -5443,7 +5444,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "0c3bffc63d1571c4572f2798be321c6abec915e9f1f3eecb597a335428a78228"
+      "sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745"
     },
     {
       "component_id": "smart_falsification_lab",
@@ -6871,7 +6872,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "8de59a698f1157c1aee9bc1952b01d45b54e720c3529d9ca06a34fc0ce0dc7ad"
+      "sha256": "88615f41e7c4a7de4306f642aabac81150147e74b9e0f6f34e45fefa36442659"
     },
     {
       "component_id": "smart_primary_card_selector",
@@ -11120,6 +11121,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
+        "smart_false_negative_rescue",
         "smart_post_result_report"
       ],
       "declared_execution_dependencies": [],
@@ -11132,7 +11134,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "1c6bd5940ecab9c61e8590e65e5f173e4e3c2ae34dd56db28aecffbf9bb9dfd6"
+      "sha256": "05e0b2bc581067be084a6db46455f34dc27ce3627f063657fc749b8a5468390c"
     },
     {
       "component_id": "test_smart_powered_falsification_artifact",

@@ -36,6 +36,37 @@ def _atomic_write(path: Path, data: str) -> None:
         tmp.unlink(missing_ok=True)
 
 
+
+
+def _preserve_ledger_evidence(root: Path, target: int, ledger: Path, expected_sha: str) -> None:
+    # Create-only, byte-exact witness after adjudication, before later mutations.
+    destination = (root / "SMART_STATE_ARCHIVE" / "hash-bound-learning" / str(target)
+                   / f"SMART_SIGNAL_LEDGER.{expected_sha}.json")
+    if destination.exists():
+        if destination.is_symlink() or _sha256_file(destination) != expected_sha:
+            raise ValueError("post-result ledger archive hash mismatch")
+        return
+    destination.parent.mkdir(parents=True, exist_ok=True)
+    fd, temporary = tempfile.mkstemp(prefix=destination.name + ".", suffix=".tmp",
+                                    dir=str(destination.parent))
+    try:
+        with os.fdopen(fd, "wb") as out, ledger.open("rb") as inp:
+            for chunk in iter(lambda: inp.read(1024 * 1024), b""):
+                out.write(chunk)
+            out.flush()
+            os.fsync(out.fileno())
+        temp_path = Path(temporary)
+        if _sha256_file(temp_path) != expected_sha:
+            raise ValueError("ledger changed while capturing post-result evidence")
+        try:
+            os.link(temp_path, destination)
+        except FileExistsError:
+            if destination.is_symlink() or _sha256_file(destination) != expected_sha:
+                raise ValueError("concurrent ledger archive hash mismatch")
+    finally:
+        Path(temporary).unlink(missing_ok=True)
+
+
 def _numbers(value: Any) -> list[int] | None:
     if isinstance(value, dict):
         value = value.get("numbers")
@@ -291,6 +322,7 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
             raise ValueError("existing post-result report self-hash invalid")
         if existing.get("source_fingerprint") != source_fingerprint:
             raise ValueError("existing post-result report is bound to different evidence")
+        _preserve_ledger_evidence(root, target, ledger_path, ledger_sha)
         return {
             "status": "EXISTING_VALID",
             "report_file": json_path.name,
@@ -299,6 +331,7 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
             "report": existing,
         }
 
+    _preserve_ledger_evidence(root, target, ledger_path, ledger_sha)
     _atomic_write(json_path, json.dumps(report, ensure_ascii=False, indent=2) + "\n")
     _atomic_write(md_path, _render_markdown(report))
     return {
