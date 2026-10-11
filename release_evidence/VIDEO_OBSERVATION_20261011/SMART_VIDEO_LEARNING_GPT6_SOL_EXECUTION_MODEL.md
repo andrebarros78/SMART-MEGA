@@ -1,6 +1,6 @@
 # SMART-MEGA — Modelo executivo GPT-6 para aprendizagem visual acelerada
 
-**Estado:** PROPOSTA DE ENGENHARIA / NAO HOMOLOGADO
+**Estado:** IMPLEMENTADO EM BRANCH, PYTEST 55 PASS; NAO HOMOLOGADO EM VIDEOS REAIS
 **Data:** 2026-10-11, America/Sao_Paulo
 **Origem:** `andrebarros78/SMART-MEGA`, branch `learning/video-observation-v131-20261009`, HEAD de base `bd0c0fedf6489293a6c1d5705333af03ad587195`
 **Modulo existente:** `smart_video_observation.py` 1.3.1
@@ -60,7 +60,7 @@ manifesto de fontes (concurso, URL, instante, procedencia)
 
 - Adicionar `observe_batch(manifest, workers=2, resume=True)` como **nova entrada do modulo existente**, sem substituir o contrato de `analyze_contest` / CLI atual.
 - Validar URL e contest_id, deduplicar por fonte, usar cache de metadados autorizado e retentar falhas transitorias com backoff limitado; fonte bloqueada/privada permanece falha, sem burlar controles de acesso.
-- Processar concursos independentes com paralelismo adaptativo 1, 2, 4 conforme CPU, RAM e taxa de erro; limitar sessoes por host. Nao usar 32 workers cegamente.
+- Processar concursos independentes com paralelismo configuravel de 1 a 8 e cota total de 8 trabalhadores de amostragem. Padrao conservador: 2; concorrencia 8 exige um trabalhador por concurso. Adaptacao automatica por CPU/RAM/taxa de erro ainda nao implementada nem comprovada. Limitar sessoes por host futuramente com benchmark real. Nao usar 32 workers cegamente.
 - Cada worker escreve **somente** seu checkpoint individual; memoria e arquivo de historico global sao escritos **uma vez apos a barreira do lote**, com ordenacao deterministica e SHA verificado. Garantir reentrada apos queda e idempotencia.
 - Telemetria: tempo de fila, resolucao, legenda/segmento, decodificacao, consolidacao, bytes, FPS efetivo, memoria, retries, videos concluidos e categorias de indisponibilidade.
 
@@ -117,4 +117,17 @@ manifesto de fontes (concurso, URL, instante, procedencia)
 - Verificados via GitHub: branch de origem, codigo 1.3.1, testes, `EVIDENCE.json`, `LEARNING_MEMORY_RECOVERY.json`, `LEARNING_QUALITY_CORRECTION_V2.json`, `LEARNING_IMMUTABLE_HISTORY_V3.json`.
 - 13 arquivos fisicos do PC Escola: **NAO VERIFICADOS**. Uma tentativa de inventario remoto pela malha LMCP em 2026-10-11 foi recusada em `REJECTED_OPERATION`, com razao `federated_external_operation_requires_modern_transport`; nenhuma leitura ocorreu.
 - Nenhum novo benchmark, decodificacao de video real, teste de concorrencia, modelo/API multimodal nem consumidor em producao foi executado por este documento.
-- Estado terminal: `MISSION_ACTIVE / DESIGN_ONLY`. Nao declarar `MISSION_PROVEN`.
+- Estado terminal atualizado: `MISSION_ACTIVE / IMPLEMENTED_BRANCH_NOT_REAL_VIDEO_HOMOLOGATED`. Codigo + memoria + corpus + API implementados e testados em isolamento, mas nao promovidos para main. Nao declarar `MISSION_PROVEN`.
+
+## 7. Execucao e prova incremental — 2026-10-11
+
+- Implementacao: `smart_video_observation.py` atualizado e novo `smart_video_learning.py` com `observe_batch`, `get_visual_features` e `publish_visual_study`.
+- Memoria: consolida uma vez por lote; snapshots e checkpoints preexistentes permanecem imutaveis; o corpus `SMART_VISUAL_STUDY_CURRENT.json` tem hash e arquivo `study_history` imutavel. Checkpoint reuse exige fingerprint identico de fonte, parametros e hipotese.
+- Consumo: `python -m smart_video_learning --target-contest N --cutoff-utc YYYY-MM-DDTHH:MM:SSZ --checkpoint-dir DIR`; para lote: `python -m smart_video_learning --manifest manifest.json --batch-workers 2 --checkpoint-dir DIR`.
+- Pytest real 8.4.2 executado em Python 3.12.3 isolado: **55 passed em 2.52s**, **0 failed**; 47 legados e 8 novos.
+- Ensaio **sintetico** com 13 fontes ficticias e atraso artificial de 90 ms: fila serial 1.8207s, lote de 8 trabalhadores 0.3749s, aceleracao **4.857x**. Isso NAO prova velocidade real de videos oficiais.
+- Reinicio/consumo: 13/13 checkpoints simulados reutilizados por novo processo; SHA de corpus e leitura por CLI comprovados.
+- Evidencia auditavel: `release_evidence/VIDEO_OBSERVATION_20261011/VIDEO_LEARNING_GPT6_ACCELERATION_EVIDENCE.json`.
+- PR draft #37 para a branch de aprendizado 1.3.1. PR #36 paralela acumula falhas/negativos; suas regras devem ser reconciliadas antes de consolidar um unico contrato final.
+- PC Escola: leitura remota bloqueada por `federated_external_operation_requires_modern_transport`. Os 13 arquivos fisicos nao foram revalidados. Nenhum video oficial novo foi processado.
+- `main` nao modificada. Evidencia preditiva continua `NOT_ESTABLISHED`, peso **0**. Aprovacao cientifica e homologacao real permanecem abertas.
