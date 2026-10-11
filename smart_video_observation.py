@@ -12,6 +12,7 @@ import re
 import socket
 import statistics
 import tempfile
+import threading
 import time
 from datetime import datetime, timezone
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -630,22 +631,25 @@ def _read_checkpoint(path: Path) -> dict[str, Any] | None:
     return data
 
 
+_ATOMIC_JSON_WRITE_LOCK = threading.RLock()
+
 def _atomic_json(path: Path, data: dict[str, Any]) -> None:
-    path.parent.mkdir(parents=True, exist_ok=True)
-    temp_path: Path | None = None
-    try:
-        with tempfile.NamedTemporaryFile(
-            mode="w", encoding="utf-8", dir=path.parent,
-            prefix=path.name + ".", suffix=".tmp", delete=False,
-        ) as handle:
-            temp_path = Path(handle.name)
-            json.dump(data, handle, ensure_ascii=False, indent=2, sort_keys=True)
-            handle.flush()
-            os.fsync(handle.fileno())
-        os.replace(temp_path, path)
-    finally:
-        if temp_path is not None:
-            temp_path.unlink(missing_ok=True)
+    with _ATOMIC_JSON_WRITE_LOCK:
+        path.parent.mkdir(parents=True, exist_ok=True)
+        temp_path: Path | None = None
+        try:
+            with tempfile.NamedTemporaryFile(
+                mode="w", encoding="utf-8", dir=path.parent,
+                prefix=path.name + ".", suffix=".tmp", delete=False,
+            ) as handle:
+                temp_path = Path(handle.name)
+                json.dump(data, handle, ensure_ascii=False, indent=2, sort_keys=True)
+                handle.flush()
+                os.fsync(handle.fileno())
+            os.replace(temp_path, path)
+        finally:
+            if temp_path is not None:
+                temp_path.unlink(missing_ok=True)
 
 
 def _observation_fingerprint(contest_id: str, source_url: str, cfg: ObservationConfig, hypothesis_id: str | None) -> str:
