@@ -323,6 +323,8 @@ def _operational_capability_consumption(freeze: dict[str, Any], actual: list[int
         "benchmarking-uncertainty-calibration-long-form": "computed calibrated-vs-uniform proper-score delta",
         "evo-memory": "created read-only post-result signal utility feedback",
         "experiment-design": "kept result-only evaluation separate from pre-result freeze",
+        "simulation": "executed uniform null Monte Carlo on frozen prediction and official result; single-draw diagnostic",
+        "live-evo-online-evolution-agentic": "executed disposable bounded post-result shadow learning; no external agent or weight promotion",
     }
     named_capabilities = {n for lane in LANES.values() for n in lane["capabilities"]}
     if not set(consumed) <= named_capabilities:

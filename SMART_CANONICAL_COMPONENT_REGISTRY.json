@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "291dedd8f75ee176739417ec08c998858178ae1839f052c409e41e2334f88c16",
+  "source_reachability_inventory_sha256": "f24fa37c7322e65e37466e1bdfc5dbad3476f30c09121da4bdb9db66ca788ac4",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -25,10 +25,10 @@
   },
   "summary": {
     "component_count": 486,
-    "active": 99,
+    "active": 100,
     "shadow": 1,
     "diagnostic": 186,
-    "validation_only": 23,
+    "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
     "archived": 176,
@@ -4671,6 +4671,7 @@
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_agent_runtime",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_p10_active_guard_hardening",
         "test_smart_bounded_online_learning"
       ],
@@ -5651,17 +5652,24 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_experiment_lab.py",
       "implementation_sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f",
-      "role": "VALIDATION",
-      "state": "VALIDATION_ONLY",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
       "producers": [],
       "consumers": [
         "smart_capability_integration_v2",
         "smart_finalize_capability_integration_v3",
         "smart_probability_audit",
+        "smart_skill_runtime",
         "test_smart_experiment_lab"
       ],
-      "entrypoints": [],
-      "execution_mode": "VALIDATION_ONLY",
+      "entrypoints": [
+        "smart_disconnection_gate",
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -5669,8 +5677,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": false,
-      "production_reachable": false
+      "reachable": true,
+      "production_reachable": true
     },
     {
       "component_id": "smart_extended_falsification",
@@ -7270,7 +7278,7 @@
       "component_id": "smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_post_result_report.py",
-      "implementation_sha256": "fab9110d983ee9788cff1e99989034ad158cc3351f1a16c0e0ce9122eb29db82",
+      "implementation_sha256": "433c49b4f7356bf9d007136e9c1f3413c35b41b1fe4ac0e332298c7d7915c106",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8663,15 +8671,17 @@
       "component_id": "smart_skill_runtime",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_skill_runtime.py",
-      "implementation_sha256": "63dcaa7f5ec5ef393aa1b53a8ac11c96652709d5779f709d73a1f7f9b4ca763c",
+      "implementation_sha256": "2d7d9682985721b74148ccba29707e2680ff4cc409a8df4b650be9e0d90f6167",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_agent_runtime",
         "smart_agent_skill_orchestration",
+        "smart_bounded_online_learning",
         "smart_canonical_identity",
         "smart_cartography_extended",
         "smart_data_quality_gate",
+        "smart_experiment_lab",
         "smart_portfolio_optimizer",
         "smart_rank_score_calibration",
         "smart_signal_attribution",
@@ -11890,7 +11900,7 @@
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
-      "implementation_sha256": "36f7cbfe3556d56fa6c6dbda53ddeec8cbc6a7694004ed2edee44fdbe7abd3f4",
+      "implementation_sha256": "408383752ed6a67528f585aa7ebc7841b9b535b859357cbf74deabdfcf8f9069",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13169,5 +13179,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "d152c77b6c6d70954b2e037836ecd4f4b443f9259408d7b4aeb3c8c589fffa32"
+  "registry_sha256": "c34e15e66ffa02980de22a9ff3ceb99b48c6ee0a494c37cc0c4f5621ba114e18"
 }

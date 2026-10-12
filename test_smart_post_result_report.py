@@ -316,7 +316,7 @@ def test_operational_capabilities_consume_real_quality_weight_calibration_and_le
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     assert result['status'] == 'PASS'
     assert result['scope'] == 'REAL_FROZEN_INPUT_POST_RESULT_NATIVE_METHODS'
-    assert len(result['native_capabilities_consumed']) == 11
+    assert len(result['native_capabilities_consumed']) == 13
     assert set(result['native_capabilities_consumed']) == set(result['native_methodology_aliases_consumed'])
     assert result['dynamic_weight_replay']['signals'] == 12
     assert result['dynamic_weight_replay']['max_abs_weight_error'] <= 1e-9
@@ -391,7 +391,7 @@ def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_
     report = result['report']
     real = report['operational_capability_consumption']
     assert real['status'] == 'PASS'
-    assert len(real['native_capabilities_consumed']) == 11
+    assert len(real['native_capabilities_consumed']) == 13
     assert real['dynamic_weight_replay']['reproduces_frozen_weights'] is True
     assert real['post_result_marginal_utility']['full_hits'] == len(
         set(frozen['challenger']['top6']) & set(report['official_result']))
@@ -409,7 +409,7 @@ def test_native_execution_receipts_are_individually_real_consumed_and_hashed():
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     receipts = result['native_execution_receipts']
     assert result['native_execution_receipts_verified'] is True
-    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 11
+    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 13
     assert set(receipts) == set(result['native_capabilities_consumed'])
     assert {r['native_function_executed'] for r in receipts.values()}
     for capability, receipt in receipts.items():
@@ -546,7 +546,47 @@ def test_real_frozen_structural_consumer_reaches_post_result_report(tmp_path: Pa
     assert structural['status']=='PASS'
     assert structural['execution_receipts_count']==7
     assert structural['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
-    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 11
+    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 13
     assert 'Execuções estruturais vinculadas ao histórico congelado' in (
         tmp_path/emitted['markdown_file']).read_text()
     assert pr.emit_post_result_report(tmp_path,active)['status']=='EXISTING_VALID'
+
+
+def test_real_null_simulation_and_bounded_shadow_learning_are_consumed():
+    from smart_skill_runtime import invoke_live_native
+    freeze, report = _real_operational_skill_fixture()
+    before = json.dumps(freeze, sort_keys=True)
+    actual = report['official_result']
+    for name in ('simulation', 'live-evo-online-evolution-agentic'):
+        first = invoke_live_native(name, freeze, actual)
+        second = invoke_live_native(name, freeze, actual)
+        assert first == second
+        assert first['execution_sha256'] == pr._sha256_json({k:v for k,v in first.items() if k != 'execution_sha256'})
+        assert first['external_skill_code_executed'] is False
+        assert first['predictive_weight_authorized'] is False
+    simulation = invoke_live_native('simulation', freeze, actual)['observed_output']
+    assert simulation['replications'] == 4096
+    assert simulation['scope'] == 'SINGLE_CONTEST_DIAGNOSTIC_NOT_PREDICTIVE_PROOF'
+    assert simulation['observed_hits'] == report['hit_count']
+    shadow = invoke_live_native('live-evo-online-evolution-agentic', freeze, actual)['observed_output']
+    assert shadow['signal_count'] == 12
+    assert shadow['weight_state_persisted'] is False
+    assert shadow['model_or_agent_promoted'] is False
+    assert shadow['max_abs_applied_delta'] <= freeze['challenger']['bounded_online_learning']['expert']['max_abs_step']
+    assert set(shadow['reward_hits']) == set(freeze['challenger']['weights'])
+    assert json.dumps(freeze, sort_keys=True) == before
+    aggregate = pr._operational_capability_consumption(freeze, actual)
+    assert aggregate['execution_receipt_count'] == 13
+    assert aggregate['native_execution_receipts']['simulation']['observed_output'] == simulation
+    assert aggregate['native_execution_receipts']['live-evo-online-evolution-agentic']['observed_output'] == shadow
+
+
+def test_shadow_learning_rejects_corrupt_configuration():
+    from copy import deepcopy
+    import pytest
+    from smart_skill_runtime import invoke_live_native
+    freeze, report = _real_operational_skill_fixture()
+    forged = deepcopy(freeze)
+    forged['challenger']['bounded_online_learning']['expert']['max_abs_step'] = -1
+    with pytest.raises(ValueError, match='max_abs_step'):
+        invoke_live_native('live-evo-online-evolution-agentic', forged, report['official_result'])

@@ -253,6 +253,8 @@ LIVE_POST_RESULT_BINDINGS = {
     "regime-detection": "smart_context_regime.frozen_regime_evidence",
     "superforecasting": "smart_rank_score_calibration.brier_score",
     "benchmarking-uncertainty-calibration-long-form": "smart_rank_score_calibration.brier_score",
+    "simulation": "smart_experiment_lab.monte_carlo_null_hits",
+    "live-evo-online-evolution-agentic": "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
 }
 
 
@@ -308,6 +310,58 @@ def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: 
                   "real_target_hits": int(utility["full_ensemble"]["hits"]),
                   "signals_evaluated": len(utility["per_signal"]),
                   "retrospective_only": True, "memory_state_mutated": False}
+    elif capability == "simulation":
+        from smart_experiment_lab import monte_carlo_null_hits
+        # Real official adjudication, but a *single contest* is explicitly
+        # insufficient for any claim about predictive superiority.
+        top = set(int(x) for x in challenger["top6"])
+        hits = len(top.intersection(actual))
+        null = monte_carlo_null_hits([hits], replications=4096,
+                                     seed=int(freeze["cutoff_contest"]))
+        if null["contest_count"] != 1 or null["observed_total_hits"] != hits:
+            raise ValueError("null simulation does not reproduce observed frozen hits")
+        result = {"observed_hits": hits, "replications": null["replications"],
+                  "uniform_expected_hits": null["uniform_expected_total_hits"],
+                  "tail_probability": null["p_null_ge_observed"],
+                  "scope": "SINGLE_CONTEST_DIAGNOSTIC_NOT_PREDICTIVE_PROOF"}
+    elif capability == "live-evo-online-evolution-agentic":
+        from smart_bounded_online_learning import BoundedOnlineLearningGuard
+        # Independent, disposable WHAT-IF update; never mutate the frozen
+        # learning authority or any file. Not an autonomous agent invocation.
+        snapshot = challenger.get("bounded_online_learning")
+        expert = snapshot.get("expert") if isinstance(snapshot, dict) else None
+        if not isinstance(expert, dict):
+            raise ValueError("frozen bounded online expert evidence absent")
+        guard = BoundedOnlineLearningGuard(
+            eta=float(expert["eta"]), baseline_hits=float(expert["baseline_hits"]),
+            max_abs_step=float(expert["max_abs_step"]),
+            warmup_max_abs_step=float(expert["warmup_max_abs_step"]),
+            prior_observations=int(expert["prior_observations"]),
+            warmup_full_after=int(expert["warmup_full_after"]),
+            min_warmup_scale=float(expert["min_warmup_scale"]),
+            max_abs_centered_logit=float(expert["max_abs_centered_logit"]),
+        )
+        log_weights = {name: math.log(float(weights[name])) for name in sorted(arrays)}
+        if any(not math.isfinite(v) for v in log_weights.values()):
+            raise ValueError("shadow learning requires finite positive frozen weights")
+        hit_set = set(actual)
+        rewards = {}
+        for name in sorted(arrays):
+            values = arrays[name]
+            top_indices = np.lexsort((np.arange(1, 61), -values))[:6]
+            rewards[name] = len({int(i) + 1 for i in top_indices}.intersection(hit_set))
+        proposed, audit = guard.update(log_weights, rewards)
+        if set(proposed) != set(weights) or not audit["update_after_result_only"]:
+            raise ValueError("online shadow update is inconsistent with frozen weights")
+        if max(abs(float(x)) for x in audit["applied_delta"].values()) > guard.max_abs_step + 1e-12:
+            raise ValueError("bounded shadow learning exceeds per-result step cap")
+        result = {"signal_count": len(rewards), "reward_hits": rewards,
+                  "reward_sum": int(sum(rewards.values())),
+                  "shadow_applied_delta": audit["applied_delta"],
+                  "max_abs_applied_delta": float(max(abs(v) for v in audit["applied_delta"].values())),
+                  "weight_state_persisted": False,
+                  "model_or_agent_promoted": False,
+                  "mode": "DISPOSABLE_POST_RESULT_SHADOW_UPDATE"}
     elif capability == "model-drift-management":
         flags = np.array([bool(quality[k].get("drift_active")) for k in sorted(arrays)], dtype=int)
         drift_count = int(np.count_nonzero(flags))
