@@ -326,6 +326,8 @@ def _operational_capability_consumption(freeze: dict[str, Any], actual: list[int
         "simulation": "executed uniform null Monte Carlo on frozen prediction and official result; single-draw diagnostic",
         "live-evo-online-evolution-agentic": "executed disposable bounded post-result shadow learning; no external agent or weight promotion",
         "thinktank-me-multi-expert-framework-middle": "replayed frozen five-policy MetaGovernor selection and consumed individual policy outcomes in disposable shadow update; no external framework executed",
+        "bayesian-workflow": "reconstructed signed frozen rank-posterior then executed a disposable, post-result Bayesian-smoothed calibration update; no PyMC executed",
+        "extremizing-forecasts": "executed unapproved rank-posterior strength 0.10 as a shadow calibration and compared actual Brier; no predictive promotion",
     }
     named_capabilities = {n for lane in LANES.values() for n in lane["capabilities"]}
     if not set(consumed) <= named_capabilities:
@@ -479,6 +481,19 @@ def _render_markdown(report: dict[str, Any]) -> str:
                           "- **Acertos por política congelada:** " + ", ".join(
                               f"{name}={hits}/6" for name, hits in observed['policy_hits'].items()),
                           "- **Atualização:** apenas estado descartável em modo sombra; resultado conhecido não escolhe retrospectivamente uma política."]
+    if isinstance(ops, dict) and ops.get("status") == "PASS":
+        receipts = ops.get("native_execution_receipts", {})
+        posterior = receipts.get("bayesian-workflow")
+        experimental = receipts.get("extremizing-forecasts")
+        if isinstance(posterior, dict) and isinstance(experimental, dict):
+            live = posterior["observed_output"]
+            trial = experimental["observed_output"]
+            lines += ["", "### Reconstrução Bayesiana e calibração alternativa em modo sombra", "",
+                      f"- **Probabilidades congeladas reproduzidas:** {'sim' if live['before_result_frozen_probability_reproduced'] else 'não'}",
+                      f"- **Observações anteriores ao resultado:** {live['reconstructed_prior_observations']}",
+                      f"- **Intensidade experimental, sem ativação:** {trial['shadow_strength']:.3f}",
+                      f"- **Brier congelado / experimental / uniforme:** {trial['frozen_brier']:.8f} / {trial['shadow_brier']:.8f} / {trial['uniform_brier']:.8f}",
+                      "- **Autoridade:** comparação retrospectiva, sem gravação de estado, sem promoção de peso ou modelo."]
     primary = report.get("primary_card_diagnostic")
     if isinstance(primary, dict) and primary.get("status") == "PASS":
         final = primary["final_decision"]

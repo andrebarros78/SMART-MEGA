@@ -256,6 +256,8 @@ LIVE_POST_RESULT_BINDINGS = {
     "simulation": "smart_experiment_lab.monte_carlo_null_hits",
     "live-evo-online-evolution-agentic": "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
     "thinktank-me-multi-expert-framework-middle": "smart_meta_governor.MetaGovernor.select/update",
+    "bayesian-workflow": "smart_rank_score_calibration.RankScoreCalibrator.predict/update",
+    "extremizing-forecasts": "smart_rank_score_calibration.RankScoreCalibrator.predict/brier_score",
 }
 
 
@@ -363,6 +365,86 @@ def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: 
                   "weight_state_persisted": False,
                   "model_or_agent_promoted": False,
                   "mode": "DISPOSABLE_POST_RESULT_SHADOW_UPDATE"}
+    elif capability in {"bayesian-workflow", "extremizing-forecasts"}:
+        # The frozen rank posterior provides enough statistics for an *exact*
+        # reconstruction because every prior contest updates all 60 ranks.
+        # No current-target information enters predict(), only the later audit.
+        from smart_rank_score_calibration import RankScoreCalibrator
+        calibration = challenger.get("rank_score_calibration")
+        if not isinstance(calibration, dict):
+            raise ValueError("frozen Bayesian rank calibration unavailable")
+        obs = int(calibration["observations"])
+        prior = float(calibration["prior_strength"])
+        strength = float(calibration["strength"])
+        raw_posterior = np.asarray(calibration["raw_posterior_by_rank"], dtype=float)
+        if (obs < 1 or not math.isfinite(prior) or prior <= 0
+                or not math.isfinite(strength) or not 0 <= strength <= 1
+                or raw_posterior.shape != (60,) or not np.all(np.isfinite(raw_posterior))):
+            raise ValueError("invalid frozen Bayesian rank posterior")
+        inferred_hits = raw_posterior * (obs + prior) - prior * 0.1
+        nearest_hits = np.rint(inferred_hits)
+        integrality_error = float(np.max(np.abs(inferred_hits - nearest_hits)))
+        if (integrality_error > 1e-7
+                or np.any(nearest_hits < 0) or np.any(nearest_hits > obs)):
+            raise ValueError("frozen Bayesian rank posterior cannot reconstruct pre-result hits")
+        audit_state = RankScoreCalibrator(
+            strength=strength, prior_strength=prior, observations=obs,
+            hits_by_rank=nearest_hits.copy(),
+            trials_by_rank=np.full(60, obs, dtype=float),
+            cumulative_brier=float(calibration["cumulative_brier"]),
+            cumulative_uniform_brier=float(calibration["cumulative_uniform_brier"]),
+        )
+        ranking = challenger.get("ranking60")
+        scores = challenger.get("aggregate_scores")
+        old_probs, reproduced_audit = audit_state.predict(ranking, scores)
+        original_probs = calibration.get("probabilities_by_number")
+        if (reproduced_audit["sha256"] != calibration.get("sha256")
+                or not isinstance(original_probs, dict)
+                or set(old_probs) != set(original_probs)
+                or any(abs(old_probs[k] - float(original_probs[k])) > 1e-12 for k in old_probs)):
+            raise ValueError("frozen Bayesian calibration does not reproduce signed pre-result prediction")
+        if capability == "bayesian-workflow":
+            replay = audit_state.update(ranking, actual, old_probs)
+            result = {
+                "reconstructed_prior_observations": obs,
+                "reconstructed_hits_integrality_max_error": integrality_error,
+                "signed_frozen_calibration_sha256": reproduced_audit["sha256"],
+                "before_result_frozen_probability_reproduced": True,
+                "proper_score_from_disposable_posterior_update": replay["brier"],
+                "uniform_reference_brier": replay["uniform_brier"],
+                "hypothetical_observations_after_result": audit_state.observations,
+                "posterior_updated_only_after_result": True,
+                "source_uses_external_pymc": False,
+                "state_persisted": False,
+            }
+        else:
+            # A bounded scientific COUNTERFACTUAL: an isotonic posterior at a
+            # small, explicitly unapproved strength. Compare proper scoring
+            # to what was actually frozen and to uniform. The shadow candidate
+            # cannot affect today's card or be promoted from a single draw.
+            shadow_strength = 0.10
+            audit_state.strength = shadow_strength
+            shadow_probs, shadow_audit = audit_state.predict(ranking, scores)
+            shadow_score = brier_score(shadow_probs, actual)
+            frozen_score = brier_score(old_probs, actual)
+            baseline = brier_score({str(n): 0.1 for n in range(1, 61)}, actual)
+            if not all(math.isfinite(v) for v in (shadow_score, frozen_score, baseline)):
+                raise ValueError("shadow extremizing calibration Brier is not finite")
+            result = {
+                "shadow_strength": shadow_strength,
+                "frozen_strength": strength,
+                "frozen_brier": frozen_score,
+                "shadow_brier": shadow_score,
+                "uniform_brier": baseline,
+                "shadow_minus_frozen_brier": shadow_score - frozen_score,
+                "shadow_minus_uniform_brier": shadow_score - baseline,
+                "shadow_probability_mass": float(sum(shadow_probs.values())),
+                "shadow_monotonic": shadow_audit["monotonic_after_isotonic"],
+                "selection_or_weight_changed": False,
+                "prospective_superiority_proven": False,
+                "state_persisted": False,
+                "external_extremizing_skill_executed": False,
+            }
     elif capability == "thinktank-me-multi-expert-framework-middle":
         from smart_meta_governor import MetaGovernor
         from smart_multi_challengers import POLICY_IDS, sha256_json as policy_sha256
