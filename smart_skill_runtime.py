@@ -574,6 +574,8 @@ def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: 
 
 
 FROZEN_STRUCTURAL_CAPABILITIES = (
+    "combinatorialist",
+    "time-series-forecasting",
     "data-analysis",
     "google-or-tools",
     "multiple-testing-fdr-statsmodels",
@@ -587,7 +589,7 @@ FROZEN_STRUCTURAL_CAPABILITIES = (
 def consume_frozen_structural_capabilities(freeze: dict[str, Any], root: str | Path) -> dict[str, Any]:
     """Run real independent libraries on hash-bound pre-draw product data.
 
-    Only observational diagnostics and a one-game CP-SAT control are produced;
+    Only observational diagnostics and bounded CP-SAT controls are produced;
     these outputs cannot promote signals, models, odds or operational cards.
     The official outcome is deliberately not an input to any of these methods.
     """
@@ -598,6 +600,7 @@ def consume_frozen_structural_capabilities(freeze: dict[str, Any], root: str | P
     from smart_v2_engine import load_draws
     from smart_cartography_extended import temporal_memory, network_structure, regime_structure
     from smart_portfolio_optimizer import optimize_portfolio, PortfolioConfig
+    from smart_randomness_cartography import fit_transition_weights
 
     path_str = freeze.get("data_file")
     if not isinstance(path_str, str) or not path_str:
@@ -656,6 +659,25 @@ def consume_frozen_structural_capabilities(freeze: dict[str, Any], root: str | P
         raise ValueError("OR-Tools control failed to reproduce frozen Champion")
     if control["contract"].get("predictive_scores_unchanged") is not True:
         raise ValueError("OR-Tools must preserve frozen score authority")
+    # A genuine time-series transition fit using ONLY pre-result history.
+    # These are rank INDICATORS, not calibrated probabilities and not scoring
+    # authority. Never substitute them for the frozen Champion or Challenger.
+    transition = fit_transition_weights(draws)
+    if transition.shape != (60, 60) or not np.all(np.isfinite(transition)):
+        raise ValueError("temporal transition matrix missing or invalid")
+    temporal_indicators = np.mean(transition[np.asarray(draws[-1], dtype=int) - 1], axis=0)
+    if temporal_indicators.shape != (60,) or not np.all(np.isfinite(temporal_indicators)):
+        raise ValueError("temporal transition indicators not finite")
+    temporal_top = [int(i) + 1 for i in np.lexsort((np.arange(1, 61), -temporal_indicators))[:6]]
+    # Exact hypergeometric 6-of-60 random baseline, never learned from target.
+    random_denominator = math.comb(60, 6)
+    hypergeometric = {str(k): math.comb(6, k) * math.comb(54, 6 - k) / random_denominator
+                      for k in range(7)}
+    if abs(sum(hypergeometric.values()) - 1.0) > 1e-14:
+        raise ValueError("exact random match distribution does not normalize")
+    expected_hits = sum(k * hypergeometric[str(k)] for k in range(7))
+    if abs(expected_hits - 0.6) > 1e-12:
+        raise ValueError("exact random match expectation invalid")
     # An independent OR-Tools invocation evaluates *portfolio constraints*,
     # not just the single-card replication above. No predictive claim follows.
     constrained = optimize_portfolio(
@@ -671,6 +693,25 @@ def consume_frozen_structural_capabilities(freeze: dict[str, Any], root: str | P
         raise ValueError("OR-Tools constrained portfolio verification failed")
 
     method_outputs = {
+        "combinatorialist": ("math.comb / exact_hypergeometric_6_of_60",
+                             {"uniform_match_distribution_0_to_6": hypergeometric,
+                              "expected_random_matches": expected_hits,
+                              "all_possible_six_number_combinations": random_denominator,
+                              "exact_six_match_probability": 1.0 / random_denominator,
+                              "uses_target_result": False,
+                              "predictive_superiority_proven": False}),
+        "time-series-forecasting": ("smart_randomness_cartography.fit_transition_weights",
+                                    {"transition_matrix_shape": [60, 60],
+                                     "fit_draws": int(len(draws)),
+                                     "cutoff": cutoff,
+                                     "candidate_top6": temporal_top,
+                                     "candidate_overlap_with_frozen_champion": len(set(temporal_top) & set(champion_card)),
+                                     "indicator_range": [float(temporal_indicators.min()),
+                                                         float(temporal_indicators.max())],
+                                     "calibrated_probabilities": False,
+                                     "frozen_champion_changed": False,
+                                     "future_information_used": False,
+                                     "predictive_promotion_authorized": False}),
         "data-analysis": ("smart_data_quality_gate.enforce_draw_quality",
                           {"status": quality.status, "contest_max": quality.contest_max,
                            "row_count": quality.row_count}),

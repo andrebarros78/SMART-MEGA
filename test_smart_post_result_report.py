@@ -459,11 +459,24 @@ def test_frozen_structural_capabilities_execute_real_libraries_with_provenance()
     root = Path(__file__).resolve().parent
     result = consume_frozen_structural_capabilities(freeze, root)
     assert result['status'] == 'PASS'
-    assert result['execution_receipts_count'] == 7
+    assert result['execution_receipts_count'] == 9
     assert result['data_quality']['cutoff'] == freeze['cutoff_contest']
     assert result['data_quality']['rows'] == freeze['cutoff_contest']
     assert result['third_party_libraries_actually_called'] == ['statsmodels', 'networkx', 'ruptures', 'ortools']
     assert result['shared_solver_executions'] == 2
+    exact = result['receipts']['combinatorialist']['observed_output']
+    assert abs(sum(exact['uniform_match_distribution_0_to_6'].values()) - 1.0) < 1e-14
+    assert exact['all_possible_six_number_combinations'] == 50063860
+    assert abs(exact['expected_random_matches'] - 0.6) < 1e-14
+    assert exact['predictive_superiority_proven'] is False
+    temporal = result['receipts']['time-series-forecasting']['observed_output']
+    assert temporal['fit_draws'] == freeze['cutoff_contest']
+    assert temporal['transition_matrix_shape'] == [60, 60]
+    assert len(temporal['candidate_top6']) == 6
+    assert len(set(temporal['candidate_top6'])) == 6
+    assert temporal['calibrated_probabilities'] is False
+    assert temporal['frozen_champion_changed'] is False
+    assert temporal['future_information_used'] is False
     assert result['receipts']['operations-research-algorithm-developer']['observed_output']['independent_constrained_solver_executed'] is True
     assert result['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
     assert result['receipts']['statsmodels']['observed_output']['ljung_box_sum_pvalues']
@@ -544,7 +557,14 @@ def test_real_frozen_structural_consumer_reaches_post_result_report(tmp_path: Pa
     assert emitted['status']=='EMITTED'
     structural = emitted['report']['structural_capability_consumption']
     assert structural['status']=='PASS'
-    assert structural['execution_receipts_count']==7
+    assert structural['execution_receipts_count']==9
+    gaps = emitted['report']['remaining_capability_reconciliation']
+    assert gaps['status'] == 'PASS'
+    assert gaps['original_gaps'] == 14
+    assert gaps['original_gaps_consumed_this_freeze'] == 2
+    assert gaps['remaining_not_proven_consumed'] == 12
+    assert gaps['capabilities']['time-series-forecasting']['status'] == 'NATIVE_EXECUTION_CONSUMED_VERIFIED'
+    assert gaps['capabilities']['combinatorialist']['status'] == 'NATIVE_EXECUTION_CONSUMED_VERIFIED'
     assert structural['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
     assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 16
     assert 'Execuções estruturais vinculadas ao histórico congelado' in (
@@ -701,3 +721,60 @@ def test_calibration_consumer_rejects_tampered_rank_posterior_and_signature():
     forged['challenger']['rank_score_calibration']['sha256'] = 'a' * 64
     with pytest.raises(ValueError, match='does not reproduce signed'):
         invoke_live_native('extremizing-forecasts', forged, report['official_result'])
+
+
+def test_all_fourteen_skill_gaps_are_reconciled_without_fake_execution():
+    from smart_skill_reconciliation import ORIGINAL_GAPS, reconcile_remaining
+    freeze, _ = _real_operational_skill_fixture()
+    root = Path(__file__).resolve().parent
+    evidence = pr._structural_capability_diagnostic(freeze, root)
+    before = json.dumps(freeze, sort_keys=True)
+    audit = reconcile_remaining(evidence, root)
+    assert audit == reconcile_remaining(evidence, root)
+    assert audit['status'] == 'PASS'
+    assert audit['original_gaps'] == len(ORIGINAL_GAPS) == 14
+    assert audit['native_consumption_capabilities_total'] == 25
+    assert audit['registered_pertinent_capabilities'] == 37
+    assert audit['registered_quarantined_capabilities'] == 4
+    assert audit['original_gaps_consumed_this_freeze'] == 2
+    assert audit['remaining_not_proven_consumed'] == 12
+    assert audit['remaining_without_implemented_consumer'] == 12
+    assert set(audit['capabilities']) == ORIGINAL_GAPS
+    for name in ('combinatorialist', 'time-series-forecasting'):
+        row = audit['capabilities'][name]
+        assert row['status'] == 'NATIVE_EXECUTION_CONSUMED_VERIFIED'
+        assert row['execution_sha256'] == evidence['receipts'][name]['execution_sha256']
+    import importlib.util
+    assert audit['capabilities']['mlflow']['status'] == (
+        'INSTALLED_NOT_CONSUMED' if importlib.util.find_spec('mlflow') else 'MISSING_DEPENDENCY')
+    for name in ('pymc', 'aeon', 'conformal-risk-control-mapie',
+                 'hyperparameter-tuning-optuna', 'property-based-testing-hypothesis',
+                 'mutmut-mutation', 'z3-formal-verification'):
+        assert audit['capabilities'][name]['status'] in {'MISSING_DEPENDENCY', 'INSTALLED_NOT_CONSUMED'}
+        assert audit['capabilities'][name]['native_execution_receipt'] is False
+    for name in ('dianoia', 'ml-engineer', 'nisan-et-al-2007-algorithmic-game-theory',
+                 'test-gap-analysis'):
+        assert audit['capabilities'][name]['status'] == 'ROLE_OR_SOURCE_NOT_EXECUTED'
+    assert audit['external_skill_executions_claimed'] == 0
+    assert audit['predictive_weight_authorized'] is False
+    assert audit['sha256'] == pr._sha256_json({k:v for k,v in audit.items() if k!='sha256'})
+    assert json.dumps(freeze, sort_keys=True) == before
+
+
+def test_remaining_capability_reconciliation_refuses_forged_receipts():
+    from copy import deepcopy
+    import pytest
+    from smart_skill_reconciliation import reconcile_remaining
+    freeze, _ = _real_operational_skill_fixture()
+    root = Path(__file__).resolve().parent
+    evidence = pr._structural_capability_diagnostic(freeze, root)
+    fraudulent = deepcopy(evidence)
+    fraudulent['receipts']['combinatorialist']['observed_output']['expected_random_matches'] = 1.3
+    with pytest.raises(ValueError, match='forged execution receipt'):
+        reconcile_remaining(fraudulent, root)
+    missing = deepcopy(evidence)
+    missing['receipts'].pop('time-series-forecasting')
+    result = reconcile_remaining(missing, root)
+    assert result['original_gaps_consumed_this_freeze'] == 1
+    assert result['capabilities']['time-series-forecasting']['status'] == 'INTEGRATION_IMPLEMENTED_NOT_EXECUTED_FOR_THIS_FREEZE'
+    assert result['remaining_not_proven_consumed'] == 13

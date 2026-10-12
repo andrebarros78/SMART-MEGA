@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "371c7895c307784d02a9a3118ebcddbe91a14839fd58832a17716c7ac73f96ef",
+  "source_reachability_inventory_sha256": "7a439510caab5ed4ae2b3eb8a4d636f61293656dd7adc3d94927b738656a690e",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,8 +24,8 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 486,
-    "active": 100,
+    "component_count": 487,
+    "active": 101,
     "shadow": 1,
     "diagnostic": 186,
     "validation_only": 22,
@@ -4555,6 +4555,7 @@
         "smart_post_result_report",
         "smart_product_certification",
         "smart_skill_adapter_registry",
+        "smart_skill_reconciliation",
         "smart_skill_runtime",
         "test_smart_agent_ecosystem_governance",
         "test_smart_agent_skill_orchestration",
@@ -7280,7 +7281,7 @@
       "component_id": "smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_post_result_report.py",
-      "implementation_sha256": "6290d5e04ba25a3338a5c54026336460e69e56330a94a1a0e8f5b05b8708dc3b",
+      "implementation_sha256": "fddb54ddc42adcc561fedc670ef15be5db44665205eea296dec4ce9f53c686f8",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7289,6 +7290,7 @@
         "smart_signal_attribution",
         "smart_signal_marginal_utility",
         "smart_signal_weights",
+        "smart_skill_reconciliation",
         "smart_skill_runtime"
       ],
       "consumers": [
@@ -7842,6 +7844,7 @@
         "smart_extended_falsification",
         "smart_falsification_lab",
         "smart_monte_carlo_convergence",
+        "smart_skill_runtime",
         "test_smart_cartography_extended",
         "test_smart_extended_falsification",
         "test_smart_falsification_lab",
@@ -8670,10 +8673,39 @@
       "production_reachable": true
     },
     {
+      "component_id": "smart_skill_reconciliation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_skill_reconciliation.py",
+      "implementation_sha256": "59b378d30d209584045d69f78adbc383c98498c3e1769e46d2abe8f086439096",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
+        "smart_agent_skill_orchestration",
+        "smart_skill_runtime"
+      ],
+      "consumers": [
+        "smart_post_result_report",
+        "test_smart_post_result_report"
+      ],
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
       "component_id": "smart_skill_runtime",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_skill_runtime.py",
-      "implementation_sha256": "6a37cc635a87d0171664fe7d3a3bdee58ef2fb9ca5557476f49c8e01de8e4cf0",
+      "implementation_sha256": "246ee8cd827c96eee3dbba768e07aa4bdb7147499a2c6caeb28d6b28a96ab9f1",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8687,6 +8719,7 @@
         "smart_meta_governor",
         "smart_multi_challengers",
         "smart_portfolio_optimizer",
+        "smart_randomness_cartography",
         "smart_rank_score_calibration",
         "smart_signal_attribution",
         "smart_signal_marginal_utility",
@@ -8697,6 +8730,7 @@
       "consumers": [
         "smart_agent_skill_functional_gate",
         "smart_post_result_report",
+        "smart_skill_reconciliation",
         "test_smart_f07_skill_adapters",
         "test_smart_post_result_report",
         "test_smart_skill_runtime"
@@ -11904,12 +11938,13 @@
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
-      "implementation_sha256": "1614409b5afaae6288e45a5e8226e5b0f35232d71ed719e32b6f68cf6eb0d7c8",
+      "implementation_sha256": "8cffbeb3582e21b2cc6b33821082253d6eec8e83dc046a7fce7698e3fb9bb9bb",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_false_negative_rescue",
         "smart_post_result_report",
+        "smart_skill_reconciliation",
         "smart_skill_runtime"
       ],
       "consumers": [],
@@ -13183,5 +13218,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "9f1ad8ae141564d44b87433dcd8e5f765d5b780310474d1bd6a3fa71b16f3b0c"
+  "registry_sha256": "eb43d88bfa4fa80b2fe4305ae8efd8c738f443e7397abe7bd62d384d95c445f7"
 }

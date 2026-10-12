@@ -53,11 +53,11 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "371c7895c307784d02a9a3118ebcddbe91a14839fd58832a17716c7ac73f96ef",
+  "inventory_sha256": "7a439510caab5ed4ae2b3eb8a4d636f61293656dd7adc3d94927b738656a690e",
   "summary": {
-    "python_components": 486,
+    "python_components": 487,
     "workflow_entrypoints": 8,
-    "production_components": 100,
+    "production_components": 101,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 22,
@@ -4289,6 +4289,7 @@
         "smart_post_result_report",
         "smart_product_certification",
         "smart_skill_adapter_registry",
+        "smart_skill_reconciliation",
         "smart_skill_runtime",
         "test_smart_agent_ecosystem_governance",
         "test_smart_agent_skill_orchestration",
@@ -6878,6 +6879,7 @@
         "smart_signal_attribution",
         "smart_signal_marginal_utility",
         "smart_signal_weights",
+        "smart_skill_reconciliation",
         "smart_skill_runtime"
       ],
       "declared_execution_dependencies": [],
@@ -6894,7 +6896,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6290d5e04ba25a3338a5c54026336460e69e56330a94a1a0e8f5b05b8708dc3b"
+      "sha256": "fddb54ddc42adcc561fedc670ef15be5db44665205eea296dec4ce9f53c686f8"
     },
     {
       "component_id": "smart_primary_card_selector",
@@ -7400,6 +7402,7 @@
         "smart_extended_falsification",
         "smart_falsification_lab",
         "smart_monte_carlo_convergence",
+        "smart_skill_runtime",
         "test_smart_cartography_extended",
         "test_smart_extended_falsification",
         "test_smart_falsification_lab",
@@ -8178,6 +8181,33 @@
       "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148"
     },
     {
+      "component_id": "smart_skill_reconciliation",
+      "source_file": "smart_skill_reconciliation.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_agent_skill_orchestration",
+        "smart_skill_runtime"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_post_result_report",
+        "test_smart_post_result_report"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "59b378d30d209584045d69f78adbc383c98498c3e1769e46d2abe8f086439096"
+    },
+    {
       "component_id": "smart_skill_runtime",
       "source_file": "smart_skill_runtime.py",
       "role": "PRODUCTION",
@@ -8200,6 +8230,7 @@
         "smart_meta_governor",
         "smart_multi_challengers",
         "smart_portfolio_optimizer",
+        "smart_randomness_cartography",
         "smart_rank_score_calibration",
         "smart_signal_attribution",
         "smart_signal_marginal_utility",
@@ -8211,6 +8242,7 @@
       "consumers": [
         "smart_agent_skill_functional_gate",
         "smart_post_result_report",
+        "smart_skill_reconciliation",
         "test_smart_f07_skill_adapters",
         "test_smart_post_result_report",
         "test_smart_skill_runtime"
@@ -8225,7 +8257,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "6a37cc635a87d0171664fe7d3a3bdee58ef2fb9ca5557476f49c8e01de8e4cf0"
+      "sha256": "246ee8cd827c96eee3dbba768e07aa4bdb7147499a2c6caeb28d6b28a96ab9f1"
     },
     {
       "component_id": "smart_source_identity",
@@ -11173,6 +11205,7 @@
       "producers": [
         "smart_false_negative_rescue",
         "smart_post_result_report",
+        "smart_skill_reconciliation",
         "smart_skill_runtime"
       ],
       "declared_execution_dependencies": [],
@@ -11185,7 +11218,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "1614409b5afaae6288e45a5e8226e5b0f35232d71ed719e32b6f68cf6eb0d7c8"
+      "sha256": "8cffbeb3582e21b2cc6b33821082253d6eec8e83dc046a7fce7698e3fb9bb9bb"
     },
     {
       "component_id": "test_smart_powered_falsification_artifact",

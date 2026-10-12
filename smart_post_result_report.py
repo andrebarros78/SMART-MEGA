@@ -494,6 +494,14 @@ def _render_markdown(report: dict[str, Any]) -> str:
                       f"- **Intensidade experimental, sem ativação:** {trial['shadow_strength']:.3f}",
                       f"- **Brier congelado / experimental / uniforme:** {trial['frozen_brier']:.8f} / {trial['shadow_brier']:.8f} / {trial['uniform_brier']:.8f}",
                       "- **Autoridade:** comparação retrospectiva, sem gravação de estado, sem promoção de peso ou modelo."]
+    gap = report.get("remaining_capability_reconciliation")
+    if isinstance(gap, dict) and gap.get("status") == "PASS":
+        lines += ["", "### Reconciliação do inventário de skills pendentes", "",
+                  f"- **Lacunas originais auditadas:** {gap['original_gaps']}",
+                  f"- **Capacidades nativas com consumidores registrados:** {gap['native_consumption_capabilities_total']}/{gap['registered_pertinent_capabilities']}",
+                  f"- **Lacunas ainda sem consumo comprovado:** {gap['remaining_not_proven_consumed']}",
+                  "- **Escopo:** cadastro não equivale a executar skill externa, e ausência de dependência não autoriza instalação implícita."]
+        lines += [f"- {name}: {row['status']}" for name, row in gap["capabilities"].items()]
     primary = report.get("primary_card_diagnostic")
     if isinstance(primary, dict) and primary.get("status") == "PASS":
         final = primary["final_decision"]
@@ -678,6 +686,10 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "status": "UNAVAILABLE_PROCESS_INTEGRITY_FINDING",
         "predictive_weight_authorized": False,
     }
+    from smart_skill_reconciliation import reconcile_remaining
+    gap_reconciliation = reconcile_remaining(structural_diagnostic, root) if not process_findings else {
+        "status": "UNAVAILABLE_PROCESS_INTEGRITY_FINDING", "predictive_weight_authorized": False,
+    }
 
     report = {
         "schema": SCHEMA,
@@ -694,6 +706,7 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "primary_card_diagnostic": primary_diagnostic,
         "operational_capability_consumption": capability_consumption,
         "structural_capability_consumption": structural_diagnostic,
+        "remaining_capability_reconciliation": gap_reconciliation,
         "portfolio_adjudication": portfolio_metrics,
         "process_audit": {
             "freeze_artifact": str(freeze_path.relative_to(root)).replace("\\", "/"),
