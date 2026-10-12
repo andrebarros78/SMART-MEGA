@@ -316,7 +316,7 @@ def test_operational_capabilities_consume_real_quality_weight_calibration_and_le
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     assert result['status'] == 'PASS'
     assert result['scope'] == 'REAL_FROZEN_INPUT_POST_RESULT_NATIVE_METHODS'
-    assert len(result['native_capabilities_consumed']) == 14
+    assert len(result['native_capabilities_consumed']) == 16
     assert set(result['native_capabilities_consumed']) == set(result['native_methodology_aliases_consumed'])
     assert result['dynamic_weight_replay']['signals'] == 12
     assert result['dynamic_weight_replay']['max_abs_weight_error'] <= 1e-9
@@ -391,7 +391,7 @@ def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_
     report = result['report']
     real = report['operational_capability_consumption']
     assert real['status'] == 'PASS'
-    assert len(real['native_capabilities_consumed']) == 14
+    assert len(real['native_capabilities_consumed']) == 16
     assert real['dynamic_weight_replay']['reproduces_frozen_weights'] is True
     assert real['post_result_marginal_utility']['full_hits'] == len(
         set(frozen['challenger']['top6']) & set(report['official_result']))
@@ -409,7 +409,7 @@ def test_native_execution_receipts_are_individually_real_consumed_and_hashed():
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     receipts = result['native_execution_receipts']
     assert result['native_execution_receipts_verified'] is True
-    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 14
+    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 16
     assert set(receipts) == set(result['native_capabilities_consumed'])
     assert {r['native_function_executed'] for r in receipts.values()}
     for capability, receipt in receipts.items():
@@ -546,7 +546,7 @@ def test_real_frozen_structural_consumer_reaches_post_result_report(tmp_path: Pa
     assert structural['status']=='PASS'
     assert structural['execution_receipts_count']==7
     assert structural['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
-    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 14
+    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 16
     assert 'Execuções estruturais vinculadas ao histórico congelado' in (
         tmp_path/emitted['markdown_file']).read_text()
     assert pr.emit_post_result_report(tmp_path,active)['status']=='EXISTING_VALID'
@@ -576,7 +576,7 @@ def test_real_null_simulation_and_bounded_shadow_learning_are_consumed():
     assert set(shadow['reward_hits']) == set(freeze['challenger']['weights'])
     assert json.dumps(freeze, sort_keys=True) == before
     aggregate = pr._operational_capability_consumption(freeze, actual)
-    assert aggregate['execution_receipt_count'] == 14
+    assert aggregate['execution_receipt_count'] == 16
     assert aggregate['native_execution_receipts']['simulation']['observed_output'] == simulation
     assert aggregate['native_execution_receipts']['live-evo-online-evolution-agentic']['observed_output'] == shadow
 
@@ -624,7 +624,7 @@ def test_multi_expert_native_governor_consumes_each_policy_without_posthoc_selec
     assert counterfactual['production_policy_changed'] is False
     assert json.dumps(freeze, sort_keys=True) == immutable_before
     aggregate = pr._operational_capability_consumption(freeze, report['official_result'])
-    assert aggregate['execution_receipt_count'] == 14
+    assert aggregate['execution_receipt_count'] == 16
     assert aggregate['native_execution_receipts'][name] == evidence
     assert aggregate['native_execution_receipts'][name]['observed_output']['policy_count'] == 5
 
@@ -647,3 +647,57 @@ def test_multi_expert_native_execution_rejects_forged_policy_and_selection():
     broken['challenger']['meta_governor']['prior_mix'] = 1.0
     with pytest.raises(ValueError, match='invalid frozen multi-expert prior'):
         invoke_live_native(name, broken, report['official_result'])
+
+
+def test_real_signed_bayesian_calibration_and_shadow_extremizing():
+    from smart_skill_runtime import invoke_live_native
+    freeze, report = _real_operational_skill_fixture()
+    original = json.dumps(freeze, sort_keys=True)
+    observed = report['official_result']
+    bayes = invoke_live_native('bayesian-workflow', freeze, observed)
+    shadow = invoke_live_native('extremizing-forecasts', freeze, observed)
+    assert bayes == invoke_live_native('bayesian-workflow', freeze, observed)
+    assert shadow == invoke_live_native('extremizing-forecasts', freeze, observed)
+    proof = bayes['observed_output']
+    assert proof['before_result_frozen_probability_reproduced'] is True
+    assert proof['signed_frozen_calibration_sha256'] == freeze['challenger']['rank_score_calibration']['sha256']
+    assert proof['reconstructed_prior_observations'] == freeze['challenger']['rank_score_calibration']['observations']
+    assert proof['reconstructed_hits_integrality_max_error'] < 1e-7
+    assert proof['posterior_updated_only_after_result'] is True
+    assert proof['hypothetical_observations_after_result'] == proof['reconstructed_prior_observations'] + 1
+    assert proof['state_persisted'] is False
+    assert proof['source_uses_external_pymc'] is False
+    trial = shadow['observed_output']
+    assert trial['shadow_strength'] == 0.10
+    assert trial['frozen_strength'] == 0.0
+    assert abs(trial['frozen_brier'] - trial['uniform_brier']) < 1e-12
+    assert abs(trial['shadow_probability_mass'] - 6.0) < 1e-9
+    assert trial['shadow_monotonic'] is True
+    assert trial['selection_or_weight_changed'] is False
+    assert trial['prospective_superiority_proven'] is False
+    assert trial['external_extremizing_skill_executed'] is False
+    assert trial['state_persisted'] is False
+    for receipt in (bayes, shadow):
+        assert receipt['execution_sha256'] == pr._sha256_json({k:v for k,v in receipt.items() if k != 'execution_sha256'})
+        assert receipt['external_skill_code_executed'] is False
+        assert receipt['predictive_weight_authorized'] is False
+    assert json.dumps(freeze, sort_keys=True) == original
+    aggregate = pr._operational_capability_consumption(freeze, observed)
+    assert aggregate['execution_receipt_count'] == 16
+    assert aggregate['native_execution_receipts']['bayesian-workflow'] == bayes
+    assert aggregate['native_execution_receipts']['extremizing-forecasts'] == shadow
+
+
+def test_calibration_consumer_rejects_tampered_rank_posterior_and_signature():
+    from copy import deepcopy
+    from smart_skill_runtime import invoke_live_native
+    import pytest
+    freeze, report = _real_operational_skill_fixture()
+    corrupted = deepcopy(freeze)
+    corrupted['challenger']['rank_score_calibration']['raw_posterior_by_rank'][0] += 0.01
+    with pytest.raises(ValueError, match='posterior cannot reconstruct'):
+        invoke_live_native('bayesian-workflow', corrupted, report['official_result'])
+    forged = deepcopy(freeze)
+    forged['challenger']['rank_score_calibration']['sha256'] = 'a' * 64
+    with pytest.raises(ValueError, match='does not reproduce signed'):
+        invoke_live_native('extremizing-forecasts', forged, report['official_result'])
