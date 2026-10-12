@@ -355,3 +355,150 @@ def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: 
     }
     receipt["execution_sha256"] = sha256_json(receipt)
     return receipt
+
+
+FROZEN_STRUCTURAL_CAPABILITIES = (
+    "data-analysis",
+    "google-or-tools",
+    "multiple-testing-fdr-statsmodels",
+    "networkx",
+    "operations-research-algorithm-developer",
+    "ruptures",
+    "statsmodels",
+)
+
+
+def consume_frozen_structural_capabilities(freeze: dict[str, Any], root: str | Path) -> dict[str, Any]:
+    """Run real independent libraries on hash-bound pre-draw product data.
+
+    Only observational diagnostics and a one-game CP-SAT control are produced;
+    these outputs cannot promote signals, models, odds or operational cards.
+    The official outcome is deliberately not an input to any of these methods.
+    """
+    import math
+    import numpy as np
+    from statsmodels.stats.multitest import multipletests
+    from smart_data_quality_gate import enforce_draw_quality
+    from smart_v2_engine import load_draws
+    from smart_cartography_extended import temporal_memory, network_structure, regime_structure
+    from smart_portfolio_optimizer import optimize_portfolio, PortfolioConfig
+
+    path_str = freeze.get("data_file")
+    if not isinstance(path_str, str) or not path_str:
+        return {"status": "UNAVAILABLE_LEGACY_FREEZE", "receipts": {},
+                "predictive_weight_authorized": False}
+    if freeze.get("frozen_before_result") is not True:
+        raise ValueError("structural consumption requires a genuine pre-result freeze")
+    cutoff = int(freeze["cutoff_contest"])
+    target = int(freeze["target_contest"])
+    if target != cutoff + 1:
+        raise ValueError("structural consumption cutoff must precede target")
+    base = Path(root).resolve()
+    file_path = (base / path_str).resolve()
+    if not file_path.is_relative_to(base) or not file_path.is_file():
+        raise ValueError("frozen structural data missing or outside canonical root")
+    expected_hash = freeze.get("data_sha256")
+    if not isinstance(expected_hash, str) or sha256_file(file_path) != expected_hash:
+        raise ValueError("frozen structural data digest mismatch")
+    quality = enforce_draw_quality(file_path, expected_max_contest=cutoff)
+    if int(quality.contest_max) != cutoff:
+        raise ValueError("structural source cutoff does not match frozen contest")
+    draws, contests = load_draws(file_path)
+    if int(contests[-1]) != cutoff or len(draws) != quality.row_count:
+        raise ValueError("structural source rows and cutoff inconsistent")
+
+    champion = freeze.get("champion", {})
+    if not isinstance(champion, dict) or not isinstance(champion.get("aggregate_scores"), dict):
+        raise ValueError("structural consumption requires frozen champion scores")
+    if set(champion["aggregate_scores"]) != {str(i) for i in range(1, 61)}:
+        raise ValueError("structural consumption requires 60 champion scores")
+    if not set(FROZEN_STRUCTURAL_CAPABILITIES) <= set(PERTINENT_CAPABILITIES):
+        raise ValueError("structural capability missing from pertinent registered skills")
+    memory = temporal_memory(draws)  # actual statsmodels acorr_ljungbox
+    structure = network_structure(draws)  # actual NetworkX graph
+    regimes = regime_structure(draws)  # actual ruptures Binseg
+    pvals = memory.get("ljung_box_sum_pvalues")
+    if not isinstance(pvals, dict) or not pvals:
+        raise ValueError("statsmodels temporal diagnostic did not produce p-values")
+    numeric_p = [float(pvals[k]) for k in sorted(pvals, key=int)]
+    if any(not math.isfinite(p) or not 0 <= p <= 1 for p in numeric_p):
+        raise ValueError("invalid p-values from temporal diagnostic")
+    # Ljung-Box lag tests overlap; BY-FDR remains valid under arbitrary
+    # dependence, unlike a naive unadjusted/independence-only declaration.
+    reject, adj, _, _ = multipletests(numeric_p, alpha=0.05, method="fdr_by")
+    multiplicity = {"method": "statsmodels.stats.multitest.multipletests:fdr_by",
+                    "hypotheses": len(numeric_p), "adjusted_p_values": [float(v) for v in adj],
+                    "rejected_count": int(np.count_nonzero(reject)),
+                    "predictive_signals_authorized": False}
+    cp_config = PortfolioConfig(game_count=1, candidate_pool_size=6,
+                                coverage_bonus=0.0, rank_bonus=0.02,
+                                time_limit_seconds=5.0, random_seed=42)
+    control = optimize_portfolio(champion["aggregate_scores"], config=cp_config)
+    game = control["games"][0]
+    champion_card = champion.get("top6")
+    if control["solver_status"] != "OPTIMAL" or not isinstance(champion_card, list) or set(game) != set(champion_card):
+        raise ValueError("OR-Tools control failed to reproduce frozen Champion")
+    if control["contract"].get("predictive_scores_unchanged") is not True:
+        raise ValueError("OR-Tools must preserve frozen score authority")
+    # An independent OR-Tools invocation evaluates *portfolio constraints*,
+    # not just the single-card replication above. No predictive claim follows.
+    constrained = optimize_portfolio(
+        champion["aggregate_scores"], config=PortfolioConfig(
+            game_count=2, candidate_pool_size=9, max_pairwise_overlap=3,
+            coverage_bonus=0.35, rank_bonus=0.02,
+            time_limit_seconds=5.0, random_seed=42,
+        ),
+    )
+    if (constrained["solver_status"] != "OPTIMAL"
+            or constrained["metrics"]["max_pairwise_overlap_observed"] > 3
+            or constrained["contract"].get("predictive_scores_unchanged") is not True):
+        raise ValueError("OR-Tools constrained portfolio verification failed")
+
+    method_outputs = {
+        "data-analysis": ("smart_data_quality_gate.enforce_draw_quality",
+                          {"status": quality.status, "contest_max": quality.contest_max,
+                           "row_count": quality.row_count}),
+        "statsmodels": ("smart_cartography_extended.temporal_memory/statsmodels.stats.diagnostic.acorr_ljungbox", memory),
+        "networkx": ("smart_cartography_extended.network_structure/networkx.Graph", structure),
+        "ruptures": ("smart_cartography_extended.regime_structure/ruptures.Binseg", regimes),
+        "multiple-testing-fdr-statsmodels": ("statsmodels.stats.multitest.multipletests", multiplicity),
+        "google-or-tools": ("smart_portfolio_optimizer.optimize_portfolio/ortools.cp_model.CpSolver",
+                            {"solver_status": control["solver_status"], "single_card": game,
+                             "objective_value": control["objective_value"],
+                             "frozen_champion_reproduced": True}),
+        "operations-research-algorithm-developer": (
+            "smart_portfolio_optimizer.optimize_portfolio/ortools.cp_model.CpSolver",
+            {"solver_status": constrained["solver_status"],
+             "game_count": len(constrained["games"]),
+             "max_pairwise_overlap_observed": constrained["metrics"]["max_pairwise_overlap_observed"],
+             "overlap_limit": 3, "objective_value": constrained["objective_value"],
+             "independent_constrained_solver_executed": True}),
+    }
+    receipts = {}
+    for capability, (method, result) in method_outputs.items():
+        receipt = {
+            "schema": "SMART_NATIVE_FROZEN_STRUCTURAL_CONSUMPTION_1",
+            "capability": capability, "native_function_executed": method,
+            "target_contest": target, "cutoff_contest": cutoff,
+            "frozen_source_sha256": expected_hash,
+            "observed_output": result,
+            "consumer": "smart_post_result_report._structural_capability_diagnostic",
+            "outcome_used_for_structural_methods": False,
+            "external_skill_source_code_executed": False,
+            "execution_mode": "NATIVE_LIBRARY_METHOD_ON_FROZEN_DATA",
+            "predictive_weight_authorized": False,
+        }
+        receipt["execution_sha256"] = sha256_json(receipt)
+        receipts[capability] = receipt
+    result = {
+        "status": "PASS", "source_file": path_str,
+        "frozen_source_sha256": expected_hash,
+        "data_quality": {"status": quality.status, "rows": quality.row_count, "cutoff": cutoff},
+        "execution_receipts_count": len(receipts), "receipts": receipts,
+        "shared_solver_executions": 2,
+        "third_party_libraries_actually_called": ["statsmodels", "networkx", "ruptures", "ortools"],
+        "outcome_used_for_structural_methods": False,
+        "predictive_weight_authorized": False, "prospective_superiority_proven": False,
+    }
+    result["sha256"] = sha256_json(result)
+    return result

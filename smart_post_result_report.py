@@ -386,6 +386,34 @@ def _operational_capability_consumption(freeze: dict[str, Any], actual: list[int
     return output
 
 
+def _structural_capability_diagnostic(freeze: dict[str, Any], root: Path) -> dict[str, Any]:
+    """Consume independently bound pre-result library evidence, never target results."""
+    from smart_skill_runtime import consume_frozen_structural_capabilities
+    payload = consume_frozen_structural_capabilities(freeze, root)
+    if payload.get("status") != "PASS":
+        return payload
+    observed = payload.get("sha256")
+    unsigned = dict(payload)
+    unsigned.pop("sha256", None)
+    if observed != _sha256_json(unsigned):
+        raise ValueError("structural capability aggregate receipt hash invalid")
+    rows = payload.get("receipts", {})
+    if payload.get("execution_receipts_count") != len(rows) or not rows:
+        raise ValueError("structural capability receipt coverage incomplete")
+    for capability, receipt in rows.items():
+        local = dict(receipt)
+        receipt_hash = local.pop("execution_sha256", None)
+        if receipt_hash != _sha256_json(local) or receipt.get("capability") != capability:
+            raise ValueError("structural capability receipt hash invalid")
+        if receipt.get("consumer") != "smart_post_result_report._structural_capability_diagnostic":
+            raise ValueError("structural capability did not reach intended consumer")
+        if receipt.get("frozen_source_sha256") != freeze.get("data_sha256"):
+            raise ValueError("structural receipt not bound to frozen data")
+        if receipt.get("predictive_weight_authorized") is not False:
+            raise ValueError("structural evidence cannot alter predictive weights")
+    return payload
+
+
 def _render_markdown(report: dict[str, Any]) -> str:
     def fmt(values: list[int]) -> str:
         return " - ".join(f"{int(x):02d}" for x in values) if values else "N/A"
@@ -422,6 +450,13 @@ def _render_markdown(report: dict[str, Any]) -> str:
                   for row in diagnostic["per_signal"]]
     elif isinstance(diagnostic, dict):
         lines += ["", "### Diagnóstico dos sinais", "", "- Indisponível: o freeze antigo não possui snapshot completo dos sinais."]
+    structures = report.get("structural_capability_consumption")
+    if isinstance(structures, dict) and structures.get("status") == "PASS":
+        lines += ["", "### Execuções estruturais vinculadas ao histórico congelado", "",
+                  f"- **Operações nativas registradas:** {structures['execution_receipts_count']}",
+                  f"- **Histórico verificado:** {structures['data_quality']['rows']} concursos até {structures['data_quality']['cutoff']}",
+                  "- **Bibliotecas realmente chamadas:** " + ", ".join(structures['third_party_libraries_actually_called']),
+                  "- **Autoridade:** somente diagnóstico/controle do portfólio; nenhuma previsão, score ou peso recalibrado."]
     ops = report.get("operational_capability_consumption")
     if isinstance(ops, dict) and ops.get("status") == "PASS":
         score = ops["proper_scoring"]
@@ -611,6 +646,11 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "named_external_skill_executed": False, "predictive_weight_authorized": False,
     }
 
+    structural_diagnostic = _structural_capability_diagnostic(freeze, root) if not process_findings else {
+        "status": "UNAVAILABLE_PROCESS_INTEGRITY_FINDING",
+        "predictive_weight_authorized": False,
+    }
+
     report = {
         "schema": SCHEMA,
         "status": "PASS" if not process_findings else "PASS_WITH_PROCESS_FINDINGS",
@@ -625,6 +665,7 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "signal_diagnostic": diagnostic,
         "primary_card_diagnostic": primary_diagnostic,
         "operational_capability_consumption": capability_consumption,
+        "structural_capability_consumption": structural_diagnostic,
         "portfolio_adjudication": portfolio_metrics,
         "process_audit": {
             "freeze_artifact": str(freeze_path.relative_to(root)).replace("\\", "/"),

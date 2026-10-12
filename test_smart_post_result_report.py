@@ -374,6 +374,7 @@ def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_
     frozen = deepcopy(freeze)
     frozen['target_contest'] = 999
     frozen['cutoff_contest'] = 998
+    frozen.pop('data_file', None)  # fixture does not carry a verified 998 cutoff archive
     for row in frozen['challenger']['raw_signals'].values():
         row['target_contest'] = 999
         row['cutoff_contest'] = 998
@@ -450,3 +451,102 @@ def test_live_capability_invocation_rejects_quarantine_and_target_tampering():
     altered['challenger']['raw_signals']['freq25']['target_contest'] -= 1
     with pytest.raises(ValueError, match='requires causal and same-target'):
         invoke_live_native('openai-validate-data', altered, report['official_result'])
+
+
+def test_frozen_structural_capabilities_execute_real_libraries_with_provenance():
+    from smart_skill_runtime import consume_frozen_structural_capabilities
+    freeze, _ = _real_operational_skill_fixture()
+    root = Path(__file__).resolve().parent
+    result = consume_frozen_structural_capabilities(freeze, root)
+    assert result['status'] == 'PASS'
+    assert result['execution_receipts_count'] == 7
+    assert result['data_quality']['cutoff'] == freeze['cutoff_contest']
+    assert result['data_quality']['rows'] == freeze['cutoff_contest']
+    assert result['third_party_libraries_actually_called'] == ['statsmodels', 'networkx', 'ruptures', 'ortools']
+    assert result['shared_solver_executions'] == 2
+    assert result['receipts']['operations-research-algorithm-developer']['observed_output']['independent_constrained_solver_executed'] is True
+    assert result['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
+    assert result['receipts']['statsmodels']['observed_output']['ljung_box_sum_pvalues']
+    assert result['receipts']['networkx']['observed_output']['edges'] > 0
+    assert result['receipts']['ruptures']['observed_output']['diagnostic_only'] is True
+    assert result['receipts']['multiple-testing-fdr-statsmodels']['observed_output']['hypotheses'] == 3
+    assert result['predictive_weight_authorized'] is False
+    assert result['outcome_used_for_structural_methods'] is False
+    validated = pr._structural_capability_diagnostic(freeze, root)
+    assert validated == result
+    again = pr._structural_capability_diagnostic(freeze, root)
+    assert again['sha256'] == result['sha256']
+
+
+def test_frozen_structural_capabilities_reject_data_hash_and_future_cutoff():
+    from copy import deepcopy
+    import pytest
+    from smart_skill_runtime import consume_frozen_structural_capabilities
+    freeze, _ = _real_operational_skill_fixture()
+    root = Path(__file__).resolve().parent
+    wrong_digest = deepcopy(freeze)
+    wrong_digest['data_sha256'] = '0' * 64
+    with pytest.raises(ValueError, match='digest mismatch'):
+        consume_frozen_structural_capabilities(wrong_digest, root)
+    wrong_cutoff = deepcopy(freeze)
+    wrong_cutoff['cutoff_contest'] -= 1
+    with pytest.raises(ValueError, match='cutoff must precede target'):
+        consume_frozen_structural_capabilities(wrong_cutoff, root)
+    outside = deepcopy(freeze)
+    outside['data_file'] = '../outside-sensitive-data.xlsx'
+    with pytest.raises(ValueError, match='missing or outside canonical root'):
+        consume_frozen_structural_capabilities(outside, root)
+
+
+def test_post_result_rejects_forged_structural_execution_receipt(monkeypatch):
+    import pytest
+    import smart_skill_runtime
+    freeze, _ = _real_operational_skill_fixture()
+    root = Path(__file__).resolve().parent
+    original = smart_skill_runtime.consume_frozen_structural_capabilities
+    def forged(*args, **kwargs):
+        payload = original(*args, **kwargs)
+        payload['receipts']['statsmodels']['observed_output']['fabricated'] = 42
+        payload['sha256'] = pr._sha256_json({k:v for k,v in payload.items() if k!='sha256'})
+        return payload
+    monkeypatch.setattr(smart_skill_runtime, 'consume_frozen_structural_capabilities', forged)
+    with pytest.raises(ValueError, match='structural capability receipt hash invalid'):
+        pr._structural_capability_diagnostic(freeze, root)
+
+
+def test_real_frozen_structural_consumer_reaches_post_result_report(tmp_path: Path):
+    import shutil
+    from copy import deepcopy
+    root = Path(__file__).resolve().parent
+    freeze, original_report = _real_operational_skill_fixture()
+    contest = freeze['target_contest']
+    frozen_path = tmp_path/'runtime'/'learning_epochs'/f'operator-{contest}-test'/f'SMART_{contest}_CHAMPION_CHALLENGER_FREEZE.json'
+    frozen_path.parent.mkdir(parents=True)
+    # Copy the actual pre-result cutoff dataset, without moving the result into it.
+    data_path = tmp_path/freeze['data_file']
+    data_path.parent.mkdir(parents=True, exist_ok=True)
+    shutil.copyfile(root/freeze['data_file'], data_path)
+    frozen = deepcopy(freeze)
+    frozen.pop('portfolio_file', None)
+    frozen.pop('portfolio_sha256', None)
+    frozen_path.write_text(json.dumps(frozen,ensure_ascii=False),encoding='utf-8')
+    freeze_sha = pr._sha256_file(frozen_path)
+    ledger_path = frozen_path.parent/'SMART_SIGNAL_LEDGER.json'
+    ledger_path.write_text(json.dumps({'events':[
+        {'event_type':'FREEZE','target_contest':contest,'freeze_sha256':freeze_sha},
+        {'event_type':'ADJUDICATION','target_contest':contest,
+         'actual_numbers':original_report['official_result'],'hits':original_report['champion_hits']},
+    ]}),encoding='utf-8')
+    active={'target_contest':contest,'freeze_authority':{'sha256':freeze_sha},
+            'state_paths':{'freeze':str(frozen_path.relative_to(tmp_path)),
+                           'ledger':str(ledger_path.relative_to(tmp_path))}}
+    emitted = pr.emit_post_result_report(tmp_path, active)
+    assert emitted['status']=='EMITTED'
+    structural = emitted['report']['structural_capability_consumption']
+    assert structural['status']=='PASS'
+    assert structural['execution_receipts_count']==7
+    assert structural['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
+    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 11
+    assert 'Execuções estruturais vinculadas ao histórico congelado' in (
+        tmp_path/emitted['markdown_file']).read_text()
+    assert pr.emit_post_result_report(tmp_path,active)['status']=='EXISTING_VALID'
