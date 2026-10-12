@@ -354,6 +354,34 @@ def _operational_capability_consumption(freeze: dict[str, Any], actual: list[int
         "predictive_weight_authorized": False,
         "prospective_superiority_proven": False,
     }
+    # Call each corresponding native operation through the actual skill
+    # execution layer. The report consumes and verifies each distinct receipt;
+    # a probe/manifest alone is not allowed to satisfy this contract.
+    from smart_skill_runtime import invoke_live_native
+    receipts = {}
+    for capability in sorted(consumed):
+        receipt = invoke_live_native(capability, freeze, actual)
+        observed = receipt.get("execution_sha256")
+        unsigned = dict(receipt)
+        unsigned.pop("execution_sha256", None)
+        if observed != _sha256_json(unsigned) or receipt.get("capability") != capability:
+            raise ValueError(f"native capability receipt invalid: {capability}")
+        if receipt.get("consumer") != "smart_post_result_report._operational_capability_consumption":
+            raise ValueError(f"native capability receipt not bound to consumer: {capability}")
+        if receipt.get("external_skill_code_executed") is not False:
+            raise ValueError("native method receipt cannot assert third-party skill execution")
+        receipts[capability] = receipt
+    if receipts["machine-learning-model-validation"]["observed_output"]["max_abs_weight_error"] != max_weight_error:
+        raise ValueError("skill weight receipt differs from consumed scores")
+    if receipts["statistical-analysis"]["observed_output"]["marginal_utility_sha256"] != marginal["marginal_utility_sha256"]:
+        raise ValueError("skill marginal utility receipt differs from post-result analysis")
+    if receipts["superforecasting"]["observed_output"]["brier"] != calibrated_brier:
+        raise ValueError("skill calibration receipt differs from consumed probabilities")
+    if receipts["model-drift-management"]["observed_output"]["drift_active_count"] != len(drifted):
+        raise ValueError("skill drift receipt differs from consumed quality metrics")
+    output["native_execution_receipts"] = receipts
+    output["native_execution_receipts_verified"] = len(receipts) == len(consumed)
+    output["execution_receipt_count"] = len(receipts)
     output["sha256"] = _sha256_json(output)
     return output
 

@@ -53,7 +53,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "a6eecf4325274f43cf6c77bb32aa762c0337edfb9d8a709a7cd446d42bb4eca4",
+  "inventory_sha256": "8763e576c34ab7ce74fc385d7210ef5527b0ac274940c26c444c5231503b6de6",
   "summary": {
     "python_components": 486,
     "workflow_entrypoints": 8,
@@ -6864,7 +6864,8 @@
         "smart_rank_score_calibration",
         "smart_signal_attribution",
         "smart_signal_marginal_utility",
-        "smart_signal_weights"
+        "smart_signal_weights",
+        "smart_skill_runtime"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
@@ -6880,7 +6881,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "9725de48d8a4ec351e51e065d946c13d097d3f1b8319658a1e5d40403a75a1c3"
+      "sha256": "45cf7a89a1ff9eb044100c46ffa75167dff031717df293beca3a71b6ff0c9949"
     },
     {
       "component_id": "smart_primary_card_selector",
@@ -7426,6 +7427,7 @@
         "smart_agent_runtime",
         "smart_post_result_report",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_smart_learning_input_contracts",
         "test_smart_rank_score_calibration"
       ],
@@ -7859,7 +7861,11 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
-        "smart_github_operator"
+        "smart_disconnection_gate",
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_v2_engine"
@@ -7869,6 +7875,7 @@
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
         "smart_post_result_report",
+        "smart_skill_runtime",
         "test_smart_signal_attribution"
       ],
       "reachable": true,
@@ -7996,6 +8003,7 @@
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_post_result_report",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_smart_learning_input_contracts",
         "test_smart_signal_marginal_utility"
       ],
@@ -8106,6 +8114,7 @@
         "smart_continuous_red_team",
         "smart_post_result_report",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_smart_coverage_core",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_signal_redundancy_consensus",
@@ -8171,12 +8180,18 @@
         "smart_agent_runtime",
         "smart_agent_skill_orchestration",
         "smart_canonical_identity",
+        "smart_rank_score_calibration",
+        "smart_signal_attribution",
+        "smart_signal_marginal_utility",
+        "smart_signal_weights",
         "smart_skill_adapter_registry"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_skill_functional_gate",
+        "smart_post_result_report",
         "test_smart_f07_skill_adapters",
+        "test_smart_post_result_report",
         "test_smart_skill_runtime"
       ],
       "reachable": true,
@@ -8189,7 +8204,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f"
+      "sha256": "54500562a415ed1433173e1f59d625b7f99a0d80dc0388212ecda1ae68f8ca39"
     },
     {
       "component_id": "smart_source_identity",
@@ -10072,7 +10087,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "7ae32110147c6584954776c98ab0405ac1c2ba59f0dc0217b2db0b4272618817"
+      "sha256": "6c3a5dc58e6959ab141344aee326d2e762cc023faf4dfb2d320567a5e1dda591"
     },
     {
       "component_id": "test_smart_falsification_lab",
@@ -11135,7 +11150,8 @@
       "entrypoints": [],
       "producers": [
         "smart_false_negative_rescue",
-        "smart_post_result_report"
+        "smart_post_result_report",
+        "smart_skill_runtime"
       ],
       "declared_execution_dependencies": [],
       "consumers": [],
@@ -11147,7 +11163,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "3cf27e0a2c9df1f3c621a237a83cbeb141bf45728f045a7b06e4b557471cdf05"
+      "sha256": "8dbd5c239af12dfd7898d5f4fc6d6ddea82f3837be048d79ccc6a9ca2a9cdaa3"
     },
     {
       "component_id": "test_smart_powered_falsification_artifact",

@@ -400,3 +400,53 @@ def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_
     assert 'Consumo efetivo de competências nativas' in (
         tmp_path / result['markdown_file']).read_text(encoding='utf-8')
     assert pr.emit_post_result_report(tmp_path, active)['status'] == 'EXISTING_VALID'
+
+
+def test_native_execution_receipts_are_individually_real_consumed_and_hashed():
+    from smart_skill_runtime import LIVE_POST_RESULT_BINDINGS
+    freeze, report = _real_operational_skill_fixture()
+    result = pr._operational_capability_consumption(freeze, report['official_result'])
+    receipts = result['native_execution_receipts']
+    assert result['native_execution_receipts_verified'] is True
+    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 11
+    assert set(receipts) == set(result['native_capabilities_consumed'])
+    assert {r['native_function_executed'] for r in receipts.values()}
+    for capability, receipt in receipts.items():
+        assert receipt['capability'] == capability
+        unsigned = dict(receipt)
+        observed = unsigned.pop('execution_sha256')
+        assert observed == pr._sha256_json(unsigned)
+        assert receipt['consumer'] == 'smart_post_result_report._operational_capability_consumption'
+        assert receipt['decision_effect'] == 'POST_RESULT_DIAGNOSTIC_ONLY'
+        assert receipt['external_skill_code_executed'] is False
+        assert receipt['predictive_weight_authorized'] is False
+    assert receipts['machine-learning-model-validation']['observed_output']['max_abs_weight_error'] == 0.0
+    assert receipts['statistical-analysis']['observed_output']['marginal_utility_sha256'] == result['post_result_marginal_utility']['marginal_utility_sha256']
+    assert receipts['superforecasting']['observed_output']['brier'] == result['proper_scoring']['frozen_calibrated_brier']
+
+
+def test_post_result_rejects_forged_native_execution_receipt(monkeypatch):
+    import pytest
+    import smart_skill_runtime
+    freeze, report = _real_operational_skill_fixture()
+    original = smart_skill_runtime.invoke_live_native
+    def forged(*args, **kwargs):
+        rec = original(*args, **kwargs)
+        rec['observed_output']['fabricated'] = 1
+        return rec
+    monkeypatch.setattr(smart_skill_runtime, 'invoke_live_native', forged)
+    with pytest.raises(ValueError, match='native capability receipt invalid'):
+        pr._operational_capability_consumption(freeze, report['official_result'])
+
+
+def test_live_capability_invocation_rejects_quarantine_and_target_tampering():
+    import pytest
+    from copy import deepcopy
+    from smart_skill_runtime import invoke_live_native
+    freeze, report = _real_operational_skill_fixture()
+    with pytest.raises(KeyError, match='no real post-result native execution'):
+        invoke_live_native('z3-formal-verification', freeze, report['official_result'])
+    altered = deepcopy(freeze)
+    altered['challenger']['raw_signals']['freq25']['target_contest'] -= 1
+    with pytest.raises(ValueError, match='requires causal and same-target'):
+        invoke_live_native('openai-validate-data', altered, report['official_result'])

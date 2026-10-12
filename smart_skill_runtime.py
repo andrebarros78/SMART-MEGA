@@ -238,3 +238,120 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# Operational consumption is deliberately separate from invoke(): a registry
+# probe is NOT evidence that a named method processed product data.
+LIVE_POST_RESULT_BINDINGS = {
+    "openai-validate-data": "smart_signal_attribution._snapshot_arrays",
+    "pandera-data-contracts": "smart_signal_attribution._snapshot_arrays",
+    "openai-analyze-data-quality": "smart_signal_weights.dynamic_weights",
+    "machine-learning-model-validation": "smart_signal_weights.dynamic_weights",
+    "statistical-analysis": "smart_signal_marginal_utility.analyze_marginal_utility_snapshot",
+    "evo-memory": "smart_signal_marginal_utility.analyze_marginal_utility_snapshot",
+    "experiment-design": "smart_signal_marginal_utility.analyze_marginal_utility_snapshot",
+    "model-drift-management": "numpy.count_nonzero",
+    "regime-detection": "smart_context_regime.frozen_regime_evidence",
+    "superforecasting": "smart_rank_score_calibration.brier_score",
+    "benchmarking-uncertainty-calibration-long-form": "smart_rank_score_calibration.brier_score",
+}
+
+
+def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: list[int]) -> dict[str, Any]:
+    """Execute a native operation on a real pre-result frozen signal snapshot.
+
+    Every call returns hashed per-capability evidence. Methodology aliases are
+    NOT third-party skill execution. Never modifies freeze, prediction or weights.
+    """
+    import math
+    import numpy as np
+    from smart_signal_attribution import _snapshot_arrays
+    from smart_signal_marginal_utility import analyze_marginal_utility_snapshot
+    from smart_signal_weights import dynamic_weights
+    from smart_rank_score_calibration import brier_score
+
+    if capability not in LIVE_POST_RESULT_BINDINGS or capability not in PERTINENT_CAPABILITIES:
+        raise KeyError(f"no real post-result native execution: {capability}")
+    challenger = freeze.get("challenger")
+    if not isinstance(challenger, dict):
+        raise ValueError("native execution requires real frozen challenger")
+    arrays, weights = _snapshot_arrays(challenger)
+    raw = challenger["raw_signals"]
+    quality = challenger.get("quality_metrics")
+    if not isinstance(quality, dict) or set(quality) != set(arrays):
+        raise ValueError("native execution quality ids mismatch")
+    if any(record.get("causal") is not True
+           or record.get("cutoff_contest") != freeze.get("cutoff_contest")
+           or record.get("target_contest") != freeze.get("target_contest")
+           for record in raw.values()):
+        raise ValueError("native execution requires causal and same-target frozen signals")
+    actual = sorted(int(n) for n in actual_numbers)
+    if len(actual) != 6 or len(set(actual)) != 6 or min(actual) < 1 or max(actual) > 60:
+        raise ValueError("native execution requires six valid official numbers")
+    methods = LIVE_POST_RESULT_BINDINGS
+    method = methods[capability]
+    result: dict[str, Any]
+    if capability in {"openai-validate-data", "pandera-data-contracts"}:
+        # _snapshot_arrays above actually executes the 60-value/weight validator.
+        result = {"validated_signal_count": len(arrays), "values_per_signal": 60,
+                  "normalized_weight_mass": round(sum(weights.values()), 12)}
+    elif capability in {"openai-analyze-data-quality", "machine-learning-model-validation"}:
+        families = {name: raw[name]["family"] for name in arrays}
+        recomputed, components = dynamic_weights(quality, families)
+        err = max(abs(float(recomputed[name]) - float(challenger["weights"][name])) for name in arrays)
+        if err > 1e-9:
+            raise ValueError("native weights do not reproduce frozen Challenger")
+        result = {"signals": len(components), "max_abs_weight_error": err,
+                  "reproduces_frozen_weights": True}
+    elif capability in {"statistical-analysis", "evo-memory", "experiment-design"}:
+        utility = analyze_marginal_utility_snapshot(challenger, actual)
+        result = {"marginal_utility_sha256": utility["marginal_utility_sha256"],
+                  "real_target_hits": int(utility["full_ensemble"]["hits"]),
+                  "signals_evaluated": len(utility["per_signal"]),
+                  "retrospective_only": True, "memory_state_mutated": False}
+    elif capability == "model-drift-management":
+        flags = np.array([bool(quality[k].get("drift_active")) for k in sorted(arrays)], dtype=int)
+        drift_count = int(np.count_nonzero(flags))
+        result = {"signals": len(flags), "drift_active_count": drift_count}
+    elif capability == "regime-detection":
+        # Frozen pre-result regime audit was executed during scoring, not
+        # recalculated using the official draw. Verify the actual audit values.
+        context = challenger.get("context_regime")
+        if not isinstance(context, dict) or not math.isfinite(float(context.get("l1_score", float("nan")))):
+            raise ValueError("native regime evidence absent or invalid")
+        result = {"frozen_regime_active": bool(context.get("active")),
+                  "frozen_l1_score": float(context["l1_score"]),
+                  "native_method": "frozen_context_regime_audit_validation"}
+        method = "smart_context_regime.frozen_context_regime_audit_validation"
+    else:
+        calibration = challenger.get("rank_score_calibration")
+        if not isinstance(calibration, dict):
+            raise ValueError("native calibration evidence missing")
+        probabilities = calibration.get("probabilities_by_number")
+        if not isinstance(probabilities, dict) or set(probabilities) != {str(n) for n in range(1, 61)}:
+            raise ValueError("native calibration requires 60 frozen probabilities")
+        if any(not math.isfinite(float(p)) or not 0 <= float(p) <= 1 for p in probabilities.values()):
+            raise ValueError("native calibration probabilities invalid")
+        if abs(sum(float(p) for p in probabilities.values()) - 6.0) > 1e-8:
+            raise ValueError("native calibration probability mass mismatch")
+        scored = brier_score(probabilities, actual)
+        reference = brier_score({str(n): 0.1 for n in range(1, 61)}, actual)
+        result = {"brier": scored, "uniform_brier": reference,
+                  "delta_vs_uniform": scored - reference,
+                  "frozen_calibration_neutralized": bool(calibration.get("neutralized"))}
+    receipt = {
+        "schema": "SMART_NATIVE_LIVE_CAPABILITY_EXECUTION_1",
+        "capability": capability,
+        "native_function_executed": method,
+        "target_contest": int(freeze["target_contest"]),
+        "cutoff_contest": int(freeze["cutoff_contest"]),
+        "frozen_inputs_sha256": sha256_json({"raw_signals": raw, "weights": challenger["weights"],
+                                             "quality_metrics": quality}),
+        "official_result_sha256": sha256_json(actual),
+        "observed_output": result,
+        "consumer": "smart_post_result_report._operational_capability_consumption",
+        "external_skill_code_executed": False,
+        "decision_effect": "POST_RESULT_DIAGNOSTIC_ONLY",
+        "predictive_weight_authorized": False,
+    }
+    receipt["execution_sha256"] = sha256_json(receipt)
+    return receipt
