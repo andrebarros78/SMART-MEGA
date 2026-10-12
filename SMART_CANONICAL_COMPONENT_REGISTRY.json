@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "f24fa37c7322e65e37466e1bdfc5dbad3476f30c09121da4bdb9db66ca788ac4",
+  "source_reachability_inventory_sha256": "e51d7c74b10b56c04b0b9016221d56387a62169300465753d55815637c17871b",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6636,6 +6636,7 @@
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_continuous_red_team",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_smart_meta_governor"
       ],
       "entrypoints": [
@@ -6781,6 +6782,7 @@
         "smart_continuous_red_team",
         "smart_meta_governor",
         "smart_signal_agent",
+        "smart_skill_runtime",
         "test_smart_meta_governor",
         "test_smart_multi_challengers"
       ],
@@ -7278,7 +7280,7 @@
       "component_id": "smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_post_result_report.py",
-      "implementation_sha256": "433c49b4f7356bf9d007136e9c1f3413c35b41b1fe4ac0e332298c7d7915c106",
+      "implementation_sha256": "d4417a2739cf2b64a3eccfa154e5d289b6ad1414363718be8011cdf38e95cd33",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8671,7 +8673,7 @@
       "component_id": "smart_skill_runtime",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_skill_runtime.py",
-      "implementation_sha256": "2d7d9682985721b74148ccba29707e2680ff4cc409a8df4b650be9e0d90f6167",
+      "implementation_sha256": "00cadad3a8f2343c34fc93b99d93b4e7097adcdcb209baa806fb713f1c11e543",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8682,6 +8684,8 @@
         "smart_cartography_extended",
         "smart_data_quality_gate",
         "smart_experiment_lab",
+        "smart_meta_governor",
+        "smart_multi_challengers",
         "smart_portfolio_optimizer",
         "smart_rank_score_calibration",
         "smart_signal_attribution",
@@ -11900,7 +11904,7 @@
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
-      "implementation_sha256": "408383752ed6a67528f585aa7ebc7841b9b535b859357cbf74deabdfcf8f9069",
+      "implementation_sha256": "98190d70859dfbee992db174ea4780cdeebfb60a182c42a4d187f64e7eee4950",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13179,5 +13183,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "c34e15e66ffa02980de22a9ff3ceb99b48c6ee0a494c37cc0c4f5621ba114e18"
+  "registry_sha256": "71da9cba655362c468b948852312363c110295a71d2221aa079f45f09c0350d4"
 }

@@ -316,7 +316,7 @@ def test_operational_capabilities_consume_real_quality_weight_calibration_and_le
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     assert result['status'] == 'PASS'
     assert result['scope'] == 'REAL_FROZEN_INPUT_POST_RESULT_NATIVE_METHODS'
-    assert len(result['native_capabilities_consumed']) == 13
+    assert len(result['native_capabilities_consumed']) == 14
     assert set(result['native_capabilities_consumed']) == set(result['native_methodology_aliases_consumed'])
     assert result['dynamic_weight_replay']['signals'] == 12
     assert result['dynamic_weight_replay']['max_abs_weight_error'] <= 1e-9
@@ -391,7 +391,7 @@ def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_
     report = result['report']
     real = report['operational_capability_consumption']
     assert real['status'] == 'PASS'
-    assert len(real['native_capabilities_consumed']) == 13
+    assert len(real['native_capabilities_consumed']) == 14
     assert real['dynamic_weight_replay']['reproduces_frozen_weights'] is True
     assert real['post_result_marginal_utility']['full_hits'] == len(
         set(frozen['challenger']['top6']) & set(report['official_result']))
@@ -409,7 +409,7 @@ def test_native_execution_receipts_are_individually_real_consumed_and_hashed():
     result = pr._operational_capability_consumption(freeze, report['official_result'])
     receipts = result['native_execution_receipts']
     assert result['native_execution_receipts_verified'] is True
-    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 13
+    assert result['execution_receipt_count'] == len(LIVE_POST_RESULT_BINDINGS) == 14
     assert set(receipts) == set(result['native_capabilities_consumed'])
     assert {r['native_function_executed'] for r in receipts.values()}
     for capability, receipt in receipts.items():
@@ -546,7 +546,7 @@ def test_real_frozen_structural_consumer_reaches_post_result_report(tmp_path: Pa
     assert structural['status']=='PASS'
     assert structural['execution_receipts_count']==7
     assert structural['receipts']['google-or-tools']['observed_output']['frozen_champion_reproduced'] is True
-    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 13
+    assert len(emitted['report']['operational_capability_consumption']['native_execution_receipts']) == 14
     assert 'Execuções estruturais vinculadas ao histórico congelado' in (
         tmp_path/emitted['markdown_file']).read_text()
     assert pr.emit_post_result_report(tmp_path,active)['status']=='EXISTING_VALID'
@@ -576,7 +576,7 @@ def test_real_null_simulation_and_bounded_shadow_learning_are_consumed():
     assert set(shadow['reward_hits']) == set(freeze['challenger']['weights'])
     assert json.dumps(freeze, sort_keys=True) == before
     aggregate = pr._operational_capability_consumption(freeze, actual)
-    assert aggregate['execution_receipt_count'] == 13
+    assert aggregate['execution_receipt_count'] == 14
     assert aggregate['native_execution_receipts']['simulation']['observed_output'] == simulation
     assert aggregate['native_execution_receipts']['live-evo-online-evolution-agentic']['observed_output'] == shadow
 
@@ -590,3 +590,60 @@ def test_shadow_learning_rejects_corrupt_configuration():
     forged['challenger']['bounded_online_learning']['expert']['max_abs_step'] = -1
     with pytest.raises(ValueError, match='max_abs_step'):
         invoke_live_native('live-evo-online-evolution-agentic', forged, report['official_result'])
+
+
+def test_multi_expert_native_governor_consumes_each_policy_without_posthoc_selection():
+    from copy import deepcopy
+    from smart_skill_runtime import invoke_live_native
+    freeze, report = _real_operational_skill_fixture()
+    immutable_before = json.dumps(freeze, sort_keys=True)
+    name = 'thinktank-me-multi-expert-framework-middle'
+    evidence = invoke_live_native(name, freeze, report['official_result'])
+    assert evidence == invoke_live_native(name, freeze, report['official_result'])
+    row = evidence['observed_output']
+    assert row['policy_count'] == 5
+    assert row['frozen_pre_result_selected_policy'] == freeze['challenger']['meta_governor']['selected_policy']
+    assert row['frozen_selected_policy_hits'] == report['hit_count']
+    assert row['pre_result_weights_replay_max_error'] <= 1e-10
+    assert row['selected_before_current_result'] is True
+    assert row['production_policy_changed'] is False
+    assert row['learning_state_persisted'] is False
+    assert row['named_external_thinktank_agent_executed'] is False
+    assert evidence['external_skill_code_executed'] is False
+    assert evidence['predictive_weight_authorized'] is False
+    assert evidence['execution_sha256'] == pr._sha256_json({k:v for k,v in evidence.items() if k!='execution_sha256'})
+    multi = freeze['challenger']['multi_challengers']['policies']
+    for pid, policy in multi.items():
+        assert row['policy_hits'][pid] == len(set(policy['top6']) & set(report['official_result']))
+    # A contrived outcome that matches the alternative cannot retroactively
+    # change the actual selection frozen before the target draw.
+    alternative = multi['diversity_max']['top6']
+    counterfactual = invoke_live_native(name, freeze, alternative)['observed_output']
+    assert counterfactual['policy_hits']['diversity_max'] == 6
+    assert counterfactual['frozen_pre_result_selected_policy'] == row['frozen_pre_result_selected_policy']
+    assert counterfactual['production_policy_changed'] is False
+    assert json.dumps(freeze, sort_keys=True) == immutable_before
+    aggregate = pr._operational_capability_consumption(freeze, report['official_result'])
+    assert aggregate['execution_receipt_count'] == 14
+    assert aggregate['native_execution_receipts'][name] == evidence
+    assert aggregate['native_execution_receipts'][name]['observed_output']['policy_count'] == 5
+
+
+def test_multi_expert_native_execution_rejects_forged_policy_and_selection():
+    from copy import deepcopy
+    from smart_skill_runtime import invoke_live_native
+    import pytest
+    freeze, report = _real_operational_skill_fixture()
+    name = 'thinktank-me-multi-expert-framework-middle'
+    broken = deepcopy(freeze)
+    broken['challenger']['multi_challengers']['policies']['diversity_max']['top6'][0] = 1
+    with pytest.raises(ValueError, match='SHA mismatch'):
+        invoke_live_native(name, broken, report['official_result'])
+    broken = deepcopy(freeze)
+    broken['challenger']['meta_governor']['selected_policy'] = 'diversity_max'
+    with pytest.raises(ValueError, match='selection did not replay'):
+        invoke_live_native(name, broken, report['official_result'])
+    broken = deepcopy(freeze)
+    broken['challenger']['meta_governor']['prior_mix'] = 1.0
+    with pytest.raises(ValueError, match='invalid frozen multi-expert prior'):
+        invoke_live_native(name, broken, report['official_result'])

@@ -325,6 +325,7 @@ def _operational_capability_consumption(freeze: dict[str, Any], actual: list[int
         "experiment-design": "kept result-only evaluation separate from pre-result freeze",
         "simulation": "executed uniform null Monte Carlo on frozen prediction and official result; single-draw diagnostic",
         "live-evo-online-evolution-agentic": "executed disposable bounded post-result shadow learning; no external agent or weight promotion",
+        "thinktank-me-multi-expert-framework-middle": "replayed frozen five-policy MetaGovernor selection and consumed individual policy outcomes in disposable shadow update; no external framework executed",
     }
     named_capabilities = {n for lane in LANES.values() for n in lane["capabilities"]}
     if not set(consumed) <= named_capabilities:
@@ -468,6 +469,16 @@ def _render_markdown(report: dict[str, Any]) -> str:
                   f"- **Brier congelado contra uniforme:** {score['frozen_calibrated_brier']:.7f} contra {score['uniform_brier']:.7f}",
                   f"- **Sinais com ganho marginal de acertos:** {ops['post_result_marginal_utility']['helpful_signal_count']}",
                   "- **Escopo:** funções nativas com dados reais; nenhum código de skill externa executado, nenhuma mudança de pesos autorizada."]
+        meta = ops.get("native_execution_receipts", {}).get("thinktank-me-multi-expert-framework-middle")
+        if isinstance(meta, dict):
+            observed = meta.get("observed_output", {})
+            if observed.get("policy_count") == 5:
+                lines += ["", "### Cinco políticas avaliadas após o resultado", "",
+                          f"- **Política escolhida antes do sorteio:** {observed['frozen_pre_result_selected_policy']}",
+                          f"- **Acertos da política previamente selecionada:** {observed['frozen_selected_policy_hits']}/6",
+                          "- **Acertos por política congelada:** " + ", ".join(
+                              f"{name}={hits}/6" for name, hits in observed['policy_hits'].items()),
+                          "- **Atualização:** apenas estado descartável em modo sombra; resultado conhecido não escolhe retrospectivamente uma política."]
     primary = report.get("primary_card_diagnostic")
     if isinstance(primary, dict) and primary.get("status") == "PASS":
         final = primary["final_decision"]

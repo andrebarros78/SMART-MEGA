@@ -255,6 +255,7 @@ LIVE_POST_RESULT_BINDINGS = {
     "benchmarking-uncertainty-calibration-long-form": "smart_rank_score_calibration.brier_score",
     "simulation": "smart_experiment_lab.monte_carlo_null_hits",
     "live-evo-online-evolution-agentic": "smart_bounded_online_learning.BoundedOnlineLearningGuard.update",
+    "thinktank-me-multi-expert-framework-middle": "smart_meta_governor.MetaGovernor.select/update",
 }
 
 
@@ -362,6 +363,85 @@ def invoke_live_native(capability: str, freeze: dict[str, Any], actual_numbers: 
                   "weight_state_persisted": False,
                   "model_or_agent_promoted": False,
                   "mode": "DISPOSABLE_POST_RESULT_SHADOW_UPDATE"}
+    elif capability == "thinktank-me-multi-expert-framework-middle":
+        from smart_meta_governor import MetaGovernor
+        from smart_multi_challengers import POLICY_IDS, sha256_json as policy_sha256
+        multi = challenger.get("multi_challengers")
+        snapshot = challenger.get("meta_governor")
+        if not isinstance(multi, dict) or not isinstance(snapshot, dict):
+            raise ValueError("multi-expert governance freeze unavailable")
+        if multi.get("policy_ids") != list(POLICY_IDS) or set(multi.get("policies", {})) != set(POLICY_IDS):
+            raise ValueError("frozen multi-expert policy identifiers mismatch")
+        prior = float(snapshot["prior_mix"])
+        if not 0 <= prior < 1:
+            raise ValueError("invalid frozen multi-expert prior")
+        published = snapshot.get("policy_weights_before_result")
+        if not isinstance(published, dict) or set(published) != set(POLICY_IDS):
+            raise ValueError("multi-expert frozen policy weights incomplete")
+        stripped = {pid: (float(published[pid]) - prior / len(POLICY_IDS)) / (1 - prior)
+                    for pid in POLICY_IDS}
+        if any(not math.isfinite(v) or v <= 0 for v in stripped.values()):
+            raise ValueError("multi-expert weights cannot be reconstructed")
+        # The compact freeze retains only the selected hedge's cumulative
+        # hit difference, not the entire historical hit vector. Reconstruct
+        # the one difference used by the actual causal selection gate so a
+        # *legitimately promoted* alternate will also replay correctly.
+        evidence = snapshot.get("alternate_evidence")
+        hedge = snapshot.get("hedge_candidate_policy")
+        if not isinstance(evidence, dict) or hedge not in POLICY_IDS:
+            raise ValueError("frozen multi-expert alternate evidence incomplete")
+        hit_lead = int(evidence["cumulative_hit_lead_vs_anchor"])
+        hits_before = {pid: 0 for pid in POLICY_IDS}
+        if hit_lead >= 0:
+            hits_before[hedge] = hit_lead
+        else:
+            hits_before["quality_dynamic"] = -hit_lead
+        replay = MetaGovernor(
+            eta=float(snapshot["eta"]), prior_mix=prior,
+            allow_alternate_selection=bool(snapshot["allow_alternate_selection"]),
+            automatic_evidence_guard=bool(snapshot["automatic_evidence_guard"]),
+            observations=int(snapshot["observations_before_result"]),
+            log_weights={pid: math.log(stripped[pid]) for pid in POLICY_IDS},
+            cumulative_hits=hits_before,
+        )
+        max_replay_error = max(abs(replay.weights()[pid] - float(published[pid]))
+                               for pid in POLICY_IDS)
+        if max_replay_error > 1e-10:
+            raise ValueError("multi-expert frozen governor weights do not replay")
+        policies = multi["policies"]
+        for pid in POLICY_IDS:
+            document = policies[pid]
+            if document.get("policy_id") != pid:
+                raise ValueError("frozen multi-expert policy id inconsistent")
+            checksum = document.get("sha256")
+            if checksum != policy_sha256({k: v for k, v in document.items() if k != "sha256"}):
+                raise ValueError("frozen multi-expert policy SHA mismatch")
+        selected_before = replay.select(multi)
+        if (selected_before["selected_policy"] != snapshot.get("selected_policy")
+                or selected_before["selected_top6"] != snapshot.get("selected_top6")
+                or selected_before["alternate_authorized"] != snapshot.get("alternate_authorized")
+                or selected_before["hedge_candidate_policy"] != hedge
+                or selected_before["alternate_evidence"]["cumulative_hit_lead_vs_anchor"] != hit_lead):
+            raise ValueError("multi-expert pre-result selection did not replay")
+        # Outcome is used only AFTER selection has been reconstructed.
+        actual_set = set(actual)
+        policy_hits = {pid: len(set(policies[pid]["top6"]) & actual_set)
+                       for pid in POLICY_IDS}
+        shadow = replay.update(policy_hits, selected_before["selected_policy"])
+        if not shadow["update_after_result_only"]:
+            raise ValueError("multi-expert update violates causal order")
+        result = {"policy_hits": policy_hits,
+                  "policy_count": len(policy_hits),
+                  "frozen_pre_result_selected_policy": selected_before["selected_policy"],
+                  "frozen_selected_policy_hits": policy_hits[selected_before["selected_policy"]],
+                  "pre_result_weights_replay_max_error": max_replay_error,
+                  "selected_before_current_result": True,
+                  "disposable_shadow_weights_after_result": shadow["weights_after_result"],
+                  "shadow_meta_governor_update_sha256": shadow["sha256"],
+                  "production_policy_changed": False,
+                  "learning_state_persisted": False,
+                  "named_external_thinktank_agent_executed": False,
+                  "scope": "FROZEN_FIVE_POLICY_POST_RESULT_COMPARISON_SHADOW_ONLY"}
     elif capability == "model-drift-management":
         flags = np.array([bool(quality[k].get("drift_active")) for k in sorted(arrays)], dtype=int)
         drift_count = int(np.count_nonzero(flags))
