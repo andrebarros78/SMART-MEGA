@@ -171,6 +171,38 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
         for n in fps: fp[str(n)]+=1
         obs.append({"contest":contest,"false_negatives":fns,"false_positives":fps,"hit_count":len(aset&gset)})
     obs.sort(key=lambda x:int(x["contest"])); total=len(obs)
+    # Keep untrusted historical feedback out of new learning cohorts. A
+    # verified suffix may be evaluated as a new shadow experiment even when
+    # earlier reports remain permanently unrecoverable. It cannot affect cards
+    # until a separate prospective, independent non-regression gate approves it.
+    invalid_ids=[]
+    for filename in quarantined:
+        match=re.fullmatch(r"SMART_POST_RESULT_REPORT_(\d+)\.json",filename)
+        if match is None:
+            invalid_ids=[10**18]
+            break
+        invalid_ids.append(int(match.group(1)))
+    latest_invalid=max(invalid_ids,default=0)
+    cohort_rows=[x for x in obs if int(x["contest"])>latest_invalid]
+    cohort_fn={str(n):0 for n in range(1,61)}
+    cohort_fp={str(n):0 for n in range(1,61)}
+    cohort_bands={"low":0,"mid":0,"high":0}
+    for row in cohort_rows:
+        for n in row["false_negatives"]:
+            cohort_fn[str(n)]+=1;cohort_bands[band(n)]+=1
+        for n in row["false_positives"]:
+            cohort_fp[str(n)]+=1
+    verified_cohort={
+        "after_last_quarantined_contest": latest_invalid,
+        "source_contests": [int(x["contest"]) for x in cohort_rows],
+        "observations": len(cohort_rows),
+        "min_observations_for_experiment": cfg.min_observations,
+        "ready_for_shadow_experiment": len(cohort_rows)>=cfg.min_observations,
+        "predictive_weight_authorized": False,
+        "false_negative_counts": cohort_fn,
+        "false_positive_counts": cohort_fp,
+        "band_false_negative_counts": cohort_bands,
+    }
     coverage="DEGRADED_PARTIAL_EVIDENCE" if quarantined else "COMPLETE"
     profile={"schema":SCHEMA,"status":"DEGRADED_PARTIAL_EVIDENCE" if quarantined else "PASS",
              "evidence_coverage":coverage,
@@ -181,6 +213,7 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
              "observations":total,"source_contests":[int(x["contest"]) for x in obs],
              "duplicates_ignored":duplicates_ignored,"quarantined_reports":quarantined,
              "quarantined_count":len(quarantined),"config":asdict(cfg),
+             "verified_successor_cohort":verified_cohort,
              "false_negative_counts":fn,"false_positive_counts":fp,
              "band_false_negative_counts":band_fn,"recent_observations":obs[-20:],
              "activation":{"number_specific_active":total>=cfg.min_observations,
@@ -209,12 +242,34 @@ def apply_rescue(aggregate_scores:Mapping[int|str,float],profile:Mapping[str,Any
         if abs(delta)>1e-15: deltas[k]=delta
     incomplete=profile.get("evidence_coverage")=="DEGRADED_PARTIAL_EVIDENCE"
     if incomplete:
+        # The observed profile may include trusted rows preceding a missing
+        # ledger. Shadow evaluation must never mix them with the new cohort.
+        cohort=profile.get("verified_successor_cohort")
+        shadow_deltas={}
+        eligible=False
+        if isinstance(cohort,dict) and cohort.get("predictive_weight_authorized") is False:
+            sample_count=int(cohort.get("observations") or 0)
+            if sample_count and profile.get("sha256")==sha256_json({k:v for k,v in profile.items() if k!="sha256"}):
+                cohort_profile={
+                    "observations": sample_count,
+                    "config":cfgd,
+                    "false_negative_counts":cohort["false_negative_counts"],
+                    "false_positive_counts":cohort["false_positive_counts"],
+                    "band_false_negative_counts":cohort["band_false_negative_counts"],
+                }
+                counterfactual,_=apply_rescue(scores,cohort_profile)
+                shadow_deltas={k:float(v-scores[k]) for k,v in counterfactual.items() if abs(v-scores[k])>1e-15}
+            eligible=(bool(cohort.get("ready_for_shadow_experiment"))
+                      and profile.get("sha256")==sha256_json({k:v for k,v in profile.items() if k!="sha256"}))
         # Never promote partly restored historical feedback to decision weights.
         audit={"schema":SCHEMA,"status":"DEGRADED_SHADOW_ONLY","observations":obs,
                "result_used":False,"profile_sha256":profile.get("sha256"),
                "evidence_coverage":profile["evidence_coverage"],
                "quarantined_count":profile.get("quarantined_count",0),
-               "shadow_nonzero_deltas":deltas,"nonzero_deltas":{}}
+               "shadow_verified_cohort_contests":cohort.get("source_contests",[]) if isinstance(cohort,dict) else [],
+               "shadow_cohort_ready_for_oos":eligible,
+               "predictive_weight_authorized":False,
+               "shadow_nonzero_deltas":shadow_deltas,"nonzero_deltas":{}}
         audit["sha256"]=sha256_json(audit)
         return scores,audit
     audit={"schema":SCHEMA,"status":"PASS","observations":obs,"result_used":False,"profile_sha256":profile.get('sha256'),"nonzero_deltas":deltas}

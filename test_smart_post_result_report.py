@@ -146,3 +146,257 @@ def test_post_result_rejects_corrupted_existing_ledger_archive(tmp_path: Path) -
     archive.write_bytes(b"tampered")
     with pytest.raises(ValueError, match="ledger archive hash mismatch"):
         pr.emit_post_result_report(tmp_path, active)
+
+
+def _inject_signal_snapshot(tmp_path: Path, active: dict, *, tamper: bool = False) -> None:
+    """Attach a legitimate pre-result challenger snapshot to a sandbox freeze."""
+    freeze_path = tmp_path / active["state_paths"]["freeze"]
+    doc = json.loads(freeze_path.read_text(encoding="utf-8"))
+    doc["challenger"] = {
+        "top6": [7, 8, 9, 10, 11, 12] if tamper else [1, 2, 3, 4, 5, 6],
+        "raw_signals": {
+            "supports_top6": {"values": {str(n): (1.0 if n <= 6 else 0.0) for n in range(1, 61)}},
+            "opposition": {"values": {str(n): (1.0 if 7 <= n <= 12 else 0.0) for n in range(1, 61)}},
+        },
+        "weights": {"supports_top6": 0.8, "opposition": 0.2},
+    }
+    freeze_path.write_text(json.dumps(doc), encoding="utf-8")
+    updated_sha = pr._sha256_file(freeze_path)
+    active["freeze_authority"]["sha256"] = updated_sha
+    ledger_path = tmp_path / active["state_paths"]["ledger"]
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    ledger["events"][0]["freeze_sha256"] = updated_sha
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+
+
+def test_post_result_consumes_actual_frozen_signal_weights_and_explains_card(tmp_path: Path) -> None:
+    active = _fixture(tmp_path, reported_hits=2)
+    _inject_signal_snapshot(tmp_path, active)
+    result = pr.emit_post_result_report(tmp_path, active)
+    report = result["report"]
+    diag = report["signal_diagnostic"]
+    assert report["hit_count"] == 2
+    assert diag["status"] == "PASS"
+    assert diag["challenger_top6"] == [1, 2, 3, 4, 5, 6]
+    assert diag["challenger_hits"] == 2
+    assert diag["signal_count"] == 2
+    assert diag["top_two_weight_share"] == 1.0
+    assert [row["signal"] for row in diag["per_signal"]] == ["supports_top6", "opposition"]
+    assert diag["coalition_tested"] == 2
+    assert len(diag["attribution_sha256"]) == 64
+    assert diag["predictive_promotion_authorized"] is False
+    assert diag["retrospective_gain_is_not_predictive_evidence"] is True
+    md = (tmp_path / result["markdown_file"]).read_text(encoding="utf-8")
+    assert "Diagnóstico dos pesos realmente consumidos" in md
+    assert "supports_top6: peso=80.00%" in md
+    assert "resultado retrospectivo" in md
+    # Reprocessing never changes a previously sealed report or its hash.
+    old_bytes = (tmp_path / result["report_file"]).read_bytes()
+    reprocessed = pr.emit_post_result_report(tmp_path, active)
+    assert reprocessed["status"] == "EXISTING_VALID"
+    assert (tmp_path / result["report_file"]).read_bytes() == old_bytes
+
+
+def test_post_result_detects_tampered_pre_result_signal_snapshot(tmp_path: Path) -> None:
+    import pytest
+    active = _fixture(tmp_path, reported_hits=2)
+    _inject_signal_snapshot(tmp_path, active, tamper=True)
+    with pytest.raises(ValueError, match="does not reproduce frozen challenger"):
+        pr.emit_post_result_report(tmp_path, active)
+    assert not (tmp_path / "SMART_POST_RESULT_REPORT_999.json").exists()
+
+
+def test_post_result_refuses_incomplete_signal_snapshot(tmp_path: Path) -> None:
+    import pytest
+    active = _fixture(tmp_path, reported_hits=2)
+    _inject_signal_snapshot(tmp_path, active)
+    freeze_path = tmp_path / active["state_paths"]["freeze"]
+    doc = json.loads(freeze_path.read_text(encoding="utf-8"))
+    del doc["challenger"]["weights"]
+    freeze_path.write_text(json.dumps(doc), encoding="utf-8")
+    updated_sha = pr._sha256_file(freeze_path)
+    active["freeze_authority"]["sha256"] = updated_sha
+    ledger_path = tmp_path / active["state_paths"]["ledger"]
+    ledger = json.loads(ledger_path.read_text(encoding="utf-8"))
+    ledger["events"][0]["freeze_sha256"] = updated_sha
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    with pytest.raises(ValueError, match="snapshot requires raw_signals and weights"):
+        pr.emit_post_result_report(tmp_path, active)
+
+
+def test_post_result_is_explicit_when_legacy_freeze_has_no_signal_snapshot(tmp_path: Path) -> None:
+    result = pr.emit_post_result_report(tmp_path, _fixture(tmp_path, reported_hits=2))
+    assert result["report"]["signal_diagnostic"]["status"] == "UNAVAILABLE_LEGACY_FREEZE"
+    assert result["report"]["signal_diagnostic"]["predictive_promotion_authorized"] is False
+
+
+def _with_champion_attribution_fixture(tmp_path: Path, *, tamper_scores: bool = False) -> dict:
+    active = _fixture(tmp_path, reported_hits=2)
+    freeze_path = tmp_path / active["state_paths"]["freeze"]
+    obj = json.loads(freeze_path.read_text())
+    signals = {
+        "support": {"values": {str(n): (1.0 if n <= 6 else 0.0) for n in range(1, 61)}},
+        "against": {"values": {str(n): (1.0 if 7 <= n <= 12 else 0.0) for n in range(1, 61)}},
+    }
+    obj["champion"]["expert_weights"] = {"support": 0.8, "against": 0.2}
+    obj["champion"]["aggregate_scores"] = {
+        str(n): (0.9 if n == 1 and tamper_scores else
+                 0.8 if n <= 6 else 0.2 if n <= 12 else 0.0)
+        for n in range(1, 61)
+    }
+    obj["challenger"] = {
+        "top6": [1, 2, 3, 4, 5, 6], "raw_signals": signals,
+        "weights": {"support": 0.8, "against": 0.2},
+    }
+    freeze_path.write_text(json.dumps(obj), encoding="utf-8")
+    digest = pr._sha256_file(freeze_path)
+    active["freeze_authority"]["sha256"] = digest
+    ledger_path = tmp_path / active["state_paths"]["ledger"]
+    ledger = json.loads(ledger_path.read_text())
+    ledger["events"][0]["freeze_sha256"] = digest
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    return active
+
+
+def test_production_champion_contribution_report_generated_card(tmp_path: Path):
+    active = _with_champion_attribution_fixture(tmp_path)
+    out = pr.emit_post_result_report(tmp_path, active)
+    diag = out["report"]["primary_card_diagnostic"]
+    assert diag["status"] == "PASS"
+    assert diag["model"] == "FROZEN_PRODUCTION_CHAMPION"
+    assert diag["signal_count"] == 2
+    assert diag["top_two_weight_share"] == 1.0
+    assert diag["final_decision"]["champion_hits"] == 2
+    assert diag["final_decision"]["actual_primary_hits"] == 2
+    assert diag["final_decision"]["decision_changed"] is False
+    assert diag["predictive_promotion_authorized"] is False
+    assert out["report"]["signal_diagnostic"]["status"] == "PASS"
+    assert "Atribuição do Champion e do cartão principal" in (tmp_path / out["markdown_file"]).read_text()
+
+
+def test_production_champion_and_selected_card_are_not_confused(tmp_path: Path):
+    active = _with_champion_attribution_fixture(tmp_path)
+    ledger_path = tmp_path / active["state_paths"]["ledger"]
+    ledger = json.loads(ledger_path.read_text())
+    ledger["events"][0]["primary_card"] = {"numbers": [1, 2, 7, 8, 9, 10]}
+    ledger_path.write_text(json.dumps(ledger), encoding="utf-8")
+    result = pr.emit_post_result_report(tmp_path, active)
+    d = result["report"]["primary_card_diagnostic"]["final_decision"]
+    assert result["report"]["hit_count"] == 6
+    assert d["champion_hits"] == 2
+    assert d["actual_primary_hits"] == 6
+    assert d["decision_changed"] is True
+    assert d["added_by_final_selection"] == [7, 8, 9, 10]
+    assert d["removed_from_champion"] == [3, 4, 5, 6]
+    assert d["cause_scope"] == "SELECTOR_PLUS_RESCUE_NOT_ISOLATED"
+
+
+def test_production_champion_rejects_score_mismatch(tmp_path: Path):
+    import pytest
+    active = _with_champion_attribution_fixture(tmp_path, tamper_scores=True)
+    with pytest.raises(ValueError, match="Champion signal scores do not reproduce"):
+        pr.emit_post_result_report(tmp_path, active)
+    assert not (tmp_path / "SMART_POST_RESULT_REPORT_999.json").exists()
+
+
+def _real_operational_skill_fixture(contest=3068):
+    """Return a truly frozen source/official pair, not synthetic metrics."""
+    from pathlib import Path
+    source_root = Path(__file__).resolve().parent
+    freeze_path = next((source_root / 'runtime' / 'learning_epochs').glob(
+        f'operator-{contest}-*/SMART_{contest}_CHAMPION_CHALLENGER_FREEZE.json'))
+    report_path = source_root / f'SMART_POST_RESULT_REPORT_{contest}.json'
+    return json.loads(freeze_path.read_text()), json.loads(report_path.read_text())
+
+
+def test_operational_capabilities_consume_real_quality_weight_calibration_and_learning():
+    import hashlib
+    freeze, report = _real_operational_skill_fixture()
+    before = hashlib.sha256(json.dumps(freeze, sort_keys=True).encode()).hexdigest()
+    result = pr._operational_capability_consumption(freeze, report['official_result'])
+    assert result['status'] == 'PASS'
+    assert result['scope'] == 'REAL_FROZEN_INPUT_POST_RESULT_NATIVE_METHODS'
+    assert len(result['native_capabilities_consumed']) == 11
+    assert set(result['native_capabilities_consumed']) == set(result['native_methodology_aliases_consumed'])
+    assert result['dynamic_weight_replay']['signals'] == 12
+    assert result['dynamic_weight_replay']['max_abs_weight_error'] <= 1e-9
+    assert result['proper_scoring']['calibration_neutralized'] is True
+    assert abs(result['proper_scoring']['frozen_calibrated_brier'] - 0.09) < 1e-12
+    assert abs(result['proper_scoring']['uniform_brier'] - 0.09) < 1e-12
+    assert result['post_result_marginal_utility']['full_hits'] == report['hit_count']
+    assert result['post_result_marginal_utility']['learning_state_written'] is False
+    assert result['named_external_skill_executed'] is False
+    assert result['predictive_weight_authorized'] is False
+    assert result['prospective_superiority_proven'] is False
+    assert len(result['sha256']) == 64
+    again = pr._operational_capability_consumption(freeze, report['official_result'])
+    assert again == result
+    assert hashlib.sha256(json.dumps(freeze, sort_keys=True).encode()).hexdigest() == before
+
+
+def test_operational_skill_consumers_reject_frozen_weight_mismatch():
+    from copy import deepcopy
+    import pytest
+    freeze, report = _real_operational_skill_fixture()
+    altered = deepcopy(freeze)
+    altered['challenger']['weights']['freq1000'] += 0.01
+    with pytest.raises(ValueError, match='does not reproduce frozen Challenger weights'):
+        pr._operational_capability_consumption(altered, report['official_result'])
+
+
+def test_operational_skill_consumers_reject_probability_and_lineage_tampering():
+    from copy import deepcopy
+    import pytest
+    freeze, report = _real_operational_skill_fixture()
+    invalid = deepcopy(freeze)
+    invalid['challenger']['rank_score_calibration']['probabilities_by_number']['1'] = 0.8
+    with pytest.raises(ValueError, match='probability mass does not sum to six'):
+        pr._operational_capability_consumption(invalid, report['official_result'])
+    foreign = deepcopy(freeze)
+    foreign['challenger']['raw_signals']['freq25']['cutoff_contest'] += 1
+    with pytest.raises(ValueError, match='cutoff mismatch'):
+        pr._operational_capability_consumption(foreign, report['official_result'])
+
+
+def test_operational_skill_consumption_not_fabricated_for_legacy_freeze(tmp_path: Path):
+    active = _fixture(tmp_path, reported_hits=2)
+    result = pr.emit_post_result_report(tmp_path, active)
+    diag = result['report']['operational_capability_consumption']
+    assert diag['status'] == 'UNAVAILABLE_LEGACY_FREEZE'
+    assert diag['native_capabilities_consumed'] == []
+    assert diag['predictive_weight_authorized'] is False
+
+
+def test_post_result_report_executes_real_native_skill_consumers_end_to_end(tmp_path: Path):
+    from copy import deepcopy
+    active = _fixture(tmp_path)
+    freeze, _source_report = _real_operational_skill_fixture()
+    frozen = deepcopy(freeze)
+    frozen['target_contest'] = 999
+    frozen['cutoff_contest'] = 998
+    for row in frozen['challenger']['raw_signals'].values():
+        row['target_contest'] = 999
+        row['cutoff_contest'] = 998
+    frozen_path = tmp_path / active['state_paths']['freeze']
+    frozen_path.write_text(json.dumps(frozen), encoding='utf-8')
+    sha = pr._sha256_file(frozen_path)
+    active['freeze_authority']['sha256'] = sha
+    ledger_path = tmp_path / active['state_paths']['ledger']
+    ledger = json.loads(ledger_path.read_text())
+    ledger['events'][0]['freeze_sha256'] = sha
+    ledger_path.write_text(json.dumps(ledger), encoding='utf-8')
+    result = pr.emit_post_result_report(tmp_path, active)
+    assert result['status'] == 'EMITTED'
+    report = result['report']
+    real = report['operational_capability_consumption']
+    assert real['status'] == 'PASS'
+    assert len(real['native_capabilities_consumed']) == 11
+    assert real['dynamic_weight_replay']['reproduces_frozen_weights'] is True
+    assert real['post_result_marginal_utility']['full_hits'] == len(
+        set(frozen['challenger']['top6']) & set(report['official_result']))
+    assert real['actual_result_used_only_after_freeze'] is True
+    assert real['named_external_skill_executed'] is False
+    assert real['predictive_weight_authorized'] is False
+    assert 'Consumo efetivo de competências nativas' in (
+        tmp_path / result['markdown_file']).read_text(encoding='utf-8')
+    assert pr.emit_post_result_report(tmp_path, active)['status'] == 'EXISTING_VALID'

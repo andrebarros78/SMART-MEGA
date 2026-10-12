@@ -53,7 +53,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
+  "inventory_sha256": "a6eecf4325274f43cf6c77bb32aa762c0337edfb9d8a709a7cd446d42bb4eca4",
   "summary": {
     "python_components": 486,
     "workflow_entrypoints": 8,
@@ -4286,6 +4286,7 @@
         "smart_agent_runtime",
         "smart_continuity_consolidator",
         "smart_engineering_activation",
+        "smart_post_result_report",
         "smart_product_certification",
         "smart_skill_adapter_registry",
         "smart_skill_runtime",
@@ -5444,7 +5445,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745"
+      "sha256": "2df7c0e66a37826db3a3d2ac325991ab6d392c1dbfd6ec01cc8141e345e675e4"
     },
     {
       "component_id": "smart_falsification_lab",
@@ -6858,10 +6859,17 @@
       "entrypoints": [
         "smart_github_operator"
       ],
-      "producers": [],
+      "producers": [
+        "smart_agent_skill_orchestration",
+        "smart_rank_score_calibration",
+        "smart_signal_attribution",
+        "smart_signal_marginal_utility",
+        "smart_signal_weights"
+      ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
+        "test_smart_false_negative_rescue",
         "test_smart_post_result_report"
       ],
       "reachable": true,
@@ -6872,7 +6880,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "88615f41e7c4a7de4306f642aabac81150147e74b9e0f6f34e45fefa36442659"
+      "sha256": "9725de48d8a4ec351e51e065d946c13d097d3f1b8319658a1e5d40403a75a1c3"
     },
     {
       "component_id": "smart_primary_card_selector",
@@ -7416,6 +7424,7 @@
         "archive.p06_calibrate_strength",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_agent_runtime",
+        "smart_post_result_report",
         "smart_signal_agent",
         "test_smart_learning_input_contracts",
         "test_smart_rank_score_calibration"
@@ -7859,6 +7868,7 @@
       "consumers": [
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
+        "smart_post_result_report",
         "test_smart_signal_attribution"
       ],
       "reachable": true,
@@ -7984,6 +7994,7 @@
         "adjudicate_signal_challenger",
         "archive.adjudicate_signal_challenger.pre_freeze_crosscheck",
         "archive.smart_signal_agent.pre_p10_active_guard",
+        "smart_post_result_report",
         "smart_signal_agent",
         "test_smart_learning_input_contracts",
         "test_smart_signal_marginal_utility"
@@ -8093,6 +8104,7 @@
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_adversarial_claim_audit",
         "smart_continuous_red_team",
+        "smart_post_result_report",
         "smart_signal_agent",
         "test_smart_coverage_core",
         "test_smart_mission_coverage_closure_20260906",
@@ -10047,7 +10059,8 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
-        "smart_false_negative_rescue"
+        "smart_false_negative_rescue",
+        "smart_post_result_report"
       ],
       "declared_execution_dependencies": [],
       "consumers": [],
@@ -10059,7 +10072,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6e2a559f97e2976fbb26bbfa7433b75d01e14705593f3c5d98817809bacb08df"
+      "sha256": "7ae32110147c6584954776c98ab0405ac1c2ba59f0dc0217b2db0b4272618817"
     },
     {
       "component_id": "test_smart_falsification_lab",
@@ -11134,7 +11147,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "05e0b2bc581067be084a6db46455f34dc27ce3627f063657fc749b8a5468390c"
+      "sha256": "3cf27e0a2c9df1f3c621a237a83cbeb141bf45728f045a7b06e4b557471cdf05"
     },
     {
       "component_id": "test_smart_powered_falsification_artifact",
