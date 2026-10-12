@@ -79,8 +79,13 @@ def reconcile_remaining(structural_diagnostic: dict[str, Any], root: str | Path)
                    "installed": bool(present), "native_execution_receipt": False,
                    "external_skill_code_executed": False}
             if name == "mlflow" and (base / "smart_experiment_lab.py").is_file():
-                row["existing_native_entrypoint"] = "smart_experiment_lab.ExperimentRegistry._log_mlflow"
-                row["integration_gap"] = "signed post-result experiment registry consumer not yet wired"
+                row["existing_native_entrypoint"] = "smart_experiment_lab.ExperimentRegistry.track_signed_post_result"
+                row["native_consumer"] = "smart_operator.post_result_report_operation / mlflow-sync"
+                row["integration_gap"] = (
+                    "post-result secondary tracking executes after signed report creation; "
+                    "only an MLflow SQLite run with verified SHA/readback proves consumption"
+                )
+                row["execution_receipt_must_be_checked_separately"] = True
         elif name in RESEARCH_ALIASES:
             row = {"status": "ROLE_OR_SOURCE_NOT_EXECUTED",
                    "reason": RESEARCH_ALIASES[name],

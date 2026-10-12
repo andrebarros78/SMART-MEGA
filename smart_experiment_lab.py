@@ -232,6 +232,163 @@ class ExperimentRegistry:
             mlflow.log_dict(dict(result), "result.json")
 
 
+    def track_signed_post_result(self, report_file: str | Path, *, expected_report_file_sha256: str) -> dict[str, Any]:
+        """Idempotently index an *already adjudicated* SMART result in local MLflow.
+
+        Observational tracking is separate from scientific preregistration and
+        predictive authority. Reuses this repository's ExperimentRegistry root
+        and local SQLite MLflow backend, never changes canonical report files.
+        """
+        import re
+        from smart_operation_lock import _acquire_os_lock, _release_os_lock
+        from mlflow.tracking import MlflowClient
+
+        report_path = Path(report_file)
+        if report_path.is_symlink() or not report_path.is_file():
+            raise ValueError('post-result MLflow requires a regular signed report')
+        report_path = report_path.resolve()
+        project_root = self.root.resolve().parent
+        if report_path.parent != project_root or not re.fullmatch(r'SMART_POST_RESULT_REPORT_[0-9]+\.json', report_path.name):
+            raise ValueError('post-result MLflow report outside canonical root or unexpected name')
+        payload_bytes = report_path.read_bytes()
+        actual_file_hash = hashlib.sha256(payload_bytes).hexdigest()
+        if (not isinstance(expected_report_file_sha256, str)
+                or actual_file_hash != expected_report_file_sha256):
+            raise ValueError('post-result MLflow signed report file hash mismatch')
+        report = json.loads(payload_bytes)
+        if not isinstance(report, dict) or report.get('schema') != 'SMART_POST_RESULT_REPORT_1':
+            raise ValueError('invalid SMART post-result report schema')
+        recorded_hash = report.get('sha256')
+        unsigned = dict(report)
+        unsigned.pop('sha256', None)
+        if recorded_hash != sha256_json(unsigned):
+            raise ValueError('post-result MLflow report self-hash mismatch')
+        contest = report.get('contest_number')
+        if (isinstance(contest, bool) or not isinstance(contest, int) or contest <= 0
+                or report_path.name != f'SMART_POST_RESULT_REPORT_{contest}.json'):
+            raise ValueError('post-result MLflow report contest invalid')
+        audit = report.get('process_audit')
+        if (report.get('status') != 'PASS' or not isinstance(audit, dict)
+                or audit.get('findings') != []
+                or audit.get('freeze_authority_present') is not True):
+            raise ValueError('post-result MLflow requires an integrity-clean adjudicated report')
+        for name, value in [('source_fingerprint',report.get('source_fingerprint')),
+                            ('freeze_sha256',audit.get('freeze_sha256')),
+                            ('ledger_sha256',audit.get('ledger_sha256'))]:
+            if not isinstance(value, str) or re.fullmatch(r'[0-9a-f]{64}', value) is None:
+                raise ValueError(f'post-result MLflow missing signed {name}')
+        official,card = report.get('official_result'),report.get('generated_card')
+        if not all(isinstance(v, list) and len(v)==6 and len(set(v))==6
+                   and all(isinstance(n,int) and not isinstance(n,bool) and 1<=n<=60 for n in v)
+                   for v in (official,card)):
+            raise ValueError('post-result MLflow requires six valid official and frozen card numbers')
+        observed_hits = len(set(official) & set(card))
+        if observed_hits != report.get('hit_count'):
+            raise ValueError('post-result MLflow hits do not reconstruct from immutable card')
+        champion_hits = report.get('champion_hits')
+        if isinstance(champion_hits, bool) or not isinstance(champion_hits,int) or not 0<=champion_hits<=6:
+            raise ValueError('post-result MLflow Champion result invalid')
+
+        metrics = {'primary_hits':float(observed_hits),'champion_hits':float(champion_hits)}
+        native = report.get('operational_capability_consumption')
+        if isinstance(native,dict) and native.get('status')=='PASS':
+            metrics['native_receipt_count']=float(native.get('execution_receipt_count',0))
+            proper = native.get('proper_scoring')
+            if isinstance(proper,dict):
+                for source,target in [('frozen_calibrated_brier','frozen_brier'),('uniform_brier','uniform_brier')]:
+                    if source in proper:
+                        metrics[target]=float(proper[source])
+        structural = report.get('structural_capability_consumption')
+        if isinstance(structural,dict) and structural.get('status')=='PASS':
+            metrics['structural_receipt_count']=float(structural.get('execution_receipts_count',0))
+        if any(not math.isfinite(v) or v<0 for v in metrics.values()):
+            raise ValueError('post-result MLflow observation metric invalid')
+
+        # MLflow is a *secondary index* and never grants an experiment promotion.
+        tags = {
+            'smart.observation_kind':'POST_RESULT_ADJUDICATED',
+            'smart.target_contest':str(contest),
+            'smart.report_sha256':recorded_hash,
+            'smart.report_file_sha256':actual_file_hash,
+            'smart.source_fingerprint':report['source_fingerprint'],
+            'smart.freeze_sha256':audit['freeze_sha256'],
+            'smart.ledger_sha256':audit['ledger_sha256'],
+            'smart.scientific_decision':'INCONCLUSIVE',
+            'smart.predictive_weight_authorized':'false',
+            'smart.freeze_mutation_authorized':'false',
+            'smart.not_preregistered_experiment':'true',
+        }
+        if not self.use_mlflow:
+            raise RuntimeError('post-result MLflow consumer requires enabled local tracking')
+        self.root.mkdir(parents=True,exist_ok=True)
+        self.mlflow_dir.mkdir(parents=True,exist_ok=True)
+        lock_file = self.root / '.post_result_mlflow.lock'
+        with lock_file.open('a+b') as lock:
+            if lock_file.stat().st_size==0:
+                lock.write(b'0');lock.flush()
+            _acquire_os_lock(lock)
+            try:
+                db_path=(self.root / 'mlflow.db').resolve()
+                client=MlflowClient(tracking_uri=f'sqlite:///{db_path.as_posix()}')
+                experiment=client.get_experiment_by_name('SMART-MEGA')
+                exp_id=(client.create_experiment('SMART-MEGA',artifact_location=self.mlflow_dir.resolve().as_uri())
+                        if experiment is None else experiment.experiment_id)
+                existing=client.search_runs([exp_id],filter_string=f"tags.`smart.target_contest` = '{contest}'",max_results=20)
+                if len(existing)>1:
+                    raise ValueError('duplicate MLflow observations for same contest')
+                if existing:
+                    run=existing[0]
+                    if any(run.data.tags.get(key)!=value for key,value in tags.items()):
+                        raise ValueError('conflicting or modified MLflow post-result observation')
+                    run_id=run.info.run_id
+                    if run.info.status=='FINISHED':
+                        if any(key not in run.data.metrics or abs(run.data.metrics[key]-value)>1e-10
+                               for key,value in metrics.items()):
+                            raise ValueError('persisted MLflow observation metrics changed')
+                        status='EXISTING_VALID'
+                    elif run.info.status=='RUNNING':
+                        status='RECOVERED_PARTIAL'
+                    else:
+                        raise ValueError('MLflow observation exists with nonrecoverable status')
+                else:
+                    created=client.create_run(exp_id,tags={**tags,'mlflow.runName':f'SMART-RESULT-{contest}'})
+                    run_id=created.info.run_id
+                    status='RECORDED'
+                if status!='EXISTING_VALID':
+                    for key,value in metrics.items():
+                        client.log_metric(run_id,key,value)
+                    client.set_terminated(run_id,status='FINISHED')
+                observed=client.get_run(run_id)
+                if observed.info.status!='FINISHED' or any(
+                    observed.data.tags.get(key)!=value for key,value in tags.items()
+                ) or any(key not in observed.data.metrics or abs(observed.data.metrics[key]-value)>1e-10
+                         for key,value in metrics.items()):
+                    raise ValueError('MLflow readback did not reproduce verified source evidence')
+                receipt = {
+                    'schema':'SMART_POST_RESULT_MLFLOW_CONSUMPTION_1',
+                    'capability':'mlflow',
+                    'native_function_executed':'mlflow.tracking.MlflowClient.create_run/log_metric/get_run',
+                    'consumer':'smart_operator.post_result_report_operation_or_mlflow_sync',
+                    'third_party_mlflow_library_executed':True,
+                    'status':status,
+                    'target_contest':contest,
+                    'experiment_id':exp_id,
+                    'run_id':run_id,
+                    'report_sha256':recorded_hash,
+                    'report_file_sha256':actual_file_hash,
+                    'source_fingerprint':report['source_fingerprint'],
+                    'consumed_metrics':metrics,
+                    'readback_verified':True,
+                    'predictive_weight_authorized':False,
+                    'freeze_mutation_authorized':False,
+                    'experiment_preregistration_claimed':False,
+                }
+                receipt['sha256'] = sha256_json(receipt)
+                return receipt
+            finally:
+                _release_os_lock(lock)
+
+
 def monte_carlo_null_hits(
     observed_hits: Sequence[int],
     replications: int = 10_000,

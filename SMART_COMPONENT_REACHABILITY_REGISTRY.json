@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "7a439510caab5ed4ae2b3eb8a4d636f61293656dd7adc3d94927b738656a690e",
+  "inventory_sha256": "56ec5ae8b2d6ec9e0871e613cc9e8b30a07ab7a6abc73944e20dd1ead4cd4421",
   "summary": {
-    "python_components": 487,
+    "python_components": 488,
     "workflow_entrypoints": 8,
     "production_components": 101,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 22,
-    "test_components": 160,
+    "test_components": 161,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5336,14 +5336,18 @@
         "smart_repository_integrity",
         "smart_skill_adapter_registry"
       ],
-      "producers": [],
+      "producers": [
+        "smart_operation_lock"
+      ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_capability_integration_v2",
         "smart_finalize_capability_integration_v3",
+        "smart_operator",
         "smart_probability_audit",
         "smart_skill_runtime",
-        "test_smart_experiment_lab"
+        "test_smart_experiment_lab",
+        "test_smart_post_result_mlflow"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -5353,7 +5357,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f"
+      "sha256": "1b63fd539278f242b3df62afeab75fc05c2abdf8be736ac806b0bcd35ad4c4fb"
     },
     {
       "component_id": "smart_extended_falsification",
@@ -6515,15 +6519,18 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
       "entrypoints": [
+        "smart_disconnection_gate",
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "producers": [
         "smart_canonical_identity"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_experiment_lab",
         "smart_full_process_pipeline",
         "smart_operator",
         "smart_regression_runner",
@@ -6632,6 +6639,7 @@
         "smart_champion_challenger",
         "smart_crash_safe_io",
         "smart_current_epoch_contract",
+        "smart_experiment_lab",
         "smart_full_process_pipeline",
         "smart_historical_binding",
         "smart_idempotency",
@@ -6676,6 +6684,7 @@
         "test_smart_operator_result_materialization",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_operator_unprepared_missed_recovery_20260915",
+        "test_smart_post_result_mlflow",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch"
       ],
@@ -6687,7 +6696,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "236b3b6ee54065a751b2ecac53e4be2fb2a60b152099108b12bf308fd575214c"
+      "sha256": "081560431d756d7c4d55a502a09cae79cddcbeb5be318d3f13590ef6bc840c22"
     },
     {
       "component_id": "smart_operator_contract",
@@ -6886,6 +6895,7 @@
       "consumers": [
         "smart_operator",
         "test_smart_false_negative_rescue",
+        "test_smart_post_result_mlflow",
         "test_smart_post_result_report"
       ],
       "reachable": true,
@@ -8205,7 +8215,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "59b378d30d209584045d69f78adbc383c98498c3e1769e46d2abe8f086439096"
+      "sha256": "b94eabdf5567f25ab2a7b441bcb66d92d1a5ea957988019501fdbd0d61b5a134"
     },
     {
       "component_id": "smart_skill_runtime",
@@ -11197,6 +11207,29 @@
       "sha256": "0d6a57c58e416efa28e8f19bfe8444d00d6f72c13e1c49467145e90c6aeefe11"
     },
     {
+      "component_id": "test_smart_post_result_mlflow",
+      "source_file": "test_smart_post_result_mlflow.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_experiment_lab",
+        "smart_operator",
+        "smart_post_result_report"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "1ade960ce78720f7fc89cc52c53e95db447f0ebb14872e0816c4eb1cb500965b"
+    },
+    {
       "component_id": "test_smart_post_result_report",
       "source_file": "test_smart_post_result_report.py",
       "role": "TEST",
@@ -11218,7 +11251,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "8cffbeb3582e21b2cc6b33821082253d6eec8e83dc046a7fce7698e3fb9bb9bb"
+      "sha256": "96f173c355dec9fb075c7af6cb1f5b42f24a7bcf59b6e6811d640865ff3d11bf"
     },
     {
       "component_id": "test_smart_powered_falsification_artifact",

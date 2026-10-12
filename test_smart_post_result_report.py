@@ -747,6 +747,9 @@ def test_all_fourteen_skill_gaps_are_reconciled_without_fake_execution():
     import importlib.util
     assert audit['capabilities']['mlflow']['status'] == (
         'INSTALLED_NOT_CONSUMED' if importlib.util.find_spec('mlflow') else 'MISSING_DEPENDENCY')
+    if importlib.util.find_spec('mlflow'):
+        assert audit['capabilities']['mlflow']['execution_receipt_must_be_checked_separately'] is True
+        assert 'track_signed_post_result' in audit['capabilities']['mlflow']['existing_native_entrypoint']
     for name in ('pymc', 'aeon', 'conformal-risk-control-mapie',
                  'hyperparameter-tuning-optuna', 'property-based-testing-hypothesis',
                  'mutmut-mutation', 'z3-formal-verification'):

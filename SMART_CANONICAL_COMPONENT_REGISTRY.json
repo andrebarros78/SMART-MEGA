@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "7a439510caab5ed4ae2b3eb8a4d636f61293656dd7adc3d94927b738656a690e",
+  "source_reachability_inventory_sha256": "56ec5ae8b2d6ec9e0871e613cc9e8b30a07ab7a6abc73944e20dd1ead4cd4421",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 487,
+    "component_count": 488,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 186,
+    "diagnostic": 187,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -5652,16 +5652,20 @@
       "component_id": "smart_experiment_lab",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_experiment_lab.py",
-      "implementation_sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f",
+      "implementation_sha256": "1b63fd539278f242b3df62afeab75fc05c2abdf8be736ac806b0bcd35ad4c4fb",
       "role": "PRODUCTION",
       "state": "ACTIVE",
-      "producers": [],
+      "producers": [
+        "smart_operation_lock"
+      ],
       "consumers": [
         "smart_capability_integration_v2",
         "smart_finalize_capability_integration_v3",
+        "smart_operator",
         "smart_probability_audit",
         "smart_skill_runtime",
-        "test_smart_experiment_lab"
+        "test_smart_experiment_lab",
+        "test_smart_post_result_mlflow"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -6912,6 +6916,7 @@
         "smart_canonical_identity"
       ],
       "consumers": [
+        "smart_experiment_lab",
         "smart_full_process_pipeline",
         "smart_operator",
         "smart_regression_runner",
@@ -6920,9 +6925,11 @@
         "test_smart_operation_lock_cross_platform"
       ],
       "entrypoints": [
+        "smart_disconnection_gate",
         "smart_github_certify",
         "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7018,7 +7025,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "236b3b6ee54065a751b2ecac53e4be2fb2a60b152099108b12bf308fd575214c",
+      "implementation_sha256": "081560431d756d7c4d55a502a09cae79cddcbeb5be318d3f13590ef6bc840c22",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7029,6 +7036,7 @@
         "smart_champion_challenger",
         "smart_crash_safe_io",
         "smart_current_epoch_contract",
+        "smart_experiment_lab",
         "smart_full_process_pipeline",
         "smart_historical_binding",
         "smart_idempotency",
@@ -7072,6 +7080,7 @@
         "test_smart_operator_result_materialization",
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_operator_unprepared_missed_recovery_20260915",
+        "test_smart_post_result_mlflow",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch"
       ],
@@ -7296,6 +7305,7 @@
       "consumers": [
         "smart_operator",
         "test_smart_false_negative_rescue",
+        "test_smart_post_result_mlflow",
         "test_smart_post_result_report"
       ],
       "entrypoints": [
@@ -8676,7 +8686,7 @@
       "component_id": "smart_skill_reconciliation",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_skill_reconciliation.py",
-      "implementation_sha256": "59b378d30d209584045d69f78adbc383c98498c3e1769e46d2abe8f086439096",
+      "implementation_sha256": "b94eabdf5567f25ab2a7b441bcb66d92d1a5ea957988019501fdbd0d61b5a134",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -11935,10 +11945,35 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_post_result_mlflow",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_post_result_mlflow.py",
+      "implementation_sha256": "1ade960ce78720f7fc89cc52c53e95db447f0ebb14872e0816c4eb1cb500965b",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_experiment_lab",
+        "smart_operator",
+        "smart_post_result_report"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
-      "implementation_sha256": "8cffbeb3582e21b2cc6b33821082253d6eec8e83dc046a7fce7698e3fb9bb9bb",
+      "implementation_sha256": "96f173c355dec9fb075c7af6cb1f5b42f24a7bcf59b6e6811d640865ff3d11bf",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13218,5 +13253,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "eb43d88bfa4fa80b2fe4305ae8efd8c738f443e7397abe7bd62d384d95c445f7"
+  "registry_sha256": "57dbe683c7eaa946dba5998e68feedffa5dba17481b5793c9052a29a5d8ba2c8"
 }
