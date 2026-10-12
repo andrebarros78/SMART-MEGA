@@ -53,20 +53,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "56ec5ae8b2d6ec9e0871e613cc9e8b30a07ab7a6abc73944e20dd1ead4cd4421",
+  "inventory_sha256": "267bd401d848da0a85f8339617aabe99ffedce1826662fb2f2a70f4e238bdf3d",
   "summary": {
-    "python_components": 488,
+    "python_components": 490,
     "workflow_entrypoints": 8,
     "production_components": 101,
     "shadow_components": 1,
-    "diagnostic_components": 27,
+    "diagnostic_components": 28,
     "validation_components": 22,
-    "test_components": 161,
+    "test_components": 162,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 38,
+    "independent_entrypoints": 39,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -123,6 +123,7 @@
       "smart_signal_2000_simulation.py",
       "smart_signal_50_round_simulation.py",
       "smart_signal_drift_calibration.py",
+      "smart_test_gap_analysis.py",
       "smart_v2_production.py"
     ]
   },
@@ -7534,11 +7535,13 @@
         "smart_canonical_identity",
         "smart_operation_lock",
         "smart_regression_evidence",
-        "smart_source_identity"
+        "smart_source_identity",
+        "smart_test_gap_analysis"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_regression_runner"
+        "test_smart_regression_runner",
+        "test_smart_test_gap_analysis"
       ],
       "reachable": false,
       "production_reachable": false,
@@ -7548,7 +7551,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "fb0768729f15b1c42e8a77742e04e854c498a7d08b1b0651df2dc9996758101e"
+      "sha256": "b7fba7d282f7cfebc2cd4c9e87812ed17cbd3aa3b35efacda2d8486f903b5149"
     },
     {
       "component_id": "smart_release_attestation",
@@ -8486,6 +8489,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "eba9a2f876187aea9a10eda5348506feafbafd2a0d05cb6ad473d650f46af86a"
+    },
+    {
+      "component_id": "smart_test_gap_analysis",
+      "source_file": "smart_test_gap_analysis.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_regression_runner",
+        "test_smart_test_gap_analysis"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "e7338f906f4aadc864627453e96cf797dbff5a89f7442eb5456dbb4874432a3b"
     },
     {
       "component_id": "smart_test_helpers",
@@ -12124,6 +12149,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "1b3f6946c4ae467d313e383548862a8d21e2e355c5bd1b9fef950c0bc89b6ffb"
+    },
+    {
+      "component_id": "test_smart_test_gap_analysis",
+      "source_file": "test_smart_test_gap_analysis.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_regression_runner",
+        "smart_test_gap_analysis"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "d451fecdc9215f75ff13970f536f95e51a32ce66e09abdd3b748c450c628d29b"
     },
     {
       "component_id": "test_smart_total_integration_gate",

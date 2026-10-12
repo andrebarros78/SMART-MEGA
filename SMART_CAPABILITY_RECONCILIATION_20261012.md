@@ -27,7 +27,7 @@
 | `dianoia` | REFERÊNCIA, NÃO EXECUTADO | Sem runtime próprio de agente de pesquisa conectado ao fluxo |
 | `ml-engineer` | PAPEL, NÃO EXECUTADO | Rótulo de engenharia; sem consumidor específico do treinamento/validação de modelo demonstrado |
 | `nisan-et-al-2007-algorithmic-game-theory` | REFERÊNCIA, NÃO EXECUTADO | Obra/metodologia, sem algoritmo de teoria dos jogos implementado especificamente |
-| `test-gap-analysis` | FUNÇÃO OFFLINE, NÃO CONSUMIDA | Existem testes e registros de cobertura, mas sem comprovante de execução dedicada de análise de lacunas neste fluxo |
+| `test-gap-analysis` | **EXECUTADO E CONSUMIDO NO GATE DE ENGENHARIA** (não no resultado de sorteio) | `smart_test_gap_analysis.execute_test_gap()` executa `coverage.py` 7.10.6 sobre cinco testes reais; `smart_regression_runner.py --verify-test-gap` consome prova assinada e rejeita fonte alterada. Evidência: `SMART_TEST_GAP_EVIDENCE_20261012.json`; o relatório pós-resultado original não certifica uma medição gerada depois. |
 
 ## Como a prova é verificada
 
@@ -36,5 +36,7 @@ O novo `smart_skill_reconciliation.reconcile_remaining()` confronta o inventári
 ## Próximo incremento legítimo
 
 A integração MLflow posterior ao relatório usa `SMART_EXPERIMENT_REGISTRY/mlflow.db`, `mlruns/` e comprovante retornado pelo operador; somente `RECORDED`, `EXISTING_VALID` ou `RECOVERED_PARTIAL` com `readback_verified=true` representam consumo real. Para reparar uma falha de telemetria sem reabrir o ciclo, executar pelo plugin no repositório autorizado `python smart_operator.py mlflow-sync --target <CONCURSO>`. Se estiver indisponível, o operador retorna `OBSERVABILITY_UNAVAILABLE` com `retry_required=true`, sem reverter resultados assinados. O total verificável no relatório mantém 25/37; após consumo MLflow de fato comprovado pelo retorno operacional, há 26/37 caminhos metodológicos operacionalizados (11 referências sem consumo). As dependências externas ausentes exigem aquisição, sanitização e testes dedicados; não devem ser instaladas ou importadas de outros projetos por conveniência. As referências de pesquisa e papéis precisam demonstrar utilidade real para terem consumidores próprios. Nenhuma mudança de modelo deve ser promovida sem validação prospectiva e não regressão.
+
+**Gate de engenharia adicional:** execução real/consumo de `test-gap-analysis`, verificando 5 módulos de código com cinco testes selecionados, constitui a 27ª capacidade nativa demonstrada em todos os fluxos combinados (25 no relatório, MLflow e análise de lacunas na trilha do operador/engenharia). Ainda existem 10 das 37 sem consumidor demonstrado. Isto não representa cobertura total de testes: a amostra encontrou 1.613 linhas não exercitadas, portanto o trabalho de fortalecimento de testes permanece aberto.
 
 **Estado científico:** não há evidência de melhora preditiva comprovada nem autorização para declarar `MISSION_PROVEN`.

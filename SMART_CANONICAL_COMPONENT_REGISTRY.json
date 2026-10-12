@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "56ec5ae8b2d6ec9e0871e613cc9e8b30a07ab7a6abc73944e20dd1ead4cd4421",
+  "source_reachability_inventory_sha256": "267bd401d848da0a85f8339617aabe99ffedce1826662fb2f2a70f4e238bdf3d",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 488,
+    "component_count": 490,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 187,
+    "diagnostic": 189,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -7984,17 +7984,19 @@
       "component_id": "smart_regression_runner",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_regression_runner.py",
-      "implementation_sha256": "fb0768729f15b1c42e8a77742e04e854c498a7d08b1b0651df2dc9996758101e",
+      "implementation_sha256": "b7fba7d282f7cfebc2cd4c9e87812ed17cbd3aa3b35efacda2d8486f903b5149",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_canonical_identity",
         "smart_operation_lock",
         "smart_regression_evidence",
-        "smart_source_identity"
+        "smart_source_identity",
+        "smart_test_gap_analysis"
       ],
       "consumers": [
-        "test_smart_regression_runner"
+        "test_smart_regression_runner",
+        "test_smart_test_gap_analysis"
       ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
@@ -8992,6 +8994,30 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "smart_test_gap_analysis",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_test_gap_analysis.py",
+      "implementation_sha256": "e7338f906f4aadc864627453e96cf797dbff5a89f7442eb5456dbb4874432a3b",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_regression_runner",
+        "test_smart_test_gap_analysis"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_test_helpers",
@@ -12946,6 +12972,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_test_gap_analysis",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_test_gap_analysis.py",
+      "implementation_sha256": "d451fecdc9215f75ff13970f536f95e51a32ce66e09abdd3b748c450c628d29b",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_regression_runner",
+        "smart_test_gap_analysis"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_total_integration_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_total_integration_gate.py",
@@ -13253,5 +13303,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "57dbe683c7eaa946dba5998e68feedffa5dba17481b5793c9052a29a5d8ba2c8"
+  "registry_sha256": "2347da5b0d7b07ac66033eae58976c8cdccfcf4e29a6dd6066a36fda0e6f846c"
 }
