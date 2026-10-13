@@ -1,0 +1,100 @@
+{
+  "schema": "SMART_MEGA_B2_INVENTORY_ENGINEERING_GATE_V1",
+  "date": "2026-10-13",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-learning-b2-checkpoint-inventory-20261013",
+  "tested_code_commit": "31b27cfec0c5b45067b3be92ac75697cb4619f0e",
+  "objective": "Provide safe SHA256-verified read-only inventory for the 13 PC Escola checkpoints and reconcile governed transport without bypassing admission policies.",
+  "implementation": {
+    "module": "smart_video_learning.py",
+    "entrypoint": "audit_checkpoint_inventory",
+    "cli": "python smart_video_learning.py --inventory-readonly --checkpoint-dir C:\\SMART-MEGA\\runtime\\video_observation --expected-checkpoints 13",
+    "expected_count": 13,
+    "maximum_count": 512,
+    "report_schema": "SMART_VIDEO_CHECKPOINT_INVENTORY_V1",
+    "read_only": true,
+    "controls": [
+      "SHA256 for each checkpoint",
+      "contest filename and ID match",
+      "extractor version",
+      "trusted extraction fingerprint",
+      "source URL guard",
+      "recursively reject result labels",
+      "candidate scope and event constraints",
+      "symlink and 1MiB file cap",
+      "no video download",
+      "no checkpoint or memory changes",
+      "predictive weight 0"
+    ]
+  },
+  "tests": {
+    "source": "test_smart_video_checkpoint_inventory.py plus legacy smart_video_observation and smart_video_learning tests",
+    "total": 61,
+    "windows": {
+      "host": "PC Vendas",
+      "python": "3.14.4",
+      "passed": 61,
+      "failed": 0,
+      "run_class": "temporary local regression fixtures"
+    },
+    "linux": {
+      "host": "wmcp-cloud-01",
+      "python": "3.12.3",
+      "passed": 61,
+      "failed": 0,
+      "run_class": "temporary local regression fixtures"
+    },
+    "physical_checkpoints_used": 0
+  },
+  "governed_b2_probes": [
+    {
+      "network_command_id": "netcmd_cb2053f9ad85493a8f08f5c429ac0295",
+      "operation": "python.version",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "stdout": "Python 3.13.15"
+    },
+    {
+      "network_command_id": "netcmd_9a4ba41145e8438cbe938685423dca10",
+      "operation": "python.exec",
+      "purpose": "--help on presumed C:\\SMART-MEGA\\smart_video_observation.py",
+      "status": "FAILED",
+      "detail": "executor reported task failed without usable stderr; file presence not proven"
+    },
+    {
+      "operation": "git.status",
+      "status": "DENIED_BEFORE_ROUTING",
+      "detail": "Linux LMCP operation allowlist excludes git.status although GOV-WINDOWS implements it"
+    },
+    {
+      "network_command_id": "netcmd_f54dd1a401b34cbfa7fe494a446df96e",
+      "operation": "fabric.manifest.get",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "stdout": "FABRIC_MANIFEST_ABSENT=1",
+      "note": "refers only to separately managed Data Fabric canonical directory, not C:\\SMART-MEGA runtime"
+    }
+  ],
+  "contract_findings": {
+    "linux_allowlist_file": "/srv/lmcp/governor/federation.py",
+    "windows_allowlist_file": "C:\\New Projet\\WMCP 3.1\\components\\governor-windows\\src\\governor_windows\\network_dispatch.py",
+    "b2_agent_source": "C:\\New Projet\\WMCP 3.1\\src\\windows_mcp\\federation\\remote_pc_agent.py",
+    "linux_wmcp_task_allowed": true,
+    "windows_wmcp_task_allowed": false,
+    "linux_git_status_allowed": false,
+    "windows_git_status_allowed": true,
+    "b2_python_exec_uses_preexisting_py_file_within_allowed_workspace": true,
+    "b2_fabric_canonical_root_separate_from_smartmega": true,
+    "global_policy_relaxation_performed": false,
+    "windows_shared_repo_observed_with_unrelated_pending_modifications": true
+  },
+  "live_physical_verdict": {
+    "pc_escola_checkpoint_files_read": 0,
+    "count_13_verified": false,
+    "real_video_benchmark": false,
+    "main_modified": false,
+    "mission_proven": false,
+    "status": "IMPLEMENTED_AND_CROSS_PLATFORM_TESTED_NOT_DEPLOYED_TO_B2",
+    "next_gate": "Publish the isolated artifact to the authorized B2 workspace via existing signed deployment process; verify script path, then run python.exec with --inventory-readonly, inspect 13 SHA-256 records, and benchmark actual videos. Do not enable shell unrestricted or merge untested."
+  }
+}
