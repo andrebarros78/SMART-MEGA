@@ -658,6 +658,13 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
     if process_findings:
         actions.insert(0, "Corrigir primeiro as falhas de integridade/processo detectadas antes de interpretar desempenho preditivo.")
 
+    # Only immutable receipts issued by explicit operator requests are compared.
+    # Existing historical reports remain byte-compatible when no such cards exist.
+    from smart_operator_card_outcomes import reconcile_operator_card_outcomes
+    requested_card_outcomes = reconcile_operator_card_outcomes(
+        root, target, freeze_sha, official, adjudications[0].get("created_utc"),
+    )
+
     ledger_sha = _sha256_file(ledger_path)
     source_fingerprint = _sha256_json({
         "target": target,
@@ -668,6 +675,13 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "portfolio_sha256": portfolio_metrics.get("portfolio_sha256") if portfolio_metrics else None,
         "portfolio_hits_per_game": portfolio_metrics.get("hits_per_game") if portfolio_metrics else None,
     })
+
+    if requested_card_outcomes is not None:
+        source_fingerprint = _sha256_json({
+            "legacy_source_fingerprint": source_fingerprint,
+            "operator_card_receipts": [row["receipt_sha256"]
+                                       for row in requested_card_outcomes["results"]],
+        })
 
     # The attribution is computed from pre-result frozen signal vectors; the
     # official outcome is consumed strictly here, after adjudication.
@@ -736,6 +750,8 @@ def emit_post_result_report(root: str | Path, active: dict[str, Any], adjudicati
         "source_fingerprint": source_fingerprint,
         "generated_utc": datetime.now(timezone.utc).isoformat(),
     }
+    if requested_card_outcomes is not None:
+        report["operator_requested_card_outcomes"] = requested_card_outcomes
     report["sha256"] = _sha256_json(report)
 
     json_path = root / f"SMART_POST_RESULT_REPORT_{target}.json"
