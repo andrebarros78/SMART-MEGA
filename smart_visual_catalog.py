@@ -10,7 +10,7 @@ from pathlib import Path
 from urllib.parse import urlparse, parse_qs
 
 SCHEMA = "SMART_VISUAL_OFFICIAL_CATALOG_V1"
-CONTEST = re.compile(r"(?i)mega\\s*[- ]?\\s*sena\\s*[-:–]?\\s*(?:concurso\\s*(?:n[ºo.]*)?\\s*)?(\\d{3,5})\\b")
+CONTEST = re.compile(r"(?i)mega\s*[- ]?\s*sena\s*[-:–]?\s*(?:concurso\s*(?:n[ºo.]*)?\s*)?(\d{3,5})\b")
 
 def video_id(url):
     p = urlparse(str(url))
