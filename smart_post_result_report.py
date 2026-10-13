@@ -89,6 +89,13 @@ def _numbers(value: Any) -> list[int] | None:
         value = value.get("numbers")
     if not isinstance(value, (list, tuple)) or len(value) != 6:
         return None
+    # Reject bools/fractions instead of silently truncating a card or
+    # interpreting True as the integer 1. Digit-only strings remain supported
+    # for historical JSON compatibility; negative values are rejected below.
+    if any(isinstance(x, bool) or not (
+        isinstance(x, int) or (isinstance(x, str) and re.fullmatch(r"[0-9]+", x))
+    ) for x in value):
+        return None
     try:
         nums = [int(x) for x in value]
     except (TypeError, ValueError):

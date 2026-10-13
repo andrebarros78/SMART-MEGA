@@ -74,3 +74,23 @@ def test_gap_consumer_requires_receipt_and_rejects_untraced_scope(tmp_path):
     original['execution_sha256'] = _hash({k:v for k,v in original.items() if k != 'execution_sha256'})
     with pytest.raises(ValueError, match='coverage incomplete'):
         verify_test_gap(original, tmp_path)
+
+
+def test_critical_consumer_gate_must_exercise_more_than_prior_five_test_sample():
+    """A larger selection is not itself a pass: critical paths must be reached."""
+    report = json.loads(PROOF.read_text(encoding='utf-8'))
+    verified = verify_test_gap(report, ROOT)
+    assert verified['tests_passed'] >= 17
+    rows = report['source_module_coverage']
+    # Frozen results from the immediately preceding 5-test sample, *not*
+    # product-wide coverage thresholds or prospective performance assertions.
+    baseline_covered = {'smart_operator.py': 130,
+                        'smart_post_result_report.py': 43}
+    for module, count in baseline_covered.items():
+        assert rows[module]['imported_by_selected_tests'] is True
+        assert rows[module]['covered_lines'] > count, (
+            f'new tests failed to exercise additional {module} statements'
+        )
+    assert report['total_missing_lines'] < 1613
+    assert report['prospective_superiority_proven'] is False
+    assert report['predictive_weight_authorized'] is False

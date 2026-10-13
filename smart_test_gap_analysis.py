@@ -30,13 +30,23 @@ TEST_FILES = (
     "test_smart_operator_result_materialization.py",
     "test_smart_skill_runtime.py",
     "test_smart_post_result_report.py",
+    "test_smart_critical_consumer_guards.py",
 )
 TEST_SELECTOR = (
     "test_mlflow_real_signed_observation_persists_replays_and_recovers or "
     "test_mlflow_signed_observation_rejects_wrong_hash_and_tampering or "
     "test_result_materialization_is_byte_exact_and_idempotent or "
     "test_unknown_capability_and_bad_payload_fail_closed or "
-    "test_remaining_capability_reconciliation_refuses_forged_receipts"
+    "test_remaining_capability_reconciliation_refuses_forged_receipts or "
+    "test_primary_card_rejects_fraction_boolean_and_nonnumeric_without_report or "
+    "test_primary_card_digit_strings_preserve_legacy_compatibility or "
+    "test_immutable_ledger_witness_refuses_symlink_and_modified_source or "
+    "test_result_materialization_refuses_duplicate_adjudication or "
+    "test_result_materialization_refuses_corrupted_sha_without_destination or "
+    "test_report_atomic_write_replaces_document_without_residual_files or "
+    "test_operator_sequence_consumes_tracking_without_undoing_adjudication or "
+    "test_explicit_mlflow_sync_repairs_without_repeating_canonical_adjudication or "
+    "test_result_materialization_rejects_conflicting_existing_file"
 )
 
 

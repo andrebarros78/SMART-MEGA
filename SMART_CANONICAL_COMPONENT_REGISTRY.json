@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "267bd401d848da0a85f8339617aabe99ffedce1826662fb2f2a70f4e238bdf3d",
+  "source_reachability_inventory_sha256": "c655fb7884e026a0611b228729f021635697201f9be9694bcf5e95aedae9b02a",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 490,
+    "component_count": 491,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 189,
+    "diagnostic": 190,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -7066,6 +7066,7 @@
         "conftest",
         "smart_github_operator",
         "test_smart_b2_evolution_20260909",
+        "test_smart_critical_consumer_guards",
         "test_smart_current_continuity_generation",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_f02_dependency_direction",
@@ -7290,7 +7291,7 @@
       "component_id": "smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_post_result_report.py",
-      "implementation_sha256": "fddb54ddc42adcc561fedc670ef15be5db44665205eea296dec4ce9f53c686f8",
+      "implementation_sha256": "8334b87fe9e023326e4edf6f636ab6f35a1516494a69d056e5c0a8c6b0e1dbfb",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7304,6 +7305,7 @@
       ],
       "consumers": [
         "smart_operator",
+        "test_smart_critical_consumer_guards",
         "test_smart_false_negative_rescue",
         "test_smart_post_result_mlflow",
         "test_smart_post_result_report"
@@ -8999,7 +9001,7 @@
       "component_id": "smart_test_gap_analysis",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_test_gap_analysis.py",
-      "implementation_sha256": "e7338f906f4aadc864627453e96cf797dbff5a89f7442eb5456dbb4874432a3b",
+      "implementation_sha256": "0f727655ac50e016a395b336ebe225129f4927990e8126c44ea6530e477f0a24",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [],
@@ -10274,6 +10276,32 @@
       "consumers": [
         "test_adjudication_integrity"
       ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_critical_consumer_guards",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_critical_consumer_guards.py",
+      "implementation_sha256": "cd2583d116b5c99281146575dc10f42bd52bdb79478102f0dd25819561b05cae",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operator",
+        "smart_post_result_report",
+        "test_smart_operator_result_materialization",
+        "test_smart_post_result_report"
+      ],
+      "consumers": [],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -11835,7 +11863,9 @@
       "producers": [
         "smart_operator"
       ],
-      "consumers": [],
+      "consumers": [
+        "test_smart_critical_consumer_guards"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -12008,7 +12038,9 @@
         "smart_skill_reconciliation",
         "smart_skill_runtime"
       ],
-      "consumers": [],
+      "consumers": [
+        "test_smart_critical_consumer_guards"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -12975,7 +13007,7 @@
       "component_id": "test_smart_test_gap_analysis",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_test_gap_analysis.py",
-      "implementation_sha256": "d451fecdc9215f75ff13970f536f95e51a32ce66e09abdd3b748c450c628d29b",
+      "implementation_sha256": "5703ff7dbcb45d5e6b51706b407ed14f70b07d4cfb027625ac6eafe477526c72",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13303,5 +13335,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "2347da5b0d7b07ac66033eae58976c8cdccfcf4e29a6dd6066a36fda0e6f846c"
+  "registry_sha256": "ce60de4a1a1da72322d945bdc18133a7e18a90cf1dfa0799cd19479fa87f1ff8"
 }
