@@ -1,0 +1,112 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "AUTHORIZE",
+  "idempotency_key": "3990636cda066381f73727c90265705f8166a0522df12a94580d73d2c0fa7db3",
+  "target": 3070,
+  "result": {
+    "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+    "status": "AUTHORIZED",
+    "target_contest": 3070,
+    "completed_contest": 3069,
+    "review_file": "SMART_POST_RESULT_REVIEW_3069.json",
+    "review_file_sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20",
+    "review_sha256": "3cf051bc774bb1ecdebbdc6d93e5065f45408c967e8961c8e27a5d4433b64121",
+    "canonical_sha256": "b38ca2f75877cc16869a12f14baa65758359d49dd5e3f1ddde769165bcde5db2",
+    "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+    "authorized_utc": "2026-10-13T22:56:16.853304+00:00",
+    "consumed": false,
+    "consumed_utc": null,
+    "prepared_epoch_id": null,
+    "reservation_transaction_id": null,
+    "reserved_utc": null,
+    "consumption_transaction_id": null,
+    "supersedes_completed_cycle_authority": true,
+    "prior_consumed_authority_sha256": "5fe73c2763855eab60283dc644a63bea6c443b03f77361816b03949e9b02ed17",
+    "prior_consumed_target_contest": 3068,
+    "prior_consumed_status": "CONSUMED",
+    "revision": 16,
+    "previous_document_sha256": "5fe73c2763855eab60283dc644a63bea6c443b03f77361816b03949e9b02ed17",
+    "sha256": "754ca25cb9fe6b5c7cd39101c3012c80e6d5e694c3b793a9200400b5f9f8c26c",
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "AUTHORIZED",
+      "revision": 38,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3070,
+      "completed_contest": 3069,
+      "previous_state": "HOLD",
+      "transition": "HOLD_TO_AUTHORIZED",
+      "transition_actor": "operator_authorize_next_cycle",
+      "transition_utc": "2026-10-13T22:56:16.860574+00:00",
+      "previous_lifecycle_sha256": "ac8053b61007e654ea5fd7dda110510ef213c8cadf336dd3dbc56d522e58ad58",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "168e98140480d9b3e80cd0fe51dfbd01af27334a04fe78b97268f994e7fe9191"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3069.json",
+          "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3068:operator-3068-acc6a34c9e27-20261008T222652499219Z",
+        "reserved_authority_sha256": "1c37bea8eb30ac71019c8da88a3bda70ec8deec2cbe38a47b724459683d15a10",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "791b63093914ca8d0180378dba857f4e1323ca1682f83ac85a3fd47606ef0828",
+          "epoch_id": "operator-3068-acc6a34c9e27-20261008T222652499219Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/ARCHIVE_MANIFEST.json",
+          "sha256": "c6f5a8b286604f366a868291d261880bb1c0847ba5fa800c090df661e281c67a"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3069,
+          "through_target": 3069,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+              "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+              "target_contest": 3069
+            }
+          ],
+          "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
+            "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
+            "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
+            "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
+            "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+            "targets": [
+              3069
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "a3919e68ee508365d1c96cd858cce8cc7a8fac1922a9287a3a9c7092bd8b6462"
+    }
+  }
+}
