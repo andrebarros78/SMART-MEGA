@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "6c6e2ec78d0d16d108fcf0e56a5b24ab0b4a0783311b79f02561262bd55c00ab",
+  "source_reachability_inventory_sha256": "ed4b79a5c6c49c2741ec7ce51c4df16f04f2f5ef501fc334a73d19c11cc94389",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 506,
+    "component_count": 507,
     "active": 104,
     "shadow": 1,
-    "diagnostic": 202,
+    "diagnostic": 203,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -4625,7 +4625,7 @@
       "component_id": "smart_authority_freshness",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_authority_freshness.py",
-      "implementation_sha256": "06db061e83cc0a70660d41dc2f06c4f420177a1043f8ca65c56c8b76edfaae9d",
+      "implementation_sha256": "b7c45ad12488116284bd9c07f5d0e20434f3d556937f62abf6e60c641c4c4b43",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4638,6 +4638,7 @@
         "smart_github_certify",
         "smart_mission_status",
         "smart_startup_reconciler",
+        "test_smart_operational_scientific_decoupling",
         "test_smart_operator_preflight"
       ],
       "entrypoints": [
@@ -8986,7 +8987,7 @@
       "component_id": "smart_startup_reconciler",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_startup_reconciler.py",
-      "implementation_sha256": "21ee65723e016c4ab6d15d5db97314065dca83db502370ecd7a94815aac55687",
+      "implementation_sha256": "b25e8041a148830a75d47f609a27df8683daa7401210c7801ee6ba0926407c97",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9002,6 +9003,7 @@
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
+        "test_smart_operational_scientific_decoupling",
         "test_smart_repository_integrity",
         "test_smart_startup_withdraw_reconciliation"
       ],
@@ -11939,6 +11941,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_operational_scientific_decoupling",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_operational_scientific_decoupling.py",
+      "implementation_sha256": "23876fe5f9f4c6c273c8ddefd7d8efbae787d04e7ce56f282612a4e9266de2ee",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_authority_freshness",
+        "smart_startup_reconciler"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_operator_adjudicate_atomicity",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_adjudicate_atomicity.py",
@@ -13733,5 +13759,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "97076260ab64e6773589e287ec249335bb6986b9d2c9b7ee6cda6015c3ea391f"
+  "registry_sha256": "10be8487807c259ac26d57dce7385e06ac5f8a4ea60a8307e05798b44947424e"
 }

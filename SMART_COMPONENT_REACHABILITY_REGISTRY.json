@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "6c6e2ec78d0d16d108fcf0e56a5b24ab0b4a0783311b79f02561262bd55c00ab",
+  "inventory_sha256": "ed4b79a5c6c49c2741ec7ce51c4df16f04f2f5ef501fc334a73d19c11cc94389",
   "summary": {
-    "python_components": 506,
+    "python_components": 507,
     "workflow_entrypoints": 8,
     "production_components": 104,
     "shadow_components": 1,
     "diagnostic_components": 31,
     "validation_components": 22,
-    "test_components": 172,
+    "test_components": 173,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4377,6 +4377,7 @@
         "smart_github_certify",
         "smart_mission_status",
         "smart_startup_reconciler",
+        "test_smart_operational_scientific_decoupling",
         "test_smart_operator_preflight"
       ],
       "reachable": true,
@@ -4389,7 +4390,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "06db061e83cc0a70660d41dc2f06c4f420177a1043f8ca65c56c8b76edfaae9d"
+      "sha256": "b7c45ad12488116284bd9c07f5d0e20434f3d556937f62abf6e60c641c4c4b43"
     },
     {
       "component_id": "smart_bounded_online_learning",
@@ -8511,6 +8512,7 @@
         "smart_operator",
         "smart_repository_integrity",
         "smart_rollover",
+        "test_smart_operational_scientific_decoupling",
         "test_smart_repository_integrity",
         "test_smart_startup_withdraw_reconciliation"
       ],
@@ -8522,7 +8524,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "21ee65723e016c4ab6d15d5db97314065dca83db502370ecd7a94815aac55687"
+      "sha256": "b25e8041a148830a75d47f609a27df8683daa7401210c7801ee6ba0926407c97"
     },
     {
       "component_id": "smart_storage_surfaces",
@@ -11216,6 +11218,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "bb670043ef13b9ccb097fd079c8d53de35de601d35d3ce1d7337740dbe9495dd"
+    },
+    {
+      "component_id": "test_smart_operational_scientific_decoupling",
+      "source_file": "test_smart_operational_scientific_decoupling.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_authority_freshness",
+        "smart_startup_reconciler"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "23876fe5f9f4c6c273c8ddefd7d8efbae787d04e7ce56f282612a4e9266de2ee"
     },
     {
       "component_id": "test_smart_operator_adjudicate_atomicity",
