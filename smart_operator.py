@@ -1064,6 +1064,26 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 
+@locked_operation("REQUEST_OPERATOR_CARD")
+def request_card_operation(root: str | Path, target: int, request_id: str) -> dict[str, Any]:
+    """Operator-only: issue one six-number card per explicit request.
+
+    A single frozen prediction can support successive operator requests for
+    the same contest. This never refreezes, reweights or auto-generates cards.
+    """
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    assert_lifecycle_state(root, "FROZEN", target_contest=target)
+    # Never issue or vary cards after the scheduled pre-result window closes.
+    assert_pre_draw_window(resolve_target_schedule(root, target))
+    active = verify_active_epoch(root / ACTIVE_PATH)
+    from smart_operator_card_requests import issue_from_frozen_epoch
+    return issue_from_frozen_epoch(
+        root, target=target, request_id=request_id, active=active,
+        operator_requested=True,
+    )
+
+
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Read-only official-result readiness gate for the immutable frozen epoch.
 
@@ -1402,6 +1422,7 @@ def main(argv: list[str] | None = None) -> None:
     n = sub.add_parser("authorize-next-cycle"); n.add_argument("--target", type=int, required=True)
     g = sub.add_parser("authorize-generation"); g.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
+    c = sub.add_parser("request-card"); c.add_argument("--target", type=int, required=True); c.add_argument("--request-id", required=True)
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
     ms = sub.add_parser("mlflow-sync"); ms.add_argument("--target", type=int, required=True)
@@ -1420,6 +1441,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "authorize-next-cycle": out = authorize_next_cycle_operation(root, args.target)
     elif args.action == "authorize-generation": out = authorize_generation_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
+    elif args.action == "request-card": out = request_card_operation(root, args.target, args.request_id)
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
     elif args.action == "mlflow-sync": out = post_result_mlflow_sync_operation(root, args.target)
