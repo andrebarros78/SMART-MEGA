@@ -1,0 +1,59 @@
+{
+  "schema": "SMART_PR40_FULL_SOURCE_BOUND_REGRESSION_1",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "tested_source_commit": "f12f92559ef8931f5685ba5c2efcb3b4f934cd72",
+  "runtime": "Python 3.12.3, pytest 9.1.1, pytest-xdist 3.8.0, 5 isolated pytest workers",
+  "github_actions_used": false,
+  "junit_file": "JUNIT_1321.xml",
+  "junit_sha256": "86a7d23ae4fba22a244a56c9f1278f8309dd2a6931fa7141efe61c22dfed2b04",
+  "tests": {
+    "passed": 1321,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "subtests_passed": 11,
+    "warnings": 5,
+    "wall_clock_seconds": 426.05
+  },
+  "code_fingerprint_sha256": "b6414e05b62428970fbc04804424e4c21076a5d78d1f05c742219c0a07dccbc8",
+  "critical_code_manifest_fingerprint_sha256": "704a8952c5f067a7cd6daa587d06b41e86f34ee5151983b148f7263a7dfddddc",
+  "current_source_and_authority_sha256": {
+    "smart_primary_card_selector.py": "92889076f1dac01ffee2a4058d1dbb23381e3f2e860f4efca11d6ac966598e0b",
+    "smart_operator_card_requests.py": "feed960604eb8ba312f66aa01997ff40060521088d2133f32b2e1470202f342c",
+    "smart_native_card_publisher.py": "24af9cb952490b19d2033437bd458b803ddd351af67eb0664f921a377bb2d6f3",
+    "smart_operator_card_outcomes.py": "72db77b1e95d06a48aa2ba7c59f58f8bdc99380f9b45d2d08a0e2b018545631d",
+    "smart_post_result_report.py": "42117cea950f49183a90e744cb5dda2010da6a296dd3c7d107cc69cedb390880",
+    "test_smart_f12_scientific_successor.py": "2d25b1b99d6c54b0aaf305b5d3aaf530b72ddadc88a159950a4696424a2a65ef",
+    "SMART_TEST_GAP_EVIDENCE_20261012.json": "6e84c87d27d8e4d024939fdb14a28c1fe31d583c3ee7e1f0ee7947bc1ebc198d",
+    "SMART_SIGNAL_LEDGER.json": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a"
+  },
+  "regression_from_prior_run": {
+    "previous_test_passed": 1297,
+    "previous_test_failed": 24,
+    "resolved_prior_failures": 24
+  },
+  "historical_F12_approval_record_preserved": true,
+  "current_selector_extension_is_not_original_F12_scope": true,
+  "new_selector_F11_source_nonregression_evidence": "d9010f7485db7e68a8887824aeb400922f76b203706f2d8eb0c1bce0a85fab0f",
+  "measured_engineering_missing_lines_across_five_modules": 1425,
+  "product_certification_current": false,
+  "product_certification_reason": "ValueError: SMART product certification is stale for current code",
+  "operative_contest": {
+    "completed": 3069,
+    "next_target": 3070,
+    "state": "HOLD",
+    "operator_issued_cards_during_tests": 0
+  },
+  "engineering_regression_gate": "PASS",
+  "scientific_predictive_superiority_proven": false,
+  "terminal_six_of_six_proven": false,
+  "release_or_main_merge_authorized": false,
+  "limitations": [
+    "This is full engineering regression, not a current production certificate: historical authorities are stale for new code.",
+    "Revised selector no-exclusion path preserves F11 behavior, but existing F12 same-source mandate appropriately rejects subsequent extension.",
+    "No operator authorization for live target 3070, no official future result and no independent prospective superiority proof.",
+    "Coverage gaps are measured, not silently considered complete."
+  ],
+  "sha256": "0b319b90b561be9560898e484a912326c5587316e4806886b866ac623a449e84"
+}
