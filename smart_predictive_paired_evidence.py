@@ -97,7 +97,8 @@ def evaluate(root):
             "all_primary_card_predictions_replayed": False,
             "promotion_authorized": False, "prospective_superiority_proven": False,
             "six_of_six_proven": False,
-            "limitations": ["four archived freeze files missing", "archive availability may be selective",
+            "limitations": [f"{len(excluded)} original archived freeze files unavailable" if excluded else "all referenced frozen files are available",
+                            "archive availability may be selective",
                             "event earlier than adjudication alone is not independently verified pre-draw publication",
                             "compared champion/challenger heads are not always the final primary card",
-                            "the seven-draw historical subset cannot support prospective promotion"]}
+                            f"the {len(verified)}-draw historical subset cannot support prospective promotion"]}

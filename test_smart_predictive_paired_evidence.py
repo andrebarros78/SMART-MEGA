@@ -12,11 +12,14 @@ ROOT = Path(__file__).resolve().parent
 
 def test_archival_result_is_tie_not_prospective_promotion():
     r = evaluate(ROOT)
-    assert (r["adjudicated_count"],r["verified_count"]) == (11,7)
-    assert [x["contest"] for x in r["rows"]] == [3051,3052,3053,3054,3062,3067,3068]
-    assert [x["contest"] for x in r["excluded"]] == [3055,3057,3060,3061]
-    assert (r["champion_hits"],r["challenger_hits"],r["challenger_minus_champion_hits"]) == (5,5,0)
+    assert (r["adjudicated_count"],r["verified_count"]) == (11,9)
+    assert [x["contest"] for x in r["rows"]] == [3051,3052,3053,3054,3055,3057,3062,3067,3068]
+    assert [x["contest"] for x in r["excluded"]] == [3060,3061]
+    assert (r["champion_hits"],r["challenger_hits"],r["challenger_minus_champion_hits"]) == (6,7,1)
     assert all(x["max_score_error"] < 1e-12 for x in r["rows"])
+    assert r["verified_count"] + len(r["excluded"]) == r["adjudicated_count"]
+    assert r["limitations"][0] == "2 original archived freeze files unavailable"
+    assert r["limitations"][-1] == "the 9-draw historical subset cannot support prospective promotion"
     assert r["promotion_authorized"] is False and r["prospective_superiority_proven"] is False
     assert r["prospective_e_value_proven"] is False
 
