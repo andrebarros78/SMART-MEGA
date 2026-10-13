@@ -189,17 +189,19 @@ def issue_from_frozen_epoch(root, *, target, request_id, active, operator_reques
     receipt["sha256"] = _hash(receipt)
     output_dir.mkdir(parents=True, exist_ok=True)
     destination = output_dir / f"CARD-{index:04d}-{request_id}.json"
-    # The outer operator lock serializes concurrent requests. Atomic replace
-    # protects against partial files; never overwrite an issued receipt.
+    # The outer operator lock serializes cooperative callers. Hard-link
+    # create-only prevents accidental overwrite even if a second process races.
+    # An atomic rename would overwrite an existing receipt after a race.
     fd, tmp = tempfile.mkstemp(prefix="card-request-", suffix=".tmp", dir=output_dir)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as fh:
             fh.write(json.dumps(receipt, indent=2, ensure_ascii=False) + "\n")
             fh.flush()
             os.fsync(fh.fileno())
-        if destination.exists():
-            raise FileExistsError("operator card request already issued")
-        os.replace(tmp, destination)
+        try:
+            os.link(tmp, destination)
+        except FileExistsError as exc:
+            raise FileExistsError("operator card request already issued") from exc
     finally:
         if os.path.exists(tmp):
             os.unlink(tmp)
