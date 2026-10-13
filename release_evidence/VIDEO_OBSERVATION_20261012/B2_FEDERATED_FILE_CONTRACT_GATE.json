@@ -1,0 +1,78 @@
+{
+  "schema": "SMART_MEGA_B2_FEDERATED_FILE_CONTRACT_GATE_V1",
+  "gate_date": "2026-10-12",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "fix/video-learning-pr37-windows-atomic-20261011",
+  "tested_code_head": "64aede26f01477cc1306e82347d1255f1349c29d",
+  "objective": "Determine whether the authorized LMCP/GOV-WINDOWS/B2 transport can perform read-only checkpoint metadata inspection without Desktop or a direct remote shell.",
+  "classification": "CONNECTOR_REACHABILITY_PROVEN_FILE_READ_CONTRACT_BLOCKED",
+  "connector_decision": {
+    "entry": "LMCP",
+    "intermediary": "GOV-WINDOWS",
+    "executor_node_id": "B2-LEARNING-NODE-01",
+    "physical_node_id": "f9d3fc77-3bc3-470b-9808-51eaf2ac3b2f",
+    "executor_hostname": "PC-ESCOLA",
+    "downstream_transport": "TAILSCALE_SIGNED_LONG_POLL",
+    "not_used": [
+      "SentinelX/Desktop",
+      "direct SSH",
+      "direct remote PowerShell"
+    ]
+  },
+  "tests": [
+    {
+      "network_command_id": "netcmd_6f750dc08033419ba6b78148c88b49cd",
+      "operation": "process.echo",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "affinity_verified": true,
+      "executor_node_id": "B2-LEARNING-NODE-01",
+      "scope": "remote governed connectivity, no filesystem"
+    },
+    {
+      "network_command_id": "netcmd_931c393bc1c2443e9f4172221f5b87e5",
+      "operation": "node.health",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "stdout": "NODE_HEALTH_PASS",
+      "executor_node_id": "B2-LEARNING-NODE-01",
+      "scope": "native B2 health, no filesystem"
+    },
+    {
+      "network_command_id": "netcmd_5d660c615d134912b5088bdc36ac7ae9",
+      "operation": "wmcp.task",
+      "purpose": "metadata only for C:\\SMART-MEGA\\runtime\\video_observation\\contest_*.json",
+      "status_at_last_check": "QUEUED_FEDERATION_RETRY",
+      "fed_error": "HTTPError:400 network_dispatch_operation_denied",
+      "attempt_count_observed": 4,
+      "checkpoint_files_read": 0,
+      "executor_read_proven": false
+    }
+  ],
+  "contract_diagnosis": {
+    "lmcp_source": "/srv/lmcp/governor/federation.py",
+    "observed_lmcp_allowlist_includes": [
+      "node.health",
+      "process.echo",
+      "wmcp.task"
+    ],
+    "windows_federation_reply": "network_dispatch_operation_denied",
+    "inference": "Contracts are inconsistent for wmcp.task: Linux advertises it while Windows ingress rejects it. Windows server source/policy not inspected, so exact root cause remains unproven.",
+    "historical_powershell_exec_rejection": "federated_external_operation_requires_modern_transport",
+    "historical_file_stat_rejection": "network_dispatch_operation_denied (file.stat not in LMCP NETWORK_OPERATIONS)",
+    "no_security_relaxation_or_transport_bypass_attempted": true
+  },
+  "scientific_validation": {
+    "checkpoint_files_read": 0,
+    "real_checkpoint_count_proven": false,
+    "actual_video_media_processed": 0,
+    "real_video_speedup_proven": false,
+    "predictive_advantage": "NOT_ESTABLISHED",
+    "predictive_weight_authorized": false,
+    "main_modified": false,
+    "mission_proven": false
+  },
+  "next_gate": "Reconcile documented, strictly read-only WMCP task admission on GOV-WINDOWS with authenticated B2 execution. Verify per-project/path permissions and signed-long-poll result contract. Then list and hash 13 real checkpoints and benchmark actual media. Do not widen general shell privileges or activate disabled Desktop.",
+  "result": "BLOCKED_GOV_WINDOWS_OPERATION_CONTRACT",
+  "verdict": "NOT_APPROVED_6_OF_6_NOT_PROVEN"
+}

@@ -1,0 +1,48 @@
+{
+  "branch": "learning/video-observation-v131-20261009",
+  "checkpoint_path_pattern": "runtime/video_observation/contest_<contest>.json",
+  "created_utc": "2026-10-11T17:50:30.558371+00:00",
+  "extractor_version": "1.3.1",
+  "fixes": [
+    {
+      "cause": "Lexical first-512 file cap starves more recent eligible checkpoints",
+      "correction": "Numerically filter earlier contests and inspect most recent 512 first",
+      "id": "VIDEO-LRN-001"
+    },
+    {
+      "cause": "Backfill to an earlier contest can replace latest consolidated learning pointer",
+      "correction": "Preserve latest next_contest and recompute memory against that target",
+      "id": "VIDEO-LRN-002"
+    },
+    {
+      "cause": "Corrupted existing learning state could be silently overwritten",
+      "correction": "Verify canonical SHA-256 of prior state and fail closed without overwrite",
+      "id": "VIDEO-LRN-003"
+    }
+  ],
+  "memory_path": "runtime/video_observation/SMART_VISUAL_LEARNING_STATE.json",
+  "mission": "smartmega-physical-observation-learning-20260929",
+  "notes": [
+    "No new lottery outcomes were learned or used as training labels",
+    "The correction protects historical observational learning, not lottery predictive weights",
+    "Historical 13 physical checkpoints remain inaccessible from the current VPS session"
+  ],
+  "parent_commit": "41624e48b491d59bf53acf69e1ac34c3aedaaeb4",
+  "schema": "SMART_VIDEO_OBSERVATION_LEARNING_QUALITY_CORRECTION_V2",
+  "sha256": "8b307ae3f6dbb45348240bb5ab8c66a67f1e41b341d09bf97a1d47e4215b07cf",
+  "source_file_sha256": {
+    "smart_video_observation.py": "1c4f0754ed1812405f67ad3a0d57383af9f91888b7b118cb55d4b344bdea7ed9",
+    "tests/test_smart_video_observation.py": "f318903bfc91ac3e9767e4235fa909b81c6ce6563bb23af8116f31a4ac58080f"
+  },
+  "status": "CODE_CORRECTED_TESTED_LOCAL_PENDING_GITHUB_CI",
+  "validation": {
+    "adjacent_integration_tests_passed": 98,
+    "failed": 0,
+    "focused_observer_tests_passed": 40,
+    "mission_proven": false,
+    "physical_PC_Escola_access": "NOT_AVAILABLE_THIS_RUN",
+    "pip_check": "PASS",
+    "predictive_evidence": "NOT_ESTABLISHED",
+    "real_video_checkpoint_count_newly_consumed": 0
+  }
+}

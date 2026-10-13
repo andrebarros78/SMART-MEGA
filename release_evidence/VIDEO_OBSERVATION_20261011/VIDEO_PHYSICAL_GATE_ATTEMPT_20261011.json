@@ -1,0 +1,107 @@
+{
+  "schema": "SMART_VISUAL_PHYSICAL_GATE_ATTEMPT_V1",
+  "recorded_at_utc": "2026-10-11T20:14:21Z",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "fix/video-learning-pr37-windows-atomic-20261011",
+  "code_head_tested": "e5509261f7e636e830b7d6ef5d302a8ff86ff87d",
+  "provenance": "Live execution via connected SentinelX on two hosts, using Python source loaded from above GitHub commit",
+  "mission": "Validate 13 physical PC Escola video checkpoints and 13-real-video throughput",
+  "overall_status": "PARTIAL_SIMULATED_VALIDATION_PHYSICAL_GATE_NOT_PROVEN",
+  "physical_gate": {
+    "target_host": "PC Escola / DESKTOP-4T6AS9K",
+    "checkpoint_pattern": "C:\\SMART-MEGA\\runtime\\video_observation\\contest_XXXX.json",
+    "files_read": 0,
+    "checkpoints_verified": 0,
+    "actual_videos_processed": 0,
+    "real_video_throughput_measured": false,
+    "prior_10_day_wallclock_verified": false,
+    "available_git_checkpoint_file_count": 0,
+    "git_refs_inspected": [
+      "main",
+      "design/video-learning-gpt6-sol-20261011",
+      "feature/video-learning-consumer-20261011"
+    ],
+    "connected_host_prelight": "LMCP network_resolve returned PC-ESCOLA READY with signed-long-poll admission, not a confirmed live file read",
+    "access_attempts": [
+      {
+        "route": "LMCP intent_execute / powershell.exec",
+        "command_id": "netcmd_01f153500cfb47e585181898b700ad15",
+        "status": "REJECTED_OPERATION",
+        "reason": "federated_external_operation_requires_modern_transport",
+        "observed_in_previous_turn": "2026-10-11"
+      },
+      {
+        "route": "LMCP network_dispatch / file.stat",
+        "status": "DENIED",
+        "reason": "network_dispatch_operation_denied",
+        "target": "PC-ESCOLA"
+      },
+      {
+        "route": "EXE federated transport availability",
+        "status": "NOT_CONNECTED",
+        "detail": "EXE consultar_pendencias_federadas returned connector_connected=false"
+      },
+      {
+        "route": "SentinelX",
+        "status": "NOT_ENROLLED_AS_CONNECTED_HOST",
+        "detail": "Connected targets only PC Vendas and Linux wmcp-cloud-01"
+      }
+    ],
+    "classification": "BLOCKED_EXTERNAL_CONNECTION_FOR_PC_ESCOLA_PHYSICAL_READ",
+    "required_proof": "Authenticated read of exact 13 B2 checkpoint files, SHA256 and contract validation, real URL/media benchmark on PC Escola and comparable serial-vs-parallel quality tests"
+  },
+  "synthetic_benchmark": {
+    "evidence_class": "SYNTHETIC_STREAM_NOT_REAL_DRAW_VIDEO",
+    "source_code": "smart_video_learning.py plus smart_video_observation.py of code_head_tested",
+    "fixtures": "tests/test_smart_video_learning.py resolver/sampler; deterministic fake video frames/motion; 90ms injected stream resolver delay",
+    "contest_count": 13,
+    "contests": "4501..4513 synthetic IDs",
+    "workers_total_scope": "1,2,4,8 batch workers; 1 sampler worker per contest",
+    "windows_pc_vendas": {
+      "python": "3.14.4",
+      "workload_seconds": {
+        "1": 1.3738,
+        "2": 0.8124,
+        "4": 0.5471,
+        "8": 0.3257
+      },
+      "speedup_4": 2.511,
+      "speedup_8": 4.218,
+      "checkpoints_written": 13,
+      "checkpoints_reused_without_reopening_sources": 13,
+      "checkpoint_bytes_sha256_unchanged_after_resume": true,
+      "consumer_source_contests": 13,
+      "predictive_weight": 0,
+      "simulated_8_worker_resume_seconds": 0.0652
+    },
+    "linux_wmcp_cloud_01": {
+      "python": "3.12.3",
+      "workload_seconds": {
+        "1": 1.5874,
+        "2": 0.8731,
+        "4": 0.5217,
+        "8": 0.3878
+      },
+      "speedup_4": 3.043,
+      "speedup_8": 4.093,
+      "checkpoints_written": 13,
+      "checkpoints_reused_without_reopening_sources": 13,
+      "checkpoint_bytes_sha256_unchanged_after_resume": true,
+      "consumer_source_contests": 13,
+      "predictive_weight": 0,
+      "simulated_8_worker_resume_seconds": 0.0725
+    },
+    "conclusion": "Under synthetic resolver delay, 8-way parallelism exceeded 4x versus serial on both hosts. This cannot be extrapolated to official videos without real physical media and throughput profiling."
+  },
+  "scientific_controls": {
+    "lottery_outcomes_used": false,
+    "visual_events_confirmed_as_draw_events": false,
+    "predictive_evidence": "NOT_ESTABLISHED",
+    "production_champion_modified": false,
+    "main_branch_modified": false,
+    "pr37_modified": false,
+    "real_video_outcome": "UNVERIFIED",
+    "mission_proven": false
+  },
+  "next_gate": "Restore authorized PC Escola modern federated transport, inspect 13 unmodified historical checkpoint JSON files, validate quality/eligibility and benchmark official videos available to the executor. Do not approve G7 before real proof."
+}

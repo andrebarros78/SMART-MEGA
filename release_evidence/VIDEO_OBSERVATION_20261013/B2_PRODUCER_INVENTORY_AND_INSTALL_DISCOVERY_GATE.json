@@ -1,0 +1,67 @@
+{
+  "schema": "SMART_MEGA_B2_PRODUCER_INVENTORY_INSTALL_DISCOVERY_GATE_V1",
+  "day": "2026-10-13",
+  "repo": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-learning-b2-checkpoint-inventory-20261013",
+  "tested_head": "7f76a73060a5a9209b9f72f6226b621e184f3a5c",
+  "goal": "Trace actual B2 checkout/checkpoints, verify code-based inventory with genuine producer output and test B2 Git provenance before isolated installation.",
+  "physical_proven": {
+    "host": "PC-ESCOLA",
+    "node": "B2-LEARNING-NODE-01",
+    "transport": "LMCP > GOV-WINDOWS > TAILSCALE_SIGNED_LONG_POLL",
+    "path_stat_command": "netcmd_bbd11aa6704a402b808dff2919c01a83",
+    "C:\\SMART-MEGA": {
+      "exists": false,
+      "checkpoint_directory_exists": false,
+      "smart_video_learning_py_exists": false,
+      "smart_video_observation_py_exists": false
+    },
+    "directory_search_commands": [
+      "netcmd_c295aa166aaf4cc78b2517753d7dad60",
+      "netcmd_85bceace86f54b76bed6bb10d3a571a9",
+      "netcmd_88fa2dd7f742456d988ecebb14eab6ff",
+      "netcmd_e035afd718b74cff8a1568d5c9a01fa8"
+    ],
+    "identified_git_clones": [
+      "C:\\SMART-MEGA-AUDIT-20261005",
+      "C:\\SMART-MEGA-REPAIR-20261005",
+      "C:\\SMART-MEGA-VERIFY-20261005"
+    ],
+    "clone_facts": "Each identified as git worktree by .git presence; none has smart_video_learning.py or runtime/video_observation at root. Other SMART-MEGA lab/recovery/runenv folders inspected had no matching visual checkpoint names within bounded traversal.",
+    "scan_limit_warning": "One lab directory scan reached a 3000-directory cap. Absence globally is NOT proven.",
+    "checked_physical_video_checkpoints": 0,
+    "changed_physical_files": 0
+  },
+  "integration_retest": {
+    "environment": "Linux wmcp-cloud-01, temporary isolated directory",
+    "source": "Exact smart_video_observation.py and smart_video_learning.py of PR41",
+    "fixture": "13 source URLs and resolver/sampler from tests/test_smart_video_learning.py, not official videos",
+    "producer_api": "observe_batch with batch_workers=4, coarse_points=8, workers=1",
+    "consumer_api": "audit_checkpoint_inventory(... expected_count=13)",
+    "produced_checkpoints": 13,
+    "producer_status": "COMPLETE",
+    "inventory_status": "CHECKPOINT_INTEGRITY_PASS",
+    "valid_count": 13,
+    "invalid_count": 0,
+    "pred_weight": 0,
+    "real_video_validation": false
+  },
+  "git_publication_probe": {
+    "id": "netcmd_635685e7dbf140e096263a15871d437d",
+    "operation": "governed shell.exec git ls-remote for PR41 on B2",
+    "last_observed_state": "WAITING_FOR_NODE",
+    "final_authenticity_proof": false,
+    "clone_or_install_performed": false,
+    "rationale": "Do not provision duplicate physical product checkout before canonical artifact provenance and destination are proven."
+  },
+  "scientific": {
+    "expected_thirteen_real_checkpoints_verified": false,
+    "root_assumption_corrected": true,
+    "semantic_motion_proven_as_ball_events": false,
+    "predictive_weight_authorized": false,
+    "global_6_of_6_proven": false,
+    "mission_proven": false
+  },
+  "next_gate": "Recover authenticated B2 Git branch connectivity OR approved artifact transfer, select designated isolated lab execution root and verify expected 13 checkpoint location; install read-only PR41 artifact without modifying existing AUDIT/REPAIR/VERIFY clones and run B2 CLI. If there are no 13 real checkpoints, report missing data and do not synthesize physical evidence.",
+  "verdict": "ENGINEERING_TESTED_PHYSICAL_PRODUCTION_NOT_PROVEN"
+}
