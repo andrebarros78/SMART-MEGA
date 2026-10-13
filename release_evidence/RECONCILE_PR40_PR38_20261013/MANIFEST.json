@@ -1,0 +1,35 @@
+{
+  "schema": "SMART_MEGA_CROSS_BRANCH_RECONCILIATION_PROOF_V1",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "reconcile/smart-mega-v6-engineering-20261013",
+  "base_pr40_head": "3540411c6a4bb3ea1e50534112ee9510ba2e4e6b",
+  "merged_pr38_head": "f91e641177f02bbf0fd125b79a44eef70cc8435e",
+  "baseline_main_observed": "795539e362600c54d5d316b72beadc32afe5e2e8",
+  "scope": "engineering candidate only; main, operational HOLD and historic freezes not modified",
+  "test_command": "pytest -q --maxfail=2 -p no:cacheprovider --disable-warnings test_smart_agent_skill_consumer_contract.py test_smart_execution_contract_binding.py test_smart_ai_fine_tuning.py test_smart_f04_fine_tuning_lifecycle.py test_smart_visual_learning_shadow.py test_smart_f05_canonical_component_registry.py test_smart_f10_disconnection.py",
+  "tests": {
+    "tests": 42,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "junit_file": "JUNIT_42.xml",
+  "junit_sha256": "ec2633dd1fbf9ce7f937ec93b80c5ad21867f1e405337e51a095a31876f9795f",
+  "static_registries_regenerated": [
+    "SMART_COMPONENT_REACHABILITY_REGISTRY.json",
+    "SMART_CANONICAL_COMPONENT_REGISTRY.json",
+    "SMART_SKILL_ADAPTER_REGISTRY.json",
+    "SMART_F10_DISCONNECTION_GATE.json"
+  ],
+  "scientific_predictive_status": "UNPROVEN",
+  "global_regression_on_merged_candidate": "NOT_RUN",
+  "production_main_merge_authorized": false,
+  "immutable_freezes_3060_3061_recovered": false,
+  "operator_hold_3070_respected": true,
+  "registry_files_sha256": {
+    "SMART_COMPONENT_REACHABILITY_REGISTRY.json": "492499bc837220523997fcf49914696a2de862dee004cabd5a885db2ceabe3cc",
+    "SMART_CANONICAL_COMPONENT_REGISTRY.json": "bab5b1a126a9a5c46535b4ba036305bf5e4b881792ce5c5e94ecefe977e0262b",
+    "SMART_SKILL_ADAPTER_REGISTRY.json": "4d735a7e30c577ee0753907639c5ebc55b95add2ec90f5b4446843fc2f23a2e9",
+    "SMART_F10_DISCONNECTION_GATE.json": "5a78f058ba71b2b62a62972f327abe37765ff47cc54ffadcf71ca63f13752658"
+  }
+}

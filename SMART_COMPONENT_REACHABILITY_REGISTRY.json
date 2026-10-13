@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "6c6e2ec78d0d16d108fcf0e56a5b24ab0b4a0783311b79f02561262bd55c00ab",
+  "inventory_sha256": "258c615a4c980315a9ba9764d8a8f35e692fb43e8571d9e1b6eebd3ec3bc7221",
   "summary": {
-    "python_components": 506,
+    "python_components": 511,
     "workflow_entrypoints": 8,
-    "production_components": 104,
+    "production_components": 106,
     "shadow_components": 1,
     "diagnostic_components": 31,
     "validation_components": 22,
-    "test_components": 172,
+    "test_components": 175,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4194,6 +4194,7 @@
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
         "archive.reconciliation_runtime_residue_20260911.runtime.create_temporal_recovery_epoch",
         "archive.reconciliation_runtime_residue_20260911.runtime.smart_50_round_validation",
+        "smart_agent_skill_consumer_contract",
         "smart_agent_skill_functional_gate",
         "smart_canonical_history_advance",
         "smart_continuity_consolidator",
@@ -4205,7 +4206,9 @@
         "smart_skill_runtime",
         "smart_total_integration_gate",
         "test_smart_agent_runtime",
+        "test_smart_agent_skill_consumer_contract",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_execution_contract_binding",
         "test_smart_f06_agent_handoffs",
         "test_smart_f09_sdk_llm_selective",
         "test_smart_mission_coverage_closure_20260906",
@@ -4225,6 +4228,33 @@
         1
       ],
       "sha256": "b6669b0a506662af02511c090b286235404e2b0a494758757e7aaac145ff955f"
+    },
+    {
+      "component_id": "smart_agent_skill_consumer_contract",
+      "source_file": "smart_agent_skill_consumer_contract.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_agent_runtime"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "test_smart_agent_skill_consumer_contract",
+        "test_smart_execution_contract_binding"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "05e54a2aa29f3d90eea41ce30c7be24d7af35739e05832723c858d484b2f483b"
     },
     {
       "component_id": "smart_agent_skill_functional_gate",
@@ -4352,7 +4382,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "f54d6575d891df6711c6798c9d0116b0c73d38c3308077e5b807061455407e4d"
+      "sha256": "48360d0ad0914bffad878fe8e366a9afcbab6b8c9f1805e96e365df353b15917"
     },
     {
       "component_id": "smart_authority_freshness",
@@ -5598,7 +5628,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "fc4eb5065334fe545bfe5f3a369b01303ccf1a89bb66e5c395dc537f625d339f"
+      "sha256": "a838fe8e6df74cb5d356c00ad47fe2274b958d8f3f055c31ded5b9e8fbed1658"
     },
     {
       "component_id": "smart_frontier_adjudicator",
@@ -5666,6 +5696,7 @@
       ],
       "producers": [
         "smart_agent_runtime",
+        "smart_agent_skill_consumer_contract",
         "smart_canonical_identity",
         "smart_champion_challenger",
         "smart_engineering_activation",
@@ -5683,7 +5714,8 @@
         "smart_storage_surfaces",
         "smart_target_schedule",
         "smart_total_integration_gate",
-        "smart_v2_engine"
+        "smart_v2_engine",
+        "smart_visual_learning_shadow"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
@@ -5708,7 +5740,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "59f6635b841d54f381fc725171110a3b5bf1db487d7f54eb36d9405278bae21c"
+      "sha256": "69f8dc45ba29893908d81725cd246eac597b49e3d83a2b4ec799cb13d81bc496"
     },
     {
       "component_id": "smart_github_certify",
@@ -8739,6 +8771,8 @@
         "smart_engineering_activation",
         "smart_full_process_pipeline",
         "smart_product_certification",
+        "test_smart_agent_skill_consumer_contract",
+        "test_smart_execution_contract_binding",
         "test_smart_f06_agent_handoffs",
         "test_smart_f07_skill_adapters",
         "test_smart_f09_sdk_llm_selective",
@@ -8930,6 +8964,30 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
+    },
+    {
+      "component_id": "smart_visual_learning_shadow",
+      "source_file": "smart_visual_learning_shadow.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "test_smart_visual_learning_shadow"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "8a9d78b3a1d4797245470cca152c5ea3f49e0e9579814e82af73852e117c7569"
     },
     {
       "component_id": "smartmega_apply_post_result_report_20260920",
@@ -9287,6 +9345,29 @@
       "sha256": "055827f0a8dd56dd9dda84b6896264c32779b1bbe776e47317b951aea968a814"
     },
     {
+      "component_id": "test_smart_agent_skill_consumer_contract",
+      "source_file": "test_smart_agent_skill_consumer_contract.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_agent_runtime",
+        "smart_agent_skill_consumer_contract",
+        "smart_total_integration_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "6da058aea7fd166b48cc620968d3660c3378b54b32f33f197038d2e22a350550"
+    },
+    {
       "component_id": "test_smart_agent_skill_functional_gate",
       "source_file": "test_smart_agent_skill_functional_gate.py",
       "role": "TEST",
@@ -9347,7 +9428,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "b87bfb3eb05441b4c46f3326a4a216bb723a7adaa823cbcb946db7d989ae7a98"
+      "sha256": "ad46fab3f9fd5655a7982eb53b6b48fb86fc03b34f6885e8daa5030d61f4f0dd"
     },
     {
       "component_id": "test_smart_architecture_alignment",
@@ -10055,6 +10136,29 @@
       "sha256": "6a14bf661770b9fb5b4f977a742d66c30ce98bf51c6718d1972ae0363d35f34d"
     },
     {
+      "component_id": "test_smart_execution_contract_binding",
+      "source_file": "test_smart_execution_contract_binding.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_agent_runtime",
+        "smart_agent_skill_consumer_contract",
+        "smart_total_integration_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "73bc3b849e86a8b2bb2caa3645cdca09d3af59effb2746be00de1930e3eb20fd"
+    },
+    {
       "component_id": "test_smart_experiment_lab",
       "source_file": "test_smart_experiment_lab.py",
       "role": "TEST",
@@ -10163,7 +10267,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "cb9114c6b01ee68b4b0659bf1183fe3edbd290064c2e69d7ca84b053303ab0fa"
+      "sha256": "0c1ca6a80b5bb580cfd9a676d9bd3a55a603c0bdea12fa52192ab5a875bbb648"
     },
     {
       "component_id": "test_smart_f05_canonical_component_registry",
@@ -12709,6 +12813,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4a22b8f0b2eac25b9b7dfc95d8bfb2e6d6bf0c460aa62d0f6fdeae65e194f60c"
+    },
+    {
+      "component_id": "test_smart_visual_learning_shadow",
+      "source_file": "test_smart_visual_learning_shadow.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_visual_learning_shadow"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "e7b9198a32bfc770e9000c34628318cc750fdb8833d8f2e83baa3c6eb6292e0e"
     },
     {
       "component_id": "test_smart_withdraw_lifecycle_recovery",
