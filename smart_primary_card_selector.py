@@ -74,11 +74,13 @@ def _normalized(scores,cands):
     span=hi-lo
     if not math.isfinite(span): raise ValueError("score range is too large to normalize safely")
     return {n:(1.0 if math.isclose(lo,hi) else (scores[n]-lo)/span) for n in cands}
-def _try_select(scores,ranking,cfg,pool_size):
+def _try_select(scores,ranking,cfg,pool_size,excluded_cards=frozenset()):
     cands=ranking[:pool_size]; norm=_normalized(scores,cands); pos={n:i for i,n in enumerate(cands)}; top3=set(ranking[:3])
     best=None; rejected={"band_guard":0,"top3_guard":0}; evaluated=feasible=0
     for combo in itertools.combinations(cands,int(cfg.numbers_per_card)):
-        evaluated+=1; c=_counts(combo)
+        evaluated+=1
+        if tuple(sorted(combo)) in excluded_cards: continue
+        c=_counts(combo)
         if not(cfg.min_low_band<=c["low"]<=cfg.max_low_band and cfg.min_mid_band<=c["mid"]<=cfg.max_mid_band and cfg.min_high_band<=c["high"]<=cfg.max_high_band):
             rejected["band_guard"]+=1; continue
         if cfg.require_top3_presence and not(set(combo)&top3): rejected["top3_guard"]+=1; continue
@@ -91,19 +93,28 @@ def _try_select(scores,ranking,cfg,pool_size):
         key=(float(obj),tuple(sorted(combo)))
         if best is None or key[0]>best[0] or (math.isclose(key[0],best[0]) and key[1]<best[1]): best=key
     return best,{"candidate_pool":cands,"candidate_pool_size":len(cands),"evaluated_combinations":evaluated,"feasible_combinations":feasible,"rejected_combinations":rejected}
-def select_primary_card(aggregate_scores:Mapping[int|str,float],ranking60:list[int]|tuple[int,...]|None=None,config:PrimaryCardSelectorConfig|None=None)->dict[str,Any]:
+def select_primary_card(aggregate_scores:Mapping[int|str,float],ranking60:list[int]|tuple[int,...]|None=None,config:PrimaryCardSelectorConfig|None=None,*,excluded_cards=None)->dict[str,Any]:
     cfg=config or PrimaryCardSelectorConfig(); cfg.validate(); scores=_coerce_scores(aggregate_scores)
+    excluded=set()
+    for card in (excluded_cards or ()):
+        if not isinstance(card,(list,tuple)) or len(card)!=6 or any(isinstance(n,bool) or not isinstance(n,Integral) or not 1<=int(n)<=60 for n in card) or len(set(card))!=6:
+            raise ValueError("excluded operator card must contain six distinct integers 1..60")
+        excluded.add(tuple(sorted(int(n) for n in card)))
     ranking=[_number(x) for x in ranking60] if ranking60 is not None else sorted(scores,key=lambda n:(-scores[n],n))
     if len(ranking)!=60 or set(ranking)!=set(range(1,61)): raise ValueError("ranking60 must be a permutation of 1..60")
     pure=sorted(ranking[:6]); attempts=[]; best=meta=None
     pools=list(range(int(cfg.candidate_pool_size),int(cfg.max_candidate_pool_size)+1,2))
     if pools[-1] != int(cfg.max_candidate_pool_size): pools.append(int(cfg.max_candidate_pool_size))
     for pool in pools:
-        best,meta=_try_select(scores,ranking,cfg,pool); attempts.append({"pool_size":pool,"feasible":meta["feasible_combinations"],"evaluated":meta["evaluated_combinations"]})
+        best,meta=_try_select(scores,ranking,cfg,pool,excluded); attempts.append({"pool_size":pool,"feasible":meta["feasible_combinations"],"evaluated":meta["evaluated_combinations"]})
         if best is not None: break
     if best is None:
         raise ValueError("no valid primary card within candidate pool; review band constraints or expand max_candidate_pool_size")
     else:
         selected=list(best[1]); obj=best[0]; fallback=False
     audit={"schema":SCHEMA,"status":"PASS","selection_rule":"hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard","result_used":False,"pure_champion_top6_sorted":pure,"selected_numbers":selected,"selected_band_counts":_counts(selected),"pure_top6_band_counts":_counts(pure),"objective_value":obj,"fallback_used":fallback,"adaptive_attempts":attempts,"config":asdict(cfg)}
-    audit.update(meta); audit["sha256"]=sha256_json(audit); return audit
+    audit.update(meta)
+    if excluded:
+        audit["operator_request_excluded_prior_cards"]=len(excluded)
+        audit["operator_request_distinct_six_number_card"]=True
+    audit["sha256"]=sha256_json(audit); return audit
