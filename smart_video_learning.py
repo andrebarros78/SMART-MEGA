@@ -11,6 +11,7 @@ import hashlib
 import os
 import tempfile
 import json
+import re
 import time
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timezone
@@ -19,7 +20,7 @@ from typing import Any, Callable, Iterable
 from urllib.parse import urlparse
 
 from smart_video_observation import (
-    EXTRACTOR_VERSION, PREDICTIVE_EVIDENCE, ObservationConfig, _atomic_json,
+    EXTRACTOR_VERSION, PREDICTIVE_EVIDENCE, VALID_STATUSES, ObservationConfig, _observation_fingerprint, _atomic_json,
     _checkpoint_path, _is_youtube_source, _utc_now, analyze_contest,
     learned_motion_prior, persist_visual_learning_state, resolve_stream,
     observe_short_sample, locate_mega_segment,
@@ -311,9 +312,144 @@ def observe_batch(
     }
 
 
+
+def audit_checkpoint_inventory(
+    checkpoint_dir: str | Path = "runtime/video_observation",
+    *,
+    expected_count: int = 13,
+    limit: int = 512,
+) -> dict[str, Any]:
+    """Inventory B2 checkpoints read-only; never downloads videos or writes memory.
+
+    This is a technical integrity audit, not a predictive signal or an approval
+    of the observed motion semantics. Results expose hashes, not raw video data.
+    """
+    if type(expected_count) is not int or expected_count < 1 or expected_count > 512:
+        raise ValueError("expected_count must be 1..512")
+    if type(limit) is not int or limit < expected_count or limit > 512:
+        raise ValueError("limit must be between expected_count and 512")
+    root = Path(checkpoint_dir)
+    result: dict[str, Any] = {
+        "schema": "SMART_VIDEO_CHECKPOINT_INVENTORY_V1",
+        "checkpoint_dir": str(root),
+        "expected_count": expected_count,
+        "status": "INCOMPLETE",
+        "files_discovered": 0,
+        "valid_count": 0,
+        "invalid_count": 0,
+        "truncated": False,
+        "contest_ids": [],
+        "records": [],
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+        "predictive_weight_authorized": False,
+        "predictive_weight": 0.0,
+        "read_only": True,
+    }
+    if root.is_symlink() or not root.is_dir():
+        result["status"] = "PATH_UNAVAILABLE"
+        return result
+
+    names: list[tuple[int, Path]] = []
+    for item in root.glob("contest_*.json"):
+        match = re.fullmatch(r"contest_([0-9]{1,12})\.json", item.name)
+        if match and int(match.group(1)) > 0:
+            names.append((int(match.group(1)), item))
+    names.sort(key=lambda pair: (pair[0], pair[1].name), reverse=True)
+    result["files_discovered"] = len(names)
+    result["truncated"] = len(names) > limit
+    outcome_keys = {
+        "winning_numbers", "drawn_numbers", "result_numbers", "dezenas_sorteadas",
+        "hit_count", "official_result", "sorteadas", "numero_sorteado",
+        "actual_winners", "winner_information", "prize_distribution",
+    }
+
+    def has_result_labels(value: Any) -> bool:
+        if isinstance(value, dict):
+            return any(
+                str(key).lower() in outcome_keys or has_result_labels(val)
+                for key, val in value.items()
+            )
+        if isinstance(value, list):
+            return any(has_result_labels(val) for val in value)
+        return False
+
+    for contest, path in names[:limit]:
+        record: dict[str, Any] = {"contest_id": str(contest), "integrity": "REJECTED"}
+        try:
+            if path.is_symlink() or not path.is_file():
+                raise ValueError("SYMLINK_OR_NONFILE")
+            size = path.stat().st_size
+            if size < 2 or size > 1024 * 1024:
+                raise ValueError("SIZE_OUT_OF_RANGE")
+            raw = path.read_bytes()
+            record["sha256"] = hashlib.sha256(raw).hexdigest()
+            record["size_bytes"] = len(raw)
+            obj = json.loads(raw)
+            if not isinstance(obj, dict) or has_result_labels(obj):
+                raise ValueError("INVALID_OBJECT_OR_RESULT_LEAKAGE")
+            if str(obj.get("contest_id")) != str(contest):
+                raise ValueError("CONTEST_ID_MISMATCH")
+            if obj.get("extractor_version") != EXTRACTOR_VERSION:
+                raise ValueError("EXTRACTOR_VERSION_MISMATCH")
+            if obj.get("predictive_evidence") != PREDICTIVE_EVIDENCE:
+                raise ValueError("PREDICTIVE_CLAIM_UNSAFE")
+            status = str(obj.get("status") or "")
+            if status not in VALID_STATUSES:
+                raise ValueError("STATUS_UNRECOGNIZED")
+            url = obj.get("source")
+            if not isinstance(url, str):
+                raise ValueError("SOURCE_MISSING")
+            parsed = urlparse(url)
+            if parsed.scheme != "https" or not parsed.hostname or parsed.username or parsed.password:
+                raise ValueError("SOURCE_UNVERIFIED")
+            cfg = ObservationConfig(**obj["main_params"]).validated()
+            if obj.get("checkpoint_fingerprint") != _observation_fingerprint(
+                str(contest), url, cfg, obj.get("hypothesis_id")
+            ):
+                raise ValueError("FINGERPRINT_MISMATCH")
+            timestamp = _cutoff(str(obj["created_at_utc"]))
+            if status == "CANDIDATE":
+                scope = obj.get("analysis_scope")
+                events = obj.get("event_timestamps_s")
+                if not isinstance(scope, dict) or not isinstance(events, list):
+                    raise ValueError("CANDIDATE_SCOPE_MISSING")
+                lo, hi = float(scope["start_s"]), float(scope["end_s"])
+                if not (hi > lo and len(events) >= cfg.min_candidate_events and
+                        all(lo <= float(t) <= hi for t in events)):
+                    raise ValueError("CANDIDATE_EVENTS_INVALID")
+                if (obj.get("spatial_consensus") or {}).get("recurrent") is not True:
+                    raise ValueError("CANDIDATE_CONSENSUS_MISSING")
+                if _is_youtube_source(url) and scope.get("segment_guard_passed") is not True:
+                    raise ValueError("CANDIDATE_YOUTUBE_SCOPE_NOT_GUARDED")
+            record.update({"integrity": "VERIFIED", "status": status,
+                           "created_at_utc": timestamp,
+                           "event_count": len(obj.get("event_timestamps_s") or [])})
+            result["valid_count"] += 1
+        except (OSError, KeyError, TypeError, ValueError, OverflowError) as exc:
+            error = str(exc)
+            record["reason"] = error if error in {
+                "SYMLINK_OR_NONFILE", "SIZE_OUT_OF_RANGE",
+                "INVALID_OBJECT_OR_RESULT_LEAKAGE", "CONTEST_ID_MISMATCH",
+                "EXTRACTOR_VERSION_MISMATCH", "PREDICTIVE_CLAIM_UNSAFE",
+                "STATUS_UNRECOGNIZED", "SOURCE_MISSING", "SOURCE_UNVERIFIED",
+                "FINGERPRINT_MISMATCH", "CANDIDATE_SCOPE_MISSING",
+                "CANDIDATE_EVENTS_INVALID", "CANDIDATE_CONSENSUS_MISSING",
+                "CANDIDATE_YOUTUBE_SCOPE_NOT_GUARDED",
+            } else type(exc).__name__
+            result["invalid_count"] += 1
+        result["records"].append(record)
+    result["contest_ids"] = sorted(int(r["contest_id"]) for r in result["records"])
+    if (not result["truncated"] and result["valid_count"] == expected_count and
+            result["invalid_count"] == 0 and result["files_discovered"] == expected_count):
+        result["status"] = "CHECKPOINT_INTEGRITY_PASS"
+    return result
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description="SMART visual observation batch and consumer")
     parser.add_argument("--manifest", help="JSON list of contest_id and source_url")
+    parser.add_argument("--inventory-readonly", action="store_true", help="read-only B2 checkpoint integrity inventory")
+    parser.add_argument("--expected-checkpoints", type=int, default=13)
     parser.add_argument("--next-contest")
     parser.add_argument("--target-contest", help="Read-only feature consumer target")
     parser.add_argument("--cutoff-utc", help="ISO-8601 observation cutoff for consumer")
@@ -323,9 +459,16 @@ def main() -> int:
     parser.add_argument("--hypothesis-id")
     parser.add_argument("--force", action="store_true")
     opts = parser.parse_args()
-    if bool(opts.manifest) == bool(opts.target_contest):
-        parser.error("choose exactly one of --manifest or --target-contest")
-    if opts.manifest:
+    if sum(bool(x) for x in (opts.manifest, opts.target_contest, opts.inventory_readonly)) != 1:
+        parser.error("choose exactly one of --manifest, --target-contest or --inventory-readonly")
+    if opts.inventory_readonly:
+        if opts.force or opts.next_contest or opts.cutoff_utc:
+            parser.error("--inventory-readonly cannot mutate or use target options")
+        try:
+            value = audit_checkpoint_inventory(opts.checkpoint_dir, expected_count=opts.expected_checkpoints)
+        except ValueError as exc:
+            parser.error(str(exc))
+    elif opts.manifest:
         rows = json.loads(Path(opts.manifest).read_text(encoding="utf-8"))
         if not isinstance(rows, list):
             parser.error("manifest must be a JSON list")

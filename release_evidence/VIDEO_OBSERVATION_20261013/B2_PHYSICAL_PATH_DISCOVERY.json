@@ -1,0 +1,133 @@
+{
+  "schema": "SMART_MEGA_B2_PHYSICAL_PATH_DISCOVERY_V1",
+  "date": "2026-10-13",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-learning-b2-checkpoint-inventory-20261013",
+  "tested_code_head": "7f76a73060a5a9209b9f72f6226b621e184f3a5c",
+  "physical_host": "PC-ESCOLA",
+  "physical_executor": "B2-LEARNING-NODE-01",
+  "transport": "LMCP -> GOV-WINDOWS -> TAILSCALE_SIGNED_LONG_POLL",
+  "status": "PHYSICAL_WORKSPACE_DISCOVERED_TARGET_VIDEO_CHECKPOINTS_NOT_FOUND_IN_SCANNED_PATHS",
+  "scope": "Read-only bounded path/file-name inspection; no file modifications, no new installation, no Desktop",
+  "probes": [
+    {
+      "command_id": "netcmd_d5a4d6aee6b34354811c9477207d39c6",
+      "op": "shell.exec python.exe --version",
+      "cwd": "C:\\SMART-MEGA",
+      "status": "FAILED",
+      "exit_code": 1
+    },
+    {
+      "command_id": "netcmd_2b2262b6f8bd4309ae220ba7b6e073c6",
+      "op": "shell.exec python.exe --version",
+      "cwd": "C:\\ProgramData\\B2-Learning-Work",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "stdout": "Python 3.13.15"
+    },
+    {
+      "command_id": "netcmd_bbd11aa6704a402b808dff2919c01a83",
+      "op": "signed read-only Python path stat",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "results": {
+        "C:\\SMART-MEGA": false,
+        "C:\\SMART-MEGA\\runtime\\video_observation": false,
+        "C:\\SMART-MEGA\\smart_video_learning.py": false,
+        "C:\\SMART-MEGA\\smart_video_observation.py": false
+      }
+    },
+    {
+      "command_id": "netcmd_c295aa166aaf4cc78b2517753d7dad60",
+      "op": "bounded top-level directory discovery",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "results": {
+        "C:\\": [
+          "SMART-MEGA-AUDIT-20261005",
+          "SMART-MEGA-AUX-20261005",
+          "SMART-MEGA-REPAIR-20261005",
+          "SMART-MEGA-VERIFY-20261005",
+          "SMART-MEGA-AUDIT-TOOLS-20261005"
+        ],
+        "C:\\ProgramData\\B2-Learning-Work": [
+          "SMART-MEGA-LAB-20260915-1651",
+          "SMART-MEGA-RECOVERY",
+          "SMART-MEGA-TOOLS",
+          "smartmega-runenv-3057"
+        ],
+        "C:\\ProgramData\\WMCP31\\LearningLab": [
+          "SMART-MEGA-FINETUNE-20260911"
+        ]
+      }
+    },
+    {
+      "command_id": "netcmd_85bceace86f54b76bed6bb10d3a571a9",
+      "op": "bounded per-project file inspection",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "matched_visual_source_files": 0,
+      "matched_contest_checkpoint_files": 0,
+      "roots_examined": 8,
+      "scan_directory_cap_per_root": 2500
+    },
+    {
+      "command_id": "netcmd_88fa2dd7f742456d988ecebb14eab6ff",
+      "op": "bounded B2 workspaces artifact inspection",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "roots_scanned": [
+        "C:\\ProgramData\\B2-Learning-Work\\smartmega-runenv-3057",
+        "C:\\ProgramData\\B2-Learning-Work",
+        "C:\\ProgramData\\WMCP31\\LearningLab"
+      ],
+      "matching_visual_artifact_files": 0,
+      "one_scan_hit_3000_dir_limit": true
+    },
+    {
+      "command_id": "netcmd_e035afd718b74cff8a1568d5c9a01fa8",
+      "op": "SMART-MEGA candidate root classification",
+      "status": "COMPLETED",
+      "exit_code": 0,
+      "results": {
+        "C:\\SMART-MEGA-AUDIT-20261005": {
+          "git_checkout": true,
+          "visual_source": false,
+          "checkpoint_dir": false
+        },
+        "C:\\SMART-MEGA-REPAIR-20261005": {
+          "git_checkout": true,
+          "visual_source": false,
+          "checkpoint_dir": false
+        },
+        "C:\\SMART-MEGA-VERIFY-20261005": {
+          "git_checkout": true,
+          "visual_source": false,
+          "checkpoint_dir": false
+        },
+        "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-LAB-20260915-1651": {
+          "archived_non_operational": true
+        },
+        "C:\\ProgramData\\B2-Learning-Work\\smartmega-runenv-3057": {
+          "python_runtime_not_source_checkout": true
+        }
+      }
+    }
+  ],
+  "controls": {
+    "scope_bounded": true,
+    "uninspected_paths_may_contain_files": true,
+    "no_claim_of_machine_wide_absence": true,
+    "no_production_merge": true,
+    "predictions_not_promoted": true,
+    "checkpoint_bytes_read": 0,
+    "no_desktop_or_sentinelx_used": true
+  },
+  "acceptance": {
+    "deployment_of_pr41_on_physical_B2": false,
+    "real_13_checkpoints_verified": 0,
+    "main_unchanged": true,
+    "overall_6_of_6_proven": false
+  },
+  "next_action": "Verify exact canonical source location via B2 Git origin, then provision an isolated, non-production staging checkout of PR41 through authenticated Git/approved transfer, avoiding alteration of AUDIT, REPAIR, VERIFY or runtime data. Only then run physical read-only inventory against a verified checkpoint directory."
+}

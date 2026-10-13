@@ -1,0 +1,89 @@
+{
+  "schema": "SMART_MEGA_B2_NATIVE_STAGING_E2E_PROOF_V1",
+  "date": "2026-10-13",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-learning-b2-checkpoint-inventory-20261013",
+  "source_git_head": "31b27cfec0c5b45067b3be92ac75697cb4619f0e",
+  "physical_executor": {
+    "host": "PC-ESCOLA",
+    "physical_node_id": "f9d3fc77-3bc3-470b-9808-51eaf2ac3b2f",
+    "node_id": "B2-LEARNING-NODE-01",
+    "transport": "LMCP > GOV-WINDOWS > TAILSCALE_SIGNED_LONG_POLL"
+  },
+  "staging": {
+    "path": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+    "kind": "isolated nonproduction laboratory tooling, NOT full product deployment",
+    "creation_network_command_id": "netcmd_9cfb5e6b581d4c67b73c5d360e921ac6",
+    "assembled_network_command_id": "netcmd_4fddd5a67db64bf08c7d5901bd2c3171",
+    "components": [
+      {
+        "file": "smart_video_observation.py",
+        "size_bytes": 58574,
+        "git_blob_sha1": "eb7bc6331de31282cc5133649bf3a8b525f1b887",
+        "sha256": "a5b906d2683dfeefa24bb6805dae8804adea5c7257129b092a41a3a42a0024a8"
+      },
+      {
+        "file": "smart_video_learning.py",
+        "size_bytes": 23088,
+        "git_blob_sha1": "8f2bc5e37e7b0ca4af9b6e5fa5387fcc750a6701",
+        "sha256": "653985328445f31bc5d4c7380b8ba2e6e6254066342a1e6d96650b26041df978"
+      }
+    ],
+    "git_sha_verification": "matched GitHub blob hashes, both scripts compiled successfully before staging",
+    "temporary_transfer_chunks_cleaned": true,
+    "cleanup_network_command_id": "netcmd_0ce876c48ec74e5aa1fda19fac54582d",
+    "existing_3_worktrees_modified": false
+  },
+  "physical_readonly_inventory": {
+    "original_path": "C:\\SMART-MEGA\\runtime\\video_observation",
+    "original_path_exists": false,
+    "command_id": "netcmd_fab6652202704d67aea525a189f5d9e8",
+    "command_status": "COMPLETED",
+    "exit_code": 0,
+    "inventory_status": "PATH_UNAVAILABLE",
+    "files_discovered": 0,
+    "valid_count": 0,
+    "pred_weight": 0,
+    "negative_control": {
+      "directory": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+      "command_id": "netcmd_c36b096c404b43b99adb2401fc189421",
+      "result": "INCOMPLETE",
+      "files_discovered": 0,
+      "verdict": "existing empty checkpoint directory correctly differs from unavailable path"
+    }
+  },
+  "physical_b2_synthetic_end_to_end": {
+    "data_class": "SYNTHETIC_ONLY_NOT_REAL_VIDEO",
+    "command_id": "netcmd_2c9fc3f9045b49499b17119471566246",
+    "status": "COMPLETED",
+    "exit_code": 0,
+    "python": "3.13.15",
+    "sample_count": 13,
+    "sample_contest_ids": "91001..91013 SYNTHETIC",
+    "fixture_path": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013\\SYNTHETIC_ONLY_13",
+    "producer": "observe_batch",
+    "batch_workers": 4,
+    "per_contest_workers": 1,
+    "first_batch_elapsed_seconds": 0.488,
+    "producer_status": "COMPLETE",
+    "created_checkpoints": 13,
+    "inventory_status": "CHECKPOINT_INTEGRITY_PASS",
+    "inventory_valid": 13,
+    "inventory_invalid": 0,
+    "reused_without_reopening_sources": 13,
+    "checkpoint_sha256_unchanged_on_replay": true,
+    "pred_weight": 0,
+    "external_real_media_access_attempted": false
+  },
+  "remaining_constraints": {
+    "verified_historical_real_video_checkpoints": 0,
+    "real_video_speedup_measured": false,
+    "real_clustering_or_predictive_gain_proven": false,
+    "production_main_unchanged": true,
+    "predictive_weight_authorized": false,
+    "physical_real_checkpoints_location_unknown": true,
+    "mission_proven": false
+  },
+  "next_gate": "Locate the canonical real draw-video sources/checkpoints or ingest real media into a separately authorized production workspace, then re-run the B2 read-only inventory against actual checkpoint files. Preserve the synthetic-only status of staged fixtures.",
+  "overall_status": "B2_LAB_INSTALLATION_AND_SYNTHETIC_E2E_PROVEN_REAL_VIDEO_PROOF_PENDING"
+}
