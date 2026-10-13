@@ -8,7 +8,7 @@ from pathlib import Path
 import unittest
 
 from smart_prospective_triple_card_gate import (
-    SCHEMA, candidate_from_frozen_event, preflight, protocol,
+    SCHEMA, candidate_from_frozen_event, evaluate_post_result_diagnostic, preflight, protocol,
 )
 
 
@@ -30,6 +30,53 @@ def fixture():
 
 
 class PreRegistrationGateTests(unittest.TestCase):
+    def test_predeclared_protocol_file_is_byte_semantically_identical(self):
+        recorded = json.loads(
+            (ROOT / "SMART_PROSPECTIVE_TRIPLE_CARD_PROTOCOL_20261013.json")
+            .read_text(encoding="utf-8-sig")
+        )
+        self.assertEqual(recorded, protocol())
+
+    def test_synthetic_post_result_scores_all_three_heads_without_promotion(self):
+        event, ledger = fixture()
+        precommit = candidate_from_frozen_event(event, ledger, completed_contest=3069)
+        fake_adjudication = {
+            "event_type": "ADJUDICATION",
+            "target_contest": 3070,
+            "created_utc": "2026-10-20T00:00:00+00:00",
+            "actual_numbers": [7, 10, 39, 40, 43, 57],
+        }
+        diagnostic = evaluate_post_result_diagnostic(precommit, fake_adjudication)
+        self.assertEqual(diagnostic["status"], "HISTORICAL_DIAGNOSTIC_ONLY_NOT_PROSPECTIVE_PROOF")
+        self.assertEqual(diagnostic["challenger_minus_champion_hits"],
+                         diagnostic["challenger_hits"] - diagnostic["champion_hits"])
+        self.assertEqual(diagnostic["primary_minus_champion_hits"],
+                         diagnostic["primary_card_hits"] - diagnostic["champion_hits"])
+        self.assertIs(diagnostic["promotion_authorized"], False)
+        self.assertIs(diagnostic["independent_git_publication_verified"], False)
+
+    def test_post_result_rejects_altered_commitment_and_forged_target(self):
+        event, ledger = fixture()
+        precommit = candidate_from_frozen_event(event, ledger, completed_contest=3069)
+        fake_adjudication = {
+            "event_type": "ADJUDICATION",
+            "target_contest": 3070,
+            "created_utc": "2026-10-20T00:00:00+00:00",
+            "actual_numbers": [7, 10, 39, 40, 43, 57],
+        }
+        modified = deepcopy(precommit)
+        modified["primary_card"] = [1, 2, 3, 4, 5, 6]
+        with self.assertRaisesRegex(ValueError, "candidate commitment"):
+            evaluate_post_result_diagnostic(modified, fake_adjudication)
+        forged = deepcopy(fake_adjudication)
+        forged["target_contest"] = 3071
+        with self.assertRaisesRegex(ValueError, "target mismatch"):
+            evaluate_post_result_diagnostic(precommit, forged)
+        forged = deepcopy(fake_adjudication)
+        forged["created_utc"] = "2020-01-01T00:00:00+00:00"
+        with self.assertRaisesRegex(ValueError, "cannot predate"):
+            evaluate_post_result_diagnostic(precommit, forged)
+
     def test_live_project_is_hold_not_an_authorized_experiment(self):
         status = preflight(ROOT)
         self.assertEqual(status["target_contest"], 3070)
