@@ -10,6 +10,7 @@ import json
 import os
 import re
 import urllib.request
+import urllib.error
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from datetime import datetime, timedelta, timezone
 from pathlib import Path
@@ -43,16 +44,20 @@ def fetch_public(vid: str, *, timeout: int = 12) -> dict[str, str]:
         "https://www.youtube.com/watch?v=" + vid,
         headers={"User-Agent": UA, "Accept-Language": "pt-BR,pt;q=0.9,en;q=0.5"},
     )
-    with urllib.request.urlopen(req, timeout=timeout) as res:
-        if res.status != 200:
-            raise RuntimeError("YOUTUBE_HTTP_NOT_OK")
-        body = res.read(2_000_001)
-        if len(body) > 2_000_000:
-            raise RuntimeError("YOUTUBE_HTML_TOO_LARGE")
-    match = MARKER.search(body.decode("utf-8", errors="replace"))
+    try:
+        with urllib.request.urlopen(req, timeout=timeout) as res:
+            if res.status != 200:
+                raise RuntimeError("YOUTUBE_HTTP_NOT_OK")
+            body = res.read(2_000_001)
+    except urllib.error.HTTPError as exc:
+        # Preserve the HTTP class, not the full response or a credential.
+        raise RuntimeError("YOUTUBE_HTTP_" + str(exc.code)) from exc
+    if len(body) > 2_000_000:
+        raise RuntimeError("YOUTUBE_HTML_TOO_LARGE")
+    raw = body.decode("utf-8", errors="replace")
+    match = MARKER.search(raw)
     if match is None:
         raise RuntimeError("YOUTUBE_METADATA_MISSING")
-    raw = body.decode("utf-8", errors="replace")
     player, _ = json.JSONDecoder().raw_decode(raw[match.end():])
     if (player.get("playabilityStatus") or {}).get("status") != "OK":
         raise RuntimeError("YOUTUBE_PUBLIC_ACCESS_UNAVAILABLE")
@@ -136,7 +141,7 @@ def harvest(catalog_dir: str | Path, *, offset: int = 0, take: int = 50,
     cache.mkdir(exist_ok=True)
     errors.mkdir(exist_ok=True)
     descriptions, pending = [], []
-    reused = skipped = 0
+    reused = skipped = deferred = 0
     for row in selected:
         vid = row["id"]
         path = cache / (vid + ".json")
@@ -150,21 +155,42 @@ def harvest(catalog_dir: str | Path, *, offset: int = 0, take: int = 50,
         else:
             pending.append(vid)
     good, bad = [], {}
-    with ThreadPoolExecutor(max_workers=workers) as pool:
-        tasks = {pool.submit(fetch_public, vid): vid for vid in pending}
-        for future in as_completed(tasks):
-            vid = tasks[future]
-            try:
-                good.append(cached_store(cache, future.result(), vid))
-            except Exception as exc:
-                bad[vid] = type(exc).__name__
-                failed_store(errors, vid, type(exc).__name__, cooldown)
+    global_retry = errors / "__global__.json"
+    global_blocked = cooldown_active(global_retry, "__global__")
+    if global_blocked:
+        deferred = len(pending)
+    else:
+        # Bounded waves, unlike a 100-item fan-out which continues after 429.
+        for start in range(0, len(pending), workers):
+            wave = pending[start:start + workers]
+            rejection_count = 0
+            with ThreadPoolExecutor(max_workers=workers) as pool:
+                tasks = {pool.submit(fetch_public, vid): vid for vid in wave}
+                for future in as_completed(tasks):
+                    vid = tasks[future]
+                    try:
+                        good.append(cached_store(cache, future.result(), vid))
+                    except Exception as exc:
+                        category = str(exc)
+                        bad[vid] = type(exc).__name__
+                        failed_store(errors, vid, type(exc).__name__ + ":" + category[:50], cooldown)
+                        if (category.startswith(("YOUTUBE_HTTP_403", "YOUTUBE_HTTP_429",
+                                                 "YOUTUBE_HTTP_503")) or
+                                category == "YOUTUBE_PUBLIC_ACCESS_UNAVAILABLE"):
+                            rejection_count += 1
+            if rejection_count >= min(2, len(wave)):
+                failed_store(errors, "__global__", "GLOBAL_YOUTUBE_ACCESS_BACKOFF",
+                             max(cooldown, 7200))
+                global_blocked = True
+                deferred = len(pending) - (start + len(wave))
+                break
     descriptions.extend(good)
     updated = enrich(descriptions, root, max_items=max(1, len(descriptions))) if descriptions else None
     return {
         "schema": "SMART_CAIXA_PUBLIC_METADATA_HARVEST_V1",
         "offset": offset, "requested": len(selected), "new_verified": len(good),
         "cache_reused": reused, "failed": len(bad), "cooldown_skipped": skipped,
+        "deferred": deferred, "global_backoff_active": global_blocked,
         "confirmed_mega_count": updated["status_counts"]["CONFIRMED_MEGA_METADATA"] if updated
             else sum(r["status"] == "CONFIRMED_MEGA_METADATA" for r in original["rows"]),
         "catalog_sha256": updated["catalog_sha256"] if updated else original["sha256"],

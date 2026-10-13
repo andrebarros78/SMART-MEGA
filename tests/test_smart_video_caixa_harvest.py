@@ -70,3 +70,37 @@ def test_corrupted_immutable_cache_fails_closed(tmp_path,monkeypatch):
 def test_bounds_without_network(tmp_path,kwargs):
     ingest(source(1),tmp_path,max_items=1)
     with pytest.raises(ValueError):h.harvest(tmp_path,**kwargs)
+
+
+def test_adaptive_429_circuit_stops_new_requests(tmp_path, monkeypatch):
+    ingest(source(16), tmp_path, max_items=16)
+    called = []
+    def rate_limited(id_, **kw):
+        called.append(id_)
+        raise RuntimeError("YOUTUBE_HTTP_429")
+    monkeypatch.setattr(h, "fetch_public", rate_limited)
+    result = h.harvest(tmp_path, take=16, workers=4)
+    assert result["failed"] == 4
+    assert result["deferred"] == 12
+    assert result["global_backoff_active"] is True
+    assert len(called) == 4
+    retry = h.harvest(tmp_path, take=16, workers=4)
+    assert retry["new_verified"] == 0
+    assert retry["deferred"] == 12
+    assert retry["cooldown_skipped"] == 4
+    assert len(called) == 4
+    assert result["predictive_weight"] == retry["predictive_weight"] == 0.0
+
+
+def test_http_error_category_without_secret_or_response_leak(tmp_path, monkeypatch):
+    from urllib.error import HTTPError
+    class Denied:
+        status = 429
+        def __enter__(self):
+            raise HTTPError("https://www.youtube.com/watch?v=00000000001", 429,
+                            "Too Many Requests", {}, None)
+        def __exit__(self, *a):
+            pass
+    monkeypatch.setattr(h.urllib.request, "urlopen", lambda *a, **kw: Denied())
+    with pytest.raises(RuntimeError, match="YOUTUBE_HTTP_429"):
+        h.fetch_public("00000000001")
