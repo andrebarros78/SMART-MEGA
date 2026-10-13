@@ -59,11 +59,11 @@ def test_f12_historical_gate_rejects_unapproved_selector_change_and_new_proof_is
     assert hashlib.sha256((ROOT / "smart_primary_card_selector.py").read_bytes()).hexdigest() == proof["current_selector_sha256"]
     assert proof["f11_original_selector_sha256"] == BASELINE_SOURCE_SHA256["smart_primary_card_selector.py"]
     assert proof["explicit_added_guard_hunks"] == 6
-    assert proof["original_F12_scope_passes_on_current_code"] is False
-    assert proof["f11_historical_evidence_passes"] is True
-    assert proof["product_promotion_authorized"] is False
-    assert proof["prospective_predictive_advantage_proven"] is False
-    assert len(proof["synthetic_score_cases"]) == 4
+    assert proof["f12_historical_same_source_gate_currently_valid"] is False
+    assert proof["f11_historical_scientific_evidence_valid"] is True
+    assert proof["operator_card_generated_in_production"] is False
+    assert proof["six_hits_predictive_superiority_proven"] is False
+    assert len(proof["synthetic_cases"]) == 4
 
 
 def test_f12_immutable_archival_approval_not_rewritten_after_new_operator_extension():
