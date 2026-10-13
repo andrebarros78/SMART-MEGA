@@ -37,6 +37,11 @@ class OperatorCardOutcomeTests(unittest.TestCase):
     def test_no_receipts_is_not_inferred_as_one_issued_card(self):
         self.assertIsNone(self.evaluate())
 
+    def test_absent_optional_receipts_preserve_legacy_adjudication_without_timestamp(self):
+        self.assertIsNone(reconcile_operator_card_outcomes(
+            self.root, 3099, self.freeze_sha, self.actual, None,
+        ))
+
     def test_three_authorized_requests_match_only_the_later_official_result(self):
         issued = [self.fixture.issue("one"), self.fixture.issue("two"), self.fixture.issue("three")]
         before = {row["operator_request_id"]: row["sha256"] for row in issued}
