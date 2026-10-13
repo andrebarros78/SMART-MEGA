@@ -1,0 +1,58 @@
+{
+  "schema": "SMART_VISUAL_LEARNING_V2_ENGINEERING_EVIDENCE_V1",
+  "date_local": "2026-10-10",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "learning/visual-learning-v2-gpt6-20261010",
+  "tested_commit": "b50ab3f7afb02306eb37f56be895a0ee34a4f294",
+  "base_branch": "learning/video-observation-v131-20261009",
+  "implementation": "research/visual_learning_v2.py",
+  "consumer_contract": "docs/SMART_VISUAL_LEARNING_V2_GPT6_EXECUTIVE.md",
+  "github_blob_sha": {
+    "research/visual_learning_v2.py": "14a0bcce04dd73654a5ae9e15cbe281a5c66a2fd",
+    "tests/test_smart_visual_learning_v2.py": "8120957cdf62bbb33a5812f5115202f78045b802",
+    "docs/SMART_VISUAL_LEARNING_V2_GPT6_EXECUTIVE.md": "d70d956fd42a97bb2f7e64d31d8341baf3b2ba6e"
+  },
+  "test_proofs": {
+    "v2_focused": {
+      "passed": 15,
+      "failed": 0
+    },
+    "v2_plus_observer_plus_f08": {
+      "passed": 54,
+      "failed": 0,
+      "command": "python -m pytest -q tests/test_smart_video_observation.py tests/test_smart_visual_learning_v2.py test_smart_f08_parallel_components.py",
+      "runner": "wmcp-cloud-01 isolated worktree",
+      "worktree": "/tmp/smartmega-visual-learning-v2-20261010"
+    }
+  },
+  "real_observation_artifact_smoke": {
+    "contest": "2978",
+    "source_file": "release_evidence/VIDEO_OBSERVATION_20261009/CONTEST_2978_FAIL_CLOSED.json",
+    "input_is_actual_video_frames": false,
+    "source_status": "STREAM_FAILED",
+    "target_contest": 2979,
+    "hypothesis_id": "mega-visual-segment-guard-v131",
+    "eligible_observations": 1,
+    "candidate_observations": 0,
+    "mode": "SHADOW_SCIENTIFIC_OBSERVATION",
+    "snapshot_sha256": "4ceb11b913dac1f3a79a00a84f18a87db46c32f62c21094c2bcc5e132440c845",
+    "persisted_on": "wmcp-cloud-01 temporary test directory (not PC Escola)"
+  },
+  "physical_b2_checkpoints": {
+    "historical_claim": 13,
+    "current_access": "NOT_REVALIDATED",
+    "ingested_in_v2": 0
+  },
+  "scientific_status": "UNPROVEN",
+  "predictive_evidence": "NOT_ESTABLISHED",
+  "models_retrained": false,
+  "automatic_gpt6_agent_connected": false,
+  "production_rollout": false,
+  "main_merged": false,
+  "result": "ENGINEERING_PROTOTYPE_TESTED_NOT_PHYSICAL_LEARNING_PROVEN",
+  "followup": [
+    "reconcile physical B2 checkpoints, fingerprint and hypothesis cohorts",
+    "run in PC Escola and verify LATEST.json and immutable snapshot",
+    "re-run full CI and prospective validation before any production promotion"
+  ]
+}
