@@ -173,3 +173,15 @@ def test_champion_unexpected_fine_tuning_error_is_not_silenced(tmp_path, monkeyp
     monkeypatch.setattr(cc, 'load_ai_hyperparameter_authority',lambda *a,**k: (_ for _ in ()).throw(ValueError('malformed fine tuning authority')))
     with pytest.raises(ValueError, match='malformed fine tuning authority'):
         cc.freeze_champion_challenger(data,46,tmp_path/'freeze.json',tmp_path/'ledger.json',tmp_path/'state.json',start=10,enforce_temporal_guard=False)
+
+
+def test_historical_windows_relative_result_requires_unique_sha(tmp_path):
+    folder = tmp_path / 'runtime' / 'learning_epochs' / 'epoch'
+    folder.mkdir(parents=True)
+    original = folder / 'Mega-Sena_result_3055.xlsx'
+    original.write_bytes(b'original historical binary')
+    declared = r'runtime\learning_epochs\epoch\Mega-Sena_result_3055.xlsx'
+    sha = ia.sha256_file(original)
+    assert ia._resolve_audit_evidence(tmp_path, declared, sha, 'result data') == original
+    with pytest.raises(ValueError, match='missing'):
+        ia._resolve_audit_evidence(tmp_path, declared, 'f'*64, 'result data')

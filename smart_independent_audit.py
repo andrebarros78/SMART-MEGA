@@ -304,8 +304,8 @@ def _resolve_historical_evidence_by_hash(root: Path, filename: str, expected_sha
 
 def _resolve_audit_evidence(root: Path, value: str | Path, expected_sha256: str, label: str, *, allow_legacy_mismatch: bool = False) -> Path:
     declared = Path(value)
-    if is_absolute_any(value):
-        # Historical absolute paths are never dereferenced or trusted.
+    if is_absolute_any(value) or '\\' in str(value):
+        # Historical Windows paths (absolute or backslash-relative) are hints only.
         # Only the filename hint plus cryptographic hash may identify a file
         # physically contained by the canonical B2 workspace.
         return _resolve_historical_evidence_by_hash(root, basename_any(value), expected_sha256, label, allow_legacy_mismatch=allow_legacy_mismatch)
