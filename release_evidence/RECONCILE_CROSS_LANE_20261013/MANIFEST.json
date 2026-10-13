@@ -1,0 +1,79 @@
+{
+  "schema": "SMART_MEGA_CROSS_LANE_TESTED_INTEGRATION_V1",
+  "repository": "andrebarros78/SMART-MEGA",
+  "base_branch": "product/native-skills-canonical-integration-20261012",
+  "candidate_branch": "reconcile/smart-mega-v6-engineering-20261013",
+  "candidate_tested_source_commit": "f23d29ad06a385d2c8fed01a3b14175108832ecd",
+  "source_branches": {
+    "PR40": "3540411c6a4bb3ea1e50534112ee9510ba2e4e6b",
+    "PR38": "f91e641177f02bbf0fd125b79a44eef70cc8435e",
+    "PR41": "feature/video-learning-b2-checkpoint-inventory-20261013",
+    "PR36": "learning/visual-learning-v2-gpt6-20261010"
+  },
+  "merge_commits": {
+    "first_PR40_plus_PR38": "2665583c0f0a424f025bd27d7a1f0b14c4a2ab14",
+    "visual_PR41": "9b6edb1196b2b5135cd855de150024eec75a5a6e",
+    "visual_PR36": "f23d29ad06a385d2c8fed01a3b14175108832ecd"
+  },
+  "test_runs": {
+    "cross_lane": {
+      "tests": 120,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "JUNIT_120_CROSS_LANE.xml",
+      "sha256": "4d4c540049cb834553e2b0b71b4ea9e8e7d7d5f1fe970121d4d5626730be98cb"
+    },
+    "predictive_card_consumer": {
+      "tests": 66,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "file": "JUNIT_55_CARDS.xml",
+      "sha256": "dbe2b84a67f882305a01c5a2fa3561bd0d9bd1a659550d1047d4a1e601659fdc"
+    },
+    "card_subtests_passed_console": 11
+  },
+  "component_count": 518,
+  "F08_classified_nonprod_root_files": 52,
+  "visual_files_diagnostic_only": [
+    "smart_video_learning.py",
+    "smart_video_observation.py"
+  ],
+  "authority_registries": {
+    "SMART_COMPONENT_REACHABILITY_REGISTRY.json": {
+      "sha256": "d3fbad3f032af202d32559be9bf1e84c96ddf348d2ce63477e31dd9ed4c4f933",
+      "status": "PASS"
+    },
+    "SMART_CANONICAL_COMPONENT_REGISTRY.json": {
+      "sha256": "870681518943baabb8236f4f5c511c05fb329b96debe597d19bdb847ae7ac45e",
+      "status": "PASS"
+    },
+    "SMART_SKILL_ADAPTER_REGISTRY.json": {
+      "sha256": "4d735a7e30c577ee0753907639c5ebc55b95add2ec90f5b4446843fc2f23a2e9",
+      "status": "PASS"
+    },
+    "SMART_F10_DISCONNECTION_GATE.json": {
+      "sha256": "323e3a89a98fbe84d550ec68a6b67857d7a31450b32da588981bc3bb6fe6b274",
+      "status": "PASS"
+    }
+  },
+  "protected_operator_authorities_hash_unchanged_in_card_test": [
+    "SMART_NEXT_CYCLE_HOLD.json",
+    "SMART_OPERATIONAL_LIFECYCLE.json",
+    "SMART_SIGNAL_LEDGER.json"
+  ],
+  "full_product_regression_on_combined_head": "NOT_RUN",
+  "real_video_checkpoints_verified": 0,
+  "B2_physical_provenance": "SOURCE_PR41_SYNTHETIC_13_ONLY",
+  "historical_freezes_missing": [
+    3060,
+    3061
+  ],
+  "P14_historical_independent_audit": "BLOCKED",
+  "scientific_predictive_status": "UNPROVEN",
+  "uniform_holdout_baseline_retained": true,
+  "production_main_merge_authorized": false,
+  "operator_generation_authorized_by_this_report": false,
+  "mission_status": "MISSION_ACTIVE"
+}

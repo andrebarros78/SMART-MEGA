@@ -1,0 +1,103 @@
+{
+  "schema": "SMART_AGENT_SKILL_EXECUTION_CONTRACT_V1",
+  "status": "ACTIVE_NON_PREDICTIVE",
+  "version": "1.0.0",
+  "orchestration_path": "smart_full_process_pipeline.run_full_process",
+  "system": {
+    "owner": "smart_operator",
+    "phases": [
+      "PRE_FREEZE",
+      "POST_FREEZE"
+    ],
+    "cycle_identity_required": [
+      "epoch_id",
+      "target_contest",
+      "cutoff_contest",
+      "data_sha256"
+    ],
+    "target_must_equal_cutoff_plus_one": true,
+    "manual_generation_authority_required": true,
+    "pre_draw_temporal_gate_required": true,
+    "post_result_data_forbidden": true
+  },
+  "agents": {
+    "executor": "SmartAgentRuntime",
+    "execution_kind": "DETERMINISTIC_NATIVE_ROLE_PROBES",
+    "required_order": [
+      "quarantine_curator",
+      "research_scout",
+      "data_guardian",
+      "null_model_cartographer",
+      "falsification_auditor",
+      "learning_calibration_governor",
+      "robustness_red_team",
+      "combinatorial_solver",
+      "mission_governor"
+    ],
+    "count": 9,
+    "consumed_handoffs_exactly_once": true,
+    "minimum_handoffs_per_phase": 1,
+    "allow_predictive_weight_mutation": false,
+    "allow_freeze_mutation": false
+  },
+  "skills": {
+    "executor": "SmartSkillRuntime",
+    "registry": "SMART_SKILL_ADAPTER_REGISTRY.json",
+    "registered_count": 41,
+    "native_probe_alias_invocations": 37,
+    "quarantined_noncallable": 4,
+    "external_skill_source_execution": false,
+    "unproven_legacy_skill_promotion": false,
+    "capability_owner_required": true,
+    "adapter_registry_sha256_required": true,
+    "invocation_sha256_required": true
+  },
+  "consumer": {
+    "validator": "smart_agent_skill_consumer_contract.bind_consumer_execution",
+    "required_before_prediction_and_freeze": true,
+    "required_after_freeze_before_final_card_proof": true,
+    "required_gate_schema": "SMART_TOTAL_INTEGRATION_GATE_V3",
+    "required_gate_status": "PASS",
+    "fail_closed": true,
+    "phase_proofs": [
+      "PRE_FREEZE_TOTAL_INTEGRATION.json",
+      "POST_FREEZE_TOTAL_INTEGRATION.json"
+    ],
+    "binding_fields": [
+      "epoch_id",
+      "target_contest",
+      "cutoff_contest",
+      "data_sha256",
+      "phase",
+      "gate_file_sha256",
+      "contract_file_sha256"
+    ],
+    "final_proof_field": "agent_skill_consumer",
+    "phase_consistent": true,
+    "same_registry_between_phases": true
+  },
+  "llm": {
+    "required": false,
+    "provider": null,
+    "external_network_calls": 0,
+    "predictive_authority": false
+  },
+  "authority": {
+    "agent_can_freeze": false,
+    "skill_can_freeze": false,
+    "consumer_can_freeze": false,
+    "agent_can_change_weights": false,
+    "skill_can_change_weights": false,
+    "consumer_can_change_weights": false,
+    "card_optimizer_unchanged": true
+  },
+  "failure": {
+    "partial_success_must_not_unlock_consumer": true,
+    "invalid_hash_rejected": true,
+    "orphan_handoff_rejected": true,
+    "quarantined_skill_invocation_rejected": true,
+    "cycle_mismatch_rejected": true,
+    "no_automatic_retry_of_frozen_cycle": true
+  },
+  "sha256": "8b789a0b1600aff882b0d40e34232623b1f5aaba7dfca94416fe6b5480ff8cbf"
+}

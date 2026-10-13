@@ -29,8 +29,13 @@ def test_f04_lifecycle_generates_and_reuses_epoch_authority(tmp_path, monkeypatc
     epoch = tmp_path / "epoch"
     calls = {"run": 0}
 
-    def fake_run(data_file, target_contest, *, start, max_workers):
+    def fake_run(data_file, target_contest, *, start, max_workers, progress=None):
         calls["run"] += 1
+        if progress:
+            progress({"status": "RUNNING", "completed": 0, "total": 1,
+                      "candidate_ids": [], "elapsed_seconds": 0.0})
+            progress({"status": "COMPLETE", "completed": 1, "total": 1,
+                      "candidate_ids": ["baseline"], "elapsed_seconds": 0.01})
         return _report(lifecycle.sha256_file(Path(data_file)), int(target_contest))
 
     monkeypatch.setattr(lifecycle, "run_fine_tuning", fake_run)
@@ -44,6 +49,12 @@ def test_f04_lifecycle_generates_and_reuses_epoch_authority(tmp_path, monkeypatc
     assert first["holdout_used_for_selection"] is False
     assert first["future_result_used"] is False
     assert first["effective_candidate_id"] == "baseline"
+    import json
+    progress_data = json.loads((epoch / "SMART_AI_FINE_TUNING_PROGRESS.json").read_text())
+    assert progress_data["status"] == "COMPLETE"
+    assert progress_data["completed"] == progress_data["total"] == 1
+    assert progress_data["target_contest"] == 3001
+    assert len(progress_data["authority_file_sha256"]) == 64
 
 
 def test_f04_lifecycle_rejects_partial_artifacts(tmp_path):
@@ -62,3 +73,27 @@ def test_f04_full_process_wires_epoch_authority_into_freeze():
     assert "ensure_pre_freeze_authority(" in source
     assert 'ai_hyperparameter_authority_path=Path(fine_tuning["authority_file"])' in source
     assert '"fine_tuning_consumed_by_challenger"' in source
+
+
+
+def test_f04_timeout_keeps_authority_absent(tmp_path, monkeypatch):
+    import pytest
+    data = tmp_path / "cutoff.xlsx"
+    data.write_bytes(b"causal-cutoff")
+    epoch = tmp_path / "epoch"
+
+    def fake_timeout(data_file, target_contest, *, start, max_workers, progress=None):
+        if progress:
+            progress({"status": "RUNNING", "completed": 1, "total": 10,
+                      "candidate_ids": ["baseline"], "elapsed_seconds": 1})
+            progress({"status": "FAILED", "completed": 1, "total": 10,
+                      "candidate_ids": ["baseline"], "elapsed_seconds": 2})
+        raise TimeoutError("simulated worker stalled")
+
+    monkeypatch.setattr(lifecycle, "run_fine_tuning", fake_timeout)
+    with pytest.raises(TimeoutError, match="stalled"):
+        lifecycle.ensure_pre_freeze_authority(data, 3001, epoch)
+    assert not (epoch / "SMART_AI_FINE_TUNING_CURRENT.json").exists()
+    assert not (epoch / "SMART_AI_HYPERPARAMETERS.json").exists()
+    import json
+    assert json.loads((epoch / "SMART_AI_FINE_TUNING_PROGRESS.json").read_text())["status"] == "FAILED"

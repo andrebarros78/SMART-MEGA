@@ -1,0 +1,52 @@
+{
+  "analyzed_windows": [],
+  "checkpoint_fingerprint": "170d2ec80aa9d214d0047295feaabf63f6e732097f334eb91c2d1809a545f308",
+  "checkpoint_reused": false,
+  "confidence": 0.0,
+  "contest_id": "2978",
+  "created_at_utc": "2026-10-09T20:09:04.504587+00:00",
+  "elapsed_s": 2.328871,
+  "errors": [
+    "RuntimeError: DownloadError: ERROR: [youtube] y7AdBLDxWsI: Sign in to confirm you’re not a bot. Use --cookies-from-browser or --cookies for the authentication. See  https://github.com/yt-dlp/yt-dlp/wiki/FAQ#how-do-i-pass-cookies-to-yt-dlp  for how to manually pass cookies. Also see  https://github.com/yt-dlp/yt-dlp/wiki/Extractors#exporting-youtube-cookies  for tips on effectively exporting YouTube cookies"
+  ],
+  "event_timestamps_s": [],
+  "extractor_version": "1.3.1",
+  "hypothesis_id": "mega-visual-segment-guard-v131",
+  "limitations": [
+    "physical observation is separated from lottery result labels",
+    "motion events are candidates, not confirmed ball/ejection semantics",
+    "network byte delta is system-wide approximate when available"
+  ],
+  "main_params": {
+    "analysis_fps": 5.0,
+    "coarse_points": 12,
+    "coarse_sample_s": 2.5,
+    "contest_timeout_s": 120.0,
+    "event_mad_multiplier": 2.5,
+    "frame_width": 320,
+    "grid_cols": 4,
+    "grid_rows": 3,
+    "max_refined_regions": 3,
+    "min_candidate_events": 3,
+    "min_event_gap_s": 0.3,
+    "motion_floor": 0.012,
+    "refine_window_s": 6.0,
+    "resolver_timeout_s": 15.0,
+    "sample_timeout_s": 12.0,
+    "segment_locator_timeout_s": 25.0,
+    "workers": 2
+  },
+  "media_persisted_bytes": 0,
+  "method": "STREAM_FIRST_COARSE_TO_FINE_INDEPENDENT_SHORT_SAMPLES",
+  "predictive_evidence": "NOT_ESTABLISHED",
+  "resource_metrics": {
+    "network_bytes_system_delta_approx": 9796720,
+    "network_measurement_scope": "system-wide approximate; not attributed exclusively to extractor",
+    "parent_cpu_seconds": 0.010000000000000009,
+    "parent_rss_bytes_end": 26394624
+  },
+  "schema": "smart.video_observation.v1",
+  "semantic_label": null,
+  "source": "https://www.youtube.com/watch?v=y7AdBLDxWsI",
+  "status": "STREAM_FAILED"
+}

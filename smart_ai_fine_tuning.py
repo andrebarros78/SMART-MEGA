@@ -1,6 +1,8 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import hashlib,json,math
-from concurrent.futures import ProcessPoolExecutor,as_completed
+from multiprocessing import Pool, TimeoutError as PoolTimeoutError
+import time
+from datetime import datetime, timezone
 from dataclasses import asdict,dataclass
 from pathlib import Path
 from typing import Any
@@ -74,18 +76,50 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  Candidate(**obj.get('effective_candidate',{})).validate()
  if obj.get('future_result_used') is not False or obj.get('holdout_used_for_selection') is not False: raise ValueError('AI fine-tuning authority violates causal partitioning')
  return obj
-def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,max_workers:int=4,candidates:list[Candidate]|None=None):
+def _bounded_evaluate(work,workers,*,timeout_s=1200.0,heartbeat_s=20.0,progress=None):
+ """Execute the original scoring function, fail closed if workers stall."""
+ if not math.isfinite(timeout_s) or timeout_s<=0 or not math.isfinite(heartbeat_s) or heartbeat_s<=0:
+  raise ValueError('fine-tuning execution limits must be finite and positive')
+ started=time.monotonic(); completed=[]; results=[]
+ ids=[args[0].candidate_id for args in work]
+ def emit(state):
+  if progress is not None:
+   progress({'schema':'SMART_FINE_TUNING_PROGRESS_V1','status':state,
+             'completed':len(completed),'total':len(work),
+             'candidate_ids':sorted(completed,key=ids.index),
+             'elapsed_seconds':round(time.monotonic()-started,3),
+             'updated_utc':datetime.now(timezone.utc).isoformat()})
+ emit('RUNNING')
+ try:
+  # Unlike ProcessPoolExecutor.__exit__, Pool.terminate does not await
+  # completion of wedged evaluation tasks on a deadline.
+  with Pool(processes=max(1,min(4,int(workers)))) as pool:
+   iterator=pool.imap_unordered(_evaluate_one,work,chunksize=1)
+   while len(results)<len(work):
+    remaining=timeout_s-(time.monotonic()-started)
+    if remaining<=0: raise TimeoutError('fine-tuning deadline exceeded, no partial authority')
+    try:
+     row=iterator.next(timeout=min(heartbeat_s,remaining))
+    except PoolTimeoutError:
+     emit('RUNNING')
+     continue
+    cid=row['candidate']['candidate_id']
+    if cid not in ids or cid in completed: raise ValueError('unexpected fine-tuning worker result')
+    results.append(row); completed.append(cid); emit('RUNNING')
+ except BaseException:
+  emit('FAILED')
+  raise
+ emit('EVALUATED')
+ return results
+
+def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,max_workers:int=4,candidates:list[Candidate]|None=None,progress=None):
  data_file=Path(data_file).resolve(); draws,contests=e.load_draws(data_file); cutoff=int(contests[-1]); target=int(target_contest)
  if target!=cutoff+1: raise ValueError('fine-tuning target must be cutoff+1')
  if cutoff<HOLDOUT_START: raise ValueError('insufficient history for canonical fine-tuning partitions')
  candidates=list(candidates or candidate_space()); ids=[c.candidate_id for c in candidates]
  if len(ids)!=len(set(ids)) or 'baseline' not in ids: raise ValueError('candidate IDs must be unique and include baseline')
  work=[(c,str(data_file),target,int(start)) for c in candidates]; results=[]; workers=max(1,min(int(max_workers),len(work)))
- if workers==1: results=[_evaluate_one(x) for x in work]
- else:
-  with ProcessPoolExecutor(max_workers=workers) as pool:
-   futs={pool.submit(_evaluate_one,x):x[0].candidate_id for x in work}
-   for fut in as_completed(futs): results.append(fut.result())
+ results=_bounded_evaluate(work,workers,timeout_s=1200.0,heartbeat_s=20.0,progress=progress)
  results.sort(key=lambda r:ids.index(r['candidate']['candidate_id'])); selection=select_without_holdout(results); adjudication=adjudicate_selected(results,selection)
  persisted=[]
  for row in results:

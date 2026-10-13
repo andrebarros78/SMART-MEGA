@@ -1,0 +1,97 @@
+{
+  "schema": "SMART_V6_EXECUTION_CONTRACTS_EVIDENCE_V1",
+  "status": "ISOLATED_INTEGRATION_TESTED_AWAITING_PRODUCT_RECERTIFICATION",
+  "generated_utc": "2026-10-11T19:08:57.482218+00:00",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "fix/smart-v6-execution-contracts-20261011",
+  "base_main_commit": "141c31d339e03dec24054581685c6b7244c825ad",
+  "contract": {
+    "schema": "SMART_AGENT_SKILL_EXECUTION_CONTRACT_V1",
+    "self_sha256": "8b789a0b1600aff882b0d40e34232623b1f5aaba7dfca94416fe6b5480ff8cbf",
+    "file_sha256": "dfb3d7fb2c76099bddca51fbc0d2470c3d9aa5b37277b43bdd1820196bf01897",
+    "agent_count": 9,
+    "registered_capabilities": 41,
+    "native_alias_invocations": 37,
+    "quarantined": 4,
+    "provider_llm": null
+  },
+  "execution_reconciliation": {
+    "historical_3069_read_only": true,
+    "phases": {
+      "PRE_FREEZE": {
+        "status": "PASS",
+        "agents_executed": 9,
+        "skills_native_invoked": 37,
+        "skills_quarantined": 4,
+        "handoffs_consumed": 10,
+        "contract_file_sha256": "dfb3d7fb2c76099bddca51fbc0d2470c3d9aa5b37277b43bdd1820196bf01897",
+        "sha256": "0a397daaf5e673d03388052e4bfc72d13f3d81d34c92afdb500cd9274cc5b5cb"
+      },
+      "POST_FREEZE": {
+        "status": "PASS",
+        "agents_executed": 9,
+        "skills_native_invoked": 37,
+        "skills_quarantined": 4,
+        "handoffs_consumed": 10,
+        "contract_file_sha256": "dfb3d7fb2c76099bddca51fbc0d2470c3d9aa5b37277b43bdd1820196bf01897",
+        "sha256": "82b9e3334f684a3d1dbc1551e4785f09be8abcc5c5929d6c181a3deda1f63e11"
+      }
+    },
+    "result_was_not_reprocessed": true
+  },
+  "calibration": {
+    "mathematical_functions_unchanged": [
+      "candidate_space",
+      "_evaluate_one",
+      "_summary",
+      "_rank_key",
+      "select_without_holdout",
+      "_decision_change_count",
+      "adjudicate_selected",
+      "build_authority",
+      "load_authority"
+    ],
+    "bounded_worker_timeout_s": 1200,
+    "partial_authorities_refused": true,
+    "visual_learning_production_influence": false
+  },
+  "clean_checkout_tests": {
+    "passed": 95,
+    "failed": 0,
+    "errors": 0,
+    "warnings": 1,
+    "duration_seconds": 534.04,
+    "suite_kind": "FOCUSED_AND_AFFECTED_REGRESSION",
+    "full_repository_suite_completed": false
+  },
+  "integrity": {
+    "F05": "PASS",
+    "F10": "PASS",
+    "fresh_clean_checkout_matches_saved_registries": true,
+    "branch_clean_before_evidence": true
+  },
+  "live_preservation": {
+    "target_contest": 3069,
+    "cutoff_contest": 3068,
+    "status": "FROZEN",
+    "card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "card_sha256": "dd36988116fa8f9f69418d82ee414a47d730995be053ef51914a06719cd3b5df",
+    "full_process_proof_sha256": "7d20ede8301dba6a048553eb79e639d44732f820e17c37ff8c41e26142eb7b92",
+    "live_main_head": "231f0080fe7a804df6d61b506e5d72ad825654b0"
+  },
+  "promotion": {
+    "merged_to_main": false,
+    "product_certification_refreshed": false,
+    "full_live_pre_result_generation_replayed": false
+  },
+  "predictive_six_of_six_proven": false,
+  "mission_proven": false,
+  "sha256": "9d3bde9fb7ae20fe8b23d5a5bbd0492fa113502eb97646d81c1120962a90f0cd"
+}

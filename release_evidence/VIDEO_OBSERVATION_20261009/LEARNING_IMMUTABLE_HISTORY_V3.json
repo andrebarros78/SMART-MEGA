@@ -1,0 +1,40 @@
+{
+  "base_commit": "009692cd390648c5dba84d06df701a794c78b3d7",
+  "change_scope": "Post-video observation memory persistence; no model predictive promotion",
+  "corrected_causes": [
+    "Previous consolidated visual learning state was overwritten without immutable revision archive",
+    "No SHA-256 predecessor link for every new memory revision",
+    "Re-running the same learning state could manufacture redundant revisions",
+    "Corruption of an archived prior revision was not checked before advancing the pointer"
+  ],
+  "created_utc": "2026-10-11T18:17:54.947674+00:00",
+  "immutable_history": "runtime/video_observation/learning_history/<sha256>.json",
+  "integration": {
+    "combined_behavior": "checkpoint reuse restores memory; state revisions archived with predecessor digests; neither path grants predictive authority",
+    "reconciled_concurrent_commit": "481101c43022c05f123e6e1c43d64aef12f0d33c"
+  },
+  "memory_pointer": "runtime/video_observation/SMART_VISUAL_LEARNING_STATE.json",
+  "mission": "smartmega-physical-observation-learning-20260929",
+  "module_version": "1.3.1",
+  "schema": "SMART_VISUAL_LEARNING_IMMUTABLE_HISTORY_V1",
+  "scientific_boundaries": {
+    "b2_physical_checkpoints_revalidated": false,
+    "predictive_evidence": "NOT_ESTABLISHED",
+    "promotion_authorized": false,
+    "result_labels_used": false,
+    "same_contest_predictive_weight_authorized": false
+  },
+  "sha256": {
+    "smart_video_observation.py": "35ef06a0c32360d84857530809ab322dc9a46e2479c159717f22fb4e4f755796",
+    "tests/test_smart_video_observation.py": "ebd0537e84b9556443fe616de777e00d9dadc1ef890fc824a2b577f18e7abdb7"
+  },
+  "status": "CODE_RECONCILED_105_TESTS_PASS_PENDING_GITHUB_CI",
+  "tests": {
+    "failed": 0,
+    "focused_and_adjacent_passed": 105,
+    "focused_observer_passed": 47,
+    "pip_check": "PASS",
+    "real_video_checkpoints_newly_consumed": 0,
+    "warning_count": 1
+  }
+}
