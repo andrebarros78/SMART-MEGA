@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "ed4b79a5c6c49c2741ec7ce51c4df16f04f2f5ef501fc334a73d19c11cc94389",
+  "source_reachability_inventory_sha256": "ed2e375334e5009ab5a4500f7fd7d05766dc7fa135c4e073fce5f8b5e3802e4e",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 507,
+    "component_count": 508,
     "active": 104,
     "shadow": 1,
-    "diagnostic": 203,
+    "diagnostic": 204,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -4999,7 +4999,7 @@
       "component_id": "smart_champion_challenger",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_champion_challenger.py",
-      "implementation_sha256": "8b643a2677b914263f0ecbd9cb650bc6f58dc83b5de056a924e4a5bafd4269df",
+      "implementation_sha256": "593a400996660120fbf6a82f7b3d6f613e1b951e24f925bc153b1f0e16d17a13",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -5013,6 +5013,7 @@
         "smart_independent_audit",
         "smart_learning_activation_authority",
         "smart_portfolio_pipeline",
+        "smart_product_certification",
         "smart_promotion_gate",
         "smart_sequential_prospective_proof",
         "smart_signal_agent",
@@ -5065,6 +5066,7 @@
         "test_smart_meta_governor",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_multi_challengers",
+        "test_smart_operational_freeze_proof_separation",
         "test_smart_promotion_gate",
         "test_smart_rank_score_calibration",
         "test_smart_sequential_prospective_proof",
@@ -6002,7 +6004,7 @@
       "component_id": "smart_full_process_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_full_process_pipeline.py",
-      "implementation_sha256": "59f6635b841d54f381fc725171110a3b5bf1db487d7f54eb36d9405278bae21c",
+      "implementation_sha256": "b29d4d1d6cffd8a8ae8bb18b2d0172d3cbc4fff2657ceaa7e6fd22732d46475a",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7726,6 +7728,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_agent_ecosystem_governance",
         "smart_authority_freshness",
+        "smart_champion_challenger",
         "smart_finalize_deployment",
         "smart_full_process_pipeline",
         "smart_github_certify",
@@ -11918,6 +11921,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_operational_freeze_proof_separation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_operational_freeze_proof_separation.py",
+      "implementation_sha256": "643a13b4b64a8f426c3b1fcbb4921382b465a3ec49967cad231e8e8771abe591",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_champion_challenger"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_operational_lifecycle_reviewed_hold",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operational_lifecycle_reviewed_hold.py",
@@ -13759,5 +13785,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "10be8487807c259ac26d57dce7385e06ac5f8a4ea60a8307e05798b44947424e"
+  "registry_sha256": "54b3db0e897c64e64eb91786a9d7a2c1561b80bfb07c56eb373bc53df62e1e39"
 }
