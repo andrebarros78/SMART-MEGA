@@ -52,7 +52,8 @@ class PreRegistrationGateTests(unittest.TestCase):
                          diagnostic["challenger_hits"] - diagnostic["champion_hits"])
         self.assertEqual(diagnostic["primary_minus_champion_hits"],
                          diagnostic["primary_card_hits"] - diagnostic["champion_hits"])
-        self.assertEqual(diagnostic["official_cards_evaluated"], 1)
+        self.assertEqual(diagnostic["frozen_reference_cards_evaluated"], 1)
+        self.assertIs(diagnostic["operator_issued_card_count_not_inferred"], True)
         self.assertEqual(diagnostic["additional_shadow_cards_evaluated"], 0)
         self.assertIs(diagnostic["model_head_comparisons_are_diagnostic"], True)
         self.assertIs(diagnostic["promotion_authorized"], False)
@@ -68,8 +69,10 @@ class PreRegistrationGateTests(unittest.TestCase):
             "actual_numbers": [7, 10, 39, 40, 43, 57],
         }
         for altered_field, value in (
-            ("official_card_count", 3),
-            ("official_card_count", True),
+            ("frozen_reference_card_count", 3),
+            ("cards_per_explicit_operator_request", True),
+            ("cards_per_explicit_operator_request", 3),
+            ("fixed_per_contest_card_limit", 1),
             ("additional_shadow_card_count", 2),
             ("model_heads_are_diagnostic_only", False),
             ("product_role", "AUXILIARY_MULTICARD_PORTFOLIO"),
@@ -111,6 +114,9 @@ class PreRegistrationGateTests(unittest.TestCase):
         self.assertEqual(status["completed_contest"], 3069)
         self.assertEqual(status["status"], "BLOCKED_BY_OPERATOR_HOLD")
         self.assertEqual(status["active_target_freeze_events"], 0)
+        self.assertEqual(status["cards_per_explicit_operator_request"], 1)
+        self.assertIsNone(status["fixed_per_contest_card_limit"])
+        self.assertIs(status["operator_controls_request_count"], True)
         self.assertIs(status["generation_authorized"], False)
         self.assertIs(status["pre_result_git_registration_exists"], False)
         self.assertIs(status["production_promotion_authorized"], False)
@@ -120,7 +126,10 @@ class PreRegistrationGateTests(unittest.TestCase):
         self.assertEqual(first, second)
         self.assertEqual(first["schema"], SCHEMA)
         self.assertEqual(first["product"]["role"], "FINAL_SINGLE_CARD_PRODUCT")
-        self.assertEqual(first["product"]["official_card_count_per_target"], 1)
+        self.assertEqual(first["product"]["cards_per_explicit_operator_request"], 1)
+        self.assertIsNone(first["product"]["fixed_per_contest_card_limit"])
+        self.assertTrue(first["product"]["operator_controls_request_count"])
+        self.assertTrue(first["product"]["successive_requests_for_same_target_permitted"])
         self.assertEqual(first["model_diagnostics"]["additional_card_count"], 0)
         self.assertIs(first["model_diagnostics"]["production_or_betting_authority"], False)
         self.assertEqual(first["comparison_series"],
@@ -141,7 +150,9 @@ class PreRegistrationGateTests(unittest.TestCase):
         self.assertEqual(candidate["challenger_top6"], event["challenger_top6"])
         self.assertEqual(candidate["primary_card"], event["primary_card"]["numbers"])
         self.assertEqual(candidate["product_role"], "FINAL_SINGLE_CARD_PRODUCT")
-        self.assertEqual(candidate["official_card_count"], 1)
+        self.assertEqual(candidate["frozen_reference_card_count"], 1)
+        self.assertEqual(candidate["cards_per_explicit_operator_request"], 1)
+        self.assertIsNone(candidate["fixed_per_contest_card_limit"])
         self.assertEqual(candidate["additional_shadow_card_count"], 0)
         self.assertIs(candidate["model_heads_are_diagnostic_only"], True)
         self.assertEqual(candidate["status"], "UNPUBLISHED_CANDIDATE_NOT_PROSPECTIVE_EVIDENCE")
