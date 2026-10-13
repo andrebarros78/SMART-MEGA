@@ -206,7 +206,9 @@ def reconcile(root: str | Path, target: int | None = None, *, include_authority_
         try:
             from smart_authority_freshness import audit as audit_authority_freshness
             freshness = audit_authority_freshness(root)
-            fresh = freshness.get("status") == "PASS"
+            # The historical/global P14 gate remains authoritative for scientific
+            # promotion, but is not a prerequisite for a guarded operator cycle.
+            fresh = freshness.get("operational_compatible") is True
             _record(checks, details, "authority_freshness", fresh, freshness)
         except Exception as exc:
             _record(checks, details, "authority_freshness", False, f"{type(exc).__name__}: {exc}")
