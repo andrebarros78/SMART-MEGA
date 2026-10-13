@@ -1,0 +1,85 @@
+{
+  "schema": "SMART_PR40_FROZEN_ORIGIN_RECOVERY_AUDIT_1",
+  "audit_date": "2026-10-13",
+  "canonical_repository": "andrebarros78/SMART-MEGA",
+  "comparison_branch": "product/native-skills-canonical-integration-20261012",
+  "audited_branch_head": "10ccd9ed78eaef1f313c47b210b7027309facd88",
+  "authority_branch": "main",
+  "main_head_during_audit": "795539e362600c54d5d316b72beadc32afe5e2e8",
+  "goal": "Find byte-identical pre-result frozen source artifacts for contests 3055, 3057, 3060 and 3061 without retrospective recreation.",
+  "method": [
+    "Fetch the complete accessible Git history for all 56 remote branches and 33 Git tags, removing shallow history limits.",
+    "Enumerate all reachable Git objects with git rev-list --objects --all.",
+    "Identify 2327 blob objects using git cat-file --batch-check.",
+    "Read all 2327 blob contents through git cat-file --batch and independently compute full-content SHA-256.",
+    "Compare actual content hashes, not filenames or Git object IDs, with the four SHA-256 identities recorded in the authenticated adjudication ledger."
+  ],
+  "git_scope": {
+    "remote_branch_heads": 56,
+    "git_tags": 33,
+    "reachable_blobs_hashed": 2327,
+    "uncompressed_bytes_hashed": 161858363,
+    "all_expected_original_hash_matches": 0,
+    "restriction": "Only Git blobs reachable from fetched branch/tag history were examined; unreachable or external files were not."
+  },
+  "sought_sources": [
+    {
+      "contest": 3055,
+      "adjudicated_sha256": "8dae686a9522e50b6433bacb41ddcb601e87f6da8e595acdced2d74df5cb6394",
+      "ledger_path": "runtime/learning_epochs/full-fa9c4e1e1d9de089-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+      "found_exact_original": false
+    },
+    {
+      "contest": 3057,
+      "adjudicated_sha256": "66fb8927a9dada4821dea837f8ed9d1d85d46581c8dd0228e4172cfeded08ba0",
+      "ledger_path": "runtime/learning_epochs/operator-3057-feab9f9be68c-20260911T124911210569Z/SMART_3057_CHAMPION_CHALLENGER_FREEZE.json",
+      "found_exact_original": false
+    },
+    {
+      "contest": 3060,
+      "adjudicated_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+      "ledger_path": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+      "found_exact_original": false
+    },
+    {
+      "contest": 3061,
+      "adjudicated_sha256": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+      "ledger_path": "runtime/learning_epochs/operator-3061-1d798ed37904-20260922T195353823390Z/SMART_3061_CHAMPION_CHALLENGER_FREEZE.json",
+      "found_exact_original": false
+    }
+  ],
+  "mismatched_candidate": {
+    "contest": 3055,
+    "reachable_alternate_path": "runtime/learning_epochs/full-3e84b0a27223fefd-01/SMART_3055_CHAMPION_CHALLENGER_FREEZE.json",
+    "alternate_sha256": "2e79460de976159963557bd569ccbcdd128a0aab49e06261309c12f4acf500a1",
+    "matches_adjudicated_sha256": false,
+    "sources": [
+      "master",
+      "seal/v6.3.1-r3-scope-seal",
+      "fine-tune/v6.3.1-r3-20260909"
+    ],
+    "admissible_as_replacement": false
+  },
+  "federated_query": {
+    "target": "PC-ESCOLA",
+    "federated_node_resolved": true,
+    "operation": "filesystem.search",
+    "admission": "DENIED_BY_FEDERATED_OPERATION_POLICY",
+    "external_files_examined": false
+  },
+  "result": {
+    "authentic_freezes_recovered": 0,
+    "verified_paired_comparison_remains_seven_archived_contests": true,
+    "missing_cases_must_remain_excluded": [
+      3055,
+      3057,
+      3060,
+      3061
+    ],
+    "retrospective_reconstruction_allowed": false,
+    "predictive_weight_change_authorized": false,
+    "challenger_promotion_authorized": false,
+    "prospective_superiority_proven": false
+  },
+  "safety_boundary": "The search cannot establish absence from external machines, unreached Git objects, or backups; do not interpret a Git-name match or a similar-card result as the missing original."
+}

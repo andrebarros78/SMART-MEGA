@@ -264,7 +264,35 @@ def run_regression(root: str | Path, pytest_args: Sequence[str] | None = None) -
         }
 
 
+def consume_test_gap_evidence(root: str | Path) -> dict[str, Any]:
+    """Consume independently traced engineering gaps; never certify a 6/6 model."""
+    from smart_test_gap_analysis import verify_test_gap
+
+    root = Path(root).resolve()
+    proof = root / "SMART_TEST_GAP_EVIDENCE_20261012.json"
+    if not proof.is_file() or proof.is_symlink():
+        raise ValueError("native test-gap execution evidence absent")
+    content = json.loads(proof.read_text(encoding="utf-8"))
+    execution = verify_test_gap(content, root)
+    return {
+        "schema": "SMART_REGRESSION_TEST_GAP_CONSUMER_1",
+        "status": "PASS",
+        "capability": "test-gap-analysis",
+        "execution_receipt_sha256": execution["execution_sha256"],
+        "actual_tests_passed": execution["tests_passed"],
+        "source_modules_measured": execution["tested_modules"],
+        "observed_missing_lines": execution["observed_missing_lines"],
+        "external_skill_executed": False,
+        "predictive_weight_authorized": False,
+        "full_test_coverage_proven": False,
+    }
+
+
 def main() -> None:
+    if sys.argv[1:] == ["--verify-test-gap"]:
+        result = consume_test_gap_evidence(canonical_root())
+        print(json.dumps(result, ensure_ascii=False))
+        raise SystemExit(0 if result["status"] == "PASS" else 1)
     result = run_regression(canonical_root(), sys.argv[1:])
     print(json.dumps(result, ensure_ascii=False))
     raise SystemExit(0 if result["status"] == "PASS" else 1)

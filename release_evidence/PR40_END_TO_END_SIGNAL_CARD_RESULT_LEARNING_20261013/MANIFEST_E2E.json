@@ -1,0 +1,121 @@
+{
+  "schema": "SMART_PR40_REAL_E2E_ENGINEERING_PROOF_1",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "tested_commit": "53c5ec95cc59171b8a5d5ad7ed6bfc4283256a2e",
+  "main_unmodified_commit": "795539e362600c54d5d316b72beadc32afe5e2e8",
+  "executor": "SentinelX wmcp-cloud-01, Python3.12 unittest and local Git bare remotes; no GitHub Actions",
+  "tests": {
+    "count": 38,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "duration_seconds": 13.8516
+  },
+  "junit_file": "JUNIT_E2E_38.xml",
+  "junit_sha256": "7582dac32015946181eebb46a05d590fcb89b0c874fc8f36cf4d745558293cfe",
+  "code_source_sha256": {
+    "smart_operator.py": "56d298c97b6295d455c01ef265de004d1dae599b96a7ae88a9ceb58793e5bd19",
+    "smart_primary_card_selector.py": "92889076f1dac01ffee2a4058d1dbb23381e3f2e860f4efca11d6ac966598e0b",
+    "smart_operator_card_requests.py": "bed7f2e02f61dc2356f13d946dc49950be03b4999d33d38064a3918338319646",
+    "smart_native_card_publisher.py": "24af9cb952490b19d2033437bd458b803ddd351af67eb0664f921a377bb2d6f3",
+    "smart_operator_card_outcomes.py": "72db77b1e95d06a48aa2ba7c59f58f8bdc99380f9b45d2d08a0e2b018545631d",
+    "smart_post_result_report.py": "42117cea950f49183a90e744cb5dda2010da6a296dd3c7d107cc69cedb390880",
+    "smart_prospective_operator_request_gate.py": "44891d70ac47ee3ba49eba70c9f2be6f6d403b995cbbff3beeb0e2d258bfe0c8",
+    "smart_operator_contract.py": "28a9fb112e16c630d095659b7dbd72a466603f947e3a6c4781e05929b42d2261",
+    "test_smart_native_card_publisher.py": "71deee71c776d7d1cca85edee7bbc3744e3d4cd0c9f8c36aa4b3d313e54b779d",
+    "test_smart_operator_card_requests.py": "ad1d7a3b45ff21018da45f5300b31d80c7cd34d51d6a3cb312321fa099c13be3",
+    "test_smart_operator_card_outcomes.py": "805d4a59e53e6a2fd85b8383d31123ae9801d63abb372ff5dcd751843a8fe619",
+    "test_smart_post_result_operator_requests.py": "b22837f8c5e139f08ac75f0f2b3ea654ed92d2f04a6b5481f4b4cbeaaa90606c",
+    "test_smart_prospective_operator_request_gate.py": "e038a77406f1a1a3b94848262d695f3a434103a6d37e1adf41e4ccc6d459e7c8",
+    "SMART_OPERATOR_CARD_REQUEST_PROTOCOL_20261013.json": "d8a739dce418b4b4230337cc28c965f9c6e34732ed93b410bd885f8af33f3ee3"
+  },
+  "real_archive_inputs_sha256": {
+    "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733",
+    "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_3068_PRIMARY_CARD.json": "af510ad8cf5880aadf8ad88f9769f155f5ea49d3805790ea2f695e87c45cf586",
+    "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_SIGNAL_STATE_3068_LEARNED.json": "8c87eb53cac0542c309e4fa3ceac68fd2edb7a0bbc25f7edb407ad1ff08d352a",
+    "SMART_POST_RESULT_REPORT_3068.json": "ba828194af6a28d19f7567ce2638b5fadddb7045b398f3fdea9845641fd56397",
+    "SMART_SIGNAL_LEDGER.json": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a"
+  },
+  "historical_case_3068": {
+    "mode": "AUTHENTIC_ARCHIVE_REPLAY_NOT_NEW_FORECAST",
+    "cutoff_contest": 3067,
+    "target_contest": 3068,
+    "champion_raw_to_60_scores_max_abs_error": 1.1102230246251565e-16,
+    "challenger_raw_to_60_scores_max_abs_error": 2.220446049250313e-16,
+    "frozen_primary_six_numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "official_result": [
+      7,
+      10,
+      39,
+      40,
+      43,
+      57
+    ],
+    "primary_hits": 1,
+    "event_sequence": [
+      "FREEZE",
+      "ADJUDICATION",
+      "LEARNING_UPDATE",
+      "SEQUENTIAL_PROOF"
+    ],
+    "learned_state_last_contest": 3068
+  },
+  "operator_card_request_path": {
+    "source": "frozen champion",
+    "operator_controls_count": true,
+    "successive_distinct_requests_tested": 3,
+    "same_id_replay_tested": true,
+    "published_to_sandbox_git_main_tested": true,
+    "real_card_published_to_canonical_main": false
+  },
+  "post_result_operator_outcomes": {
+    "signed_report_integration_tested": true,
+    "legacy_report_unchanged_without_extra_requests": true,
+    "card_count_does_not_multiply_independent_draws": true,
+    "predictive_weight_promotion_authorized": false
+  },
+  "certification_status": {
+    "existing_certificate_current_for_branch": false,
+    "changed_or_new_source_files": [
+      "smart_operator.py",
+      "smart_primary_card_selector.py",
+      "smart_operator_card_requests.py",
+      "smart_native_card_publisher.py",
+      "smart_operator_card_outcomes.py",
+      "smart_post_result_report.py",
+      "smart_prospective_operator_request_gate.py",
+      "smart_operator_contract.py",
+      "test_smart_native_card_publisher.py",
+      "test_smart_operator_card_requests.py",
+      "test_smart_operator_card_outcomes.py",
+      "test_smart_post_result_operator_requests.py",
+      "test_smart_prospective_operator_request_gate.py"
+    ],
+    "recertification_required_before_productive_operator_prepare": true
+  },
+  "real_operator_authority": {
+    "state": "HOLD",
+    "target": 3070,
+    "generation_allowed_without_explicit_request": false,
+    "card_count_authorized_by_operator": null
+  },
+  "scientific": {
+    "prospective_superiority_proven": false,
+    "terminal_6_of_6_proven": false,
+    "historical_result_used_to_fit_test_cards": false
+  },
+  "limitations": [
+    "Historical genuine result 3068 is not evidence for forecast on 3070.",
+    "Synthetic operator-request and sandbox Git tests are not a real authorized 3070 production cycle.",
+    "Main certification must be renewed on promoted tested code.",
+    "Real out-of-sample improvement over uniform fair-draw reference remains unproven."
+  ],
+  "manifest_sha256": "dbde5ed768e3327e1f77ebbcd04989ef74797ca80e12cc5575fbf6c5e4b9e2e6"
+}

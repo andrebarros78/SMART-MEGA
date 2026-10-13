@@ -1,0 +1,54 @@
+{
+  "schema": "SMART_PR40_RECERTIFICATION_GATE_1",
+  "generated_utc": "2026-10-13T20:43:54.092598+00:00",
+  "scope": "PR #40 engineering recertification; not scientific predictive promotion",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "source_commit": "88c01224438ff67ad2bfa9cac9ee03b59407d2b9",
+  "construction_certification": "CONSTRUCTION_PROVEN",
+  "construction_current_code_verified": true,
+  "regression": {
+    "tests": 1349,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "junit_sha256": "cc19c046c78b8c57ebde1d952aef8b726b4691d1888fe756ec438fd6748977b0"
+  },
+  "additional_targeted_regression": {
+    "passed": 46,
+    "failures": 0
+  },
+  "global_integrity": "BLOCKED",
+  "independent_p14_current_report": "STALE_REGISTRY_BINDING",
+  "attempted_independent_rebuild": "FAILED_CLOSED",
+  "rebuild_error": "ValueError: frozen artifact missing",
+  "missing_original_freezes": [
+    {
+      "contest": 3060,
+      "path": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+      "observed_sha256": null,
+      "hash_verified": false
+    },
+    {
+      "contest": 3061,
+      "path": "runtime/learning_epochs/operator-3061-1d798ed37904-20260922T195353823390Z/SMART_3061_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_sha256": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+      "observed_sha256": null,
+      "hash_verified": false
+    }
+  ],
+  "recovery_checks": {
+    "reachable_git_names_checked": true,
+    "unreachable_blobs_hashed": 527,
+    "all_missing_freezes_recovered": false
+  },
+  "scientific_predictive_status": "UNPROVEN",
+  "terminal_6of6_proven": false,
+  "scientific_promotion_authorized": false,
+  "generation_allowed_by_this_gate": false,
+  "release_or_main_merge_authorized": false,
+  "mission_status": "MISSION_ACTIVE",
+  "next_gate": "Recover both exact original SHA256-matched freeze files from the canonical source; rerun independent audit; rebuild and verify global proof; retest and bind new evidence before release.",
+  "sha256": "a335f5d19615eb67957b3a4d991351683ab92a090a84488cd8ce9e16aa0bd86c"
+}

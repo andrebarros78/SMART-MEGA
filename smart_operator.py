@@ -1064,6 +1064,33 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 
+@locked_operation("REQUEST_OPERATOR_CARD")
+def request_card_operation(root: str | Path, target: int, request_id: str) -> dict[str, Any]:
+    """Operator-only: issue one six-number card per explicit request.
+
+    A single frozen prediction can support successive operator requests for
+    the same contest. This never refreezes, reweights or auto-generates cards.
+    """
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    assert_lifecycle_state(root, "FROZEN", target_contest=target)
+    # Never issue or vary cards after the scheduled pre-result window closes.
+    assert_pre_draw_window(resolve_target_schedule(root, target))
+    active = verify_active_epoch(root / ACTIVE_PATH)
+    from smart_operator_card_requests import issue_from_frozen_epoch
+    from smart_native_card_publisher import publish_operator_card
+    issued = issue_from_frozen_epoch(
+        root, target=target, request_id=request_id, active=active,
+        operator_requested=True,
+    )
+    # A local receipt is not canonical until GitHub main confirms its commit.
+    publication = publish_operator_card(
+        root, issued,
+        pre_draw_check=lambda: assert_pre_draw_window(resolve_target_schedule(root, target)),
+    )
+    return {**issued, "canonical_publication": publication}
+
+
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Read-only official-result readiness gate for the immutable frozen epoch.
 
@@ -1268,10 +1295,36 @@ def post_result_report_operation(root: str | Path, target: int) -> dict[str, Any
     # These existing gates refuse missing adjudication, wrong cutoff and unbound learning.
     learning = terminal_executor.complete_adjudicated_sequence(root, target)
     history = advance_completed_epoch(root, active)
+    from smart_experiment_lab import ExperimentRegistry
+    try:
+        tracked = ExperimentRegistry(root / "SMART_EXPERIMENT_REGISTRY", use_mlflow=True).track_signed_post_result(
+            root / report["report_file"], expected_report_file_sha256=report["report_sha256"])
+    except Exception as exc:
+        # The signed report is canonical; a secondary telemetry outage must not
+        # undo an adjudication or cause a repeated operational lifecycle.
+        tracked = {"status": "OBSERVABILITY_UNAVAILABLE", "error_type": type(exc).__name__,
+                   "predictive_weight_authorized": False, "retry_required": True}
     return {"status": "POST_RESULT_SEQUENCE_COMPLETED", "target_contest": target,
             "post_result_report": report, "result_dataset": dataset,
-            "learning": learning, "canonical_history": history}
+            "learning": learning, "canonical_history": history,
+            "mlflow_post_result_tracking": tracked}
 
+
+
+def post_result_mlflow_sync_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Retry secondary MLflow indexing without repeating adjudication/learning."""
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    if target <= 0:
+        raise ValueError("MLflow replay requires positive contest")
+    report_path = root / f"SMART_POST_RESULT_REPORT_{target}.json"
+    if not report_path.is_file() or report_path.is_symlink():
+        raise ValueError("MLflow replay requires a signed existing post-result report")
+    from smart_experiment_lab import ExperimentRegistry
+    observation = ExperimentRegistry(root / "SMART_EXPERIMENT_REGISTRY", use_mlflow=True).track_signed_post_result(
+        report_path, expected_report_file_sha256=sha256_file(report_path))
+    return {"status": "POST_RESULT_MLFLOW_SYNC_COMPLETE", "target_contest": target,
+            "mlflow_post_result_tracking": observation}
 
 
 @locked_operation("REVIEW")
@@ -1376,8 +1429,10 @@ def main(argv: list[str] | None = None) -> None:
     n = sub.add_parser("authorize-next-cycle"); n.add_argument("--target", type=int, required=True)
     g = sub.add_parser("authorize-generation"); g.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
+    c = sub.add_parser("request-card"); c.add_argument("--target", type=int, required=True); c.add_argument("--request-id", required=True)
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
+    ms = sub.add_parser("mlflow-sync"); ms.add_argument("--target", type=int, required=True)
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
     t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
@@ -1393,8 +1448,10 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "authorize-next-cycle": out = authorize_next_cycle_operation(root, args.target)
     elif args.action == "authorize-generation": out = authorize_generation_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
+    elif args.action == "request-card": out = request_card_operation(root, args.target, args.request_id)
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
+    elif args.action == "mlflow-sync": out = post_result_mlflow_sync_operation(root, args.target)
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)
     else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)

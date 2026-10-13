@@ -1,0 +1,68 @@
+{
+  "schema": "SMART_PR40_PAIRED_OOS_EVIDENCE_GATE_1",
+  "status": "ENGINEERING_GATE_PASS_SCIENTIFIC_PROMOTION_BLOCKED",
+  "scope": "READ_ONLY_HISTORICAL_PAIRED_AUDIT_NOT_PROSPECTIVE_VALIDATION",
+  "repository": "andrebarros78/SMART-MEGA",
+  "tested_branch": "product/native-skills-canonical-integration-20261012",
+  "tested_code_head": "079d33c2e97d9bf1642fb41d30273079fbc84b6a",
+  "test_result": {
+    "passed": 30,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0
+  },
+  "archive_evaluation": {
+    "observed_adjudications": 11,
+    "verified_original_freezes": 7,
+    "missing_freezes": [
+      3055,
+      3057,
+      3060,
+      3061
+    ],
+    "champion_total_hits": 5,
+    "challenger_total_hits": 5,
+    "paired_advantage_hits": 0,
+    "theoretical_uniform_expected_hits": 4.2
+  },
+  "prior_historical_validation": {
+    "f11_predictive_superiority_proven": false,
+    "p06_holdout_mean_brier": 0.09001357670052432,
+    "uniform_holdout_mean_brier": 0.08999999999999989,
+    "p06_model_not_better_than_uniform": true
+  },
+  "authorities": {
+    "eligible_for_production_promotion": false,
+    "e_value_from_prospective_cohort_proven": false,
+    "future_result_used_to_select_weights": false,
+    "full_primary_card_cohort_verified": false,
+    "learning_promotion_authorized": false,
+    "six_hit_guarantee": false
+  },
+  "inputs_sha256": {
+    "SMART_SIGNAL_LEDGER.json": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a",
+    "Mega-Sena.xlsx": "b38ca2f75877cc16869a12f14baa65758359d49dd5e3f1ddde769165bcde5db2",
+    "SMART_F11_PREDICTIVE_NONREGRESSION.json": "7724db9ee31a6334540dd77cc15b8496f3057218442e969f87eb72724e5ceaa8",
+    "SMART_P06_FINAL_HOLDOUT.json": "494519221c7a0837a0dbffb42e73b666f525143e13a8450f3aaa69d551792699"
+  },
+  "source_sha256": {
+    "smart_predictive_paired_evidence.py": "e95993233650cbb931fe5dfc004d0f1f4c62f19b3b78af95c5a7bee458d2a7a7",
+    "test_smart_predictive_paired_evidence.py": "6a652c130146ab7fd00b9e97a8e7334521798ef766d97c4848b5f3fb651ef1f5",
+    "smart_v2_engine.py": "cb2caf140f9c090de9c621ac946251d006e7a3c30d0a3df305669dbcdd5998e2",
+    "smart_signal_agent.py": "04f1abc512178ffff767964021438fc9d8bcf52ec67ce88c2823542264a3f02f",
+    "smart_signal_weights.py": "38322311a70604191471c9a91d84fccb64821114d854563927891abb9d45610b",
+    "smart_promotion_gate.py": "d9ff730c2775087e4486d71be819a313f4445d84b8b2827d5c9ae5e68b081e91"
+  },
+  "output_sha256": {
+    "PAIRED_MODEL_COMPARISON.json": "974e7ecdc0fb651b61ec3910e34975baf025afd6af3400c0ab68d71f790493a1",
+    "JUNIT.xml": "2fdd9e49a3be34a980a92df2d3f658d77e2579d4f9daeb2567f0cd074c81f983"
+  },
+  "limitations": [
+    "four archived freeze files missing",
+    "archive availability may be selective",
+    "event earlier than adjudication alone is not independently verified pre-draw publication",
+    "compared champion/challenger heads are not always the final primary card",
+    "the seven-draw historical subset cannot support prospective promotion"
+  ],
+  "manifest_sha256": "d40924329183ddd831df8d33788fcc1e2b7c7001d9c434110516e439e4655f36"
+}

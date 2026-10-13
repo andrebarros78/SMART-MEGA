@@ -1,0 +1,135 @@
+{
+  "schema": "SMART_PR40_PREDICTIVE_CAUSAL_CHAIN_GATE_1",
+  "scope": "HISTORICAL_CAUSAL_REPLAY_READ_ONLY_NO_RETROACTIVE_PREDICTION",
+  "status": "ENGINEERING_CAUSAL_PATH_PASS_SCIENTIFIC_ADVANTAGE_UNPROVEN",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "tested_git_head": "926d26f2fd5a584245ba4fa6ecb646e811c85a1f",
+  "executor": "LMCP:wmcp-cloud-01",
+  "mission_id": "m_bc587c0e705c4345a7c0cdc1399efffb",
+  "command_id": "c_596d0335d6df4c1b8ba0c4d8a4373f34",
+  "pytest": {
+    "version": "9.1.1",
+    "passed": 37,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings_observed_in_stdout": 2,
+    "junit_sha256": "0448937e33c5ac217bd43bab1766f50ea886d4f0b32cbcc3ddd8082ae90ac4f4"
+  },
+  "frozen_cycle": {
+    "target": 3068,
+    "cutoff": 3067,
+    "freeze_time_utc": "2026-10-08T22:35:40.297741+00:00",
+    "signal_count": 12,
+    "signal_weight_sum": 1.0,
+    "largest_signal": "freq1000",
+    "largest_signal_weight": 0.38895945652434566,
+    "reconstructed_score_max_abs_error": 2.220446049250313e-16,
+    "challenger_top6": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35
+    ],
+    "champion_top6": [
+      11,
+      38,
+      10,
+      27,
+      53,
+      35
+    ],
+    "frozen_single_card": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      53
+    ],
+    "result": [
+      7,
+      10,
+      39,
+      40,
+      43,
+      57
+    ],
+    "hits": 1,
+    "expected_random_hits_per_single_card": 0.6,
+    "champion_remains_active": true,
+    "production_switch_performed": false,
+    "learning_events_count": 1,
+    "sequential_proof_count": 1,
+    "learned_last_contest": 3068,
+    "counterfactual_score_change_moved_card": true,
+    "counterfactual_has_predictive_authority": false
+  },
+  "scientific_boundary": {
+    "p06_holdout_brier": 0.09001357670052432,
+    "uniform_holdout_brier": 0.08999999999999989,
+    "model_worse_than_uniform": true,
+    "predictive_promotion_authorized": false,
+    "prospective_superiority_proven": false,
+    "six_of_six_proven": false,
+    "signal_to_card_production_path": "champion.aggregate_scores -> false_negative_rescue -> primary_selector -> frozen_primary_card",
+    "challenger_direct_product_consumption": false
+  },
+  "artifact_inputs": {
+    "freeze": {
+      "path": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_3068_CHAMPION_CHALLENGER_FREEZE.json",
+      "sha256": "b822c558988e476ccdbc7bbd34fd6e93f61de7029cb9d4a9f0c571e54b6a6733"
+    },
+    "portfolio": {
+      "path": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_3068_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+      "sha256": "97da72dbdad95ecf5f133a9f05048d0aecc3b39ac924ce13e4f56a82ff7f5ecf"
+    },
+    "primary_card": {
+      "path": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_3068_PRIMARY_CARD.json",
+      "sha256": "af510ad8cf5880aadf8ad88f9769f155f5ea49d3805790ea2f695e87c45cf586"
+    },
+    "learned_state": {
+      "path": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/epoch/SMART_SIGNAL_STATE_3068_LEARNED.json",
+      "sha256": "8c87eb53cac0542c309e4fa3ceac68fd2edb7a0bbc25f7edb407ad1ff08d352a"
+    },
+    "result_report": {
+      "path": "SMART_POST_RESULT_REPORT_3068.json",
+      "sha256": "ba828194af6a28d19f7567ce2638b5fadddb7045b398f3fdea9845641fd56397"
+    },
+    "ledger": {
+      "path": "SMART_SIGNAL_LEDGER.json",
+      "sha256": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a"
+    },
+    "scientific_holdout": {
+      "path": "SMART_P06_FINAL_HOLDOUT.json",
+      "sha256": "494519221c7a0837a0dbffb42e73b666f525143e13a8450f3aaa69d551792699"
+    },
+    "regression_benchmark": {
+      "path": "SMART_F11_PREDICTIVE_NONREGRESSION.json",
+      "sha256": "7724db9ee31a6334540dd77cc15b8496f3057218442e969f87eb72724e5ceaa8"
+    }
+  },
+  "tested_source_sha256": {
+    "smart_signal_agent.py": "04f1abc512178ffff767964021438fc9d8bcf52ec67ce88c2823542264a3f02f",
+    "smart_signal_weights.py": "38322311a70604191471c9a91d84fccb64821114d854563927891abb9d45610b",
+    "smart_primary_card_selector.py": "7d9874fca1e1bc2e285cd1d14d32777512b45ff5db27dde2df15b88744d152f8",
+    "smart_portfolio_pipeline.py": "3717220da894cad4c49f4e7d3bc38ccfd93f3a951bd6ebedafe0a77d3601202a",
+    "smart_champion_challenger.py": "8b643a2677b914263f0ecbd9cb650bc6f58dc83b5de056a924e4a5bafd4269df",
+    "smart_learning_epoch_reset.py": "cfce4a690444dfab0298957bd4980e3a774f6302583d5a4a18417620df6b278f",
+    "smart_terminal_executor.py": "eba9a2f876187aea9a10eda5348506feafbafd2a0d05cb6ad473d650f46af86a",
+    "smart_post_result_report.py": "8334b87fe9e023326e4edf6f636ab6f35a1516494a69d056e5c0a8c6b0e1dbfb",
+    "test_smart_predictive_causal_chain_3068.py": "78064fbacdfe73886df771f09e9e7b1f8c97c542ac1115e98bbc1c642aa6c355"
+  },
+  "junit_file": "JUNIT_PREDICTIVE_CHAIN.xml",
+  "limitations": [
+    "one historical draw is not predictive evidence",
+    "counterfactual score perturbation is not a betting strategy",
+    "no frozen card was regenerated or rewritten",
+    "cannot promote challenger without prospective out-of-sample nonregression",
+    "release branch is not main"
+  ],
+  "manifest_sha256": "96f7d5c335ddefb7f688f1cbf442321ff7b6679309a724d7d69bb9a9ad59b2f9"
+}

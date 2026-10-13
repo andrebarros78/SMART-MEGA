@@ -244,3 +244,90 @@ def test_bogus_same_name_archive_cannot_authorize_foreign_contest(tmp_path):
             tmp_path, "runtime/learning_epochs/operator-3069-other/SMART_SIGNAL_LEDGER.json",
             "a" * 64, 3067, "ledger"
         )
+
+
+def _signed_frozen_result_for_successor(root, contest: int) -> None:
+    """Create only test fixtures with immutable freeze/ledger/report lineage."""
+    import json
+    import smart_post_result_report as reporter
+    epoch = root / "runtime" / "learning_epochs" / f"operator-{contest}-verified-fixture"
+    epoch.mkdir(parents=True)
+    freeze = epoch / f"SMART_{contest}_CHAMPION_CHALLENGER_FREEZE.json"
+    freeze.write_text(json.dumps({"target_contest":contest,"champion":{"top6":[1,2,3,4,5,6]}}))
+    fsha = reporter._sha256_file(freeze)
+    ledger = epoch / "SMART_SIGNAL_LEDGER.json"
+    ledger.write_text(json.dumps({"events":[
+        {"event_type":"FREEZE","target_contest":contest,"freeze_sha256":fsha},
+        {"event_type":"ADJUDICATION","target_contest":contest,
+         "freeze_sha256":fsha,"actual_numbers":[1,2,7,8,9,10]},
+    ]}))
+    active={"target_contest":contest,"freeze_authority":{"sha256":fsha},
+            "state_paths":{"freeze":str(freeze.relative_to(root)),
+                           "ledger":str(ledger.relative_to(root))}}
+    result=reporter.emit_post_result_report(root,active)
+    assert result["status"]=="EMITTED"
+
+
+def _unavailable_lineage_report_for_successor(root, contest: int) -> None:
+    import json
+    from smart_false_negative_rescue import sha256_json
+    official=[1,2,7,8,9,10]
+    card=[1,2,3,4,5,6]
+    audit={"freeze_artifact":f"missing/{contest}/freeze.json","freeze_sha256":"a"*64,
+           "ledger":f"missing/{contest}/ledger.json","ledger_sha256":"b"*64,
+           "freeze_authority_present":True,"findings":[]}
+    source={"target":contest,"official_result":official,"generated_card":card,
+            "freeze_sha256":audit["freeze_sha256"],"ledger_sha256":audit["ledger_sha256"],
+            "portfolio_sha256":None,"portfolio_hits_per_game":None}
+    report={"schema":"SMART_POST_RESULT_REPORT_1","status":"PASS",
+            "contest_number":contest,"official_result":official,"generated_card":card,
+            "hit_count":2,"process_audit":audit,"source_fingerprint":sha256_json(source)}
+    report["sha256"]=sha256_json(report)
+    (root/f"SMART_POST_RESULT_REPORT_{contest}.json").write_text(json.dumps(report))
+
+
+def test_verified_successor_cohort_isolated_from_unrecoverable_history(tmp_path):
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}")
+    _signed_frozen_result_for_successor(tmp_path,997)
+    _unavailable_lineage_report_for_successor(tmp_path,998)
+    for c in (999,1000,1001):
+        _signed_frozen_result_for_successor(tmp_path,c)
+    profile=build_profile_from_reports(tmp_path,through_contest=1001)
+    cohort=profile["verified_successor_cohort"]
+    assert profile["status"]=="DEGRADED_PARTIAL_EVIDENCE"
+    assert profile["source_contests"]==[997,999,1000,1001]
+    assert profile["quarantined_count"]==1
+    assert cohort["after_last_quarantined_contest"]==998
+    assert cohort["source_contests"]==[999,1000,1001]
+    assert cohort["observations"]==3
+    assert cohort["ready_for_shadow_experiment"] is True
+    assert cohort["predictive_weight_authorized"] is False
+    scores={str(n):0.5 for n in range(1,61)}
+    after,audit=apply_rescue(scores,profile)
+    assert after==scores
+    assert audit["status"]=="DEGRADED_SHADOW_ONLY"
+    assert audit["shadow_cohort_ready_for_oos"] is True
+    assert audit["shadow_verified_cohort_contests"]==[999,1000,1001]
+    assert audit["shadow_nonzero_deltas"]
+    assert audit["nonzero_deltas"]=={}
+    assert audit["predictive_weight_authorized"] is False
+    # A more recent lost artifact starts a NEW cohort, no old samples leak.
+    _unavailable_lineage_report_for_successor(tmp_path,1002)
+    newer=build_profile_from_reports(tmp_path,through_contest=1002)
+    assert newer["verified_successor_cohort"]["source_contests"]==[]
+    after2,audit2=apply_rescue(scores,newer)
+    assert after2==scores and not audit2["shadow_nonzero_deltas"]
+    assert audit2["shadow_cohort_ready_for_oos"] is False
+
+
+def test_tampered_successor_cohort_cannot_affect_scores(tmp_path):
+    (tmp_path/"SMART_CANONICAL_ROOT.json").write_text("{}")
+    _unavailable_lineage_report_for_successor(tmp_path,998)
+    _signed_frozen_result_for_successor(tmp_path,999)
+    profile=build_profile_from_reports(tmp_path,through_contest=999)
+    profile["verified_successor_cohort"]["false_negative_counts"]["60"]=999999
+    scores={str(n):0.5 for n in range(1,61)}
+    after,audit=apply_rescue(scores,profile)
+    assert after==scores and audit["shadow_nonzero_deltas"]=={}
+    assert audit["nonzero_deltas"]=={}
+    assert audit["shadow_cohort_ready_for_oos"] is False

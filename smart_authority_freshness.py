@@ -53,6 +53,17 @@ def audit(root: str | Path) -> dict[str, Any]:
         result["authorities"]["global_integrity"]={"current":True}
     except Exception as exc:
         result["authorities"]["global_integrity"]={"current":False,"reason":f"{type(exc).__name__}: {exc}"}
+    # Runtime operations must not depend on retrospective P14/terminal proof.
+    # Keep code, governance, and open material-deficiency checks fail-closed.
+    operational_checks = {
+        "product_certification_current": result["authorities"]["product_certification"].get("current") is True,
+        "governance_current": result["authorities"]["governance"].get("current") is True,
+        "no_open_material_deficiencies": registry.get("open_count") == 0,
+    }
+    result["operational_checks"] = operational_checks
+    result["operational_compatible"] = all(operational_checks.values())
+    result["operational_status"] = "PASS" if result["operational_compatible"] else "BLOCKED"
+    # Scientific promotion still requires the complete global integrity proof.
     result["terminal_compatible"] = registry.get("open_count")==0 and all(v.get("current") is True for v in result["authorities"].values())
     result["status"]="PASS" if result["terminal_compatible"] else "STALE_OR_BLOCKED"
     result["sha256"]=_sha_json(result)

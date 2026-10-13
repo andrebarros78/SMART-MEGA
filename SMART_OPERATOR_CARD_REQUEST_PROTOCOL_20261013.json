@@ -1,0 +1,51 @@
+{
+  "schema": "SMART_OPERATOR_CONTROLLED_SIX_NUMBER_CARD_PRECOMMIT_3",
+  "product": {
+    "role": "FINAL_SINGLE_CARD_PRODUCT",
+    "cards_per_explicit_operator_request": 1,
+    "fixed_per_contest_card_limit": null,
+    "operator_controls_request_count": true,
+    "successive_requests_for_same_target_permitted": true,
+    "numbers_per_card": 6,
+    "source": "SMART_SIGNAL_LEDGER.json FREEZE.primary_card and operator-issued cards from frozen champion scores"
+  },
+  "model_diagnostics": {
+    "heads": [
+      "champion_top6",
+      "challenger_top6"
+    ],
+    "additional_card_count": 0,
+    "production_or_betting_authority": false,
+    "purpose": "compare model rankings without creating more cards"
+  },
+  "comparison_series": [
+    "primary_card",
+    "champion_top6",
+    "challenger_top6"
+  ],
+  "evaluation_metric": "six_number_set_intersection_count_for_product_and_unplayed_model_heads",
+  "reference": {
+    "distribution": "uniform_six_without_replacement",
+    "expected_hits_per_six_number_set": 0.6,
+    "six_hit_guarantee": false
+  },
+  "paired_comparisons": [
+    "challenger_minus_champion_hits",
+    "primary_minus_champion_hits"
+  ],
+  "prospective_inclusion": "operator-issued six-number cards with unique request IDs and frozen champion lineage, independently Git-published before draw and adjudicated after; model heads remain diagnostic",
+  "registration_source": "SMART_SIGNAL_LEDGER.json FREEZE event (active target only)",
+  "registration_before_draw_required": true,
+  "registration_independent_git_publication_required": true,
+  "minimum_prospective_contests_for_p13_gate": 20,
+  "sequential_e_value_threshold_for_p13_gate": 10,
+  "statistical_gate_authority": "existing smart_promotion_gate and independent P14/P15 checks",
+  "post_result_reweighting_of_same_target_forbidden": true,
+  "historical_backfill_forbidden": true,
+  "missing_frozen_artifact_policy": "exclude_and_report_never_reconstruct",
+  "missing_card_policy": "ineligible_never_infer",
+  "reporting": "report all attempts and exclusions; no cherry-picking",
+  "production_switch_authorized": false,
+  "predictive_superiority_proven": false,
+  "protocol_sha256": "9cc4a95408e53e90b8d090173407d285a50b62bbce792d149deadd30e7eb04bb"
+}
