@@ -1,0 +1,53 @@
+{
+  "schema": "SMART_PR40_OPERATOR_CONTROLS_SIX_NUMBER_CARD_REQUESTS_1",
+  "status": "ENGINEERING_ISOLATED_FUNCTIONAL_GATE_PASS",
+  "tested_git_base_head": "e5f3354a061c1bc87f49eb3d36f99b745bb32487",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "operator_semantics": {
+    "cards_per_explicit_operator_request": 1,
+    "fixed_card_limit_per_contest": null,
+    "operator_may_request_successive_cards_same_contest": true,
+    "six_distinct_in_range_1_to_60_per_card": true,
+    "duplicate_request_id_replays_prior_receipt": true,
+    "new_request_excludes_issued_combinations": true,
+    "frozen_champion_scores_consumed_for_additional_requests": true,
+    "champion_and_challenger_diagnostics_do_not_issue_cards": true,
+    "no_automatic_or_result_after_window_generation": true
+  },
+  "operator_cli_command": "smart_operator.py request-card --target <contest> --request-id <id>",
+  "request_artifact_path": "runtime/operator_card_requests/<contest>/CARD-<ordinal>-<id>.json",
+  "protocol_file": "SMART_OPERATOR_CARD_REQUEST_PROTOCOL_20261013.json",
+  "protocol_sha256": "9cc4a95408e53e90b8d090173407d285a50b62bbce792d149deadd30e7eb04bb",
+  "functional_test_result": {
+    "framework": "python3.12-unittest",
+    "executed": 23,
+    "failed": 0,
+    "errors": 0,
+    "request_sequence_test": "three successive operator requests yield three distinct 6-number cards",
+    "operator_guard_test": "requests refused without explicit operator flag and after adjudication"
+  },
+  "tested_source_files_sha256": {
+    "smart_operator.py": "3965cea36580855386805961c17220e2c099c7b2e3b37ad2deabf767eab960a8",
+    "smart_primary_card_selector.py": "92889076f1dac01ffee2a4058d1dbb23381e3f2e860f4efca11d6ac966598e0b",
+    "smart_operator_card_requests.py": "94270004e46fa898635f8bbb978ade18d3ea0484a0fc04597b0cf15cd6be9576",
+    "smart_prospective_operator_request_gate.py": "44891d70ac47ee3ba49eba70c9f2be6f6d403b995cbbff3beeb0e2d258bfe0c8",
+    "test_smart_operator_card_requests.py": "ad1d7a3b45ff21018da45f5300b31d80c7cd34d51d6a3cb312321fa099c13be3",
+    "test_smart_prospective_operator_request_gate.py": "e038a77406f1a1a3b94848262d695f3a434103a6d37e1adf41e4ccc6d459e7c8",
+    "SMART_OPERATOR_CARD_REQUEST_PROTOCOL_20261013.json": "d8a739dce418b4b4230337cc28c965f9c6e34732ed93b410bd885f8af33f3ee3"
+  },
+  "post_result_promotion_authorized": false,
+  "production_card_generated": false,
+  "official_weights_modified": false,
+  "existing_hold_state_modified": false,
+  "predictive_superiority_proven": false,
+  "limits": [
+    "Live smart_operator.py CLI needs full runtime dependencies and an authorized FROZEN epoch; no actual 3070 operator card was generated.",
+    "All observed next-card selection tests were run in an isolated synthetic frozen epoch.",
+    "GitHub publication of actual operator receipts remains an external operational requirement for prospective scientific inclusion.",
+    "Any specific six-number combination in a fair lottery has no proven predictive advantage based on these software tests."
+  ],
+  "superseded_normative_policy": "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2",
+  "superseded_evidence": "release_evidence/PR40_SINGLE_CARD_SCOPE_CORRECTION_20261013.json",
+  "receipt_sha256": "952cdd4a5b7000f6be93dc46eb96004d47ae04a24501d67c68c898a91112afbe"
+}

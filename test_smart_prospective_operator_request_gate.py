@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import unittest
 
-from smart_prospective_single_card_gate import (
+from smart_prospective_operator_request_gate import (
     SCHEMA, candidate_from_frozen_event, evaluate_post_result_diagnostic, preflight, protocol,
 )
 
@@ -32,7 +32,7 @@ def fixture():
 class PreRegistrationGateTests(unittest.TestCase):
     def test_predeclared_protocol_file_is_byte_semantically_identical(self):
         recorded = json.loads(
-            (ROOT / "SMART_PROSPECTIVE_SINGLE_CARD_PROTOCOL_20261013.json")
+            (ROOT / "SMART_OPERATOR_CARD_REQUEST_PROTOCOL_20261013.json")
             .read_text(encoding="utf-8-sig")
         )
         self.assertEqual(recorded, protocol())
@@ -60,7 +60,7 @@ class PreRegistrationGateTests(unittest.TestCase):
         self.assertIs(diagnostic["independent_git_publication_verified"], False)
 
     def test_forged_three_cards_rejected_even_with_recomputed_hash(self):
-        from smart_prospective_single_card_gate import _sha
+        from smart_prospective_operator_request_gate import _sha
         event, ledger = fixture()
         candidate = candidate_from_frozen_event(event, ledger, completed_contest=3069)
         adjudication = {
