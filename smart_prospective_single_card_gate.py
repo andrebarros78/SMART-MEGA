@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 
-SCHEMA = "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2"
+SCHEMA = "SMART_OPERATOR_CONTROLLED_SIX_NUMBER_CARD_PRECOMMIT_3"
 
 
 def _sha(value):
@@ -55,9 +55,12 @@ def protocol():
         "schema": SCHEMA,
         "product": {
             "role": "FINAL_SINGLE_CARD_PRODUCT",
-            "official_card_count_per_target": 1,
+            "cards_per_explicit_operator_request": 1,
+            "fixed_per_contest_card_limit": None,
+            "operator_controls_request_count": True,
+            "successive_requests_for_same_target_permitted": True,
             "numbers_per_card": 6,
-            "source": "SMART_SIGNAL_LEDGER.json FREEZE.primary_card",
+            "source": "SMART_SIGNAL_LEDGER.json FREEZE.primary_card and operator-issued cards from frozen champion scores",
         },
         "model_diagnostics": {
             "heads": ["champion_top6", "challenger_top6"],
@@ -76,7 +79,7 @@ def protocol():
             "challenger_minus_champion_hits",
             "primary_minus_champion_hits",
         ],
-        "prospective_inclusion": "one authentic frozen primary card plus two diagnostic model heads bound to the same freeze, independently Git-published before draw and adjudicated after",
+        "prospective_inclusion": "operator-issued six-number cards with unique request IDs and frozen champion lineage, independently Git-published before draw and adjudicated after; model heads remain diagnostic",
         "registration_source": "SMART_SIGNAL_LEDGER.json FREEZE event (active target only)",
         "registration_before_draw_required": True,
         "registration_independent_git_publication_required": True,
@@ -119,7 +122,9 @@ def preflight(root):
         "target_contest": target,
         "completed_contest": completed,
         "lifecycle_state": lifecycle.get("state"),
-        "official_card_limit_per_target": 1,
+        "cards_per_explicit_operator_request": 1,
+        "fixed_per_contest_card_limit": None,
+        "operator_controls_request_count": True,
         "additional_shadow_card_limit": 0,
         "active_target_freeze_events": len(frozen),
         "status": "BLOCKED_BY_OPERATOR_HOLD" if blocked else "REQUIRES_AUTHENTIC_FROZEN_CARD",
@@ -184,7 +189,9 @@ def candidate_from_frozen_event(event, ledger, *, completed_contest):
         "freeze_sha256": freeze_hash,
         "portfolio_sha256": portfolio_hash,
         "product_role": "FINAL_SINGLE_CARD_PRODUCT",
-        "official_card_count": 1,
+        "frozen_reference_card_count": 1,
+        "cards_per_explicit_operator_request": 1,
+        "fixed_per_contest_card_limit": None,
         "additional_shadow_card_count": 0,
         "model_heads_are_diagnostic_only": True,
         "champion_top6": list(champion),
@@ -217,8 +224,11 @@ def evaluate_post_result_diagnostic(candidate, adjudication):
             or candidate.get("status") != "UNPUBLISHED_CANDIDATE_NOT_PROSPECTIVE_EVIDENCE"
             or candidate.get("result_used") is not False
             or candidate.get("product_role") != "FINAL_SINGLE_CARD_PRODUCT"
-            or type(candidate.get("official_card_count")) is not int
-            or candidate.get("official_card_count") != 1
+            or type(candidate.get("frozen_reference_card_count")) is not int
+            or candidate.get("frozen_reference_card_count") != 1
+            or type(candidate.get("cards_per_explicit_operator_request")) is not int
+            or candidate.get("cards_per_explicit_operator_request") != 1
+            or candidate.get("fixed_per_contest_card_limit") is not None
             or type(candidate.get("additional_shadow_card_count")) is not int
             or candidate.get("additional_shadow_card_count") != 0
             or candidate.get("model_heads_are_diagnostic_only") is not True
@@ -243,7 +253,8 @@ def evaluate_post_result_diagnostic(candidate, adjudication):
         "status": "HISTORICAL_DIAGNOSTIC_ONLY_NOT_PROSPECTIVE_PROOF",
         "target_contest": target,
         "candidate_sha256": expected,
-        "official_cards_evaluated": 1,
+        "frozen_reference_cards_evaluated": 1,
+        "operator_issued_card_count_not_inferred": True,
         "additional_shadow_cards_evaluated": 0,
         "model_head_comparisons_are_diagnostic": True,
         **totals,
