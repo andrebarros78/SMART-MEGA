@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "fa9b1d29f1639652a61dba2ad0e26ca5ac4e62338188ecdfd909463428b479fc",
+  "source_reachability_inventory_sha256": "6c6e2ec78d0d16d108fcf0e56a5b24ab0b4a0783311b79f02561262bd55c00ab",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 504,
+    "component_count": 506,
     "active": 104,
     "shadow": 1,
-    "diagnostic": 200,
+    "diagnostic": 202,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -7947,6 +7947,7 @@
       "state": "DIAGNOSTIC",
       "producers": [],
       "consumers": [
+        "smart_scientific_eligibility_gate",
         "test_smart_prospective_operator_request_gate"
       ],
       "entrypoints": [],
@@ -8281,6 +8282,31 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "smart_scientific_eligibility_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_scientific_eligibility_gate.py",
+      "implementation_sha256": "86ee872a3b272e6a6695287680fc372da127c06a569384d169d1e6c592ae1fae",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_prospective_operator_request_gate"
+      ],
+      "consumers": [
+        "test_smart_scientific_eligibility_gate"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_scientific_state_guard",
@@ -10843,7 +10869,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "31c986ba270bb4de6a1bdee7dbbf300a83c50f8f663e60797622e923d35c9f8a",
+      "implementation_sha256": "57cd2ff9d20c4272c839e83ee2d45e6f96f6c26dbd9ab0b7581222a75d659767",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -12996,6 +13022,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_scientific_eligibility_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_scientific_eligibility_gate.py",
+      "implementation_sha256": "cf35320dfbd19fd68d2d618b865c69216f9b36176972a58f8a6ce3d9c8664e20",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_scientific_eligibility_gate"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_sequential_prospective_proof",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_sequential_prospective_proof.py",
@@ -13684,5 +13733,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "8e976a55931702e6a85a6ff01acf2b389835ab45b02a285cc5f01eb5306a62a4"
+  "registry_sha256": "97076260ab64e6773589e287ec249335bb6986b9d2c9b7ee6cda6015c3ea391f"
 }

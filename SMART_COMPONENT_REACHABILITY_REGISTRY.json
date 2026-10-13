@@ -53,20 +53,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "fa9b1d29f1639652a61dba2ad0e26ca5ac4e62338188ecdfd909463428b479fc",
+  "inventory_sha256": "6c6e2ec78d0d16d108fcf0e56a5b24ab0b4a0783311b79f02561262bd55c00ab",
   "summary": {
-    "python_components": 504,
+    "python_components": 506,
     "workflow_entrypoints": 8,
     "production_components": 104,
     "shadow_components": 1,
-    "diagnostic_components": 30,
+    "diagnostic_components": 31,
     "validation_components": 22,
-    "test_components": 171,
+    "test_components": 172,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 39,
+    "independent_entrypoints": 40,
     "import_cycles": 2,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -120,6 +120,7 @@
       "smart_rag_excel.py",
       "smart_refresh_falsification_report.py",
       "smart_regression_runner.py",
+      "smart_scientific_eligibility_gate.py",
       "smart_signal_2000_simulation.py",
       "smart_signal_50_round_simulation.py",
       "smart_signal_drift_calibration.py",
@@ -7505,6 +7506,7 @@
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_scientific_eligibility_gate",
         "test_smart_prospective_operator_request_gate"
       ],
       "reachable": false,
@@ -7817,6 +7819,29 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "1bef54e64e211766338f3ccea7430403cbd12f5aedc9095e34dbaefd2167a34e"
+    },
+    {
+      "component_id": "smart_scientific_eligibility_gate",
+      "source_file": "smart_scientific_eligibility_gate.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_prospective_operator_request_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_scientific_eligibility_gate"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "86ee872a3b272e6a6695287680fc372da127c06a569384d169d1e6c592ae1fae"
     },
     {
       "component_id": "smart_scientific_state_guard",
@@ -10227,7 +10252,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "31c986ba270bb4de6a1bdee7dbbf300a83c50f8f663e60797622e923d35c9f8a"
+      "sha256": "57cd2ff9d20c4272c839e83ee2d45e6f96f6c26dbd9ab0b7581222a75d659767"
     },
     {
       "component_id": "test_smart_f09_sdk_llm_selective",
@@ -12184,6 +12209,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "0a4054e93d1648cd5d6ea01fc9190f30337a6bea77f85f0bd27cbe4a34f4b396"
+    },
+    {
+      "component_id": "test_smart_scientific_eligibility_gate",
+      "source_file": "test_smart_scientific_eligibility_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_scientific_eligibility_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "cf35320dfbd19fd68d2d618b865c69216f9b36176972a58f8a6ce3d9c8664e20"
     },
     {
       "component_id": "test_smart_sequential_prospective_proof",
