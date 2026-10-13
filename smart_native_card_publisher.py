@@ -54,7 +54,10 @@ def publish_operator_card(root, receipt, *, pre_draw_check, allowed_remotes=CANO
     if path.is_symlink() or not path.is_file() or not path.resolve().is_relative_to(root):
         raise ValueError("operator card receipt path unavailable or unsafe")
     record = _verified_receipt(path, target, freeze_sha)
-    if record != receipt or record["sha256"] != expected_sha:
+    # An idempotent replay adds a response-only marker, not a signed file field.
+    submitted = dict(receipt)
+    submitted.pop("idempotent_replay", None)
+    if record != submitted or record["sha256"] != expected_sha:
         raise ValueError("operator card payload differs from signed receipt")
     if (record.get("explicit_operator_request") is not True
             or record.get("result_used") is not False
