@@ -1078,10 +1078,17 @@ def request_card_operation(root: str | Path, target: int, request_id: str) -> di
     assert_pre_draw_window(resolve_target_schedule(root, target))
     active = verify_active_epoch(root / ACTIVE_PATH)
     from smart_operator_card_requests import issue_from_frozen_epoch
-    return issue_from_frozen_epoch(
+    from smart_native_card_publisher import publish_operator_card
+    issued = issue_from_frozen_epoch(
         root, target=target, request_id=request_id, active=active,
         operator_requested=True,
     )
+    # A local receipt is not canonical until GitHub main confirms its commit.
+    publication = publish_operator_card(
+        root, issued,
+        pre_draw_check=lambda: assert_pre_draw_window(resolve_target_schedule(root, target)),
+    )
+    return {**issued, "canonical_publication": publication}
 
 
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
