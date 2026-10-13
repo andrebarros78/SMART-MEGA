@@ -19,7 +19,7 @@ def _audit():
     groups = manifest["groups"]
     paths = [p for members in groups.values() for p in members]
     assert len(paths) == len(set(paths))
-    assert len(paths) == 47
+    assert len(paths) == 49
     observed = {
         r["source_file"]
         for r in reach["components"]
