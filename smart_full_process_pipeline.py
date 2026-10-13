@@ -9,6 +9,7 @@ from typing import Any
 
 import smart_v2_engine as engine
 from smart_agent_runtime import SmartAgentRuntime, sha256_file
+from smart_consumer_integration import write as write_consumer_integration
 from smart_champion_challenger import freeze_champion_challenger, load_ledger
 from smart_engineering_activation import verify_activation
 from smart_frontier_signal_lab import freeze_shadow, run_historical
@@ -434,6 +435,14 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     )
     primary_card_path.write_text(json.dumps(primary_card, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
     primary_card_sha = sha256_file(primary_card_path)
+    consumer_integration_path = epoch_dir / "SMART_CARD_CONSUMER_INTEGRATION.json"
+    consumer_integration = write_consumer_integration(
+        root, consumer_integration_path,
+        target=target, epoch_id=active["epoch_id"],
+        freeze_path=actual_freeze_path, portfolio_path=portfolio_path,
+        primary_card=primary_card, pre_gate=pre_gate, post_gate=post_gate,
+    )
+    consumer_integration_sha = sha256_file(consumer_integration_path)
     activation_time = datetime.fromisoformat(str(activation["activated_utc"]).replace("Z", "+00:00"))
     freeze_time = datetime.fromisoformat(str(freeze_obj["frozen_utc"]).replace("Z", "+00:00"))
     trace_checks = {
@@ -452,6 +461,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "challenger_top6_valid": _valid_top6(challenger.get("top6")),
         "pre_freeze_integration_pass": pre_gate.get("status") == "PASS" and pre_gate.get("phase") == "PRE_FREEZE",
         "post_freeze_integration_pass": post_gate.get("status") == "PASS" and post_gate.get("phase") == "POST_FREEZE",
+        "card_consumer_integration_verified": consumer_integration["status"] == "PASS" and consumer_integration["target_contest"] == target,
         "all_9_agents_operational_after_freeze": post_runtime.get("status") == "PASS" and post_runtime.get("agent_count") == 9,
         "all_41_capabilities_accounted_after_freeze": post_runtime.get("capability_count") == 41,
         "fresh_epoch_did_not_import_old_activation_authority": freeze_obj.get("learning_activation_authority", {}).get("status") == "FAIL_CLOSED_INACTIVE",
@@ -510,6 +520,8 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "primary_card": primary_card,
         "primary_card_file": _rel(root, primary_card_path),
         "primary_card_sha256": primary_card_sha,
+        "consumer_integration_file": _rel(root, consumer_integration_path),
+        "consumer_integration_sha256": consumer_integration_sha,
         "portfolio_file": _rel(root, portfolio_path),
         "portfolio_sha256": portfolio_sha,
         "optimization_contract": {
