@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "258c615a4c980315a9ba9764d8a8f35e692fb43e8571d9e1b6eebd3ec3bc7221",
+  "source_reachability_inventory_sha256": "ca166bfc24f2986adf7d115de53a0ac23edce489d99fb74afab39b3ff64b4ee8",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 511,
+    "component_count": 518,
     "active": 106,
     "shadow": 1,
-    "diagnostic": 205,
+    "diagnostic": 212,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -4199,6 +4199,31 @@
       "production_reachable": false
     },
     {
+      "component_id": "research.visual_learning_v2",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "research/visual_learning_v2.py",
+      "implementation_sha256": "d3a8af80c23a79b6d9752a8eb25cdf5502043f8aa3f3ed186830673bdce8232d",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_observation"
+      ],
+      "consumers": [
+        "tests.test_smart_visual_learning_v2"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smart_3054_adjudication_preflight",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_3054_adjudication_preflight.py",
@@ -6271,6 +6296,7 @@
         "smart_official_result_ingest",
         "smart_procedural_cronogram_acquire",
         "smart_procedural_youtube_recent_acquire",
+        "smart_video_observation",
         "test_smart_http_guard"
       ],
       "entrypoints": [
@@ -9485,6 +9511,62 @@
       "production_reachable": false
     },
     {
+      "component_id": "smart_video_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_learning.py",
+      "implementation_sha256": "653985328445f31bc5d4c7380b8ba2e6e6254066342a1e6d96650b26041df978",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_observation"
+      ],
+      "consumers": [
+        "tests.test_smart_video_checkpoint_inventory",
+        "tests.test_smart_video_learning"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_video_observation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_observation.py",
+      "implementation_sha256": "a5b906d2683dfeefa24bb6805dae8804adea5c7257129b092a41a3a42a0024a8",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_http_guard"
+      ],
+      "consumers": [
+        "research.visual_learning_v2",
+        "smart_video_learning",
+        "tests.test_smart_video_checkpoint_inventory",
+        "tests.test_smart_video_learning",
+        "tests.test_smart_video_observation",
+        "tests.test_smart_visual_learning_v2"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smart_visual_learning_shadow",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_visual_learning_shadow.py",
@@ -10981,7 +11063,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "57cd2ff9d20c4272c839e83ee2d45e6f96f6c26dbd9ab0b7581222a75d659767",
+      "implementation_sha256": "4b2712a64db9e1e9607be364ce165238c2c7c226cd3fad01abbf158d029419fc",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13748,6 +13830,101 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_video_checkpoint_inventory",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_video_checkpoint_inventory.py",
+      "implementation_sha256": "4e064b41e12893cbd025992ad01d82e61d22fbd264617e559868b2c9ee854e1e",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "tests.test_smart_video_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_video_learning.py",
+      "implementation_sha256": "5db870859a835191518fcd7291aab464c718881f047634bad3d97e0c13f4cee7",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "tests.test_smart_video_observation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_video_observation.py",
+      "implementation_sha256": "ebd0537e84b9556443fe616de777e00d9dadc1ef890fc824a2b577f18e7abdb7",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "tests.test_smart_visual_learning_v2",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_visual_learning_v2.py",
+      "implementation_sha256": "fc9a4089ea24098e7fc4da999f10e09629ceff0e2e3fe956a24a0d9655033333",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "research.visual_learning_v2",
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_wmcp_scientific_tools",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_wmcp_scientific_tools.py",
@@ -13868,5 +14045,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "378c1689121b654e4886f00dd979ea18f719e0ed276736cff652a14a59c1c9b5"
+  "registry_sha256": "ccbaef7401f05dec01eb634bbba21d83ca87c9c8a426df4f3d9a770d78892637"
 }
