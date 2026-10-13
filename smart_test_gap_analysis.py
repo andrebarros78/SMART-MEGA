@@ -160,6 +160,8 @@ def verify_test_gap(report: dict[str, Any], root: str | Path) -> dict[str, Any]:
         raise ValueError("test-gap evidence receipt SHA mismatch")
     if (report.get("capability") != "test-gap-analysis"
             or report.get("consumer") != "smart_test_gap_analysis.verify_test_gap"
+            or report.get("native_function_executed") != "coverage.Coverage.json_report / pytest"
+            or report.get("observability_scope") != "ENGINEERING_TESTS_ONLY"
             or report.get("predictive_weight_authorized") is not False
             or report.get("external_skill_code_executed") is not False
             or report.get("prospective_superiority_proven") is not False):
@@ -169,24 +171,47 @@ def verify_test_gap(report: dict[str, Any], root: str | Path) -> dict[str, Any]:
         raise ValueError("test-gap test suite does not match approved manifest")
     if report.get("input_files_sha256") != _inputs(root):
         raise ValueError("test-gap receipt bound to different source snapshot")
-    if report.get("junit_tests", 0) < 1 or report.get("junit_failures") != 0 or report.get("junit_skipped") != 0:
+    # The collector requires at least one passing case per monitored test file.
+    # A recomputed JSON digest must never turn an impossible JUnit receipt into PASS.
+    tests = report.get("junit_tests")
+    failures = report.get("junit_failures")
+    skipped = report.get("junit_skipped")
+    if (type(tests) is not int or tests < len(TEST_FILES)
+            or type(failures) is not int or failures != 0
+            or type(skipped) is not int or skipped != 0):
         raise ValueError("test-gap execution did not pass")
     rows = report.get("source_module_coverage", {})
     if not isinstance(rows, dict) or set(rows) != set(SOURCE_FILES):
         raise ValueError("test-gap source module coverage incomplete")
     misses = 0
     for name, row in rows.items():
-        if row.get("source_sha256") != report["input_files_sha256"][name]:
+        if not isinstance(row, dict) or row.get("source_sha256") != report["input_files_sha256"][name]:
             raise ValueError("test-gap source binding differs")
         missing = row.get("missing_lines")
         covered, total = row.get("covered_lines"), row.get("statements")
-        if (not isinstance(missing, list) or not all(isinstance(n, int) and n > 0 for n in missing)
+        traced = row.get("imported_by_selected_tests")
+        branches = row.get("missing_branches")
+        if (not isinstance(missing, list) or not all(type(n) is int and n > 0 for n in missing)
                 or len(set(missing)) != len(missing) or missing != sorted(missing)
-                or not isinstance(covered, int) or not isinstance(total, int)
-                or covered + len(missing) != total
-                or row.get("missing_line_count") != len(missing)
+                or type(covered) is not int or type(total) is not int
+                or total < 1 or covered < 0 or covered + len(missing) != total
+                or type(row.get("missing_line_count")) is not int
+                or row["missing_line_count"] != len(missing)
                 or round(100 * covered / total, 4) != row.get("percent_covered")):
             raise ValueError("test-gap measured coverage invalid")
+        # Untested modules can be represented as zero-covered, never as traced.
+        # Coverage branch destinations may be negative exit markers.
+        if type(traced) is not bool:
+            raise ValueError("test-gap traced-module indicator invalid")
+        if not traced:
+            if covered != 0 or branches is not None:
+                raise ValueError("test-gap untraced module has execution evidence")
+        elif (not isinstance(branches, list)
+              or any(not isinstance(arc, list) or len(arc) != 2
+                     or any(type(n) is not int for n in arc) for arc in branches)
+              or branches != sorted(branches)
+              or len({tuple(arc) for arc in branches}) != len(branches)):
+            raise ValueError("test-gap missing branch evidence invalid")
         misses += len(missing)
     if report.get("total_missing_lines") != misses:
         raise ValueError("test-gap uncovered-line total invalid")

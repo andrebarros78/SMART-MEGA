@@ -94,3 +94,42 @@ def test_critical_consumer_gate_must_exercise_more_than_prior_five_test_sample()
     assert report['total_missing_lines'] < 1613
     assert report['prospective_superiority_proven'] is False
     assert report['predictive_weight_authorized'] is False
+
+
+@pytest.mark.parametrize("junit", [0, 1, 4, True, "17", -1])
+def test_gap_consumer_rejects_impossible_junit_count_even_if_rehashed(tmp_path, junit):
+    proof = _snapshot(tmp_path)
+    proof['junit_tests'] = junit
+    proof['execution_sha256'] = _hash({k: v for k, v in proof.items() if k != 'execution_sha256'})
+    with pytest.raises(ValueError, match='execution did not pass'):
+        verify_test_gap(proof, tmp_path)
+
+
+@pytest.mark.parametrize("update", [
+    {'imported_by_selected_tests': False},
+    {'imported_by_selected_tests': 'yes'},
+    {'missing_branches': None},
+    {'missing_branches': [[-1, 'invalid']]},
+    {'missing_branches': [[1, 2], [1, 2]]},
+    {'missing_branches': [[2, 3], [1, 2]]},
+])
+def test_gap_consumer_rejects_inconsistent_trace_even_if_rehashed(tmp_path, update):
+    proof = _snapshot(tmp_path)
+    proof['source_module_coverage']['smart_operator.py'].update(update)
+    proof['execution_sha256'] = _hash({k: v for k, v in proof.items() if k != 'execution_sha256'})
+    with pytest.raises(ValueError, match='(traced-module|untraced module|missing branch)'):
+        verify_test_gap(proof, tmp_path)
+
+
+@pytest.mark.parametrize("claim", [
+    {"observability_scope": "PRODUCT_WIDE_TEST_COVERAGE"},
+    {"native_function_executed": "external-skill"},
+    {"prospective_superiority_proven": True},
+    {"predictive_weight_authorized": True},
+])
+def test_gap_consumer_rejects_privilege_or_scope_inflation_even_if_rehashed(tmp_path, claim):
+    proof = _snapshot(tmp_path)
+    proof.update(claim)
+    proof['execution_sha256'] = _hash({k: v for k, v in proof.items() if k != 'execution_sha256'})
+    with pytest.raises(ValueError, match='authority or consumer invalid'):
+        verify_test_gap(proof, tmp_path)
