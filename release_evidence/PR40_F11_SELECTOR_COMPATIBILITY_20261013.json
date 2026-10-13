@@ -1,0 +1,100 @@
+{
+  "schema": "SMART_PR40_F11_SELECTOR_COMPATIBILITY_BOUND_1",
+  "tested_commit": "6fe744d0ad27a65ab8cea6a54aacd63b5e6d2b83",
+  "f11_commit": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
+  "f11_original_selector_sha256": "97c6642203419924f61b257d15bcd352bb758f1745cb41eaea606f9afab249ba",
+  "current_selector_sha256": "92889076f1dac01ffee2a4058d1dbb23381e3f2e860f4efca11d6ac966598e0b",
+  "explicit_added_guard_hunks": 6,
+  "exact_historical_source_reconstructed": true,
+  "unexcluded_behavior_matches_legacy_in_representative_contexts": true,
+  "synthetic_cases": [
+    {
+      "case": "descending",
+      "original_card": [
+        1,
+        2,
+        3,
+        4,
+        21,
+        22
+      ],
+      "original_audit_sha256": "8cd2c82467d02865cf7883dc15855861c6178b2f25695d4980e6c45a8a143992",
+      "next_distinct_card": [
+        1,
+        2,
+        3,
+        4,
+        21,
+        23
+      ]
+    },
+    {
+      "case": "ascending",
+      "original_card": [
+        3,
+        4,
+        23,
+        24,
+        41,
+        44
+      ],
+      "original_audit_sha256": "415ecd73244a676de073565ea6b4393aebe573b9afb60c5cda399eaa835103c9",
+      "next_distinct_card": [
+        1,
+        4,
+        23,
+        24,
+        43,
+        44
+      ]
+    },
+    {
+      "case": "sine",
+      "original_card": [
+        1,
+        2,
+        3,
+        4,
+        24,
+        41
+      ],
+      "original_audit_sha256": "b650162ea8eefa1d1cecef5231459b689005810e7adb627b88f8d742aebb6ba6",
+      "next_distinct_card": [
+        1,
+        2,
+        3,
+        4,
+        23,
+        24
+      ]
+    },
+    {
+      "case": "ties",
+      "original_card": [
+        1,
+        2,
+        3,
+        21,
+        22,
+        41
+      ],
+      "original_audit_sha256": "c618d67464d963c348cfcd517e16074c6701554e749576e37984defa9b878257",
+      "next_distinct_card": [
+        1,
+        2,
+        21,
+        22,
+        23,
+        41
+      ]
+    }
+  ],
+  "subsequent_operator_card_distinct": true,
+  "f11_historical_scientific_evidence_valid": true,
+  "f12_historical_same_source_gate_currently_valid": false,
+  "needs_separately_authorized_scientific_successor": true,
+  "six_hits_predictive_superiority_proven": false,
+  "operator_card_generated_in_production": false,
+  "weights_modified": false,
+  "sha256": "d9010f7485db7e68a8887824aeb400922f76b203706f2d8eb0c1bce0a85fab0f"
+}
