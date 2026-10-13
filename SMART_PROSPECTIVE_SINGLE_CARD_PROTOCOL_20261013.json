@@ -1,0 +1,48 @@
+{
+  "schema": "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2",
+  "product": {
+    "role": "FINAL_SINGLE_CARD_PRODUCT",
+    "official_card_count_per_target": 1,
+    "numbers_per_card": 6,
+    "source": "SMART_SIGNAL_LEDGER.json FREEZE.primary_card"
+  },
+  "model_diagnostics": {
+    "heads": [
+      "champion_top6",
+      "challenger_top6"
+    ],
+    "additional_card_count": 0,
+    "production_or_betting_authority": false,
+    "purpose": "compare model rankings without creating more cards"
+  },
+  "comparison_series": [
+    "primary_card",
+    "champion_top6",
+    "challenger_top6"
+  ],
+  "evaluation_metric": "six_number_set_intersection_count_for_product_and_unplayed_model_heads",
+  "reference": {
+    "distribution": "uniform_six_without_replacement",
+    "expected_hits_per_six_number_set": 0.6,
+    "six_hit_guarantee": false
+  },
+  "paired_comparisons": [
+    "challenger_minus_champion_hits",
+    "primary_minus_champion_hits"
+  ],
+  "prospective_inclusion": "one authentic frozen primary card plus two diagnostic model heads bound to the same freeze, independently Git-published before draw and adjudicated after",
+  "registration_source": "SMART_SIGNAL_LEDGER.json FREEZE event (active target only)",
+  "registration_before_draw_required": true,
+  "registration_independent_git_publication_required": true,
+  "minimum_prospective_contests_for_p13_gate": 20,
+  "sequential_e_value_threshold_for_p13_gate": 10.0,
+  "statistical_gate_authority": "existing smart_promotion_gate and independent P14/P15 checks",
+  "post_result_reweighting_of_same_target_forbidden": true,
+  "historical_backfill_forbidden": true,
+  "missing_frozen_artifact_policy": "exclude_and_report_never_reconstruct",
+  "missing_card_policy": "ineligible_never_infer",
+  "reporting": "report all attempts and exclusions; no cherry-picking",
+  "production_switch_authorized": false,
+  "predictive_superiority_proven": false,
+  "protocol_sha256": "34b89032f36a3f653bbdbbf1ee80970d8d3d5ac2065924c3ceac60ac99a1ab6a"
+}

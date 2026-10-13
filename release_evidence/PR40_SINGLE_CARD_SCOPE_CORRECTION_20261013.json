@@ -1,0 +1,60 @@
+{
+  "schema": "SMART_PR40_SINGLE_CARD_SCOPE_CORRECTION_1",
+  "state": "ENGINEERING_REPAIR_TESTED_OLD_TRIPLE_CARD_SCOPE_SUPERSEDED",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "baseline_head": "e66070449c07cf29f0692839becb36b9813af3b0",
+  "normative_protocol": "SMART_PROSPECTIVE_SINGLE_CARD_PROTOCOL_20261013.json",
+  "normative_schema": "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2",
+  "protocol_sha256": "34b89032f36a3f653bbdbbf1ee80970d8d3d5ac2065924c3ceac60ac99a1ab6a",
+  "previous_protocol": "SMART_PROSPECTIVE_TRIPLE_CARD_PROTOCOL_20261013.json",
+  "previous_protocol_sha256": "fde28d48e21b084f11aeabe64106ad3b4f24b2cc71ef9a837d32a7df87081616",
+  "previous_proof": "release_evidence/PR40_PROSPECTIVE_TRIPLE_CARD_GATE_20261013.json",
+  "previous_proof_status": "HISTORICAL_ONLY_SUPERSEDED_NORMATIVE_SCOPE",
+  "operational_contract": {
+    "official_generated_cards_per_target": 1,
+    "official_card_product_role": "FINAL_SINGLE_CARD_PRODUCT",
+    "diagnostic_heads": [
+      "champion_top6",
+      "challenger_top6"
+    ],
+    "additional_shadow_cards": 0,
+    "portfolio_product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
+    "model_head_predictions_are_not_extra_cards": true,
+    "registration_only_after_operator_authorized_real_freeze": true
+  },
+  "tests": {
+    "framework": "Python_3_12_unittest",
+    "passed": 14,
+    "failed": 0,
+    "new_adversarial_condition": "forged_three_official_cards_refused_even_with_recomputed_candidate_hash"
+  },
+  "validated_inputs_sha256": {
+    "smart_prospective_single_card_gate.py": "a60c6dc66b33ca56bed8096532658ba9cb62dcc7142ea7273006e323ed9d7560",
+    "test_smart_prospective_single_card_gate.py": "1ec8211cf5481b45d090bd980be67e54312d10c23c92bd2790e9d87f8a2c8cec",
+    "SMART_PROSPECTIVE_SINGLE_CARD_PROTOCOL_20261013.json": "38d2d6c7ab5dda985249ac3caa0a1b4bb34baca74d5c529a2396ade4ec22d3a7",
+    "SMART_SIGNAL_LEDGER.json": "73d7c884fc4aa65093c5a4928d64bee35d3d5dcc1b62ae5dbb3b8407a0c7f22a",
+    "SMART_OPERATIONAL_LIFECYCLE.json": "5ab7c4bfebd59b719892ed19b51d7c4a8229cab400c2014bf6fec478cc453b78",
+    "SMART_NEXT_CYCLE_HOLD.json": "96f680a0faca7c451a2a1af294a923f65f845b929baba75d6f4f534fa537ddb4"
+  },
+  "preflight": {
+    "schema": "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2",
+    "target_contest": 3070,
+    "completed_contest": 3069,
+    "lifecycle_state": "HOLD",
+    "official_card_limit_per_target": 1,
+    "additional_shadow_card_limit": 0,
+    "active_target_freeze_events": 0,
+    "status": "BLOCKED_BY_OPERATOR_HOLD",
+    "generation_authorized": false,
+    "retrospective_registration_authorized": false,
+    "pre_result_git_registration_exists": false,
+    "production_promotion_authorized": false,
+    "protocol_sha256": "34b89032f36a3f653bbdbbf1ee80970d8d3d5ac2065924c3ceac60ac99a1ab6a"
+  },
+  "new_card_generated": false,
+  "official_result_or_weights_changed": false,
+  "scientific_superiority_proven": false,
+  "mission_proven": false,
+  "report_sha256": "ea3ca3db72a1684dfb1d3d0797a17f6c735e5c3146421c7d68477c0d40f97972"
+}

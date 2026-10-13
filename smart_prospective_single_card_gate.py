@@ -1,4 +1,4 @@
-"""Prospective triple-card preregistration gate, using the canonical signal ledger.
+"""One official primary card with two diagnostic model heads, using the canonical signal ledger.
 
 The gate is read-only. A pre-result CANDIDATE is NOT a registered experiment:
 independent immutable Git publication prior to the draw is still required.
@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 
 
-SCHEMA = "SMART_PROSPECTIVE_TRIPLE_CARD_PRECOMMIT_1"
+SCHEMA = "SMART_PROSPECTIVE_SINGLE_CARD_PRECOMMIT_2"
 
 
 def _sha(value):
@@ -50,21 +50,33 @@ def _timestamp(value, label):
 
 
 def protocol():
-    """Ex-ante rules; changing them requires a new version and new Git commit."""
+    """Version 2: exactly one generated product card, with shadow model scores."""
     p = {
         "schema": SCHEMA,
-        "comparison_units": ["champion_top6", "challenger_top6", "primary_card"],
-        "evaluation_metric": "exact_intersection_hit_count_each_six_number_card",
+        "product": {
+            "role": "FINAL_SINGLE_CARD_PRODUCT",
+            "official_card_count_per_target": 1,
+            "numbers_per_card": 6,
+            "source": "SMART_SIGNAL_LEDGER.json FREEZE.primary_card",
+        },
+        "model_diagnostics": {
+            "heads": ["champion_top6", "challenger_top6"],
+            "additional_card_count": 0,
+            "production_or_betting_authority": False,
+            "purpose": "compare model rankings without creating more cards",
+        },
+        "comparison_series": ["primary_card", "champion_top6", "challenger_top6"],
+        "evaluation_metric": "six_number_set_intersection_count_for_product_and_unplayed_model_heads",
         "reference": {
             "distribution": "uniform_six_without_replacement",
-            "expected_hits_per_card": 0.6,
+            "expected_hits_per_six_number_set": 0.6,
             "six_hit_guarantee": False,
         },
         "paired_comparisons": [
             "challenger_minus_champion_hits",
             "primary_minus_champion_hits",
         ],
-        "prospective_inclusion": "only frozen target cards independently published on Git before draw and adjudicated after",
+        "prospective_inclusion": "one authentic frozen primary card plus two diagnostic model heads bound to the same freeze, independently Git-published before draw and adjudicated after",
         "registration_source": "SMART_SIGNAL_LEDGER.json FREEZE event (active target only)",
         "registration_before_draw_required": True,
         "registration_independent_git_publication_required": True,
@@ -107,6 +119,8 @@ def preflight(root):
         "target_contest": target,
         "completed_contest": completed,
         "lifecycle_state": lifecycle.get("state"),
+        "official_card_limit_per_target": 1,
+        "additional_shadow_card_limit": 0,
         "active_target_freeze_events": len(frozen),
         "status": "BLOCKED_BY_OPERATOR_HOLD" if blocked else "REQUIRES_AUTHENTIC_FROZEN_CARD",
         "generation_authorized": False,
@@ -169,6 +183,10 @@ def candidate_from_frozen_event(event, ledger, *, completed_contest):
         "freeze_created_utc": freeze_time.isoformat(),
         "freeze_sha256": freeze_hash,
         "portfolio_sha256": portfolio_hash,
+        "product_role": "FINAL_SINGLE_CARD_PRODUCT",
+        "official_card_count": 1,
+        "additional_shadow_card_count": 0,
+        "model_heads_are_diagnostic_only": True,
         "champion_top6": list(champion),
         "challenger_top6": list(challenger),
         "primary_card": list(final),
@@ -183,7 +201,7 @@ def candidate_from_frozen_event(event, ledger, *, completed_contest):
 
 
 def evaluate_post_result_diagnostic(candidate, adjudication):
-    """Score the three locked predictions without granting prospective authority.
+    """Score one official card and two unplayed model heads; never promote.
 
     This is *not* a Git publication verifier or a statistical promotion gate.
     Independent proof of pre-draw registration and the P13/P14/P15 gates remain
@@ -198,6 +216,12 @@ def evaluate_post_result_diagnostic(candidate, adjudication):
             or candidate.get("protocol_sha256") != protocol()["protocol_sha256"]
             or candidate.get("status") != "UNPUBLISHED_CANDIDATE_NOT_PROSPECTIVE_EVIDENCE"
             or candidate.get("result_used") is not False
+            or candidate.get("product_role") != "FINAL_SINGLE_CARD_PRODUCT"
+            or type(candidate.get("official_card_count")) is not int
+            or candidate.get("official_card_count") != 1
+            or type(candidate.get("additional_shadow_card_count")) is not int
+            or candidate.get("additional_shadow_card_count") != 0
+            or candidate.get("model_heads_are_diagnostic_only") is not True
             or not isinstance(expected, str) or _sha(unsigned) != expected):
         raise ValueError("candidate commitment was altered or is not pre-result")
     target = candidate.get("target_contest")
@@ -219,10 +243,13 @@ def evaluate_post_result_diagnostic(candidate, adjudication):
         "status": "HISTORICAL_DIAGNOSTIC_ONLY_NOT_PROSPECTIVE_PROOF",
         "target_contest": target,
         "candidate_sha256": expected,
+        "official_cards_evaluated": 1,
+        "additional_shadow_cards_evaluated": 0,
+        "model_head_comparisons_are_diagnostic": True,
         **totals,
         "challenger_minus_champion_hits": totals["challenger_hits"] - totals["champion_hits"],
         "primary_minus_champion_hits": totals["primary_card_hits"] - totals["champion_hits"],
-        "uniform_expected_hits_per_card": 0.6,
+        "uniform_expected_hits_per_six_number_set": 0.6,
         "independent_git_publication_verified": False,
         "promotion_authorized": False,
         "predictive_superiority_proven": False,

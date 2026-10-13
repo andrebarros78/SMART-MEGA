@@ -1,4 +1,4 @@
-"""Tests for read-only preregistration of the three predictive decision heads."""
+"""Tests for a single official card and diagnostic model-head comparisons."""
 from __future__ import annotations
 
 from copy import deepcopy
@@ -7,7 +7,7 @@ import json
 from pathlib import Path
 import unittest
 
-from smart_prospective_triple_card_gate import (
+from smart_prospective_single_card_gate import (
     SCHEMA, candidate_from_frozen_event, evaluate_post_result_diagnostic, preflight, protocol,
 )
 
@@ -32,7 +32,7 @@ def fixture():
 class PreRegistrationGateTests(unittest.TestCase):
     def test_predeclared_protocol_file_is_byte_semantically_identical(self):
         recorded = json.loads(
-            (ROOT / "SMART_PROSPECTIVE_TRIPLE_CARD_PROTOCOL_20261013.json")
+            (ROOT / "SMART_PROSPECTIVE_SINGLE_CARD_PROTOCOL_20261013.json")
             .read_text(encoding="utf-8-sig")
         )
         self.assertEqual(recorded, protocol())
@@ -52,8 +52,36 @@ class PreRegistrationGateTests(unittest.TestCase):
                          diagnostic["challenger_hits"] - diagnostic["champion_hits"])
         self.assertEqual(diagnostic["primary_minus_champion_hits"],
                          diagnostic["primary_card_hits"] - diagnostic["champion_hits"])
+        self.assertEqual(diagnostic["official_cards_evaluated"], 1)
+        self.assertEqual(diagnostic["additional_shadow_cards_evaluated"], 0)
+        self.assertIs(diagnostic["model_head_comparisons_are_diagnostic"], True)
         self.assertIs(diagnostic["promotion_authorized"], False)
         self.assertIs(diagnostic["independent_git_publication_verified"], False)
+
+    def test_forged_three_cards_rejected_even_with_recomputed_hash(self):
+        from smart_prospective_single_card_gate import _sha
+        event, ledger = fixture()
+        candidate = candidate_from_frozen_event(event, ledger, completed_contest=3069)
+        adjudication = {
+            "event_type": "ADJUDICATION", "target_contest": 3070,
+            "created_utc": "2026-10-20T00:00:00+00:00",
+            "actual_numbers": [7, 10, 39, 40, 43, 57],
+        }
+        for altered_field, value in (
+            ("official_card_count", 3),
+            ("official_card_count", True),
+            ("additional_shadow_card_count", 2),
+            ("model_heads_are_diagnostic_only", False),
+            ("product_role", "AUXILIARY_MULTICARD_PORTFOLIO"),
+        ):
+            changed = deepcopy(candidate)
+            changed[altered_field] = value
+            changed["candidate_sha256"] = _sha(
+                {key: item for key, item in changed.items() if key != "candidate_sha256"}
+            )
+            with self.subTest(field=altered_field, value=value):
+                with self.assertRaisesRegex(ValueError, "candidate commitment"):
+                    evaluate_post_result_diagnostic(changed, adjudication)
 
     def test_post_result_rejects_altered_commitment_and_forged_target(self):
         event, ledger = fixture()
@@ -91,9 +119,13 @@ class PreRegistrationGateTests(unittest.TestCase):
         first, second = protocol(), protocol()
         self.assertEqual(first, second)
         self.assertEqual(first["schema"], SCHEMA)
-        self.assertEqual(first["comparison_units"],
-                         ["champion_top6", "challenger_top6", "primary_card"])
-        self.assertEqual(first["reference"]["expected_hits_per_card"], 0.6)
+        self.assertEqual(first["product"]["role"], "FINAL_SINGLE_CARD_PRODUCT")
+        self.assertEqual(first["product"]["official_card_count_per_target"], 1)
+        self.assertEqual(first["model_diagnostics"]["additional_card_count"], 0)
+        self.assertIs(first["model_diagnostics"]["production_or_betting_authority"], False)
+        self.assertEqual(first["comparison_series"],
+                         ["primary_card", "champion_top6", "challenger_top6"])
+        self.assertEqual(first["reference"]["expected_hits_per_six_number_set"], 0.6)
         self.assertEqual(first["minimum_prospective_contests_for_p13_gate"], 20)
         self.assertEqual(first["sequential_e_value_threshold_for_p13_gate"], 10.0)
         digest = first.pop("protocol_sha256")
@@ -108,6 +140,10 @@ class PreRegistrationGateTests(unittest.TestCase):
         self.assertEqual(candidate["champion_top6"], event["champion_top6"])
         self.assertEqual(candidate["challenger_top6"], event["challenger_top6"])
         self.assertEqual(candidate["primary_card"], event["primary_card"]["numbers"])
+        self.assertEqual(candidate["product_role"], "FINAL_SINGLE_CARD_PRODUCT")
+        self.assertEqual(candidate["official_card_count"], 1)
+        self.assertEqual(candidate["additional_shadow_card_count"], 0)
+        self.assertIs(candidate["model_heads_are_diagnostic_only"], True)
         self.assertEqual(candidate["status"], "UNPUBLISHED_CANDIDATE_NOT_PROSPECTIVE_EVIDENCE")
         self.assertIs(candidate["promotion_authorized"], False)
         self.assertIs(candidate["result_used"], False)
