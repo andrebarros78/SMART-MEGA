@@ -1,0 +1,115 @@
+{
+  "schema": "SMART_MEGA_PR40_FOCUSED_GATE_V1",
+  "status": "TARGETED_ENGINEERING_TEST_PASS",
+  "scope": "ENGINEERING_ONLY_SIX_TEST_FILES_FIVE_MEASURED_MODULES",
+  "tested_git_commit": "f833bbcd5edb9d4d464d9e6aa5a3bba7af54092e",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "branch": "product/native-skills-canonical-integration-20261012",
+  "executor": "LMCP:wmcp-cloud-01",
+  "mission_id": "m_73b64758218041c9ac15d633066426a5",
+  "pytest_command_id": "c_f6d794f22ccb4e539153e76b280d3de9",
+  "coverage_command_id": "c_0e9927c6380847a1bb03d9dc6104e0cb",
+  "python": "3.12.3",
+  "pytest": "9.1.1",
+  "coverage_py": "7.10.6",
+  "coverage_engine": "coverage run --branch --source=smart_operator,smart_post_result_report,smart_experiment_lab,smart_skill_runtime,smart_skill_reconciliation",
+  "test_files": [
+    "test_smart_test_gap_analysis.py",
+    "test_smart_critical_consumer_guards.py",
+    "test_smart_post_result_mlflow.py",
+    "test_smart_operator_result_materialization.py",
+    "test_smart_skill_runtime.py",
+    "test_smart_post_result_report.py"
+  ],
+  "test_file_sha256": {
+    "test_smart_test_gap_analysis.py": "dd70d642e90ccccba299000966e491e504f6a262a4a80327d5be5cd5dd42a066",
+    "test_smart_critical_consumer_guards.py": "cd2583d116b5c99281146575dc10f42bd52bdb79478102f0dd25819561b05cae",
+    "test_smart_post_result_mlflow.py": "1ade960ce78720f7fc89cc52c53e95db447f0ebb14872e0816c4eb1cb500965b",
+    "test_smart_operator_result_materialization.py": "34d792dbee872796acd213cb22a1c08759583b4daddf762e81907debd0094b21",
+    "test_smart_skill_runtime.py": "e6498633ac33ea6ba5088cf3124193a4e51c0581248411b7fa2b5ee9a61692a9",
+    "test_smart_post_result_report.py": "96f173c355dec9fb075c7af6cb1f5b42f24a7bcf59b6e6811d640865ff3d11bf"
+  },
+  "test_result": {
+    "passed": 78,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "warnings": 1,
+    "junit_time_seconds": 242.811
+  },
+  "coverage": {
+    "measured_module_count": 5,
+    "statement_count": 2106,
+    "covered_lines": 1029,
+    "missing_lines": 1077,
+    "missing_branches": 530,
+    "prior_17_test_missing_lines": 1411,
+    "additional_exercised_lines": 334,
+    "module_metrics": {
+      "smart_experiment_lab.py": {
+        "source_sha256": "1b63fd539278f242b3df62afeab75fc05c2abdf8be736ac806b0bcd35ad4c4fb",
+        "executable_statements": 264,
+        "covered_lines": 150,
+        "missing_lines": 114,
+        "missing_branches": 66,
+        "previous_17_test_covered_lines": 127,
+        "additional_lines_exercised": 23
+      },
+      "smart_operator.py": {
+        "source_sha256": "081560431d756d7c4d55a502a09cae79cddcbeb5be318d3f13590ef6bc840c22",
+        "executable_statements": 993,
+        "covered_lines": 157,
+        "missing_lines": 836,
+        "missing_branches": 347,
+        "previous_17_test_covered_lines": 157,
+        "additional_lines_exercised": 0
+      },
+      "smart_post_result_report.py": {
+        "source_sha256": "8334b87fe9e023326e4edf6f636ab6f35a1516494a69d056e5c0a8c6b0e1dbfb",
+        "executable_statements": 412,
+        "covered_lines": 344,
+        "missing_lines": 68,
+        "missing_branches": 64,
+        "previous_17_test_covered_lines": 219,
+        "additional_lines_exercised": 125
+      },
+      "smart_skill_reconciliation.py": {
+        "source_sha256": "b94eabdf5567f25ab2a7b441bcb66d92d1a5ea957988019501fdbd0d61b5a134",
+        "executable_statements": 52,
+        "covered_lines": 48,
+        "missing_lines": 4,
+        "missing_branches": 2,
+        "previous_17_test_covered_lines": 48,
+        "additional_lines_exercised": 0
+      },
+      "smart_skill_runtime.py": {
+        "source_sha256": "246ee8cd827c96eee3dbba768e07aa4bdb7147499a2c6caeb28d6b28a96ab9f1",
+        "executable_statements": 385,
+        "covered_lines": 330,
+        "missing_lines": 55,
+        "missing_branches": 51,
+        "previous_17_test_covered_lines": 144,
+        "additional_lines_exercised": 186
+      }
+    }
+  },
+  "prior_17_test_evidence_sha256": "453dba31c57803868544ba31cc7796758768b8bb11060347448b4eafee2bf9e1",
+  "artifacts": {
+    "junit_78.xml": {
+      "sha256": "d4abe2d6cea2138bc49b2e7bbeec82d55daeedc9d9a1e285ae2007a5fa005fdc",
+      "bytes": 11232
+    },
+    "coverage_5_modules.json": {
+      "sha256": "1f5c2f79e2896eddf0281f980bb971262dccfc3796870735ce81d15ef0488354",
+      "bytes": 99825
+    }
+  },
+  "limits": {
+    "product_wide_coverage_proven": false,
+    "predictive_superiority_proven": false,
+    "operational_card_or_weight_modified": false,
+    "external_skill_execution_claimed": false,
+    "git_actions_used": false
+  },
+  "manifest_sha256": "afc87595867fea7c6ab9e7ee5b328610d2b2f1fb5506021e4f3fc91f5e21888d"
+}
