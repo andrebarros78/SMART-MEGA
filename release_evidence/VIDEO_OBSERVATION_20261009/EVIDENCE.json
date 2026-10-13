@@ -1,0 +1,62 @@
+{
+  "base_commit": "9f03eba9e31b729d606daf001eaa699d7a6c43dd",
+  "created_at_utc": "2026-10-09T20:12:22.572609+00:00",
+  "mission_id": "smartmega-physical-observation-learning-20260929",
+  "mission_proven": false,
+  "module_version": "1.3.1",
+  "notes": [
+    "Physical motion after the draw is scientific-mechanism evidence only, not pre-draw information",
+    "No known result values are input to video extraction or window selection",
+    "Code is a reimplementation based on preserved v1.0-v1.3 contracts, not a byte-identical export of the B2 runtime",
+    "No results of official draw video were added to training from the VPS bot-blocked sample"
+  ],
+  "predictive_evidence": "NOT_ESTABLISHED",
+  "proofs": {
+    "focused_observer_tests": {
+      "failed": 0,
+      "passed": 29
+    },
+    "focused_plus_adjacent": {
+      "failed": 0,
+      "passed": 50
+    },
+    "global_regression": {
+      "actual_hash_in_main": "2398cc2ae5e46f8268aa260056f4d76e73631d7227e1c80fb5c452a1ea294330",
+      "branch_modified_either_file": false,
+      "expected_hash_in_main": "a03f3845dc6cd8168394944edbd3e126ca8527ccf61a61c1c4fc3ac4fe159d76",
+      "file": "SMART_3052_GATE_REGISTRATION_PROOF.json",
+      "status": "BLOCKED_PREEXISTING_AUTHORITY_HASH",
+      "test": "test_smart_agent_ecosystem_governance.py::test_build_context_is_non_operational_and_targets_next_contest"
+    },
+    "historical_b2_video_checkpoint_count": {
+      "current_access": "NOT_REVALIDATED_IN_THIS_BRANCH",
+      "last_verified": 13
+    },
+    "official_2978_vps": {
+      "media_persisted_bytes": 0,
+      "reason": "YouTube bot challenge; no visual observation on VPS",
+      "status": "STREAM_FAILED"
+    },
+    "pip_check": "PASS",
+    "synthetic_global_motion_control": {
+      "candidate": false,
+      "media_persisted_bytes": 0,
+      "status": "INSUFFICIENT_EVIDENCE"
+    },
+    "synthetic_positive_video": {
+      "events": 4,
+      "media_persisted_bytes": 0,
+      "note": "synthetic test data only; not confirmed ball ejection or predictive evidence",
+      "status": "CANDIDATE"
+    }
+  },
+  "repository": "andrebarros78/SMART-MEGA",
+  "schema": "SMART_VIDEO_OBSERVATION_ENGINEERING_EVIDENCE_V1",
+  "sha256": {
+    "requirements.video-observation.txt": "8bc7fd33b50b1887f2e69012dec75ec4e5a37ae83d6de615e7ca701f0b19b2fd",
+    "smart_video_observation.py": "7d3431b933c1f8c4b38d6e194a4eba028b404d47203fc46f7f87fef9adeba85a",
+    "tests/test_smart_video_observation.py": "9d91fd50f0c48480f69ddca1906e75ffca0834d5e476dc5a4ca8feeeb5077060"
+  },
+  "status": "MISSION_ACTIVE",
+  "work_branch": "learning/video-observation-v131-20261009"
+}
