@@ -41,11 +41,11 @@ def reconcile_operator_card_outcomes(root, target, freeze_sha, official_numbers,
             or any(c not in "0123456789abcdefABCDEF" for c in freeze_sha)):
         raise ValueError("invalid immutable freeze SHA-256")
     actual = set(_six(official_numbers))
-    adjudicated_time = _utc(adjudicated_utc, "adjudication")
     root = Path(root).resolve()
     directory = _path(root, f"runtime/operator_card_requests/{target}")
     if not directory.exists():
         return None
+    adjudicated_time = _utc(adjudicated_utc, "adjudication")
     if not directory.is_dir():
         raise ValueError("operator request archive is not a directory")
     files = sorted(directory.glob("CARD-*.json"))
