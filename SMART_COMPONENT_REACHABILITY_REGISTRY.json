@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2fd52a7a18e8b0edb4b34eb665659b6bb4a3921e740acd15be2f28aa4ed5a329",
+  "inventory_sha256": "ffd66cd501ea668f7ff1cd4e22b69431554abbd614b065e5595129bb6fc48785",
   "summary": {
-    "python_components": 503,
+    "python_components": 504,
     "workflow_entrypoints": 8,
     "production_components": 104,
     "shadow_components": 1,
     "diagnostic_components": 30,
     "validation_components": 22,
-    "test_components": 170,
+    "test_components": 171,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4768,6 +4768,7 @@
         "smart_terminal_engine",
         "test_adjudication_integrity",
         "test_p14_critical_branch_coverage",
+        "test_p14_fresh_source_guards_20261013",
         "test_smart_architecture_hardening_20260905",
         "test_smart_b2_coverage_closure_20260909",
         "test_smart_b2_evolution_20260909",
@@ -5295,6 +5296,7 @@
         "archive.smart_champion_challenger.pre_lineage_fix",
         "smart_champion_challenger",
         "test_p14_critical_branch_coverage",
+        "test_p14_fresh_source_guards_20261013",
         "test_p15_contract_strictness",
         "test_smart_evidence_only_promotion",
         "test_smart_mission_coverage_closure_20260906"
@@ -5982,6 +5984,7 @@
         "smart_3054_terminal_executor",
         "smart_champion_challenger",
         "smart_terminal_engine",
+        "test_p14_fresh_source_guards_20261013",
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
         "test_smart_independent_audit",
@@ -9036,6 +9039,32 @@
       "sha256": "38c990ed49d22349e7d36873a0327972795c8c735e6882e470aaaafae5016d71"
     },
     {
+      "component_id": "test_p14_fresh_source_guards_20261013",
+      "source_file": "test_p14_fresh_source_guards_20261013.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_champion_challenger",
+        "smart_evidence_only_promotion",
+        "smart_independent_audit",
+        "test_smart_coverage_governance",
+        "test_smart_evidence_only_promotion",
+        "test_smart_independent_audit"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "1ed885521cf2038751b196fd02688e14bb98caebab0f3188a1d91c2aee9a613b"
+    },
+    {
       "component_id": "test_p15_contract_strictness",
       "source_file": "test_p15_contract_strictness.py",
       "role": "TEST",
@@ -9822,7 +9851,8 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_adjudication_integrity"
+        "test_adjudication_integrity",
+        "test_p14_fresh_source_guards_20261013"
       ],
       "reachable": false,
       "production_reachable": false,
@@ -9966,6 +9996,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "test_p14_critical_branch_coverage",
+        "test_p14_fresh_source_guards_20261013",
         "test_p15_contract_strictness",
         "test_smart_mission_coverage_closure_20260906"
       ],
@@ -10692,6 +10723,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "test_p14_fresh_source_guards_20261013",
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
         "test_smart_mission_coverage_closure_20260906"
