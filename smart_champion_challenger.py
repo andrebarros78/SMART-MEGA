@@ -88,7 +88,9 @@ PROMOTION_LINEAGE_COMPONENTS = (
 
 
 
-def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> dict[str, Any] | None:
+def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH, *,
+
+                          operational_certification_path: Path | None = None) -> dict[str, Any] | None:
 
     if int(target) < 3052:
 
@@ -120,17 +122,45 @@ def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> 
 
         raise ValueError(f'SMART pre-3052 implementation gate blocked; pending={pending}')
 
-    # Continuous Red Team freshness is enforced only after all 15 implementation gates open.
+    # Keep complete scientific/global proof mandatory by default. Operational
 
-    if gate_path.resolve() == PRE_3052_GATE_PATH.resolve():
+    # generation may use the separately certified CURRENT source, never P14.
+
+    canonical_gate = gate_path.resolve() == PRE_3052_GATE_PATH.resolve()
+
+    if operational_certification_path is not None and not canonical_gate:
+
+        raise PermissionError('operational certificate requires canonical implementation gate')
+
+    if canonical_gate:
 
         from smart_continuous_red_team import verify_latest_report
 
         verify_latest_report(root=gate_path.resolve().parent)
 
-        from smart_global_integrity import verify_global_integrity
+        if operational_certification_path is None:
 
-        verify_global_integrity(root=gate_path.resolve().parent, gate_path=gate_path.resolve())
+            from smart_global_integrity import verify_global_integrity
+
+            verify_global_integrity(root=gate_path.resolve().parent, gate_path=gate_path.resolve())
+
+        else:
+
+            from smart_product_certification import verify_product_certification
+
+            operational_root = gate_path.resolve().parent
+
+            certificate = Path(operational_certification_path).resolve()
+
+            if certificate != operational_root / 'SMART_PRODUCT_CERTIFICATION.json':
+
+                raise PermissionError('operational certificate must be canonical and root-bound')
+
+            verified = verify_product_certification(certificate, root=operational_root, require_current_code=True)
+
+            if verified.get('status') != 'CONSTRUCTION_PROVEN':
+
+                raise PermissionError('operational source certification is not proven')
 
     return obj
 
@@ -698,7 +728,9 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
                                enforce_temporal_guard: bool = True,
 
-                               schedule_authority: dict[str, Any] | None = None) -> dict[str, Any]:
+                               schedule_authority: dict[str, Any] | None = None,
+
+                               operational_certification_path: Path | None = None) -> dict[str, Any]:
 
     if enforce_temporal_guard:
 
@@ -724,7 +756,13 @@ def freeze_champion_challenger(data: Path, target: int, out: Path, ledger_path: 
 
         }
 
-    implementation_gate = require_pre_3052_gate(target)
+    implementation_gate = (
+
+        require_pre_3052_gate(target) if operational_certification_path is None
+
+        else require_pre_3052_gate(target, operational_certification_path=operational_certification_path)
+
+    )
 
     ledger = load_ledger(ledger_path)
 

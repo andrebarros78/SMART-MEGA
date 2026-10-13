@@ -335,6 +335,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             ai_hyperparameter_authority_path=Path(fine_tuning["authority_file"]),
             expansion_registry_path=expansion_registry_path,
             schedule_authority=schedule,
+            operational_certification_path=(root / cert_file if active.get('operator_selected_target') is True else None),
         )
         actual_freeze_path = Path(freeze_result["freeze_file"])
         if not actual_freeze_path.is_absolute():
