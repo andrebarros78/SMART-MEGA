@@ -96,6 +96,20 @@ class OperatorCardRequestTests(unittest.TestCase):
         self.assertTrue(again["idempotent_replay"])
         self.assertEqual(len(list((self.root/"runtime/operator_card_requests/3099").glob("CARD-*.json"))),1)
 
+    def test_racing_receipt_creation_cannot_overwrite_another_writer(self):
+        from unittest.mock import patch
+        original = b"other-process-did-not-authorize-overwrite"
+        destination = (self.root / "runtime/operator_card_requests/3099"
+                       / "CARD-0001-race.json")
+        def emulate_racing_creation(tmp, final):
+            final.write_bytes(original)
+            raise FileExistsError("another writer created this filename")
+        with patch("smart_operator_card_requests.os.link", side_effect=emulate_racing_creation):
+            with self.assertRaisesRegex(FileExistsError, "already issued"):
+                self.issue("race")
+        self.assertEqual(destination.read_bytes(), original)
+        self.assertEqual(list(destination.parent.glob("card-request-*.tmp")), [])
+
     def test_prior_receipt_alteration_blocks_new_request(self):
         self.issue("first")
         stored=next((self.root/"runtime/operator_card_requests/3099").glob("CARD-*.json"))
