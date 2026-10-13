@@ -180,3 +180,50 @@ def candidate_from_frozen_event(event, ledger, *, completed_contest):
     }
     commitment["candidate_sha256"] = _sha(commitment)
     return commitment
+
+
+def evaluate_post_result_diagnostic(candidate, adjudication):
+    """Score the three locked predictions without granting prospective authority.
+
+    This is *not* a Git publication verifier or a statistical promotion gate.
+    Independent proof of pre-draw registration and the P13/P14/P15 gates remain
+    mandatory. In particular, an old reconstructed candidate must never be
+    counted as prospective evidence.
+    """
+    if not isinstance(candidate, dict) or not isinstance(adjudication, dict):
+        raise ValueError("candidate and adjudication must be objects")
+    expected = candidate.get("candidate_sha256")
+    unsigned = {k: v for k, v in candidate.items() if k != "candidate_sha256"}
+    if (candidate.get("schema") != SCHEMA
+            or candidate.get("protocol_sha256") != protocol()["protocol_sha256"]
+            or candidate.get("status") != "UNPUBLISHED_CANDIDATE_NOT_PROSPECTIVE_EVIDENCE"
+            or candidate.get("result_used") is not False
+            or not isinstance(expected, str) or _sha(unsigned) != expected):
+        raise ValueError("candidate commitment was altered or is not pre-result")
+    target = candidate.get("target_contest")
+    if (type(target) is not int or adjudication.get("event_type") != "ADJUDICATION"
+            or adjudication.get("target_contest") != target):
+        raise ValueError("official adjudication target mismatch")
+    _timestamp(adjudication.get("created_utc"), "adjudication")
+    if (_timestamp(adjudication["created_utc"], "adjudication")
+            <= _timestamp(candidate.get("freeze_created_utc"), "freeze")):
+        raise ValueError("result cannot predate frozen decision")
+    actual = _six(adjudication.get("actual_numbers"), "official result")
+    totals = {
+        "champion_hits": len(set(_six(candidate.get("champion_top6"), "champion")) & set(actual)),
+        "challenger_hits": len(set(_six(candidate.get("challenger_top6"), "challenger")) & set(actual)),
+        "primary_card_hits": len(set(_six(candidate.get("primary_card"), "primary card")) & set(actual)),
+    }
+    return {
+        "schema": SCHEMA,
+        "status": "HISTORICAL_DIAGNOSTIC_ONLY_NOT_PROSPECTIVE_PROOF",
+        "target_contest": target,
+        "candidate_sha256": expected,
+        **totals,
+        "challenger_minus_champion_hits": totals["challenger_hits"] - totals["champion_hits"],
+        "primary_minus_champion_hits": totals["primary_card_hits"] - totals["champion_hits"],
+        "uniform_expected_hits_per_card": 0.6,
+        "independent_git_publication_verified": False,
+        "promotion_authorized": False,
+        "predictive_superiority_proven": False,
+    }
