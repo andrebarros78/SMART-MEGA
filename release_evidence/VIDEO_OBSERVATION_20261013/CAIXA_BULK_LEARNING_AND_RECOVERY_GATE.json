@@ -1,0 +1,125 @@
+{
+  "schema": "SMART_MEGA_CAIXA_BULK_LEARNING_GATE_V1",
+  "date": "2026-10-13",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-learning-caixa-bulk-catalog-20261013",
+  "source_commit": "40c96632a2d6bb786b1e64ee99b89c75ecaf9e57",
+  "goal": "Replace repeating backup recovery and serial YouTube search with authenticated official-channel acquisition, loss-resistant incremental catalog and verified metadata classification.",
+  "result": "OFFICIAL_DISCOVERY_500_AND_B2_METADATA_137_PROVEN; VISUAL_EXTRACTION_NOT_PROVEN",
+  "source": {
+    "official_channel_id": "UCPbhr02AfVb2nd5pm12BxTw",
+    "official_channel_handle": "@caixa",
+    "official_livestreams": "https://www.youtube.com/channel/UCPbhr02AfVb2nd5pm12BxTw/streams",
+    "discovery_method": "yt-dlp --flat-playlist --playlist-end 500 --dump-single-json --skip-download",
+    "verified_unique_broadcasts": 500,
+    "discovery_wallclock_seconds": 14.07,
+    "no_media_downloaded": true,
+    "official_flat_snapshot": "research/official_caixa_youtube_500_discovery_20261013.json",
+    "flat_git_blob_sha1": "9b63f73df14c5c7bfede646c81734ea43e5e9ef6"
+  },
+  "modules": [
+    {
+      "file": "smart_video_official_catalog.py",
+      "description": "Official channel integrity, monotonic append-only catalog, SHA256 archive and idempotent replay",
+      "source_commit": "66cd8bfc0be69caa883b9d0a83cc0dff1957335c",
+      "regressions": 15
+    },
+    {
+      "file": "smart_video_caixa_harvest.py",
+      "description": "Verified public watch-page descriptors, safe caching, bounded work waves, backoff on HTTP403/429/503",
+      "source_commit": "47ac1e71ae3d14027dd31f03eaa8c5c6daffa0a7",
+      "regressions": 11
+    },
+    {
+      "file": "smart_video_caixa_data_api.py",
+      "description": "Optional YouTube Data API videos.list snippet batches of max 50, API key in x-goog-api-key header only; no key committed",
+      "source_commit": "40c96632a2d6bb786b1e64ee99b89c75ecaf9e57",
+      "regressions": 10,
+      "real_authorized_api_key_confirmed": false,
+      "live_google_api_requests_executed": 0
+    }
+  ],
+  "cross_platform": {
+    "windows_pc_vendas": {
+      "catalog_and_harvest_and_api_tests_passed": 36,
+      "failed": 0
+    },
+    "linux_wmcp_cloud_01": {
+      "catalog_and_harvest_and_api_tests_passed": 36,
+      "failed": 0
+    },
+    "real_500_catalog_ingest_both_hosts": {
+      "first_new": 500,
+      "second_new": 0,
+      "same_memory_sha256": "53819c10f4ef9cfec373c50607bd76b0d77226199a4260c76b965e593bb26298"
+    }
+  },
+  "b2_physical": {
+    "host": "PC-ESCOLA",
+    "node_id": "B2-LEARNING-NODE-01",
+    "transport": "LMCP -> GOV-WINDOWS -> signed-long-poll",
+    "staging_path": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+    "staging_only_not_production": true,
+    "published_code_git_hash_verified": true,
+    "catalog_ingest_command": "netcmd_3039600150774a23bfa57e1f824daaaa",
+    "catalog_replay_command": "netcmd_c076415b56e74b859945e04b0dddb49c",
+    "real_catalog_indexed": 500,
+    "real_catalog_replay_new": 0,
+    "public_watch_html_detail_probe": "netcmd_3d44a3e82b154a3e85fbadd66ca173c8",
+    "public_watch_channel_verified": true,
+    "first_40_command": "netcmd_26df7a63c20946e5a005183537a71aaf",
+    "next_100_command": "netcmd_8fe8f6ca0ecc4d1fa7a995e80f1e5101",
+    "next_100_rejected_command": "netcmd_9b385eefa52749c08ed215d4c21650f3",
+    "verified_video_descriptions": 137,
+    "broadcasts_with_mega_reference": 52,
+    "distinct_mega_contests": 51,
+    "historical_contests_min": 3013,
+    "historical_contests_max": 3069,
+    "duplicates_same_contest_across_videos": 1,
+    "invalid_or_unverified_broadcasts_for_mega": 448,
+    "global_backoff_code_commit": "47ac1e71ae3d14027dd31f03eaa8c5c6daffa0a7",
+    "global_backoff_install_command": "netcmd_32c81e98395747b0b97795db8f0dc449",
+    "global_backoff_proof_command": "netcmd_5c2e093e1e8648ceb3e45b4a41604c78",
+    "backoff_trigger_test": {
+      "failed_requests_before_stop": 4,
+      "deferred": 26,
+      "active": true,
+      "reason": "HTTP_429"
+    },
+    "global_backoff_until_utc": "2026-10-14T00:47:11.666295+00:00",
+    "catalog_integrity_command": "netcmd_3df6da5fe86e4d18a8f068b54efe1b68",
+    "catalog_sha256": "7d03e4637975bf8aa1c311de5ac12677a820b11f6ea3710797ee7416d96cef35",
+    "immutable_versions_observed": 3,
+    "real_video_frames_analyzed": 0,
+    "predictive_weight": 0,
+    "production_main_modified": false
+  },
+  "disaster_recovery": {
+    "backup_verified_public_descriptions": "research/official_caixa_public_metadata_137_verified_20261013.json",
+    "backup_git_blob_sha1": "61bef525cf03400deeef160fbc8b1da68489c8e8",
+    "source_backup_network_command": "netcmd_9448418a0f3d4c25ba5cd372a71a1f15",
+    "export_encoding": "ensure_ascii True to avoid Windows console encoding loss",
+    "restored_without_any_youtube_connection": true,
+    "windows_restored_500_137_52_51": true,
+    "linux_restored_500_137_52_51": true,
+    "same_restored_sha256_both": "a400e7bb9d994133d17a0ac12ac58d02ab1a402d7e9977321a92dab74151f527",
+    "restored_replay_no_changes": true,
+    "note": "restored archive hash differs from B2 runtime because B2 had 3 successive revisions; semantic content is equal"
+  },
+  "scientific_guardrails": {
+    "video_stream_processing_completed": 0,
+    "motion_events_trained_from_official_video": 0,
+    "signal_weight_proven": false,
+    "result_predictive_evidence": "NOT_ESTABLISHED",
+    "predictive_weight_authorized": false,
+    "mission_proven": false,
+    "no_github_actions_used": true
+  },
+  "blocks": [
+    "Most website HTML metadata requests started returning HTTP 429 at larger batches. Persistent backoff prevents repeated calls; official YouTube Data API adapter available but actual API key not confirmed.",
+    "Correct use of videos.list requires a YouTube Data API-enabled Google Cloud project and an authorized API key. Never store API key in repo or logs.",
+    "500 catalogued broadcasts does not imply 500 Mega contests or video frames analyzed.",
+    "Need verified Mega segment identification, official streams accessible, real checkpoint production and validated 6/6 outcomes before promotion."
+  ],
+  "next_gate": "Configure authorized official YouTube Data API key through secure B2 environment and validate one videos.list batch; then process remaining uncached IDs in groups of at most 50 with append-only checkpointing; separate visual extraction and predictive validation. Leave website backoff in effect."
+}
