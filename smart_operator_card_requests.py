@@ -31,8 +31,16 @@ def _file_sha(path):
 def _path(root, relative):
     if not isinstance(relative, str) or not relative:
         raise ValueError("card evidence file path missing")
-    candidate = (root / relative).resolve()
-    if not candidate.is_relative_to(root) or candidate.is_symlink():
+    raw = Path(relative)
+    if raw.is_absolute() or not raw.parts or ".." in raw.parts:
+        raise ValueError("card evidence path outside project")
+    current = root
+    for part in raw.parts:
+        current = current / part
+        if current.is_symlink():
+            raise ValueError("card evidence path contains symlink")
+    candidate = current.resolve()
+    if not candidate.is_relative_to(root):
         raise ValueError("card evidence path outside project")
     return candidate
 
@@ -121,8 +129,8 @@ def issue_from_frozen_epoch(root, *, target, request_id, active, operator_reques
         raise ValueError("frozen champion six-number card source integrity failure")
     first_card = _six(primary.get("numbers"))
 
-    output_dir = root / "runtime" / "operator_card_requests" / str(target)
-    if output_dir.is_symlink() or (output_dir.exists() and not output_dir.is_dir()):
+    output_dir = _path(root, f"runtime/operator_card_requests/{target}")
+    if output_dir.exists() and not output_dir.is_dir():
         raise ValueError("operator request receipt directory invalid")
     existing = []
     for file in sorted(output_dir.glob("CARD-*.json")) if output_dir.is_dir() else ():
