@@ -1,0 +1,35 @@
+{
+  "schema": "SMART_PR40_P14_INDEPENDENT_AUDIT_BLOCKER_1",
+  "generated_utc": "2026-10-13T19:21:20.246030+00:00",
+  "repo": "andrebarros78/SMART-MEGA",
+  "source_commit": "1caab5eace90b94d628f43ab8fc35664c2990898",
+  "coverage_gate": {
+    "status": "PASS",
+    "module_count": 4
+  },
+  "full_independent_audit": {
+    "status": "BLOCKED",
+    "reason": "ValueError: result data missing"
+  },
+  "missing_original_freezes": [
+    {
+      "target_contest": 3060,
+      "expected_relative_path": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+      "exists_in_checkout": false,
+      "filename_found_in_reachable_git_objects": false
+    },
+    {
+      "target_contest": 3061,
+      "expected_relative_path": "runtime/learning_epochs/operator-3061-1d798ed37904-20260922T195353823390Z/SMART_3061_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_sha256": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+      "exists_in_checkout": false,
+      "filename_found_in_reachable_git_objects": false
+    }
+  ],
+  "scientific_status": "UNPROVEN",
+  "terminal_6of6_proven": false,
+  "release_or_merge_authorized": false,
+  "historical_certificate_not_promoted": true,
+  "sha256": "2ed3fb71ab6e2cea8a8621ed184631c956159ae335c62025a5e30ace84b3de4a"
+}
