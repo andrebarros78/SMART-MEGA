@@ -81,7 +81,7 @@ class NativeCardGitPublisherTests(unittest.TestCase):
         self.assertEqual(one["commit"],_git(self.repo,"ls-remote","origin","refs/heads/main").split()[0])
         self.assertEqual(_git(self.repo,"status","--porcelain=v1"),"")
         original_sha=one["commit"]
-        replay=self._publish(first)
+        replay=self._publish({**first,"idempotent_replay":True})
         self.assertEqual(replay["status"],"ALREADY_PUBLISHED")
         self.assertEqual(replay["commit"],original_sha)
         second,_=self._receipt(2,"operator-2")
