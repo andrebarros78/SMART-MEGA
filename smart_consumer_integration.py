@@ -30,6 +30,14 @@ def _sha256_json(data: Any) -> str:
         separators=(",", ":")).encode("utf-8")).hexdigest()
 
 
+def _valid_self_hash(value: Any) -> bool:
+    if not isinstance(value, dict):
+        return False
+    content = dict(value)
+    claimed = content.pop("sha256", None)
+    return isinstance(claimed, str) and claimed == _sha256_json(content)
+
+
 def evaluate(
     *, root: str | Path, target: int, epoch_id: str,
     freeze_path: str | Path, portfolio_path: str | Path,
@@ -70,6 +78,9 @@ def evaluate(
     pre_reg = pre_gate.get("skill_adapter_registry_sha256")
     post_reg = post_gate.get("skill_adapter_registry_sha256")
     checks = {
+        "gate_evidence_hashes_valid": _valid_self_hash(pre_gate) and _valid_self_hash(post_gate),
+        "primary_card_hash_valid": _valid_self_hash(primary_card),
+        "epoch_identity_matches_card": isinstance(epoch_id, str) and epoch_id == primary_card.get("run_id"),
         "pre_and_post_execution_gates_pass": (
             pre_gate.get("status"), pre_gate.get("phase"),
             post_gate.get("status"), post_gate.get("phase"),
