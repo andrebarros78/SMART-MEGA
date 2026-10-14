@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable
 
 SCHEMA = "SMART_COMPONENT_REACHABILITY_REGISTRY_V1"
-EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__"}
+EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", ".venv-recovery", "WMCP_TEMP"}
 ARCHIVE_PREFIXES = ("archive/", "SMART_STATE_ARCHIVE/", "portable_evidence/", "release_evidence/")
 QUARANTINE_PREFIXES = (".external_",)
 VALIDATION_TOKENS = (

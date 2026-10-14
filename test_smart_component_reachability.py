@@ -1,6 +1,6 @@
 from pathlib import Path
 
-from smart_component_reachability import build_registry
+from smart_component_reachability import _python_files, build_registry
 
 
 ROOT = Path(__file__).resolve().parent
@@ -43,3 +43,13 @@ def test_f01_registry_file_matches_live_source_graph():
     import json
     persisted = json.loads(registry_path.read_text(encoding="utf-8"))
     assert persisted == build_registry(ROOT)
+
+
+def test_f01_ignore_local_python_runtimes_and_ephemeral_runner_files(tmp_path):
+    (tmp_path / "component.py").write_text("value = 1\n", encoding="utf-8")
+    for ephemeral in (".venv", ".venv-recovery", "WMCP_TEMP"):
+        hidden = tmp_path / ephemeral / "Lib" / "site-packages"
+        hidden.mkdir(parents=True)
+        (hidden / "not_a_project_module.py").write_text("value = 2\n", encoding="utf-8")
+    files = [path.relative_to(tmp_path).as_posix() for path in _python_files(tmp_path)]
+    assert files == ["component.py"]
