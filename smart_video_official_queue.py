@@ -21,7 +21,8 @@ from smart_video_observation import (
     _observation_fingerprint, _checkpoint_path, resolve_stream,
     observe_short_sample, locate_mega_segment,
 )
-from smart_video_learning import observe_batch
+from smart_video_learning import observe_batch, get_visual_features, publish_visual_study
+from smart_video_observation import persist_visual_learning_state, _utc_now
 
 SCHEMA = "SMART_CAIXA_VISUAL_QUEUE_V1"
 POINTER = "SMART_CAIXA_VISUAL_QUEUE_CURRENT.json"
@@ -106,7 +107,9 @@ def _read_state(root: Path) -> dict[str, Any] | None:
 
 
 def _publish(root: Path, body: dict[str, Any], previous: dict[str, Any] | None) -> dict[str, Any]:
-    current = dict(body)
+    # Snapshot before journaling: callers mutate in-memory per-contest states.
+    # A shallow dict would alias previous['records'] and erase RUNNING transitions.
+    current = json.loads(json.dumps(body))
     comparable = {k: v for k, v in current.items() if k != "previous_sha256"}
     if previous and comparable == {k: v for k, v in previous.items()
                                    if k not in ("previous_sha256", "sha256")}:
@@ -350,13 +353,15 @@ def _execute(catalog, eligible, collisions, cp_root, q_root, cfg, hypothesis_id,
              previous, max_items, batch_workers, max_attempts,
              resolver, sampler, segment_locator):
     attempted, waves = 0, 0
+    attempted_once: set[str] = set()
+    source_failure_circuit_open = False
     while True:
         records, body = _reconcile_and_report(
             catalog, eligible, collisions, cp_root, q_root, cfg,
             hypothesis_id, previous, max_attempts)
         previous = _publish(q_root, body, previous)
         ready = [k for k, row in records.items() if row["state"] == "PENDING"
-                 and row["attempts"] < max_attempts]
+                 and row["attempts"] < max_attempts and k not in attempted_once]
         if not ready or attempted >= max_items:
             break
         chunk = ready[:min(batch_workers, max_items - attempted)]
@@ -375,16 +380,35 @@ def _execute(catalog, eligible, collisions, cp_root, q_root, cfg, hypothesis_id,
             segment_locator=segment_locator,
         )
         attempted += len(chunk)
+        attempted_once.update(chunk)
         waves += 1
         # Re-read checkpoint bytes and journal before considering another wave.
         records, body = _reconcile_and_report(
             catalog, eligible, collisions, cp_root, q_root, cfg,
             hypothesis_id, previous, max_attempts)
         previous = _publish(q_root, body, previous)
+        # Avoid hammering the upstream video service when an entire wave fails.
+        if all(records[c]["checkpoint_status"] in {"STREAM_FAILED", "TIMEOUT"} for c in chunk):
+            source_failure_circuit_open = True
+            break
     records, _ = _reconcile_and_report(
         catalog, eligible, collisions, cp_root, q_root, cfg, hypothesis_id,
         previous, max_attempts)
+    # A crash can happen after videos are checkpointed but before shared memory
+    # is committed. Regenerate the idempotent consumer state from verified bytes.
+    memory_reconciled = False
+    if any(r["state"] == "VERIFIED" for r in records.values()):
+        next_contest = str(max(map(int, records)) + 1)
+        source_url = records[next(iter(records))]["source_url"]
+        persist_visual_learning_state(cp_root, next_contest, hypothesis_id,
+                                      source_url=source_url)
+        features = get_visual_features(next_contest, _utc_now(), cp_root,
+                                       hypothesis_id, source_url=source_url)
+        publish_visual_study(cp_root, features)
+        memory_reconciled = True
     result = _summarize(catalog, records, collisions, attempted, waves, dry_run=False)
+    result["shared_memory_reconciled"] = memory_reconciled
+    result["source_failure_circuit_open"] = source_failure_circuit_open
     result["queue_state_sha256"] = previous["sha256"]
     return result
 
