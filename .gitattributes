@@ -210,3 +210,21 @@
 /smart_false_negative_rescue.py -text
 /smart_post_result_report.py -text
 /test_smart_post_result_report.py -text
+
+# Restore original raw-byte evidence on Windows and Linux without changing tracked blobs.
+*.py text eol=crlf
+/archive/reconciliation_runtime_residue_20260911/runtime/*.py -text
+/archive/reconciliation_runtime_residue_20260911/runtime/historical_training_shadow/*.py -text
+/smart_ai_fine_tuning.py -text
+/smart_false_negative_rescue.py -text
+/smart_post_result_report.py -text
+/smart_terminal_executor.py -text
+/test_smart_ai_fine_tuning.py -text
+/test_smart_canonical_result_store_reconcile.py -text
+/test_smart_post_result_report.py -text
+/requirements.lock.txt text eol=crlf
+/SMART_NULL_UNIVERSE_MANIFEST.json text eol=crlf
+/SMART_RANDOMNESS_ATLAS_1000.json text eol=crlf
+/SMART_RANDOMNESS_ATLAS.json text eol=crlf
+/SMART_EXTERNAL_SKILLS_QUARANTINE_MANIFEST.json text eol=crlf
+/SMART_SIGNAL_STATE_3054_V2.json text eol=crlf
