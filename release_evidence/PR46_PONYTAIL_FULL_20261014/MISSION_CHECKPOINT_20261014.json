@@ -1,0 +1,41 @@
+{
+  "schema": "SMART_PONYTAIL_FULL_MISSION_CHECKPOINT_1",
+  "updated_utc": "2026-10-14T11:30:26.239522+00:00",
+  "mission_id": "SMART_MEGA_CARD_FLOW_ENGINEERING_20261014",
+  "state": "MISSION_ACTIVE",
+  "objective": "Operational single-card issue, Git publication, crash-safe recovery and live authority freshness; scientifically honest claims",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "hardening/card-publication-recovery-20261013",
+  "certified_source_commit": "7465daedb70d1f9abf2a42af098beaa28e8bf31e",
+  "engineering_results": {
+    "full_regression_tests": 1379,
+    "passed": 1379,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "post_recert_smoke": 103,
+    "operational_preflight_status": "AWAITING_OPERATOR_AUTHORIZATION",
+    "construction_certification": "CONSTRUCTION_PROVEN",
+    "governance": "PASS",
+    "authority_freshness_operational": "PASS"
+  },
+  "evidence": [
+    "FULL_REGRESSION_SOURCE_7465dae.xml",
+    "CONSTRUCTION_RECERTIFICATION_20261014.json",
+    "SMART_AUDIT_JUNIT_CURRENT.xml",
+    "SMART_PRODUCT_CERTIFICATION.json",
+    "SMART_AGENT_ECOSYSTEM_GOVERNANCE.json",
+    "POST_CERTIFICATION_SMOKE_20261014.xml"
+  ],
+  "remaining": {
+    "target_contest": 3070,
+    "generation_allowed": false,
+    "canonical_production_main_untouched": true,
+    "scientific_terminal": "UNPROVEN",
+    "P14_historical_scientific_integrity": "BLOCKED",
+    "certified_staging_branch_not_production_main": true
+  },
+  "next_action": "Finish controlled integration of PR46 to canonical staging after branch and artifact verification; verify fresh operational runtime in actual deployment and operator authorization separately. No historical backfill.",
+  "rollback": "Revert feature/evidence commits on integration branch; preserve certified source SHA; never force-push or alter canonical main without explicit production gate",
+  "sha256": "0f7238941a902687020049b294b0b7ecbd1699f82834c08034f12e811dedd742"
+}
