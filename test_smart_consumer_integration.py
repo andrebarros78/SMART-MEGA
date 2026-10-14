@@ -125,3 +125,13 @@ def test_mismatched_epoch_identity_is_rejected(specimen):
     changed = {**specimen, "epoch_id": "WRONG_EPOCH"}
     with pytest.raises(RuntimeError, match="epoch_identity_matches_card"):
         evaluate(**changed)
+
+
+def test_duplicate_native_skill_invocation_cannot_fake_full_coverage(specimen):
+    changed = {**specimen, "post_gate": copy.deepcopy(specimen["post_gate"])}
+    rows = changed["post_gate"]["native_invocations"]
+    assert len(rows) == 37
+    rows[-1] = copy.deepcopy(rows[0])
+    # Even if an upstream gate claimed PASS, no repeated invocation covers a missing skill.
+    with pytest.raises(RuntimeError, match="37_native_skill_aliases_invoked"):
+        evaluate(**changed)
