@@ -40,9 +40,16 @@ def test_f12_historical_gate_rejects_unapproved_selector_change_and_new_proof_is
     import hashlib
     actual = evaluate(ROOT)
     assert actual["status"] == "FAIL"
+    # Both the predictor pipeline (current operational freeze guard) and other
+    # production consumers have evolved since the narrowly approved F12
+    # snapshot. They MUST remain rejected by the archival F12 gate, not be
+    # silently promoted or mistaken for a fresh scientific certification.
     assert {k for k, ok in actual["checks"].items() if not ok} == {
-        "all_other_production_sources_unchanged"
+        "all_other_production_sources_unchanged",
+        "candidate_diff_exactly_explained_by_guard",
     }
+    assert actual["sources"][PREDICTIVE_FILE]["approved_f11_source_preserved"] is False
+    assert actual["engineering_consumer_trace_fix_approved"] is False
     assert actual["checks"]["f11_historical_evidence_integrity"] is True
     assert actual["historical_comparison"]["p10"]["total_delta"] == 0
     assert actual["historical_comparison"]["p06"]["approved_for_predictive_promotion"] is False
@@ -81,11 +88,14 @@ def test_f12_immutable_archival_approval_not_rewritten_after_new_operator_extens
     assert evaluate(ROOT)["status"] == "FAIL"
 
 
-def test_f12_reconstructed_approved_pipeline_is_bitwise_f11_identity():
+def test_f12_current_operational_pipeline_is_not_mistaken_for_f11_identity():
+    # Removing the original F12 repair alone is not sufficient: later
+    # operational runtime hardening has changed the source independently.
     source = (ROOT / PREDICTIVE_FILE).read_bytes()
     pre = reconstruct_predecessor(source)
     assert pre is not None
-    assert _matches_expected_code(pre, BASELINE_SOURCE_SHA256[PREDICTIVE_FILE])
+    assert not _matches_expected_code(pre, BASELINE_SOURCE_SHA256[PREDICTIVE_FILE])
+    assert evaluate(ROOT)["checks"]["candidate_diff_exactly_explained_by_guard"] is False
 
 
 def test_f12_altered_agent_parameters_rejected_even_if_authority_declared():
