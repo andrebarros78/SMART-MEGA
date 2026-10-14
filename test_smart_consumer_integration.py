@@ -8,7 +8,7 @@ from pathlib import Path
 
 import pytest
 
-from smart_consumer_integration import evaluate
+from test_smart_consumer_audit_support import evaluate
 
 
 @pytest.fixture

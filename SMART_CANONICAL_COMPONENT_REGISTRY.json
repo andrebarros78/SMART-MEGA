@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
+  "source_reachability_inventory_sha256": "658311b30d25bc853ff8cf2d3e17df33616a4a2559f7d32c512535a219aa3ae1",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 486,
+    "component_count": 488,
     "active": 99,
     "shadow": 1,
-    "diagnostic": 186,
+    "diagnostic": 188,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -7298,6 +7298,7 @@
       "producers": [],
       "consumers": [
         "smart_portfolio_pipeline",
+        "test_smart_consumer_integration",
         "test_smart_primary_card_selector"
       ],
       "entrypoints": [
@@ -10002,6 +10003,53 @@
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_component_reachability"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_consumer_audit_support",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_consumer_audit_support.py",
+      "implementation_sha256": "edf9e2df77b74314a14a306fe11a37146bbe97b86ee097555bab80aff45984ee",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "test_smart_consumer_integration"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_consumer_integration",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_consumer_integration.py",
+      "implementation_sha256": "2002512658531dcec85025af34c8cbd0b14b0e060c6f11afc320b9cab147adb9",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_primary_card_selector",
+        "test_smart_consumer_audit_support"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -13132,5 +13180,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "4e26edd2a307dfbfba85e9821653619c0d1e3222de6e3f45ced785ebb1e06932"
+  "registry_sha256": "22fbc6c8473641d871904f22748cf8f9b16a7cc26086667cf55e0a76d041d121"
 }

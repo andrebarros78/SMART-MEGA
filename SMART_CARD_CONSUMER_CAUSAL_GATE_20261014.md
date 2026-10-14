@@ -39,3 +39,9 @@ git checkout integration/card-consumer-proof-20261014
 python -m pytest -q -p no:cacheprovider --disable-warnings --junitxml=SMART_CONSUMER_FULL_REGRESSION.xml
 ```
 Do not run the command in an active frozen operational epoch. Preserve the baseline and audit the exact source SHA, environment, dependencies and JUnit hash.
+
+## 2026-10-14 Windows regression correction (GATE 5)
+- First complete run at branch 03ba008: 1,213 passed; five failures (F01, F05, F08 x2, F10) due to two new top-level Python files changing the canonical component graph, not due to a regression of historical predictive scoring.
+- Read-only auditor relocated to `test_smart_consumer_audit_support.py`, a test-only component; `test_smart_consumer_integration.py` imports this helper. No production scorer, pipeline, or F11/F12 protected source was edited.
+- Canonical snapshots regenerated from actual code by `smart_component_reachability.build_registry`, `smart_canonical_component_registry.build_registry`, and `smart_disconnection_gate.audit_disconnections`. F01/F05/F10 gate statuses PASS.
+- Focused corrected retest: **43 passed** including consumer, F01/F05/F08/F10, F11 and F12. Full corrected regression and release certification are separate gates, not implied by this result.

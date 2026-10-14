@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
+  "inventory_sha256": "658311b30d25bc853ff8cf2d3e17df33616a4a2559f7d32c512535a219aa3ae1",
   "summary": {
-    "python_components": 486,
+    "python_components": 488,
     "workflow_entrypoints": 8,
     "production_components": 99,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 160,
+    "test_components": 162,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6890,6 +6890,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_portfolio_pipeline",
+        "test_smart_consumer_integration",
         "test_smart_primary_card_selector"
       ],
       "reachable": true,
@@ -9429,6 +9430,49 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "885a529c9ad5a5e1edc54f6e40755601698053ab2db28e56edfd7b923542c19c"
+    },
+    {
+      "component_id": "test_smart_consumer_audit_support",
+      "source_file": "test_smart_consumer_audit_support.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_consumer_integration"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "edf9e2df77b74314a14a306fe11a37146bbe97b86ee097555bab80aff45984ee"
+    },
+    {
+      "component_id": "test_smart_consumer_integration",
+      "source_file": "test_smart_consumer_integration.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_primary_card_selector",
+        "test_smart_consumer_audit_support"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "2002512658531dcec85025af34c8cbd0b14b0e060c6f11afc320b9cab147adb9"
     },
     {
       "component_id": "test_smart_context_regime_adwin",
