@@ -273,6 +273,7 @@ def run_official_queue(
     max_attempts: int = 3,
     hypothesis_id: str | None = None,
     dry_run: bool = False,
+    sync_only: bool = False,
     resolver: Callable = resolve_stream,
     sampler: Callable = observe_short_sample,
     segment_locator: Callable = locate_mega_segment,
@@ -282,6 +283,8 @@ def run_official_queue(
     Queue state is journaled before an observation begins; after a crash,
     succeeded checkpoints are verified before further video access.
     """
+    if dry_run and sync_only:
+        raise ValueError("DRY_RUN_AND_SYNC_ONLY_CONFLICT")
     if type(max_items) is not int or not 1 <= max_items <= 500:
         raise ValueError("MAX_ITEMS_OUT_OF_RANGE")
     if type(batch_workers) is not int or not 1 <= batch_workers <= 8:
@@ -308,6 +311,15 @@ def run_official_queue(
 
     with _exclusive(q_root):
         previous = _read_state(q_root)
+        if sync_only:
+            records, body = _reconcile_and_report(
+                catalog, eligible, collisions, cp_root, q_root,
+                cfg, hypothesis_id, previous, max_attempts)
+            state = _publish(q_root, body, previous)
+            result = _summarize(catalog, records, collisions, 0, 0, dry_run=False)
+            result["sync_only"] = True
+            result["queue_state_sha256"] = state["sha256"]
+            return result
         return _execute(catalog, eligible, collisions, cp_root, q_root, cfg, hypothesis_id,
                         previous, max_items, batch_workers, max_attempts,
                         resolver, sampler, segment_locator)
@@ -424,12 +436,14 @@ def main() -> int:
     parser.add_argument("--max-attempts", type=int, default=3)
     parser.add_argument("--hypothesis-id")
     parser.add_argument("--dry-run", action="store_true")
+    parser.add_argument("--sync-only", action="store_true",
+                        help="persist all eligible queue entries without opening any video")
     a = parser.parse_args()
     result = run_official_queue(
         a.catalog_dir, a.checkpoint_dir, a.queue_dir,
         max_items=a.max_items, batch_workers=a.batch_workers,
         workers=a.workers, max_attempts=a.max_attempts,
-        hypothesis_id=a.hypothesis_id, dry_run=a.dry_run,
+        hypothesis_id=a.hypothesis_id, dry_run=a.dry_run, sync_only=a.sync_only,
     )
     print(json.dumps(result, sort_keys=True, ensure_ascii=False, indent=2))
     return 0
