@@ -207,3 +207,16 @@ def test_missing_generation_proof_fails_closed(specimen):
     import smart_operator as op
     with pytest.raises(RuntimeError, match="requires this target"):
         op._card_consumption_checked(lambda root, target: {"status": "PASS"})(specimen["root"], 3070)
+
+@pytest.mark.parametrize("fault", ["non_object", "non_finite"])
+def test_malformed_generation_proof_rejected_before_any_write(specimen, tmp_path, fault):
+    from smart_consumer_integration import audit_generation
+    epoch = specimen["freeze_path"].parent
+    proof = json.loads((epoch / "FULL_PROCESS_PROOF.json").read_text(encoding="utf-8"))
+    if fault == "non_object":
+        proof = None
+    else:
+        proof["untrusted_measurement"] = float("nan")
+    with pytest.raises(RuntimeError, match="full_process_proof_valid"):
+        audit_generation(tmp_path, proof)
+    assert list(tmp_path.iterdir()) == []
