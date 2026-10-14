@@ -1,0 +1,291 @@
+{
+  "schema": "SMART_CONSUMER_INTEGRATION_V2",
+  "status": "PASS",
+  "target_contest": 3070,
+  "epoch_id": "operator-3070-ee1bc13734e4-20261013T225858165681Z",
+  "freeze_file": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_3070_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256": "ddc5393ff936ff9dbd8da31796b6873b6099ea719435496d01326a1040ea3e2a",
+  "portfolio_file": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_3070_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+  "portfolio_sha256": "457a5fc466a63f46bcb4cd705d3dbd06404235da971949bf230801a5f8b158fd",
+  "card_numbers": [
+    10,
+    11,
+    27,
+    38,
+    43,
+    53
+  ],
+  "effective_decision_head": "champion",
+  "challenger_weight_role": "SHADOW_UNLESS_EVIDENCE_PROMOTED",
+  "native_agents_executed": 9,
+  "native_skill_aliases_invoked": 37,
+  "external_skill_source_executions": 0,
+  "external_llm_provider_calls": 0,
+  "sdk": [
+    {
+      "name": "pandas",
+      "version": "3.0.5",
+      "installed": true,
+      "role": "CAUSAL_HISTORY_AND_SIGNAL_REPLAY",
+      "runtime_installation_is_not_predictive_evidence": true
+    },
+    {
+      "name": "river",
+      "version": "0.26.1",
+      "installed": true,
+      "role": "FROZEN_ADWIN_QUALITY_INPUT_TO_CHALLENGER_WEIGHTS",
+      "runtime_installation_is_not_predictive_evidence": true
+    },
+    {
+      "name": "ortools",
+      "version": "9.15.6755",
+      "installed": true,
+      "role": "FROZEN_SCORE_AUXILIARY_PORTFOLIO_REPLAY",
+      "runtime_installation_is_not_predictive_evidence": true
+    },
+    {
+      "name": "pydantic",
+      "version": "2.13.5",
+      "installed": true,
+      "role": "TYPED_OPERATIONAL_HANDOFF_CONSUMPTION",
+      "runtime_installation_is_not_predictive_evidence": true
+    },
+    {
+      "name": "pypdf",
+      "version": "6.19.0",
+      "installed": true,
+      "role": "ARCHIVED_OFFICIAL_SCHEDULE_REPLAY",
+      "runtime_installation_is_not_predictive_evidence": true
+    }
+  ],
+  "checks": {
+    "pre_and_post_execution_gates_pass": true,
+    "gates_self_hash_and_checks_valid": true,
+    "nine_distinct_native_agents": true,
+    "37_native_skill_aliases_invoked": true,
+    "four_reference_only_not_executed": true,
+    "external_third_party_code_quarantined": true,
+    "five_consumed_sdk_packages_installed": true,
+    "adapter_registry_consistent": true,
+    "twelve_valid_challenger_signal_weights": true,
+    "champion_scores_cover_universe": true,
+    "target_result_not_consumed": true,
+    "primary_consumes_champion_head": true,
+    "six_numbers_exactly_from_selector_and_portfolio": true,
+    "freeze_and_portfolio_byte_hashes_bound": true,
+    "primary_card_self_hash_valid": true,
+    "no_external_llm_authority_claimed": true
+  },
+  "consumption_replay": {
+    "data_sha256": "b38ca2f75877cc16869a12f14baa65758359d49dd5e3f1ddde769165bcde5db2",
+    "history_rows": 3069,
+    "cutoff_contest": 3069,
+    "signals_recomputed": 12,
+    "signal_ablations": [
+      {
+        "head": "champion",
+        "signal": "freq25",
+        "weight": 0.034930717490569835,
+        "max_score_delta_without_signal": 0.023140718309448305,
+        "effective_primary_card_weight": 0.034930717490569835,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq50",
+        "weight": 0.03641166375782008,
+        "max_score_delta_without_signal": 0.019960261681579272,
+        "effective_primary_card_weight": 0.03641166375782008,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq100",
+        "weight": 0.03762711653633884,
+        "max_score_delta_without_signal": 0.017832281039006914,
+        "effective_primary_card_weight": 0.03762711653633884,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq250",
+        "weight": 0.03762766833986979,
+        "max_score_delta_without_signal": 0.024957487633296027,
+        "effective_primary_card_weight": 0.03762766833986979,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq500",
+        "weight": 0.042790072747089083,
+        "max_score_delta_without_signal": 0.01612281968205498,
+        "effective_primary_card_weight": 0.042790072747089083,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq1000",
+        "weight": 0.45944730956733804,
+        "max_score_delta_without_signal": 0.28723383972160127,
+        "effective_primary_card_weight": 0.45944730956733804,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "freq_global",
+        "weight": 0.05116545156097417,
+        "max_score_delta_without_signal": 0.017553400570380018,
+        "effective_primary_card_weight": 0.05116545156097417,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "ewma10",
+        "weight": 0.05039137515659623,
+        "max_score_delta_without_signal": 0.035897647781858555,
+        "effective_primary_card_weight": 0.05039137515659623,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "ewma25",
+        "weight": 0.033920315867290406,
+        "max_score_delta_without_signal": 0.02177964322195347,
+        "effective_primary_card_weight": 0.033920315867290406,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "ewma50",
+        "weight": 0.027913025205315287,
+        "max_score_delta_without_signal": 0.016599938267854886,
+        "effective_primary_card_weight": 0.027913025205315287,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "ewma100",
+        "weight": 0.02646115674197533,
+        "max_score_delta_without_signal": 0.012491048841054786,
+        "effective_primary_card_weight": 0.02646115674197533,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "champion",
+        "signal": "ewma250",
+        "weight": 0.16131412702882275,
+        "max_score_delta_without_signal": 0.08223510949233323,
+        "effective_primary_card_weight": 0.16131412702882275,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq25",
+        "weight": 0.041184577999545405,
+        "max_score_delta_without_signal": 0.026425578347358925,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq50",
+        "weight": 0.04199359567663723,
+        "max_score_delta_without_signal": 0.022096944628260395,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq100",
+        "weight": 0.04761896053528953,
+        "max_score_delta_without_signal": 0.022434443331735388,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq250",
+        "weight": 0.03376416546379346,
+        "max_score_delta_without_signal": 0.02195344523466164,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq500",
+        "weight": 0.0708851996087805,
+        "max_score_delta_without_signal": 0.029356721890087978,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq1000",
+        "weight": 0.39146742066883133,
+        "max_score_delta_without_signal": 0.23291263606772133,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "freq_global",
+        "weight": 0.07308608004712251,
+        "max_score_delta_without_signal": 0.025482062491502228,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "ewma10",
+        "weight": 0.05180301433588908,
+        "max_score_delta_without_signal": 0.036133894044136694,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "ewma25",
+        "weight": 0.034286828915824116,
+        "max_score_delta_without_signal": 0.0211669025166058,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "ewma50",
+        "weight": 0.02993020205547638,
+        "max_score_delta_without_signal": 0.017092321673850774,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "ewma100",
+        "weight": 0.029293293758662225,
+        "max_score_delta_without_signal": 0.013237524253494393,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      },
+      {
+        "head": "challenger",
+        "signal": "ewma250",
+        "weight": 0.15468666093414823,
+        "max_score_delta_without_signal": 0.07485210349403687,
+        "effective_primary_card_weight": 0.0,
+        "predictive_benefit_proven": false
+      }
+    ],
+    "typed_handoffs_consumed": 20,
+    "portfolio_solver_status": "OPTIMAL",
+    "portfolio_recomputed_objective": 11387980000.0,
+    "schedule_source_sha256": "d8820f270f264c1d5963e84dc5052eb7e9b46d6adaae51281b51d91312f4a26d",
+    "selector_sha256": "3db58b72b105d642ea3fe9e753fe99ac2bc16abe7a5eae9b9eded8015c592e43",
+    "target_result_used": false,
+    "ablation_scope": "FROZEN_SCORE_INFLUENCE_ONLY__NOT_OUT_OF_SAMPLE_BENEFIT"
+  },
+  "result_used": false,
+  "predictive_advantage_proven": false,
+  "claim_boundary": "Native role and methodology probes gate evidence. Actual history, raw signals, both weighted score heads, handoffs, schedule, optimizer and primary selector are replayed. Frozen ablation measures influence, not predictive benefit; challenger remains shadow.",
+  "sha256": "dfafa1b61e71165c712a44a49a97078a127724a3d614097d48ab6fbb3e737189",
+  "full_process_proof_sha256": "d695d10bbab95003d672e3e8305793b15ee6c625967d552770a83a92d55f6ad0"
+}
