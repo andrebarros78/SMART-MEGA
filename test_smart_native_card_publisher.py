@@ -126,5 +126,89 @@ class NativeCardGitPublisherTests(unittest.TestCase):
         self.assertEqual(_git(self.repo,"ls-remote","origin","refs/heads/main").split()[0],original)
 
 
+    def test_recovers_crash_after_attribute_pin_before_git_add(self):
+        from unittest.mock import patch
+        from smart_github_operator import _pin_artifact_bytes
+        receipt, _ = self._receipt(1, "recovery-pin")
+        remote_before = _git(self.repo, "rev-parse", "HEAD")
+
+        def simulated_crash(root, changes):
+            _pin_artifact_bytes(root, changes)
+            raise OSError("simulated interruption after attributes pin")
+
+        with patch("smart_native_card_publisher._pin_artifact_bytes", side_effect=simulated_crash):
+            with self.assertRaisesRegex(OSError, "simulated interruption"):
+                self._publish(receipt)
+        self.assertEqual(_git(self.repo, "ls-remote", "origin", "refs/heads/main").split()[0], remote_before)
+        self.assertIn(".gitattributes", _git(self.repo, "status", "--porcelain=v1"))
+        recovered = self._publish(receipt)
+        self.assertEqual(recovered["status"], "CARD_RECEIPT_PUBLISHED_GITHUB_NATIVE")
+        self.assertTrue(recovered["remote_main_verified"])
+        self.assertEqual(_git(self.repo, "status", "--porcelain=v1"), "")
+
+    def test_recovers_crash_after_staging_before_commit(self):
+        from unittest.mock import patch
+        from smart_native_card_publisher import _git as production_git
+        receipt, _ = self._receipt(1, "recovery-stage")
+        remote_before = _git(self.repo, "rev-parse", "HEAD")
+
+        def interrupted_commit(root, *args):
+            if "commit" in args:
+                raise RuntimeError("simulated interruption before commit")
+            return production_git(root, *args)
+
+        with patch("smart_native_card_publisher._git", side_effect=interrupted_commit):
+            with self.assertRaisesRegex(RuntimeError, "simulated interruption"):
+                self._publish(receipt)
+        self.assertEqual(_git(self.repo, "ls-remote", "origin", "refs/heads/main").split()[0], remote_before)
+        self.assertIn(".gitattributes", _git(self.repo, "diff", "--cached", "--name-only"))
+        recovered = self._publish(receipt)
+        self.assertTrue(recovered["remote_main_verified"])
+        self.assertEqual(_git(self.repo, "status", "--porcelain=v1"), "")
+
+    def test_recovery_rejects_unrelated_attribute_mutation(self):
+        receipt, _ = self._receipt(1, "blocked-unrelated")
+        before = _git(self.repo, "rev-parse", "HEAD")
+        (self.repo / ".gitattributes").write_text(
+            "/runtime/operator_card_requests/3099/CARD-0001-blocked-unrelated.json -text\n"
+            "/unrelated-file -text\n", encoding="utf-8")
+        with self.assertRaisesRegex(RuntimeError, "other changes|attributes"):
+            self._publish(receipt)
+        self.assertEqual(_git(self.repo, "rev-parse", "HEAD"), before)
+        self.assertEqual(_git(self.repo, "ls-remote", "origin", "refs/heads/main").split()[0], before)
+
+    def test_recovery_refuses_symlinked_attributes_without_writing_outside_checkout(self):
+        receipt, _ = self._receipt(1, "unsafe-attributes")
+        outside = self.root / "do-not-modify.txt"
+        outside.write_text("external data untouched\n", encoding="utf-8")
+        (self.repo / ".gitattributes").symlink_to(outside)
+        head_before = _git(self.repo, "rev-parse", "HEAD")
+        with self.assertRaisesRegex(RuntimeError, "attributes|other changes"):
+            self._publish(receipt)
+        self.assertEqual(outside.read_text(encoding="utf-8"), "external data untouched\n")
+        self.assertEqual(_git(self.repo,"rev-parse","HEAD"), head_before)
+        self.assertEqual(_git(self.repo,"ls-remote","origin","refs/heads/main").split()[0], head_before)
+
+    def test_recovers_after_local_commit_but_failed_push(self):
+        from unittest.mock import patch
+        from smart_native_card_publisher import _git as production_git
+        receipt, _ = self._receipt(1, "recovery-push")
+        remote_before = _git(self.repo, "rev-parse", "HEAD")
+
+        def interrupted_push(root, *args):
+            if args and args[0] == "push":
+                raise RuntimeError("simulated interrupted network push")
+            return production_git(root, *args)
+
+        with patch("smart_native_card_publisher._git", side_effect=interrupted_push):
+            with self.assertRaisesRegex(RuntimeError, "interrupted network push"):
+                self._publish(receipt)
+        self.assertNotEqual(_git(self.repo, "rev-parse", "HEAD"), remote_before)
+        self.assertEqual(_git(self.repo, "ls-remote", "origin", "refs/heads/main").split()[0], remote_before)
+        recovered = self._publish(receipt)
+        self.assertTrue(recovered["remote_main_verified"])
+        self.assertEqual(_git(self.repo, "status", "--porcelain=v1"), "")
+
+
 if __name__ == "__main__":
     unittest.main()

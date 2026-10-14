@@ -12,6 +12,7 @@ import hashlib
 import json
 from pathlib import Path
 import re
+import subprocess
 
 from smart_github_operator import _git, _changes, _pin_artifact_bytes, _verify_staged_bytes
 from smart_operator_card_requests import _verified_receipt
@@ -20,6 +21,35 @@ CANONICAL_REMOTES = frozenset({
     "https://github.com/andrebarros78/SMART-MEGA.git",
     "git@github.com:andrebarros78/SMART-MEGA.git",
 })
+
+
+def _verified_interrupted_attribute_pin(root: Path, relative: str) -> bool:
+    """Permit resuming *only* our deterministic, interrupted -text pin.
+
+    Never adopt pre-existing unrelated .gitattributes changes. The file is
+    compared against canonical HEAD plus the single anticipated receipt rule;
+    staged and unstaged interruptions are treated identically.
+    """
+    attributes = root / ".gitattributes"
+    if attributes.is_symlink() or not attributes.is_file():
+        return False
+    try:
+        previous = _git(root, "show", "HEAD:.gitattributes")
+    except subprocess.CalledProcessError:
+        # A pristine sandbox checkout can have no .gitattributes in HEAD.
+        if _git(root, "ls-tree", "HEAD", "--", ".gitattributes"):
+            return False  # Existing but unreadable/non-regular Git entry.
+        previous = ""
+    expected = previous.splitlines()
+    rule = f"/{relative} -text"
+    if rule in expected:
+        return False  # Already pinned in HEAD: no attribute change is needed.
+    expected.append(rule)
+    try:
+        actual = attributes.read_text(encoding="utf-8").splitlines()
+    except (OSError, UnicodeError):
+        return False
+    return actual == expected
 
 
 def publish_operator_card(root, receipt, *, pre_draw_check, allowed_remotes=CANONICAL_REMOTES):
@@ -84,9 +114,17 @@ def publish_operator_card(root, receipt, *, pre_draw_check, allowed_remotes=CANO
                 "receipt_path": relative, "receipt_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                 "commit": head, "remote_main_verified": True}
 
-    if changed == {relative} and head == remote:
+    if changed in ({relative}, {relative, ".gitattributes"}) and head == remote:
+        # A process interrupted after the byte-pin or after git add leaves
+        # both the receipt and .gitattributes dirty. Recover only if the
+        # attributes match precisely HEAD plus this receipt's -text rule.
+        recovering_pin = ".gitattributes" in changed
+        if recovering_pin and not _verified_interrupted_attribute_pin(root, relative):
+            raise RuntimeError("operator card publication attributes changed outside verified interrupted pin")
+        if (root / ".gitattributes").is_symlink():
+            raise RuntimeError("operator card publication attributes path is a symlink")
         attrs_changed = _pin_artifact_bytes(root, [relative])
-        expected_files = {relative} | ({".gitattributes"} if attrs_changed else set())
+        expected_files = {relative} | ({".gitattributes"} if attrs_changed or recovering_pin else set())
         _git(root, "add", "--", *sorted(expected_files))
         _git(root, "-c", "core.whitespace=blank-at-eol,blank-at-eof,space-before-tab,cr-at-eol",
              "diff", "--cached", "--check")
