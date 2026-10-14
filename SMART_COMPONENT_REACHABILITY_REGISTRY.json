@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "091aa1292d82987136c309a08af768cec34173684f8b8706e036d1f2b391c51e",
+  "inventory_sha256": "c133baf399154f2f83c9927a07b160254888ac801df2f99c4eeab920c144761f",
   "summary": {
-    "python_components": 486,
+    "python_components": 488,
     "workflow_entrypoints": 8,
-    "production_components": 99,
+    "production_components": 100,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 160,
+    "test_components": 161,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4141,6 +4141,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_agent_runtime",
+        "smart_consumer_integration",
         "test_smart_f06_agent_handoffs",
         "test_smart_f09_sdk_llm_selective"
       ],
@@ -4823,6 +4824,38 @@
       "sha256": "a87d3f894f273cb438c7253375b8383df28012a2e361d27d1fa47960b1243338"
     },
     {
+      "component_id": "smart_consumer_integration",
+      "source_file": "smart_consumer_integration.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_agent_handoff_runtime",
+        "smart_data_quality_gate",
+        "smart_portfolio_optimizer",
+        "smart_primary_card_selector",
+        "smart_signal_weights",
+        "smart_target_schedule",
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_operator",
+        "test_smart_consumer_integration"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "98089b927cfbce101fbd3b66fb629d86562096cb310cc09e6838155776fceeb7"
+    },
+    {
       "component_id": "smart_context_calibration_confirm",
       "source_file": "smart_context_calibration_confirm.py",
       "role": "DIAGNOSTIC",
@@ -5177,6 +5210,7 @@
         "smart_capability_integration_v2",
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
+        "smart_consumer_integration",
         "smart_finalize_capability_integration_v3",
         "test_smart_architecture_corrections_20260905",
         "test_smart_data_quality_gate",
@@ -6616,6 +6650,7 @@
         "smart_canonical_history_advance",
         "smart_canonical_identity",
         "smart_champion_challenger",
+        "smart_consumer_integration",
         "smart_crash_safe_io",
         "smart_current_epoch_contract",
         "smart_full_process_pipeline",
@@ -6648,6 +6683,7 @@
         "conftest",
         "smart_github_operator",
         "test_smart_b2_evolution_20260909",
+        "test_smart_consumer_integration",
         "test_smart_current_continuity_generation",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_f02_dependency_direction",
@@ -6673,7 +6709,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "236b3b6ee54065a751b2ecac53e4be2fb2a60b152099108b12bf308fd575214c"
+      "sha256": "e79ba3d694fc14826aea63346985f708048b047c0ead50cb3a377c291d805ccd"
     },
     {
       "component_id": "smart_operator_contract",
@@ -6798,6 +6834,7 @@
       "consumers": [
         "smart_agent_runtime",
         "smart_capability_integration_v2",
+        "smart_consumer_integration",
         "smart_portfolio_backtest",
         "smart_portfolio_pipeline",
         "test_smart_11of10_critical_path_coverage",
@@ -6889,6 +6926,7 @@
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_consumer_integration",
         "smart_portfolio_pipeline",
         "test_smart_primary_card_selector"
       ],
@@ -8092,6 +8130,7 @@
         "archive.smart_continuous_red_team.pre_integrity_hardening",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_adversarial_claim_audit",
+        "smart_consumer_integration",
         "smart_continuous_red_team",
         "smart_signal_agent",
         "test_smart_coverage_core",
@@ -8302,6 +8341,7 @@
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_operator",
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
+        "smart_consumer_integration",
         "smart_engineering_activation",
         "smart_full_process_pipeline",
         "smart_github_operator",
@@ -8551,6 +8591,7 @@
         "smart_cartography_extended",
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
+        "smart_consumer_integration",
         "smart_continuous_red_team",
         "smart_falsification_lab",
         "smart_frontier_signal_lab",
@@ -9429,6 +9470,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "885a529c9ad5a5e1edc54f6e40755601698053ab2db28e56edfd7b923542c19c"
+    },
+    {
+      "component_id": "test_smart_consumer_integration",
+      "source_file": "test_smart_consumer_integration.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_consumer_integration",
+        "smart_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "f9da60ad6f2be3b95678936bff74c528fe5ae7768f6bf7b34a04cca37d8a736d"
     },
     {
       "component_id": "test_smart_context_regime_adwin",
@@ -10890,7 +10953,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6b741421148b0b3313784c29e673af1cf9e6cf8df12db6092c8ebf4c84e3f3d4"
+      "sha256": "d3137fbf886b59931fbb0813301393e8aa2e3e890b7e79f6faefc3403c39453c"
     },
     {
       "component_id": "test_smart_operator_missed_recovery_20260910",

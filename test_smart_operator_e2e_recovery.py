@@ -21,14 +21,15 @@ def test_freeze_operation_recovers_before_retry(tmp_path, monkeypatch):
     monkeypatch.setattr(op,"recover_interrupted_freeze_operation",lambda root,target,reason="": calls.append((target,reason)) or {"status":"RECOVERED_INTERRUPTED_FREEZE"})
     monkeypatch.setattr(op,"assert_lifecycle_state",lambda *a,**k:{})
     monkeypatch.setattr(op,"verify_active_epoch",lambda path:{"operator_selected_target":True,"target_contest":3062})
-    monkeypatch.setattr(op,"run_full_process",lambda *a,**k:{"status":"PASS"})
+    monkeypatch.setattr(op,"run_full_process",lambda *a,**k:{"status":"PASS","proof":{"target_contest":3062}})
+    monkeypatch.setattr(op,"audit_generation",lambda *a,**k:{"status":"PASS"})
     assert op.freeze_operation(tmp_path,3062)["status"]=="PASS"
     assert calls==[(3062,"freeze_operation_entry")]
 
 def test_freeze_operation_is_idempotent_when_already_frozen(tmp_path, monkeypatch):
     monkeypatch.setattr(op,"canonical_root",lambda root=None: Path(root).resolve())
     monkeypatch.setattr(op,"recover_interrupted_freeze_operation",lambda *a,**k:{"status":"ALREADY_FROZEN"})
-    monkeypatch.setattr(op,"_existing_frozen_freeze_summary",lambda root,target:{"status":"FROZEN","idempotent_replay":True,"target_contest":target})
+    monkeypatch.setattr(op,"_existing_frozen_freeze_summary",lambda root,target:{"schema":"SMART_FREEZE_OPERATION_1","status":"FROZEN","idempotent_replay":True,"target_contest":target,"freeze_file":"freeze.json"})
     assert op.freeze_operation(tmp_path,3062)["idempotent_replay"] is True
 
 def test_run_full_process_contains_exception_rollback():

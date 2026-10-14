@@ -12,6 +12,7 @@ from smart_scientific_state_guard import audit_boundaries as audit_state_boundar
 
 import argparse
 import hashlib
+from functools import wraps
 import json
 import os
 import shutil
@@ -28,6 +29,7 @@ from smart_champion_challenger import active_freeze, load_ledger, reconcile_comp
 from smart_canonical_history_advance import advance_completed_epoch
 from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import _rel, _resolve, run_full_process
+from smart_consumer_integration import audit_generation
 from smart_operation_recovery import recover_interrupted_freeze_operation
 from smart_operator_contract import contract, validate_target_sequence
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
@@ -1048,7 +1050,26 @@ def _existing_frozen_freeze_summary(root: str | Path, target: int) -> dict[str, 
         raise ValueError("existing frozen epoch is not bound to requested target")
     return {"schema":"SMART_FREEZE_OPERATION_1","status":"FROZEN","idempotent_replay":True,"target_contest":int(target),"cutoff_contest":int(active.get("cutoff_contest",target-1)),"epoch_id":active.get("epoch_id"),"freeze_file":_rel(root,fp),"freeze_sha256":fs,"active_epoch_sha256":active.get("sha256"),"result_used":False,"mutated_state":False}
 
+def _card_consumption_checked(fn):
+    """Audit both new generation and idempotent replay before returning a card."""
+    @wraps(fn)
+    def checked(root, target, **kwargs):
+        result = dict(fn(root, target, **kwargs))
+        proof = result.get("proof")
+        if proof is None and result.get("schema") == "SMART_FREEZE_OPERATION_1" and result.get("idempotent_replay") is True:
+            proof_path = _resolve(Path(root), result["freeze_file"]).with_name("FULL_PROCESS_PROOF.json")
+            if not proof_path.is_file():
+                return {**result, "consumer_integration": {"status": "UNVERIFIED_HISTORICAL_GENERATION_PROOF"}}
+            proof = json.loads(proof_path.read_text(encoding="utf-8-sig"))
+        if not isinstance(proof, dict) or proof.get("target_contest") != int(target):
+            raise RuntimeError("consumer integration requires this target's full generation proof")
+        result["consumer_integration"] = audit_generation(root, proof)
+        return result
+    return checked
+
+
 @startup_guarded("FREEZE")
+@_card_consumption_checked
 @idempotent_operation('FREEZE')
 def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | None = None) -> dict[str, Any]:
     root = canonical_root(root)
