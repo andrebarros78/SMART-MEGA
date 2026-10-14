@@ -45,3 +45,14 @@ Do not run the command in an active frozen operational epoch. Preserve the basel
 - Read-only auditor relocated to `test_smart_consumer_audit_support.py`, a test-only component; `test_smart_consumer_integration.py` imports this helper. No production scorer, pipeline, or F11/F12 protected source was edited.
 - Canonical snapshots regenerated from actual code by `smart_component_reachability.build_registry`, `smart_canonical_component_registry.build_registry`, and `smart_disconnection_gate.audit_disconnections`. F01/F05/F10 gate statuses PASS.
 - Focused corrected retest: **43 passed** including consumer, F01/F05/F08/F10, F11 and F12. Full corrected regression and release certification are separate gates, not implied by this result.
+
+## 2026-10-14 ECC Full EOL closure checkpoint — engineering only
+- Isolation branch: `fix/smart-mega-v6-ecc-eol-20261014`, base `f5e89c2c00a46f1eb7562151bf3eaff47acaf9c4`.
+- Two minimal `.gitattributes` commits: `647b664fc3b7e40a263de72a59d6b68e78d33907` and `d9ad17a60a7cd3219a83f73a9b220a2603b87054`.
+- Git clean-filter fault reproduced: pre-fix worker checkouts sometimes marked raw committed CRLF blobs modified despite unchanged bytes. Added exact `-text` path exceptions for the two new diagnostic consumer test files, 47 archived scripts, and one legacy source script. No source byte or frozen-result changes.
+- Three independent fresh Linux worker clones at `d9ad17a...` reported `git status --porcelain` count zero and raw 3070 freeze/portfolio SHA checks PASS.
+- ECC Full targeted code rerun on exact `d9ad17a...`: 28/28 direct Python test functions PASS across F01 (4), F05 (4), F08 (2), F10 (4 selected), F11 (9), and F12 (5). Durable command `c_b1d91fd166544ed2a710ffbb032101fe`, exit code 0, clean worktree before and after.
+- Consumer negative/replay suite: 10/10 targeted functions PASS using an in-process `pytest` API shim for fixtures/raises and a metadata-version stub (`c_8df126c56a014ed78c7ec9b6ea5de91c`, exit code 0). This does **not** attest real pytest execution or five real SDK installations.
+- F11/F12 scientific boundary remains unchanged: no prospective advantage, no proven 6/6, and no authorization to promote challenger weights from shadow.
+- Still blocked for release: pinned-dependency environment with real `pytest`, the entire post-fix test collection/JUnit and SDK-to-score causal/out-of-sample tests. None of those missing proofs is represented as PASS.
+- No merge to `main`, no mutation of historical freeze, no productive execution or new agent/skill/SDK authority.
