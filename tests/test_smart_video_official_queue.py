@@ -180,3 +180,26 @@ def test_queue_state_pointer_tamper_stops(tmp_path):
     p.write_text(json.dumps(row),encoding="utf-8")
     with pytest.raises(ValueError,match="QUEUE_CHECKSUM"):
         run_official_queue(**opts,resolver=bad,sampler=bad)
+
+
+def test_sync_only_persists_all_entries_without_video(tmp_path):
+    cat=official(tmp_path,500)
+    opts=options(tmp_path,cat)
+    one=run_official_queue(**opts,sync_only=True,resolver=bad,sampler=bad)
+    assert one["sync_only"] is True
+    assert one["eligible_unique_contests"]==500
+    assert one["attempted_this_run"]==0
+    assert one["pending"]==500
+    assert not opts["checkpoint_dir"].exists()
+    saved=_read_state(opts["queue_dir"])
+    assert saved["catalog_sha256"] and len(saved["records"])==500
+    assert set(row["state"] for row in saved["records"].values())=={"PENDING"}
+    again=run_official_queue(**opts,sync_only=True,resolver=bad,sampler=bad)
+    assert one["queue_state_sha256"]==again["queue_state_sha256"]
+    assert len(list((opts["queue_dir"]/"queue_history").glob("*.json")))==1
+
+
+def test_conflicting_dry_and_sync_modes_denied(tmp_path):
+    cat=official(tmp_path,1)
+    with pytest.raises(ValueError,match="CONFLICT"):
+        run_official_queue(**options(tmp_path,cat),dry_run=True,sync_only=True)
