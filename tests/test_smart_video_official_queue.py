@@ -167,7 +167,7 @@ def test_reject_wrong_resource_budget_and_same_path(tmp_path):
     cat=official(tmp_path,1)
     opts=options(tmp_path,cat)
     with pytest.raises(ValueError,match="RESOURCE_BUDGET"):
-        run_official_queue(**opts,batch_workers=8,workers=2)
+        run_official_queue(**{**opts, 'batch_workers':8,'workers':2})
     with pytest.raises(ValueError,match="MUST_DIFFER"):
         run_official_queue(cat,tmp_path/"same",tmp_path/"same",dry_run=True)
 
