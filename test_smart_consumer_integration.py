@@ -135,3 +135,49 @@ def test_duplicate_native_skill_invocation_cannot_fake_full_coverage(specimen):
     # Even if an upstream gate claimed PASS, no repeated invocation covers a missing skill.
     with pytest.raises(RuntimeError, match="37_native_skill_aliases_invoked"):
         evaluate(**changed)
+
+
+def test_real_3070_quality_to_weight_to_shadow_score_while_champion_remains_authorized(specimen):
+    """Prove causal shadow scoring without asserting unearned predictive advantage."""
+    import numpy as np
+    from smart_signal_weights import dynamic_weights
+    from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
+
+    frozen_bytes = specimen["freeze_path"].read_bytes()
+    portfolio_bytes = specimen["portfolio_path"].read_bytes()
+    freeze = json.loads(frozen_bytes)
+    challenger = freeze["challenger"]
+    metrics = copy.deepcopy(challenger["quality_metrics"])
+    families = {k: v["family"] for k, v in challenger["raw_signals"].items()}
+    weights, _ = dynamic_weights(metrics, families)
+    assert len(weights) == 12
+    assert max(abs(weights[k] - challenger["weights"][k]) for k in weights) < 1e-10
+
+    def weighted_scores(w):
+        out = np.zeros(60, dtype=float)
+        for name, value in w.items():
+            raw = challenger["raw_signals"][name]["values"]
+            out += value * np.array([raw[str(i)] for i in range(1, 61)])
+        return out
+
+    original = weighted_scores(weights)
+    expected = np.array([challenger["aggregate_scores"][str(i)] for i in range(1, 61)])
+    assert np.allclose(original, expected, rtol=0.0, atol=1e-10)
+
+    # Controlled intervention affects dynamic weights and shadow scores only.
+    metrics["freq25"]["quality"] *= 0.1
+    changed_weights, _ = dynamic_weights(metrics, families)
+    assert abs(changed_weights["freq25"] - weights["freq25"]) > 1e-5
+    assert np.max(np.abs(weighted_scores(changed_weights) - original)) > 1e-8
+
+    assert freeze["production_switch_performed"] is False
+    assert freeze["champion_remains_active"] is True
+    scores = freeze["champion"]["aggregate_scores"]
+    ranking = sorted(range(1, 61), key=lambda n: (-scores[str(n)], n))
+    replay = select_primary_card(
+        scores, ranking60=ranking,
+        config=PrimaryCardSelectorConfig(**specimen["primary_card"]["selector"]["config"]),
+    )
+    assert replay == specimen["primary_card"]["selector"]
+    assert specimen["freeze_path"].read_bytes() == frozen_bytes
+    assert specimen["portfolio_path"].read_bytes() == portfolio_bytes
