@@ -89,7 +89,11 @@ def evaluate(
             and len({r.get("name") for r in agents}) == 9
             and all(r.get("probe_result", {}).get("pass") is True for r in agents),
         "37_native_skill_aliases_invoked": len(native) == len(invocations) == 37
-            and all(r.get("status") == "PASS"
+            and len({r.get("capability") for r in native}) == 37
+            and {r.get("capability") for r in native} == {r.get("capability") for r in invocations}
+            and len({r.get("capability") for r in invocations}) == 37
+            and all(r.get("agent_owner") in {a.get("name") for a in agents}
+                    and r.get("status") == "PASS"
                     and r.get("direct_named_skill_execution") is False
                     and r.get("predictive_weight_authorized") is False for r in invocations),
         "four_reference_only_not_executed": len(reference_only) == 4
@@ -97,7 +101,7 @@ def evaluate(
         "external_third_party_code_quarantined": all(
             r.get("external_skill_source_executed") is False
             and r.get("direct_named_skill_execution") is False for r in skills),
-        "five_consumed_sdk_packages_installed": all(row["installed"] for row in sdk),
+        "five_declared_runtime_sdk_packages_present": all(row["installed"] for row in sdk),
         "adapter_registry_consistent": isinstance(pre_reg, str) and pre_reg == post_reg,
         "twelve_valid_challenger_signal_weights": isinstance(weights, dict)
             and set(weights) == names
