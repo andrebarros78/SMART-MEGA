@@ -87,7 +87,6 @@ def test_frozen_champion_scores_reproduce_selector_without_sdk_assumptions(speci
 
 def test_counterfactual_champion_score_reaches_card_without_freeze_mutation(specimen):
     """In-memory ablation checks score sensitivity; it is NOT predictive gain."""
-    import hashlib
     from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
 
     saved_freeze_bytes = specimen["freeze_path"].read_bytes()
@@ -105,3 +104,24 @@ def test_counterfactual_champion_score_reaches_card_without_freeze_mutation(spec
     )
     assert counterfactual["selected_numbers"] != card["numbers"]
     assert specimen["freeze_path"].read_bytes() == saved_freeze_bytes
+
+
+def test_forged_post_gate_still_marked_pass_is_rejected(specimen):
+    changed = {**specimen, "post_gate": copy.deepcopy(specimen["post_gate"])}
+    changed["post_gate"]["claim_boundary"] = "TAMPERED_WITHOUT_REHASH"
+    assert changed["post_gate"]["status"] == "PASS"
+    with pytest.raises(RuntimeError, match="gate_evidence_hashes_valid"):
+        evaluate(**changed)
+
+
+def test_forged_primary_card_metadata_is_rejected(specimen):
+    changed = {**specimen, "primary_card": copy.deepcopy(specimen["primary_card"])}
+    changed["primary_card"]["generated_utc"] = "2099-01-01T00:00:00Z"
+    with pytest.raises(RuntimeError, match="primary_card_hash_valid"):
+        evaluate(**changed)
+
+
+def test_mismatched_epoch_identity_is_rejected(specimen):
+    changed = {**specimen, "epoch_id": "WRONG_EPOCH"}
+    with pytest.raises(RuntimeError, match="epoch_identity_matches_card"):
+        evaluate(**changed)
