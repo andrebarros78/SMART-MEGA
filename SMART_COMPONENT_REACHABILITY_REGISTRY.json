@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "ed2e375334e5009ab5a4500f7fd7d05766dc7fa135c4e073fce5f8b5e3802e4e",
+  "inventory_sha256": "f3a9c59899587fcce142c1ab19e3646bc347e8c052cbc7797aa29b9acc71e88d",
   "summary": {
-    "python_components": 508,
+    "python_components": 509,
     "workflow_entrypoints": 8,
     "production_components": 104,
     "shadow_components": 1,
     "diagnostic_components": 31,
     "validation_components": 22,
-    "test_components": 174,
+    "test_components": 175,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5771,6 +5771,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_native_card_publisher",
         "test_smart_github_operator",
+        "test_smart_native_card_publisher",
         "test_smart_result_consumption_readiness",
         "test_smart_signal_agent"
       ],
@@ -6458,6 +6459,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
+        "test_smart_card_request_publication_e2e",
         "test_smart_native_card_publisher"
       ],
       "reachable": true,
@@ -6470,7 +6472,7 @@
       "cycle_ids": [
         2
       ],
-      "sha256": "24af9cb952490b19d2033437bd458b803ddd351af67eb0664f921a377bb2d6f3"
+      "sha256": "1fd754f74396a743e34d6df73257c3e63e984cc35542c019d5615970b3492164"
     },
     {
       "component_id": "smart_official_dataset_reconcile",
@@ -6794,6 +6796,7 @@
         "smart_native_card_publisher",
         "smart_operator",
         "smart_operator_card_outcomes",
+        "test_smart_card_request_publication_e2e",
         "test_smart_native_card_publisher",
         "test_smart_operator_card_outcomes",
         "test_smart_operator_card_requests"
@@ -9656,6 +9659,28 @@
       "sha256": "8aac96f7e5d85b65cdb43b491ca6087d5ee7231ac1f7244b21a64dc23bebc7ed"
     },
     {
+      "component_id": "test_smart_card_request_publication_e2e",
+      "source_file": "test_smart_card_request_publication_e2e.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_native_card_publisher",
+        "smart_operator_card_requests"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "2b042bb3e59021a2dadfb3f88c585bc405c806226972312415275857d9942130"
+    },
+    {
       "component_id": "test_smart_cartography_extended",
       "source_file": "test_smart_cartography_extended.py",
       "role": "TEST",
@@ -11087,6 +11112,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
+        "smart_github_operator",
         "smart_native_card_publisher",
         "smart_operator_card_requests"
       ],
@@ -11100,7 +11126,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "71deee71c776d7d1cca85edee7bbc3744e3d4cd0c9f8c36aa4b3d313e54b779d"
+      "sha256": "a341a05b37e0144a049eac12039782cf13a6dc4c47af957d6102275cd3e70530"
     },
     {
       "component_id": "test_smart_october_2026_schedule_archive",

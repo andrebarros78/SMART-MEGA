@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "ed2e375334e5009ab5a4500f7fd7d05766dc7fa135c4e073fce5f8b5e3802e4e",
+  "source_reachability_inventory_sha256": "f3a9c59899587fcce142c1ab19e3646bc347e8c052cbc7797aa29b9acc71e88d",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 508,
+    "component_count": 509,
     "active": 104,
     "shadow": 1,
-    "diagnostic": 204,
+    "diagnostic": 205,
     "validation_only": 22,
     "quarantined": 0,
     "deprecated": 1,
@@ -6108,6 +6108,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_native_card_publisher",
         "test_smart_github_operator",
+        "test_smart_native_card_publisher",
         "test_smart_result_consumption_readiness",
         "test_smart_signal_agent"
       ],
@@ -6820,7 +6821,7 @@
       "component_id": "smart_native_card_publisher",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_native_card_publisher.py",
-      "implementation_sha256": "24af9cb952490b19d2033437bd458b803ddd351af67eb0664f921a377bb2d6f3",
+      "implementation_sha256": "1fd754f74396a743e34d6df73257c3e63e984cc35542c019d5615970b3492164",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6829,6 +6830,7 @@
       ],
       "consumers": [
         "smart_operator",
+        "test_smart_card_request_publication_e2e",
         "test_smart_native_card_publisher"
       ],
       "entrypoints": [
@@ -7179,6 +7181,7 @@
         "smart_native_card_publisher",
         "smart_operator",
         "smart_operator_card_outcomes",
+        "test_smart_card_request_publication_e2e",
         "test_smart_native_card_publisher",
         "test_smart_operator_card_outcomes",
         "test_smart_operator_card_requests"
@@ -10231,6 +10234,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_card_request_publication_e2e",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_card_request_publication_e2e.py",
+      "implementation_sha256": "2b042bb3e59021a2dadfb3f88c585bc405c806226972312415275857d9942130",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_card_publisher",
+        "smart_operator_card_requests"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_cartography_extended",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_cartography_extended.py",
@@ -11785,10 +11812,11 @@
       "component_id": "test_smart_native_card_publisher",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_native_card_publisher.py",
-      "implementation_sha256": "71deee71c776d7d1cca85edee7bbc3744e3d4cd0c9f8c36aa4b3d313e54b779d",
+      "implementation_sha256": "a341a05b37e0144a049eac12039782cf13a6dc4c47af957d6102275cd3e70530",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_github_operator",
         "smart_native_card_publisher",
         "smart_operator_card_requests"
       ],
@@ -13785,5 +13813,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "54b3db0e897c64e64eb91786a9d7a2c1561b80bfb07c56eb373bc53df62e1e39"
+  "registry_sha256": "2469c02fc083b3fabb7e743be649e84c1e2a2aba5e0c97c0c17e093f8eefb7e3"
 }
