@@ -1,0 +1,100 @@
+{
+  "schema": "SMART_MEGA_OFFICIAL_CATALOG_QUEUE_CHECKPOINT_INTEGRATION_GATE_V1",
+  "date": "2026-10-13",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-official-queue-resume-20261013",
+  "source_commit": "0b88f2e916dea13e430343be0dd71422ce99e9d5",
+  "status": "GOVERNED_B2_PERSISTENT_QUEUE_AND_SYNTHETIC_E2E_PROVEN_REAL_VIDEO_VALIDATION_PENDING",
+  "architecture": {
+    "source": "smart_video_official_catalog.read_current; cryptographic catalog pointer + immutable history",
+    "selection": "only CONFIRMED_MEGA_METADATA from CAIXA channel UCPbhr02AfVb2nd5pm12BxTw, one video per unique contest",
+    "identity_and_conflicts": "two videos for same contest quarantined from scheduling; no arbitrary choice",
+    "durable_bridge": "smart_video_official_queue.py",
+    "observer": "smart_video_learning.observe_batch using smart_video_observation.analyze_contest",
+    "consumer": "persist_visual_learning_state + get_visual_features + publish_visual_study",
+    "durability": "OS exclusive file locking on Windows and Linux; journal RUNNING before video; SHA256 pointer and immutable history; atomic pointer replacement",
+    "recovery": "verify source, fingerprint, config, checkpoint SHA before reuse; crash replay reconstructs memory without reopening valid media; bad checkpoints quarantined; lost or changed previously verified checkpoints fail closed",
+    "resource_governor": "max 8 simultaneous worker units, batches <=8, max 500 attempts per invocation, max_attempts<=5, each contest attempted once per invocation; stop when entire wave has source/timeout failures",
+    "operational_modes": [
+      "--dry-run",
+      "--sync-only",
+      "normal observed execution"
+    ],
+    "predictive_evidence": "NOT_ESTABLISHED",
+    "predictive_weight": 0
+  },
+  "cross_platform_regression": {
+    "windows": {
+      "host": "PC Vendas",
+      "tests_passed": 109,
+      "tests_failed": 0
+    },
+    "linux": {
+      "host": "wmcp-cloud-01",
+      "tests_passed": 109,
+      "tests_failed": 0
+    },
+    "test_categories": [
+      "existing observer",
+      "batch memory and replays",
+      "checkpoint inventory",
+      "CAIXA metadata catalog and API",
+      "new durable official queue",
+      "interrupted wave recovery",
+      "500-item persistent sync",
+      "duplicate contest quarantine",
+      "tamper and identity drift",
+      "bounded retries and outages"
+    ]
+  },
+  "physical_b2": {
+    "hostname": "PC-ESCOLA",
+    "executor_node_id": "B2-LEARNING-NODE-01",
+    "physical_node_id": "f9d3fc77-3bc3-470b-9808-51eaf2ac3b2f",
+    "transport": "LMCP -> GOV-WINDOWS -> TAILSCALE_SIGNED_LONG_POLL",
+    "staging_root": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+    "module": "smart_video_official_queue.py",
+    "module_git_blob_sha1": "17c3d01cd5ec5a7896fd609fd6fb157451c4dc36",
+    "verified_upgrade_command": "netcmd_7f3cedd197d743cb9bd1e1bb4b251276",
+    "backup_retained": "smart_video_official_queue_BEFORE_SYNC_V2_20261013.py",
+    "initial_readonly_official_queue_plan_command": "netcmd_08bc8ee369dc449080ddb40f7b365465",
+    "catalog_broadcasts": 500,
+    "metadata_confirmed_broadcasts": 52,
+    "unique_contests": 51,
+    "conflicting_contest_count": 1,
+    "eligible_unique_contests": 50,
+    "persistent_real_queue_dir": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013\\real_video_queue",
+    "real_media_checkpoint_dir": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013\\real_video_checkpoints",
+    "queue_initialization_command": "netcmd_560c57d3162e464e9d36efca2bfd66b3",
+    "queue_idempotent_reconciliation_command": "netcmd_18aa4074a5e44a88804d3e5ba2eddde1",
+    "real_queue_state_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "real_queue_pending": 50,
+    "real_queue_verified_checkpoints": 0,
+    "real_video_media_opened_during_queue_sync": 0,
+    "synthetic_end_to_end": {
+      "command": "netcmd_e45dd0fc345a40c48e8f618ad0b914e2",
+      "data_class": "SYNTHETIC_ONLY_NOT_OFFICIAL_VIDEO",
+      "contest_ids": "92001..92013",
+      "video_sources_mocked": 13,
+      "first_execution_checkpoint_count": 13,
+      "first_execution_waves": 4,
+      "second_execution_media_reopens": 0,
+      "second_execution_attempts": 0,
+      "state_sha256_unchanged": true,
+      "checkpoint_sha256_unchanged": true,
+      "memory_reconciled": true,
+      "predictive_weight": 0,
+      "real_video_frames": 0
+    },
+    "production_main_modified": false
+  },
+  "scientific_limits": {
+    "real_video_frames_analyzed": 0,
+    "real_checkpoints_created": 0,
+    "predictive_signal_gains_proven": false,
+    "actual_quality_6_of_6_proven": false,
+    "approved_for_same_contest_predictive_weight": false,
+    "mission_proven": false
+  },
+  "next_gate": "With authorized official media/metadata access and per-video Mega segment provenance, execute bounded normal queue on real CAIXA videos in waves <=4 with persistent cooldown; verify per-contest source, checkpoint hashes and motion quality; compare against prospective holdout data before activating any predictive weight. Do not merge the feature stack or claim predictive success before physical evidence."
+}
