@@ -60,3 +60,41 @@ def test_integrity_rejects_missing_or_inconsistent_operational_state(tmp_path, m
         pd.DataFrame([{"Concurso": 1}]).to_excel(tmp_path / "Mega-Sena.xlsx", index=False)
     with pytest.raises(integrity.RepositoryIntegrityError, match="requires recovery"):
         integrity._check_operational_state()
+
+
+def test_frozen_operator_schedule_pins_verified_authorization_before_consumption(tmp_path, monkeypatch):
+    import hashlib
+    import shutil
+
+    origin = Path(__file__).resolve().parent
+    authority = json.loads((origin / "SMART_NEXT_CYCLE_AUTHORITY.json").read_text())
+    epoch = json.loads((origin / "SMART_ACTIVE_EPOCH.json").read_text())
+    expected = epoch["target_schedule"]["source_sha256"]
+    archive = list((origin / "runtime/idempotency/AUTHORIZE").glob("*.json"))
+    matches = [p for p in archive if json.loads(p.read_text()).get("result", {}).get("sha256") == expected]
+    assert len(matches) == 1
+    (tmp_path / "runtime/idempotency/AUTHORIZE").mkdir(parents=True)
+    receipt = tmp_path / "runtime/idempotency/AUTHORIZE" / matches[0].name
+    shutil.copyfile(matches[0], receipt)
+    document = tmp_path / "SMART_NEXT_CYCLE_AUTHORITY.json"
+    shutil.copyfile(origin / document.name, document)
+    monkeypatch.setattr(integrity, "ROOT", tmp_path)
+    schedule = epoch["target_schedule"]
+    integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))
+
+    # A recomputed current document hash cannot substitute for the pinned
+    # pre-reservation authorization: the independent receipt must still match.
+    changed = dict(authority)
+    changed["review_sha256"] = "0" * 64
+    changed.pop("sha256")
+    changed["sha256"] = hashlib.sha256(json.dumps(changed, sort_keys=True, ensure_ascii=False,
+        separators=(",", ":")).encode()).hexdigest()
+    document.write_text(json.dumps(changed))
+    with pytest.raises(integrity.RepositoryIntegrityError, match="snapshot not proven"):
+        integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))
+    shutil.copyfile(origin / document.name, document)
+    receipt.unlink()
+    with pytest.raises(integrity.RepositoryIntegrityError, match="snapshot not proven"):
+        integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))
+    with pytest.raises(integrity.RepositoryIntegrityError):
+        integrity._require_frozen_schedule_source({**schedule, "source_sha256": "f" * 64}, int(epoch["target_contest"]))
