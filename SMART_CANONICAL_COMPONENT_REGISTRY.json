@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "2b8057afffa2a10752d247b9a8232dc3c413a16ce837f1a0d958b5efdf17da22",
+  "source_reachability_inventory_sha256": "555325317e1f5121ed84ca2327e284b92c7d0c4efedb11da76b4741eb2ca1b9f",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 496,
+    "component_count": 497,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 194,
+    "diagnostic": 195,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -8378,6 +8378,7 @@
         "test_smart_mechanism_integration",
         "test_smart_meta_governor",
         "test_smart_multi_challengers",
+        "test_smart_post_result_policy_consistency",
         "test_smart_rank_score_calibration",
         "test_smart_reconciliation_closure_20260907",
         "test_smart_sequential_prospective_proof",
@@ -8916,7 +8917,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "1468374743558138c090b1757a64b02f237690121abdc3a9631b6436952e3f30",
+      "implementation_sha256": "a418e2731ce24f66ad28fc1e2899e456b51c05de5a0b791426c96259a9ccb865",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8943,7 +8944,8 @@
         "smart_terminal_executor",
         "test_smart_f03_terminal_engine_migration",
         "test_smart_f17_terminal_stale_coverage",
-        "test_smart_operator_direct_terminal_default"
+        "test_smart_operator_direct_terminal_default",
+        "test_smart_post_result_policy_consistency"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -12117,6 +12119,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_post_result_policy_consistency",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_post_result_policy_consistency.py",
+      "implementation_sha256": "feea1bc4915b1df29e3326a93ac2f044b0fe8f7b0da1082ff563b97d534a76e2",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_signal_agent",
+        "smart_terminal_engine"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_post_result_report",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_report.py",
@@ -13423,5 +13449,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "41a2a57228d901288312f2b88e572fa2c7895473b5c3cb85c034c8df1bf15d17"
+  "registry_sha256": "dc89f9a42f68a60b42388f9108e92136b11059ecc82a56fce317dd9610c7ac93"
 }
