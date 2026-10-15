@@ -2,11 +2,12 @@
   "schema": "SMART_F12_SCIENTIFIC_SUCCESSOR_1",
   "status": "PASS",
   "project": "SMART-MEGA",
-  "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR",
+  "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__OPERATOR_SCHEDULE_ADAPTER",
   "historical_baseline_head": "d3c411cbc6e22f0b332fb37be11ead0e2a7d9d77",
   "historical_f11_report_file": "SMART_F11_PREDICTIVE_NONREGRESSION.json",
   "historical_f11_report_sha256": "7724db9ee31a6334540dd77cc15b8496f3057218442e969f87eb72724e5ceaa8",
   "checks": {
+    "operator_schedule_only_change_reversible_to_F12": true,
     "f11_historical_report_reproducible": true,
     "f11_historical_report_pass": true,
     "f11_historical_evidence_integrity": true,
@@ -46,7 +47,7 @@
     },
     "smart_full_process_pipeline.py": {
       "approved_f11_source_preserved": true,
-      "current_canonical_lf_sha256": "59f6635b841d54f381fc725171110a3b5bf1db487d7f54eb36d9405278bae21c",
+      "current_canonical_lf_sha256": "1719b447dca60e59c19a09972c59185b56a0c1581128771a369e7bb9aa838eab",
       "f11_source_sha256": "f154252a116604941e6ce05adac0e5b52acba62e4ccb516a642f8be921e3c9cc",
       "repair_scope": true
     },
@@ -145,6 +146,6 @@
   "prospective_advantage_proven": false,
   "six_of_six_proven": false,
   "additional_prospective_samples_since_F11": 0,
-  "note": "An unchanged predictor plus a stricter lineage check is engineering non-regression, not evidence of superior lottery prediction.",
-  "sha256": "dfb5fe55cb2f9ad7f12275800cbecc3f499fc3a07861fc636a4f5c75bfa9a562"
+  "note": "The immutable F11 predictor is reconstructed byte-for-byte after reversing only the exact approved F12 causal guard and operator-target scheduling delta. This proves a restricted source change, not superior lottery prediction.",
+  "sha256": "412de45bf157b3f046f653d5b17b1326ba76596ca661c52f59323f50c6e24f41"
 }
