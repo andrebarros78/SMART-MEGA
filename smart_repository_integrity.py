@@ -90,6 +90,64 @@ def _require_raw_hash(label: str, relative: str, expected: str) -> None:
         )
 
 
+def _require_frozen_schedule_source(schedule: dict[str, Any], target: int) -> None:
+    relative = str(schedule["source_file"])
+    expected = str(schedule["source_sha256"]).lower()
+    try:
+        _require_raw_hash("schedule source", relative, expected)
+        return
+    except RepositoryIntegrityError as raw_failure:
+        # Only the operator's snapshotted AUTHORIZED authority can remain pinned
+        # after the same document advances through RESERVED to CONSUMED.
+        if relative != "SMART_NEXT_CYCLE_AUTHORITY.json" or schedule.get("authority") != "OPERATOR_SELECTED_TARGET":
+            raise raw_failure
+    if not re.fullmatch(r"[0-9a-f]{64}", expected):
+        raise RepositoryIntegrityError("operator schedule source has invalid pinned hash")
+    current = _read_json(relative)
+    body = {k: v for k, v in current.items() if k != "sha256"}
+    actual = hashlib.sha256(json.dumps(body, ensure_ascii=False, sort_keys=True,
+                                      separators=(",", ":")).encode("utf-8")).hexdigest()
+    if (current.get("schema") != "SMART_NEXT_CYCLE_AUTHORITY_1"
+            or current.get("sha256") != actual
+            or current.get("status") != "CONSUMED"
+            or current.get("consumed") is not True
+            or current.get("authority_sha256_before_reservation") != expected
+            or int(current.get("target_contest", -1)) != target
+            or current.get("authorized_by") != "USER_EXPLICIT_APPLY_OR_GENERATE"
+            or not current.get("consumption_transaction_id")
+            or not current.get("prepared_epoch_id")):
+        raise RepositoryIntegrityError("operator schedule consumed-authority lineage invalid")
+    receipts = ROOT / "runtime" / "idempotency" / "AUTHORIZE"
+    if not receipts.is_dir():
+        raise RepositoryIntegrityError("operator schedule authorized receipt archive missing")
+    for path in sorted(receipts.glob("*.json")):
+        receipt = _read_json(str(path.relative_to(ROOT)))
+        if (receipt.get("schema") != "SMART_IDEMPOTENCY_1"
+                or receipt.get("operation") != "AUTHORIZE"
+                or receipt.get("idempotency_key") != path.stem
+                or receipt.get("target") != target):
+            continue
+        snapshot = receipt.get("result")
+        if not isinstance(snapshot, dict) or snapshot.get("sha256") != expected:
+            continue
+        # operational_lifecycle is receipt metadata, not part of the original
+        # authorization's self-hashed bytes.
+        signed = {k: v for k, v in snapshot.items() if k not in {"sha256", "operational_lifecycle"}}
+        computed = hashlib.sha256(json.dumps(signed, ensure_ascii=False, sort_keys=True,
+                                             separators=(",", ":")).encode("utf-8")).hexdigest()
+        if (computed == expected
+                and snapshot.get("status") == "AUTHORIZED"
+                and snapshot.get("consumed") is False
+                and snapshot.get("authorized_by") == current.get("authorized_by")
+                and int(snapshot.get("target_contest", -1)) == target
+                and all(snapshot.get(k) == current.get(k) for k in
+                        ("completed_contest", "review_file", "review_file_sha256", "review_sha256",
+                         "canonical_sha256", "authorized_utc"))
+                and int(current.get("revision", 0)) > int(snapshot.get("revision", 0))):
+            return
+    raise RepositoryIntegrityError("operator schedule original authorized snapshot not proven")
+
+
 def _check_discovery_docs() -> None:
     required_files = (
         "README.md",
@@ -200,8 +258,11 @@ def _check_active_epoch() -> dict[str, Any]:
     _require_raw_hash("learning state", str(learning["file"]), str(learning["sha256"]))
 
     schedule = epoch.get("target_schedule") or {}
-    _require_raw_hash("schedule source", str(schedule["source_file"]), str(schedule["source_sha256"]))
-    _require_file("draw-time policy", str(schedule["draw_time_policy_file"]))
+    _require_frozen_schedule_source(schedule, target)
+    if schedule.get("draw_time_policy_file"):
+        _require_file("draw-time policy", str(schedule["draw_time_policy_file"]))
+    elif schedule.get("authority") != "OPERATOR_SELECTED_TARGET":
+        raise RepositoryIntegrityError("verified schedule missing draw-time policy file")
     if int(schedule["target_contest"]) != target:
         raise RepositoryIntegrityError("schedule target mismatch")
     if schedule.get("result_used") is not False:
