@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "71bb49afa5089892e91b2b53ea030191473df5ce4ae313b9a437d00a778ff258",
+  "inventory_sha256": "295a061fb35a54a8896ee754d0868d992ce7d11d665b71d040ed19f0e972587f",
   "summary": {
-    "python_components": 489,
+    "python_components": 490,
     "workflow_entrypoints": 8,
     "production_components": 100,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 162,
+    "test_components": 163,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4496,6 +4496,7 @@
         "smart_terminal_engine",
         "test_smart_canonical_history_advance",
         "test_smart_canonical_history_advance_dtype",
+        "test_smart_canonical_history_fastpath",
         "test_smart_d015_critical_operational_coverage"
       ],
       "reachable": true,
@@ -4506,7 +4507,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "dfffe2d46795b60e77d332f2bd55a1a3d52b0defe87d91e121b1297e45494f34"
+      "sha256": "1e337c0094afc21741e6554a43b7aedd6691334c2fb01dcbf699beea0ae23118"
     },
     {
       "component_id": "smart_canonical_identity",
@@ -9273,6 +9274,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "test_smart_canonical_history_fastpath",
         "test_smart_d015_critical_operational_coverage"
       ],
       "reachable": false,
@@ -9305,6 +9307,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "e14d5c7f88bfdbb47f29923709c00321d6c8671e442abd2cb28ad2e46c995377"
+    },
+    {
+      "component_id": "test_smart_canonical_history_fastpath",
+      "source_file": "test_smart_canonical_history_fastpath.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_canonical_history_advance",
+        "test_smart_canonical_history_advance"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "236eed20b854f1ac7a2a33aa2e72af0453a9860c13946e82ebfa0d730fed8ed4"
     },
     {
       "component_id": "test_smart_canonical_result_store_reconcile",
@@ -9704,7 +9728,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "9ef1086aa46067e685540ed8f04fb1278c2d7187d8ee57ac4e4cd3d74f675402"
+      "sha256": "8369d42b480c1741ef153363513e48d75f2fbd7581129e170c7e0f6210fc0241"
     },
     {
       "component_id": "test_smart_data_quality_gate",

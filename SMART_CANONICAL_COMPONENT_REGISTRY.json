@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "71bb49afa5089892e91b2b53ea030191473df5ce4ae313b9a437d00a778ff258",
+  "source_reachability_inventory_sha256": "295a061fb35a54a8896ee754d0868d992ce7d11d665b71d040ed19f0e972587f",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 489,
+    "component_count": 490,
     "active": 100,
     "shadow": 1,
-    "diagnostic": 188,
+    "diagnostic": 189,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4753,7 +4753,7 @@
       "component_id": "smart_canonical_history_advance",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_canonical_history_advance.py",
-      "implementation_sha256": "dfffe2d46795b60e77d332f2bd55a1a3d52b0defe87d91e121b1297e45494f34",
+      "implementation_sha256": "1e337c0094afc21741e6554a43b7aedd6691334c2fb01dcbf699beea0ae23118",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4774,6 +4774,7 @@
         "smart_terminal_engine",
         "test_smart_canonical_history_advance",
         "test_smart_canonical_history_advance_dtype",
+        "test_smart_canonical_history_fastpath",
         "test_smart_d015_critical_operational_coverage"
       ],
       "entrypoints": [
@@ -9841,6 +9842,7 @@
         "smart_canonical_history_advance"
       ],
       "consumers": [
+        "test_smart_canonical_history_fastpath",
         "test_smart_d015_critical_operational_coverage"
       ],
       "entrypoints": [],
@@ -9864,6 +9866,30 @@
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_canonical_history_advance"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_canonical_history_fastpath",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_canonical_history_fastpath.py",
+      "implementation_sha256": "236eed20b854f1ac7a2a33aa2e72af0453a9860c13946e82ebfa0d730fed8ed4",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_canonical_history_advance",
+        "test_smart_canonical_history_advance"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -10291,7 +10317,7 @@
       "component_id": "test_smart_d015_critical_operational_coverage",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_d015_critical_operational_coverage.py",
-      "implementation_sha256": "9ef1086aa46067e685540ed8f04fb1278c2d7187d8ee57ac4e4cd3d74f675402",
+      "implementation_sha256": "8369d42b480c1741ef153363513e48d75f2fbd7581129e170c7e0f6210fc0241",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13225,5 +13251,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "a6e91582c2b5bdc578a751769c3bb99cc2f1bedb65ba2ce9cb8fcdc1518e3e7e"
+  "registry_sha256": "b9010a3ea5d4c0584fb27c9bf7a9c82f0551035ad642519d0f5c8d7c57e30d33"
 }

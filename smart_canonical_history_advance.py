@@ -269,9 +269,10 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
     tmp = Path(raw)
     try:
         shutil.copyfile(through, tmp)
-        temp_frame = pd.read_excel(tmp)
-        if list(temp_frame.columns) != list(through_frame.columns) or not temp_frame.equals(through_frame):
-            raise RuntimeError("temporary canonical history verification failed")
+        # The through frame was already checked against the immutable
+        # adjudication and exact canonical prefix. Byte identity proves
+        # the temporary copy has the same schema, values and row order,
+        # without an unnecessary second Excel parse.
         if sha256_file(tmp) != through_sha:
             raise RuntimeError("temporary canonical history hash mismatch")
         os.replace(tmp, canonical)
@@ -281,9 +282,10 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
     after_sha = sha256_file(canonical)
     if after_sha != through_sha:
         raise RuntimeError("canonical history advance hash mismatch")
-    final_frame = pd.read_excel(canonical)
-    final_seq = _contest_sequence(final_frame)
-    if final_seq[-1] != target or _numbers(final_frame, target) != actual:
+    # Post-replacement SHA-256 identity to the validated through workbook
+    # guarantees the same rows. Re-check the authoritative target without
+    # reparsing an identical 3,000+-row Excel workbook.
+    if through_seq[-1] != target or _numbers(through_frame, target) != actual:
         raise RuntimeError("canonical history advance postcondition failed")
 
     proof = {
