@@ -1,16 +1,16 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "HOLD",
-  "revision": 45,
+  "state": "FROZEN",
+  "revision": 50,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
   "target_contest": 3071,
   "completed_contest": 3070,
-  "previous_state": "REVIEWED",
-  "transition": "REVIEWED_TO_HOLD",
-  "transition_actor": "smart_rollover.canonical_rollover",
-  "transition_utc": "2026-10-15T14:23:35.481480+00:00",
-  "previous_lifecycle_sha256": "d7cb7416e700cb0bb3b16edba709196efa7546d8b89ef776b973f3d508ff0d15",
+  "previous_state": "FREEZING",
+  "transition": "FREEZING_TO_FROZEN",
+  "transition_actor": "full_process_freeze_complete",
+  "transition_utc": "2026-10-15T18:49:44.331970+00:00",
+  "previous_lifecycle_sha256": "6c13b82e5889557666f2350cdeb89e59d3566768f5c3fa77c6f7b0decdd824e0",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
@@ -35,12 +35,12 @@
       "status": "CONSUMED_FOR_PREPARE",
       "target_contest": 3060
     },
-    "prepare_transaction_id": "PREPARE:3070:operator-3070-ee1bc13734e4-20261013T225858165681Z",
-    "reserved_authority_sha256": "db6ba864634964a7884d127774c06e1128566a04ba8f82b5f75457c5a2016332",
+    "prepare_transaction_id": "PREPARE:3071:operator-3071-10553e1b5911-20261015T184134194917Z",
+    "reserved_authority_sha256": "5ac2c3951a45465fe14a6d463a24bfb498c79543fee3152858f288e8c2c81cb4",
     "active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
-      "sha256": "f1504f857aee6d378b7f08f61dd90cac90e6593f1ca00fb10affd9be03ecf373",
-      "epoch_id": "operator-3070-ee1bc13734e4-20261013T225858165681Z"
+      "sha256": "ebf5637022c91b52c88d22e0b38733b8fc7d81e66ddaee5e2d7dbf004d270048",
+      "epoch_id": "operator-3071-10553e1b5911-20261015T184134194917Z"
     },
     "rollover_archive": {
       "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3070/operator-3070-ee1bc13734e4-20261013T225858165681Z/ARCHIVE_MANIFEST.json",
@@ -77,5 +77,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "7ed5a5482a8803ced9f413db40bb27464c0de0baae32564d650c46899077f417"
+  "sha256": "18a0d31a08ff84a6a80966dd51ff87ae8d952c61b5232f5010b34d33c8ff20a5"
 }
