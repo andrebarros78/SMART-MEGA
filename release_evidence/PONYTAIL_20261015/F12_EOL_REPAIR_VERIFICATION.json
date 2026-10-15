@@ -1,0 +1,32 @@
+{
+  "schema": "SMART_F12_EOL_REPAIR_HOMOLOGATION_1",
+  "date": "2026-10-15",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "source_baseline_sha": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "hotfix_branch": "fix/f12-eol-reconstruction-20261015",
+  "tested_hotfix_source_sha": "34a25f46160ae28798d5b62b14c6fc86e6918bdf",
+  "scope": "Nonpredictive F12 exact historical source reconstruction under Git LF/CRLF; does not affect model, scoring or frozen cards",
+  "cause": "F12 OPERATOR_SOURCE_REVERSALS for multiline snippets matched LF but working tree smart_full_process_pipeline.py was CRLF; _canonical_variants() already explicitly authorized both by original SHA pin",
+  "baseline_test_observed": {
+    "test_command": "pytest -q test_smart_f12_scientific_successor.py",
+    "failed": 3,
+    "passed": 2,
+    "source": "main fc1347"
+  },
+  "fix_test_observed": {
+    "test_command": "pytest -q test_smart_f12_scientific_successor.py",
+    "passed": 6,
+    "failed": 0,
+    "check": "python smart_f12_scientific_successor.py",
+    "status": "PASS",
+    "checks": true,
+    "check_count": 12,
+    "negative_tamper_rejected": true,
+    "source_reconstructed_to_historical_f11_pin": true
+  },
+  "guard": "No SHA pins changed. Original predecessor SHA required after known operator-only transformations. Invalid source remains rejected.",
+  "scientific_predictive_status": "UNPROVEN_PROSPECTIVE_6_OF_6",
+  "production_merge": "NOT_EXECUTED",
+  "full_regression": "NOT_PROVEN",
+  "state": "HOMOL_PASS_TARGETED_RELEASE_PENDING"
+}
