@@ -161,7 +161,7 @@ def fetch_mirror_consensus(target: int) -> dict[str, Any]:
     second = _get_json_url(MIRROR_ARCHIVE, "www.resultadomega.com.br", 500_000)
     if type(first) is not dict or type(first.get("concurso")) is not int or first["concurso"] != target:
         raise ValueError("first mirror contest mismatch")
-    a = strict_numbers([int(n) if isinstance(n, str) and re.fullmatch(r"\\d{1,2}", n)
+    a = strict_numbers([int(n) if isinstance(n, str) and re.fullmatch(r"\d{1,2}", n)
                         else n for n in first.get("dezenas", [])])
     try:
         d1 = datetime.strptime(first["data"], "%d/%m/%Y").date()
