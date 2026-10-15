@@ -1065,6 +1065,17 @@ def _card_consumption_checked(fn):
         if not isinstance(proof, dict) or proof.get("target_contest") != int(target):
             raise RuntimeError("consumer integration requires this target's full generation proof")
         result["consumer_integration"] = audit_generation(root, proof)
+        # Experiment is downstream of the audited productive card; it can never
+        # change the champion decision or block a successful productive freeze.
+        try:
+            from smart_cap60_parallel import produce as produce_cap60_parallel
+            result["cap60_parallel"] = produce_cap60_parallel(root, proof["freeze_file"])
+        except (OSError, ValueError, RuntimeError, KeyError, TypeError) as exc:
+            result["cap60_parallel"] = {
+                "status": "SHADOW_UNAVAILABLE",
+                "error_type": type(exc).__name__,
+                "production_authority": False,
+            }
         return result
     return checked
 
