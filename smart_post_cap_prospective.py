@@ -135,9 +135,67 @@ def fetch_caixa(target: int) -> dict[str, Any]:
     return result
 
 
+
+MIRROR_API = "https://loteriascaixa-api.herokuapp.com/api/megasena/"
+MIRROR_ARCHIVE = "https://www.resultadomega.com.br/api/concursos.json"
+
+
+def _get_json_url(url: str, expected_hostname: str, cap: int) -> Any:
+    if urlparse(url).scheme != "https" or urlparse(url).hostname != expected_hostname:
+        raise ValueError("untrusted mirror host")
+    req = Request(url, headers={"Accept": "application/json",
+                                "User-Agent": "SMART-MEGA-prospective-audit/1"})
+    with urlopen(req, timeout=25) as response:
+        u = urlparse(response.geturl())
+        if u.scheme != "https" or u.hostname != expected_hostname:
+            raise ValueError("mirror redirected off allowlist")
+        body = response.read(cap + 1)
+        if len(body) > cap:
+            raise ValueError("mirror response oversized")
+    return json.loads(body.decode("utf-8-sig"))
+
+
+def fetch_mirror_consensus(target: int) -> dict[str, Any]:
+    """Two different publishers; NEVER represents direct official CAIXA proof."""
+    first = _get_json_url(MIRROR_API + str(target), "loteriascaixa-api.herokuapp.com", 200_000)
+    second = _get_json_url(MIRROR_ARCHIVE, "www.resultadomega.com.br", 500_000)
+    if type(first) is not dict or type(first.get("concurso")) is not int or first["concurso"] != target:
+        raise ValueError("first mirror contest mismatch")
+    a = strict_numbers([int(n) if isinstance(n, str) and re.fullmatch(r"\\d{1,2}", n)
+                        else n for n in first.get("dezenas", [])])
+    try:
+        d1 = datetime.strptime(first["data"], "%d/%m/%Y").date()
+    except (KeyError, ValueError, TypeError) as exc:
+        raise ValueError("first mirror date invalid") from exc
+    if not isinstance(second, list):
+        raise ValueError("second mirror archive invalid")
+    matches = [row for row in second if isinstance(row, list) and len(row) == 3
+               and type(row[0]) is int and row[0] == target]
+    if len(matches) != 1:
+        raise ValueError("second mirror has no unique target")
+    try:
+        d2 = datetime.strptime(matches[0][1], "%Y-%m-%d").date()
+        b = strict_numbers(matches[0][2])
+    except (ValueError, TypeError) as exc:
+        raise ValueError("second mirror data invalid") from exc
+    if a != b or d1 != d2:
+        raise ValueError("independent mirror result disagreement")
+    return {
+        "numero": target,
+        "dataApuracao": d1.strftime("%d/%m/%Y"),
+        "listaDezenas": [f"{n:02d}" for n in a],
+        "evidence_kind": "TWO_MIRRORS_PROVISIONAL_NOT_OFFICIAL",
+        "source_urls": [MIRROR_API + str(target), MIRROR_ARCHIVE],
+        "first_publisher_sha256": canonical_sha256(first),
+        "second_publisher_row_sha256": hashlib.sha256(
+            json.dumps(matches[0], sort_keys=True, separators=(",", ":")).encode()).hexdigest(),
+    }
+
+
 def assess_series(registrations: list[dict[str, Any]],
                   official_results: list[dict[str, Any]], *,
-                  fetched_directly_from_caixa: bool = False) -> dict[str, Any]:
+                  fetched_directly_from_caixa: bool = False,
+                  mirrors_crosschecked: bool = False) -> dict[str, Any]:
     if not registrations:
         return {"schema": AUDIT_SCHEMA, "status": "AWAITING_PROSPECTIVE_RESULTS",
                 "n": 0, "eligible": False, "e_value": 1.0, "blockers": ["no_paired_official_results"]}
@@ -185,7 +243,9 @@ def assess_series(registrations: list[dict[str, Any]],
         blockers.append("awaiting_next_chronological_draws")
     return {
         "schema": AUDIT_SCHEMA,
-        "status": "PROSPECTIVE_GATE_ELIGIBLE" if eligible else "PROSPECTIVE_NOT_PROVEN",
+        "status": ("PROSPECTIVE_GATE_ELIGIBLE" if eligible else
+                   "MIRROR_MATCH_PENDING_OFFICIAL" if mirrors_crosschecked and rows else
+                   "PROSPECTIVE_NOT_PROVEN"),
         "eligible": eligible,
         "n": len(rows),
         "pairs_registered": len(registrations),
@@ -199,6 +259,8 @@ def assess_series(registrations: list[dict[str, Any]],
         "observations": verified_observations,
         "blockers": sorted(set(blockers)),
         "official_provider": OFFICIAL_API if fetched_directly_from_caixa else None,
+        "mirror_consensus_provisional": bool(mirrors_crosschecked and rows),
+        "officially_verified_contests": len(rows) if fetched_directly_from_caixa else 0,
         "production_mutation": False,
     }
 
@@ -206,22 +268,28 @@ def assess_series(registrations: list[dict[str, Any]],
 def main() -> None:
     p = argparse.ArgumentParser()
     p.add_argument("registration", nargs="+", type=Path)
-    p.add_argument("--fetch-official", action="store_true")
+    group = p.add_mutually_exclusive_group()
+    group.add_argument("--fetch-official", action="store_true")
+    group.add_argument("--fetch-mirrors", action="store_true")
     p.add_argument("--out", type=Path)
     a = p.parse_args()
     regs = [verify_registration(json.loads(path.read_text(encoding="utf-8-sig")))
             for path in a.registration]
     results = []
-    if a.fetch_official:
+    if a.fetch_official or a.fetch_mirrors:
         for reg in regs:
             try:
-                results.append(fetch_caixa(reg["target_contest"]))
+                result = (fetch_caixa(reg["target_contest"]) if a.fetch_official
+                          else fetch_mirror_consensus(reg["target_contest"]))
+                results.append(result)
             except Exception as exc:
-                # Do not skip a missing result or silently replace it with a simulation.
+                # Never skip a missing target, accept a partial draw, or fake official verification.
                 print(json.dumps({"status": "RESULT_NOT_VERIFIED", "target": reg["target_contest"],
                                   "detail": type(exc).__name__}), flush=True)
                 break
-    audit = assess_series(regs, results, fetched_directly_from_caixa=bool(a.fetch_official and results))
+    audit = assess_series(regs, results,
+                          fetched_directly_from_caixa=bool(a.fetch_official and results),
+                          mirrors_crosschecked=bool(a.fetch_mirrors and results))
     if a.out:
         if a.out.exists():
             raise FileExistsError("evaluation evidence is append-only; choose new path")
