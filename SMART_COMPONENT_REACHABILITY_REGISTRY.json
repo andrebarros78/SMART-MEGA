@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2b8057afffa2a10752d247b9a8232dc3c413a16ce837f1a0d958b5efdf17da22",
+  "inventory_sha256": "555325317e1f5121ed84ca2327e284b92c7d0c4efedb11da76b4741eb2ca1b9f",
   "summary": {
-    "python_components": 496,
+    "python_components": 497,
     "workflow_entrypoints": 8,
     "production_components": 101,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 168,
+    "test_components": 169,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -7921,6 +7921,7 @@
         "test_smart_mechanism_integration",
         "test_smart_meta_governor",
         "test_smart_multi_challengers",
+        "test_smart_post_result_policy_consistency",
         "test_smart_rank_score_calibration",
         "test_smart_reconciliation_closure_20260907",
         "test_smart_sequential_prospective_proof",
@@ -8458,7 +8459,8 @@
         "smart_terminal_executor",
         "test_smart_f03_terminal_engine_migration",
         "test_smart_f17_terminal_stale_coverage",
-        "test_smart_operator_direct_terminal_default"
+        "test_smart_operator_direct_terminal_default",
+        "test_smart_post_result_policy_consistency"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8468,7 +8470,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "1468374743558138c090b1757a64b02f237690121abdc3a9631b6436952e3f30"
+      "sha256": "a418e2731ce24f66ad28fc1e2899e456b51c05de5a0b791426c96259a9ccb865"
     },
     {
       "component_id": "smart_terminal_executor",
@@ -11378,6 +11380,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "86cd792cf0b91180650b8e34b5e8e005a70be7652300067b185c48d1ae62c7ac"
+    },
+    {
+      "component_id": "test_smart_post_result_policy_consistency",
+      "source_file": "test_smart_post_result_policy_consistency.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_signal_agent",
+        "smart_terminal_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "feea1bc4915b1df29e3326a93ac2f044b0fe8f7b0da1082ff563b97d534a76e2"
     },
     {
       "component_id": "test_smart_post_result_report",
