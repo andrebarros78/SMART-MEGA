@@ -144,7 +144,7 @@ def test_cha_temporary_verification_and_hash_guards(tmp_path: Path, monkeypatch)
         df = pd.read_excel(dst); df.loc[0, 'Bola1'] = 60; df.to_excel(dst, index=False)
         return dst
     monkeypatch.setattr(cha.shutil, 'copyfile', corrupt_copy)
-    with pytest.raises(RuntimeError, match='temporary canonical history verification failed'):
+    with pytest.raises(RuntimeError, match='temporary canonical history hash mismatch'):
         cha.advance_completed_epoch(base, active)
     monkeypatch.setattr(cha.shutil, 'copyfile', real_copyfile)
 
