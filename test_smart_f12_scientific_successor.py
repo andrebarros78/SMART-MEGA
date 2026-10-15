@@ -50,3 +50,18 @@ def test_f12_rejects_unrelated_predictive_code_change():
     assert tampered != source
     pre = reconstruct_predecessor(tampered)
     assert pre is None or not _matches_expected_code(pre, BASELINE_SOURCE_SHA256[PREDICTIVE_FILE])
+
+
+def test_f12_scientific_successor_accepts_pinned_source_across_git_eol_styles():
+    # Only the exact approved predecessor is accepted; checkout EOL is irrelevant.
+    raw = (ROOT / PREDICTIVE_FILE).read_bytes()
+    expected = BASELINE_SOURCE_SHA256[PREDICTIVE_FILE]
+    lf = raw.replace(b"\r\n", b"\n")
+    crlf = lf.replace(b"\n", b"\r\n")
+    for variant in (raw, lf, crlf):
+        predecessor = reconstruct_predecessor(variant)
+        assert predecessor is not None
+        assert _matches_expected_code(predecessor, expected)
+    tampered = raw.replace(b"expected_value != effective_value", b"expected_value == effective_value", 1)
+    assert tampered != raw
+    assert reconstruct_predecessor(tampered) is None
