@@ -79,7 +79,9 @@ def produce(root: str | Path, freeze_file: str | Path) -> dict[str, Any]:
     draws, contests = e.load_draws(data_path)
     if int(contests[-1]) != cutoff or len(draws) <= int(freeze.get("start_index", 1000)):
         raise ValueError("frozen history does not end immediately before target")
-    original_sha = _sha(root / "freeze_next_research.py")
+    source_bytes = (root / "freeze_next_research.py").read_bytes()
+    # Git checkouts may use CRLF while the immutable freeze pins LF bytes.
+    original_sha = hashlib.sha256(source_bytes.replace(b"\r\n", b"\n")).hexdigest()
     if original_sha != freeze.get("champion_engine_sha256"):
         raise ValueError("champion source differs from frozen champion source")
     start = int(freeze.get("start_index", 1000))
