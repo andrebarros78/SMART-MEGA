@@ -130,9 +130,11 @@ class FrontierState:
         gaps[unseen] = self.step + 1
         return np.maximum(gaps, 1)
 
-    def predict(self, target_weekday: int) -> FrontierPrediction:
-        weekday = int(target_weekday)
-        if weekday < 0 or weekday > 6:
+    def predict(self, target_weekday: int | None) -> FrontierPrediction:
+        # Without a declared draw date, never invent a weekday. The calendar
+        # candidate stays neutral and shadow-only; other signals are unchanged.
+        weekday = None if target_weekday is None else int(target_weekday)
+        if weekday is not None and (weekday < 0 or weekday > 6):
             raise ValueError("target weekday must be in [0,6]")
         gaps = self._current_gaps()
         gap_score = np.asarray([
@@ -151,7 +153,9 @@ class FrontierState:
             graph_den = self.cooccurrence[rows].sum(axis=1, keepdims=True) + 60.0
             graph_score = np.mean((self.cooccurrence[rows] + 1.0) / graph_den, axis=0)
 
-        weekday_score = (self.weekday_counts[weekday] + 1.0) / (self.weekday_draws[weekday] + 10.0)
+        weekday_score = (np.full(60, UNIFORM_PROBABILITY, dtype=float)
+                         if weekday is None else
+                         (self.weekday_counts[weekday] + 1.0) / (self.weekday_draws[weekday] + 10.0))
         global_rate = (self.global_counts + 1.0) / (self.step + 10.0)
         if self.recent:
             recent_counts = np.sum(np.vstack(self.recent), axis=0)
@@ -362,22 +366,23 @@ def freeze_shadow(
     state: FrontierState,
     data_path: Path,
     target: int,
-    target_date: str,
+    target_date: str | None,
     report_path: Path,
     freeze_path: Path,
     registry_path: Path,
 ) -> dict[str, Any]:
     if freeze_path.exists():
         raise FileExistsError(f"refusing to overwrite existing frontier freeze: {freeze_path}")
-    draw_date = datetime.strptime(str(target_date), "%d/%m/%Y")
-    prediction = state.predict(draw_date.weekday()).document()
+    draw_date = (None if target_date is None
+                 else datetime.strptime(str(target_date), "%d/%m/%Y"))
+    prediction = state.predict(None if draw_date is None else draw_date.weekday()).document()
     cutoff = int(target) - 1
     registration = register_candidates(registry_path, cutoff)
     freeze = {
         "schema": FREEZE_SCHEMA,
         "frozen_utc": datetime.now(timezone.utc).isoformat(),
         "target_contest": int(target),
-        "target_date": draw_date.strftime("%d/%m/%Y"),
+        "target_date": None if draw_date is None else draw_date.strftime("%d/%m/%Y"),
         "cutoff_contest": cutoff,
         "data_file": Path(data_path).name,
         "data_sha256": sha256_file(data_path),
@@ -397,6 +402,8 @@ def freeze_shadow(
         "promotion_requires_future_oos_evidence": True,
         "result_used": False,
     }
+    if draw_date is None:
+        freeze["calendar_conditioning"] = "NEUTRALIZED_MISSING_TARGET_DATE"
     freeze["sha256"] = sha256_json(freeze)
     freeze_path.write_text(json.dumps(freeze, ensure_ascii=False, indent=2), encoding="utf-8")
     return freeze

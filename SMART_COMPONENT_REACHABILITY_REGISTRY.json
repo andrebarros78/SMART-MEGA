@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "555325317e1f5121ed84ca2327e284b92c7d0c4efedb11da76b4741eb2ca1b9f",
+  "inventory_sha256": "da25ef10836fc547024326369529c318b028709b132a6fb13dc70522ae30e550",
   "summary": {
-    "python_components": 497,
+    "python_components": 498,
     "workflow_entrypoints": 8,
     "production_components": 101,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 169,
+    "test_components": 170,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5663,6 +5663,7 @@
         "smart_frontier_adjudicator",
         "smart_full_process_pipeline",
         "test_smart_frontier_adjudicator",
+        "test_smart_frontier_operator_undated",
         "test_smart_frontier_signal_lab"
       ],
       "reachable": true,
@@ -5673,7 +5674,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "3e8c9ffefe5744c1a9375957539d2edc1745ef0f782533205d4f09e948326839"
+      "sha256": "5c4a67bda0f32b7e9ddffe3e0504dc2b9cfbb57cda95d60d7920d174e871134a"
     },
     {
       "component_id": "smart_full_process_pipeline",
@@ -10305,6 +10306,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "dba3897421e13751cf12b10289f155252280c8505b125a4a8b959877575b4409"
+    },
+    {
+      "component_id": "test_smart_frontier_operator_undated",
+      "source_file": "test_smart_frontier_operator_undated.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_frontier_signal_lab"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "512dcb65ef0175f7b8bdfe5778ce07f121a0c3b3489725ba15ded347f8f89cff"
     },
     {
       "component_id": "test_smart_frontier_signal_lab",
