@@ -15,7 +15,7 @@ from smart_operational_lifecycle import assert_state, transition
 from smart_operation_lock import locked_operation, update_current_process_lock
 from smart_startup_reconciler import assert_reconciled
 from smart_storage_surfaces import evidence_path, require_within
-from smart_transaction_journal import begin as journal_begin, prepared as journal_prepared, committing as journal_committing, committed as journal_committed, rolled_back as journal_rolled_back
+from smart_transaction_journal import begin as journal_begin, prepared as journal_prepared, committing as journal_committing, committed as journal_committed, rolled_back as journal_rolled_back, read_entries as journal_read_entries
 
 ARCHIVE_ROOT = Path("SMART_STATE_ARCHIVE") / "adjudicated-epochs"
 
@@ -101,13 +101,48 @@ def _read_self_hashed(path: Path, schema: str) -> dict[str, Any]:
         raise RolloverError(f"self-hash mismatch: {path}")
     return obj
 
+def _next_rollover_transaction_id(root: Path, target: int) -> str:
+    """Retry only an explicitly rolled-back rollover, never an open/committed one.
+
+    Each attempt gets its own immutable transaction ID. The journal hash chain
+    retains the failed attempt and its cause; no transaction is erased/reopened.
+    This is selection, not an automatic retry of a failed operation.
+    """
+    base = f"ROLLOVER:{target}:{target + 1}"
+    prefix = base + ":retry:"
+    attempts: dict[int, list[dict[str, Any]]] = {}
+    for entry in journal_read_entries(root):
+        transaction_id = str(entry.get("transaction_id", ""))
+        if transaction_id == base:
+            attempt = 1
+        elif transaction_id.startswith(prefix):
+            suffix = transaction_id[len(prefix):]
+            if not suffix.isdecimal() or int(suffix) < 2 or str(int(suffix)) != suffix:
+                raise RolloverError("invalid rollover retry transaction identity")
+            attempt = int(suffix)
+        else:
+            continue
+        if entry.get("operation") != "ROLLOVER" or entry.get("target_contest") != target:
+            raise RolloverError("rollover transaction journal target/operation conflict")
+        attempts.setdefault(attempt, []).append(entry)
+
+    if not attempts:
+        return base
+    for attempt in range(1, max(attempts) + 1):
+        if attempt not in attempts:
+            raise RolloverError("rollover retry journal sequence gap")
+        if attempts[attempt][-1]["phase"] != "ROLLED_BACK":
+            raise RolloverError("rollover transaction is open or already committed")
+    return f"{prefix}{max(attempts) + 1}"
+
+
 @locked_operation("ROLLOVER")
 def canonical_rollover(root: str | Path, target: int, hold_file: str | Path="SMART_NEXT_CYCLE_HOLD.json") -> dict[str, Any]:
     root=Path(root).resolve()
     target=int(target)
     assert_reconciled(root,target,operation="ROLLOVER")
     lifecycle_before=assert_state(root,"REVIEWED",target_contest=target)
-    transaction_id=f"ROLLOVER:{target}:{target+1}"
+    transaction_id=_next_rollover_transaction_id(root,target)
     update_current_process_lock(root, target_contest=target, transaction_id=transaction_id)
     journal_begin(root,transaction_id,"ROLLOVER",target_contest=target,metadata={"lifecycle_sha256":lifecycle_before["sha256"]})
     try:
