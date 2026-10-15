@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "555325317e1f5121ed84ca2327e284b92c7d0c4efedb11da76b4741eb2ca1b9f",
+  "source_reachability_inventory_sha256": "da25ef10836fc547024326369529c318b028709b132a6fb13dc70522ae30e550",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 497,
+    "component_count": 498,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 195,
+    "diagnostic": 196,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -5987,7 +5987,7 @@
       "component_id": "smart_frontier_signal_lab",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_frontier_signal_lab.py",
-      "implementation_sha256": "3e8c9ffefe5744c1a9375957539d2edc1745ef0f782533205d4f09e948326839",
+      "implementation_sha256": "5c4a67bda0f32b7e9ddffe3e0504dc2b9cfbb57cda95d60d7920d174e871134a",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6000,6 +6000,7 @@
         "smart_frontier_adjudicator",
         "smart_full_process_pipeline",
         "test_smart_frontier_adjudicator",
+        "test_smart_frontier_operator_undated",
         "test_smart_frontier_signal_lab"
       ],
       "entrypoints": [
@@ -10948,6 +10949,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_frontier_operator_undated",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_frontier_operator_undated.py",
+      "implementation_sha256": "512dcb65ef0175f7b8bdfe5778ce07f121a0c3b3489725ba15ded347f8f89cff",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_frontier_signal_lab"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_frontier_signal_lab",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_frontier_signal_lab.py",
@@ -13449,5 +13473,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "dc89f9a42f68a60b42388f9108e92136b11059ecc82a56fce317dd9610c7ac93"
+  "registry_sha256": "b5143e6254bef05069e103f45128704d93bb5dfba56035dcc8e173261711fe78"
 }
