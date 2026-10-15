@@ -1,0 +1,137 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "REVIEW",
+  "idempotency_key": "3b59b2c34821d25a0bc2aeb900b5bfa83be00250d9ea1269f803f30631ec7fd4",
+  "target": 3070,
+  "result": {
+    "status": "REVIEWED",
+    "review": {
+      "schema": "SMART_POST_RESULT_REVIEW_1",
+      "status": "POST_RESULT_REVIEW_COMPLETE",
+      "target_contest": 3070,
+      "next_target": 3071,
+      "created_utc": "2026-10-15T14:21:57.341452+00:00",
+      "source": "CAIXA_LOTERIAS_PRIMARY_OFFICIAL_3070",
+      "canonical_history": {
+        "file": "Mega-Sena.xlsx",
+        "sha256": "ac1659a4818c67a9509c51015941390ddc3d80f6e4551b4339e298f8147a0436",
+        "history_max": 3070,
+        "row_count": 3070
+      },
+      "official_result": [
+        19,
+        27,
+        29,
+        43,
+        54,
+        60
+      ],
+      "primary_card_hits": 2,
+      "champion_hits": 2,
+      "challenger_hits": 2,
+      "calendar_audit": {
+        "scheduled_date_immutable": "13/10/2026",
+        "official_draw_date": "14/10/2026",
+        "secondary_official_channel": "UNAVAILABLE_HTTP404"
+      },
+      "learning_policy": {
+        "frozen_weights_unchanged": true,
+        "future_weight_promotion_requires_out_of_sample_validation": true,
+        "future_information_used_for_pre_result_card": false
+      },
+      "operator_next_action": "HOLD_OR_AUTHORIZE_NEXT_CYCLE",
+      "stop_required": true,
+      "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+      "automatic_weight_change_performed": false,
+      "statistical_adjustment_authorized": false,
+      "result_used_for_prediction": false,
+      "no_future_leakage": true,
+      "reviewed_utc": "2026-10-15T14:21:57.341495+00:00",
+      "parecer": "OFFICIAL_3070_ADJUDICATED; CAUSAL_FREEZE_IMMUTABLE; HOLD_3071_NEEDS_OPERATOR",
+      "revision": 1,
+      "previous_document_sha256": null,
+      "sha256": "32232e89af83b82fc42d79af3e6c88dc5898a6be61c1b6d8b84fa5082de9a09d"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "REVIEWED",
+      "revision": 44,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3070,
+      "completed_contest": 3069,
+      "previous_state": "ADJUDICATED",
+      "transition": "ADJUDICATED_TO_REVIEWED",
+      "transition_actor": "operator_review_complete",
+      "transition_utc": "2026-10-15T14:22:08.778302+00:00",
+      "previous_lifecycle_sha256": "d3426992bfa33d4ba79b2d67fb7b0aaff367c9bbab164d9170a75a3751b9b534",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "168e98140480d9b3e80cd0fe51dfbd01af27334a04fe78b97268f994e7fe9191"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3069.json",
+          "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3070:operator-3070-ee1bc13734e4-20261013T225858165681Z",
+        "reserved_authority_sha256": "db6ba864634964a7884d127774c06e1128566a04ba8f82b5f75457c5a2016332",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "f1504f857aee6d378b7f08f61dd90cac90e6593f1ca00fb10affd9be03ecf373",
+          "epoch_id": "operator-3070-ee1bc13734e4-20261013T225858165681Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/ARCHIVE_MANIFEST.json",
+          "sha256": "c6f5a8b286604f366a868291d261880bb1c0847ba5fa800c090df661e281c67a"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3069,
+          "through_target": 3069,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+              "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+              "target_contest": 3069
+            }
+          ],
+          "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
+            "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
+            "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
+            "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
+            "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+            "targets": [
+              3069
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "d7cb7416e700cb0bb3b16edba709196efa7546d8b89ef776b973f3d508ff0d15"
+    }
+  }
+}
