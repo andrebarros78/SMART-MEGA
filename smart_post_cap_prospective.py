@@ -137,7 +137,7 @@ def fetch_caixa(target: int) -> dict[str, Any]:
 
 
 MIRROR_API = "https://loteriascaixa-api.herokuapp.com/api/megasena/"
-MIRROR_ARCHIVE = "https://www.resultadomega.com.br/api/concursos.json"
+MIRROR_ARCHIVE = "https://resultadomega.com.br/api/concursos.json"
 
 
 def _get_json_url(url: str, expected_hostname: str, cap: int) -> Any:
@@ -158,7 +158,7 @@ def _get_json_url(url: str, expected_hostname: str, cap: int) -> Any:
 def fetch_mirror_consensus(target: int) -> dict[str, Any]:
     """Two different publishers; NEVER represents direct official CAIXA proof."""
     first = _get_json_url(MIRROR_API + str(target), "loteriascaixa-api.herokuapp.com", 200_000)
-    second = _get_json_url(MIRROR_ARCHIVE, "www.resultadomega.com.br", 500_000)
+    second = _get_json_url(MIRROR_ARCHIVE, "resultadomega.com.br", 500_000)
     if type(first) is not dict or type(first.get("concurso")) is not int or first["concurso"] != target:
         raise ValueError("first mirror contest mismatch")
     a = strict_numbers([int(n) if isinstance(n, str) and re.fullmatch(r"\d{1,2}", n)
