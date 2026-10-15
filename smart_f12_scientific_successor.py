@@ -27,6 +27,59 @@ NEW_CHECK = b'"fine_tuning_consumed_by_challenger": _fine_tuning_consumed_by_cha
 OLD_CHECK = b'"fine_tuning_consumed_by_challenger": challenger.get("ai_hyperparameter_authority", {}).get("sha256") == fine_tuning["authority_sha256"],'
 
 
+# F12-approved live source is anchored to the pre-operator change revision.
+# These exact inverse transformations prove the operator change affects only
+# scheduling/authorization, not predictive scoring, weights or historical data.
+APPROVED_F12_PIPELINE_SHA256 = "59f6635b841d54f381fc725171110a3b5bf1db487d7f54eb36d9405278bae21c"
+OPERATOR_SOURCE_REVERSALS = (
+    (
+        b"from smart_procedural_actionability_gate import FreezeWindowResult, evaluate_freeze_window",
+        b"from smart_procedural_actionability_gate import evaluate_freeze_window",
+    ),
+    (
+        b'''    if schedule.get("authority") == "OPERATOR_SELECTED_TARGET":
+        # The operator directs generation; a draw timestamp is not invented
+        # or misrepresented as independently verified.
+        freeze_window = FreezeWindowResult(
+            status="OPERATOR_UNVERIFIED_DRAW_TIME",
+            scheduled_datetime="",
+            observed_at=datetime.now(timezone.utc).isoformat(),
+            before_draw=False,
+            freeze_authority_allowed=True,
+            reason="operator requested target; no externally verified draw time",
+        )
+    else:
+        freeze_window = evaluate_freeze_window(
+            scheduled_datetime=str(schedule["scheduled_datetime"]),
+            observed_at=datetime.now(timezone.utc).isoformat(),
+        )''',
+        b'''    freeze_window = evaluate_freeze_window(
+        scheduled_datetime=str(schedule["scheduled_datetime"]),
+        observed_at=datetime.now(timezone.utc).isoformat(),
+    )''',
+    ),
+    (
+        b'''        "target_authority_bound": (
+            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET"}
+            and schedule.get("result_used") is False
+        ),''',
+        b'''        "official_schedule_bound": schedule.get("authority") == "CAIXA_ARCHIVED_CRONOGRAM_PDF" and schedule.get("result_used") is False,''',
+    ),
+)
+
+
+def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
+    '''Return the exact pre-operator F12 pipeline; reject arbitrary diffs.'''
+    if _matches_expected_code(value, APPROVED_F12_PIPELINE_SHA256):
+        return value
+    restored = value
+    for candidate, original in OPERATOR_SOURCE_REVERSALS:
+        if restored.count(candidate) != 1:
+            return None
+        restored = restored.replace(candidate, original, 1)
+    return restored if _matches_expected_code(restored, APPROVED_F12_PIPELINE_SHA256) else None
+
+
 def _sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -50,7 +103,10 @@ def _matches_expected_code(value: bytes, sha256: str) -> bool:
 
 
 def reconstruct_predecessor(value: bytes) -> bytes | None:
-    """Restore old source *text* without editing it; fail if repair is unexpected."""
+    """Prove operator-only delta, then recover the immutable F11 source exactly."""
+    value = reconstruct_approved_f12_source(value)
+    if value is None:
+        return None
     if value.count(REPAIR_START) != 1 or value.count(REPAIR_END) != 1 or value.count(NEW_CHECK) != 1:
         return None
     start = value.index(REPAIR_START)
@@ -89,7 +145,9 @@ def evaluate(root: str | Path) -> dict[str, Any]:
                          "f11_source_sha256": expected,
                          "repair_scope": path == PREDICTIVE_FILE}
     live_f11 = evaluate_f11(root)
+    operator_delta_proven = reconstruct_approved_f12_source((root / PREDICTIVE_FILE).read_bytes()) is not None
     check = {
+        "operator_schedule_only_change_reversible_to_F12": operator_delta_proven,
         "f11_historical_report_reproducible": archived == reproduced,
         "f11_historical_report_pass": archived.get("status") == "PASS"
             and archived.get("sha256") == _json_sha({k: v for k, v in archived.items() if k != "sha256"}),
@@ -116,7 +174,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "schema": SCHEMA,
         "status": "PASS" if all(check.values()) else "FAIL",
         "project": "SMART-MEGA",
-        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR",
+        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__OPERATOR_SCHEDULE_ADAPTER",
         "historical_baseline_head": BASELINE_HEAD,
         "historical_f11_report_file": F11_ARCHIVE,
         "historical_f11_report_sha256": _sha256((root / F11_ARCHIVE).read_bytes()),
@@ -129,7 +187,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "prospective_advantage_proven": False,
         "six_of_six_proven": False,
         "additional_prospective_samples_since_F11": 0,
-        "note": "An unchanged predictor plus a stricter lineage check is engineering non-regression, not evidence of superior lottery prediction.",
+        "note": "The immutable F11 predictor is reconstructed byte-for-byte after reversing only the exact approved F12 causal guard and operator-target scheduling delta. This proves a restricted source change, not superior lottery prediction.",
     }
     report["sha256"] = _json_sha(report)
     return report

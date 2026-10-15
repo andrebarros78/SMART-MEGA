@@ -20,13 +20,14 @@ REPOSITORY = "andrebarros78/SMART-MEGA"
 READ_ONLY = {"status", "preflight", "result-preflight"}
 TARGET_ACTIONS = {
     "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
-    "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate",
+    "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "register-result", "generate-card",
     "post-result-report", "review", "hold", "terminal",
 }
 ACTIONS = READ_ONLY | TARGET_ACTIONS
-PAYLOAD_REQUIRED = {"adjudicate", "review"}
+PAYLOAD_REQUIRED = {"adjudicate", "review", "register-result"}
 PAYLOAD_OPTION = {
     "adjudicate": "--result-data",
+    "register-result": "--result-file",
     "review": "--review-file",
     "catch-up": "--payload-file",
 }
@@ -263,8 +264,8 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
                 "observation": observation, "result_preflight": result_readiness, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
-    frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation == "freeze" else None
-    if operation == "freeze":
+    frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation in {"freeze", "generate-card"} else None
+    if operation in {"freeze", "generate-card"}:
         from smart_calibration_safety_gate import historical_baseline, verify_freeze_calibration
         historical_baseline(root)
         verify_freeze_calibration(root, observation["proof"])

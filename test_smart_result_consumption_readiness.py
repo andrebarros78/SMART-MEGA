@@ -7,6 +7,13 @@ from smart_github_operator import READ_ONLY, command_args
 
 
 def _setup(monkeypatch, tmp_path):
+    from smart_operator_result import register
+    import json
+    supplied = tmp_path / "OPERATOR_RESULT_INPUT.json"
+    supplied.write_text(json.dumps({"schema": "SMART_OPERATOR_RESULT_INPUT_1",
+        "target_contest": 3068, "draw_date": "08/10/2026",
+        "numbers": [1, 7, 13, 25, 41, 59]}))
+    register(tmp_path, 3068, supplied)
     monkeypatch.setattr(op, "canonical_root", lambda root=None: tmp_path)
     monkeypatch.setattr(op, "reconcile_startup",
                         lambda *a, **k: {"status": "OK", "failed_checks": []})
@@ -168,3 +175,20 @@ def test_existing_github_preflight_dispatch_exposes_readonly_result_gate(tmp_pat
     assert result["commit"] is None
     assert subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"]) == before
     assert not subprocess.check_output(["git", "-C", str(root), "status", "--porcelain"])
+
+
+
+def test_operator_result_preflight_ignores_external_schedule_date(tmp_path, monkeypatch):
+    _setup(monkeypatch, tmp_path)
+    monkeypatch.setattr(op, "verify_active_epoch", lambda *a, **k: {
+        "status": "FROZEN", "target_contest": 3068,
+        "target_schedule": {"authority": "OPERATOR_SELECTED_TARGET",
+                            "target_contest": 3068, "target_date": None}})
+    monkeypatch.setattr(op.terminal_executor, "probe", lambda *a, **k: _observation(
+        draw_date="09/10/2026", result_input_authority="OPERATOR",
+        terminal_source_corroboration_authorized=False))
+    result = op.result_preflight_operation(tmp_path, 3068)
+    assert result["status"] == "READY_TO_CONSUME"
+    assert result["result_input_authority"] == "OPERATOR"
+    assert result["draw_date"] == "09/10/2026"
+    assert result["primary_official_channel_validated"] is False
