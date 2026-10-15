@@ -67,3 +67,16 @@ def test_full_process_before_deadline_crosses_temporal_guard(monkeypatch,tmp_pat
     monkeypatch.setattr(fp,'freeze_champion_challenger',lambda *_a,**_k:(_ for _ in ()).throw(AssertionError('freeze should not be reached in this test')))
     with pytest.raises(ReachedPreGate,match='reached pre-freeze integration'):
         fp.run_full_process(tmp_path, manual_generation_authorized=True)
+
+
+
+def test_operator_target_without_caixa_draw_time_reaches_generation_gate(monkeypatch,tmp_path):
+    schedule={"authority":"OPERATOR_SELECTED_TARGET", "scheduled_datetime":None,
+              "result_used":False, "target_date":None,
+              "target_contest":3054}
+    _wire(monkeypatch,tmp_path,schedule)
+    class ReachedPreGate(RuntimeError): pass
+    monkeypatch.setattr(fp,'write_total_integration',lambda *_a,**_k:
+                        (_ for _ in ()).throw(ReachedPreGate('operator target authorized')))
+    with pytest.raises(ReachedPreGate,match='operator target authorized'):
+        fp.run_full_process(tmp_path, manual_generation_authorized=True)

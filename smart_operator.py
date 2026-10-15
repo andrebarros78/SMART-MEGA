@@ -35,6 +35,7 @@ from smart_operator_contract import contract, validate_target_sequence
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
 from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
+from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
 
@@ -1085,6 +1086,41 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 
+def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """A single explicit operator request authorizes the existing generation steps."""
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    lifecycle = load_lifecycle(root)
+    if int(lifecycle.get("target_contest", -1)) != target:
+        raise ValueError("operator requested target differs from lifecycle")
+    if lifecycle.get("state") == "HOLD":
+        authorize_next_cycle_operation(root, target)
+        lifecycle = load_lifecycle(root)
+    if lifecycle.get("state") == "AUTHORIZED":
+        prepare_operation(root, target)
+        lifecycle = load_lifecycle(root)
+    if lifecycle.get("state") == "PREPARED":
+        authorize_generation_operation(root, target)
+        return freeze_operation(root, target)
+    if lifecycle.get("state") == "FROZEN":
+        return freeze_operation(root, target)
+    raise ValueError(f"card generation requires HOLD/AUTHORIZED/PREPARED/FROZEN: {lifecycle.get('state')}")
+
+
+@locked_operation("REGISTER_RESULT")
+@startup_guarded("REGISTER_RESULT")
+def register_result_operation(root: str | Path, target: int, result_file: str | Path) -> dict[str, Any]:
+    """Register immutable operator input without any source-lookup or CAIXA dependency."""
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    assert_lifecycle_state(root, "FROZEN", target_contest=target)
+    active = verify_active_epoch(root / ACTIVE_PATH)
+    if active.get("status") != "FROZEN" or int(active.get("target_contest", -1)) != target:
+        raise ValueError("result registration requires the exact frozen epoch")
+    _existing_frozen_freeze_summary(root, target)
+    return register_operator_result(root, target, result_file)
+
+
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Read-only official-result readiness gate for the immutable frozen epoch.
 
@@ -1113,11 +1149,17 @@ def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
         schedule = active.get("target_schedule")
         if not isinstance(schedule, dict) or int(schedule.get("target_contest", -1)) != target:
             raise ValueError("active epoch target schedule is invalid")
-        expected_date = str(schedule.get("target_date", ""))
-        datetime.strptime(expected_date, "%d/%m/%Y")
+        if schedule.get("authority") == "OPERATOR_SELECTED_TARGET":
+            expected_date = None
+        else:
+            expected_date = str(schedule.get("target_date", ""))
+            datetime.strptime(expected_date, "%d/%m/%Y")
     except (ValueError, RuntimeError, KeyError, TypeError, FileNotFoundError) as exc:
         return {**base, "status": "BLOCKED_INTEGRITY",
                 "error_type": type(exc).__name__, "reason": str(exc)}
+    if not (root / f"SMART_OPERATOR_RESULT_{target}.json").is_file():
+        return {**base, "status": "WAITING_OPERATOR_RESULT",
+                "freeze_sha256": frozen["freeze_sha256"], "input_authority": "OPERATOR"}
     try:
         observation = terminal_executor.probe(root, target)
     except (ValueError, RuntimeError, KeyError, TypeError, FileNotFoundError) as exc:
@@ -1145,7 +1187,8 @@ def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     if observation.get("preflight_status") != "PASS":
         return {**base, "status": "BLOCKED_INTEGRITY",
                 "reason": "terminal prospective freeze preflight did not pass"}
-    if observation.get("draw_date") != expected_date:
+    if (observation.get("draw_date") != expected_date
+            and observation.get("result_input_authority") != "OPERATOR"):
         return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
                 "reason": "official result date differs from frozen schedule"}
     numbers = observation.get("actual_numbers")
@@ -1158,10 +1201,12 @@ def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
         **base, "status": "READY_TO_CONSUME",
         "freeze_sha256": frozen["freeze_sha256"],
         "lifecycle_sha256": lifecycle["sha256"],
-        "cutoff_contest": target - 1, "draw_date": expected_date,
+        "cutoff_contest": target - 1,
+        "draw_date": observation.get("draw_date") if expected_date is None else expected_date,
         "official_numbers": numbers,
         "dual_channel_corroborated": observation.get("terminal_source_corroboration_authorized") is True,
-        "primary_official_channel_validated": True,
+        "primary_official_channel_validated": observation.get("result_input_authority") != "OPERATOR",
+        "result_input_authority": observation.get("result_input_authority", "CAIXA_CONTEST_API"),
         "mutation_requires_explicit_dispatch": True,
     }
 
@@ -1398,6 +1443,8 @@ def main(argv: list[str] | None = None) -> None:
     g = sub.add_parser("authorize-generation"); g.add_argument("--target", type=int, required=True)
     f = sub.add_parser("freeze"); f.add_argument("--target", type=int, required=True)
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
+    op_result = sub.add_parser("register-result"); op_result.add_argument("--target", type=int, required=True); op_result.add_argument("--result-file", required=True)
+    gen_card = sub.add_parser("generate-card"); gen_card.add_argument("--target", type=int, required=True)
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
@@ -1415,6 +1462,8 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "authorize-generation": out = authorize_generation_operation(root, args.target)
     elif args.action == "freeze": out = freeze_operation(root, args.target)
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
+    elif args.action == "register-result": out = register_result_operation(root, args.target, args.result_file)
+    elif args.action == "generate-card": out = generate_card_operation(root, args.target)
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)

@@ -72,6 +72,20 @@ def assert_pre_draw_window(
 ) -> dict[str, Any]:
     if not isinstance(schedule, dict) or schedule.get("schema") != SCHEMA:
         raise ValueError("target schedule authority invalid for temporal guard")
+    if schedule.get("authority") == "OPERATOR_SELECTED_TARGET":
+        if (schedule.get("operator_selected_target") is not True
+                or schedule.get("result_used") is not False
+                or schedule.get("scheduled_datetime") is not None
+                or not isinstance(schedule.get("target_contest"), int)):
+            raise ValueError("operator target authority is invalid")
+        return {
+            "schema": TEMPORAL_GUARD_SCHEMA, "status": "OPERATOR_UNVERIFIED_DRAW_TIME",
+            "target_contest": int(schedule["target_contest"]),
+            "checked_at_utc": (datetime.now(timezone.utc) if now is None else now).astimezone(timezone.utc).isoformat(),
+            "scheduled_datetime": None, "seconds_until_draw": None,
+            "minimum_lead_seconds": None, "before_scheduled_draw": False,
+            "operator_selected": True, "result_used": False,
+        }
     scheduled_raw = schedule.get("scheduled_datetime")
     if not isinstance(scheduled_raw, str):
         raise ValueError("target schedule lacks scheduled_datetime")
@@ -144,6 +158,46 @@ def _previous_contest_date(root: Path, target_contest: int) -> datetime:
     return value.to_pydatetime().replace(tzinfo=None)
 
 
+def _operator_selected_schedule(root: Path, target_contest: int) -> dict[str, Any] | None:
+    """Explicit target instruction; no inferred draw date, time or external fetch."""
+    target = int(target_contest)
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    if active_path.is_file():
+        from smart_learning_epoch_reset import verify_active_epoch
+        active = verify_active_epoch(active_path)
+        existing = active.get("target_schedule")
+        if (int(active.get("target_contest", -1)) == target
+                and active.get("operator_selected_target") is True
+                and isinstance(existing, dict)
+                and existing.get("authority") == "OPERATOR_SELECTED_TARGET"):
+            return existing
+
+    authority_path = root / "SMART_NEXT_CYCLE_AUTHORITY.json"
+    if not authority_path.is_file():
+        return None
+    doc = json.loads(authority_path.read_text(encoding="utf-8-sig"))
+    if not isinstance(doc, dict) or doc.get("schema") != "SMART_NEXT_CYCLE_AUTHORITY_1":
+        raise ValueError("operator target authority invalid")
+    observed = doc.get("sha256")
+    canonical = dict(doc)
+    canonical.pop("sha256", None)
+    if observed != _sha256_json(canonical):
+        raise ValueError("operator target authority self-hash mismatch")
+    if (int(doc.get("target_contest", -1)) != target
+            or doc.get("authorized_by") != "USER_EXPLICIT_APPLY_OR_GENERATE"
+            or doc.get("status") not in {"AUTHORIZED", "RESERVED", "CONSUMED_FOR_PREPARE"}):
+        return None
+    return {
+        "schema": SCHEMA, "target_contest": target, "previous_contest": target - 1,
+        "target_date": None, "weekday": None, "scheduled_datetime": None,
+        "scheduled_timezone": None, "source_file": authority_path.name,
+        "source_sha256": observed, "source_count": 1,
+        "authority": "OPERATOR_SELECTED_TARGET", "operator_selected_target": True,
+        "draw_time_independently_verified": False, "schedule_consensus": False,
+        "result_used": False,
+    }
+
+
 def resolve_target_schedule(
     root: str | Path,
     target_contest: int,
@@ -151,6 +205,9 @@ def resolve_target_schedule(
     time_policy: str | Path = DEFAULT_TIME_POLICY,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
+    operator = _operator_selected_schedule(root, int(target_contest))
+    if operator is not None:
+        return operator
     archive_path = Path(archive)
     if not archive_path.is_absolute():
         archive_path = (root / archive_path).resolve()

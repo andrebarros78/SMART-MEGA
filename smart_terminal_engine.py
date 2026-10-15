@@ -881,6 +881,7 @@ def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensu
         "actual_numbers": normalized["numbers"],
         "draw_date": normalized["draw_date"],
         "terminal_source_corroboration_authorized": consensus.get("terminal_source_corroboration_authorized") is True,
+        "result_input_authority": consensus.get("primary", {}).get("channel"),
         "canonical_writes_performed": False,
         "terminal_6of6_proven": False,
     }

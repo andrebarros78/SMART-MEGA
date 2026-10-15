@@ -132,9 +132,21 @@ def ingest(source: Path, output: Path, proof: Path, target: int, payload: dict[s
     if proof.exists():
         raise FileExistsError(f"refusing to overwrite existing proof: {proof}")
     if payload is None:
-        payload, endpoint = fetch_official_payload(target)
-    else:
-        endpoint = API_URL.format(contest=int(target))
+        # A missing operator result cannot trigger an implicit network call.
+        # Locate the immutable operator authority along the caller's own
+        # project-local dataset ancestry (canonical or epoch snapshot).
+        from smart_operator_result import fetch as operator_fetch
+        source_parent = source.resolve().parent
+        roots = (source_parent, *source_parent.parents)
+        project_root = next(
+            (candidate for candidate in roots
+             if (candidate / f"SMART_OPERATOR_RESULT_{int(target)}.json").is_file()),
+            None,
+        )
+        if project_root is None:
+            raise ValueError("operator result required; automatic CAIXA ingestion disabled")
+        payload, _ = operator_fetch(project_root, target)
+    endpoint = None if payload.get("source") == "OPERATOR" else API_URL.format(contest=int(target))
     official = validate_official_payload(payload, target)
     source_sha = sha256_file(source)
     frame = build_extended_frame(source, target, official)
@@ -143,6 +155,8 @@ def ingest(source: Path, output: Path, proof: Path, target: int, payload: dict[s
         "schema": SCHEMA,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "official_endpoint": endpoint,
+        "result_input_authority": "OPERATOR" if payload.get("source") == "OPERATOR" else "CAIXA_CONTEST_API",
+        "source_independently_verified": payload.get("source") != "OPERATOR",
         "target_contest": int(target),
         "draw_date": official["draw_date_text"],
         "actual_numbers": official["numbers"],

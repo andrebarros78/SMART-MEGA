@@ -139,19 +139,36 @@ def test_ingest_is_atomic_and_refuses_overwrite(tmp_path):
         ingest(source, output, another_proof, 3053, payload())
 
 
-def test_ingest_fetches_when_payload_is_omitted(tmp_path, monkeypatch):
-    import smart_official_result_ingest as module
+def _register_operator_for_ingest(tmp_path):
+    import json
+    from smart_operator_result import register
+    source = tmp_path / "SMART_OPERATOR_RESULT_INPUT_3053.json"
+    source.write_text(json.dumps({"schema":"SMART_OPERATOR_RESULT_INPUT_1",
+        "target_contest":3053,"draw_date":"03/09/2026",
+        "numbers":[1,13,25,35,39,51]}),encoding="utf-8")
+    return register(tmp_path,3053,source)
 
-    monkeypatch.setattr(module, "fetch_official_payload", lambda target: (payload(target), "https://official/test"))
-    result = module.ingest(source_file(tmp_path), tmp_path / "out.xlsx", tmp_path / "proof.json", 3053)
-    assert result["official_endpoint"] == "https://official/test"
+
+def test_ingest_fetches_operator_only_when_payload_omitted(tmp_path, monkeypatch):
+    import smart_official_result_ingest as module
+    monkeypatch.setattr(module,"fetch_official_payload",
+                        lambda *a: pytest.fail("must not call CAIXA"))
+    source = source_file(tmp_path)
+    with pytest.raises(ValueError,match="operator result required"):
+        module.ingest(source,tmp_path/"blocked.xlsx",tmp_path/"blocked.json",3053)
+    _register_operator_for_ingest(tmp_path)
+    result = module.ingest(source,tmp_path/"out.xlsx",tmp_path/"proof.json",3053)
+    assert result["official_endpoint"] is None
+    assert result["result_input_authority"] == "OPERATOR"
+    assert result["source_independently_verified"] is False
 
 
 def test_ingest_main_cli(tmp_path, monkeypatch, capsys):
     import json
     import smart_official_result_ingest as module
 
-    monkeypatch.setattr(module, "fetch_official_payload", lambda target: (payload(target), "https://official/test"))
+    _register_operator_for_ingest(tmp_path)
+    monkeypatch.setattr(module, "fetch_official_payload", lambda target: pytest.fail("must not call CAIXA"))
     source = source_file(tmp_path)
     output = tmp_path / "cli.xlsx"
     proof = tmp_path / "cli.json"

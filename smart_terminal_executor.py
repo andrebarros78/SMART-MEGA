@@ -2,6 +2,7 @@ from __future__ import annotations
 
 from pathlib import Path
 from typing import Any, Callable
+from smart_operator_result import fetch as fetch_operator_result
 
 import smart_terminal_engine as _engine
 
@@ -10,12 +11,12 @@ Fetcher = Callable[[int], tuple[dict[str, Any], dict[str, Any]]]
 
 def probe(root: str | Path, target: int, fetcher: Fetcher | None = None) -> dict[str, Any]:
     if fetcher is None:
-        return _engine.probe_active_epoch(root, int(target))
+        fetcher = lambda selected: fetch_operator_result(root, selected)
     return _engine.probe_active_epoch(root, int(target), fetcher=fetcher)
 
 def execute(root: str | Path, target: int, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:
     if fetcher is None:
-        return _engine.execute_active_epoch(root, int(target), allow_terminal_write=allow_terminal_write)
+        fetcher = lambda selected: fetch_operator_result(root, selected)
     return _engine.execute_active_epoch(root, int(target), fetcher=fetcher, allow_terminal_write=allow_terminal_write)
 
 def complete_adjudicated_sequence(root: str | Path, target: int) -> dict[str, Any]:

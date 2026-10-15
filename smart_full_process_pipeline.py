@@ -21,7 +21,7 @@ from smart_startup_reconciler import assert_reconciled
 from smart_storage_surfaces import require_within
 from smart_manual_generation_authority import validate as validate_manual_generation, consume as consume_manual_generation
 from smart_prospective_cycle import register as register_prospective_cycle
-from smart_procedural_actionability_gate import evaluate_freeze_window
+from smart_procedural_actionability_gate import FreezeWindowResult, evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
 
@@ -283,10 +283,22 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     cutoff = int(active["cutoff_contest"])
     manual_generation_authority = validate_manual_generation(root, active, target)
     schedule = resolve_target_schedule(root, target)
-    freeze_window = evaluate_freeze_window(
-        scheduled_datetime=str(schedule["scheduled_datetime"]),
-        observed_at=datetime.now(timezone.utc).isoformat(),
-    )
+    if schedule.get("authority") == "OPERATOR_SELECTED_TARGET":
+        # The operator directs generation; a draw timestamp is not invented
+        # or misrepresented as independently verified.
+        freeze_window = FreezeWindowResult(
+            status="OPERATOR_UNVERIFIED_DRAW_TIME",
+            scheduled_datetime="",
+            observed_at=datetime.now(timezone.utc).isoformat(),
+            before_draw=False,
+            freeze_authority_allowed=True,
+            reason="operator requested target; no externally verified draw time",
+        )
+    else:
+        freeze_window = evaluate_freeze_window(
+            scheduled_datetime=str(schedule["scheduled_datetime"]),
+            observed_at=datetime.now(timezone.utc).isoformat(),
+        )
     ledger_checks = _pre_freeze_ledger_checks(root, active, ledger_path, ledger_before, target)
     pre_checks = {
         "epoch_reset_ready": active["status"] == "RESET_READY",
@@ -463,7 +475,10 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "fine_tuning_authority_bound_to_epoch_data": fine_tuning["data_sha256"] == active["data_sha256"] and int(fine_tuning["target_contest"]) == target and int(fine_tuning["cutoff_contest"]) == cutoff,
         "fine_tuning_future_result_unused": fine_tuning["future_result_used"] is False and fine_tuning["holdout_used_for_selection"] is False,
         "fine_tuning_consumed_by_challenger": _fine_tuning_consumed_by_challenger(freeze_obj, fine_tuning),
-        "official_schedule_bound": schedule.get("authority") == "CAIXA_ARCHIVED_CRONOGRAM_PDF" and schedule.get("result_used") is False,
+        "target_authority_bound": (
+            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET"}
+            and schedule.get("result_used") is False
+        ),
     }
     if not all(trace_checks.values()):
         raise RuntimeError(f"full process trace invalid: {trace_checks}")
