@@ -828,9 +828,17 @@ def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus:
     return mission
 
 
-def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
+def _default_operator_fetcher(root: Path) -> Fetcher:
+    """Only local operator declaration is used by direct engine entrypoints."""
+    from smart_operator_result import fetch as operator_fetch
+    return lambda target: operator_fetch(root, target)
+
+
+def probe(root: str | Path, fetcher: Fetcher | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
+    if fetcher is None:
+        fetcher = _default_operator_fetcher(root)
     binding = _runtime_binding(root)
     if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
         raise ValueError("active epoch freeze hash differs from immutable authority")
@@ -887,9 +895,11 @@ def probe(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensu
     }
 
 
-def execute(root: str | Path, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
+def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
+    if fetcher is None:
+        fetcher = _default_operator_fetcher(root)
     binding = _runtime_binding(root)
     if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
         raise ValueError("active epoch freeze hash differs from immutable authority")
@@ -1001,13 +1011,13 @@ def active_epoch_context(root: str | Path, target: int):
                 globals()[name] = value
 
 
-def probe_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus) -> dict[str, Any]:
+def probe_active_epoch(root: str | Path, target: int, fetcher: Fetcher | None = None) -> dict[str, Any]:
     root = canonical_root(root)
     with active_epoch_context(root, target):
         return probe(root, fetcher=fetcher)
 
 
-def execute_active_epoch(root: str | Path, target: int, fetcher: Fetcher = official_consensus.fetch_consensus, *, allow_terminal_write: bool = True) -> dict[str, Any]:
+def execute_active_epoch(root: str | Path, target: int, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:
     root = canonical_root(root)
     with active_epoch_context(root, target):
         return execute(root, fetcher=fetcher, allow_terminal_write=allow_terminal_write)

@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "31fbe5fd2d3791653b0394350031344843e5dd37a4b46fc29a44d1efc178ce73",
+  "inventory_sha256": "2b8057afffa2a10752d247b9a8232dc3c413a16ce837f1a0d958b5efdf17da22",
   "summary": {
-    "python_components": 495,
+    "python_components": 496,
     "workflow_entrypoints": 8,
     "production_components": 101,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 167,
+    "test_components": 168,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6775,8 +6775,10 @@
       "consumers": [
         "smart_official_result_ingest",
         "smart_operator",
+        "smart_terminal_engine",
         "smart_terminal_executor",
         "test_smart_official_result_ingest",
+        "test_smart_operator_direct_terminal_default",
         "test_smart_operator_result_authority",
         "test_smart_operator_result_integration",
         "test_smart_result_consumption_readiness"
@@ -8443,6 +8445,7 @@
         "smart_mission_status",
         "smart_official_evidence_consensus",
         "smart_official_result_ingest",
+        "smart_operator_result",
         "smart_prospective_authority",
         "smart_prospective_authority_lock",
         "smart_sequential_prospective_proof",
@@ -8454,7 +8457,8 @@
       "consumers": [
         "smart_terminal_executor",
         "test_smart_f03_terminal_engine_migration",
-        "test_smart_f17_terminal_stale_coverage"
+        "test_smart_f17_terminal_stale_coverage",
+        "test_smart_operator_direct_terminal_default"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8464,7 +8468,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "72ffbe6b03bfc55acdc87876eb5720eed99adaca492e781006c2531a8739a9b3"
+      "sha256": "1468374743558138c090b1757a64b02f237690121abdc3a9631b6436952e3f30"
     },
     {
       "component_id": "smart_terminal_executor",
@@ -11019,6 +11023,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4f90b50bccbbaec230a5839642859cff0a5e925c36a59769879af933b1d12f91"
+    },
+    {
+      "component_id": "test_smart_operator_direct_terminal_default",
+      "source_file": "test_smart_operator_direct_terminal_default.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_operator_result",
+        "smart_terminal_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "ac5fdb62eb103db0a9249f574bb35da82ca04fa5f09128f8945d5b5d8a2b8ef8"
     },
     {
       "component_id": "test_smart_operator_e2e_recovery",

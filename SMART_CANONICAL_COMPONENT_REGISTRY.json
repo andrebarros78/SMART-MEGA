@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "31fbe5fd2d3791653b0394350031344843e5dd37a4b46fc29a44d1efc178ce73",
+  "source_reachability_inventory_sha256": "2b8057afffa2a10752d247b9a8232dc3c413a16ce837f1a0d958b5efdf17da22",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 495,
+    "component_count": 496,
     "active": 101,
     "shadow": 1,
-    "diagnostic": 193,
+    "diagnostic": 194,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -7166,8 +7166,10 @@
       "consumers": [
         "smart_official_result_ingest",
         "smart_operator",
+        "smart_terminal_engine",
         "smart_terminal_executor",
         "test_smart_official_result_ingest",
+        "test_smart_operator_direct_terminal_default",
         "test_smart_operator_result_authority",
         "test_smart_operator_result_integration",
         "test_smart_result_consumption_readiness"
@@ -8914,7 +8916,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "72ffbe6b03bfc55acdc87876eb5720eed99adaca492e781006c2531a8739a9b3",
+      "implementation_sha256": "1468374743558138c090b1757a64b02f237690121abdc3a9631b6436952e3f30",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8929,6 +8931,7 @@
         "smart_mission_status",
         "smart_official_evidence_consensus",
         "smart_official_result_ingest",
+        "smart_operator_result",
         "smart_prospective_authority",
         "smart_prospective_authority_lock",
         "smart_sequential_prospective_proof",
@@ -8939,7 +8942,8 @@
       "consumers": [
         "smart_terminal_executor",
         "test_smart_f03_terminal_engine_migration",
-        "test_smart_f17_terminal_stale_coverage"
+        "test_smart_f17_terminal_stale_coverage",
+        "test_smart_operator_direct_terminal_default"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -11726,6 +11730,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_operator_direct_terminal_default",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_operator_direct_terminal_default.py",
+      "implementation_sha256": "ac5fdb62eb103db0a9249f574bb35da82ca04fa5f09128f8945d5b5d8a2b8ef8",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operator_result",
+        "smart_terminal_engine"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_operator_e2e_recovery",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_e2e_recovery.py",
@@ -13395,5 +13423,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "636037b35fbd144099c1d3b5670a983963de662a0dd44f9d37c282d60aa4ef01"
+  "registry_sha256": "41a2a57228d901288312f2b88e572fa2c7895473b5c3cb85c034c8df1bf15d17"
 }
