@@ -1,0 +1,379 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "ADJUDICATE",
+  "idempotency_key": "c5289eae1f728b61e5aa76e6b9c8966c5896e09fb2b97f175b685704b0709df7",
+  "target": 3070,
+  "result": {
+    "target_contest": 3070,
+    "actual_numbers": [
+      19,
+      27,
+      29,
+      43,
+      54,
+      60
+    ],
+    "champion_hits": 2,
+    "challenger_hits": 2,
+    "e_value_after": 1.0416666666666667,
+    "ledger_sha256": "a420f1a8bf36bdaa20e78c9ebb710337cf230982bbc93a9711d2ab2da0a26389",
+    "attribution_sha256": "aa79f54beac8ef07697249de23d717e06c3bf6ffc0bddc3a1a9e3c676bdbdc41",
+    "marginal_utility_sha256": "40d84ff85a4c396113ec81ed34c689f88df20ca5023de694dce370e78b640326",
+    "interaction_sha256": "cd311af7949afaa44fe510935bf7e8903d314d770637087f79bbbba8635b51f8",
+    "multi_challenger_sha256": "afe65df601a20d744c84b0c30faa8d1115ecd7f9e34eddc3dee20dccf4cf893b",
+    "meta_governor_sha256": "40f19b8a8502c361c5c8aa168757e251c9a30f96b266be984d6eeb3ee4f5db75",
+    "rank_score_calibration_evaluation_sha256": "ebeda9735cdb943b60fde1e42b85fe3d48bf72a42792e9212f44acbdc1e5a773",
+    "promotion": {
+      "schema": "SMART_EVIDENCE_ONLY_PROMOTION_AUTHORIZATION_1",
+      "decision": "KEEP_CHAMPION",
+      "authorized": false,
+      "production_switch_may_proceed": false,
+      "champion_remains_active": true,
+      "p13_eligible": false,
+      "p13_gate": {
+        "decision": "KEEP_CHAMPION",
+        "eligible": false,
+        "n": 1,
+        "challenger_hits": 2,
+        "champion_hits": 2,
+        "advantage_hits": 0,
+        "mean_hit_advantage": 0.0,
+        "cumulative_regret": 0,
+        "e_value": 1.0,
+        "inputs_validated": true,
+        "base_min_prospective_contests": 20,
+        "required_prospective_contests": 20,
+        "adaptive_sample_escalated": false,
+        "enough_contests": false,
+        "superior_to_champion": false,
+        "favorable_regret": false,
+        "sequential_evidence": false,
+        "blockers": [
+          "no_cumulative_superiority",
+          "regret_not_favorable",
+          "insufficient_adaptive_sample",
+          "insufficient_sequential_evidence"
+        ],
+        "reason": "prospective promotion conditions not met",
+        "candidate_fingerprint": "d6c3271d30e0ce81b6f723e85765f4b6cb187a7d48d08fca13668479c8929078",
+        "lineage_pair_count": 1,
+        "total_versioned_causal_pairs": 8,
+        "unversioned_causal_pairs_ignored": 4,
+        "discarded_prior_version_pairs": 7,
+        "lineage_e_value": 1.0,
+        "stored_global_e_value_trusted_for_promotion": false,
+        "lineage_reset_on_predictive_architecture_change": true,
+        "promotion_lineage_components": [
+          "engine",
+          "champion_engine",
+          "signal_agent",
+          "signal_quality",
+          "signal_weights",
+          "context_regime",
+          "redundancy_consensus",
+          "marginal_utility",
+          "contextual_meta_weights",
+          "rank_score_calibration",
+          "multi_challengers",
+          "meta_governor",
+          "bounded_online_learning",
+          "signal_interactions",
+          "signal_expansion_governance",
+          "learning_activation_gate",
+          "learning_activation_authority",
+          "ai_fine_tuning",
+          "data_quality_gate"
+        ]
+      },
+      "implementation_gate": {
+        "available": false
+      },
+      "independent_audit": {
+        "available": false
+      },
+      "global_integrity": {
+        "available": false,
+        "verified": false
+      },
+      "global_integrity_verified": false,
+      "known_material_deficiencies": [
+        "p13_not_eligible"
+      ],
+      "known_material_deficiency_count": 1,
+      "blockers": [
+        "p13_not_eligible"
+      ],
+      "reason": "evidence-only promotion requirements not met",
+      "policy": {
+        "schema": "SMART_EVIDENCE_ONLY_PROMOTION_POLICY_1",
+        "p13_statistical_eligibility_required": true,
+        "p14_independent_audit_pass_required": true,
+        "all_15_implementation_items_proven_required": true,
+        "implementation_gate_exact_contract_required": true,
+        "implementation_gate_freeze_allowed_required": true,
+        "current_global_integrity_proof_required": true,
+        "audit_report_self_hash_required": true,
+        "audit_promotion_authority_must_be_false": true,
+        "audit_independence_flag_required": true,
+        "audit_coverage_lines_and_branches_required": true,
+        "audit_hash_integrity_required": true,
+        "audit_deterministic_replay_required": true,
+        "audit_future_leakage_absent_required": true,
+        "audit_full_champion_comparison_required": true,
+        "p13_p14_metric_identity_required": true,
+        "known_material_deficiency_count_must_be_zero": true,
+        "missing_or_invalid_evidence_keeps_champion": true,
+        "manual_override_prohibited": true,
+        "historical_or_synthetic_evidence_cannot_authorize_real_promotion": true,
+        "production_switch_requires_explicit_p15_authorization": true,
+        "required_audit_checks": [
+          "coverage_lines_and_branches",
+          "hash_integrity",
+          "deterministic_replay",
+          "future_leakage_absent",
+          "full_champion_comparison",
+          "promotion_lineage_recomputed",
+          "independence_no_forbidden_dependencies",
+          "independent_freeze_decision_oracle"
+        ],
+        "sha256": "7c898823b70b67e1e3dc5f63506ef9a35e5d6bbcbb321cb6d1b0d726a3d1ed96"
+      },
+      "sha256": "bc6ead9473f8a49af194139faa0d4961d347e1fc7e09f73d4b49db755ab10ef5"
+    },
+    "post_result_report": {
+      "status": "EMITTED",
+      "report_file": "SMART_POST_RESULT_REPORT_3070.json",
+      "report_sha256": "2e4dd35c7eaeba03a9eff253a29a4f4fa1ea3cf5e03907c3a73929ca984d2062",
+      "markdown_file": "SMART_POST_RESULT_REPORT_3070.md",
+      "markdown_sha256": "91d6943f81f00e36a8abd2794d6296627ed097e19e477894839fac23bf22e444",
+      "report": {
+        "schema": "SMART_POST_RESULT_REPORT_1",
+        "status": "PASS",
+        "contest_number": 3070,
+        "official_result": [
+          19,
+          27,
+          29,
+          43,
+          54,
+          60
+        ],
+        "generated_card": [
+          10,
+          11,
+          38,
+          43,
+          27,
+          53
+        ],
+        "hit_count": 2,
+        "matched_numbers": [
+          27,
+          43
+        ],
+        "missed_result_numbers": [
+          19,
+          29,
+          54,
+          60
+        ],
+        "card_numbers_not_drawn": [
+          10,
+          11,
+          38,
+          53
+        ],
+        "champion_hits": 2,
+        "portfolio_adjudication": {
+          "portfolio_file": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_3070_CHAMPION_CHALLENGER_FREEZE_PORTFOLIO.json",
+          "portfolio_sha256": "457a5fc466a63f46bcb4cd705d3dbd06404235da971949bf230801a5f8b158fd",
+          "portfolio_id": "0f26002f76ccc569210d2872",
+          "artifact_type": "SMART_PORTFOLIO_ARTIFACT",
+          "games": [
+            [
+              10,
+              11,
+              14,
+              38,
+              46,
+              53
+            ],
+            [
+              10,
+              27,
+              35,
+              37,
+              43,
+              53
+            ],
+            [
+              11,
+              17,
+              30,
+              35,
+              37,
+              38
+            ],
+            [
+              14,
+              17,
+              27,
+              30,
+              43,
+              46
+            ]
+          ],
+          "hits_per_game": [
+            0,
+            2,
+            0,
+            2
+          ],
+          "best_game_hits": 2,
+          "union_numbers": [
+            10,
+            11,
+            14,
+            17,
+            27,
+            30,
+            35,
+            37,
+            38,
+            43,
+            46,
+            53
+          ],
+          "union_hits": 2,
+          "number_exposure": {
+            "10": 2,
+            "11": 2,
+            "14": 2,
+            "38": 2,
+            "46": 2,
+            "53": 2,
+            "27": 2,
+            "35": 2,
+            "37": 2,
+            "43": 2,
+            "17": 2,
+            "30": 2
+          }
+        },
+        "process_audit": {
+          "freeze_artifact": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_3070_CHAMPION_CHALLENGER_FREEZE.json",
+          "freeze_sha256": "ddc5393ff936ff9dbd8da31796b6873b6099ea719435496d01326a1040ea3e2a",
+          "ledger": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_SIGNAL_LEDGER.json",
+          "ledger_sha256": "a420f1a8bf36bdaa20e78c9ebb710337cf230982bbc93a9711d2ab2da0a26389",
+          "freeze_authority_present": true,
+          "reported_hits": null,
+          "recomputed_hits": 2,
+          "findings": []
+        },
+        "self_analysis": {
+          "summary": "Concurso 3070: 2/6 acertos. A análise separa desempenho observado, integridade do processo e recomendações de melhoria.",
+          "what_worked": [
+            "O cartão cobriu 2 das 6 dezenas sorteadas.",
+            "A comparação usa o cartão congelado, preservando previsão × resultado real e evitando reescrita retroativa."
+          ],
+          "errors_and_failures": [
+            "O cartão não cobriu 4 dezenas do resultado: 19, 29, 54, 60."
+          ],
+          "recommended_actions": [
+            "Executar atribuição causal por família e sinal para identificar contribuição correta, excesso de peso, atraso, ruído e redundância.",
+            "Comparar o comportamento com a janela histórica e com evidência prospectiva acumulada; não recalibrar pesos por um único concurso.",
+            "Registrar falsos positivos e falsos negativos por sinal e procurar recorrência antes de promover, penalizar ou neutralizar influência.",
+            "Validar qualquer ajuste em dados não usados na calibração e aplicar a regra medir antes -> alterar -> medir depois -> comparar.",
+            "Se uma mudança melhorar métrica local mas piorar resultado global, reverter/corrigir e retestar."
+          ],
+          "single_contest_weight_change_prohibited": true,
+          "oos_validation_required_for_material_changes": true
+        },
+        "source_fingerprint": "0e05825756d8bfb2dba138ca4c82b1e0a4387bd23cd2e18c28d7063b9732f55f",
+        "generated_utc": "2026-10-15T14:03:12.674620+00:00",
+        "sha256": "fc84ea375218ad1a155f495843abe4add8ecd7aeb20acd23a2b28bcde5dba287"
+      }
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "ADJUDICATED",
+      "revision": 43,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3070,
+      "completed_contest": 3069,
+      "previous_state": "FROZEN",
+      "transition": "FROZEN_TO_ADJUDICATED",
+      "transition_actor": "operator_adjudicate_complete",
+      "transition_utc": "2026-10-15T14:03:12.556772+00:00",
+      "previous_lifecycle_sha256": "40fc7c8d73095034cc4884a7dea6104e1d6359721f4b9875bdc48e9ff1a35f0a",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "168e98140480d9b3e80cd0fe51dfbd01af27334a04fe78b97268f994e7fe9191"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3069.json",
+          "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3070:operator-3070-ee1bc13734e4-20261013T225858165681Z",
+        "reserved_authority_sha256": "db6ba864634964a7884d127774c06e1128566a04ba8f82b5f75457c5a2016332",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "f1504f857aee6d378b7f08f61dd90cac90e6593f1ca00fb10affd9be03ecf373",
+          "epoch_id": "operator-3070-ee1bc13734e4-20261013T225858165681Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3068/operator-3068-acc6a34c9e27-20261008T222652499219Z/ARCHIVE_MANIFEST.json",
+          "sha256": "c6f5a8b286604f366a868291d261880bb1c0847ba5fa800c090df661e281c67a"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3069,
+          "through_target": 3069,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+              "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+              "target_contest": 3069
+            }
+          ],
+          "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
+            "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
+            "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
+            "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
+            "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+            "targets": [
+              3069
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "d3426992bfa33d4ba79b2d67fb7b0aaff367c9bbab164d9170a75a3751b9b534"
+    }
+  }
+}
