@@ -72,12 +72,18 @@ def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
     '''Return the exact pre-operator F12 pipeline; reject arbitrary diffs.'''
     if _matches_expected_code(value, APPROVED_F12_PIPELINE_SHA256):
         return value
-    restored = value
-    for candidate, original in OPERATOR_SOURCE_REVERSALS:
-        if restored.count(candidate) != 1:
-            return None
-        restored = restored.replace(candidate, original, 1)
-    return restored if _matches_expected_code(restored, APPROVED_F12_PIPELINE_SHA256) else None
+    # Search the same EOL variants already accepted by the pinned SHA proof.
+    # Multiline source reversals must not depend on Git's checkout EOL policy.
+    for variant in _canonical_variants(value):
+        restored = variant
+        for candidate, original in OPERATOR_SOURCE_REVERSALS:
+            if restored.count(candidate) != 1:
+                break
+            restored = restored.replace(candidate, original, 1)
+        else:
+            if _matches_expected_code(restored, APPROVED_F12_PIPELINE_SHA256):
+                return restored
+    return None
 
 
 def _sha256(data: bytes) -> str:
