@@ -1,0 +1,96 @@
+{
+  "schema": "SMART_ECC_FINETUNING_SHADOW_20261015",
+  "mission_id": "smartmega-v6-ecc-finetune-20261015",
+  "source_head": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "branch": "ecc/finetuning-shadow-20261015",
+  "historical_source": "User-provided Mega-Sena (2).xlsx through contest 3070",
+  "historical_source_sha256": "7c8fe0c2f06ebf07118809758454169a755a9e91885cb47624387eeb236e9d81",
+  "scope": "EXPLORATORY_SHADOW_NO_PRODUCTION_PROMOTION",
+  "cap_fix": {
+    "module": "freeze_next_research.py",
+    "rule": "normalize and project redundancy-adjusted within-family expert weights back onto a simplex capped at 0.60",
+    "base_reproduced_share": 0.9090909090909092,
+    "corrected_share": 0.6,
+    "actual_3071_freq1000_share_before": 0.6583086514001786,
+    "actual_3071_freq1000_weight_before": 0.460816055980125,
+    "actual_3071_freq1000_weight_after": 0.42,
+    "baseline_cap_violations_historical": 716,
+    "candidate_cap_violations_historical": 0,
+    "changed_cards_historical": 151,
+    "historical_comparison": {
+      "all_oos": {
+        "contests": 2070,
+        "baseline_hits": 1274,
+        "candidate_hits": 1268
+      },
+      "calibration": {
+        "contests": 1000,
+        "baseline_hits": 607,
+        "candidate_hits": 597
+      },
+      "validation": {
+        "contests": 351,
+        "baseline_hits": 244,
+        "candidate_hits": 244
+      },
+      "holdout": {
+        "contests": 220,
+        "baseline_hits": 128,
+        "candidate_hits": 131
+      }
+    },
+    "predicted_3071_set_unchanged": true,
+    "local_full_engine_tests": {
+      "passed": 3,
+      "failed": 0
+    }
+  },
+  "selector_and_duque": {
+    "shadow_contests": 220,
+    "period": "2851-3070",
+    "baseline_hits": 128,
+    "selector_no_rescue_hits": 130,
+    "forced_previous_pair_hits": 137,
+    "uniform_expected_hits": 132,
+    "structural_selector_changed_cards": 81,
+    "pair_forcing_changed_cards": 154,
+    "selector_delta_mean_bootstrap95": [
+      -0.022727272727272728,
+      0.04090909090909091
+    ],
+    "duque_delta_mean_bootstrap95": [
+      -0.01818181818181818,
+      0.1
+    ],
+    "exact_two_repeated_transitions": 252,
+    "transitions_with_at_least_two": 279,
+    "total_transitions": 3069,
+    "no_advantage_proven": true,
+    "no_promotion": true
+  },
+  "evidence_integrity": {
+    "missing_immutable_ledger_snapshot_contests": [
+      3060,
+      3061,
+      3062,
+      3068
+    ],
+    "verified_ledger_snapshot_contests": [
+      3067,
+      3070
+    ],
+    "shadow_3071_quarantined_count": 4,
+    "protection": "Preserve quarantine; never reconstruct missing signed ledger bytes from similar content"
+  },
+  "regression": {
+    "directed_real_engine_tests": "PASS_3_OF_3",
+    "full_repo_regression": "NOT_RUN_NO_WORKING_CANONICAL_CHECKOUT"
+  },
+  "production": {
+    "main_changed": false,
+    "freeze_3071_changed": false,
+    "promoted": false,
+    "scientific_status": "UNPROVEN",
+    "reason": "Historical global regression and selection uncertainty; prospective evidence required"
+  }
+}
