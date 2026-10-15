@@ -125,3 +125,34 @@ def test_non_contiguous_or_duplicate_registrations_rejected():
 def test_result_without_corresponding_preregistration_rejected():
     with pytest.raises(ValueError, match="more results"):
         p.assess_series([registered()], [mock_official(), mock_official()])
+
+
+def test_two_publisher_consensus_normalizes_known_3070_without_claiming_official(monkeypatch):
+    one = {"concurso": 3070, "data": "14/10/2026", "dezenas": ["19", "27", "29", "43", "54", "60"]}
+    two = [[3069, "2026-10-11", [5, 19, 22, 44, 47, 57]],
+           [3070, "2026-10-14", [19, 27, 29, 43, 54, 60]]]
+    monkeypatch.setattr(p, "_get_json_url",
+                        lambda url, host, cap: one if "herokuapp" in host else two)
+    value = p.fetch_mirror_consensus(3070)
+    assert value["numero"] == 3070
+    assert value["evidence_kind"] == "TWO_MIRRORS_PROVISIONAL_NOT_OFFICIAL"
+    assert p.parse_official_result(value, 3070) == [19, 27, 29, 43, 54, 60]
+
+
+def test_mirror_result_conflict_rejected(monkeypatch):
+    one = {"concurso": 3070, "data": "14/10/2026", "dezenas": ["19", "27", "29", "43", "54", "60"]}
+    two = [[3070, "2026-10-14", [19, 27, 29, 43, 54, 59]]]
+    monkeypatch.setattr(p, "_get_json_url",
+                        lambda url, host, cap: one if "herokuapp" in host else two)
+    with pytest.raises(ValueError, match="disagreement"):
+        p.fetch_mirror_consensus(3070)
+
+
+def test_mirror_quorum_can_never_grant_statistical_release():
+    row = registered()
+    out = p.assess_series([row], [mock_official()], mirrors_crosschecked=True)
+    assert out["officially_verified_contests"] == 0
+    assert out["mirror_consensus_provisional"] is True
+    assert out["eligible"] is False
+    assert out["status"] == "MIRROR_MATCH_PENDING_OFFICIAL"
+    assert "official_https_independence_not_verified" in out["blockers"]
