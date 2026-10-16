@@ -76,14 +76,43 @@ def produce(root: str | Path, freeze_file: str | Path) -> dict[str, Any]:
     data_sha = _sha(data_path)
     if data_sha != freeze.get("data_sha256"):
         raise ValueError("frozen dataset hash mismatch")
-    draws, contests = e.load_draws(data_path)
-    if int(contests[-1]) != cutoff or len(draws) <= int(freeze.get("start_index", 1000)):
-        raise ValueError("frozen history does not end immediately before target")
     source_bytes = (root / "freeze_next_research.py").read_bytes()
     # Git checkouts may use CRLF while the immutable freeze pins LF bytes.
     original_sha = hashlib.sha256(source_bytes.replace(b"\r\n", b"\n")).hexdigest()
     if original_sha != freeze.get("champion_engine_sha256"):
         raise ValueError("champion source differs from frozen champion source")
+    experimental_sha = _sha(root / "smart_cap60_experiment_engine.py")
+    original_top6 = _numbers(freeze["champion"]["top6"])
+    destination = freeze_path.with_name(f"SMART_{target}_CAP60_PARALLEL_CARD.json")
+    if destination.exists():
+        existing = json.loads(destination.read_text(encoding="utf-8-sig"))
+        _verify_record(existing)
+        if (existing.get("status") != "FROZEN_SHADOW_ONLY"
+                or existing.get("target_contest") != target
+                or existing.get("cutoff_contest") != cutoff
+                or existing.get("freeze_file") != str(freeze_path.relative_to(root))
+                or existing.get("freeze_file_sha256") != frozen_bytes_sha
+                or existing.get("data_file") != str(data_path.relative_to(root))
+                or existing.get("data_sha256") != data_sha
+                or existing.get("champion_engine_sha256") != original_sha
+                or existing.get("experimental_engine_sha256") != experimental_sha
+                or existing.get("champion_card") != original_top6
+                or existing.get("same_card") != (
+                    _numbers(existing.get("experimental_card")) == original_top6)
+                or existing.get("prospective_promotion_authority") is not False
+                or not isinstance(existing.get("family_max_expert_share"), dict)
+                or not existing["family_max_expert_share"]
+                or any(type(v) not in (int, float) or not 0 < v <= 0.6000000001
+                       for v in existing["family_max_expert_share"].values())):
+            raise ValueError("existing shadow artifact bound to different source")
+        return {"status": "ALREADY_FROZEN_SHADOW", "file": str(destination.relative_to(root)),
+                "sha256": _sha(destination), "card": existing["experimental_card"],
+                "production_authority": False}
+    # Full causality and mathematical replays are mandatory on the FIRST
+    # production of a shadow record, not for verified immutable replays.
+    draws, contests = e.load_draws(data_path)
+    if int(contests[-1]) != cutoff or len(draws) <= int(freeze.get("start_index", 1000)):
+        raise ValueError("frozen history does not end immediately before target")
     start = int(freeze.get("start_index", 1000))
     champion = champion_engine.current_policy(draws, start=start)
     original_top6 = _numbers(freeze["champion"]["top6"])
@@ -111,7 +140,7 @@ def produce(root: str | Path, freeze_file: str | Path) -> dict[str, Any]:
         "data_file": str(data_path.relative_to(root)),
         "data_sha256": data_sha,
         "champion_engine_sha256": original_sha,
-        "experimental_engine_sha256": _sha(root / "smart_cap60_experiment_engine.py"),
+        "experimental_engine_sha256": experimental_sha,
         "start_index": start,
         "champion_card": original_top6,
         "experimental_card": top6,
@@ -129,17 +158,6 @@ def produce(root: str | Path, freeze_file: str | Path) -> dict[str, Any]:
         "timestamp_proof": "requires separate GitHub pre-draw registration; generated_utc alone is not proof",
     }
     out["sha256"] = _digest(out)
-    destination = freeze_path.with_name(f"SMART_{target}_CAP60_PARALLEL_CARD.json")
-    if destination.exists():
-        existing = json.loads(destination.read_text(encoding="utf-8-sig"))
-        _verify_record(existing)
-        if (existing.get("freeze_file_sha256") != frozen_bytes_sha
-                or existing.get("experimental_engine_sha256") != out["experimental_engine_sha256"]
-                or existing.get("data_sha256") != data_sha):
-            raise ValueError("existing shadow artifact bound to different source")
-        return {"status": "ALREADY_FROZEN_SHADOW", "file": str(destination.relative_to(root)),
-                "sha256": _sha(destination), "card": existing["experimental_card"],
-                "production_authority": False}
     fd, temp = tempfile.mkstemp(prefix=".cap60_", suffix=".tmp", dir=destination.parent)
     try:
         with os.fdopen(fd, "w", encoding="utf-8") as stream:
