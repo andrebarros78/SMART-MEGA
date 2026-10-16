@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "a287ac563385443c0d3979b9eac9bd2adaa475b3c527faf6ed3d7cd43f39fe6b",
+  "source_reachability_inventory_sha256": "2beb20d3fd9b4119896d86d1d72563e2b1c9aef6e1578d341a264f135f245f3b",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 501,
+    "component_count": 502,
     "active": 103,
     "shadow": 1,
-    "diagnostic": 197,
+    "diagnostic": 198,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4930,7 +4930,7 @@
       "component_id": "smart_cap60_parallel",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_cap60_parallel.py",
-      "implementation_sha256": "67931a9cbdabc680c421bb1d34177aedea81327feb59e406b866318ef7e36cf5",
+      "implementation_sha256": "237d863b5be2fbaefc522418a2690596e560df1fa4498133b04d460be9b0286d",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4940,7 +4940,8 @@
       ],
       "consumers": [
         "smart_operator",
-        "test_smart_cap60_parallel"
+        "test_smart_cap60_parallel",
+        "test_smart_shadow_latency_regression"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -10098,7 +10099,9 @@
         "smart_cap60_parallel",
         "smart_operator"
       ],
-      "consumers": [],
+      "consumers": [
+        "test_smart_shadow_latency_regression"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -12924,6 +12927,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_shadow_latency_regression",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_shadow_latency_regression.py",
+      "implementation_sha256": "6548c102f24dae525c9ec12b71e38651562dea7d47c62a087b760b5941a13ef9",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_cap60_parallel",
+        "test_smart_cap60_parallel"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_signal_agent",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_signal_agent.py",
@@ -13559,5 +13586,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "5671fa4d3fa196a4eb4775676ef250762b9a25680d70fafbcfd5a7806d5ef51a"
+  "registry_sha256": "42489da7763a580de571c34162f80e1faf016f7144a45c5dbba704e9ec272483"
 }

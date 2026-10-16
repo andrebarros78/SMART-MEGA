@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "a287ac563385443c0d3979b9eac9bd2adaa475b3c527faf6ed3d7cd43f39fe6b",
+  "inventory_sha256": "2beb20d3fd9b4119896d86d1d72563e2b1c9aef6e1578d341a264f135f245f3b",
   "summary": {
-    "python_components": 501,
+    "python_components": 502,
     "workflow_entrypoints": 8,
     "production_components": 103,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 171,
+    "test_components": 172,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4659,7 +4659,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
-        "test_smart_cap60_parallel"
+        "test_smart_cap60_parallel",
+        "test_smart_shadow_latency_regression"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4669,7 +4670,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "67931a9cbdabc680c421bb1d34177aedea81327feb59e406b866318ef7e36cf5"
+      "sha256": "237d863b5be2fbaefc522418a2690596e560df1fa4498133b04d460be9b0286d"
     },
     {
       "component_id": "smart_capability_integration_v2",
@@ -9529,7 +9530,9 @@
         "smart_operator"
       ],
       "declared_execution_dependencies": [],
-      "consumers": [],
+      "consumers": [
+        "test_smart_shadow_latency_regression"
+      ],
       "reachable": false,
       "production_reachable": false,
       "runtime_executed": null,
@@ -12119,6 +12122,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "0da8c1a1ad40ed37e32c42d0f2dc8edec91931cecc8821e10b6f4be2aa03c1f2"
+    },
+    {
+      "component_id": "test_smart_shadow_latency_regression",
+      "source_file": "test_smart_shadow_latency_regression.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_cap60_parallel",
+        "test_smart_cap60_parallel"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "6548c102f24dae525c9ec12b71e38651562dea7d47c62a087b760b5941a13ef9"
     },
     {
       "component_id": "test_smart_signal_agent",
