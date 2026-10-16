@@ -1,0 +1,57 @@
+{
+  "schema": "SMART_MEGA_PERFORMANCE_SHADOW_REPLAY_GATED_1",
+  "date": "2026-10-16",
+  "source_commit": "266e1315bfc914664d5d53f12d40fb0fda076c48",
+  "target_contest_for_benchmark": 3071,
+  "number_of_historical_results": 3070,
+  "before": {
+    "repeat_shadow_seconds": 5.1653,
+    "benchmark_character": "already-frozen shadow re-executed from main checkout"
+  },
+  "after": {
+    "repeat_shadow_seconds": 0.0046,
+    "benchmark_character": "cache validated and early return from same immutable freeze and model source pins"
+  },
+  "operator_after": {
+    "source": "266e1315bfc914664d5d53f12d40fb0fda076c48",
+    "target": 3071,
+    "iterations": [
+      {
+        "iteration": 1,
+        "seconds": 17.7958,
+        "shadow_status": "FROZEN_SHADOW_ONLY",
+        "consumer_status": "PASS"
+      },
+      {
+        "iteration": 2,
+        "seconds": 11.9898,
+        "shadow_status": "ALREADY_FROZEN_SHADOW",
+        "consumer_status": "PASS"
+      }
+    ],
+    "freeze_primary_unchanged": true
+  },
+  "data_ingestion_local_estimates_seconds": {
+    "read_and_validate_excel": 1.401,
+    "write_extended_excel": 1.564,
+    "external_provider_latency_not_measured": true
+  },
+  "initial_card_generation_note": "first-time cap60 shadow continues to run complete retrospective mathematics; optimize only verified idempotent replays",
+  "technical_certification": {
+    "status": "CONSTRUCTION_PROVEN",
+    "tests": 1271,
+    "junit_sha256": "443e9de0b0474e79d28daac3223f0f6e95e66ac06b61b0530e6511297eefe882",
+    "product_certification_sha256": "e74431dd9371a882a8b118242afc027a0bd6542921261fda93e50aa459bda0d4",
+    "governance_sha256": "c9b1974d11aca9ea297cb63cd7676b754ce124dbd7ead063a42ec058001c0974",
+    "global_integrity_sha256": "ca2d0117ce55155907643ceb8bd663198028e5c6b12c2ae2f494258915436f7e"
+  },
+  "safety": {
+    "champion_engine_modified": false,
+    "primary_card_modified": false,
+    "frozen_runtime_artifacts_modified": false,
+    "shadow_material_weight": 0,
+    "first_creation_replay_preserved": true,
+    "source_data_and_freeze_hashes_verified_before_cache": true
+  },
+  "promotion_scope": "PRODUCTION_PERFORMANCE_CODE_ONLY__NOT_PREDICTIVE_SUPERIORITY"
+}
