@@ -133,7 +133,7 @@ def quality_snapshot(catalog_dir, checkpoint_dir, queue_dir, *, workers=1):
         "source_access_reason": blocker.get("reason"),
         "official_contests_in_queue": len(records),
         "count_by_quality": counts,
-        "real_decoded_frame_evidence_count": sum(r["frames_analyzed"] > 0 for r in records),
+        "checkpoints_reporting_decoded_frames": sum(r["frames_analyzed"] > 0 for r in records),
         "records": records,
         "predictive_evidence": "NOT_ESTABLISHED",
         "predictive_weight_authorized": False,
@@ -211,7 +211,7 @@ def main():
         "source_access_state": report["source_access_state"],
         "source_access_reason": report["source_access_reason"],
         "count_by_quality": report["count_by_quality"],
-        "real_decoded_frame_evidence_count": report["real_decoded_frame_evidence_count"],
+        "checkpoints_reporting_decoded_frames": report["checkpoints_reporting_decoded_frames"],
         "predictive_weight": 0.0,
     }, ensure_ascii=False, sort_keys=True, indent=2))
 
