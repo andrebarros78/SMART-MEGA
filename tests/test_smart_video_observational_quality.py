@@ -85,7 +85,7 @@ def test_quality_detects_mutated_checkpoint_against_immutable_sha(tmp_path):
     doc["semantic_label"] = "WINNING_NUMBER_GUESS"
     cp.write_text(json.dumps(doc), encoding="utf-8")
     report = quality_snapshot(**{k:v for k,v in opts.items() if k!='batch_workers'})
-    assert report["count_by_quality"] == {"CHECKPOINT_CORRUPT_OR_MISSING":1}
+    assert report["count_by_quality"] == {"CHECKPOINT_SHA_MISMATCH":1}
     with pytest.raises(ValueError, match="COMPLETED_CHECKPOINT_LOST_OR_CHANGED"):
         run_official_queue(**opts, resolver=bad, sampler=bad)
 
