@@ -8,6 +8,7 @@ from __future__ import annotations
 import argparse
 import datetime as dt
 import os
+import re
 import pathlib
 import subprocess
 import sys
@@ -28,13 +29,16 @@ def _el(parent, tag, text=None):
 
 def task_xml(python_exe: str, script: str, root: str, catalog: str,
              checkpoint: str, queue: str, *, start: dt.datetime,
-             hours: int = 15, interval_minutes: int = 5) -> bytes:
+             hours: int = 15, interval_minutes: int = 5,
+             user_sid: str) -> bytes:
     if type(hours) is not int or not 10 <= hours <= 15:
         raise ValueError("WINDOW_HOURS_OUT_OF_RANGE")
     if type(interval_minutes) is not int or not 2 <= interval_minutes <= 15:
         raise ValueError("INTERVAL_MINUTES_OUT_OF_RANGE")
     if start.tzinfo is not None:
         raise ValueError("LOCAL_WALL_CLOCK_REQUIRED")
+    if not isinstance(user_sid, str) or not re.fullmatch(r"S-1-\d+(?:-\d+){2,}", user_sid):
+        raise ValueError("TASK_SID_INVALID")
     paths = [pathlib.PureWindowsPath(p) for p in (python_exe, script, root, catalog, checkpoint, queue)]
     if any(not p.is_absolute() or ".." in p.parts for p in paths):
         raise ValueError("TASK_PATH_MUST_BE_ABSOLUTE")
@@ -64,6 +68,7 @@ def task_xml(python_exe: str, script: str, root: str, catalog: str,
     principal = _el(doc, "Principals")
     p = _el(principal, "Principal")
     p.set("id", "Author")
+    _el(p, "UserId", user_sid)
     _el(p, "LogonType", "InteractiveToken")
     _el(p, "RunLevel", "LeastPrivilege")
     settings = _el(doc, "Settings")
@@ -111,6 +116,20 @@ def register(xml_bytes: bytes, task_name=TASK_NAME) -> dict:
     return {"task":task_name,"state":"REGISTERED_VERIFIED"}
 
 
+def current_user_sid():
+    """Resolve only the current B2 operator identity, never a service account."""
+    if os.name != "nt":
+        raise OSError("WINDOWS_ONLY")
+    result = subprocess.run(["whoami.exe", "/user", "/fo", "csv", "/nh"],
+                            capture_output=True, text=True, timeout=15)
+    if result.returncode != 0:
+        raise RuntimeError("TASK_IDENTITY_QUERY_DENIED")
+    sid = re.search(r"S-1-\d+(?:-\d+){2,}", result.stdout)
+    if sid is None:
+        raise RuntimeError("TASK_IDENTITY_UNAVAILABLE")
+    return sid.group(0)
+
+
 def main():
     p = argparse.ArgumentParser()
     p.add_argument("--python-exe", required=True)
@@ -128,7 +147,7 @@ def main():
     xml = task_xml(args.python_exe, args.script, args.root,
                    args.catalog_dir, args.checkpoint_dir, args.queue_dir,
                    start=dt.datetime.now() + dt.timedelta(seconds=args.start_offset_seconds),
-                   hours=args.hours)
+                   hours=args.hours, user_sid=current_user_sid())
     if args.install:
         import json
         print(json.dumps(register(xml),sort_keys=True))
