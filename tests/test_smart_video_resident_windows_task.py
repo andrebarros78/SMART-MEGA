@@ -17,6 +17,7 @@ def example(**kwargs):
         queue=r"C:\SMART-MEGA\real_video_queue",
         start=dt.datetime(2026, 10, 17, 16, 30),
         hours=15,
+        user_sid="S-1-5-21-100-200-300-1001",
     )
     inputs.update(kwargs)
     return task_xml(**inputs)
@@ -66,3 +67,11 @@ def test_refuse_relative_script_and_queue_collision():
         example(script="relative.py")
     with pytest.raises(ValueError,match="COLLISION"):
         example(root=r"C:\SMART-MEGA\real_video_queue")
+
+
+def test_requires_real_windows_sid_for_principal():
+    xml = ET.fromstring(example())
+    n={"t":NS}
+    assert xml.findtext('.//t:Principal/t:UserId',namespaces=n)=='S-1-5-21-100-200-300-1001'
+    with pytest.raises(ValueError,match='SID_INVALID'):
+        example(user_sid='fake-or-blank')
