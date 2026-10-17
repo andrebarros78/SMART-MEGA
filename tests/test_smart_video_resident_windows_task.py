@@ -25,7 +25,7 @@ def example(**kwargs):
 def test_windows_task_xml_is_native_utf16_with_matching_declaration():
     b = example()
     assert b.startswith(b"\xff\xfe")
-    assert 'encoding="utf-16"' in b.decode("utf-16").lower()
+    assert "encoding='utf-16'" in b.decode("utf-16").lower()
     assert ET.fromstring(b).tag.endswith("Task")
 
 
