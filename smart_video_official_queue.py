@@ -16,6 +16,7 @@ from pathlib import Path
 from typing import Any, Callable
 
 from smart_video_official_catalog import CHANNEL, read_current
+from smart_video_source_access import read_source_gate
 from smart_video_observation import (
     EXTRACTOR_VERSION, PREDICTIVE_EVIDENCE, ObservationConfig,
     _observation_fingerprint, _checkpoint_path, resolve_stream,
@@ -319,6 +320,17 @@ def run_official_queue(
             result = _summarize(catalog, records, collisions, 0, 0, dry_run=False)
             result["sync_only"] = True
             result["queue_state_sha256"] = state["sha256"]
+            return result
+        access = read_source_gate(q_root)
+        if access['state'] == 'BLOCKED':
+            records, body = _reconcile_and_report(
+                catalog, eligible, collisions, cp_root, q_root,
+                cfg, hypothesis_id, previous, max_attempts)
+            state = _publish(q_root, body, previous)
+            result = _summarize(catalog, records, collisions, 0, 0, dry_run=False)
+            result['source_access'] = 'BLOCKED'
+            result['source_access_reason'] = access['reason']
+            result['queue_state_sha256'] = state['sha256']
             return result
         return _execute(catalog, eligible, collisions, cp_root, q_root, cfg, hypothesis_id,
                         previous, max_items, batch_workers, max_attempts,

@@ -1,0 +1,109 @@
+{
+  "schema": "SMART_MEGA_VIDEO_EXECUTOR_SELECTION_GATE_V1",
+  "date": "2026-10-17",
+  "objective": "Choose the fastest authorized host for official CAIXA Mega-Sena video learning without discarding the 50-item persistent queue or bypassing site/gateway access controls.",
+  "orchestrator": {
+    "name": "ECC Full Bridge",
+    "mission_id": "smartmega-official-50-visual-20261015",
+    "ledger_location": "PC Casa",
+    "ledger_last_verified_status": "OPEN",
+    "expired_prior_g01_lease_recovered": true
+  },
+  "selected": {
+    "host": "PC-ESCOLA",
+    "node": "B2-LEARNING-NODE-01",
+    "transport_plugin": "LMCP",
+    "reason": "Local durable queue and observatory code, installed cv2+yt_dlp in existing runenv, already proven frame-processing fixtures and SHA replay.",
+    "data_paths": {
+      "lab": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+      "queue": "real_video_queue",
+      "catalog": "catalog_memory",
+      "quality": "real_video_queue/SMART_CAIXA_OBSERVATIONAL_QUALITY_CURRENT.json"
+    }
+  },
+  "comparison": [
+    {
+      "host": "PC-ESCOLA",
+      "cpu_threads": null,
+      "cv2": true,
+      "yt_dlp": true,
+      "existing_queue": true,
+      "source_result": "Official single-video yt_dlp public access previously returned sign-in/bot confirmation challenge; Microsoft Edge session present but federated browser.navigate was REJECTED_POLICY",
+      "browser_status_command": "netcmd_80116c77dcec4f3f87ddaa47f2aabfe6",
+      "browser_navigate_command": "netcmd_ff3a96f3531d429db4b3507bcf21eabb"
+    },
+    {
+      "host": "wmcp-cloud-01",
+      "cpu_threads": 8,
+      "ffmpeg": true,
+      "ffprobe": true,
+      "cv2": false,
+      "yt_dlp_in_primary_python": false,
+      "disk_free_gb": 58.4,
+      "web_test": "Official watch page HTTP 200 only; no proven playback",
+      "ephemeral_yt_dlp_version": "2026.08.19",
+      "ephemeral_probe": "One metadata extraction attempt, no cookies/proxy/retries/downloads",
+      "source_result": "Sign in to confirm you're not a bot",
+      "ephemeral_tool_install_persisted": false
+    },
+    {
+      "host": "pc-vendas",
+      "cpu_threads": 8,
+      "cv2": false,
+      "yt_dlp": false,
+      "ffmpeg": false,
+      "ffprobe": false,
+      "existing_queue": false,
+      "disk_free_gb": 42.4,
+      "source_result": "Media access not tested; base Python toolchain insufficient; do not relocate queue"
+    }
+  ],
+  "physical_catalog_proof": {
+    "network_command_id": "netcmd_abdbc297ee714e1c81bfc03448ebe41c",
+    "status": "COMPLETED",
+    "exit_code": 0,
+    "catalog_sha256": "7d03e4637975bf8aa1c311de5ac12677a820b11f6ea3710797ee7416d96cef35",
+    "queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "official_contests": 50,
+    "contest_identity_matches": 50,
+    "description_hashes_present": 50,
+    "media_checkpoints_present": false,
+    "first_two": [
+      {
+        "contest_id": "3013",
+        "video_id": "ZP3mCk4_ku0",
+        "catalog_title": "CAIXA Lotteries | 05/30/2026"
+      },
+      {
+        "contest_id": "3016",
+        "video_id": "3dTwSbhlbeY",
+        "catalog_title": "CAIXA Lotteries | 06/09/2026"
+      }
+    ],
+    "last_two": [
+      {
+        "contest_id": "3068",
+        "video_id": "cZRXnKRTKUs",
+        "catalog_title": "CAIXA Lotteries | 10/08/2026"
+      },
+      {
+        "contest_id": "3069",
+        "video_id": "d2O7Xiaew0Q",
+        "catalog_title": "CAIXA Lotteries | 10/11/2026"
+      }
+    ]
+  },
+  "controls": {
+    "youtube_credentials_copied": false,
+    "proxy_used": false,
+    "cookies_used": false,
+    "source_policy_override": false,
+    "browser_navigation_policy_override": false,
+    "official_frames_extracted": 0,
+    "new_real_checkpoints": 0,
+    "predictive_weight": 0,
+    "main_changed": false
+  },
+  "verdict": "B2_SELECTED_METADATA_STUDY_VERIFIED_OFFICIAL_MEDIA_ACCESS_BLOCKED",
+  "next_gate": "Keep B2 as authoritative queue, resolve official YouTube viewing authorization and the federated browser.navigate policy through their respective legitimate providers, confirm actual frame decoding for one selected contest before running a bounded wave of at most two; preserve observed-vs-metadata separation."
+}

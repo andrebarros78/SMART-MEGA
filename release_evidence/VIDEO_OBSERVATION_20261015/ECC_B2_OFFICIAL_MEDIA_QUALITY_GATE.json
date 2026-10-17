@@ -1,0 +1,122 @@
+{
+  "schema": "SMART_MEGA_ECC_OFFICIAL_VIDEO_QUALITY_GATE_20261015_V1",
+  "date_local": "2026-10-15",
+  "repo": "andrebarros78/SMART-MEGA",
+  "branch": "feature/visual-source-gate-quality-20261015",
+  "source_head": "dfda842eabed17041405c5fe54081b8c5312e389",
+  "ecc": {
+    "skill_stack": [
+      "ecc-router",
+      "ecc-durable-mission",
+      "ecc-full-engineer",
+      "ecc-execution-bridge",
+      "ecc-mission-continuity"
+    ],
+    "mission_id": "smartmega-official-50-visual-20261015",
+    "ledger": "C:\\ECC-FULL\\state\\mission_ledger.sqlite3",
+    "ledger_integrity_check": "PASS",
+    "mission_proven": false,
+    "stage": "OPEN",
+    "note": "G01 claim obtained but its lease token was not preserved by the failed evidence-JSON command; no gate marked PASS; recover expired lease by governed ECC workflow before advancing durable ledger state."
+  },
+  "physical_host": {
+    "hostname": "PC-ESCOLA",
+    "executor_id": "B2-LEARNING-NODE-01",
+    "transport": "LMCP -> GOV-WINDOWS -> TAILSCALE_SIGNED_LONG_POLL",
+    "location": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013"
+  },
+  "baseline": {
+    "catalog_video_ids": 500,
+    "metadata_confirmed_broadcasts": 52,
+    "unique_unambiguous_contests": 50,
+    "queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "real_queue_pending": 50,
+    "verified_real_checkpoints": 0,
+    "real_frames_analyzed": 0,
+    "media_opened_in_queue_during_gate": 0
+  },
+  "toolchain": {
+    "cpython_base": "3.13.15",
+    "main_python_has_cv2": true,
+    "main_python_has_requests": true,
+    "venv_path": "C:\\ProgramData\\B2-Learning-Work\\smartmega-runenv-3057\\Scripts\\python.exe",
+    "venv_has_cv2": true,
+    "venv_has_yt_dlp": true,
+    "yt_dlp_version": "2026.09.27.232945",
+    "http_guard_installed_in_staging": true,
+    "http_guard_git_blob": "ab1990ecbb04383e485e1708c3a9efe8b89b7f02",
+    "http_guard_command": "netcmd_f7be49313e38422da863176306faf906"
+  },
+  "real_source_probe": {
+    "network_command_id": "netcmd_0739bd7d2f9a4361ac97e674d841397e",
+    "video_id": "ZP3mCk4_ku0",
+    "source_channel": "UCPbhr02AfVb2nd5pm12BxTw",
+    "workload": "one preexisting official video metadata only, zero download, zero retries, no cookies",
+    "outcome": "METADATA_UNAVAILABLE",
+    "cause_class": "YOUTUBE_SIGN_IN_REQUIRED_ANTI_BOT",
+    "error_class": "yt_dlp DownloadError",
+    "explicit_http_429": false,
+    "elapsed_seconds": 1.84,
+    "access_policy": "Do not bypass sign-in/bot challenge; do not silently export browser cookies; do not fan out to remaining 49 videos."
+  },
+  "engineering": {
+    "files": [
+      "smart_video_source_access.py",
+      "smart_video_observation_quality.py",
+      "smart_video_official_queue.py",
+      "tests/test_smart_video_observational_quality.py"
+    ],
+    "source_control_branch_only": true,
+    "source_gate_function": "Block and refuse normal queue work until authorized media source proof exists; immutable signed state + shared queue OS lock",
+    "quality_function": "Persist immutable per-video coverage/frame/status diagnostics without promoting metadata or synthetic sample data to physical visual proof",
+    "regression_windows_pc_vendas": {
+      "passed": 117,
+      "failed": 0
+    },
+    "regression_linux": {
+      "passed": 117,
+      "failed": 0
+    }
+  },
+  "physical_deployment": {
+    "network_command_id": "netcmd_d1218ded9b7b4cf09a4a32747eb744a5",
+    "published_modules": [
+      {
+        "file": "smart_video_source_access.py",
+        "sha1_git": "cf9f4bfc5b99be0128a6119b61bc6b4f9d241d6a"
+      },
+      {
+        "file": "smart_video_observation_quality.py",
+        "sha1_git": "3f6635b32591deeae5b5be73a3bec812aeb0c0d4"
+      }
+    ],
+    "controller_upgraded": false,
+    "controller_current_git_blob": "17c3d01cd5ec5a7896fd609fd6fb157451c4dc36",
+    "controller_target_git_blob": "75373579244bf98d647d0270470541e62d98601c",
+    "controller_transfer_limitation": "One chunk of the controller was rejected by platform safety screening; no alternate connector or bypass attempted. Other incomplete parts removed.",
+    "source_gate_active_on_physical_queue": false,
+    "physical_source_probe_reason_registered_in_github_report": true,
+    "quality_snapshot_command": "netcmd_7359af78f3bb49b78fde318e87b39c77",
+    "quality_replay_command": "netcmd_b41551ccb94e4dddbe50a83972359ecb",
+    "read_only_postcheck_command": "netcmd_c5583407aef14bbd92ddd25acdf16528",
+    "quality_sha256": "a709407d45244a316db49ebdd9c12e826fb91f249db4f7568936b320131704fd",
+    "quality_report_count": 50,
+    "quality_classification": {
+      "NOT_OBSERVED": 50
+    },
+    "history_versions": 1,
+    "repeat_sha256_unchanged": true,
+    "queue_sha256_unchanged": true,
+    "queue_pending_unchanged": 50,
+    "physical_checkpoint_files_created": 0,
+    "frames_reported": 0,
+    "predictive_weight": 0
+  },
+  "scientific_verdict": "NOT_PROVEN_6_OF_6",
+  "next_gates": [
+    "Recover ECC ledger G01 lease with fenced recovery after expiry and record independent proof.",
+    "Resolve blocked code-transfer safety through the authorized release path; do not bypass denial. Activate tested source gate only after SHA-and-regression deployment proof.",
+    "Obtain legitimate official media access: Data API key alone yields metadata, not decoded frames; a permitted source mechanism is needed, not browser-cookie bypass.",
+    "Only after successful one-video official extraction: process next <=2 official contests in bounded waves and report actual frames, coverage, motion candidates and separate scientific holdout outcome before any predictive weight."
+  ]
+}
