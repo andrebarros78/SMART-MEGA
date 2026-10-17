@@ -117,18 +117,81 @@ def register(xml_bytes: bytes, task_name=TASK_NAME) -> dict:
 
 
 def current_user_sid():
-    """Resolve only the current B2 operator identity, never a service account."""
+    """SID of the *active logged-on user*, never SYSTEM or another account.
+
+    Query only Windows native WTS/Account APIs. No credentials or process
+    impersonation, and no Task Scheduler SYSTEM principal as fallback.
+    """
     if os.name != "nt":
         raise OSError("WINDOWS_ONLY")
-    result = subprocess.run(["whoami.exe", "/user", "/fo", "csv", "/nh"],
-                            capture_output=True, text=True, timeout=15)
-    if result.returncode != 0:
-        raise RuntimeError("TASK_IDENTITY_QUERY_DENIED")
-    sid = re.search(r"S-1-\d+(?:-\d+){2,}", result.stdout)
-    if sid is None:
-        raise RuntimeError("TASK_IDENTITY_UNAVAILABLE")
-    return sid.group(0)
+    import ctypes
+    from ctypes import wintypes
 
+    kernel = ctypes.windll.kernel32
+    wts = ctypes.windll.wtsapi32
+    security = ctypes.windll.advapi32
+    kernel.WTSGetActiveConsoleSessionId.restype = wintypes.DWORD
+    wts.WTSQuerySessionInformationW.argtypes = [
+        wintypes.HANDLE, wintypes.DWORD, wintypes.DWORD,
+        ctypes.POINTER(wintypes.LPWSTR), ctypes.POINTER(wintypes.DWORD),
+    ]
+    wts.WTSQuerySessionInformationW.restype = wintypes.BOOL
+    wts.WTSFreeMemory.argtypes = [wintypes.LPVOID]
+    wts.WTSFreeMemory.restype = None
+    security.LookupAccountNameW.argtypes = [
+        wintypes.LPCWSTR, wintypes.LPCWSTR, wintypes.LPVOID,
+        ctypes.POINTER(wintypes.DWORD), wintypes.LPWSTR,
+        ctypes.POINTER(wintypes.DWORD), ctypes.POINTER(wintypes.DWORD),
+    ]
+    security.LookupAccountNameW.restype = wintypes.BOOL
+    security.ConvertSidToStringSidW.argtypes = [
+        wintypes.LPVOID, ctypes.POINTER(wintypes.LPWSTR)
+    ]
+    security.ConvertSidToStringSidW.restype = wintypes.BOOL
+    kernel.LocalFree.argtypes = [wintypes.HANDLE]
+    kernel.LocalFree.restype = wintypes.HANDLE
+
+    session_id = kernel.WTSGetActiveConsoleSessionId()
+    if session_id == 0xFFFFFFFF:
+        raise RuntimeError("NO_INTERACTIVE_OPERATOR_SESSION")
+    ptr = wintypes.LPWSTR()
+    size = wintypes.DWORD()
+    if not wts.WTSQuerySessionInformationW(
+        None, session_id, 5, ctypes.byref(ptr), ctypes.byref(size)
+    ):
+        raise RuntimeError("INTERACTIVE_OPERATOR_NOT_AVAILABLE")
+    try:
+        name = ptr.value
+    finally:
+        wts.WTSFreeMemory(ctypes.cast(ptr, wintypes.LPVOID))
+    if not name:
+        raise RuntimeError("INTERACTIVE_OPERATOR_NOT_AVAILABLE")
+    sidlen = wintypes.DWORD()
+    domainlen = wintypes.DWORD()
+    use = wintypes.DWORD()
+    security.LookupAccountNameW(
+        None, name, None, ctypes.byref(sidlen),
+        None, ctypes.byref(domainlen), ctypes.byref(use)
+    )
+    if not sidlen.value:
+        raise RuntimeError("INTERACTIVE_OPERATOR_SID_UNAVAILABLE")
+    sid_buffer = ctypes.create_string_buffer(sidlen.value)
+    domain = ctypes.create_unicode_buffer(domainlen.value+1)
+    if not security.LookupAccountNameW(
+        None, name, sid_buffer, ctypes.byref(sidlen),
+        domain, ctypes.byref(domainlen), ctypes.byref(use)
+    ):
+        raise RuntimeError("INTERACTIVE_OPERATOR_SID_UNAVAILABLE")
+    sid_text = wintypes.LPWSTR()
+    if not security.ConvertSidToStringSidW(sid_buffer, ctypes.byref(sid_text)):
+        raise RuntimeError("INTERACTIVE_OPERATOR_SID_UNAVAILABLE")
+    try:
+        value = sid_text.value
+    finally:
+        kernel.LocalFree(ctypes.cast(sid_text, wintypes.HANDLE))
+    if not value or not re.fullmatch(r"S-1-\d+(?:-\d+){3,}", value):
+        raise RuntimeError("INTERACTIVE_OPERATOR_SID_INVALID")
+    return value
 
 def main():
     p = argparse.ArgumentParser()
