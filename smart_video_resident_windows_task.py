@@ -78,7 +78,7 @@ def task_xml(python_exe: str, script: str, root: str, catalog: str,
     _el(exe, "Command", str(paths[0]))
     _el(exe, "Arguments", args)
     _el(exe, "WorkingDirectory", str(pathlib.PureWindowsPath(script).parent))
-    return ET.tostring(doc, encoding="utf-8", xml_declaration=True)
+    return ET.tostring(doc, encoding="utf-16", xml_declaration=True)
 
 
 def register(xml_bytes: bytes, task_name=TASK_NAME) -> dict:
@@ -88,7 +88,7 @@ def register(xml_bytes: bytes, task_name=TASK_NAME) -> dict:
                               capture_output=True, timeout=20)
     if existing.returncode == 0:
         if ET.canonicalize(existing.stdout.decode("utf-16", "ignore") if existing.stdout.startswith(b"\xff\xfe")
-                           else existing.stdout.decode("utf-8", "replace")) == ET.canonicalize(xml_bytes.decode()):
+                           else existing.stdout.decode("utf-8", "replace")) == ET.canonicalize(xml_bytes.decode("utf-16")):
             return {"task":task_name,"state":"ALREADY_MATCHING"}
         raise ValueError("TASK_NAME_COLLISION_REVIEW_REQUIRED")
     with tempfile.TemporaryDirectory(prefix="smartmega_scheduled_task_") as d:
