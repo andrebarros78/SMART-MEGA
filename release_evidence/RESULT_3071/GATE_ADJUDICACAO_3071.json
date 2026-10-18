@@ -1,0 +1,77 @@
+{
+  "schema": "SMART_MEGA_3071_ADJUDICATION_GATE_1",
+  "status": "ADJUDICATED__LEARNING_BLOCKED_BY_PRE_DRAW_TEMPORAL_AUTHORITY",
+  "generated_utc": "2026-10-18T18:55:48.002993+00:00",
+  "repo": "andrebarros78/SMART-MEGA",
+  "branch": "auditoria-resultado-3071-20261018",
+  "target_contest": 3071,
+  "actual_numbers": [
+    12,
+    22,
+    41,
+    45,
+    51,
+    52
+  ],
+  "result_source": "OPERATOR",
+  "direct_caixa_verified": false,
+  "lifecycle_state": "ADJUDICATED",
+  "active_epoch_state": "FROZEN",
+  "adjudication": {
+    "event_count": 1,
+    "champion_hits": 0,
+    "challenger_hits": 0,
+    "difference": 0,
+    "historical_global_e_value_in_event": 1.0416666666666667,
+    "lineage_promotion_e_value": 1.0,
+    "ledger_sha256": "b8598935c572e43e5c2673dcabbf4b558487cdbe67f91fd3ab912d76782dcc65",
+    "diagnostic_event_counts": {
+      "RANK_SCORE_CALIBRATION": 1,
+      "ATTRIBUTION": 1,
+      "MULTI_CHALLENGERS": 1,
+      "ADJUDICATION": 1,
+      "FREEZE": 1,
+      "MARGINAL_UTILITY": 1,
+      "INTERACTIONS": 1,
+      "META_GOVERNOR": 1
+    },
+    "signal_experts_evaluated": 12,
+    "expert_top6_hit_distribution": {
+      "0": 12,
+      "1": 0,
+      "2": 0,
+      "3": 0,
+      "4": 0,
+      "5": 0,
+      "6": 0
+    },
+    "promote_challenger": false
+  },
+  "post_result_report": {
+    "status": "PASS",
+    "json_sha256": "b5540310085d72172aca924ba8b4a042c73e3013a6dbb3259896c39999e21fa3",
+    "markdown_sha256": "9407a5a0c91da2669fae270c35a51a9c3ca207b632db1ac324fbb918519ad66b"
+  },
+  "learning_gate": {
+    "attempt": "smart_operator.post_result_report_operation(root,3071)",
+    "error": "post-result recovery lacks valid pre-draw temporal guard",
+    "guard_status": "OPERATOR_UNVERIFIED_DRAW_TIME",
+    "guard_before_scheduled_draw": false,
+    "operator_selected": true,
+    "scheduled_datetime": null,
+    "learned_state_created": false,
+    "canonical_history_advanced": false,
+    "original_guard_rewritten": false,
+    "required_next_action": "Security-governed independent temporal attestation and review; never rewrite original frozen guard or bypass the rejection."
+  },
+  "integrity": {
+    "status": "PASS",
+    "data_quality": "PASS",
+    "freeze_sha256": "5bd372977cb5c5f36358f31997ab05e9da38f8d010d6badf2e8abceaef0b4fab",
+    "primary_card_sha256": "cb0f8d53873f2f91a06233399509a2e4aaa35fe5d102ee91dc455fe6a2731d5c",
+    "canonical_history_sha256": "ac1659a4818c67a9509c51015941390ddc3d80f6e4551b4339e298f8147a0436",
+    "staged_result_history_sha256": "b686791ca6b9d3c9860250be10940e37ec3e419c7f3364d5632939fba3e49428"
+  },
+  "statistical_caution": "The 13 cards and 12 experts are correlated; one 0-hit draw does not establish a systematic predictive failure.",
+  "predictive_6of6_proven": false
+}
