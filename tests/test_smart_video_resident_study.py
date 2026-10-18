@@ -125,3 +125,47 @@ def test_no_pretend_learning_on_blocked_source(tmp_path):
     assert r["official_frames_decoded_verified"] == 0
     assert r["learning_complete"] is False
     assert r["source_gate_blocked"] is True
+
+
+def test_resident_accepts_authentic_checkpoint_queue_progress_without_new_session(tmp_path):
+    from test_smart_video_official_queue import resolver, sampler
+    cfg, resident = fixture(tmp_path, n=4, blocked=False)
+    initial = call(cfg, resident, 10000)
+    completed = run_official_queue(
+        **cfg, max_items=2, resolver=resolver, sampler=sampler
+    )
+    assert completed["verified_checkpoints"] == 2
+    assert completed["queue_state_sha256"] != initial["queue_sha256"]
+    observed = call(cfg, resident, 10100)
+    assert observed["heartbeat_count"] == 2
+    assert observed["queue_sha256"] == completed["queue_state_sha256"]
+    assert observed["deadline_epoch"] == initial["deadline_epoch"]
+    assert observed["quality_classification"] == {
+        "NO_DECODED_FRAME_PROOF": 2, "NOT_OBSERVED": 2,
+    }
+    assert observed["official_frames_decoded_verified"] == 0
+
+
+def test_resident_rejects_missing_immutable_queue_ancestor(tmp_path):
+    from test_smart_video_official_queue import resolver, sampler
+    cfg, resident = fixture(tmp_path, n=2, blocked=False)
+    first = call(cfg, resident, 10000)
+    run_official_queue(**cfg, max_items=1, resolver=resolver, sampler=sampler)
+    ancestor = cfg["queue_dir"] / "queue_history" / (first["queue_sha256"] + ".json")
+    ancestor.unlink()
+    with pytest.raises(ValueError, match="RESIDENT_QUEUE_HISTORY_INVALID"):
+        call(cfg, resident, 10100)
+    assert read_status(resident)["heartbeat_count"] == 1
+
+
+def test_resident_new_explicit_window_preserves_old_ledger(tmp_path):
+    cfg, resident = fixture(tmp_path)
+    old = call(cfg, resident, 200)
+    ended = call(cfg, resident, old["deadline_epoch"])
+    assert ended["state"] == "WINDOW_FINISHED"
+    next_root = tmp_path / "resident_new_authorized_window"
+    new = call(cfg, next_root, old["deadline_epoch"] + 120)
+    assert new["state"] == "PAUSED_SOURCE_ACCESS"
+    assert new["heartbeat_count"] == 1
+    assert new["started_at_epoch"] > old["deadline_epoch"]
+    assert read_status(resident)["deadline_epoch"] == old["deadline_epoch"]
