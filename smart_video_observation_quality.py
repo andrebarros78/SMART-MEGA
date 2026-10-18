@@ -143,8 +143,17 @@ def quality_snapshot(catalog_dir, checkpoint_dir, queue_dir, *, workers=1):
     return summary
 
 
-def save_quality_snapshot(catalog_dir, checkpoint_dir, queue_dir, *, workers=1):
-    root = Path(queue_dir)
+def save_quality_snapshot(catalog_dir, checkpoint_dir, queue_dir, *, workers=1,
+                          output_dir=None):
+    """Persist optional isolated quality ledger; source queue remains read-only."""
+    root = Path(output_dir) if output_dir is not None else Path(queue_dir)
+    if root.is_symlink():
+        raise ValueError("QUALITY_OUTPUT_SYMLINK")
+    if output_dir is not None and any(
+        root.resolve() == Path(path).resolve()
+        for path in (catalog_dir, checkpoint_dir, queue_dir)
+    ):
+        raise ValueError("QUALITY_OUTPUT_ROOT_COLLISION")
     with _exclusive(root):
         state = quality_snapshot(catalog_dir, checkpoint_dir, queue_dir, workers=workers)
         previous_path = root / CURRENT
