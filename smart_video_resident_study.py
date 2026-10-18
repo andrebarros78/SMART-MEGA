@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 import os
 import sqlite3
 import time
@@ -18,7 +19,7 @@ from pathlib import Path
 from typing import Callable
 
 from smart_video_official_catalog import read_current
-from smart_video_official_queue import _read_state
+from smart_video_official_queue import _read_state, _digest, _encode
 from smart_video_observation_quality import save_quality_snapshot
 from smart_video_source_access import read_source_gate
 
@@ -92,6 +93,72 @@ def _connect(root: Path):
     """)
     conn.commit()
     return conn
+
+
+
+def _reconcile_queue_history(queue_root: Path, current: dict, baseline_sha: str):
+    """Accept only cryptographically journaled, identity-preserving progress.
+
+    The last recognized SHA is an ancestor, not necessarily the direct parent:
+    one observation wave may publish multiple immutable queue snapshots.
+    """
+    if baseline_sha == current["sha256"]:
+        return
+    if not isinstance(baseline_sha, str) or not re.fullmatch(r"[0-9a-f]{64}", baseline_sha):
+        raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID")
+    visited = {current["sha256"]}
+    node = current
+    ancestor = None
+    for _ in range(4000):
+        old = node.get("previous_sha256")
+        if not isinstance(old, str) or not re.fullmatch(r"[0-9a-f]{64}", old) or old in visited:
+            raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID")
+        visited.add(old)
+        archive = queue_root / "queue_history" / (old + ".json")
+        if archive.is_symlink() or not archive.is_file() or archive.stat().st_size > 3 * 1024 * 1024:
+            raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID")
+        blob = archive.read_bytes()
+        try:
+            doc = json.loads(blob)
+        except (ValueError, UnicodeError) as exc:
+            raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID") from exc
+        if (not isinstance(doc, dict) or doc.get("sha256") != old
+                or _digest({k: v for k, v in doc.items() if k != "sha256"}) != old
+                or blob != _encode(doc)):
+            raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID")
+        if old == baseline_sha:
+            ancestor = doc
+            break
+        node = doc
+    if ancestor is None:
+        raise ValueError("RESIDENT_QUEUE_HISTORY_INVALID")
+    if (ancestor.get("catalog_sha256") != current.get("catalog_sha256")
+            or ancestor.get("checkpoint_dir") != current.get("checkpoint_dir")
+            or ancestor.get("config_sha256") != current.get("config_sha256")
+            or ancestor.get("official_channel_id") != current.get("official_channel_id")
+            or ancestor.get("hypothesis_id") != current.get("hypothesis_id")
+            or ancestor.get("predictive_weight") != 0.0
+            or current.get("predictive_weight") != 0.0):
+        raise ValueError("RESIDENT_QUEUE_IDENTITY_DRIFT")
+    earlier = ancestor.get("records") or {}
+    later = current.get("records") or {}
+    if set(earlier) != set(later):
+        raise ValueError("RESIDENT_QUEUE_IDENTITY_DRIFT")
+    identity_keys = ("contest_id", "video_id", "source_url", "description_sha256")
+    for contest, past in earlier.items():
+        after = later[contest]
+        if any(past.get(k) != after.get(k) for k in identity_keys):
+            raise ValueError("RESIDENT_QUEUE_IDENTITY_DRIFT")
+        old_attempts, new_attempts = past.get("attempts"), after.get("attempts")
+        if (type(old_attempts) is not int or type(new_attempts) is not int
+                or old_attempts < 0 or new_attempts < old_attempts or new_attempts > 5):
+            raise ValueError("RESIDENT_QUEUE_ATTEMPT_REGRESSION")
+        if (past.get("state") == "VERIFIED" and
+                (after.get("state") != "VERIFIED" or
+                 after.get("checkpoint_sha256") != past.get("checkpoint_sha256"))):
+            raise ValueError("RESIDENT_QUEUE_COMPLETION_REGRESSION")
+        if past.get("state") in {"QUARANTINED", "EXHAUSTED"} and past != after:
+            raise ValueError("RESIDENT_QUEUE_TERMINAL_REGRESSION")
 
 
 def read_status(root: str | Path):
@@ -171,9 +238,9 @@ def tick(
                 )
                 conn.commit()
                 previous = conn.execute("SELECT * FROM resident WHERE id=1").fetchone()
-            if (previous["source_queue_sha256"] != queue["sha256"] or
-                    previous["source_catalog_sha256"] != cat["sha256"]):
+            if previous["source_catalog_sha256"] != cat["sha256"]:
                 raise ValueError("RESIDENT_CATALOG_OR_QUEUE_DRIFT")
+            _reconcile_queue_history(q_root, queue, previous["source_queue_sha256"])
             if previous["deadline_epoch"] - previous["started_at_epoch"] != window_hours*3600:
                 raise ValueError("RESIDENT_WINDOW_CONFIG_DRIFT")
             if epoch < previous["started_at_epoch"]:
@@ -197,6 +264,13 @@ def tick(
                 quality = save_quality_snapshot(
                     catalog_dir, cp_root, q_root, workers=1
                 )
+                if quality.get("queue_sha256") != queue["sha256"]:
+                    raise ValueError("RESIDENT_QUEUE_CONCURRENT_UPDATE")
+                unsafe = {"CHECKPOINT_UNTRUSTED", "CHECKPOINT_SHA_MISMATCH",
+                          "CHECKPOINT_CORRUPT_OR_MISSING"}
+                if any(quality.get("count_by_quality", {}).get(key, 0) > 0
+                       for key in unsafe):
+                    raise ValueError("RESIDENT_CHECKPOINT_INTEGRITY_VIOLATION")
                 state = ("PAUSED_SOURCE_ACCESS" if source["state"] == "BLOCKED"
                          else "PAUSED_AWAITING_MEDIA_AUTHORIZATION")
             else:
@@ -208,8 +282,9 @@ def tick(
             conn.execute(
                 """UPDATE resident SET state=?,heartbeat_epoch=?,
                    heartbeat_count=heartbeat_count+1,
-                   quality_sha256=?,source_gate_sha256=? WHERE id=1""",
-                (state, epoch, qs, source.get("sha256"))
+                   quality_sha256=?,source_gate_sha256=?,
+                   source_queue_sha256=? WHERE id=1""",
+                (state, epoch, qs, source.get("sha256"), queue["sha256"])
             )
             conn.commit()
             summary = read_status(root)
