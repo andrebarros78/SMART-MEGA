@@ -90,7 +90,8 @@ def test_quality_snapshot_from_block_is_stable(tmp_path):
     assert one["quality_classification"] == {"SOURCE_ACCESS_BLOCKED": 50}
     assert two["quality_sha256"] == one["quality_sha256"]
     assert two["heartbeat_count"] == 2
-    assert len(list((cfg["queue_dir"]/"quality_history").glob("*.json"))) == 1
+    assert not (cfg["queue_dir"]/"quality_history").exists()
+    assert len(list((root/"quality_history").glob("*.json"))) == 1
 
 
 def test_source_gate_tamper_fails_closed(tmp_path):
@@ -169,3 +170,26 @@ def test_resident_new_explicit_window_preserves_old_ledger(tmp_path):
     assert new["heartbeat_count"] == 1
     assert new["started_at_epoch"] > old["deadline_epoch"]
     assert read_status(resident)["deadline_epoch"] == old["deadline_epoch"]
+
+
+def test_resident_never_writes_the_official_queue_or_catalog(tmp_path):
+    cfg, root = fixture(tmp_path, n=3)
+    pointer = cfg["queue_dir"]/"SMART_CAIXA_VISUAL_QUEUE_CURRENT.json"
+    before = pointer.read_bytes()
+    parent_before = sorted(p.name for p in cfg["queue_dir"].iterdir())
+    report = call(cfg, root, 24000)
+    assert report["heartbeat_count"] == 1
+    assert pointer.read_bytes() == before
+    assert sorted(p.name for p in cfg["queue_dir"].iterdir()) == parent_before
+    assert (root/"quality_history").is_dir()
+
+
+def test_local_quality_snapshot_corruption_refused(tmp_path):
+    cfg, root = fixture(tmp_path, n=1)
+    one = call(cfg, root, 30000)
+    snap = root/"quality_history"/(one["quality_sha256"] + ".json")
+    assert snap.is_file()
+    snap.write_text("{}", encoding="utf-8")
+    with pytest.raises(ValueError, match="RESIDENT_QUALITY_ARCHIVE_CORRUPT"):
+        call(cfg, root, 30100)
+    assert read_status(root)["heartbeat_count"] == 1
