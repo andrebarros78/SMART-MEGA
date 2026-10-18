@@ -20,7 +20,7 @@ from typing import Callable
 
 from smart_video_official_catalog import read_current
 from smart_video_official_queue import _read_state, _digest, _encode
-from smart_video_observation_quality import save_quality_snapshot
+from smart_video_observation_quality import quality_snapshot
 from smart_video_source_access import read_source_gate
 
 SCHEMA = "SMART_CAIXA_RESIDENT_STUDY_V1"
@@ -67,6 +67,81 @@ def _exclusive(root: Path):
                 yield
             finally:
                 fcntl.flock(h.fileno(), fcntl.LOCK_UN)
+
+
+
+def _quality_bytes(doc: dict) -> bytes:
+    return (json.dumps(doc, sort_keys=True, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+
+
+def _read_quality_archive(path: Path, claimed_sha: str) -> dict:
+    if path.is_symlink() or not path.is_file() or path.stat().st_size > 2 * 1024 * 1024:
+        raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+    try:
+        blob = path.read_bytes()
+        doc = json.loads(blob)
+        if not isinstance(doc, dict) or doc.get("sha256") != claimed_sha:
+            raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+        if (_digest({k: v for k, v in doc.items() if k != "sha256"}) != claimed_sha
+                or blob != _quality_bytes(doc)):
+            raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+    except (OSError, TypeError, UnicodeError, json.JSONDecodeError) as exc:
+        raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT") from exc
+    return doc
+
+
+def _read_local_quality(root: Path, claimed_sha: str) -> dict:
+    return _read_quality_archive(root / "quality_history" / (claimed_sha + ".json"), claimed_sha)
+
+
+def _verify_prior_quality(root: Path, official_queue: Path, prior_sha: str | None):
+    if not prior_sha:
+        return
+    folder = root / "quality_history"
+    if folder.is_symlink():
+        raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+    path = folder / (prior_sha + ".json")
+    if path.exists() or path.is_symlink():
+        _read_quality_archive(path, prior_sha)
+        return
+    # One-time migration of legacy bootstrap quality already archived on B2.
+    # The original official queue and quality snapshots stay unchanged.
+    doc = _read_quality_archive(
+        official_queue / "quality_history" / (prior_sha + ".json"), prior_sha
+    )
+    folder.mkdir(exist_ok=True)
+    try:
+        with path.open("xb") as output:
+            output.write(_quality_bytes(doc))
+            output.flush()
+            os.fsync(output.fileno())
+    except FileExistsError:
+        pass
+    _read_quality_archive(path, prior_sha)
+
+
+def _publish_local_quality(root: Path, report: dict) -> str:
+    doc = dict(report, sha256=_digest(report))
+    sha = doc["sha256"]
+    folder = root / "quality_history"
+    if folder.is_symlink():
+        raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+    folder.mkdir(exist_ok=True)
+    path = folder / (sha + ".json")
+    if path.is_symlink():
+        raise ValueError("RESIDENT_QUALITY_ARCHIVE_CORRUPT")
+    if path.exists():
+        _read_quality_archive(path, sha)
+    else:
+        try:
+            with path.open("xb") as output:
+                output.write(_quality_bytes(doc))
+                output.flush()
+                os.fsync(output.fileno())
+        except FileExistsError:
+            _read_quality_archive(path, sha)
+    return sha
+
 
 
 def _connect(root: Path):
@@ -259,11 +334,11 @@ def tick(
             if prior == "QUARANTINED_SOURCE_GATE":
                 raise ValueError("RESIDENT_SOURCE_GATE_QUARANTINED")
 
-            # Reporting can consume existing observations, never fetch media.
+            # The interactive scheduler reads the official queue but writes
+            # quality reports ONLY into its private resident session.
+            _verify_prior_quality(root, q_root, previous["quality_sha256"])
             if epoch < previous["deadline_epoch"]:
-                quality = save_quality_snapshot(
-                    catalog_dir, cp_root, q_root, workers=1
-                )
+                quality = quality_snapshot(catalog_dir, cp_root, q_root, workers=1)
                 if quality.get("queue_sha256") != queue["sha256"]:
                     raise ValueError("RESIDENT_QUEUE_CONCURRENT_UPDATE")
                 unsafe = {"CHECKPOINT_UNTRUSTED", "CHECKPOINT_SHA_MISMATCH",
@@ -271,14 +346,14 @@ def tick(
                 if any(quality.get("count_by_quality", {}).get(key, 0) > 0
                        for key in unsafe):
                     raise ValueError("RESIDENT_CHECKPOINT_INTEGRITY_VIOLATION")
+                qs = _publish_local_quality(root, quality)
                 state = ("PAUSED_SOURCE_ACCESS" if source["state"] == "BLOCKED"
                          else "PAUSED_AWAITING_MEDIA_AUTHORIZATION")
             else:
                 state = "WINDOW_FINISHED"
-                # Last verified quality pointer is retained if the window ended.
-                p = q_root / "SMART_CAIXA_OBSERVATIONAL_QUALITY_CURRENT.json"
-                quality = json.loads(p.read_text("utf-8")) if p.is_file() else None
-            qs = quality.get("sha256") if quality else previous["quality_sha256"]
+                quality = (_read_local_quality(root, previous["quality_sha256"])
+                           if previous["quality_sha256"] else None)
+                qs = previous["quality_sha256"]
             conn.execute(
                 """UPDATE resident SET state=?,heartbeat_epoch=?,
                    heartbeat_count=heartbeat_count+1,
