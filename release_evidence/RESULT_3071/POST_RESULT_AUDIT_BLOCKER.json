@@ -1,0 +1,67 @@
+{
+  "schema": "SMART_POST_RESULT_3071_MATERIAL_EVIDENCE_DEFICIENCY_1",
+  "status": "BLOCKED_HISTORICAL_FREEZE_EVIDENCE",
+  "target_contest": 3071,
+  "cutoff_contest": 3070,
+  "created_utc": "2026-10-19T17:54:03.719390+00:00",
+  "official_result_operator_attested": [
+    12,
+    22,
+    41,
+    45,
+    51,
+    52
+  ],
+  "source_independently_verified": false,
+  "primary_card": [
+    10,
+    11,
+    27,
+    38,
+    43,
+    53
+  ],
+  "primary_hits": 0,
+  "frozen_card_sha256": "5bd372977cb5c5f36358f31997ab05e9da38f8d010d6badf2e8abceaef0b4fab",
+  "result_authority_sha256": "a6ab693eacbf61a2f6f918647934363d58f8e5021d2240ed5449e2fa6045f79d",
+  "sequential_learning_valid": true,
+  "calibration_promotion_authorized": false,
+  "learning_policy": "DIVERSITY_HARDENED_V1",
+  "online_learning_max_abs_step": 0.75,
+  "historical_freeze_coverage": {
+    "total": 17,
+    "sha256_verified": 15,
+    "missing": [
+      {
+        "target_contest": 3060,
+        "file": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+        "expected_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871"
+      },
+      {
+        "target_contest": 3061,
+        "file": "runtime/learning_epochs/operator-3061-1d798ed37904-20260922T195353823390Z/SMART_3061_CHAMPION_CHALLENGER_FREEZE.json",
+        "expected_sha256": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8"
+      }
+    ],
+    "restored_original_from_git": [
+      {
+        "target": 3055,
+        "git_blob": "6c22f7dd4f21b5f11490adcc061c95aaab93041b",
+        "sha256": "8dae686a9522e50b6433bacb41ddcb601e87f6da8e595acdced2d74df5cb6394"
+      },
+      {
+        "target": 3057,
+        "git_blob": "0b7638bfdcb92ad5764d99dab7f70344d34d5288",
+        "sha256": "66fb8927a9dada4821dea837f8ed9d1d85d46581c8dd0228e4172cfeded08ba0"
+      }
+    ]
+  },
+  "independent_audit_complete": false,
+  "post_result_canonical_history_advance_complete": false,
+  "operational_lifecycle": "FROZEN_PENDING_AUDIT",
+  "root_cause": "Legacy FREEZE events reference historical files absent from available canonical repository and authenticated project hosts",
+  "required_recovery": "Retrieve each exact historical freeze, verify its original SHA-256 and immutable timestamps, then rerun independent audit without retroactive reproduction",
+  "no_history_fabrication": true,
+  "no_automatic_3072_generation": true,
+  "sha256": "65ebebeca1abf75a2e3a6cebb1ecc28682491accd4b11479f108ca2c95a36ee3"
+}
