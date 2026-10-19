@@ -95,6 +95,59 @@ def _project_local(root: Path, value: str | Path, label: str) -> Path:
     return path
 
 
+def _validate_post_result_temporal_guard(
+    active: dict[str, Any], freeze_doc: dict[str, Any], target: int,
+) -> str:
+    """Preserve an operator-only clock as UNVERIFIED, never as official pre-draw proof.
+
+    The immutable pre-result freeze is valid for operational adjudication even
+    when its source never claimed an independently known drawing timestamp.
+    Such a result can never upgrade its original temporal provenance.
+    """
+    guard = active.get("temporal_guard")
+    frozen_guard = freeze_doc.get("temporal_guard")
+    schedule = active.get("target_schedule")
+    frozen_schedule = freeze_doc.get("target_schedule")
+    if not all(isinstance(x, dict) for x in
+               (guard, frozen_guard, schedule, frozen_schedule)):
+        raise ValueError("post-result recovery temporal evidence missing")
+    if (int(guard.get("target_contest", -1)) != int(target)
+            or int(frozen_guard.get("target_contest", -1)) != int(target)
+            or guard.get("result_used") is not False
+            or frozen_guard.get("result_used") is not False
+            or int(freeze_doc.get("target_contest", -1)) != int(target)
+            or int(freeze_doc.get("cutoff_contest", -1)) != int(target)-1
+            or freeze_doc.get("frozen_before_result") is not True
+            or freeze_doc.get("causal_cutoff") is not True):
+        raise ValueError("post-result recovery temporal evidence is not causal")
+
+    if guard.get("status") == "PASS":
+        if (frozen_guard.get("status") != "PASS"
+                or guard.get("before_scheduled_draw") is not True
+                or frozen_guard.get("before_scheduled_draw") is not True):
+            raise ValueError("post-result recovery verified temporal guard invalid")
+        return "VERIFIED_PRE_DRAW_WINDOW"
+
+    if guard.get("status") != "OPERATOR_UNVERIFIED_DRAW_TIME":
+        raise ValueError("post-result recovery temporal status unsupported")
+    if (frozen_guard.get("status") != "OPERATOR_UNVERIFIED_DRAW_TIME"
+            or guard.get("before_scheduled_draw") is not False
+            or frozen_guard.get("before_scheduled_draw") is not False
+            or guard.get("operator_selected") is not True
+            or frozen_guard.get("operator_selected") is not True
+            or active.get("operator_selected_target") is not True):
+        raise ValueError("post-result operator temporal provenance mismatch")
+    for item in (schedule, frozen_schedule):
+        if (item.get("authority") != "OPERATOR_SELECTED_TARGET"
+                or item.get("operator_selected_target") is not True
+                or int(item.get("target_contest", -1)) != int(target)
+                or item.get("target_date") is not None
+                or item.get("draw_time_independently_verified") is not False
+                or item.get("result_used") is not False):
+            raise ValueError("post-result operator temporal schedule mismatch")
+    return "OPERATOR_TIME_UNVERIFIED_AUDIT_ONLY"
+
+
 def _active_epoch_binding(root: Path) -> dict[str, Any] | None:
     root = Path(root).resolve()
     active_path = root / "SMART_ACTIVE_EPOCH.json"
@@ -161,11 +214,7 @@ def _active_epoch_binding(root: Path) -> dict[str, Any] | None:
             raise ValueError("post-result adjudication numbers are invalid")
         if adjudication.get("retroactive_rewrite") is not False:
             raise ValueError("post-result adjudication permits retroactive rewrite")
-        guard = active.get("temporal_guard") if isinstance(active.get("temporal_guard"), dict) else {}
-        if guard.get("status") != "PASS" or int(guard.get("target_contest", -1)) != TARGET:
-            raise ValueError("post-result recovery lacks valid pre-draw temporal guard")
-        if guard.get("before_scheduled_draw") is not True or guard.get("result_used") is not False:
-            raise ValueError("post-result recovery temporal guard is not causal")
+        _validate_post_result_temporal_guard(active, freeze_doc, TARGET)
         current = {
             "status": "POST_RESULT_RECOVERY",
             "target_contest": TARGET,
