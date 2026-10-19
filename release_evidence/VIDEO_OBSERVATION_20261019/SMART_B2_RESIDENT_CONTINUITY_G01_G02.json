@@ -125,5 +125,51 @@
     "scheduler_enabled": true,
     "sqlite_integrity": "ok",
     "condition": "SUPERVISOR_ONLY_NOT_VIDEO_LEARNING"
+  },
+  "G02_authorized_media_attempt_20261019": {
+    "scope": "NO_CIRCUMVENTION",
+    "selected_executor_plugin": "LMCP network federation",
+    "selected_machine": "PC-ESCOLA/B2-LEARNING-NODE-01",
+    "alternate_browser_target": "PC-VENDAS",
+    "browser_operation": "browser.open_url",
+    "browser_result": "DENIED: FederationError:network_dispatch_operation_denied",
+    "youtube_video_target": "https://www.youtube.com/watch?v=ZP3mCk4_ku0",
+    "youtube_web_preview": "NO_MEDIA_FRAMES: web public page fetch failed",
+    "plugin_discovery": "vidIQ available but not installed; advertised video visual analysis does not prove physical frame access",
+    "vps_check": {
+      "command_id": "c_1b510814eb5b4f88b360de64f11daf8c",
+      "opencv_present": false,
+      "project_dirs_examined": [
+        "/srv/SMART-MEGA",
+        "/srv/SMART-MEGA-V6"
+      ],
+      "project_dirs_exist": false,
+      "media_found": 0
+    },
+    "b2_read_only": {
+      "command_id": "netcmd_c826dd58aee748d5997e72f3b602c897",
+      "result_sha256": "95fded64acb2af0d4f59c0e19fddb74102177c4e293c0e6ab70788866859ef0c",
+      "resident_heartbeats_observed": 34,
+      "state": "PAUSED_SOURCE_ACCESS",
+      "queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+      "contest_3013": {
+        "video_id": "ZP3mCk4_ku0",
+        "state": "PENDING",
+        "attempts": 0,
+        "checkpoint": null
+      },
+      "contest_3016": {
+        "video_id": "3dTwSbhlbeY",
+        "state": "PENDING",
+        "attempts": 0,
+        "checkpoint": null
+      }
+    },
+    "no_authentication_bypass": true,
+    "no_video_frames_decoded": true,
+    "no_video_checkpoint_created": true,
+    "predictive_weight_unchanged": 0,
+    "state": "BLOCKED_EXTERNAL_MEDIA_AUTHORIZATION",
+    "next_external_dependency": "Permitted decodable official replay or legitimate video file/stream; data/metadata alone insufficient"
   }
 }
