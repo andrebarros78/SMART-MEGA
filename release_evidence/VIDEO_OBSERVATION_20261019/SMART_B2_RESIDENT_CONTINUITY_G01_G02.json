@@ -178,5 +178,59 @@
     "commit_subject": "audit: prepare immutable result-consumption and calibration review for 3071",
     "evidence": "Public GitHub commit endpoint",
     "note": "Main advanced independently from old 01ae8d2; this operation made changes only on feature branch, not on main; do not assume global baseline immutable."
+  },
+  "ecc_full_g02_resilience_review_20261019": {
+    "plugin_skills_used": [
+      "ecc-full-engineer",
+      "ecc-durable-mission",
+      "ecc-mission-continuity",
+      "ecc-execution-bridge",
+      "ecc-mcp"
+    ],
+    "gate": "G02",
+    "outcome": "BLOCKED_EXTERNAL_MEDIA_OR_GRAPHICAL_AUTHORITY",
+    "official_public_sources": {
+      "caixa_youtube_archives": "officially stated by Caixa",
+      "caixa_facebook": "officially stated by Caixa",
+      "redetv": "broadcast confirmed by Caixa in public documentation",
+      "independent_html_video": "not verified",
+      "gigasena_3013": "third-party video page only embeds YouTube; no stand-alone media URL in fetched HTML"
+    },
+    "authorized_b2_probes": [
+      {
+        "command": "netcmd_384a1fae99e441228efa77c24b2dda67",
+        "proof_sha256": "2d2577d043956d0fa32c691af86d52c45ad89fa6e2862687f44e151232a8cafd",
+        "result": "OpenCV installed; youtube public request HTTP 429; Facebook public landing HTTP 200 but not a video; ffmpeg/ffprobe/yt-dlp unavailable on PATH; resident PAUSED_SOURCE_ACCESS at 36 heartbeats"
+      },
+      {
+        "command": "netcmd_24735d97ff5c4a57a3c00d4dd80e169c",
+        "proof_sha256": "8e97975f95d0a8b1d8500c99149a9ff2affa1e67efa178f69388d3b60a73d369",
+        "result": "Edge process in Windows session 1; mss, PIL, cv2, Playwright installed"
+      },
+      {
+        "command": "netcmd_8ef0a4d0b107416186c8b7025c9a2c25",
+        "proof_sha256": "5d14c0568d82034d279cc41f31a5e8109a282dbf10b08a2c9abe413b76737446",
+        "result": "Governed Python executor in Windows session 0; mss screenshot fails BitBlt access denied; no screen content exported"
+      }
+    ],
+    "ecc_runtime_health": {
+      "project_id": "ecc-full-missions",
+      "project_supervisor": "ready",
+      "project_health_healthy": true,
+      "execution_enabled": true,
+      "workers_operational": false,
+      "worker_details": "local workers offline/stale; Vendas and B2 external workers remote_unavailable; do not submit as fully ready",
+      "mission_status": "Not found by S-WMCP ProjectMissionStatus",
+      "ecc_sqlite_claim_or_finish": "NOT_PERFORMED: no verified governed ledger access"
+    },
+    "zero_false_claims": {
+      "video_frames_decoded": 0,
+      "verified_video_checkpoints": 0,
+      "predictive_weights_changed": 0,
+      "access_controls_bypassed": 0,
+      "actual_video_learning_proven": false
+    },
+    "required_next_step": "Authorized decoded video asset or allowed graphical media source under interactive Windows Session 1; then B2 video observation, SHA-256 checkpoint, out-of-sample validation before any predictive weighting",
+    "no_main_edits": true
   }
 }
