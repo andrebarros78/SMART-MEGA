@@ -53,15 +53,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2beb20d3fd9b4119896d86d1d72563e2b1c9aef6e1578d341a264f135f245f3b",
+  "inventory_sha256": "e3010f665c5504fb64bf1d85247e23461d9695244e849d87e9272738ea680ce4",
   "summary": {
-    "python_components": 502,
+    "python_components": 503,
     "workflow_entrypoints": 8,
     "production_components": 103,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 172,
+    "test_components": 173,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8518,6 +8518,7 @@
         "test_smart_f03_terminal_engine_migration",
         "test_smart_f17_terminal_stale_coverage",
         "test_smart_operator_direct_terminal_default",
+        "test_smart_post_result_operator_temporal_recovery",
         "test_smart_post_result_policy_consistency"
       ],
       "reachable": true,
@@ -8528,7 +8529,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "03a69201663c258aac62c8c405f7952431ebfbc05e04fd750700375a865bf455"
+      "sha256": "4d67080b334a8a719146b43063c79da2219949fb6c74652a479128bbbc1c7b48"
     },
     {
       "component_id": "smart_terminal_executor",
@@ -11485,6 +11486,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "0d6a57c58e416efa28e8f19bfe8444d00d6f72c13e1c49467145e90c6aeefe11"
+    },
+    {
+      "component_id": "test_smart_post_result_operator_temporal_recovery",
+      "source_file": "test_smart_post_result_operator_temporal_recovery.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_terminal_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "97430b6777e704091e20af199fd64f6e4419f74ab9eb8f3659f5b4f00ef91133"
     },
     {
       "component_id": "test_smart_post_result_policy_consistency",
