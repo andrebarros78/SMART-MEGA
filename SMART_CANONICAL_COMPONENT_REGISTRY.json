@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "2beb20d3fd9b4119896d86d1d72563e2b1c9aef6e1578d341a264f135f245f3b",
+  "source_reachability_inventory_sha256": "e3010f665c5504fb64bf1d85247e23461d9695244e849d87e9272738ea680ce4",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 502,
+    "component_count": 503,
     "active": 103,
     "shadow": 1,
-    "diagnostic": 198,
+    "diagnostic": 199,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -8979,7 +8979,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "03a69201663c258aac62c8c405f7952431ebfbc05e04fd750700375a865bf455",
+      "implementation_sha256": "4d67080b334a8a719146b43063c79da2219949fb6c74652a479128bbbc1c7b48",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9007,6 +9007,7 @@
         "test_smart_f03_terminal_engine_migration",
         "test_smart_f17_terminal_stale_coverage",
         "test_smart_operator_direct_terminal_default",
+        "test_smart_post_result_operator_temporal_recovery",
         "test_smart_post_result_policy_consistency"
       ],
       "entrypoints": [
@@ -12232,6 +12233,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_post_result_operator_temporal_recovery",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_post_result_operator_temporal_recovery.py",
+      "implementation_sha256": "97430b6777e704091e20af199fd64f6e4419f74ab9eb8f3659f5b4f00ef91133",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_terminal_engine"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_post_result_policy_consistency",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_policy_consistency.py",
@@ -13586,5 +13610,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "42489da7763a580de571c34162f80e1faf016f7144a45c5dbba704e9ec272483"
+  "registry_sha256": "643036c046470e67097bc9b12ba019d1b76c8350ed2315d0efd86d217cc6c017"
 }
