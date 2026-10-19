@@ -11,7 +11,7 @@ import json
 from pathlib import Path
 from typing import Any
 
-from smart_official_result_ingest import validate_official_payload
+from smart_official_result_validation import validate_official_payload
 
 INPUT_SCHEMA = "SMART_OPERATOR_RESULT_INPUT_1"
 RESULT_SCHEMA = "SMART_OPERATOR_RESULT_AUTHORITY_1"
