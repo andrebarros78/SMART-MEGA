@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "6baa40ac8d34dc1aaa29c40216df1b2cc8d8cb9225bc3ac94455ae3c559931f8",
+  "source_reachability_inventory_sha256": "0747153d4591b57dddd9746f5c05522ad11cb0b2ae45c8a50c92b19922729e97",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 504,
-    "active": 103,
+    "component_count": 506,
+    "active": 104,
     "shadow": 1,
-    "diagnostic": 200,
+    "diagnostic": 201,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -5185,7 +5185,7 @@
       "component_id": "smart_consumer_integration",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_consumer_integration.py",
-      "implementation_sha256": "98089b927cfbce101fbd3b66fb629d86562096cb310cc09e6838155776fceeb7",
+      "implementation_sha256": "7401f11ed240677e3baf0d96a559b13219b613fd39821e26c1c2f42b81a55e8d",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6951,12 +6951,13 @@
       "component_id": "smart_official_result_ingest",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_official_result_ingest.py",
-      "implementation_sha256": "487b9297f31b4d7bbe24dce1a50c18303066b31eec332f3ca7b8126da9bff4d6",
+      "implementation_sha256": "bac6cfeb0cea0e2418e480b83a95c5c2ff51bbad569d895a0cf2aa2edc7566f1",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_canonical_identity",
         "smart_http_guard",
+        "smart_official_result_validation",
         "smart_operator_result"
       ],
       "consumers": [
@@ -6971,9 +6972,35 @@
         "smart_official_dataset_reconcile",
         "smart_official_evidence_consensus",
         "smart_operator",
-        "smart_operator_result",
         "smart_terminal_engine",
         "test_smart_official_result_ingest"
+      ],
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_official_result_validation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_official_result_validation.py",
+      "implementation_sha256": "66e5c347bac527f5998bfc125bf23f7d882bf91aa017a19cab56004797953c96",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [],
+      "consumers": [
+        "smart_official_result_ingest",
+        "smart_operator_result",
+        "test_smart_operator_result_standalone"
       ],
       "entrypoints": [
         "smart_github_operator"
@@ -7106,7 +7133,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "cb87a63ced2080f689fb015999557a0d3be0b69dc85946a40c1686a98ce2fdfe",
+      "implementation_sha256": "6c7e50214662bee712a2d2ae4ce7abbd771425a8f8783235024138d6b987d0ac",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7220,11 +7247,11 @@
       "component_id": "smart_operator_result",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator_result.py",
-      "implementation_sha256": "753479d7b93d94d38f980a89183dbad1a807a34e34b3cae68b29e1639c9846eb",
+      "implementation_sha256": "e33be90f54fd5dc1dd28044a660fde57c7f21f97333c440af3a9049cd79ce6dd",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
-        "smart_official_result_ingest"
+        "smart_official_result_validation"
       ],
       "consumers": [
         "smart_official_result_ingest",
@@ -7235,6 +7262,7 @@
         "test_smart_operator_direct_terminal_default",
         "test_smart_operator_result_authority",
         "test_smart_operator_result_integration",
+        "test_smart_operator_result_standalone",
         "test_smart_result_consumption_readiness"
       ],
       "entrypoints": [
@@ -12065,6 +12093,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_operator_result_standalone",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_operator_result_standalone.py",
+      "implementation_sha256": "14f8f0ff83fbaf6cef1dbe2999ba17c2144c2594c8e0072744ffb96b9ce60810",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_official_result_validation",
+        "smart_operator_result"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_operator_schedule_authority",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_schedule_authority.py",
@@ -12308,7 +12360,7 @@
       "component_id": "test_smart_postresult_preflight_resume",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_postresult_preflight_resume.py",
-      "implementation_sha256": "33bb241068279986839eda0e2e2c7136cbc7870724986a6791e619e374962b9c",
+      "implementation_sha256": "b2214c402cdcc3101af415228e8a4aa8b8a2114c648fdf3838a14142bfd8c3b5",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13637,5 +13689,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "44a478e3c216bdf67d89500bab202f1a7227f5b44638d0da4eb7ad5be92e58e9"
+  "registry_sha256": "f35ccfb56da8f40e8eadf2e775c67946ac545ca6616a33a5fd588dc9b5518b8e"
 }

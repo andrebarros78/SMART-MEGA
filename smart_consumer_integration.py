@@ -290,8 +290,8 @@ def audit_generation(root: str | Path, proof: dict) -> dict:
     if not out.is_file() or out.read_bytes() != payload:
         fd, temporary = tempfile.mkstemp(dir=out.parent, prefix=".consumer-", suffix=".tmp")
         try:
-            with os.fdopen(fd, "w", encoding="utf-8") as handle:
-                handle.write(payload.decode("utf-8"))
+            with os.fdopen(fd, "wb") as handle:
+                handle.write(payload)
                 handle.flush()
                 os.fsync(handle.fileno())
             os.replace(temporary, out)
