@@ -60,3 +60,20 @@ A amostra é **um único sorteio**. A diferença observada não demonstra tendê
 - **Preparado:** input de resultado, reconciliação read-only de referências e cálculo observacional dos candidatos.
 - **Não executado:** registro do resultado pelo operador; preflight em runner; terminal/ingestão; relatório pós-resultado canônico; revisão/hold; ensaios OOS e promoção de pesos.
 - GitHub Actions é rota existente no código, mas **execução real não foi observada** nesta preparação. Via executor federado é válida somente se operar no mesmo repositório/commit e publicar recibos no GitHub.
+
+## Execução observada — Ponytail Full / 19-10-2026
+
+**Missão LMCP:** `m_bda5d3f91f5c429892d385c989a7521a`. **Checkout Linux isolado:** `/srv/lmcp/workspaces/smartmega-3071-20261019` (root git no host: `/srv/lmcp-data/storage/workspaces/smartmega-3071-20261019`). Baseline antes dos testes: `4da9c732e3fc6ad160ec8d347170ea14852d02f4` e `git status --porcelain` vazio.
+
+### Evidência dos comandos
+
+- `gh workflow run operator.yml -R andrebarros78/SMART-MEGA --ref main -f operation=preflight -f target=3071`: despacho confirmado. GitHub Actions run [39312774630](https://github.com/andrebarros78/SMART-MEGA/actions/runs/39312774630), **failure** antes de qualquer step de `operate`. Check-run annotations: `The job was not started because recent account payments have failed or your spending limit needs to be increased`. Esse resultado **não** é falha do código de preflight.
+- `python3 -B smart_operator.py preflight --target 3071`: **FAILED**, exit 1, `ModuleNotFoundError: No module named 'pandas'` importado por `smart_champion_challenger.py`. Os demais pacotes também não estão instalados conforme o lock. Tentativa de instalação pelo executor LMCP foi recusada com `installation_requires_signed_typed_admin_operation`; tentativas pela rota de administrador tipada retornaram `admin_operation_not_allowed`. Nenhuma instalação externa foi feita.
+- `python3 -B smart_calibration_safety_gate.py`: **PASS** real. Política `P06_NEUTRALIZED_AFTER_FINAL_HOLDOUT_20260830`, `production_calibration_strength=0.0`, `all_60_probabilities_uniform=true`, `future_result_used=false`; prova SHA-256 do freeze `5bd372977cb5c5f36358f31997ab05e9da38f8d010d6badf2e8abceaef0b4fab`.
+- Auditoria Python stdlib somente leitura do freeze, cartão principal e cinco vetores de 60 probabilidades: **PASS_STDLIB_READ_ONLY**, todos vetores com massa 6, todos candidatos 0/6, principal 0/6; Brier em tabela anterior, valores numericamente conferidos. `git status` vazio após os testes.
+
+### Situação pós-execução e retomada
+
+**MISSION_ACTIVE / BLOCKED_EXTERNAL no caminho de execução do operador.** Não houve `register-result`, `READY_TO_CONSUME`, `terminal`, ingestão da planilha, `ADJUDICATION`, `LEARNING_UPDATE`, `post-result-report` ou review/hold de 3071. Não gerar nem registrar artefatos simulando essas ações. Pesos congelados intactos.
+
+**Dependência externa para desbloqueio:** restaurar capacidade de execução do GitHub Actions na conta (Billing & plans), **ou** disponibilizar ao executor autorizado ambiente com dependências do `requirements.lock.txt` por operação administrativa tipada aprovada. Não contornar negações por outro canal no mesmo host. Após desbloqueio, reconciliar primeiro HEAD, lifecycle, active epoch e possíveis efeitos de outros operadores, depois executar `register-result` com `SMART_3071_RESULT_INPUT.json` e o preflight; prosseguir somente com os gates normativos e recibos reais.
