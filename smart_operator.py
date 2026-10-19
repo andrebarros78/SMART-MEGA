@@ -1132,6 +1132,49 @@ def register_result_operation(root: str | Path, target: int, result_file: str | 
     return register_operator_result(root, target, result_file)
 
 
+def _verified_adjudication_recovery(
+    root: Path, active: dict[str, Any], target: int,
+    frozen_sha256: str, observation: dict[str, Any],
+) -> bool:
+    """Accept a resumed *operator-only* result once, with valid immutable lineage.
+
+    A resumed sequence is NOT a fresh prospective readiness gate. Never
+    upgrade its original time/source evidence or change historical values.
+    """
+    from smart_operator_result import _read_authority
+    paths = active.get("state_paths")
+    if not isinstance(paths, dict) or not paths.get("ledger"):
+        return False
+    path = Path(str(paths["ledger"]))
+    if path.is_absolute() or ".." in path.parts:
+        return False
+    ledger_path = root / path
+    if (not ledger_path.is_file() or ledger_path.is_symlink()
+            or not ledger_path.resolve().is_relative_to(root)):
+        return False
+    if observation.get("result_input_authority") != "OPERATOR":
+        return False
+    ledger = load_ledger(ledger_path)
+    freeze = active_freeze(ledger, target)
+    if not isinstance(freeze, dict) or freeze.get("freeze_sha256") != frozen_sha256:
+        return False
+    events = [row for row in ledger.get("events", [])
+              if isinstance(row, dict)
+              and row.get("event_type") == "ADJUDICATION"
+              and int(row.get("target_contest", -1)) == target]
+    if len(events) != 1:
+        return False
+    adjudication = events[0]
+    if (adjudication.get("freeze_sha256") != frozen_sha256
+            or adjudication.get("retroactive_rewrite") is not False
+            or adjudication.get("actual_numbers") != observation.get("actual_numbers")):
+        return False
+    authority = _read_authority(root, target)
+    return (authority.get("source") == "OPERATOR"
+            and authority.get("actual_numbers") == adjudication["actual_numbers"]
+            and authority.get("predictive_weight_authorized") is False)
+
+
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Read-only official-result readiness gate for the immutable frozen epoch.
 
@@ -1195,9 +1238,20 @@ def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     if status != "OFFICIAL_RESULT_AVAILABLE" or observation.get("official_result_available") is not True:
         return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",
                 "reason": f"unexpected official probe status: {status!r}"}
-    if observation.get("preflight_status") != "PASS":
-        return {**base, "status": "BLOCKED_INTEGRITY",
-                "reason": "terminal prospective freeze preflight did not pass"}
+    preflight_marker = observation.get("preflight_status")
+    if preflight_marker != "PASS":
+        if preflight_marker != "POST_RESULT_SEQUENCE_IN_PROGRESS_OR_COMPLETE":
+            return {**base, "status": "BLOCKED_INTEGRITY",
+                    "reason": "terminal prospective freeze preflight did not pass"}
+        try:
+            valid_recovery = _verified_adjudication_recovery(
+                root, active, target, frozen["freeze_sha256"], observation,
+            )
+        except (ValueError, RuntimeError, KeyError, TypeError, FileNotFoundError):
+            valid_recovery = False
+        if not valid_recovery:
+            return {**base, "status": "BLOCKED_INTEGRITY",
+                    "reason": "post-result recovery ledger/operator authority mismatch"}
     if (observation.get("draw_date") != expected_date
             and observation.get("result_input_authority") != "OPERATOR"):
         return {**base, "status": "BLOCKED_OFFICIAL_EVIDENCE",

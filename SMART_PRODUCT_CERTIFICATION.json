@@ -2,12 +2,12 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-19T17:27:25.227112+00:00",
+  "generated_utc": "2026-10-19T17:42:28.229588+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
   "code_fingerprint": {
-    "file_count": 324,
+    "file_count": 325,
     "files": [
       {
         "path": "SMART_DATA_CONTRACT.md",
@@ -367,7 +367,7 @@
       },
       {
         "path": "smart_operator.py",
-        "sha256": "295cfe4306de7df3d556c4d4dd6007e2ae345699361dbc7f694ff6d7bba39628"
+        "sha256": "cb87a63ced2080f689fb015999557a0d3be0b69dc85946a40c1686a98ce2fdfe"
       },
       {
         "path": "smart_operator_contract.py",
@@ -1110,6 +1110,10 @@
         "sha256": "05e0b2bc581067be084a6db46455f34dc27ce3627f063657fc749b8a5468390c"
       },
       {
+        "path": "test_smart_postresult_preflight_resume.py",
+        "sha256": "33bb241068279986839eda0e2e2c7136cbc7870724986a6791e619e374962b9c"
+      },
+      {
         "path": "test_smart_powered_falsification_artifact.py",
         "sha256": "c141f9b8c5f1d5c961d05cd5bca6e2e6b052b801395b4ba39aa8ef5abd45018b"
       },
@@ -1306,19 +1310,19 @@
         "sha256": "9c81b6dc019609b958a0563048b4ea0bb04303244220dcd19bfa6e42dbb3bc1f"
       }
     ],
-    "sha256": "fbf96b1834bd35b016c23e01d60925fd0bf44b0e9cd2f4f1f198d858b885a157"
+    "sha256": "851f4f724b97fbf52637200ba4873d057323a77de9aca3a99b5d71eda729e00b"
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "1cc1efcff66bc53bb73344a5b2d315d9123e48d2",
+    "source_commit": "20f9cfd88cb827dfa4bd7f4be0f168f03bc1fe33",
     "ci_run_id": null,
     "execution": {
       "kind": "FEDERATED_PC",
-      "execution_id": "449d6128-0d4e-47c8-860f-f9e1b799172a",
+      "execution_id": "6dce7b48-6b3a-4acc-8563-fccb65f21170",
       "hostname": "wmcp-cloud-01"
     },
-    "code_fingerprint_sha256": "fbf96b1834bd35b016c23e01d60925fd0bf44b0e9cd2f4f1f198d858b885a157",
-    "junit_sha256": "1526086197fea076821fa0c70175c5db87e56057c4d2b247bc737500ee278e4e",
+    "code_fingerprint_sha256": "851f4f724b97fbf52637200ba4873d057323a77de9aca3a99b5d71eda729e00b",
+    "junit_sha256": "0073fd14c05cb5eaf1b2b93cb7a4e2cbbfe44ebc43602230238d7e46b7439acc",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1415,7 +1419,7 @@
       "smart_operation_lock.py": "4b1df0ec6d9fa8d10497ae18f441f8390aeffc5a87052380aa2b865de5820a3a",
       "smart_operation_recovery.py": "a9ad05e75b2b316583200baeabe952031b580bda20e371dc3a7ae205fe97a1d4",
       "smart_operational_lifecycle.py": "fb9b475778b9df94517d5d4aa8966bb70255bf179b87682b6c17cab97f83436d",
-      "smart_operator.py": "295cfe4306de7df3d556c4d4dd6007e2ae345699361dbc7f694ff6d7bba39628",
+      "smart_operator.py": "cb87a63ced2080f689fb015999557a0d3be0b69dc85946a40c1686a98ce2fdfe",
       "smart_operator_contract.py": "850800a017db2b964fc48b6753b6fa1b4f470f899c13ae7f638e937ae8da6f79",
       "smart_operator_result.py": "0338d750f99601b0a6d20477df8b140ecd28023b9346f9b2f37c858024eb7b52",
       "smart_path_semantics.py": "865875f02156029bd0b2fb2757071c62e7f13c3d24b8303ffde165ca2d36be73",
@@ -1479,24 +1483,24 @@
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "0aa82ce60c9575af7ca5121a16a4e0749b16ea8be06be39969ff80374ee2159a"
+    "fingerprint_sha256": "5dac47597b36b268c65b44b99c1b7af46b6585992d351a79f02526295280a6d4"
   },
   "regression": {
-    "tests": 1284,
+    "tests": 1291,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "1526086197fea076821fa0c70175c5db87e56057c4d2b247bc737500ee278e4e"
+    "sha256": "0073fd14c05cb5eaf1b2b93cb7a4e2cbbfe44ebc43602230238d7e46b7439acc"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "c30ee593a7b82e9216e1664c6bffa3a202de5c72ecaaee7d572bc9c422d9ee62",
-    "authority_sha256": "602ee03813b24eba709735e2f586a7b71cd524464281ef3b94ca66c205031442",
+    "file_sha256": "7c935fe56061bbc736265bdfe63404eac95e3e9cb9824fd8785f82be6a731de9",
+    "authority_sha256": "b8fb8b9589e7cf88a7ef7b134ccf1db6e660ac5b7bb7f798937b6504c5d64b65",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "1526086197fea076821fa0c70175c5db87e56057c4d2b247bc737500ee278e4e",
-    "tests": 1284,
+    "junit_sha256": "0073fd14c05cb5eaf1b2b93cb7a4e2cbbfe44ebc43602230238d7e46b7439acc",
+    "tests": 1291,
     "failures": 0,
     "errors": 0,
     "checks": {
@@ -1515,7 +1519,7 @@
   },
   "runtime_guard": {
     "schema": "SMART_RUNTIME_GUARD_V2",
-    "project_root": "/var/tmp/smart-mega-3071-temporal-fix-20261019",
+    "project_root": "/var/tmp/smart-mega-3071-preflight-recovery-fix-20261019",
     "canonical_python": "/usr/bin/python3.12",
     "current_python": "/usr/bin/python3.12",
     "python_version": "3.12.3",
@@ -1558,10 +1562,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "56b65ae62e8f6fbdbb8925dccfdcfad86df1ee62d3cb008f6e62dd2a61a8473d",
-  "build_runtime_sha256": "16cc91049a0581ef3f31b0aa007b86b8a429ece51cf8b2ed6296a7dea9609f12",
-  "build_functional_sha256": "f1756b01256ba81c550ed65aad8fe7da8f733ef1a7c8d6b8448b815253607f83",
-  "build_total_integration_sha256": "7b948eb41bfa87a63af99c9f541c7e90e1af59f5d3f7e9e95aaec2625ba2c9b6",
+  "build_orchestration_sha256": "e214be9e2882a5f41b1645e2c92a5800ea7f91c67f7562f19ad22f0969981ed4",
+  "build_runtime_sha256": "6a5f473e4531680acb0c1d4e299dac0633f5dcd44d2e500006fe102d12ec066c",
+  "build_functional_sha256": "081eedd54cc33125916b1b62a668c8ff3e3bbb102432ef3f57f114f6727cb639",
+  "build_total_integration_sha256": "aa2c566dc1730d3b85bd7f1de58ca47cc8cb8a1b08f03f9861512bae0b6f606b",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1630,5 +1634,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "3c3b1039c7c0cce72845f78357c94f128a3d8079fe94af91daccacf538660b2d"
+  "sha256": "a9c3b56d55d20a52f2d7196c612f2d50f5720c022cbddbdc7c2a46fecc74c62c"
 }
