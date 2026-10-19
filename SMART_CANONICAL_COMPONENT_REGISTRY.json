@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "e3010f665c5504fb64bf1d85247e23461d9695244e849d87e9272738ea680ce4",
+  "source_reachability_inventory_sha256": "6baa40ac8d34dc1aaa29c40216df1b2cc8d8cb9225bc3ac94455ae3c559931f8",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 503,
+    "component_count": 504,
     "active": 103,
     "shadow": 1,
-    "diagnostic": 199,
+    "diagnostic": 200,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -7106,7 +7106,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "3efe419567a2de6f3fadf9ee3780d540ce645b495c9fa82f273b1b48f7a1158b",
+      "implementation_sha256": "cb87a63ced2080f689fb015999557a0d3be0b69dc85946a40c1686a98ce2fdfe",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7167,6 +7167,7 @@
         "test_smart_operator_seed_rollover_20260910",
         "test_smart_operator_single_command_card",
         "test_smart_operator_unprepared_missed_recovery_20260915",
+        "test_smart_postresult_preflight_resume",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch"
       ],
@@ -8979,7 +8980,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "4d67080b334a8a719146b43063c79da2219949fb6c74652a479128bbbc1c7b48",
+      "implementation_sha256": "38ecf115b11f1562671603b015933318acb6d74a1e973efd1f0f4cb488e1b51c",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -12236,7 +12237,7 @@
       "component_id": "test_smart_post_result_operator_temporal_recovery",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_post_result_operator_temporal_recovery.py",
-      "implementation_sha256": "97430b6777e704091e20af199fd64f6e4419f74ab9eb8f3659f5b4f00ef91133",
+      "implementation_sha256": "8cadde2f7fda03e2c61aaf295f635db4e28bab2b3febed3036822b6a49f5b609",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -12289,6 +12290,30 @@
       "producers": [
         "smart_false_negative_rescue",
         "smart_post_result_report"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_postresult_preflight_resume",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_postresult_preflight_resume.py",
+      "implementation_sha256": "33bb241068279986839eda0e2e2c7136cbc7870724986a6791e619e374962b9c",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operator",
+        "test_smart_result_consumption_readiness"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -12861,7 +12886,9 @@
         "smart_operator",
         "smart_operator_result"
       ],
-      "consumers": [],
+      "consumers": [
+        "test_smart_postresult_preflight_resume"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -13610,5 +13637,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "643036c046470e67097bc9b12ba019d1b76c8350ed2315d0efd86d217cc6c017"
+  "registry_sha256": "44a478e3c216bdf67d89500bab202f1a7227f5b44638d0da4eb7ad5be92e58e9"
 }
