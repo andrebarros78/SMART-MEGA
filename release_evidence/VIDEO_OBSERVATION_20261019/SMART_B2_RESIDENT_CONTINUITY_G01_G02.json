@@ -231,6 +231,23 @@
       "actual_video_learning_proven": false
     },
     "required_next_step": "Authorized decoded video asset or allowed graphical media source under interactive Windows Session 1; then B2 video observation, SHA-256 checkpoint, out-of-sample validation before any predictive weighting",
-    "no_main_edits": true
+    "no_main_edits": true,
+    "governed_capability_request": {
+      "request_id": "capreq_52ef281572da43ab8ec6e1c88ca2c38d",
+      "capability_key": "smartmega_b2_authorized_interactive_video_observation",
+      "status": "REQUESTED",
+      "approval": "NOT_GRANTED",
+      "target": "B2-LEARNING-NODE-01",
+      "reason": "Need authorized Session 1 video player observation because delegated Session 0 screenshot gets BitBlt access denied",
+      "explicitly_excludes": [
+        "cookies",
+        "credentials",
+        "privilege_escalation",
+        "login_bypass",
+        "uncensored_desktop_capture",
+        "main_branch_edits"
+      ],
+      "acceptance": "Official physical frames decoded + independently hashed checkpoint"
+    }
   }
 }
