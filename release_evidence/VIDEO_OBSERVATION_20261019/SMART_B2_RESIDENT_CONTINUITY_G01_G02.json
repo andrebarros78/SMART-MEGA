@@ -1,0 +1,103 @@
+{
+  "schema": "SMART_MEGA_OFFICIAL_VIDEO_CONTINUITY_EVIDENCE_V1",
+  "observed_date": "2026-10-19",
+  "mission_id": "smartmega-official-50-visual-20261015",
+  "repository": "andrebarros78/SMART-MEGA",
+  "source_branch": "feature/video-resident-15h-supervisor-20261017",
+  "source_head_pre_evidence": "313aaa564d452c7676592fd2994fa25ccd351557",
+  "production_main_head_unchanged_at_pre_write": "01ae8d2f4c9be6b21b98d5e9e33e464dae0db340",
+  "executor": {
+    "hostname": "PC-ESCOLA",
+    "id": "B2-LEARNING-NODE-01",
+    "transport": "LMCP > GOV-WINDOWS > TAILSCALE_SIGNED_LONG_POLL"
+  },
+  "G01_previous_session_terminal_closure": {
+    "status": "PASS",
+    "session": "resident_15h_20261018",
+    "pre_close": {
+      "state": "PAUSED_SOURCE_ACCESS",
+      "heartbeats": 179,
+      "started_at_epoch": 1792340272,
+      "deadline_epoch": 1792394272,
+      "queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333"
+    },
+    "action": "One guarded tick after expiry, with SQLite backup before mutation",
+    "post_close": {
+      "state": "WINDOW_FINISHED",
+      "heartbeats": 180,
+      "deadline_epoch": 1792394272,
+      "queue_pending": 50,
+      "real_frames_analyzed": 0,
+      "predictive_weight": 0,
+      "sqlite_integrity": "ok"
+    },
+    "backup": {
+      "path": "resident_15h_20261018/SMART_CAIXA_RESIDENT.before_terminal_close_20261019.sqlite3",
+      "sha256": "d98bc5f1648ee17b10736c524682d5cde972ddee70f5b006b1b2c2dd0ac79732"
+    },
+    "command_id": "netcmd_446aea4dade549078e391d77dd08be78",
+    "return_code": 0,
+    "result_sha256": "4d51df3bc30e5ee52088374babe42881821749310290dc49c05333ab94444c92"
+  },
+  "current_session_20261019": {
+    "status": "ACTIVE_SUPERVISION_ONLY",
+    "session": "resident_15h_20261019",
+    "started_at_epoch": 1792428535,
+    "deadline_epoch": 1792482535,
+    "observed_heartbeats": 32,
+    "last_heartbeat_epoch": 1792437436,
+    "sqlite_integrity": "ok",
+    "state": "PAUSED_SOURCE_ACCESS",
+    "task_name": "\\SMART-MEGA-B2-VISUAL-RESIDENT-20261019-15H",
+    "task_trigger_start_local": "2026-10-19T13:52:16",
+    "task_trigger_end_local": "2026-10-20T04:52:16",
+    "note": "Task trigger end follows internal fixed deadline; application must terminate by internal deadline without extending window.",
+    "read_only_command_id": "netcmd_7e8c7eb787bd4b9483297122b61ccdb6"
+  },
+  "G02_media_access": {
+    "status": "BLOCKED",
+    "reason": "YOUTUBE_SIGN_IN_REQUIRED",
+    "source_gate_sha256": "9a8056c1b23991907af918199ae6efa0e6c12f4e4d6070775aa9a7ae95795401",
+    "official_queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "pending": 50,
+    "verified": 0,
+    "decoded_frames": 0,
+    "real_checkpoints": 0,
+    "predictive_weight": 0,
+    "local_media_files_in_staging": 0,
+    "first_video_targets": [
+      {
+        "contest": 3013,
+        "video_id": "ZP3mCk4_ku0"
+      },
+      {
+        "contest": 3016,
+        "video_id": "3dTwSbhlbeY"
+      }
+    ],
+    "not_attempted": "No new YouTube authentication challenge, cookie export, credential extraction or mass media retry",
+    "external_requirement": "Verified permitted media replay or legally supplied source file with provenance and decoded frame evidence"
+  },
+  "gates": {
+    "G01": "PASS_G01_CLOSE_VERIFIED",
+    "G02": "BLOCKED_EXTERNAL_MEDIA_AUTHORIZATION",
+    "G03": "PENDING",
+    "G04": "PENDING",
+    "G05": "PENDING"
+  },
+  "limits": {
+    "ecc_ledger_mutation": "NOT_PERFORMED: independent ECC tool not available in current session",
+    "scientific_state": "UNPROVEN",
+    "engineering_global_6_of_6": "NOT_PROVEN",
+    "main_modified": false,
+    "code_modified": false,
+    "fresh_pytest_run": false,
+    "terminal": "MISSION_ACTIVE"
+  },
+  "provenance": [
+    "netcmd_a7241e48fe6949ef846fe3a683894507",
+    "netcmd_02b533e1db844ec0b04984152fef94d5",
+    "netcmd_446aea4dade549078e391d77dd08be78",
+    "netcmd_7e8c7eb787bd4b9483297122b61ccdb6"
+  ]
+}
