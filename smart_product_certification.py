@@ -121,6 +121,15 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
         execution_valid = run_id is None and isinstance(execution_id, str) and re.fullmatch(
             r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", execution_id
         ) is not None and isinstance(execution.get("hostname"), str) and bool(execution["hostname"].strip()) and execution["hostname"] == execution["hostname"].strip()
+    elif isinstance(execution, dict) and execution.get("kind") == "LMCP_LINUX_VPS":
+        execution_id = execution.get("execution_id")
+        execution_valid = (
+            run_id is None
+            and execution.get("hostname") == "wmcp-cloud-01"
+            and execution.get("provider") == "LMCP"
+            and isinstance(execution_id, str)
+            and re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", execution_id) is not None
+        )
     else:
         execution_valid = False
     recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
