@@ -1103,6 +1103,16 @@ def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
     target = int(target)
     lifecycle = load_lifecycle(root)
     if int(lifecycle.get("target_contest", -1)) != target:
+        # An incomplete prior adjudication cannot prevent obtaining a playable
+        # NEXT-contest card. The independent contingency is never a production
+        # model freeze, scientific proof or substitute for lifecycle review.
+        prior = int(lifecycle.get("target_contest", -1))
+        if target == prior + 1 and lifecycle.get("state") in {"FROZEN", "ADJUDICATED", "REVIEWED"}:
+            from smart_contingency_card import generate_contingency_card
+            return generate_contingency_card(
+                root, target, preceding_target=prior,
+                lifecycle_sha256=str(lifecycle.get("sha256", "")),
+            )
         raise ValueError("operator requested target differs from lifecycle")
     if lifecycle.get("state") == "HOLD":
         authorize_next_cycle_operation(root, target)
