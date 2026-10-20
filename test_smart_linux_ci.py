@@ -82,5 +82,94 @@ class LinuxCIContract(unittest.TestCase):
             self.assertTrue(proof["certification_requested"])
 
 
+    def test_forged_success_stdout_without_real_junit_is_not_full_proof(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            artifacts = root.parent / (root.name + "-evidence")
+            fake = {
+                "status": "PASS", "promoted": True,
+                "candidate": {"tests": 1295, "status": "PASS",
+                              "sha256": "a" * 64},
+                "promotion": {"sha256": "a" * 64},
+            }
+            proc = SimpleNamespace(returncode=0, stdout=json.dumps(fake) + "\n", stderr="")
+            with patch.object(ci, "_verified_identity", return_value={
+                "source_commit": "a" * 40,
+                "source_origin": "https://github.com/andrebarros78/SMART-MEGA.git",
+                "checkout_clean": True
+            }), patch.object(ci, "check_full_dependencies", return_value={
+                "status": "PASS", "missing": [], "expected_count": 75, "installed_count": 75,
+            }), patch("subprocess.run", return_value=proc):
+                outcome = ci.execute(root, "full", evidence_dir=artifacts)
+            self.assertEqual(outcome["status"], "FAIL")
+            self.assertFalse(outcome["full_regression_proven"])
+
+    def test_malformed_runner_output_returns_fail_receipt_not_uncaught_exception(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            artifacts = root.parent / (root.name + "-evidence")
+            proc = SimpleNamespace(returncode=1, stdout="broken-json", stderr="runner failed")
+            with patch.object(ci, "_verified_identity", return_value={
+                "source_commit": "b" * 40,
+                "source_origin": "https://github.com/andrebarros78/SMART-MEGA.git",
+                "checkout_clean": True
+            }), patch.object(ci, "check_full_dependencies", return_value={
+                "status": "PASS", "missing": [], "expected_count": 75, "installed_count": 75,
+            }), patch("subprocess.run", return_value=proc):
+                outcome = ci.execute(root, "full", evidence_dir=artifacts)
+            self.assertEqual(outcome["status"], "FAIL")
+            self.assertFalse(outcome["full_regression_proven"])
+
+
+    def test_full_junit_requires_matching_candidate_current_and_runner_controls(self):
+        import hashlib
+        import sys
+        from types import SimpleNamespace
+        from xml.etree import ElementTree as ET
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            xml = b'<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite tests="2" failures="0" errors="0" skipped="0"/></testsuites>'
+            (root / "SMART_AUDIT_JUNIT_CANDIDATE.xml").write_bytes(xml)
+            (root / "SMART_AUDIT_JUNIT_CURRENT.xml").write_bytes(xml)
+            digest = hashlib.sha256(xml).hexdigest()
+            def parsed(path):
+                tree = ET.parse(path).getroot()
+                return dict(status="PASS", tests=int(tree.get("tests")),
+                            errors=int(tree.get("errors")), failures=int(tree.get("failures")),
+                            skipped=int(tree.get("skipped")),
+                            sha256=hashlib.sha256(Path(path).read_bytes()).hexdigest())
+            report = {"status": "PASS", "promoted": True,
+                      "code_fingerprint_stable": True,
+                      "canonical_environment_stable": True,
+                      "isolated_python_environment": True,
+                      "exclusive_runner_lock": True,
+                      "current_preserved_during_test": True,
+                      "candidate": {"tests": 2, "sha256": digest},
+                      "promotion": {"sha256": digest},
+                      "current_sha256": digest}
+            with patch.dict(sys.modules, {"smart_regression_evidence": SimpleNamespace(junit_summary=parsed)}):
+                self.assertTrue(ci.verify_full_junit(root, report))
+                report["code_fingerprint_stable"] = False
+                self.assertFalse(ci.verify_full_junit(root, report))
+                report["code_fingerprint_stable"] = True
+                (root / "SMART_AUDIT_JUNIT_CURRENT.xml").write_bytes(b'<testsuite tests="1" failures="0" errors="0"/>')
+                self.assertFalse(ci.verify_full_junit(root, report))
+
+    def test_invalid_candidate_metadata_returns_false(self):
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            report = {"status": "PASS", "promoted": True,
+                      "code_fingerprint_stable": True,
+                      "canonical_environment_stable": True,
+                      "isolated_python_environment": True,
+                      "exclusive_runner_lock": True,
+                      "current_preserved_during_test": True,
+                      "candidate": "invalid", "promotion": {}}
+            self.assertFalse(ci.verify_full_junit(root, report))
+
+
 if __name__ == "__main__":
     unittest.main()
