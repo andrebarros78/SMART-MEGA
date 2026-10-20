@@ -986,6 +986,33 @@ def probe(root: str | Path, fetcher: Fetcher | None = None) -> dict[str, Any]:
     }
 
 
+
+def _precheck_historical_freeze_evidence(root: Path, ledger: dict[str, Any]) -> None:
+    """Reject missing hash-bound historical freezes before result persistence."""
+    targets = {TARGET}
+    targets.update(
+        int(event["target_contest"])
+        for event in ledger.get("events", [])
+        if event.get("event_type") == "ADJUDICATION"
+    )
+    for event in ledger.get("events", []):
+        if event.get("event_type") != "FREEZE":
+            continue
+        contest = int(event.get("target_contest", -1))
+        if contest not in targets:
+            continue
+        try:
+            independent_audit._resolve_audit_evidence(
+                root, str(event.get("freeze_file", "")),
+                str(event.get("freeze_sha256", "")), "frozen artifact"
+            )
+        except (ValueError, OSError) as exc:
+            raise ValueError(
+                f"historical freeze evidence unavailable for contest {contest}"
+            ) from exc
+
+
+
 def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:
     root = canonical_root(root)
     root = Path(root).resolve()
@@ -998,6 +1025,7 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     adjudications = _target_events(ledger, "ADJUDICATION")
     if len(adjudications) > 1:
         raise ValueError("multiple 3054 adjudications are forbidden")
+    _precheck_historical_freeze_evidence(root, ledger)
     if not adjudications:
         readiness = _preflight_readiness(root, binding)
         if readiness.get("readiness_status") != "PASS":

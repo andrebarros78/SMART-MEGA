@@ -53,7 +53,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "428ea9450ff183409221369be2166483da6704f14e8b05c6da91e672d3248125",
+  "inventory_sha256": "e365d1ca17554fe3b4a47cfa9d57a1d42ad1709eb7537a06a2e594fe1e95ae23",
   "summary": {
     "python_components": 506,
     "workflow_entrypoints": 8,
@@ -8538,7 +8538,8 @@
         "test_smart_f17_terminal_stale_coverage",
         "test_smart_operator_direct_terminal_default",
         "test_smart_post_result_operator_temporal_recovery",
-        "test_smart_post_result_policy_consistency"
+        "test_smart_post_result_policy_consistency",
+        "test_smart_terminal_executor_active_epoch"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8548,7 +8549,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "38ecf115b11f1562671603b015933318acb6d74a1e973efd1f0f4cb488e1b51c"
+      "sha256": "5b14c3d731808f52da30a1e739bcefba9d5c66d59afebd35445282bc52478dd1"
     },
     {
       "component_id": "smart_terminal_executor",
@@ -12520,6 +12521,7 @@
       "producers": [
         "smart_3054_terminal_executor",
         "smart_operator",
+        "smart_terminal_engine",
         "smart_terminal_executor"
       ],
       "declared_execution_dependencies": [],
@@ -12532,7 +12534,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "1b3f6946c4ae467d313e383548862a8d21e2e355c5bd1b9fef950c0bc89b6ffb"
+      "sha256": "2c686139cbb13390e3063ed85e73bfbd045db64ae403175d552bd12b0b45f457"
     },
     {
       "component_id": "test_smart_total_integration_gate",

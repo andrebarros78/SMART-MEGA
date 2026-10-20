@@ -86,6 +86,55 @@ def test_execute_waits_fail_closed_when_official_result_unavailable(tmp_path, mo
     assert out["terminal_6of6_proven"] is False
 
 
+
+def test_precheck_stops_partial_adjudication_before_fetch_when_historical_freeze_missing(
+    tmp_path, monkeypatch
+):
+    import smart_terminal_engine as engine
+
+    freeze = tmp_path / "frozen.json"
+    freeze.write_bytes(b"immutable")
+    digest = hashlib.sha256(freeze.read_bytes()).hexdigest()
+    ledger_path = tmp_path / "ledger.json"
+    original = json.dumps({"events": [
+        {"event_type": "FREEZE", "target_contest": 9000,
+         "freeze_file": "missing-historical.json", "freeze_sha256": "a" * 64},
+        {"event_type": "ADJUDICATION", "target_contest": 9000},
+    ]})
+    ledger_path.write_text(original, encoding="utf-8")
+    binding = {"mode": "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY",
+               "freeze": freeze, "freeze_sha256": digest,
+               "ledger": ledger_path}
+    monkeypatch.setattr(engine, "TARGET", 9001)
+    monkeypatch.setattr(engine, "_runtime_binding", lambda root: binding)
+    monkeypatch.setattr(engine.champion_challenger, "load_ledger",
+                        lambda path: json.loads(ledger_path.read_text(encoding="utf-8")))
+
+    def unexpected_fetch(_):
+        raise AssertionError("fetcher must not run before historical evidence precheck")
+
+    with pytest.raises(ValueError, match="historical freeze evidence unavailable for contest 9000"):
+        engine.execute(tmp_path, fetcher=unexpected_fetch)
+    assert ledger_path.read_text(encoding="utf-8") == original
+
+
+def test_precheck_accepts_exact_history_and_rejects_tampering(tmp_path, monkeypatch):
+    import smart_terminal_engine as engine
+
+    frozen = tmp_path / "historical-freeze.json"
+    frozen.write_bytes(b"immutable history")
+    digest = hashlib.sha256(frozen.read_bytes()).hexdigest()
+    monkeypatch.setattr(engine, "TARGET", 9001)
+    ledger = {"events": [
+        {"event_type": "FREEZE", "target_contest": 9000,
+         "freeze_file": frozen.name, "freeze_sha256": digest},
+        {"event_type": "ADJUDICATION", "target_contest": 9000},
+    ]}
+    engine._precheck_historical_freeze_evidence(tmp_path, ledger)
+    frozen.write_bytes(b"tampered history")
+    with pytest.raises(ValueError, match="historical freeze evidence unavailable for contest 9000"):
+        engine._precheck_historical_freeze_evidence(tmp_path, ledger)
+
 def test_facade_delegates_to_active_epoch_engine(tmp_path, monkeypatch):
     seen={}
     engine=terminal._engine
