@@ -162,6 +162,47 @@ def write_receipt(directory: Path, receipt: dict[str, Any]) -> Path:
     return path
 
 
+def verify_full_junit(root: Path, report: dict[str, Any]) -> bool:
+    """Require the real project's immutable candidate/current JUnit evidence."""
+    if not isinstance(report, dict) or report.get("status") != "PASS" or report.get("promoted") is not True:
+        return False
+    if any(report.get(key) is not True for key in (
+        "code_fingerprint_stable",
+        "canonical_environment_stable",
+        "isolated_python_environment",
+        "exclusive_runner_lock",
+        "current_preserved_during_test",
+    )):
+        return False
+    candidate = root / "SMART_AUDIT_JUNIT_CANDIDATE.xml"
+    current = root / "SMART_AUDIT_JUNIT_CURRENT.xml"
+    if candidate.is_symlink() or current.is_symlink() or not candidate.is_file() or not current.is_file():
+        return False
+    try:
+        # The repository's original parser uses defusedxml and checks test counts.
+        from smart_regression_evidence import junit_summary
+        generated = junit_summary(candidate)
+        persisted = junit_summary(current)
+    except Exception:
+        # Invalid/unreadable third-party JUnit is a failed gate, never an exception-based escape.
+        return False
+    metadata = report.get("candidate")
+    promoted = report.get("promotion")
+    if not isinstance(metadata, dict) or not isinstance(promoted, dict):
+        return False
+    return (
+        generated["status"] == "PASS"
+        and persisted["status"] == "PASS"
+        and generated == persisted
+        and type(generated["tests"]) is int and generated["tests"] > 0
+        and generated["tests"] == metadata.get("tests")
+        and generated["sha256"] == metadata.get("sha256")
+        and generated["sha256"] == promoted.get("sha256")
+        and generated["sha256"] == report.get("current_sha256")
+        and generated["failures"] == 0 and generated["errors"] == 0
+    )
+
+
 def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certify: bool = False) -> dict[str, Any]:
     root = root.resolve()
     if not root.is_dir():
@@ -197,10 +238,13 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certi
             done = subprocess.run(command, cwd=root, capture_output=True, text=True,
                                   timeout=5400, check=False, env={**os.environ,
                                       "PYTHONNOUSERSITE": "1", "PYTHONPATH": ""})
-            summary = json.loads(done.stdout.strip().splitlines()[-1]) if done.stdout.strip() else {}
-            passing = (done.returncode == 0 and summary.get("status") == "PASS"
-                       and summary.get("promoted") is True
-                       and summary.get("candidate", {}).get("tests", 0) > 0)
+            try:
+                summary = json.loads(done.stdout.strip().splitlines()[-1]) if done.stdout.strip() else {}
+            except (ValueError, IndexError, TypeError):
+                summary = {}
+            if not isinstance(summary, dict):
+                summary = {}
+            passing = done.returncode == 0 and verify_full_junit(root, summary)
             base.update({"status": "PASS" if passing else "FAIL",
                          "canonical_junit_promoted": passing,
                          "full_regression_proven": passing,
