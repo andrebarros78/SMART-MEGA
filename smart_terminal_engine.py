@@ -1003,6 +1003,7 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
         if readiness.get("readiness_status") != "PASS":
             raise RuntimeError("3054 preflight is not PASS")
     existing = _load_existing_official_evidence(root)
+    fetched_fresh = False
     try:
         fresh_payload, fresh_consensus = fetcher(TARGET)
     except Exception as exc:
@@ -1021,6 +1022,13 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
             raise
         payload, consensus = existing
     else:
+        payload, consensus = fresh_payload, fresh_consensus
+        fetched_fresh = True
+
+    # Enforce immutable historical freeze evidence before the first result write.
+    # A missing historical SHA-bound artifact must not leave new partial events.
+    independent_audit.audit_prospective_ledger(root, binding["ledger"])
+    if fetched_fresh:
         payload = _ensure_primary_payload(root, fresh_payload)
         consensus = _ensure_monotonic_consensus(root, fresh_consensus)
 
