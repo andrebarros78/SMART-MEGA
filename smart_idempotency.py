@@ -59,7 +59,7 @@ def replay(root: str | Path, operation: str, key: str, target: int) -> Any | Non
     if int(prior.get("target", -1)) != int(target):
         raise RuntimeError("idempotency target conflict")
     return prior.get("result")
-def idempotent_operation(operation: str, payload_builder=None):
+def idempotent_operation(operation: str, payload_builder=None, *, commit_if=None):
     def decorate(fn):
         @wraps(fn)
         def wrapped(root, target, *args, idempotency_key=None, **kwargs):
@@ -81,15 +81,18 @@ def idempotent_operation(operation: str, payload_builder=None):
             if prior is not None:
                 return prior
             result = fn(root, target, *args, **kwargs)
-            commit(
-                root,
-                operation,
-                key,
-                int(target),
-                result,
-                epoch_id=epoch_id,
-                transaction_id=transaction_id,
-            )
+            # A transient WAITING/RECOVERY_REQUIRED outcome must remain
+            # retryable when a later observation or repair changes the state.
+            if commit_if is None or commit_if(result):
+                commit(
+                    root,
+                    operation,
+                    key,
+                    int(target),
+                    result,
+                    epoch_id=epoch_id,
+                    transaction_id=transaction_id,
+                )
             return result
         return wrapped
     return decorate
