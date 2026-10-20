@@ -1098,7 +1098,7 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
-    """A single explicit operator request authorizes the existing generation steps."""
+    """Generate the active frozen card or a non-certified next-contest contingency."""
     root = Path(canonical_root(root)).resolve()
     target = int(target)
     lifecycle = load_lifecycle(root)
