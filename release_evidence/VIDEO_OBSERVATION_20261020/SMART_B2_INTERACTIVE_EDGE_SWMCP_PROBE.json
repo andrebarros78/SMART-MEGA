@@ -1,0 +1,55 @@
+{
+  "schema": "smart.swmcp.federated.visual_gate.v1",
+  "mission_id": "smartmega-official-50-visual-20261015",
+  "date_local": "2026-10-20",
+  "selected_route": "S-WMCP policy verified -> LMCP federation GOV-WINDOWS -> B2 same-user scheduled task",
+  "policy": {
+    "action_class": "desktop.user.observe",
+    "decision": "allow",
+    "no_bypass": true
+  },
+  "first_probe": {
+    "task": "\\SMART-MEGA-B2-EDGE-CAIXA-VISUAL-PROBE-20261020",
+    "command_create": "netcmd_106a74cdddf2486e89d211a6752787ee",
+    "command_readback": "netcmd_5fbd86e937664be9bf793d408da4ddba",
+    "exit_code": 0,
+    "windows_session": 1,
+    "visible_edge_windows": 1,
+    "edge_title_has_youtube": true,
+    "edge_title_has_caixa": true,
+    "foreground_is_edge": false,
+    "pixel_capture": "NOT_ATTEMPTED",
+    "frames_decoded": 0,
+    "video_learning": false,
+    "local_proof": "resident_15h_20261020/edge_visual_probe/session1_visual_probe.json",
+    "signed_readback_sha256": "49dc4fa0ff59e0b91359b4810fc0913db135c6caa6af0c1d73f3c631d1889d09"
+  },
+  "second_probe": {
+    "task": "\\SMART-MEGA-B2-EDGE-CAIXA-FOCUS-PROBE-20261020",
+    "dispatch_command": "netcmd_2c5403f8f68a451fac6975f2a44ed1a0",
+    "dispatch_exit_code": 0,
+    "dispatched": true,
+    "accepted_task_not_final_proof": true,
+    "readback_command": "netcmd_bce7e2fd02ba432fa42420d9a11e65d0",
+    "readback_result": "UNVERIFIED - security layer blocked follow-up status query",
+    "no_claim_of_frame_capture": true
+  },
+  "external_capability_request": {
+    "id": "capreq_52ef281572da43ab8ec6e1c88ca2c38d",
+    "last_status": "DISCOVERY_PENDING"
+  },
+  "safety": {
+    "no_cookie_access": true,
+    "no_login_bypass": true,
+    "no_full_desktop_image_export": true,
+    "no_video_payload_export": true,
+    "main_untouched": true
+  },
+  "scientific_gate": {
+    "official_video_frames_verified": 0,
+    "checkpoints_verified": 0,
+    "predictive_weight_changed": 0,
+    "mission_proven": false
+  },
+  "next": "Governed readback of second session1 task, verify player timeline and physical frames before promoting checkpoint"
+}

@@ -1,0 +1,75 @@
+{
+  "schema": "SMART_B2_VISUAL_EVIDENCE_V1",
+  "mission_id": "smartmega-official-50-visual-20261015",
+  "date_local": "2026-10-20",
+  "timezone": "America/Sao_Paulo",
+  "target": "B2-LEARNING-NODE-01",
+  "execution_mode": "GOVERNED_READONLY_NO_CREDENTIALS",
+  "status": "VISUAL_LEARNING_BLOCKED_RESIDENT_HEALTHY",
+  "proofs": [
+    {
+      "stage": "network",
+      "result": "PASS",
+      "node_count": 4,
+      "ready": 4
+    },
+    {
+      "stage": "source_access_authority",
+      "request_id": "capreq_52ef281572da43ab8ec6e1c88ca2c38d",
+      "result": "DISCOVERY_PENDING_NO_AUTHORIZATION"
+    },
+    {
+      "stage": "session_and_queue_read_only",
+      "network_command_id": "netcmd_d263d024d029461abe56285151fc4b22",
+      "signed_result_sha256": "33196bb9f764f23de346c2399df44366d498c7c26e1bc3f525324901f27fdb3b",
+      "sqlite_integrity": "ok",
+      "resident_heartbeats": 91,
+      "resident_state": "PAUSED_SOURCE_ACCESS",
+      "scheduler_last_exit": 0,
+      "scheduler_last_run_local": "2026-10-20 18:29:58",
+      "queue_count": 50,
+      "queue_pending": 50,
+      "video_files": 0,
+      "checkpoints": 0,
+      "queue_pointer_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+      "queue_content_sha256": "57f78043d56c6b818dc38603abcdafb2d39c0319760520089249b3fb4270d888"
+    },
+    {
+      "stage": "official_queue_dry_run",
+      "network_command_id": "netcmd_942b954b29b84b70a454e3ac49909d2b",
+      "signed_result_sha256": "b45df6069f0557e7ad297ff9b75e22d69639aec472ddbc52cc3a8ea390d7901f",
+      "exit_code": 0,
+      "catalog_broadcasts": 500,
+      "eligible_unique_contests": 50,
+      "ambiguous_contests_blocked": 1,
+      "attempts_executed": 0,
+      "verified_checkpoints": 0,
+      "media_verified": false,
+      "queue_bytes_unchanged": true,
+      "predictive_evidence": "NOT_ESTABLISHED",
+      "predictive_weight": 0
+    }
+  ],
+  "external_source_research": {
+    "confirmed_official_video": "https://www.youtube.com/watch?v=ZP3mCk4_ku0",
+    "official_source_guide": "https://loterias.caixa.gov.br/Paginas/regras-sorteios.aspx",
+    "third_party_embedded_video_page": "https://sampi.net.br/bauru/noticias/2982985/brasil-e-mundo/2026/05/veja-o-resultado-do-concurso-3013-da-megasena-deste-sabado",
+    "independent_decodable_video": "NOT_VERIFIED",
+    "source_research_limit": "Public web metadata and pages cannot serve as frames"
+  },
+  "scientific_gate": {
+    "real_frames_decoded": 0,
+    "training_observations": 0,
+    "validated_visual_checkpoints": 0,
+    "predictive_weight": 0,
+    "mission_proven": false
+  },
+  "safety": {
+    "main_changed_by_this_execution": false,
+    "no_screen_security_bypass": true,
+    "no_youtube_authentication_bypass": true,
+    "no_cookie_access": true,
+    "no_false_positive_visual_learning": true
+  },
+  "next_gate": "Authorized source produces genuine decodable motion frames; only then execute smart_video_observation.py consumer and hash checkpoint; historical in-sample observation cannot prove forward predictive advantage."
+}

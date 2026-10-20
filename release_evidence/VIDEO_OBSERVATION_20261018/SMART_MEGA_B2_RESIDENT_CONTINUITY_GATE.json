@@ -1,0 +1,83 @@
+{
+  "schema": "SMART_MEGA_B2_RESIDENT_CONTINUITY_GATE_V1",
+  "date": "2026-10-18",
+  "repo": "andrebarros78/SMART-MEGA",
+  "branch": "feature/video-resident-15h-supervisor-20261017",
+  "source_commit": "203dd54a087631f9ff3b95e93c61138d6fc51294",
+  "objective": "Continue SMART-MEGA learning safely via 10–15h B2 resident checkpoints, without repeating discovery or bypassing official YouTube media policies.",
+  "state": "ENGINEERING_REGRESSIONS_PROVEN_B2_RESIDENT_SCHEDULER_NOT_APPROVED",
+  "physical_pc_escola": {
+    "node": "B2-LEARNING-NODE-01",
+    "transport": "LMCP -> GOV-WINDOWS -> TAILSCALE_SIGNED_LONG_POLL",
+    "root": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013",
+    "reconcile_command": "netcmd_888be79cf5314caea4cf4d108e8bdcc4",
+    "official_queue_pending": 50,
+    "official_queue_verified": 0,
+    "real_video_checkpoints": 0,
+    "queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "source_gate": "BLOCKED_YOUTUBE_SIGN_IN_REQUIRED",
+    "old_resident": {
+      "sqlite": "resident_15h/SMART_CAIXA_RESIDENT.sqlite3",
+      "start_local": "2026-10-17T16:18:35-03:00",
+      "deadline_local": "2026-10-18T07:18:35-03:00",
+      "heartbeat_count": 1,
+      "expired": true,
+      "untouched": true
+    },
+    "windows_task_name": "\\SMART-MEGA-B2-VISUAL-RESIDENT-15H",
+    "windows_task_created": false,
+    "installer_git_blob_on_b2": "6214ee4ef5770fe8f106a0f267be3a547f75ed4a",
+    "installer_git_blob_verified_command": "netcmd_2524151476364e16914258d2af6159d2",
+    "wts_active_interactive_sid_available": true,
+    "wts_sid_probe_command": "netcmd_8e0e1dcb696e44919ed3218ee3560f43",
+    "resident_initial_version_git_blob": "ce48a678ceafa9b9d7b7a7edaba8d5c7096786d0",
+    "corrected_resident_version_installed": false,
+    "platform_denial": "The federated transfer attempt for the corrected supervisor was blocked by platform security; it was not retried using another transport.",
+    "source_media_unblocked": false,
+    "media_downloaded": 0,
+    "frames_analyzed": 0
+  },
+  "engineering_gates": {
+    "RED_1": "Two resident tests reproducibly failed when legitimate observed-queue SHA changed and when immutable ancestor archive was missing",
+    "GREEN_1": "Verified immutable journal ancestry, identity, attempts, checkpoint integrity, changed source hash acceptance without resetting time",
+    "RED_2": "Three tests failed because resident wrote observational quality files into the official queue and did not have a private quality history",
+    "GREEN_2": "Resident now reports per-contest quality into private resident-root immutable SHA archive while keeping official queue read-only and refusing corrupted private archive",
+    "windows_pc_vendas": {
+      "regressions_passed": 102,
+      "failed": 0,
+      "scope": "resident, scheduler, official observer and checkpoint inventory"
+    },
+    "linux_wmcp_cloud_01": {
+      "regressions_passed": 102,
+      "failed": 0,
+      "scope": "resident, scheduler, official observer and checkpoint inventory"
+    },
+    "linux_catalogue_and_official_data_api_regression": {
+      "passed": 36,
+      "failed": 0
+    },
+    "windows_catalogue_and_data_api_additional_run": "NOT_PROVEN; connector rejected test invocation",
+    "note": "All learning/media tests use synthetic sources and do not attest actual frame decoding from official YouTube videos."
+  },
+  "ecc_mission": {
+    "id": "smartmega-official-50-visual-20261015",
+    "state": "OPEN",
+    "G01": "PASS",
+    "G02": "BLOCKED",
+    "G03": "PENDING",
+    "G04": "PENDING",
+    "G05": "PENDING",
+    "ledger": "C:\\ECC-FULL\\state\\mission_ledger.sqlite3"
+  },
+  "rules": {
+    "original_queue_mutated": false,
+    "previous_session_reset": false,
+    "credentials_copied": false,
+    "cookies_exported": false,
+    "youtube_auth_bypassed": false,
+    "main_changed": false,
+    "predictive_weight": 0,
+    "mission_proven": false
+  },
+  "next_gate": "Gain permission for physical SHA-verified deployment of corrected resident to B2; start a fresh root distinct from expired 2026-10-17 SQLite; schedule least-privilege 5-minute ticks for bounded 15h; prove two actual scheduler heartbeats and reboot recovery; require independently authorized YouTube media viewing and genuine decoded frames before marking learning progress."
+}
