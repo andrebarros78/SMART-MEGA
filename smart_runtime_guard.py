@@ -34,18 +34,22 @@ def audit(root: str|Path='.') -> dict:
         except Exception as exc:
             modules[name]={'ok':False,'error':type(exc).__name__}
     current=Path(sys.executable).resolve()
+    interpreter_prefix=Path(sys.prefix).resolve()
     external_project_paths=[]
     new_project_root=Path(r'C:\New Projet').resolve()
     for raw in sys.path:
         if not raw:
             continue
         if is_windows_absolute(raw):
+            # The canonical checkout and current isolated interpreter are not foreign projects.
+            if windows_path_under(raw, str(root)) or windows_path_under(raw, str(interpreter_prefix)):
+                continue
             if windows_path_under(raw, r'C:\New Projet'):
                 external_project_paths.append(str(raw))
             continue
         try: candidate=Path(raw).resolve()
         except OSError: continue
-        if candidate==root or root in candidate.parents:
+        if candidate==root or root in candidate.parents or candidate==interpreter_prefix or interpreter_prefix in candidate.parents:
             continue
         if candidate==new_project_root or new_project_root in candidate.parents:
             external_project_paths.append(str(candidate))
