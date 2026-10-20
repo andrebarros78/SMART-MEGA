@@ -1482,6 +1482,50 @@ def terminal_operation(
     return {**result, "operational_lifecycle": lifecycle_after}
 
 
+
+def complete_result_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Settle a registered result and publish its report with a resumable command.
+
+    A scientific 6/6 promotion is NEVER attempted by this operational command.
+    It does not create next-cycle authority, override human review or freeze
+    the next card. The existing guarded operations remain the only mutators.
+    """
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    lifecycle = load_lifecycle(root)
+    state = lifecycle.get("state")
+    if int(lifecycle.get("target_contest", -1)) != target:
+        if (state == "HOLD"
+                and int(lifecycle.get("target_contest", -1)) == target + 1
+                and int(lifecycle.get("completed_contest", -1)) == target):
+            return {"status": "POST_RESULT_ALREADY_CLOSED", "target_contest": target,
+                    "next_target": target + 1, "terminal_promotion_attempted": False}
+        raise ValueError("post-result target differs from operational lifecycle")
+    if state == "FROZEN":
+        terminal = terminal_operation(root, target, allow_terminal_write=False)
+        if not isinstance(terminal, dict) or not terminal.get("adjudication_status"):
+            return {"status": "WAITING_FOR_RESULT", "target_contest": target,
+                    "next_target": target + 1, "terminal_promotion_attempted": False,
+                    "terminal_status": terminal.get("status") if isinstance(terminal, dict) else None,
+                    "canonical_history_advanced": False}
+        state = load_lifecycle(root).get("state")
+        if state != "ADJUDICATED":
+            raise RuntimeError("terminal did not complete its lifecycle transition")
+    if state == "ADJUDICATED":
+        report = post_result_report_operation(root, target)
+        if not isinstance(report, dict) or report.get("status") != "POST_RESULT_SEQUENCE_COMPLETED":
+            raise RuntimeError("post-result sequence did not complete")
+        return {"status": "POST_RESULT_OPERATIONALLY_COMPLETED",
+                "target_contest": target, "next_target": target + 1,
+                "report": report, "terminal_promotion_attempted": False,
+                "review_and_rollover_required": True}
+    if state == "REVIEWED":
+        return {"status": "POST_RESULT_REVIEWED_PENDING_ROLLOVER",
+                "target_contest": target, "next_target": target + 1,
+                "terminal_promotion_attempted": False}
+    raise ValueError("result completion requires FROZEN, ADJUDICATED or REVIEWED lifecycle")
+
+
 def status(root: str | Path) -> dict[str, Any]:
     root = Path(canonical_root(root)).resolve()
     reconciliation = reconcile_startup(root, include_authority_freshness=True)
@@ -1531,6 +1575,7 @@ def main(argv: list[str] | None = None) -> None:
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
+    cr = sub.add_parser("complete-result"); cr.add_argument("--target", type=int, required=True)
     t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
     args = parser.parse_args(argv)
     root = canonical_root()
@@ -1550,6 +1595,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)
+    elif args.action == "complete-result": out = complete_result_operation(root, args.target)
     else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
