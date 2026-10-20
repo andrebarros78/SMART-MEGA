@@ -1,0 +1,241 @@
+"""SMART-MEGA regression on governed Linux without GitHub Actions or pip installs.
+
+An isolated checkout is required. Reuses the repository's canonical
+smart_regression_runner for the *full* gate; a focused gate is explicitly
+non-certifying. All evidence is create-only and stored outside the worktree.
+"""
+from __future__ import annotations
+
+import argparse
+import ast
+import hashlib
+import importlib.metadata as metadata
+import json
+import os
+from pathlib import Path
+import re
+import socket
+import subprocess
+import sys
+from datetime import datetime, timezone
+import uuid
+from typing import Any, Callable
+
+SCHEMA = "SMART_LINUX_CI_EXECUTION_1"
+REPOSITORY = "andrebarros78/SMART-MEGA"
+EXPECTED_ORIGINS = {
+    "https://github.com/andrebarros78/SMART-MEGA",
+    "https://github.com/andrebarros78/SMART-MEGA.git",
+    "git@github.com:andrebarros78/SMART-MEGA.git",
+    "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+}
+FOCUSED_MODULES = (
+    "test_smart_contingency_card",
+    "test_smart_scoped_history_gate",
+    "test_smart_frozen_terminal_recovery",
+    "test_smart_terminal_pending_idempotency",
+    "test_smart_operator_complete_result",
+    "test_smart_terminal_degraded_audit_execution",
+    "test_smart_linux_ci",
+)
+
+
+def _sha(data: bytes) -> str:
+    return hashlib.sha256(data).hexdigest()
+
+
+def _canonical(obj: dict[str, Any]) -> bytes:
+    return json.dumps(obj, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def sign_receipt(doc: dict[str, Any]) -> dict[str, Any]:
+    signed = dict(doc)
+    signed.pop("sha256", None)
+    signed["sha256"] = _sha(_canonical(signed))
+    return signed
+
+
+def verify_receipt(doc: dict[str, Any]) -> bool:
+    if not isinstance(doc, dict) or not isinstance(doc.get("sha256"), str):
+        return False
+    return sign_receipt(doc)["sha256"] == doc["sha256"]
+
+
+def read_lock(path: Path) -> dict[str, str]:
+    if not path.is_file():
+        raise FileNotFoundError(path)
+    result: dict[str, str] = {}
+    for line in path.read_text(encoding="utf-8-sig").splitlines():
+        line = line.strip()
+        if not line or line.startswith("#"):
+            continue
+        match = re.fullmatch(r"([A-Za-z0-9][A-Za-z0-9_.-]*)==([A-Za-z0-9][A-Za-z0-9_.+!-]*)", line)
+        if match is None:
+            raise ValueError("dependency not pinned in lock: " + line[:100])
+        name = re.sub(r"[-_.]+", "-", match.group(1)).lower()
+        if name in result:
+            raise ValueError("duplicate dependency in lock: " + name)
+        result[name] = match.group(2)
+    if not result:
+        raise ValueError("locked dependencies missing")
+    return result
+
+
+def installed_version(name: str) -> str | None:
+    try:
+        return metadata.version(name)
+    except metadata.PackageNotFoundError:
+        return None
+
+
+def missing_packages(dependencies: dict[str, str], *,
+                     installed: Callable[[str], str | None] = installed_version) -> list[str]:
+    return sorted(f"{name}=={version}" for name, version in dependencies.items()
+                  if installed(name) != version)
+
+
+def check_full_dependencies(root: Path, *,
+                            installed: Callable[[str], str | None] = installed_version) -> dict[str, Any]:
+    requirements = root / "requirements.lock.txt"
+    expected = read_lock(requirements)
+    missing = missing_packages(expected, installed=installed)
+    return {
+        "status": "BLOCKED_DEPENDENCIES" if missing else "PASS",
+        "expected_count": len(expected),
+        "lock_sha256": _sha(requirements.read_bytes()),
+        "missing": missing,
+        "installed_count": len(expected) - len(missing),
+    }
+
+
+def interpret_focused(returncode: int, text: str, *, min_tests: int = 42) -> dict[str, Any]:
+    match = re.search(r"Ran ([0-9]+) tests? in ", text)
+    tested = int(match.group(1)) if match else 0
+    return {"status": "PASS" if returncode == 0 and tested >= min_tests and
+            re.search(r"(?m)^OK(?:\s|$)", text) else "FAIL",
+            "test_count": tested, "min_tests": min_tests, "return_code": returncode}
+
+
+def _git(root: Path, *args: str) -> str:
+    return subprocess.run(["git", *args], cwd=root, capture_output=True, text=True,
+                          timeout=30, check=True).stdout.strip()
+
+
+def _verified_identity(root: Path) -> dict[str, Any]:
+    head = _git(root, "rev-parse", "HEAD")
+    if not re.fullmatch("[0-9a-f]{40}", head):
+        raise ValueError("git source HEAD invalid")
+    origin = _git(root, "remote", "get-url", "origin")
+    if origin not in EXPECTED_ORIGINS:
+        raise ValueError("only canonical SMART-MEGA Git origin allowed")
+    if _git(root, "status", "--porcelain", "--untracked-files=normal"):
+        raise ValueError("execution requires clean, isolated checkout")
+    return {"source_commit": head, "source_origin": origin, "checkout_clean": True}
+
+
+def _syntax_check(root: Path) -> dict[str, Any]:
+    raw = subprocess.run(["git", "ls-files", "-z", "--", "*.py"], cwd=root,
+                         capture_output=True, check=True, timeout=30).stdout
+    names = [p.decode("utf-8") for p in raw.split(b"\0") if p]
+    for name in names:
+        p = root / name
+        with p.open("rb") as file:
+            ast.parse(file.read(), filename=name)
+    return {"checked_files": len(names), "status": "PASS" if names else "FAIL"}
+
+
+def write_receipt(directory: Path, receipt: dict[str, Any]) -> Path:
+    if not verify_receipt(receipt) or receipt.get("schema") != SCHEMA:
+        raise ValueError("invalid signed regression receipt")
+    directory = Path(directory)
+    if directory.is_symlink():
+        raise ValueError("receipt directory cannot be a symlink")
+    directory.mkdir(parents=True, exist_ok=True)
+    key = uuid.uuid4().hex
+    path = directory / f"SMART_LINUX_CI_{receipt.get('profile')}_{key}.json"
+    with path.open("x", encoding="utf-8") as fd:
+        json.dump(receipt, fd, ensure_ascii=False, indent=2, sort_keys=True)
+        fd.write("\n")
+    if not verify_receipt(json.loads(path.read_text(encoding="utf-8"))):
+        raise RuntimeError("regression receipt write integrity failure")
+    return path
+
+
+def execute(root: Path, profile: str, *, evidence_dir: Path | None = None) -> dict[str, Any]:
+    root = root.resolve()
+    if not root.is_dir():
+        raise FileNotFoundError(root)
+    if profile not in {"focused", "full"}:
+        raise ValueError("unknown regression profile")
+    provenance = _verified_identity(root)
+    evidence_dir = (evidence_dir or root.parent / "SMART-MEGA-V6-CI-ATTESTATIONS").resolve()
+    if evidence_dir.is_relative_to(root):
+        raise ValueError("receipts must stay outside Git checkout")
+    base: dict[str, Any] = {
+        "schema": SCHEMA, "profile": profile, "executor": "LMCP_LINUX_VPS",
+        "host": socket.gethostname(), "utc": datetime.now(timezone.utc).isoformat(),
+        "python": sys.version.split()[0], **provenance,
+        "github_actions_required": False, "full_regression_proven": False,
+        "scientific_6of6_proven": False, "production_changed": False,
+    }
+    if profile == "full":
+        dependencies = check_full_dependencies(root)
+        if dependencies["status"] != "PASS":
+            base.update({"status": "BLOCKED_DEPENDENCIES", "dependency_gate": dependencies,
+                         "test_count": 0, "canonical_junit_promoted": False})
+        else:
+            # Original project runner manages exclusive lock, immutable CURRENT
+            # and JUnit candidate promotion. Never emulate its result.
+            command = [sys.executable, "-E", "-c",
+                "import json,sys; from pathlib import Path; from smart_regression_runner import run_regression; "
+                "r=run_regression(Path.cwd(), ['-p','no:cacheprovider','--disable-warnings']); "
+                "print(json.dumps(r,ensure_ascii=False)); sys.exit(0 if r['status']=='PASS' else 1)"]
+            done = subprocess.run(command, cwd=root, capture_output=True, text=True,
+                                  timeout=5400, check=False, env={**os.environ,
+                                      "PYTHONNOUSERSITE": "1", "PYTHONPATH": ""})
+            summary = json.loads(done.stdout.strip().splitlines()[-1]) if done.stdout.strip() else {}
+            passing = (done.returncode == 0 and summary.get("status") == "PASS"
+                       and summary.get("promoted") is True
+                       and summary.get("candidate", {}).get("tests", 0) > 0)
+            base.update({"status": "PASS" if passing else "FAIL",
+                         "canonical_junit_promoted": passing,
+                         "full_regression_proven": passing,
+                         "test_count": int(summary.get("candidate", {}).get("tests", 0)),
+                         "runner": summary,
+                         "stderr_sha256": _sha(done.stderr.encode("utf-8")),
+                         "stderr_tail": done.stderr[-1000:]})
+    else:
+        syntax = _syntax_check(root)
+        command = [sys.executable, "-E", "-m", "unittest", "-q", *FOCUSED_MODULES]
+        done = subprocess.run(command, cwd=root, capture_output=True, text=True,
+                              timeout=180, check=False,
+                              env={**os.environ, "PYTHONNOUSERSITE": "1", "PYTHONPATH": ""})
+        result = interpret_focused(done.returncode, done.stderr + "\n" + done.stdout)
+        base.update({"status": "PASS" if result["status"] == "PASS"
+                     and syntax["status"] == "PASS" else "FAIL",
+                     "focused_suite": result, "syntax": syntax,
+                     "test_count": result["test_count"],
+                     "canonical_junit_promoted": False,
+                     "stdout_sha256": _sha(done.stdout.encode("utf-8")),
+                     "stderr_sha256": _sha(done.stderr.encode("utf-8")),
+                     "stderr_tail": done.stderr[-1000:]})
+    signed = sign_receipt(base)
+    path = write_receipt(evidence_dir, signed)
+    return {"status": base["status"], "profile": profile, "test_count": base["test_count"],
+            "receipt": str(path), "sha256": signed["sha256"],
+            "full_regression_proven": base["full_regression_proven"]}
+
+
+def main() -> None:
+    cli = argparse.ArgumentParser()
+    cli.add_argument("--profile", required=True, choices=["focused", "full"])
+    cli.add_argument("--root", type=Path, default=Path.cwd())
+    cli.add_argument("--evidence-dir", type=Path)
+    args = cli.parse_args()
+    result = execute(args.root, args.profile, evidence_dir=args.evidence_dir)
+    print(json.dumps(result, ensure_ascii=False, sort_keys=True))
+    raise SystemExit(0 if result["status"] == "PASS" else 2)
+
+
+if __name__ == "__main__":
+    main()
