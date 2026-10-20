@@ -150,6 +150,7 @@ def test_execute_carries_single_pre_result_binding_across_post_result_stages(tmp
     monkeypatch.setattr(legacy.champion_challenger, "load_ledger", lambda path:{"events":[]})
     payload={"numero":target,"listaDezenas":["01","02","03","04","05","06"],"dataApuracao":"01/01/2030","acumulado":False}
     consensus={"primary":{"validated":True,"numbers":[1,2,3,4,5,6]},"terminal_source_corroboration_authorized":True,"status":"DUAL_CAIXA_CHANNEL_CONSENSUS"}
+    monkeypatch.setattr(legacy.independent_audit, "audit_prospective_ledger", lambda root,ledger: {"status":"PASS"})
     monkeypatch.setattr(legacy, "_ensure_primary_payload", lambda root,p:p)
     monkeypatch.setattr(legacy, "_ensure_monotonic_consensus", lambda root,c:c)
     monkeypatch.setattr(legacy, "_normalized_primary", lambda p:{"numbers":[1,2,3,4,5,6],"draw_date":"01/01/2030"})
