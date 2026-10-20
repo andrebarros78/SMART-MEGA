@@ -7,7 +7,7 @@ import tempfile
 import unittest
 from datetime import datetime, timezone
 from pathlib import Path
-from types import ModuleType
+from typing import Any
 from unittest import mock
 import sys
 
@@ -101,6 +101,7 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         source = Path(__file__).resolve().with_name("smart_operator.py").read_text(encoding="utf-8")
         node = next(n for n in ast.parse(source).body
                     if isinstance(n, ast.FunctionDef) and n.name == "generate_card_operation")
+        environment["Any"] = Any
         exec(compile(ast.Module(body=[node], type_ignores=[]), "<operator-generate-card>", "exec"), environment)
         return environment["generate_card_operation"]
 
