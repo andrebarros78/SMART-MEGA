@@ -818,6 +818,7 @@ def evaluate_terminal_rule(
     total_adjudication_count = sum(1 for event in ledger.get("events", []) if event.get("event_type") == "ADJUDICATION")
     prospective = audit.get("prospective_ledger", {})
     primary = consensus.get("primary", {})
+    audited_pairs = prospective.get("pair_count")
     checks = {
         "freeze_hash_immutable": freeze_event.get("freeze_sha256") == expected_freeze_sha256,
         "freeze_before_result": freeze_event.get("frozen_before_result") is True and freeze.get("frozen_before_result") is True,
@@ -827,7 +828,7 @@ def evaluate_terminal_rule(
         "official_numbers_match_adjudication": sorted(int(x) for x in primary.get("numbers", [])) == actual,
         "sequential_proof_valid": sequence_validation.get("valid") is True and sequence_validation.get("proof_recorded") is True,
         "independent_audit_pass": audit.get("status") == "PASS" and prospective.get("status") == "PASS",
-        "all_attempts_counted": int(prospective.get("pair_count", -1)) == total_adjudication_count,
+        "all_attempts_counted": type(audited_pairs) is int and audited_pairs >= 0 and audited_pairs == total_adjudication_count,
         "no_future_leakage": prospective.get("no_future_leakage") is True,
         "source_corroborated": consensus.get("terminal_source_corroboration_authorized") is True,
         "exact_6of6": recomputed_hits == 6 and int(adjudication.get("champion_hits", -1)) == 6,
