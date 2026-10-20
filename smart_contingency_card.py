@@ -65,7 +65,7 @@ def generate_contingency_card(root: str | Path, target: int, *,
         raise FileNotFoundError("canonical project directory unavailable")
     folder = project / RELATIVE_DIR
     filepath = folder / f"SMART_CONTINGENCY_CARD_{target}.json"
-    if folder.is_symlink() or filepath.is_symlink():
+    if (project / "runtime").is_symlink() or folder.is_symlink() or filepath.is_symlink():
         raise ValueError("contingency receipt path must not be symbolic link")
     if filepath.is_file():
         document = json.loads(filepath.read_text(encoding="utf-8"))
@@ -96,7 +96,7 @@ def generate_contingency_card(root: str | Path, target: int, *,
         "changes_productive_epoch": False,
         "adjudication_required": False,
         "next_cycle_freeze_authority": False,
-        "result_3071_used_in_selection": False,
+        "preceding_result_used_in_selection": False,
     }
     document["sha256"] = _digest(document)
     folder.mkdir(parents=True, exist_ok=True)
