@@ -12,6 +12,7 @@ from typing import Any
 import pandas as pd
 
 from smart_canonical_identity import require_canonical_identity
+from smart_frozen_terminal_recovery import verified_frozen_terminal_recovery
 from smart_operation_lock import read_lock_metadata
 from smart_operational_lifecycle import load_lifecycle
 from smart_transaction_journal import open_transactions, read_entries
@@ -190,8 +191,20 @@ def reconcile(root: str | Path, target: int | None = None, *, include_authority_
             _record(checks, details, "dataset_readable", True, {"max_contest": dataset_max, "row_count": row_count})
             if state == "HOLD":
                 monotonic = int(completed) == dataset_max and int(life_target) == dataset_max + 1
-            elif state in {"AUTHORIZED", "PREPARING", "PREPARED", "FREEZING", "FROZEN"}:
+            elif state in {"AUTHORIZED", "PREPARING", "PREPARED", "FREEZING"}:
                 monotonic = int(life_target) == dataset_max + 1
+            elif state == "FROZEN":
+                monotonic = int(life_target) == dataset_max + 1
+                # The terminal can commit target history before recording
+                # FROZEN -> ADJUDICATED. Allow only exact proof-bound recovery.
+                if not monotonic and dataset_max == int(life_target) and consistency:
+                    monotonic = verified_frozen_terminal_recovery(root, lifecycle, active)
+                    if monotonic:
+                        details["verified_interrupted_terminal_commit"] = {
+                            "target_contest": int(life_target),
+                            "resume_only": True,
+                            "scientific_promotion_authorized": False,
+                        }
             elif state in {"ADJUDICATED", "REVIEWED"}:
                 monotonic = dataset_max in {int(life_target) - 1, int(life_target)}
             else:
