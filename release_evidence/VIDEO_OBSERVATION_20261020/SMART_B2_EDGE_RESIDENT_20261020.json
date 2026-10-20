@@ -1,0 +1,80 @@
+{
+  "schema": "smart.b2.video_continuation.evidence.v1",
+  "date_local": "2026-10-20",
+  "timezone": "America/Sao_Paulo",
+  "mission_id": "smartmega-official-50-visual-20261015",
+  "branch_scope": "feature/video-resident-15h-supervisor-20261017",
+  "requested_scope": "Real official CAIXA YouTube video observation through existing PC Escola Edge and supervised B2 learning",
+  "user_reported": {
+    "browser": "Microsoft Edge",
+    "machine": "PC Escola",
+    "page": "YouTube / CAIXA",
+    "verified_by_user": true,
+    "independently_verified_frame": false
+  },
+  "governor_request": {
+    "request_id": "capreq_52ef281572da43ab8ec6e1c88ca2c38d",
+    "status": "DISCOVERY_PENDING",
+    "approval": "NOT_GRANTED",
+    "attempt": "governor_capability_ensure",
+    "requested_capability": "smartmega_b2_authorized_interactive_video_observation"
+  },
+  "pc_escola": {
+    "node_id": "B2-LEARNING-NODE-01",
+    "session0_edge_window_title": "UNAVAILABLE",
+    "chrome_debug_ports_9222_9223": "NO_ACTIVE_CDP",
+    "isolated_playwright_attempt": {
+      "command_id": "netcmd_f451ab13027e415aa94d87649beff418",
+      "result": "TargetClosedError launching Edge in isolated guest context",
+      "physical_frames_decoded": 0
+    },
+    "pending_media_requirement": "Legitimate access to already-open interactive Edge session / authorized official file"
+  },
+  "prior_session": {
+    "name": "resident_15h_20261019",
+    "result": "WINDOW_FINISHED",
+    "heartbeats": 183,
+    "backup_sha256": "9016930ca6abfb5d5388c67bc115273006db481e31019e4613f889a1986a9cb0",
+    "sqlite_integrity": "ok",
+    "old_deadline_preserved": true,
+    "completion_command_id": "netcmd_93cfb8057bb6429e9a98bafbab1347e5"
+  },
+  "current_session": {
+    "name": "resident_15h_20261020",
+    "path": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013\\resident_15h_20261020",
+    "scheduler_name": "\\SMART-MEGA-B2-VISUAL-RESIDENT-20261020-15H",
+    "schedule": "5 minutes for a fixed 15-hour window",
+    "source_gate": "BLOCKED",
+    "queue_pending": 50,
+    "original_queue_sha256": "fd09b344d28e57aa67a124e389f04dbfaf0c54c68845f71b202e91d26827a333",
+    "initial_scheduler_result": 1,
+    "diagnosed_root_cause": "InteractiveToken user PC-ESCOLA\\andre had RX only on isolated resident output folder, preventing SQLite/quality writes",
+    "manual_reproduction": "Existing exact task command succeeded under governed service context",
+    "repair": {
+      "scope": "ONLY resident_15h_20261020 subtree",
+      "change": "PC-ESCOLA\\andre (OI)(CI) Modify",
+      "queue_and_catalog_acl": "UNCHANGED RX",
+      "backup_acl_sha256": "03fd462deb1b43793222b39826ef48a29e4999ec2100971281b0f90d6e105d4a",
+      "repair_command_id": "netcmd_51799a8437944b819e869b69c919a3b1"
+    },
+    "independent_scheduler_proof": {
+      "task_last_result": 0,
+      "last_execution_local": "2026-10-20 11:11:57",
+      "state": "PAUSED_SOURCE_ACCESS",
+      "heartbeats": 3,
+      "sqlite_integrity": "ok",
+      "command_id": "netcmd_7bdf42a89d7c407cbc80b8d0b19fb57f",
+      "result_sha256": "416feba24bb37fef7587524ae55e0e3c93b11b732885b45f4923c2e283ce7400"
+    }
+  },
+  "scientific_gate": {
+    "official_frames_decoded_verified": 0,
+    "verified_visual_checkpoints": 0,
+    "predictive_weight": 0,
+    "learning_proven": false,
+    "mission_proven": false,
+    "policy": "NEVER_TREAT_HEARTBEATS_AS_VISUAL_LEARNING"
+  },
+  "next_gate": "Obtain authorized access to actual official YouTube video frames in logged-in Edge user session or CAIXA official usable recording, then run smart_video_observation.py and require SHA-256 video checkpoint + out-of-sample calibration proof",
+  "main_untouched_by_this_execution": true
+}
