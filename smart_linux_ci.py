@@ -37,6 +37,7 @@ FOCUSED_MODULES = (
     "test_smart_operator_complete_result",
     "test_smart_terminal_degraded_audit_execution",
     "test_smart_linux_ci",
+    "test_smart_linux_certification_provenance",
 )
 
 
@@ -161,12 +162,14 @@ def write_receipt(directory: Path, receipt: dict[str, Any]) -> Path:
     return path
 
 
-def execute(root: Path, profile: str, *, evidence_dir: Path | None = None) -> dict[str, Any]:
+def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certify: bool = False) -> dict[str, Any]:
     root = root.resolve()
     if not root.is_dir():
         raise FileNotFoundError(root)
     if profile not in {"focused", "full"}:
         raise ValueError("unknown regression profile")
+    if certify and profile != "full":
+        raise ValueError("certification requires full regression profile")
     provenance = _verified_identity(root)
     evidence_dir = (evidence_dir or root.parent / "SMART-MEGA-V6-CI-ATTESTATIONS").resolve()
     if evidence_dir.is_relative_to(root):
@@ -177,6 +180,7 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None) -> di
         "python": sys.version.split()[0], **provenance,
         "github_actions_required": False, "full_regression_proven": False,
         "scientific_6of6_proven": False, "production_changed": False,
+        "certification_requested": certify, "certification_proven": False,
     }
     if profile == "full":
         dependencies = check_full_dependencies(root)
@@ -204,6 +208,41 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None) -> di
                          "runner": summary,
                          "stderr_sha256": _sha(done.stderr.encode("utf-8")),
                          "stderr_tail": done.stderr[-1000:]})
+            if passing and certify:
+                # Existing certification routine validates actual JUnit, code
+                # fingerprint, governance and global integrity. No mock proof.
+                import uuid
+                execution_id = str(uuid.uuid4())
+                script = (
+                    "import json,sys,socket; from pathlib import Path; "
+                    "from smart_github_certify import refresh; "
+                    "report=refresh(Path.cwd(), Path('SMART_AUDIT_JUNIT_CANDIDATE.xml'), "
+                    "sys.argv[1], sys.argv[2], executor_host=socket.gethostname(), "
+                    "executor_kind='LMCP_LINUX_VPS'); print(json.dumps(report,ensure_ascii=False))"
+                )
+                certificate = subprocess.run(
+                    [sys.executable, "-E", "-c", script,
+                     provenance["source_commit"], execution_id],
+                    cwd=root, capture_output=True, text=True, timeout=1800,
+                    check=False, env={**os.environ, "PYTHONNOUSERSITE": "1", "PYTHONPATH": ""},
+                )
+                try:
+                    certified = json.loads(certificate.stdout.strip().splitlines()[-1])
+                except (json.JSONDecodeError, IndexError):
+                    certified = {}
+                verified = (certificate.returncode == 0
+                            and certified.get("status") == "CONSTRUCTION_PROVEN"
+                            and certified.get("source_commit") == provenance["source_commit"]
+                            and certified.get("execution", {}).get("kind") == "LMCP_LINUX_VPS"
+                            and certified.get("tests") == base["test_count"])
+                base.update({
+                    "status": "PASS" if verified else "FAIL",
+                    "certification_proven": verified,
+                    "certification_evidence": certified,
+                    "certification_stdout_sha256": _sha(certificate.stdout.encode("utf-8")),
+                    "certification_stderr_sha256": _sha(certificate.stderr.encode("utf-8")),
+                    "certification_stderr_tail": certificate.stderr[-1500:],
+                })
     else:
         syntax = _syntax_check(root)
         command = [sys.executable, "-E", "-m", "unittest", "-q", *FOCUSED_MODULES]
@@ -231,8 +270,9 @@ def main() -> None:
     cli.add_argument("--profile", required=True, choices=["focused", "full"])
     cli.add_argument("--root", type=Path, default=Path.cwd())
     cli.add_argument("--evidence-dir", type=Path)
+    cli.add_argument("--certify", action="store_true", help="require full regression and complete Linux certification")
     args = cli.parse_args()
-    result = execute(args.root, args.profile, evidence_dir=args.evidence_dir)
+    result = execute(args.root, args.profile, evidence_dir=args.evidence_dir, certify=args.certify)
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))
     raise SystemExit(0 if result["status"] == "PASS" else 2)
 
