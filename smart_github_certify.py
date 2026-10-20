@@ -9,6 +9,7 @@ from pathlib import Path
 import re
 import shutil
 import socket
+import sys
 import uuid
 import subprocess
 
@@ -30,11 +31,13 @@ ARTIFACTS = (
 )
 
 
-def execution_provenance(root: Path, source_commit: str, run_id: str, executor_host: str | None = None) -> dict:
+def execution_provenance(root: Path, source_commit: str, run_id: str, executor_host: str | None = None, *, executor_kind: str = "FEDERATED_PC") -> dict:
     """Identify the real executor without impersonating a GitHub Actions run."""
     if not isinstance(source_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_commit):
         raise ValueError("invalid tested source commit")
     if executor_host is None:
+        if executor_kind != "FEDERATED_PC":
+            raise PermissionError("explicit Linux identity requires a verified executor host")
         if os.environ.get("GITHUB_REPOSITORY") != "andrebarros78/SMART-MEGA":
             raise PermissionError("certification requires canonical GitHub repository")
         if not isinstance(run_id, str) or not run_id.isdecimal() or int(run_id) <= 0:
@@ -57,13 +60,20 @@ def execution_provenance(root: Path, source_commit: str, run_id: str, executor_h
         "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
     }:
         raise PermissionError("federated certification requires canonical Git origin")
+    if executor_kind == "LMCP_LINUX_VPS":
+        if sys.platform != "linux" or executor_host != "wmcp-cloud-01":
+            raise PermissionError("LMCP Linux certification requires the canonical VPS")
+        return {"kind": "LMCP_LINUX_VPS", "provider": "LMCP",
+                "execution_id": execution_id, "hostname": executor_host}
+    if executor_kind != "FEDERATED_PC":
+        raise ValueError("unsupported certification executor kind")
     return {"kind": "FEDERATED_PC", "execution_id": execution_id, "hostname": executor_host}
 
 
 def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
-            executor_host: str | None = None) -> dict:
+            executor_host: str | None = None, executor_kind: str = "FEDERATED_PC") -> dict:
     root = root.resolve()
-    execution = execution_provenance(root, source_commit, run_id, executor_host)
+    execution = execution_provenance(root, source_commit, run_id, executor_host, executor_kind=executor_kind)
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True,
                           text=True, check=True).stdout.strip()
     if head != source_commit:
@@ -92,7 +102,7 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
         "git_ref_sha": source_commit,
         "git_head": f"commit: {source_commit}",
         "authority_refreshed_at": datetime.now(timezone.utc).isoformat(),
-        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE" if executor_host is None else "FEDERATED_EXECUTION_PROVENANCE",
+        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE" if executor_host is None else ("LINUX_VPS_EXECUTION_PROVENANCE" if execution["kind"] == "LMCP_LINUX_VPS" else "FEDERATED_EXECUTION_PROVENANCE"),
         "certified_execution": execution,
         "certified_source_commit": source_commit,
         "certified_ci_run_id": run_id if executor_host is None else None,
