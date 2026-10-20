@@ -162,7 +162,44 @@ def write_receipt(directory: Path, receipt: dict[str, Any]) -> Path:
     return path
 
 
-def verify_full_junit(root: Path, report: dict[str, Any]) -> bool:
+
+def baseline_junit_counts(root: Path) -> dict[str, Any] | None:
+    """Read the pre-execution JUnit from Git HEAD, never from a mutable path."""
+    try:
+        import xml.etree.ElementTree as ET
+        tracked = subprocess.run(
+            ["git", "show", "HEAD:SMART_AUDIT_JUNIT_CURRENT.xml"],
+            cwd=root, capture_output=True, check=False, timeout=30,
+        )
+        if tracked.returncode != 0 or not (0 < len(tracked.stdout) <= 5_000_000):
+            return None
+        raw = tracked.stdout
+        if b"<!DOCTYPE" in raw.upper() or b"<!ENTITY" in raw.upper():
+            return None
+        root_xml = ET.fromstring(raw)
+        if root_xml.tag == "testsuite":
+            suites = [root_xml]
+        elif root_xml.tag == "testsuites":
+            suites = root_xml.findall("testsuite")
+        else:
+            return None
+        if not suites:
+            return None
+        counts = {
+            field: sum(int(suite.attrib.get(field, "0")) for suite in suites)
+            for field in ("tests", "failures", "errors", "skipped")
+        }
+        if counts["tests"] <= 0 or counts["failures"] != 0 or counts["errors"] != 0:
+            return None
+        return {
+            "tests": counts["tests"], "skipped": counts["skipped"],
+            "sha256": _sha(raw), "git_revision": "HEAD",
+        }
+    except (OSError, ValueError, TypeError, TimeoutError, ET.ParseError):
+        return None
+
+
+def verify_full_junit(root: Path, report: dict[str, Any], *, minimum_tests: int = 1, maximum_skipped: int = 0) -> bool:
     """Require the real project's immutable candidate/current JUnit evidence."""
     if not isinstance(report, dict) or report.get("status") != "PASS" or report.get("promoted") is not True:
         return False
@@ -194,7 +231,8 @@ def verify_full_junit(root: Path, report: dict[str, Any]) -> bool:
         generated["status"] == "PASS"
         and persisted["status"] == "PASS"
         and generated == persisted
-        and type(generated["tests"]) is int and generated["tests"] > 0
+        and type(generated["tests"]) is int and generated["tests"] >= minimum_tests
+        and type(generated["skipped"]) is int and generated["skipped"] <= maximum_skipped
         and generated["tests"] == metadata.get("tests")
         and generated["sha256"] == metadata.get("sha256")
         and generated["sha256"] == promoted.get("sha256")
@@ -225,10 +263,15 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certi
     }
     if profile == "full":
         dependencies = check_full_dependencies(root)
+        baseline = baseline_junit_counts(root) if dependencies["status"] == "PASS" else None
         if dependencies["status"] != "PASS":
             base.update({"status": "BLOCKED_DEPENDENCIES", "dependency_gate": dependencies,
                          "test_count": 0, "canonical_junit_promoted": False})
+        elif baseline is None:
+            base.update({"status": "BLOCKED_BASELINE_EVIDENCE",
+                         "test_count": 0, "canonical_junit_promoted": False})
         else:
+            base["historical_junit_baseline"] = baseline
             # Original project runner manages exclusive lock, immutable CURRENT
             # and JUnit candidate promotion. Never emulate its result.
             command = [sys.executable, "-E", "-c",
@@ -244,7 +287,10 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certi
                 summary = {}
             if not isinstance(summary, dict):
                 summary = {}
-            passing = done.returncode == 0 and verify_full_junit(root, summary)
+            passing = done.returncode == 0 and verify_full_junit(
+                root, summary, minimum_tests=baseline["tests"],
+                maximum_skipped=baseline["skipped"],
+            )
             base.update({"status": "PASS" if passing else "FAIL",
                          "canonical_junit_promoted": passing,
                          "full_regression_proven": passing,
