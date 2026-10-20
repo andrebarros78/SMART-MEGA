@@ -7,8 +7,10 @@ from __future__ import annotations
 
 import hashlib
 import json
+import os
 import re
 import secrets
+import tempfile
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -63,6 +65,8 @@ def generate_contingency_card(root: str | Path, target: int, *,
         raise FileNotFoundError("canonical project directory unavailable")
     folder = project / RELATIVE_DIR
     filepath = folder / f"SMART_CONTINGENCY_CARD_{target}.json"
+    if folder.is_symlink() or filepath.is_symlink():
+        raise ValueError("contingency receipt path must not be symbolic link")
     if filepath.is_file():
         document = json.loads(filepath.read_text(encoding="utf-8"))
         _verify(document, target, preceding_target, lifecycle_sha256)
@@ -96,13 +100,28 @@ def generate_contingency_card(root: str | Path, target: int, *,
     }
     document["sha256"] = _digest(document)
     folder.mkdir(parents=True, exist_ok=True)
+    if not folder.resolve().is_relative_to(project):
+        raise ValueError("contingency receipt storage escapes canonical project")
+    payload = (json.dumps(document, sort_keys=True, ensure_ascii=False, indent=2) + "\n").encode("utf-8")
+    # Write and sync a complete temporary receipt; link creates the final name
+    # exclusively and atomically. Interrupted writes cannot leave a partial
+    # authoritative receipt, and two operators cannot overwrite one another.
+    fd, name = tempfile.mkstemp(prefix=f".{target}.", suffix=".tmp", dir=folder)
+    temporary = Path(name)
     try:
-        with filepath.open("x", encoding="utf-8", newline="\n") as stream:
-            json.dump(document, stream, sort_keys=True, ensure_ascii=False, indent=2)
-            stream.write("\n")
-    except FileExistsError:
-        replay = json.loads(filepath.read_text(encoding="utf-8"))
-        _verify(replay, target, preceding_target, lifecycle_sha256)
-        return {**replay, "idempotent_replay": True, "receipt_file": filepath.relative_to(project).as_posix()}
+        with os.fdopen(fd, "wb") as stream:
+            stream.write(payload)
+            stream.flush()
+            os.fsync(stream.fileno())
+        try:
+            os.link(temporary, filepath)
+        except FileExistsError:
+            if filepath.is_symlink() or not filepath.is_file():
+                raise ValueError("contingency receipt race path invalid")
+            replay = json.loads(filepath.read_text(encoding="utf-8"))
+            _verify(replay, target, preceding_target, lifecycle_sha256)
+            return {**replay, "idempotent_replay": True, "receipt_file": filepath.relative_to(project).as_posix()}
+    finally:
+        temporary.unlink(missing_ok=True)
     _verify(document, target, preceding_target, lifecycle_sha256)
     return {**document, "idempotent_replay": False, "receipt_file": filepath.relative_to(project).as_posix()}
