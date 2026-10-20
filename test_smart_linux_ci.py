@@ -100,6 +100,8 @@ class LinuxCIContract(unittest.TestCase):
                 "checkout_clean": True
             }), patch.object(ci, "check_full_dependencies", return_value={
                 "status": "PASS", "missing": [], "expected_count": 75, "installed_count": 75,
+            }), patch.object(ci, "baseline_junit_counts", return_value={
+                "tests": 1295, "skipped": 0
             }), patch("subprocess.run", return_value=proc):
                 outcome = ci.execute(root, "full", evidence_dir=artifacts)
             self.assertEqual(outcome["status"], "FAIL")
@@ -117,6 +119,8 @@ class LinuxCIContract(unittest.TestCase):
                 "checkout_clean": True
             }), patch.object(ci, "check_full_dependencies", return_value={
                 "status": "PASS", "missing": [], "expected_count": 75, "installed_count": 75,
+            }), patch.object(ci, "baseline_junit_counts", return_value={
+                "tests": 1295, "skipped": 0
             }), patch("subprocess.run", return_value=proc):
                 outcome = ci.execute(root, "full", evidence_dir=artifacts)
             self.assertEqual(outcome["status"], "FAIL")
@@ -169,6 +173,66 @@ class LinuxCIContract(unittest.TestCase):
                       "current_preserved_during_test": True,
                       "candidate": "invalid", "promotion": {}}
             self.assertFalse(ci.verify_full_junit(root, report))
+
+
+    def test_full_junit_rejects_drop_below_1295_baseline(self):
+        from types import SimpleNamespace
+        import hashlib, sys
+        from xml.etree import ElementTree
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            xml = b'<testsuites tests="1" failures="0" errors="0" skipped="0"/>'
+            (root / "SMART_AUDIT_JUNIT_CANDIDATE.xml").write_bytes(xml)
+            (root / "SMART_AUDIT_JUNIT_CURRENT.xml").write_bytes(xml)
+            digest = hashlib.sha256(xml).hexdigest()
+            def summary(path):
+                node = ElementTree.parse(path).getroot()
+                return {"tests": int(node.get("tests")), "failures": 0, "errors": 0,
+                        "skipped": 0, "status": "PASS",
+                        "sha256": hashlib.sha256(Path(path).read_bytes()).hexdigest()}
+            receipt = {"status": "PASS", "promoted": True,
+                       "code_fingerprint_stable": True, "canonical_environment_stable": True,
+                       "isolated_python_environment": True, "exclusive_runner_lock": True,
+                       "current_preserved_during_test": True,
+                       "candidate": {"tests": 1, "sha256": digest},
+                       "promotion": {"sha256": digest}, "current_sha256": digest}
+            with patch.dict(sys.modules, {"smart_regression_evidence": SimpleNamespace(junit_summary=summary)}):
+                self.assertFalse(ci.verify_full_junit(root, receipt, minimum_tests=1295))
+                self.assertTrue(ci.verify_full_junit(root, receipt, minimum_tests=1))
+
+    def test_committed_baseline_is_required_and_not_mutable_workspace(self):
+        with tempfile.TemporaryDirectory() as temp:
+            self.assertIsNone(ci.baseline_junit_counts(Path(temp)))
+
+    def test_baseline_is_bound_to_committed_junit(self):
+        # Independently check the real, versioned baseline.
+        root = Path(__file__).resolve().parent
+        result = ci.baseline_junit_counts(root)
+        self.assertIsNotNone(result)
+        self.assertGreaterEqual(result["tests"], 1295)
+        self.assertEqual(result["skipped"], 0)
+
+    def test_decreasing_test_coverage_cannot_certify_full(self):
+        # A mocked subprocess that reports fewer tests than baseline must
+        # never certify even if stdout, JUnit and hashes are mutually consistent.
+        from types import SimpleNamespace
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            evidence = root.parent / (root.name + "-evidence")
+            fake = {"status": "PASS", "promoted": True,
+                    "candidate": {"tests": 12, "sha256": "a" * 64},
+                    "promotion": {"sha256": "a" * 64}}
+            report = SimpleNamespace(returncode=0, stdout=json.dumps(fake), stderr="")
+            with patch.object(ci, "_verified_identity", return_value={
+                    "source_commit": "a" * 40,
+                    "source_origin": "https://github.com/andrebarros78/SMART-MEGA.git",
+                    "checkout_clean": True}), patch.object(ci, "check_full_dependencies", return_value={
+                    "status": "PASS", "expected_count": 75, "installed_count": 75,
+                    "missing": []}), patch.object(ci, "baseline_junit_counts", return_value={
+                    "tests": 1295, "skipped": 0}), patch("subprocess.run", return_value=report):
+                out = ci.execute(root, "full", evidence_dir=evidence)
+            self.assertEqual(out["status"], "FAIL")
+            self.assertFalse(out["full_regression_proven"])
 
 
 if __name__ == "__main__":
