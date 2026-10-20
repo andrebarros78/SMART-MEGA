@@ -57,5 +57,30 @@ class LinuxCIContract(unittest.TestCase):
             self.assertEqual(json.loads(path.read_text())["status"], "BLOCKED_DEPENDENCIES")
 
 
+    def test_certification_is_only_supported_with_full_profile(self):
+        with tempfile.TemporaryDirectory() as d:
+            with self.assertRaisesRegex(ValueError, "requires full"):
+                ci.execute(Path(d), "focused", certify=True)
+
+    def test_missing_dependencies_never_attempt_linux_certification(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            folder = root.parent / (root.name + "-evidence")
+            with patch.object(ci, "_verified_identity", return_value={
+                "source_commit": "a" * 40,
+                "source_origin": "https://github.com/andrebarros78/SMART-MEGA.git",
+                "checkout_clean": True
+            }), patch.object(ci, "check_full_dependencies", return_value={
+                "status": "BLOCKED_DEPENDENCIES", "missing": ["pytest==9.1.1"],
+                "expected_count": 1, "installed_count": 0
+            }), patch("subprocess.run", side_effect=AssertionError("No subprocess allowed")):
+                result = ci.execute(root, "full", certify=True, evidence_dir=folder)
+            self.assertEqual(result["status"], "BLOCKED_DEPENDENCIES")
+            self.assertFalse(result["full_regression_proven"])
+            proof = json.loads(Path(result["receipt"]).read_text())
+            self.assertFalse(proof["certification_proven"])
+            self.assertTrue(proof["certification_requested"])
+
+
 if __name__ == "__main__":
     unittest.main()
