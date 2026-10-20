@@ -132,5 +132,31 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         self.assertEqual(result, {"status": "FROZEN", "target_contest": 3071})
 
 
+
+class TestContingencyReceiptAtomicity(unittest.TestCase):
+    def test_interrupted_finalization_leaves_no_partial_card(self):
+        with tempfile.TemporaryDirectory() as d:
+            with mock.patch("smart_contingency_card.os.link", side_effect=OSError("simulated IO failure")):
+                with self.assertRaisesRegex(OSError, "simulated IO failure"):
+                    generate_contingency_card(d, 3072, preceding_target=3071,
+                                              lifecycle_sha256=SHA, chooser=FixedChooser())
+            folder = Path(d) / "runtime" / "contingency_cards"
+            self.assertFalse((folder / "SMART_CONTINGENCY_CARD_3072.json").exists())
+            self.assertEqual(list(folder.iterdir()), [])
+
+    def test_symlinked_receipt_rejected(self):
+        with tempfile.TemporaryDirectory() as d:
+            root = Path(d)
+            root.joinpath("runtime", "contingency_cards").mkdir(parents=True)
+            target = root / "outside.json"
+            target.write_text("{}")
+            link = root / "runtime" / "contingency_cards" / "SMART_CONTINGENCY_CARD_3072.json"
+            link.symlink_to(target)
+            with self.assertRaisesRegex(ValueError, "symbolic link"):
+                generate_contingency_card(d, 3072, preceding_target=3071,
+                                          lifecycle_sha256=SHA, chooser=FixedChooser())
+            self.assertEqual(target.read_text(), "{}")
+
+
 if __name__ == "__main__":
     unittest.main()
