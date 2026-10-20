@@ -1446,7 +1446,15 @@ def hold_operation(root: str | Path, target: int, hold_file: str | Path = POST_R
 
 @locked_operation("TERMINAL")
 @startup_guarded("TERMINAL")
-@idempotent_operation('TERMINAL')
+@idempotent_operation(
+    'TERMINAL',
+    commit_if=lambda result: (
+        isinstance(result, dict)
+        and result.get("official_result_available") is True
+        and result.get("sequence_valid") is True
+        and bool(result.get("adjudication_status"))
+    ),
+)
 def terminal_operation(
     root: str | Path,
     target: int,
