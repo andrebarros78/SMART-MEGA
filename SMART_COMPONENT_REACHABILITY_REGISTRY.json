@@ -60,7 +60,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "6ae3ed95bff7a4fd8f761b466b1a77f26b7de039e500dac68b8bfba3978c91e6",
+  "inventory_sha256": "3a857cb595e5c3682130e57592984e244b4a41afe366a06b78427494b1fe8dba",
   "summary": {
     "python_components": 530,
     "workflow_entrypoints": 10,
@@ -5930,12 +5930,15 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
-        "smart_github_native_policy"
+        "smart_github_native_policy",
+        "smart_github_operator"
       ],
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_github_native_policy"
+        "smart_github_operator",
+        "test_smart_github_native_policy",
+        "test_smart_github_operator"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -5958,6 +5961,7 @@
       "producers": [
         "smart_calibration_safety_gate",
         "smart_frozen_card_reader",
+        "smart_github_native_policy",
         "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -5983,7 +5987,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "9a1934826053f1dd0c2f8ac797cfe21f57bf28813a72b1c00e0169a69608f697"
+      "sha256": "47dd261592e65939d82d674fedfcaa8884116c5c50e949623d1035649e12b5c0"
     },
     {
       "component_id": "smart_global_integrity",
@@ -10919,6 +10923,7 @@
       "entrypoints": [],
       "producers": [
         "smart_frozen_card_reader",
+        "smart_github_native_policy",
         "smart_github_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -10933,7 +10938,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "7d4dbc9aad7ebadb52dad21116705712b5e7feb07d4a05a83f5c8c5a53d8b0de"
+      "sha256": "3c99ee386c3ae4c76a25573dc72fd0c5ea47870c99328e653464e077bb1af50c"
     },
     {
       "component_id": "test_smart_global_integrity",
