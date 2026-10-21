@@ -35,6 +35,12 @@
     "smart_github_operator.py": [
       "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
+    "smart_github_native_policy.py": [
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+    ],
+    "smart_linux_ci.py": [
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+    ],
     "smart_repository_integrity.py": [
       "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
@@ -54,20 +60,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "fcad54417dd0526e68e741a4ceb67092025cc3b256dfc7acfdc006e930987c75",
+  "inventory_sha256": "6ae3ed95bff7a4fd8f761b466b1a77f26b7de039e500dac68b8bfba3978c91e6",
   "summary": {
     "python_components": 530,
-    "workflow_entrypoints": 8,
-    "production_components": 110,
+    "workflow_entrypoints": 10,
+    "production_components": 112,
     "shadow_components": 1,
-    "diagnostic_components": 29,
+    "diagnostic_components": 27,
     "validation_components": 23,
     "test_components": 191,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 40,
+    "independent_entrypoints": 38,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -104,10 +110,8 @@
       "smart_finalize_capability_integration_v3.py",
       "smart_finalize_deployment.py",
       "smart_frontier_adjudicator.py",
-      "smart_github_native_policy.py",
       "smart_historical_training_intake.py",
       "smart_hypothesis_state_reconciler.py",
-      "smart_linux_ci.py",
       "smart_monte_carlo_convergence.py",
       "smart_official_dataset_reconcile.py",
       "smart_portfolio_backtest.py",
@@ -4886,7 +4890,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "4caed6378b51832975b4cfbbcd39dac1141f8efbdd1ca7e776f02085f2452efc"
+      "sha256": "b6bd0fd842ffd159dd0c8ba529204820f5eb19754306af153f27bbe4a6558c16"
     },
     {
       "component_id": "smart_consumer_integration",
@@ -5923,16 +5927,18 @@
     {
       "component_id": "smart_github_native_policy",
       "source_file": "smart_github_native_policy.py",
-      "role": "DIAGNOSTIC",
-      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
-      "entrypoints": [],
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_native_policy"
+      ],
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
         "test_smart_github_native_policy"
       ],
-      "reachable": false,
-      "production_reachable": false,
+      "reachable": true,
+      "production_reachable": true,
       "runtime_executed": null,
       "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
@@ -6371,9 +6377,11 @@
     {
       "component_id": "smart_linux_ci",
       "source_file": "smart_linux_ci.py",
-      "role": "DIAGNOSTIC",
-      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
-      "entrypoints": [],
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_linux_ci"
+      ],
       "producers": [
         "smart_regression_evidence"
       ],
@@ -6381,8 +6389,8 @@
       "consumers": [
         "test_smart_linux_ci"
       ],
-      "reachable": false,
-      "production_reachable": false,
+      "reachable": true,
+      "production_reachable": true,
       "runtime_executed": null,
       "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
@@ -7814,6 +7822,7 @@
         "smart_disconnection_gate",
         "smart_github_certify",
         "smart_github_operator",
+        "smart_linux_ci",
         "smart_repository_integrity",
         "smart_skill_adapter_registry"
       ],
@@ -9881,7 +9890,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "0358b598926f2540ffe9ed035627bc2f0aa694c02ef07b6a6a63dd517c45a243"
+      "sha256": "0729c3533954ddb91787a974e05c85bc46de3fcab53caf4e7d2c4a53a2d3264d"
     },
     {
       "component_id": "test_smart_consumer_integration",
@@ -11861,7 +11870,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "5a60a8f6711702d206303a8b0b0fb2f7824009e1d62627a258be0e581f9761f0"
+      "sha256": "9c944c7fb420ea71de2171734a5bc7542e4b503e68a0445c827c47bd69a55875"
     },
     {
       "component_id": "test_smart_operator_unprepared_missed_recovery_20260915",
@@ -13058,7 +13067,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "2c686139cbb13390e3063ed85e73bfbd045db64ae403175d552bd12b0b45f457"
+      "sha256": "75d6bd35005f1dfbc555938989983a5744f6430e0b1adcb06f559eca5d1c88bb"
     },
     {
       "component_id": "test_smart_terminal_pending_idempotency",

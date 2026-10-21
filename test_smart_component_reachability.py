@@ -67,3 +67,14 @@ def test_f01_rejects_any_runnable_github_actions_file(tmp_path):
     workflow.write_text("on: push\n", encoding="utf-8")
     with pytest.raises(ValueError, match="GitHub Actions is forbidden"):
         _workflow_entrypoints(tmp_path, {"smart_github_operator.py": "smart_github_operator"})
+
+
+
+def test_f01_external_native_policy_and_linux_runner_are_reachable():
+    registry = build_registry(ROOT)
+    by_path = {row["source_file"]: row for row in registry["components"]}
+    for name in ("smart_github_native_policy.py", "smart_linux_ci.py"):
+        row = by_path[name]
+        assert row["role"] == "PRODUCTION"
+        assert row["production_reachable"] is True
+        assert row["predictive_authority"] == "NOT_ESTABLISHED_BY_STATIC_REACHABILITY"
