@@ -169,6 +169,18 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     }}
     with pytest.raises(ValueError, match="freeze window closed"):
         github_operator._verified_freeze_publication(tmp_path, {"proof": expired}, [relative], "3067")
+    manual_schedule = {**proof, "target_schedule": {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "authority": "OPERATOR_SELECTED_TARGET",
+        "operator_selected_target": True,
+        "result_used": False,
+        "scheduled_datetime": None,
+        "target_contest": 3067,
+    }}
+    with pytest.raises(ValueError, match="verified pre-draw schedule"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": manual_schedule}, [relative], "3067"
+        )
 
 def test_operator_cli_failure_returns_standardized_error(monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", [

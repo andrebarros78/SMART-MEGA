@@ -169,7 +169,9 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
             or len(set(numbers)) != 6):
         raise ValueError("frozen primary card must contain six distinct numbers")
     schedule = proof.get("target_schedule")
-    assert_pre_draw_window(schedule)
+    temporal = assert_pre_draw_window(schedule)
+    if temporal.get("status") != "PASS" or temporal.get("before_scheduled_draw") is not True:
+        raise ValueError("freeze publication requires a verified pre-draw schedule")
     return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule,
             "run_id": run_id, "confidence": confidence}
 
