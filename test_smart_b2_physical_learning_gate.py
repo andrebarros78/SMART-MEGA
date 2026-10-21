@@ -87,6 +87,21 @@ class B2PhysicalLearningGateTests(unittest.TestCase):
             self.assertIsNone(result["observational_utility"])
             self.assertEqual(result["file_integrity"]["invalid_count"], 1)
 
+    def test_thirteen_fixture_checkpoints_accounted_for_exactly(self):
+        with tempfile.TemporaryDirectory() as parent:
+            root = Path(parent, "b2")
+            root.mkdir()
+            for contest in range(100, 113):
+                self.fixture.make_checkpoint(root, contest)
+            result = audit_b2_physical_learning(
+                root, "113", "2026-10-11T00:00:00Z", expected_count=13,
+            )
+            self.assertEqual(result["physical_files_read"], 13)
+            self.assertEqual(result["observational_utility"]["eligible_episodes"], 13)
+            self.assertEqual(result["observational_utility"]["observed_motion_events"], 39)
+            self.assertEqual(result["temporal_provenance"]["independently_attested"], 0)
+            self.assertEqual(result["predictive_weight"], 0.0)
+
     def test_wrong_expected_count_does_not_invent_13_files(self):
         with tempfile.TemporaryDirectory() as parent:
             root = Path(parent, "b2")
