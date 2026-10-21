@@ -1103,6 +1103,49 @@ def show_card_operation(root: str | Path, target: int) -> dict[str, Any]:
     return read_frozen_card(root, int(target))
 
 
+def recover_cycle_operation(
+    root: str | Path,
+    target: int,
+    payload_file: str | Path | None = None,
+) -> dict[str, Any]:
+    """Finish old result(s) and obtain one *new* frozen model card.
+
+    This is an explicit operator action, not an automatic post-result trigger.
+    Retains all underlying result, governance, certification and pre-draw gates.
+    """
+    root = Path(canonical_root(root)).resolve()
+    selected_batch = None
+    if payload_file is not None:
+        incoming = Path(payload_file)
+        if incoming.is_absolute() or not incoming.parts or ".." in incoming.parts:
+            raise ValueError("recovery official batch must be project-relative")
+        candidate = root
+        for part in incoming.parts:
+            candidate = candidate / part
+            if candidate.is_symlink():
+                raise ValueError("recovery official batch symbolic link forbidden")
+        if not candidate.is_file() or not candidate.resolve().is_relative_to(root):
+            raise ValueError("recovery official batch file absent or outside repository")
+        if candidate.stat().st_size > 2 * 1024 * 1024:
+            raise ValueError("recovery official batch file exceeds size limit")
+        selected_batch = candidate
+
+    from smart_cycle_completion import CycleHandlers, complete_to_model_card
+    from smart_missed_catchup import load_official_payload_batch
+    from smart_operator_result import fetch as fetch_registered_result
+    from smart_frozen_card_reader import read_frozen_card
+
+    return complete_to_model_card(root, int(target), selected_batch, CycleHandlers(
+        lifecycle=load_lifecycle,
+        previous_result=fetch_registered_result,
+        read_batch=load_official_payload_batch,
+        complete_result=complete_result_operation,
+        catch_up=catch_up_missed_operation,
+        generate=generate_card_operation,
+        read_card=read_frozen_card,
+    ))
+
+
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Generate the active frozen card or a non-certified next-contest contingency."""
     root = Path(canonical_root(root)).resolve()
@@ -1583,6 +1626,7 @@ def main(argv: list[str] | None = None) -> None:
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
     cr = sub.add_parser("complete-result"); cr.add_argument("--target", type=int, required=True)
+    cycle = sub.add_parser("recover-cycle"); cycle.add_argument("--target", type=int, required=True); cycle.add_argument("--payload-file")
     t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
     args = parser.parse_args(argv)
     root = canonical_root()
@@ -1604,6 +1648,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)
     elif args.action == "complete-result": out = complete_result_operation(root, args.target)
+    elif args.action == "recover-cycle": out = recover_cycle_operation(root, args.target, args.payload_file)
     else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)
     print(json.dumps(out, ensure_ascii=False, indent=2))
 
