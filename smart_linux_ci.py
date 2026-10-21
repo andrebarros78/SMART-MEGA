@@ -43,6 +43,7 @@ FOCUSED_MODULES = (
     "test_smart_cycle_wiring",
     "test_smart_portal_transcription_recovery",
     "test_smart_public_result_capture",
+    "test_smart_result_transport_provenance",
 )
 
 

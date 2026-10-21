@@ -119,9 +119,14 @@ def ingest(source: Path, output: Path, proof: Path, target: int, payload: dict[s
             raise ValueError("CAIXA portal transcription endpoint mismatch")
     elif incoming_source == "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL":
         result_authority, source_verified, endpoint = incoming_source, False, None
-    elif incoming_source in {None, "CAIXA_CONTEST_API"}:
-        result_authority, source_verified = "CAIXA_CONTEST_API", incoming_source is None
+    elif incoming_source == "CAIXA_CONTEST_API":
+        # A caller-supplied label and an API URL do not attest an actual HTTP fetch.
+        result_authority, source_verified = "CAIXA_CONTEST_API", False
         endpoint = API_URL.format(contest=int(target))
+    elif incoming_source is None:
+        # Direct or batch-supplied JSON cannot inherit independent API authority.
+        # Only a separate, verifiable transport attestation could establish it.
+        result_authority, source_verified, endpoint = "UNATTRIBUTED_LOCAL_PAYLOAD", False, None
     else:
         raise ValueError("unknown result origin: refusing to assert API verification")
     official = validate_official_payload(payload, target)
