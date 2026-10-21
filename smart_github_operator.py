@@ -21,7 +21,7 @@ READ_ONLY = {"status", "preflight", "result-preflight", "show-card"}
 TARGET_ACTIONS = {
     "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
     "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "register-result", "generate-card",
-    "post-result-report", "review", "hold", "terminal", "show-card",
+    "post-result-report", "review", "hold", "terminal", "show-card", "recover-cycle",
 }
 ACTIONS = READ_ONLY | TARGET_ACTIONS
 PAYLOAD_REQUIRED = {"adjudicate", "review", "register-result"}
@@ -30,6 +30,7 @@ PAYLOAD_OPTION = {
     "register-result": "--result-file",
     "review": "--review-file",
     "catch-up": "--payload-file",
+    "recover-cycle": "--payload-file",
 }
 SUFFIXES = {".json", ".md", ".xml", ".txt", ".xlsx", ".csv", ".pdf", ".log"}
 TRANSIENT_IGNORED = (
