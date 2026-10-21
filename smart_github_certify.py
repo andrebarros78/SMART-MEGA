@@ -1,4 +1,4 @@
-"""Refresh GitHub-native construction certification from a tested Actions commit."""
+"""Refresh construction certification from externally tested canonical GitHub code."""
 from __future__ import annotations
 
 import hashlib
@@ -30,25 +30,52 @@ ARTIFACTS = (
 
 def execution_provenance(root: Path, source_commit: str, run_id: str,
                          executor_host: str | None = None, *,
-                         executor_kind: str = "GITHUB_ACTIONS") -> dict:
-    """Record a bound GitHub-native CI identity. Legacy remote executors are retired."""
+                         executor_kind: str = "EXTERNAL_GOVERNED_EXECUTOR") -> dict:
+    """Record approved, source-bound external verification, never Actions.
+
+    GitHub is canonical for source, not an execution environment. This binding
+    is an integrity/authorization check, not a cryptographic host signature.
+    """
+    import socket
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions are prohibited for certification")
+    if executor_kind != "EXTERNAL_GOVERNED_EXECUTOR":
+        raise PermissionError("retired or GitHub Actions certification authority")
     if not isinstance(source_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_commit):
         raise ValueError("invalid tested source commit")
-    if executor_host is not None or executor_kind != "GITHUB_ACTIONS":
-        raise PermissionError("external certification is retired; GitHub-native only")
-    if (os.environ.get("GITHUB_ACTIONS") != "true"
-            or os.environ.get("GITHUB_REPOSITORY") != "andrebarros78/SMART-MEGA"
-            or os.environ.get("GITHUB_SHA") != source_commit):
-        raise PermissionError("certification requires the exact GitHub-run repository and SHA")
-    if not isinstance(run_id, str) or not run_id.isdecimal() or int(run_id) <= 0:
-        raise ValueError("invalid GitHub run identity")
-    if os.environ.get("GITHUB_RUN_ID") != run_id:
-        raise PermissionError("certification requires the exact GitHub-run ID")
-    return {"kind": "GITHUB_ACTIONS", "run_id": run_id}
-
+    if (not isinstance(run_id, str) or re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            run_id) is None):
+        raise ValueError("external execution identity must be UUIDv4")
+    if (not isinstance(executor_host, str) or not executor_host
+            or executor_host != socket.gethostname()):
+        raise PermissionError("executor host identity mismatch")
+    if os.environ.get("SMART_MEGA_CERTIFICATION_APPROVAL") != source_commit:
+        raise PermissionError("GitHub canonical source requires explicit certification approval")
+    root = Path(root).resolve()
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=root, capture_output=True,
+                              text=True, check=True, timeout=45).stdout.strip()
+    if Path(git("rev-parse", "--show-toplevel")).resolve() != root:
+        raise PermissionError("certification checkout is not the canonical Git root")
+    if git("rev-parse", "HEAD") != source_commit:
+        raise PermissionError("checked-out Git source differs from approved SHA")
+    origin = git("remote", "get-url", "origin")
+    if origin not in {
+        "https://github.com/andrebarros78/SMART-MEGA.git",
+        "https://github.com/andrebarros78/SMART-MEGA",
+        "git@github.com:andrebarros78/SMART-MEGA.git",
+        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+    }:
+        raise PermissionError("certification Git origin is not canonical")
+    return {
+        "kind": "EXTERNAL_GOVERNED_EXECUTOR", "execution_id": run_id,
+        "hostname": executor_host, "source_commit": source_commit, "origin": origin,
+    }
 
 def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
-            executor_host: str | None = None, executor_kind: str = "GITHUB_ACTIONS") -> dict:
+            executor_host: str | None = None, executor_kind: str = "EXTERNAL_GOVERNED_EXECUTOR") -> dict:
     root = root.resolve()
     execution = execution_provenance(root, source_commit, run_id, executor_host, executor_kind=executor_kind)
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True,
@@ -79,7 +106,7 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
         "git_ref_sha": source_commit,
         "git_head": f"commit: {source_commit}",
         "authority_refreshed_at": datetime.now(timezone.utc).isoformat(),
-        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE",
+        "authority_refresh_reason": "GITHUB_CANONICAL_EXTERNAL_REGRESSION_PROVENANCE",
         "certified_execution": execution,
         "certified_source_commit": source_commit,
         "certified_ci_run_id": run_id,
@@ -146,6 +173,14 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
 
 
 if __name__ == "__main__":
-    result = refresh(Path.cwd(), Path("SMART_AUDIT_JUNIT_GITHUB.xml"),
-                     os.environ.get("GITHUB_SHA", ""), os.environ.get("GITHUB_RUN_ID", ""))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--candidate", required=True, type=Path)
+    parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--execution-id", required=True)
+    args = parser.parse_args()
+    import socket
+    result = refresh(Path.cwd(), args.candidate, args.source_commit,
+                     args.execution_id, executor_host=socket.gethostname(),
+                     executor_kind="EXTERNAL_GOVERNED_EXECUTOR")
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))

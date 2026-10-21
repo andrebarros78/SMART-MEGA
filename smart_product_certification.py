@@ -112,15 +112,25 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
     source = authority.get("certified_source_commit")
     run_id = authority.get("certified_ci_run_id")
     execution = authority.get("certified_execution")
-    # Old federated/VPS or unattributed receipts remain historical evidence,
-    # never a source of fresh certification under SMART_GITHUB_NATIVE_ONLY_20261021.
+    # Accept only the new governed contract. Historic GitHub Actions, LMCP
+    # labels and self-declared/partial identities cannot gain fresh authority.
     execution_valid = (
         isinstance(execution, dict)
-        and execution.get("kind") == "GITHUB_ACTIONS"
+        and execution.get("kind") == "EXTERNAL_GOVERNED_EXECUTOR"
         and isinstance(run_id, str)
-        and run_id.isdecimal()
-        and int(run_id) > 0
-        and execution.get("run_id") == run_id
+        and re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            run_id) is not None
+        and execution.get("execution_id") == run_id
+        and execution.get("source_commit") == source
+        and isinstance(execution.get("hostname"), str)
+        and bool(execution.get("hostname"))
+        and execution.get("origin") in {
+            "https://github.com/andrebarros78/SMART-MEGA.git",
+            "https://github.com/andrebarros78/SMART-MEGA",
+            "git@github.com:andrebarros78/SMART-MEGA.git",
+            "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+        }
     )
     recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
     checks = {

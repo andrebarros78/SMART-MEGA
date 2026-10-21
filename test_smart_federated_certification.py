@@ -43,7 +43,7 @@ def test_legacy_executor_cannot_mint_certification(tmp_path, monkeypatch, kind):
     monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
     monkeypatch.setenv("GITHUB_SHA", source)
     monkeypatch.setenv("GITHUB_RUN_ID", "123")
-    with pytest.raises(PermissionError, match="retired"):
+    with pytest.raises(PermissionError, match="retired|GitHub Actions"):
         execution_provenance(tmp_path, source, str(uuid4()), "wmcp-cloud-01", executor_kind=kind)
 
 
@@ -73,27 +73,27 @@ def test_binding_rejects_mismatched_or_external_run(tmp_path, execution, ci_run)
     assert regression_source_binding(tmp_path, junit, fp)["status"] == "FAIL"
 
 
-def test_github_provenance_requires_real_repository_commit_and_run(tmp_path, monkeypatch):
+
+def test_github_actions_provenance_is_denied_even_with_legacy_env(tmp_path, monkeypatch):
     source, _, _ = _repo(tmp_path)
-    for key in ("GITHUB_ACTIONS", "GITHUB_REPOSITORY", "GITHUB_SHA", "GITHUB_RUN_ID"):
-        monkeypatch.delenv(key, raising=False)
-    with pytest.raises(PermissionError):
-        execution_provenance(tmp_path, source, "123")
-    for key, value in {
-        "GITHUB_ACTIONS": "true", "GITHUB_REPOSITORY": "andrebarros78/SMART-MEGA",
-        "GITHUB_SHA": source, "GITHUB_RUN_ID": "123",
-    }.items():
-        monkeypatch.setenv(key, value)
-    assert execution_provenance(tmp_path, source, "123") == {
-        "kind": "GITHUB_ACTIONS", "run_id": "123"
-    }
-    with pytest.raises(ValueError):
-        execution_provenance(tmp_path, source, str(uuid4()))
+    monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
+    monkeypatch.setenv("GITHUB_SHA", source)
+    monkeypatch.setenv("GITHUB_RUN_ID", "123")
+    with pytest.raises(PermissionError, match="GitHub Actions"):
+        execution_provenance(tmp_path, source, "123", executor_kind="GITHUB_ACTIONS")
 
 
-def test_github_regression_binding_requires_exact_file_hash_and_code_fingerprint(tmp_path):
+def test_external_regression_binding_requires_exact_file_hash_and_code_fingerprint(tmp_path, monkeypatch):
+    import socket
     source, junit, fp = _repo(tmp_path)
-    _write_authority(tmp_path, source, junit, fp, {"kind": "GITHUB_ACTIONS", "run_id": "123"}, "123")
+    uid = str(uuid4())
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_CERTIFICATION_APPROVAL", source)
+    identity = execution_provenance(tmp_path, source, uid, socket.gethostname(),
+                                    executor_kind="EXTERNAL_GOVERNED_EXECUTOR")
+    _write_authority(tmp_path, source, junit, fp, identity, uid)
     assert regression_source_binding(tmp_path, junit, fp)["status"] == "PASS"
     (tmp_path / "smart_example.py").write_text("print('changed')\n", encoding="utf-8")
     current = code_fingerprint(tmp_path)
