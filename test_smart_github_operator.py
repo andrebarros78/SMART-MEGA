@@ -177,9 +177,23 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
         "scheduled_datetime": None,
         "target_contest": 3067,
     }}
-    with pytest.raises(ValueError, match="verified pre-draw schedule"):
+    with pytest.raises(ValueError, match="verified pre-draw window"):
         github_operator._verified_freeze_publication(
             tmp_path, {"proof": manual_schedule}, [relative], "3067"
+        )
+    wrong_contest_schedule = {**proof, "target_schedule": {
+        **proof["target_schedule"], "target_contest": 3074,
+    }}
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": wrong_contest_schedule}, [relative], "3067"
+        )
+    invalid_type_schedule = {**proof, "target_schedule": {
+        **proof["target_schedule"], "target_contest": True,
+    }}
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": invalid_type_schedule}, [relative], "3067"
         )
 
 def test_operator_cli_failure_returns_standardized_error(monkeypatch, capsys):
@@ -370,3 +384,38 @@ def test_native_cycle_rejects_wrong_target_and_missing_full_proof(tmp_path, monk
     (tmp_path / "runtime/learning_epochs/e3073/FULL_PROCESS_PROOF.json").unlink()
     with pytest.raises(ValueError, match="proof is absent"):
         github_operator._verified_cycle_card_publication(tmp_path, observation, [relative], "3073")
+
+
+
+def test_pre_draw_guard_requires_exact_contest_and_strict_verified_status(monkeypatch):
+    import smart_target_schedule
+
+    schedule = {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "target_contest": 3073,
+        "scheduled_datetime": "2100-01-01T21:00:00-03:00",
+    }
+    checked = github_operator._require_verified_pre_draw_window(schedule, 3073)
+    assert checked["status"] == "PASS"
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._require_verified_pre_draw_window(schedule, 3074)
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._require_verified_pre_draw_window(
+            {**schedule, "target_contest": True}, 3073
+        )
+
+    monkeypatch.setattr(
+        smart_target_schedule, "assert_pre_draw_window",
+        lambda _: {"status": "OPERATOR_UNVERIFIED_DRAW_TIME",
+                   "target_contest": 3073, "before_scheduled_draw": False},
+    )
+    with pytest.raises(ValueError, match="verified pre-draw window"):
+        github_operator._require_verified_pre_draw_window(schedule, 3073)
+
+    monkeypatch.setattr(
+        smart_target_schedule, "assert_pre_draw_window",
+        lambda _: {"status": "PASS", "target_contest": 3074,
+                   "before_scheduled_draw": True},
+    )
+    with pytest.raises(ValueError, match="same target"):
+        github_operator._require_verified_pre_draw_window(schedule, 3073)

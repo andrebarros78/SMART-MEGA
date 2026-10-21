@@ -124,11 +124,26 @@ def _require_no_unpersisted_state(root: Path) -> None:
         raise RuntimeError(f"operator generated ignored state: {material[:20]}")
 
 
+def _require_verified_pre_draw_window(schedule: dict, target: int) -> dict:
+    """Fail closed if the selected draw's actual publication window is unproven."""
+    from smart_target_schedule import assert_pre_draw_window
+
+    if (not isinstance(schedule, dict)
+            or type(schedule.get("target_contest")) is not int
+            or schedule["target_contest"] != target):
+        raise ValueError("freeze schedule target does not match primary card")
+    checked = assert_pre_draw_window(schedule)
+    if (not isinstance(checked, dict)
+            or checked.get("status") != "PASS"
+            or checked.get("before_scheduled_draw") is not True
+            or checked.get("target_contest") != target):
+        raise ValueError("freeze publication requires verified pre-draw window for same target")
+    return checked
+
+
 def _verified_freeze_publication(root: Path, observation: dict, changes: list[str],
                                  target: str) -> dict:
     """Allow a frozen card into main only while its pre-draw window is open."""
-    from smart_target_schedule import assert_pre_draw_window
-
     proof = observation.get("proof")
     if not isinstance(proof, dict) or proof.get("status") != "PASS" or proof.get("result_used") is not False:
         raise ValueError("freeze lacks a valid prospective full-process proof")
@@ -169,9 +184,7 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
             or len(set(numbers)) != 6):
         raise ValueError("frozen primary card must contain six distinct numbers")
     schedule = proof.get("target_schedule")
-    temporal = assert_pre_draw_window(schedule)
-    if temporal.get("status") != "PASS" or temporal.get("before_scheduled_draw") is not True:
-        raise ValueError("freeze publication requires a verified pre-draw schedule")
+    _require_verified_pre_draw_window(schedule, int(target))
     return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule,
             "run_id": run_id, "confidence": confidence}
 
@@ -349,8 +362,9 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout still contains uncommitted state")
     if frozen_card is not None:
-        from smart_target_schedule import assert_pre_draw_window
-        assert_pre_draw_window(frozen_card["schedule"])
+        # Recheck after the commit, before the push: the pre-draw cutoff can
+        # expire while files are validated and artifacts are committed.
+        _require_verified_pre_draw_window(frozen_card["schedule"], int(target))
     _git(root, "push", "origin", "HEAD:main")
     remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
     if remote != commit:
