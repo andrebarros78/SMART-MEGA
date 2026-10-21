@@ -116,10 +116,37 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
     if not batch_path.is_file():
         raise FileNotFoundError(batch_path)
     obj = json.loads(batch_path.read_text(encoding="utf-8-sig"))
-    if not isinstance(obj, dict) or obj.get("schema") != OFFICIAL_BATCH_SCHEMA:
+    portal_schema = "SMART_CAIXA_PORTAL_TRANSCRIPTION_BATCH_1"
+    portal_authority = "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED"
+    portal_url = "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx"
+    public_schema = "SMART_PUBLIC_CORROBORATED_RESULT_BATCH_1"
+    public_authority = "TWO_PUBLIC_SOURCES_NOT_CAIXA_API_VERIFIED"
+    if not isinstance(obj, dict) or obj.get("schema") not in {
+        OFFICIAL_BATCH_SCHEMA, portal_schema, public_schema
+    }:
         raise ValueError("official result batch schema invalid")
-    if obj.get("authority") != "CAIXA_LOTERIAS_OFFICIAL_API":
+    is_portal_transcription = obj["schema"] == portal_schema
+    is_public = obj["schema"] == public_schema
+    expected_authority = (
+        portal_authority if is_portal_transcription
+        else public_authority if is_public
+        else "CAIXA_LOTERIAS_OFFICIAL_API"
+    )
+    if obj.get("authority") != expected_authority:
         raise ValueError("official result batch authority invalid")
+    if is_portal_transcription and (
+        obj.get("raw_api_independently_verified") is not False
+        or obj.get("portal_url") != portal_url
+        or obj.get("capture_transport") != "PUBLIC_CAIXA_PAGE_TRANSCRIPTION"
+    ):
+        raise ValueError("portal transcription cannot claim independent API verification")
+    if is_public and (
+        obj.get("raw_api_independently_verified") is not False
+        or obj.get("scientific_certification_authorized") is not False
+        or obj.get("predictive_weight_change_authorized") is not False
+        or obj.get("capture_transport") != "TWO_PUBLIC_WEB_SOURCES_CROSS_CHECK"
+    ):
+        raise ValueError("public results cannot claim API or scientific authority")
     observed = obj.get("sha256")
     body = dict(obj); body.pop("sha256", None)
     if not isinstance(observed, str) or observed != _sha_json(body):
@@ -133,17 +160,47 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
             raise ValueError("official result batch row invalid")
         target = int(row.get("numero", -1))
         validate_official_payload(row, target)
-        expected_endpoint = f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{target}"
+        expected_endpoint = (
+            None if is_public
+            else portal_url if is_portal_transcription
+            else f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{target}"
+        )
         if row.get("endpoint") != expected_endpoint:
             raise ValueError(f"official result batch endpoint mismatch for target {target}")
+        if is_public:
+            if row.get("source") != "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL":
+                raise ValueError("public batch result source invalid")
+        elif is_portal_transcription:
+            if row.get("source") != "CAIXA_PORTAL_TRANSCRIPTION":
+                raise ValueError("portal batch result source invalid")
+        elif row.get("source") in {"OPERATOR", "CAIXA_PORTAL_TRANSCRIPTION", "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL"}:
+            raise ValueError("API result batch source cannot be a transcription")
         if target in payloads:
             raise ValueError("official result batch contains duplicate target")
         payloads[target] = row
     ordered = sorted(payloads)
     if ordered != list(range(ordered[0], ordered[-1] + 1)):
         raise ValueError("official result batch target sequence contains gaps")
+    if is_public:
+        providers = obj.get("providers")
+        from smart_public_result_capture import SOURCES
+        if (not isinstance(providers, list) or len(providers) != 2
+                or {p.get("provider") for p in providers if isinstance(p, dict)} != set(SOURCES)):
+            raise ValueError("two independent public sources required")
+        for item in providers:
+            if not isinstance(item, dict):
+                raise ValueError("public provider evidence invalid")
+            for target in ordered:
+                expected_url = SOURCES[item["provider"]].format(target=target)
+                if (item.get("url") != expected_url
+                        or item.get("draw_date") != payloads[target].get("dataApuracao")
+                        or sorted(item.get("numbers") or []) != sorted(int(n) for n in payloads[target]["listaDezenas"])
+                        or not isinstance(item.get("html_sha256"), str)
+                        or len(item["html_sha256"]) != 64):
+                    raise ValueError("public result crosscheck provenance mismatch")
     evidence = {
-        "schema": OFFICIAL_BATCH_SCHEMA,
+        "schema": obj["schema"],
+        "raw_api_independently_verified": False if is_portal_transcription or is_public else None,
         "file": batch_path.name,
         "file_sha256": sha256_file(batch_path),
         "document_sha256": observed,
