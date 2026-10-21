@@ -31,4 +31,19 @@ class SourceGateTests(unittest.TestCase):
  def test_predictive_promotion_rejected(self):
   def reader(**_):return {'source_contests':[100], 'predictive_weight':0.1,'as_of_utc':'2026-10-21T12:00:00Z'}
   with self.assertRaises(ValueError):guarded_features(reader,101,'2026-10-21T12:00:00Z')
+class OfficialLearningPITTests(unittest.TestCase):
+ def test_official_consumer_rejects_future_checkpoint(self):
+  from smart_video_learning import get_visual_features
+  prior={'status':'ACTIVE','training_contests':[101],'training_sha256':{},'normalized_event_center':0.5,'observed_spread':0.1,'eligible_observations':1,'active':True}
+  with patch('smart_video_learning.learned_motion_prior',return_value=prior):
+   with self.assertRaisesRegex(ValueError,'PIT_FUTURE_OR_TARGET_CONTEST'):
+    get_visual_features('101','2026-10-21T12:00:00Z')
+ def test_official_consumer_accepts_prior_only(self):
+  from smart_video_learning import get_visual_features
+  prior={'status':'ACTIVE','training_contests':[100],'training_sha256':{},'normalized_event_center':0.5,'observed_spread':0.1,'eligible_observations':1,'active':True}
+  with patch('smart_video_learning.learned_motion_prior',return_value=prior):
+   result=get_visual_features('101','2026-10-21T12:00:00Z')
+   self.assertEqual(result['source_contests'],[100])
+   self.assertEqual(result['predictive_weight'],0.0)
+
 if __name__=='__main__':unittest.main()
