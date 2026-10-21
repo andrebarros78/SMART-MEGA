@@ -6,7 +6,7 @@ from pathlib import Path
 from uuid import uuid4
 
 import pytest
-from smart_github_certify import execution_provenance
+from smart_github_certify import execution_provenance, refresh
 from smart_product_certification import code_fingerprint, regression_source_binding, sha256_file
 
 
@@ -101,3 +101,36 @@ def test_forged_external_certification_rejected(tmp_path):
         }
         (tmp_path / "SMART_CANONICAL_ROOT.json").write_text(json.dumps(authority))
         assert regression_source_binding(tmp_path, junit, fp)["status"] == "FAIL"
+
+
+
+@pytest.mark.parametrize("kind", ["truncated", "skipped", "baseline_missing"])
+def test_refresh_rejects_inadequate_junit_without_mutation(tmp_path, monkeypatch, kind):
+    """No partial or missing-baseline JUnit can authorize a certificate."""
+    root = tmp_path / "checkout"
+    root.mkdir()
+    source, current, _fp = source_repo(root)
+    if kind != "baseline_missing":
+        current.write_text(
+            '<testsuite tests="3" failures="0" errors="0" skipped="0">'
+            '<testcase name="a"/><testcase name="b"/><testcase name="c"/>'
+            '</testsuite>', encoding="utf-8")
+        git(root, "add", "SMART_AUDIT_JUNIT_CURRENT.xml")
+        git(root, "-c", "user.name=test", "-c", "user.email=test@example.invalid",
+            "commit", "-qm", "immutable regression baseline")
+        source = git(root, "rev-parse", "HEAD")
+    before = current.read_bytes()
+    candidate = tmp_path / "external-run.xml"
+    tests = 1 if kind == "truncated" else 3
+    skipped = 1 if kind == "skipped" else 0
+    candidate.write_text(
+        f'<testsuite tests="{tests}" failures="0" errors="0" skipped="{skipped}">'
+        '<testcase name="x"/></testsuite>', encoding="utf-8")
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_CERTIFICATION_APPROVAL", source)
+    with pytest.raises(ValueError, match="baseline|coverage|skipped"):
+        refresh(root, candidate, source, str(uuid4()),
+                executor_host=socket.gethostname())
+    assert current.read_bytes() == before
+    assert not (root / ".gitattributes").exists()

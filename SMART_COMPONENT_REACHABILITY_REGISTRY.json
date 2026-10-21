@@ -60,7 +60,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "76db27a322ac2ae71270fd1cb2298a3206fb978065ee89d9e132ec553779b137",
+  "inventory_sha256": "a8c797c0d1a8673b5b16b43a94c758b19165aa742550b646b944414d7220de5a",
   "summary": {
     "python_components": 531,
     "workflow_entrypoints": 10,
@@ -5906,6 +5906,7 @@
         "smart_authority_freshness",
         "smart_continuous_red_team",
         "smart_global_integrity",
+        "smart_linux_ci",
         "smart_product_certification",
         "smart_startup_reconciler"
       ],
@@ -5923,7 +5924,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "06434818dc4839d235e67a6597b6c68a3b0a8dc107ace2e22e24c36aa4b6db42"
+      "sha256": "4c4cb9c6d295704cc73e86723ff22612b23d81353eebff3f53b05ba90da390b5"
     },
     {
       "component_id": "smart_github_native_policy",
@@ -6385,6 +6386,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_github_certify",
         "smart_linux_ci"
       ],
       "producers": [
@@ -6392,6 +6394,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_github_certify",
         "test_smart_linux_ci"
       ],
       "reachable": true,
@@ -10323,7 +10326,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "0fc9a6763ba64e55f57d493a6e4eb1fd69c3fe05b78fad7fbb0731f1e191c312"
+      "sha256": "76464ef2e956fd7ae8869b77f1c8b34252458f34967fd9752edd27625b161ddd"
     },
     {
       "component_id": "test_smart_f02_dependency_direction",
@@ -12330,7 +12333,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "9d47fe1fb4de6aaf617ed5b0cbc35a83c218f6ebff2841a739bdff7abdae8cda"
+      "sha256": "57cab18563e17dc981e7407f3f457020406497f3f54238cf165a9d25ae5054ed"
     },
     {
       "component_id": "test_smart_promote_cartography_1000",

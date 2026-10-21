@@ -82,8 +82,22 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
                           text=True, check=True).stdout.strip()
     if head != source_commit:
         raise ValueError("certification source differs from checked-out commit")
-    if not candidate.is_file() or candidate.resolve() == (root / ARTIFACTS[0]).resolve():
-        raise ValueError("CI JUnit candidate missing or not independent of current proof")
+    if (not candidate.is_file() or candidate.is_symlink()
+            or candidate.resolve() == (root / ARTIFACTS[0]).resolve()):
+        raise ValueError("regression JUnit candidate missing or not independent of current proof")
+
+    # Validate the external result BEFORE changing any tracked authority.
+    # Use the immutable source-commit baseline, never the mutable checkout file.
+    from smart_linux_ci import baseline_junit_counts
+    baseline = baseline_junit_counts(root)
+    if baseline is None:
+        raise ValueError("immutable Git JUnit baseline unavailable")
+    observed = junit_summary(candidate)
+    if (observed.get("status") != "PASS"
+            or observed.get("tests", 0) < baseline["tests"]
+            or observed.get("failures") != 0 or observed.get("errors") != 0
+            or observed.get("skipped") != 0):
+        raise ValueError("regression coverage below immutable baseline or skipped tests")
 
     attributes = root / ".gitattributes"
     lines = attributes.read_text(encoding="utf-8").splitlines() if attributes.is_file() else []

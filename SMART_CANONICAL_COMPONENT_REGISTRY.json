@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "76db27a322ac2ae71270fd1cb2298a3206fb978065ee89d9e132ec553779b137",
+  "source_reachability_inventory_sha256": "a8c797c0d1a8673b5b16b43a94c758b19165aa742550b646b944414d7220de5a",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6248,7 +6248,7 @@
       "component_id": "smart_github_certify",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_certify.py",
-      "implementation_sha256": "06434818dc4839d235e67a6597b6c68a3b0a8dc107ace2e22e24c36aa4b6db42",
+      "implementation_sha256": "4c4cb9c6d295704cc73e86723ff22612b23d81353eebff3f53b05ba90da390b5",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6257,6 +6257,7 @@
         "smart_authority_freshness",
         "smart_continuous_red_team",
         "smart_global_integrity",
+        "smart_linux_ci",
         "smart_product_certification",
         "smart_startup_reconciler"
       ],
@@ -6766,9 +6767,11 @@
         "smart_regression_evidence"
       ],
       "consumers": [
+        "smart_github_certify",
         "test_smart_linux_ci"
       ],
       "entrypoints": [
+        "smart_github_certify",
         "smart_linux_ci"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -10943,7 +10946,7 @@
       "component_id": "test_smart_external_attestation",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_external_attestation.py",
-      "implementation_sha256": "0fc9a6763ba64e55f57d493a6e4eb1fd69c3fe05b78fad7fbb0731f1e191c312",
+      "implementation_sha256": "76464ef2e956fd7ae8869b77f1c8b34252458f34967fd9752edd27625b161ddd",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13131,7 +13134,7 @@
       "component_id": "test_smart_product_certification_critical_surface",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_product_certification_critical_surface.py",
-      "implementation_sha256": "9d47fe1fb4de6aaf617ed5b0cbc35a83c218f6ebff2841a739bdff7abdae8cda",
+      "implementation_sha256": "57cab18563e17dc981e7407f3f457020406497f3f54238cf165a9d25ae5054ed",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14317,5 +14320,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "815a2b9a0bb25dc13ed4c814f14ca960654d12a6af60e45543e6d036d9497bd9"
+  "registry_sha256": "6d1abeb352c63b2413024bad3bc8b74499166389f76551edb019086fb13dff9b"
 }
