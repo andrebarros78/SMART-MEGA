@@ -39,6 +39,10 @@ FOCUSED_MODULES = (
     "test_smart_linux_ci",
     "test_smart_linux_certification_provenance",
     "test_smart_frozen_card_reader",
+    "test_smart_cycle_completion",
+    "test_smart_cycle_wiring",
+    "test_smart_portal_transcription_recovery",
+    "test_smart_public_result_capture",
 )
 
 
