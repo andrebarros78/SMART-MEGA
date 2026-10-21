@@ -17,11 +17,11 @@ import sys
 from smart_transaction_journal import JOURNAL_PATH
 
 REPOSITORY = "andrebarros78/SMART-MEGA"
-READ_ONLY = {"status", "preflight", "result-preflight"}
+READ_ONLY = {"status", "preflight", "result-preflight", "show-card"}
 TARGET_ACTIONS = {
     "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
     "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "register-result", "generate-card",
-    "post-result-report", "review", "hold", "terminal",
+    "post-result-report", "review", "hold", "terminal", "show-card",
 }
 ACTIONS = READ_ONLY | TARGET_ACTIONS
 PAYLOAD_REQUIRED = {"adjudicate", "review", "register-result"}
@@ -51,7 +51,8 @@ def command_args(operation: str, target: str = "", payload: str = "") -> list[st
         raise ValueError(f"{operation} requires a repository payload path")
     if payload and operation not in PAYLOAD_OPTION:
         raise ValueError(f"{operation} does not accept a payload")
-    args = [sys.executable, "smart_operator.py", operation]
+    args = ([sys.executable, "smart_frozen_card_reader.py", "--root", str(Path(__file__).resolve().parent)]
+            if operation == "show-card" else [sys.executable, "smart_operator.py", operation])
     if operation in TARGET_ACTIONS:
         args += ["--through" if operation == "catch-up" else "--target", target]
     if payload:
