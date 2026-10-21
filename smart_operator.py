@@ -1097,12 +1097,71 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 
+def show_card_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Read a verified previously frozen MODEL card without adjudication."""
+    from smart_frozen_card_reader import read_frozen_card
+    return read_frozen_card(root, int(target))
+
+
+def recover_cycle_operation(
+    root: str | Path,
+    target: int,
+    payload_file: str | Path | None = None,
+) -> dict[str, Any]:
+    """Finish old result(s) and obtain one *new* frozen model card.
+
+    This is an explicit operator action, not an automatic post-result trigger.
+    Retains all underlying result, governance, certification and pre-draw gates.
+    """
+    root = Path(canonical_root(root)).resolve()
+    selected_batch = None
+    if payload_file is not None:
+        incoming = Path(payload_file)
+        if incoming.is_absolute() or not incoming.parts or ".." in incoming.parts:
+            raise ValueError("recovery official batch must be project-relative")
+        candidate = root
+        for part in incoming.parts:
+            candidate = candidate / part
+            if candidate.is_symlink():
+                raise ValueError("recovery official batch symbolic link forbidden")
+        if not candidate.is_file() or not candidate.resolve().is_relative_to(root):
+            raise ValueError("recovery official batch file absent or outside repository")
+        if candidate.stat().st_size > 2 * 1024 * 1024:
+            raise ValueError("recovery official batch file exceeds size limit")
+        selected_batch = candidate
+
+    from smart_cycle_completion import CycleHandlers, complete_to_model_card
+    from smart_missed_catchup import load_official_payload_batch
+    from smart_operator_result import fetch as fetch_registered_result
+    from smart_frozen_card_reader import read_frozen_card
+
+    return complete_to_model_card(root, int(target), selected_batch, CycleHandlers(
+        lifecycle=load_lifecycle,
+        previous_result=fetch_registered_result,
+        read_batch=load_official_payload_batch,
+        complete_result=complete_result_operation,
+        catch_up=catch_up_missed_operation,
+        generate=generate_card_operation,
+        read_card=read_frozen_card,
+    ))
+
+
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
-    """A single explicit operator request authorizes the existing generation steps."""
+    """Generate the active frozen card or a non-certified next-contest contingency."""
     root = Path(canonical_root(root)).resolve()
     target = int(target)
     lifecycle = load_lifecycle(root)
     if int(lifecycle.get("target_contest", -1)) != target:
+        # An incomplete prior adjudication cannot prevent obtaining a playable
+        # NEXT-contest card. The independent contingency is never a production
+        # model freeze, scientific proof or substitute for lifecycle review.
+        prior = int(lifecycle.get("target_contest", -1))
+        if target == prior + 1 and lifecycle.get("state") in {"FROZEN", "ADJUDICATED", "REVIEWED"}:
+            from smart_contingency_card import generate_contingency_card
+            return generate_contingency_card(
+                root, target, preceding_target=prior,
+                lifecycle_sha256=str(lifecycle.get("sha256", "")),
+            )
         raise ValueError("operator requested target differs from lifecycle")
     if lifecycle.get("state") == "HOLD":
         authorize_next_cycle_operation(root, target)
@@ -1436,7 +1495,15 @@ def hold_operation(root: str | Path, target: int, hold_file: str | Path = POST_R
 
 @locked_operation("TERMINAL")
 @startup_guarded("TERMINAL")
-@idempotent_operation('TERMINAL')
+@idempotent_operation(
+    'TERMINAL',
+    commit_if=lambda result: (
+        isinstance(result, dict)
+        and result.get("official_result_available") is True
+        and result.get("sequence_valid") is True
+        and bool(result.get("adjudication_status"))
+    ),
+)
 def terminal_operation(
     root: str | Path,
     target: int,
@@ -1462,6 +1529,50 @@ def terminal_operation(
     else:
         lifecycle_after = load_lifecycle(root)
     return {**result, "operational_lifecycle": lifecycle_after}
+
+
+
+def complete_result_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Settle a registered result and publish its report with a resumable command.
+
+    A scientific 6/6 promotion is NEVER attempted by this operational command.
+    It does not create next-cycle authority, override human review or freeze
+    the next card. The existing guarded operations remain the only mutators.
+    """
+    root = Path(canonical_root(root)).resolve()
+    target = int(target)
+    lifecycle = load_lifecycle(root)
+    state = lifecycle.get("state")
+    if int(lifecycle.get("target_contest", -1)) != target:
+        if (state == "HOLD"
+                and int(lifecycle.get("target_contest", -1)) == target + 1
+                and int(lifecycle.get("completed_contest", -1)) == target):
+            return {"status": "POST_RESULT_ALREADY_CLOSED", "target_contest": target,
+                    "next_target": target + 1, "terminal_promotion_attempted": False}
+        raise ValueError("post-result target differs from operational lifecycle")
+    if state == "FROZEN":
+        terminal = terminal_operation(root, target, allow_terminal_write=False)
+        if not isinstance(terminal, dict) or not terminal.get("adjudication_status"):
+            return {"status": "WAITING_FOR_RESULT", "target_contest": target,
+                    "next_target": target + 1, "terminal_promotion_attempted": False,
+                    "terminal_status": terminal.get("status") if isinstance(terminal, dict) else None,
+                    "canonical_history_advanced": False}
+        state = load_lifecycle(root).get("state")
+        if state != "ADJUDICATED":
+            raise RuntimeError("terminal did not complete its lifecycle transition")
+    if state == "ADJUDICATED":
+        report = post_result_report_operation(root, target)
+        if not isinstance(report, dict) or report.get("status") != "POST_RESULT_SEQUENCE_COMPLETED":
+            raise RuntimeError("post-result sequence did not complete")
+        return {"status": "POST_RESULT_OPERATIONALLY_COMPLETED",
+                "target_contest": target, "next_target": target + 1,
+                "report": report, "terminal_promotion_attempted": False,
+                "review_and_rollover_required": True}
+    if state == "REVIEWED":
+        return {"status": "POST_RESULT_REVIEWED_PENDING_ROLLOVER",
+                "target_contest": target, "next_target": target + 1,
+                "terminal_promotion_attempted": False}
+    raise ValueError("result completion requires FROZEN, ADJUDICATED or REVIEWED lifecycle")
 
 
 def status(root: str | Path) -> dict[str, Any]:
@@ -1510,9 +1621,12 @@ def main(argv: list[str] | None = None) -> None:
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
     op_result = sub.add_parser("register-result"); op_result.add_argument("--target", type=int, required=True); op_result.add_argument("--result-file", required=True)
     gen_card = sub.add_parser("generate-card"); gen_card.add_argument("--target", type=int, required=True)
+    sc = sub.add_parser("show-card"); sc.add_argument("--target", type=int, required=True)
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
+    cr = sub.add_parser("complete-result"); cr.add_argument("--target", type=int, required=True)
+    cycle = sub.add_parser("recover-cycle"); cycle.add_argument("--target", type=int, required=True); cycle.add_argument("--payload-file")
     t = sub.add_parser("terminal"); t.add_argument("--target", type=int, required=True); t.add_argument("--probe-only", action="store_true"); t.add_argument("--no-terminal-write", action="store_true")
     args = parser.parse_args(argv)
     root = canonical_root()
@@ -1529,9 +1643,12 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
     elif args.action == "register-result": out = register_result_operation(root, args.target, args.result_file)
     elif args.action == "generate-card": out = generate_card_operation(root, args.target)
+    elif args.action == "show-card": out = show_card_operation(root, args.target)
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)
+    elif args.action == "complete-result": out = complete_result_operation(root, args.target)
+    elif args.action == "recover-cycle": out = recover_cycle_operation(root, args.target, args.payload_file)
     else: out = terminal_operation(root, args.target, probe_only=args.probe_only, allow_terminal_write=not args.no_terminal_write)
     print(json.dumps(out, ensure_ascii=False, indent=2))
 

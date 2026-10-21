@@ -33,7 +33,9 @@ def test_generate_card_rejects_unrelated_or_invalid_lifecycle(tmp_path,monkeypat
     monkeypatch.setattr(op,"load_lifecycle",lambda root:{"target_contest":3071,"state":"ADJUDICATED"})
     with pytest.raises(ValueError,match="requires"):
         op.generate_card_operation(tmp_path,3071)
-    with pytest.raises(ValueError,match="differs"):
+    # A next-contest contingency still needs authenticated preceding lifecycle
+    # evidence; this intentionally incomplete fixture must fail closed.
+    with pytest.raises(ValueError,match="prior operational lifecycle SHA-256 invalid"):
         op.generate_card_operation(tmp_path,3072)
 
 

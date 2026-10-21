@@ -244,6 +244,36 @@ def advance_completed_epoch(root: str | Path, active: dict[str, Any]) -> dict[st
         }
         canonical_doc = json.dumps(proof, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
         proof["sha256"] = hashlib.sha256(canonical_doc).hexdigest()
+        # The first PASS receipt is immutable: a resumed post-result / catch-up
+        # pass may report ALREADY_CURRENT but must not rewrite original proof.
+        if proof_path.exists():
+            if proof_path.is_symlink() or not proof_path.is_file():
+                raise ValueError("existing canonical history advance proof invalid")
+            try:
+                previous = json.loads(proof_path.read_text(encoding="utf-8-sig"))
+            except (OSError, UnicodeError, json.JSONDecodeError) as exc:
+                raise ValueError("existing canonical history advance proof invalid") from exc
+            if not isinstance(previous, dict):
+                raise ValueError("existing canonical history advance proof invalid")
+            original_body = {key: value for key, value in previous.items() if key != "sha256"}
+            original_sha = hashlib.sha256(json.dumps(
+                original_body, ensure_ascii=False, sort_keys=True,
+                separators=(",", ":"),
+            ).encode("utf-8")).hexdigest()
+            if (previous.get("sha256") != original_sha
+                    or previous.get("schema") != SCHEMA
+                    or previous.get("status") not in {"PASS", "ALREADY_CURRENT"}
+                    or previous.get("target_contest") != target
+                    or previous.get("through_sha256") != through_sha
+                    or previous.get("sequence_sha256") != validation.get("sequence_sha256")
+                    or previous.get("future_information_used") is not False
+                    or previous.get("retroactive_rewrite") is not False
+                    or (previous.get("status") == "PASS" and
+                        previous.get("canonical_sha256_after") != through_sha)):
+                raise ValueError("existing canonical history advance proof invalid")
+            proof["existing_proof_preserved"] = True
+            proof["persisted_proof_sha256"] = sha256_file(proof_path)
+            return proof
         _atomic_json(proof_path, proof)
         return proof
 

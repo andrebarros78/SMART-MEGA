@@ -1,5 +1,7 @@
 from pathlib import Path
 
+import pytest
+
 from smart_component_reachability import build_registry
 
 
@@ -43,3 +45,36 @@ def test_f01_registry_file_matches_live_source_graph():
     import json
     persisted = json.loads(registry_path.read_text(encoding="utf-8"))
     assert persisted == build_registry(ROOT)
+
+
+
+def test_f01_entrypoints_use_external_execution_not_github_actions():
+    registry = build_registry(ROOT)
+    assert registry["entrypoint_authority"] == "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+    assert registry["workflow_entrypoints"]["smart_github_operator.py"] == [
+        "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+    ]
+    assert all(
+        not any(".github/workflows/" in x for x in values)
+        for values in registry["workflow_entrypoints"].values()
+    )
+
+
+def test_f01_rejects_any_runnable_github_actions_file(tmp_path):
+    from smart_component_reachability import _workflow_entrypoints
+    workflow = tmp_path / ".github" / "workflows" / "ci.yml"
+    workflow.parent.mkdir(parents=True)
+    workflow.write_text("on: push\n", encoding="utf-8")
+    with pytest.raises(ValueError, match="GitHub Actions is forbidden"):
+        _workflow_entrypoints(tmp_path, {"smart_github_operator.py": "smart_github_operator"})
+
+
+
+def test_f01_external_native_policy_and_linux_runner_are_reachable():
+    registry = build_registry(ROOT)
+    by_path = {row["source_file"]: row for row in registry["components"]}
+    for name in ("smart_github_native_policy.py", "smart_linux_ci.py"):
+        row = by_path[name]
+        assert row["role"] == "PRODUCTION"
+        assert row["production_reachable"] is True
+        assert row["predictive_authority"] == "NOT_ESTABLISHED_BY_STATIC_REACHABILITY"
