@@ -300,9 +300,46 @@ def observe_batch(
     memory = persist_visual_learning_state(
         root, target, hypothesis_id, source_url=common_url,
     )
+    # Bind the same PIT cutoff and source hashes to the feature reader and
+    # memory consumer. No external model or lottery result is used here.
+    as_of = _utc_now()
     features = get_visual_features(
-        target, _utc_now(), root, hypothesis_id, source_url=common_url,
+        target, as_of, root, hypothesis_id, source_url=common_url,
     )
+    historical = get_visual_learning_memory(
+        target, as_of, root, hypothesis_id, source_url=common_url,
+    )
+    historical_episodes = historical.get("episodic")
+    historical_graph = historical.get("graph")
+    historical_semantic = historical.get("semantic")
+    expected_sources = features["source_sha256"]
+    if (historical.get("schema") != "SMART_VISUAL_EVIDENCE_MEMORY_V1"
+            or historical.get("source_manifest_sha256") != _digest(expected_sources)
+            or not isinstance(historical_episodes, list)
+            or not isinstance(historical_graph, dict)
+            or not isinstance(historical_semantic, dict)
+            or [episode.get("contest_id") for episode in historical_episodes]
+                != features["source_contests"]
+            or any(episode.get("checkpoint_sha256") != expected_sources.get(
+                str(episode.get("contest_id"))) for episode in historical_episodes)
+            or historical_graph.get("episode_count") != len(historical_episodes)
+            or historical_graph.get("edge_count") != historical_semantic.get("observed_event_count")
+            or historical.get("predictive_weight") != 0.0
+            or historical.get("source_gate") != "BLOCKED"
+            or historical.get("model_execution_enabled") is not False):
+        raise ValueError("MEMORY_SOURCE_MANIFEST_MISMATCH")
+    observational_memory = {
+        "schema": "SMART_BATCH_MEMORY_RECEIPT_V1",
+        "provenance_sha256": historical["provenance_sha256"],
+        "source_manifest_sha256": historical["source_manifest_sha256"],
+        "episode_count": len(historical_episodes),
+        "motion_event_count": historical_semantic["observed_event_count"],
+        "graph_edges": historical_graph["edge_count"],
+        "index_hit": historical["metrics"]["index_hit"],
+        "predictive_weight_authorized": False,
+        "predictive_weight": 0.0,
+        "source_gate": "BLOCKED",
+    }
     study = publish_visual_study(root, features)
     return {
         "schema": "SMART_VISUAL_BATCH_V1",
@@ -316,6 +353,7 @@ def observe_batch(
         "learning_state_sha256": memory["sha256"],
         "learning_training_observations": memory["training_observations"],
         "consumer_features": features,
+        "observational_memory": observational_memory,
         "study_sha256": study["sha256"],
         "study_examples": study["studied_contests"],
         "elapsed_s": round(time.monotonic() - start, 6),

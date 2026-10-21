@@ -86,6 +86,28 @@ class CacheTests(unittest.TestCase):
             with self.assertRaisesRegex(ValueError, "SYMLINK"):
                 CheckpointCache(pointer)
 
+    def test_forged_payload_and_rehashed_sqlite_cannot_change_source_facts(self):
+        import hashlib
+        import sqlite3
+        with tempfile.TemporaryDirectory() as root:
+            source = Path(root, "contest_100.json")
+            source.write_text('{"contest_id":"100","created_at_utc":"2026-01-01T00:00:00Z"}')
+            db = Path(root, "cache.sqlite")
+            cache = CheckpointCache(db)
+            authoritative, original_sha = cache.read(source)
+            cache.close()
+            malicious = '{"contest_id":"100","created_at_utc":"2027-01-01T00:00:00Z"}'
+            with sqlite3.connect(db) as conn:
+                conn.execute("UPDATE checkpoint_cache SET payload=?,payload_sha256=?",
+                             (malicious, hashlib.sha256(malicious.encode()).hexdigest()))
+            cache = CheckpointCache(db)
+            repaired, digest = cache.read(source)
+            self.assertEqual(digest, original_sha)
+            self.assertEqual(repaired, authoritative)
+            self.assertEqual(cache.metrics()["hits"], 0)
+            self.assertEqual(cache.metrics()["invalidations"], 1)
+            cache.close()
+
     def test_symlink_denied(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root, "contest_100.json")

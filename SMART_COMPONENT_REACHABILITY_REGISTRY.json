@@ -40,16 +40,16 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "56f02e37dab0db8445ddc134e6ce7496c935ff55de3f4c0c6ce02f3848c90adb",
+  "inventory_sha256": "b465942a11b00b60190303c8478ea6cc6e99ca90f0d42937dfad57e2983e7bc0",
   "summary": {
-    "python_components": 525,
+    "python_components": 526,
     "workflow_entrypoints": 0,
     "external_entrypoints": 1,
     "production_components": 96,
     "shadow_components": 1,
     "diagnostic_components": 44,
     "validation_components": 25,
-    "test_components": 183,
+    "test_components": 184,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -3945,7 +3945,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "a52ba0ad4baa8eb04dc5374f6a876ceae3951ac026e64909e6fc2a1e6c452e1b"
+      "sha256": "89823b55efba9b5efa8bc68d1227a90bb37f1edce07ea22879ec293b46262631"
     },
     {
       "component_id": "isolated_source_gate.video_learning_fastpath",
@@ -3992,7 +3992,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "3369c234a9b9584bbff0cfdb183bf1f6172b46adf202524830e2420f786fdf74"
+      "sha256": "471e08d443f615d2858a917577b13b8ce4f08e12ddebe5ceb0f5ceb105ce320d"
     },
     {
       "component_id": "p14_coverage_plugin",
@@ -8687,6 +8687,7 @@
       "consumers": [
         "isolated_source_gate.visual_evidence_memory",
         "test_smart_vendor_learning",
+        "test_smart_video_batch_memory_integration",
         "test_smart_video_learning_vendor_e2e",
         "test_smart_visual_memory_gate"
       ],
@@ -8700,7 +8701,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "29926e028d6d0be97b0c7aa3b2edbd79b9f6a760167b45b68afeec7d12d41beb"
+      "sha256": "fb86960a5ba2bca731371245e2b4789c55f99350ca0e3e61f72d41135a716720"
     },
     {
       "component_id": "smart_video_observation",
@@ -8817,7 +8818,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "2297b7694dbe65c7deb039c80dbf782efc920e268fb9b72c9fa0edbbf90844bd"
+      "sha256": "8296e1ae420c7b3a149c85c731e76e0793a31b82e7bf3ab738aff07e50fdb0ba"
     },
     {
       "component_id": "test_checkpoint_cache_pit",
@@ -12702,6 +12703,28 @@
       "sha256": "7a11c73974912052ead1a6346466fe8d25255bf22ca2548a2377ff799c7f174b"
     },
     {
+      "component_id": "test_smart_video_batch_memory_integration",
+      "source_file": "test_smart_video_batch_memory_integration.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_video_learning",
+        "test_smart_visual_memory_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "4edd94a37e6c9f6d125c5abb71b9428d589cf622547bfb55597730f919dc65de"
+    },
+    {
       "component_id": "test_smart_video_learning_vendor_e2e",
       "source_file": "test_smart_video_learning_vendor_e2e.py",
       "role": "TEST",
@@ -12734,7 +12757,9 @@
         "smart_video_observation"
       ],
       "declared_execution_dependencies": [],
-      "consumers": [],
+      "consumers": [
+        "test_smart_video_batch_memory_integration"
+      ],
       "reachable": false,
       "production_reachable": false,
       "runtime_executed": null,
@@ -12743,7 +12768,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "841b8eb7ee3e6783795f705120d90fd4b5e41e9bd957a41e1d04983d220eb03e"
+      "sha256": "6807a4de7500316ec1ab536fb60d1966335c392f9c28a1544f7fafc4e693f61a"
     },
     {
       "component_id": "test_smart_withdraw_lifecycle_recovery",

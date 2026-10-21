@@ -45,6 +45,11 @@ class CheckpointCache:
                 saved = self._db.execute("SELECT sha256,payload,payload_sha256 FROM checkpoint_cache WHERE name=?", (key,)).fetchone()
                 # Legacy (unsigned) rows are never treated as trustworthy hits.
                 if (saved and saved[0] == digest and saved[2] is not None
+                        and isinstance(saved[1], str)
+                        # Cached payload must be byte-identical to the
+                        # freshly SHA-verified source. Otherwise an attacker
+                        # could forge payload+digest inside the same database.
+                        and saved[1].encode("utf-8") == raw
                         and hashlib.sha256(saved[1].encode("utf-8")).hexdigest() == saved[2]):
                     row = json.loads(saved[1])
                     if isinstance(row, dict):
@@ -60,14 +65,16 @@ class CheckpointCache:
         self.misses += 1
         if self._db is not None:
             try:
-                encoded = json.dumps(row, separators=(",", ":"), ensure_ascii=False)
-                payload_digest = hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+                # Persist the exact wire representation, not a reserialized
+                # parse. Reuse is allowed only if the source bytes still match.
+                encoded = raw.decode("utf-8")
+                payload_digest = hashlib.sha256(raw).hexdigest()
                 self._db.execute(
                     "INSERT OR REPLACE INTO checkpoint_cache(name,sha256,payload,payload_sha256)"
                     " VALUES(?,?,?,?)", (key, digest, encoded, payload_digest)
                 )
                 self._db.commit()
-            except sqlite3.Error:
+            except (sqlite3.Error, UnicodeDecodeError):
                 pass
         return row, digest
 

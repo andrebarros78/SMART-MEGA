@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "56f02e37dab0db8445ddc134e6ce7496c935ff55de3f4c0c6ce02f3848c90adb",
+  "source_reachability_inventory_sha256": "b465942a11b00b60190303c8478ea6cc6e99ca90f0d42937dfad57e2983e7bc0",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 525,
+    "component_count": 526,
     "active": 96,
     "shadow": 1,
-    "diagnostic": 226,
+    "diagnostic": 227,
     "validation_only": 25,
     "quarantined": 0,
     "deprecated": 1,
@@ -4178,7 +4178,7 @@
       "component_id": "isolated_source_gate.checkpoint_cache",
       "type": "PYTHON_COMPONENT",
       "implementation": "isolated_source_gate/checkpoint_cache.py",
-      "implementation_sha256": "a52ba0ad4baa8eb04dc5374f6a876ceae3951ac026e64909e6fc2a1e6c452e1b",
+      "implementation_sha256": "89823b55efba9b5efa8bc68d1227a90bb37f1edce07ea22879ec293b46262631",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [],
@@ -4226,7 +4226,7 @@
       "component_id": "isolated_source_gate.visual_evidence_memory",
       "type": "PYTHON_COMPONENT",
       "implementation": "isolated_source_gate/visual_evidence_memory.py",
-      "implementation_sha256": "3369c234a9b9584bbff0cfdb183bf1f6172b46adf202524830e2420f786fdf74",
+      "implementation_sha256": "471e08d443f615d2858a917577b13b8ce4f08e12ddebe5ceb0f5ceb105ce320d",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -9193,7 +9193,7 @@
       "component_id": "smart_video_learning",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_video_learning.py",
-      "implementation_sha256": "29926e028d6d0be97b0c7aa3b2edbd79b9f6a760167b45b68afeec7d12d41beb",
+      "implementation_sha256": "fb86960a5ba2bca731371245e2b4789c55f99350ca0e3e61f72d41135a716720",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -9204,6 +9204,7 @@
       "consumers": [
         "isolated_source_gate.visual_evidence_memory",
         "test_smart_vendor_learning",
+        "test_smart_video_batch_memory_integration",
         "test_smart_video_learning_vendor_e2e",
         "test_smart_visual_memory_gate"
       ],
@@ -9327,7 +9328,7 @@
       "component_id": "test_checkpoint_cache",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_checkpoint_cache.py",
-      "implementation_sha256": "2297b7694dbe65c7deb039c80dbf782efc920e268fb9b72c9fa0edbbf90844bd",
+      "implementation_sha256": "8296e1ae420c7b3a149c85c731e76e0793a31b82e7bf3ab738aff07e50fdb0ba",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13577,6 +13578,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_video_batch_memory_integration",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_video_batch_memory_integration.py",
+      "implementation_sha256": "4edd94a37e6c9f6d125c5abb71b9428d589cf622547bfb55597730f919dc65de",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "test_smart_visual_memory_gate"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_video_learning_vendor_e2e",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_video_learning_vendor_e2e.py",
@@ -13604,14 +13629,16 @@
       "component_id": "test_smart_visual_memory_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_visual_memory_gate.py",
-      "implementation_sha256": "841b8eb7ee3e6783795f705120d90fd4b5e41e9bd957a41e1d04983d220eb03e",
+      "implementation_sha256": "6807a4de7500316ec1ab536fb60d1966335c392f9c28a1544f7fafc4e693f61a",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_video_learning",
         "smart_video_observation"
       ],
-      "consumers": [],
+      "consumers": [
+        "test_smart_video_batch_memory_integration"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -13903,5 +13930,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "ad8122e46bb8abbba75dbb720faa0d9be5cc2d1b008c67f8e7b3b6ffa8b3beb7"
+  "registry_sha256": "40fb298f1d390669f0e4c6f38a744c96e15e1a4efcdf633b602c2929cc7c6943"
 }

@@ -125,6 +125,73 @@ class VisualMemoryGateTests(unittest.TestCase):
             self.assertEqual(first["provenance_sha256"], second["provenance_sha256"])
             self.assertFalse(second["metrics"]["index_hit"])
 
+    def test_forged_consistent_episode_graph_cannot_override_source_bytes(self):
+        # Attacker can recompute the *unkeyed* SQLite payload hash; the
+        # checkpoint content SHA must remain authoritative on a warm hit.
+        import hashlib
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            for n in (100, 101, 102):
+                self.make_checkpoint(root, n)
+            args = ("103", "2026-10-11T00:00:00Z", root)
+            initial = get_visual_learning_memory(*args)
+            with sqlite3.connect(root / ".visual_learning_memory.sqlite") as db:
+                key, encoded = db.execute(
+                    "SELECT cache_key,payload FROM memory_snapshots"
+                ).fetchone()
+                doc = json.loads(encoded)
+                doc["episodic"][0]["event_positions"] = [.1, .4, .5]
+                doc["semantic"]["observational_motion_histogram_10_bins"] = [
+                    0, 1, 0, 6, 2, 0, 0, 0, 0, 0,
+                ]
+                # Independently fix exact histogram from all forged episodes.
+                bins = [0] * 10
+                edges = []
+                for episode in doc["episodic"]:
+                    for i, position in enumerate(episode["event_positions"]):
+                        bins[min(9, int(position * 10))] += 1
+                        edges.append({
+                            "contest_id": episode["contest_id"],
+                            "event_ordinal": i,
+                            "normalized_position": position,
+                            "relationship": "OBSERVED_MOTION_ONLY",
+                        })
+                doc["semantic"]["observational_motion_histogram_10_bins"] = bins
+                doc["graph"]["edges"] = edges
+                encoded = json.dumps(doc, separators=(",", ":"))
+                db.execute(
+                    "UPDATE memory_snapshots SET payload=?,payload_sha256=? WHERE cache_key=?",
+                    (encoded, hashlib.sha256(encoded.encode()).hexdigest(), key),
+                )
+            checked = get_visual_learning_memory(*args)
+            self.assertFalse(checked["metrics"]["index_hit"])
+            self.assertEqual(checked["episodic"], initial["episodic"])
+            self.assertEqual(checked["graph"], initial["graph"])
+            self.assertEqual(checked["semantic"], initial["semantic"])
+
+    def test_forged_predictive_claim_is_rejected_even_when_rehashed(self):
+        import hashlib
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            for n in (100, 101, 102):
+                self.make_checkpoint(root, n)
+            args = ("103", "2026-10-11T00:00:00Z", root)
+            get_visual_learning_memory(*args)
+            with sqlite3.connect(root / ".visual_learning_memory.sqlite") as db:
+                key, original = db.execute(
+                    "SELECT cache_key,payload FROM memory_snapshots"
+                ).fetchone()
+                payload = json.loads(original)
+                payload["predictive_evidence"] = "ESTABLISHED"
+                forged = json.dumps(payload)
+                db.execute(
+                    "UPDATE memory_snapshots SET payload=?,payload_sha256=? WHERE cache_key=?",
+                    (forged, hashlib.sha256(forged.encode()).hexdigest(), key),
+                )
+            verified = get_visual_learning_memory(*args)
+            self.assertEqual(verified["predictive_evidence"], "NOT_ESTABLISHED")
+            self.assertFalse(verified["metrics"]["index_hit"])
+
     def test_mutated_cached_episode_timestamp_is_not_reused(self):
         import hashlib
         with tempfile.TemporaryDirectory() as temp:

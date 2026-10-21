@@ -137,7 +137,7 @@ def _create_snapshot(root: Path, features: dict, target: int, cutoff: str) -> di
 
 
 
-def _consistent_snapshot(payload: dict, features: dict, target: int) -> bool:
+def _consistent_snapshot(payload: dict, features: dict, target: int, root: Path) -> bool:
     """Cross-check cached episode, graph and semantic claims without a model."""
     episodes = payload.get("episodic")
     graph = payload.get("graph")
@@ -161,8 +161,40 @@ def _consistent_snapshot(payload: dict, features: dict, target: int) -> bool:
             return False
         if _validated_cutoff(episode.get("observed_at_utc")) > features["as_of_utc"]:
             return False
+        # An unkeyed SQLite SHA-256 is only accidental-corruption detection.
+        # A caller capable of changing SQLite can rehash forged episodes and
+        # graphs. Rebind every warm-hit episode to the *original checkpoint
+        # bytes*; a warmed cache must not become a new authority.
+        checkpoint = root / f"contest_{contest}.json"
+        if checkpoint.is_symlink() or not checkpoint.is_file():
+            return False
+        raw = checkpoint.read_bytes()
+        if len(raw) > 1024 * 1024 or hashlib.sha256(raw).hexdigest() != episode["checkpoint_sha256"]:
+            return False
+        original = json.loads(raw)
+        if (not isinstance(original, dict)
+                or original.get("contest_id") != str(contest)
+                or _validated_cutoff(original.get("created_at_utc")) != episode.get("observed_at_utc")):
+            return False
+        scope = original.get("analysis_scope")
+        values = original.get("event_timestamps_s")
+        if not isinstance(scope, dict) or not isinstance(values, list):
+            return False
+        if len(values) > MAX_EPISODE_EVENTS:
+            return False
+        lo, hi = float(scope["start_s"]), float(scope["end_s"])
+        if not math.isfinite(lo) or not math.isfinite(hi) or hi <= lo:
+            return False
+        derived_positions = []
+        for value in values:
+            moment = float(value)
+            if not math.isfinite(moment) or not lo <= moment <= hi:
+                return False
+            derived_positions.append(round((moment - lo) / (hi - lo), 6))
+        derived_positions.sort()
         positions = episode.get("event_positions")
-        if not isinstance(positions, list) or len(positions) > MAX_EPISODE_EVENTS:
+        if (not isinstance(positions, list) or len(positions) > MAX_EPISODE_EVENTS
+                or positions != derived_positions):
             return False
         if episode.get("motion_event_count") != len(positions) or positions != sorted(positions):
             return False
@@ -239,6 +271,7 @@ def get_visual_learning_memory(
                         and payload.get("source_manifest_sha256") == _digest(features["source_sha256"])
                         and payload.get("provenance_sha256") == key
                         and payload.get("predictive_weight") == 0.0
+                        and payload.get("predictive_evidence") == "NOT_ESTABLISHED"
                         and payload.get("source_gate") == "BLOCKED"
                         and payload.get("model_execution_enabled") is False):
                     # Verify exact episode identities/digests before cache reuse.
@@ -251,13 +284,14 @@ def get_visual_learning_memory(
                     }
                     if (cached == expected
                             and all(type(n) is int and 0 < n < int(target) for n in cached)
-                            and _consistent_snapshot(payload, features, int(target))):
+                            and _consistent_snapshot(payload, features, int(target), root)):
                         return {**payload, "metrics": {
                             "schema": "SMART_VIDEO_MEMORY_INDEX_METRICS_V1",
                             "index_hit": True,
                             "episode_count": len(expected), "indexed_sources": len(expected),
                         }}
-            except (ValueError, TypeError, KeyError, AttributeError, json.JSONDecodeError):
+            except (OSError, ValueError, TypeError, KeyError, AttributeError,
+                    OverflowError, json.JSONDecodeError):
                 pass
 
         payload = _create_snapshot(root, features, int(target), cutoff)
