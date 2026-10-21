@@ -89,9 +89,20 @@ def complete_to_model_card(root: str | Path, target: int,
         payloads, evidence = handlers.read_batch(official_batch)
         if sorted(payloads) != list(missing):
             raise ValueError("official batch missing contests or not strictly contiguous")
-        if (not isinstance(evidence, dict)
-                or evidence.get("authority") != "CAIXA_LOTERIAS_OFFICIAL_API"
-                or evidence.get("targets") != list(missing)):
+        if not isinstance(evidence, dict) or evidence.get("targets") != list(missing):
+            raise ValueError("official batch lacks validated source and exact target sequence")
+        batch_authority = evidence.get("authority")
+        if batch_authority == "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED":
+            if evidence.get("raw_api_independently_verified") is not False or any(
+                row.get("source") != "CAIXA_PORTAL_TRANSCRIPTION" for row in payloads.values()
+            ):
+                raise ValueError("portal transcription must remain non-API-verified")
+        elif batch_authority == "TWO_PUBLIC_SOURCES_NOT_CAIXA_API_VERIFIED":
+            if evidence.get("raw_api_independently_verified") is not False or any(
+                row.get("source") != "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL" for row in payloads.values()
+            ):
+                raise ValueError("public corroboration must remain non-API-verified")
+        elif batch_authority != "CAIXA_LOTERIAS_OFFICIAL_API":
             raise ValueError("official batch lacks validated source and exact target sequence")
 
     if state in {"FROZEN", "ADJUDICATED"}:
