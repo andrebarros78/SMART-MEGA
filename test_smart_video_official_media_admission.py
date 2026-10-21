@@ -69,7 +69,7 @@ class OfficialMediaAdmissionTests(unittest.TestCase):
             "oembed_author_name": "CAIXA",
             "oembed_author_url": "https://www.youtube.com/@caixa",
             "probe_utc": "2026-10-21T18:38:10Z",
-            "command_id": "netcmd_" + "b" * 32,
+            "oembed_command_id": "netcmd_" + "b" * 32,
         }
 
     def test_blocked_gate_overrides_successful_public_metadata_and_claimed_frames(self):
@@ -141,8 +141,19 @@ class OfficialMediaAdmissionTests(unittest.TestCase):
         )
         self.assertFalse(output["media_capture_authorized"])
 
+    def test_real_b2_public_probe_receipt_schema_matches_consumer(self):
+        actual = json.loads(
+            (Path(__file__).resolve().parent / "isolated_source_gate"
+             / "B2_CAIXA_PUBLIC_MEDIA_PROBE_20261021.json").read_text("utf-8")
+        )
+        output = audit_official_media_admission(self.root, "3013", probe=actual)
+        self.assertEqual(output["public_metadata"]["status"], "VERIFIED_METADATA_ONLY")
+        self.assertEqual(output["video_access_status"], "HTTP_429_RESTRICTED")
+        self.assertEqual(output["status"], "OFFICIAL_MEDIA_SOURCE_BLOCKED")
+        self.assertFalse(output["checkpoint_generation_authorized"])
+
     def test_unrecognized_or_future_probe_refused(self):
-        probe = dict(self.probe, command_id="unaudited", probe_utc="2099-01-01T00:00:00Z")
+        probe = dict(self.probe, oembed_command_id="unaudited", probe_utc="2099-01-01T00:00:00Z")
         output = audit_official_media_admission(self.root, "3013", probe=probe)
         self.assertEqual(output["public_metadata"]["status"], "UNVERIFIED_METADATA")
         self.assertFalse(output["checkpoint_generation_authorized"])

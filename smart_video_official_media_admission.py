@@ -130,7 +130,9 @@ def _probe_status(probe: dict[str, Any] | None, video_id: str) -> tuple[str, dic
         access = "HTML_ONLY_NO_FRAME_EVIDENCE"
     else:
         access = "STREAM_ACCESS_UNPROVEN"
-    receipt = str(probe.get("command_id") or "")
+    # Separate independently governed commands: one public watch-page
+    # attempt and another public oEmbed metadata receipt.
+    receipt = str(probe.get("oembed_command_id") or "")
     stamp = str(probe.get("probe_utc") or "")
     try:
         dt = datetime.fromisoformat(stamp.replace("Z", "+00:00"))
