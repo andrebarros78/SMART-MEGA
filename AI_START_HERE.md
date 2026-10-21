@@ -1,15 +1,14 @@
 # SMART-MEGA — AI START HERE
 
-## Ordem executiva vigente — SMART_GITHUB_NATIVE_ONLY_20261021
+## Ordem executiva vigente — SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021
 
-**Repositório `andrebarros78/SMART-MEGA`, branch `main`: execução exclusivamente GitHub-native.** GitHub é a fonte de código, estado, versionamento, integração e evidências. Somente **GitHub Actions em runners hospedados pelo GitHub** executam o produto e os testes. A API/conector GitHub pode ler, editar e versionar, mas não substitui um teste de execução real.
+GitHub andrebarros78/SMART-MEGA, branch main: autoridade canônica exclusiva de código, versionamento, integração, estado e evidências.
 
-**Rotas expressamente revogadas:** LMCP, VPS, PC Casa, PC Escola, PC Vendas, S-WMCP, runners próprios/`self-hosted`, SSH, redes federadas ou qualquer executor externo — também como solução temporária, contingência, fallback ou suposta autorização herdada. Não instalar dependências nem criar missões nesses ambientes para SMART-MEGA V6.
+GitHub Actions é PROIBIDO. Workflows executáveis em .github/workflows foram aposentados e não devem ser executados.
 
-**Falha do GitHub Actions:** diagnosticar no GitHub; fazer somente edições e verificações permitidas pela API/conector GitHub, sem afirmar que o produto foi executado. Se não for possível testar no GitHub, registrar o gate `BLOCKED_GITHUB_ACTIONS`, manter `main` íntegra e jamais transferir a operação para outro host.
+Executores externos autorizados: LMCP, VPS, PC Casa, PC Escola, PC Vendas e outros executores autorizados podem realizar testes, compilação e homologação temporariamente e isoladamente. Nenhum executor externo é dependência permanente ou autoridade canônica. Vincular recibos ao SHA do GitHub e registrar provas no repositório.
 
-**Precedência:** esta ordem atual supersede qualquer permissão anterior para máquinas externas em documentos, prompts, memórias, roadmaps, relatórios ou outras branches. Mudança exige nova ordem explícita do proprietário e atualização versionada deste contrato em `main`. O verificador `python smart_github_native_policy.py` é obrigatório em todos os workflows e usa somente Python padrão.
-
+Esta política substitui SMART_GITHUB_NATIVE_ONLY_20261021 e qualquer instrução anterior conflitante. Não certificar nem promover versões sem testes reais do commit.
 Este é o ponteiro inicial de descoberta para agentes e IAs.
 
 ## Leia primeiro

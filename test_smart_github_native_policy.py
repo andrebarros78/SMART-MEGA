@@ -1,97 +1,74 @@
-"""Negative and positive cases for repository-only execution authority."""
-from __future__ import annotations
-
+"""No GitHub Actions; external governed execution; GitHub is canonical."""
 import tempfile
 import unittest
 from pathlib import Path
-from smart_github_native_policy import (
-    ACTIVE_INSTRUCTIONS, REQUIRED_WORKFLOWS, PolicyViolation, verify,
-)
+
+from smart_github_native_policy import ACTIVE_INSTRUCTIONS, POLICY_ID, PolicyViolation, verify
 
 
-class NativeOnlyContract(unittest.TestCase):
+class CanonicalGitHubExecutionPolicyTests(unittest.TestCase):
     def setUp(self):
-        self.temp = tempfile.TemporaryDirectory()
-        self.addCleanup(self.temp.cleanup)
-        self.root = Path(self.temp.name)
-        for filename in ACTIVE_INSTRUCTIONS:
-            (self.root / filename).write_text(
-                "SMART_GITHUB_NATIVE_ONLY_20261021\n"
-                "GitHub andrebarros78/SMART-MEGA main\n",
-                encoding="utf-8",
-            )
-        (self.root / "smart_github_operator.py").write_text(
-            "GITHUB_REPOSITORY GITHUB_REF GITHUB_EVENT_NAME refs/heads/main\n",
-            encoding="utf-8",
-        )
-        for filename in REQUIRED_WORKFLOWS:
-            path = self.root / filename
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(
-                "jobs:\n  check:\n    runs-on: ubuntu-latest\n    steps:\n"
-                "      - uses: actions/checkout@v4\n"
-                "      - run: python smart_github_native_policy.py\n"
-                "      - run: pip install -r requirements.lock.txt\n",
+        t = tempfile.TemporaryDirectory()
+        self.addCleanup(t.cleanup)
+        self.root = Path(t.name)
+        for name in ACTIVE_INSTRUCTIONS:
+            (self.root / name).write_text(
+                f"{POLICY_ID}\nandrebarros78/SMART-MEGA\nmain\n"
+                "GitHub Actions PROIBIDO; executores externos autorizados para teste.\n",
                 encoding="utf-8",
             )
 
-    def test_only_hosted_native_workflows_pass(self):
-        result = verify(self.root)
-        self.assertEqual(result["status"], "PASS")
-        self.assertFalse(result["external_execution_allowed"])
-        self.assertEqual(result["hosted_jobs"], 3)
+    def test_external_execution_allowed_without_github_actions(self):
+        r = verify(self.root)
+        self.assertEqual(r["status"], "PASS")
+        self.assertFalse(r["github_actions_authorized"])
+        self.assertTrue(r["external_executors_authorized"])
+        self.assertFalse(r["external_executor_permanent_dependency"])
 
-    def test_explicit_old_federated_permission_is_rejected(self):
-        path = self.root / "README.md"
-        path.write_text(path.read_text() + "GitHub Actions ou executor federado autorizado\n")
-        with self.assertRaisesRegex(PolicyViolation, "legacy external"):
+    def test_legacy_actions_only_rule_denied(self):
+        p = self.root / "README.md"
+        p.write_text(p.read_text() + "Somente GitHub Actions em runners hospedados.\n")
+        with self.assertRaisesRegex(PolicyViolation, "obsolete Actions-only"):
             verify(self.root)
 
-    def test_self_hosted_executor_is_rejected(self):
-        path = self.root / REQUIRED_WORKFLOWS[0]
-        path.write_text(path.read_text().replace("ubuntu-latest", "self-hosted"))
-        with self.assertRaisesRegex(PolicyViolation, "non-GitHub-hosted"):
+    def test_live_workflow_denied(self):
+        p = self.root / ".github/workflows/ci.yml"
+        p.parent.mkdir(parents=True)
+        p.write_text("on: push\n")
+        with self.assertRaisesRegex(PolicyViolation, "GitHub Actions is prohibited"):
             verify(self.root)
 
-    def test_lmcp_runner_dispatch_is_rejected(self):
-        path = self.root / REQUIRED_WORKFLOWS[1]
-        path.write_text(path.read_text() + "      - run: lmcp job start\n")
-        with self.assertRaisesRegex(PolicyViolation, "external dispatch"):
+    def test_nested_live_workflow_denied(self):
+        p = self.root / ".github/workflows/nested/ci.yaml"
+        p.parent.mkdir(parents=True)
+        p.write_text("on: workflow_dispatch\n")
+        with self.assertRaisesRegex(PolicyViolation, "GitHub Actions is prohibited"):
             verify(self.root)
 
-    def test_checker_cannot_be_bypassed_by_deleting_step(self):
-        path = self.root / REQUIRED_WORKFLOWS[0]
-        path.write_text(path.read_text().replace("      - run: python smart_github_native_policy.py\n", ""))
-        with self.assertRaisesRegex(PolicyViolation, "every job"):
+    def test_archived_workflow_text_not_runnable(self):
+        p = self.root / "docs/retired-github-actions/ci.yml.txt"
+        p.parent.mkdir(parents=True)
+        p.write_text("on: push\n")
+        self.assertEqual(verify(self.root)["status"], "PASS")
+
+    def test_policy_id_required_everywhere(self):
+        p = self.root / "AGENTS.md"
+        p.write_text("andrebarros78/SMART-MEGA\nmain\n")
+        with self.assertRaisesRegex(PolicyViolation, "missing"):
             verify(self.root)
 
-    def test_checker_must_run_before_dependency_installation(self):
-        path = self.root / REQUIRED_WORKFLOWS[0]
-        path.write_text(path.read_text().replace(
-            "      - run: python smart_github_native_policy.py\n"
-            "      - run: pip install -r requirements.lock.txt\n",
-            "      - run: pip install -r requirements.lock.txt\n"
-            "      - run: python smart_github_native_policy.py\n",
-        ))
-        with self.assertRaisesRegex(PolicyViolation, "before native policy"):
+    def test_injected_github_origin_forbidden(self):
+        p = self.root / "AI_START_HERE.md"
+        p.write_text(POLICY_ID + "\nmain\n")
+        with self.assertRaisesRegex(PolicyViolation, "missing"):
             verify(self.root)
 
-    def test_all_active_agent_entrypoints_require_marker(self):
-        path = self.root / "AGENTS.md"
-        path.write_text("andrebarros78/SMART-MEGA main\n")
-        with self.assertRaisesRegex(PolicyViolation, "missing canonical marker"):
-            verify(self.root)
-
-    def test_external_runner_workflow_cannot_be_hidden(self):
-        path = self.root / ".github/workflows/obsolete-vps.yml"
-        path.write_text("jobs:\n  old:\n    runs-on: self-hosted\n")
-        with self.assertRaisesRegex(PolicyViolation, "non-GitHub-hosted"):
-            verify(self.root)
-
-    def test_hostless_operator_loses_authority(self):
-        path = self.root / "smart_github_operator.py"
-        path.write_text("GITHUB_REF refs/heads/main\n")
-        with self.assertRaisesRegex(PolicyViolation, "operator lost"):
+    def test_symlink_workflows_denied(self):
+        (self.root / "target").mkdir()
+        d = self.root / ".github"
+        d.mkdir()
+        (d / "workflows").symlink_to(self.root / "target", target_is_directory=True)
+        with self.assertRaisesRegex(PolicyViolation, "symlinked"):
             verify(self.root)
 
 
