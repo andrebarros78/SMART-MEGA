@@ -21,7 +21,10 @@ class CheckpointCache:
         try:
             self.path.parent.mkdir(parents=True, exist_ok=True)
             self._db = sqlite3.connect(str(self.path), timeout=2)
-            self._db.execute("CREATE TABLE IF NOT EXISTS checkpoint_cache (name TEXT PRIMARY KEY, sha256 TEXT NOT NULL, payload TEXT NOT NULL)")
+            self._db.execute("CREATE TABLE IF NOT EXISTS checkpoint_cache (name TEXT PRIMARY KEY, sha256 TEXT NOT NULL, payload TEXT NOT NULL, payload_sha256 TEXT)")
+            columns = {row[1] for row in self._db.execute("PRAGMA table_info(checkpoint_cache)")}
+            if "payload_sha256" not in columns:
+                self._db.execute("ALTER TABLE checkpoint_cache ADD COLUMN payload_sha256 TEXT")
             self._db.commit()
         except (sqlite3.Error, OSError):
             self.close()
@@ -37,8 +40,10 @@ class CheckpointCache:
         key = str(path.resolve())
         if self._db is not None:
             try:
-                saved = self._db.execute("SELECT sha256,payload FROM checkpoint_cache WHERE name=?", (key,)).fetchone()
-                if saved and saved[0] == digest:
+                saved = self._db.execute("SELECT sha256,payload,payload_sha256 FROM checkpoint_cache WHERE name=?", (key,)).fetchone()
+                # Legacy (unsigned) rows are never treated as trustworthy hits.
+                if (saved and saved[0] == digest and saved[2] is not None
+                        and hashlib.sha256(saved[1].encode("utf-8")).hexdigest() == saved[2]):
                     row = json.loads(saved[1])
                     if isinstance(row, dict):
                         self.hits += 1
@@ -53,7 +58,12 @@ class CheckpointCache:
         self.misses += 1
         if self._db is not None:
             try:
-                self._db.execute("INSERT OR REPLACE INTO checkpoint_cache(name,sha256,payload) VALUES(?,?,?)", (key, digest, json.dumps(row, separators=(",", ":"))))
+                encoded = json.dumps(row, separators=(",", ":"), ensure_ascii=False)
+                payload_digest = hashlib.sha256(encoded.encode("utf-8")).hexdigest()
+                self._db.execute(
+                    "INSERT OR REPLACE INTO checkpoint_cache(name,sha256,payload,payload_sha256)"
+                    " VALUES(?,?,?,?)", (key, digest, encoded, payload_digest)
+                )
                 self._db.commit()
             except sqlite3.Error:
                 pass

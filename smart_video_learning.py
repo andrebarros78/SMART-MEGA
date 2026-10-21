@@ -462,6 +462,8 @@ def main() -> int:
     parser.add_argument("--expected-checkpoints", type=int, default=13)
     parser.add_argument("--next-contest")
     parser.add_argument("--target-contest", help="Read-only feature consumer target")
+    parser.add_argument("--memory-readonly", action="store_true",
+                        help="Read PIT-verified episodic/semantic/graph memory (no model or source gate)")
     parser.add_argument("--cutoff-utc", help="ISO-8601 observation cutoff for consumer")
     parser.add_argument("--checkpoint-dir", default="runtime/video_observation")
     parser.add_argument("--batch-workers", type=int, default=2)
@@ -471,6 +473,8 @@ def main() -> int:
     opts = parser.parse_args()
     if sum(bool(x) for x in (opts.manifest, opts.target_contest, opts.inventory_readonly)) != 1:
         parser.error("choose exactly one of --manifest, --target-contest or --inventory-readonly")
+    if opts.memory_readonly and not opts.target_contest:
+        parser.error("--memory-readonly requires --target-contest and --cutoff-utc")
     if opts.inventory_readonly:
         if opts.force or opts.next_contest or opts.cutoff_utc:
             parser.error("--inventory-readonly cannot mutate or use target options")
@@ -490,16 +494,13 @@ def main() -> int:
     else:
         if not opts.cutoff_utc:
             parser.error("--target-contest requires --cutoff-utc")
-        value = get_visual_features(
+        reader = get_visual_learning_memory if opts.memory_readonly else get_visual_features
+        value = reader(
             opts.target_contest, opts.cutoff_utc, opts.checkpoint_dir,
             opts.hypothesis_id,
         )
     print(json.dumps(value, ensure_ascii=False, indent=2))
     return 0
-
-
-if __name__ == "__main__":
-    raise SystemExit(main())
 
 
 def get_vendor_learning_status() -> dict[str, Any]:
@@ -512,3 +513,21 @@ def normalize_observation_entities(text: str) -> str:
     """Use the pinned TaskMem normalization routine without model execution."""
     from smart_video_vendor import normalize_taskmem_entities
     return normalize_taskmem_entities(text)
+
+
+def get_visual_learning_memory(
+    target_contest: str,
+    cutoff_utc: str,
+    checkpoint_dir: str | Path = "runtime/video_observation",
+    hypothesis_id: str | None = None,
+    *,
+    source_url: str | None = None,
+) -> dict[str, Any]:
+    """Read PIT-verified episodic, semantic and graph evidence from pinned video."""
+    from isolated_source_gate.visual_evidence_memory import get_visual_learning_memory as read_memory
+    return read_memory(target_contest, cutoff_utc, checkpoint_dir, hypothesis_id,
+                       source_url=source_url)
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())

@@ -37,6 +37,46 @@ class CacheTests(unittest.TestCase):
             assert cache.metrics()["hits"] == 0
             cache.close()
 
+    def test_mutated_sqlite_payload_does_not_poison_observed_events(self):
+        import sqlite3
+        with tempfile.TemporaryDirectory() as root:
+            file = Path(root, "contest_100.json")
+            db = Path(root, "cache.sqlite")
+            file.write_text('{"contest_id":"100","event_timestamps_s":[30,40,50]}')
+            cache = CheckpointCache(db)
+            original, digest = cache.read(file)
+            cache.close()
+            with sqlite3.connect(db) as conn:
+                conn.execute("UPDATE checkpoint_cache SET payload = ?",
+                             ('{"contest_id":"100","event_timestamps_s":[1,2,3]}',))
+            cache = CheckpointCache(db)
+            row, checked_digest = cache.read(file)
+            self.assertEqual(row, original)
+            self.assertEqual(checked_digest, digest)
+            self.assertEqual(cache.metrics()["hits"], 0)
+            self.assertEqual(cache.metrics()["invalidations"], 1)
+            cache.close()
+
+    def test_old_cache_schema_upgrades_without_trusting_unsigned_rows(self):
+        import sqlite3
+        with tempfile.TemporaryDirectory() as root:
+            file = Path(root, "contest_100.json")
+            file.write_text('{"contest_id":"100","event_timestamps_s":[30,40,50]}')
+            db = Path(root, "legacy.sqlite")
+            with sqlite3.connect(db) as conn:
+                conn.execute(
+                    "CREATE TABLE checkpoint_cache (name TEXT PRIMARY KEY,"
+                    "sha256 TEXT NOT NULL,payload TEXT NOT NULL)"
+                )
+            cache = CheckpointCache(db)
+            first, _ = cache.read(file)
+            self.assertEqual(first["event_timestamps_s"], [30,40,50])
+            self.assertEqual(cache.metrics()["misses"], 1)
+            second, _ = cache.read(file)
+            self.assertEqual(second, first)
+            self.assertEqual(cache.metrics()["hits"], 1)
+            cache.close()
+
     def test_symlink_denied(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root, "contest_100.json")
