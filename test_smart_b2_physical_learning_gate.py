@@ -102,6 +102,40 @@ class B2PhysicalLearningGateTests(unittest.TestCase):
             self.assertEqual(result["temporal_provenance"]["independently_attested"], 0)
             self.assertEqual(result["predictive_weight"], 0.0)
 
+    def test_explicit_synthetic_only_b2_directories_are_quarantined(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "SMART-MEGA-VISUAL-INVENTORY-20261013" / "SYNTHETIC_ONLY_13"
+            root.mkdir(parents=True)
+            self.fixture.make_checkpoint(root, 100)
+            result = audit_b2_physical_learning(
+                root, "101", "2026-10-11T00:00:00Z", expected_count=1,
+            )
+            self.assertEqual(result["status"], "SYNTHETIC_SOURCE_QUARANTINED")
+            self.assertEqual(result["physical_files_read"], 0)
+            self.assertIsNone(result["observational_utility"])
+            self.assertEqual(result["predictive_weight"], 0.0)
+
+    def test_synthetic_only_official_queue_is_not_official_physical_evidence(self):
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp) / "SYNTHETIC_ONLY_OFFICIAL_QUEUE_13" / "checkpoints"
+            root.mkdir(parents=True)
+            self.fixture.make_checkpoint(root, 100)
+            result = audit_b2_physical_learning(
+                root, "101", "2026-10-11T00:00:00Z", expected_count=1,
+            )
+            self.assertEqual(result["status"], "SYNTHETIC_SOURCE_QUARANTINED")
+            self.assertFalse(result["pit_independently_attested"])
+            self.assertIsNone(result["measured_predictive_gain"])
+
+    def test_windows_backslash_synthetic_only_path_is_also_quarantined(self):
+        root = r"C:\ProgramData\B2-Learning-Work\SMART-MEGA-VISUAL-INVENTORY-20261013\SYNTHETIC_ONLY_OFFICIAL_QUEUE_13\checkpoints"
+        output = audit_b2_physical_learning(
+            root, "92014", "2026-10-11T00:00:00Z", expected_count=13,
+        )
+        self.assertEqual(output["status"], "SYNTHETIC_SOURCE_QUARANTINED")
+        self.assertEqual(output["source_classification"], "SYNTHETIC_FIXTURE")
+        self.assertIsNone(output["observational_utility"])
+
     def test_wrong_expected_count_does_not_invent_13_files(self):
         with tempfile.TemporaryDirectory() as parent:
             root = Path(parent, "b2")

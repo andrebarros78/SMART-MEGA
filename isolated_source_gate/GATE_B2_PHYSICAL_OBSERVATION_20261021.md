@@ -77,3 +77,55 @@ checkpoint, usando `test_smart_visual_memory_gate` como gerador:
 **Estado:** código e testes de engenharia disponíveis; acesso físico B2 e
 validação temporal independente continuam bloqueados. Nunca promover
 inferências a cartões nem alterar `main` por estes números.
+
+## Atualização verificável — retomada do transporte moderno no B2 (21/10)
+
+A recusa anterior foi causada pela escolha de operação:
+`powershell.exec` está ausente de
+`governor_windows.network_dispatch.MODERN_PC_TRANSPORT_OPS` para
+executores externos. Não era uma indisponibilidade física total da máquina.
+Sem alterar o governador, a operação já implementada e autorizada
+`shell.exec` foi executada com `hostname` e `python --version`;
+ambas retornaram `exit_code=0`, hostname `PC-ESCOLA`,
+autenticação, identidade física e vínculo de execução comprovados.
+Transporte: `TAILSCALE_SIGNED_LONG_POLL`.
+Recibos: `netcmd_891de83dccab434fb8beeef1e3612faf`,
+`netcmd_7c64f796eed34ca5b31c1b78f82eb940`.
+
+**A reconciliação da fonte real contradiz a localização histórica declarada.**
+O diretório `C:\SMART-MEGA\runtime\video_observation` não existe
+(`netcmd_ea8ff422e0344152a3fddca4d8939405`).
+O diretório `real_video_checkpoints` declarado pelo queue também não
+existe (`netcmd_fee4cad077034a2189e76523cdf49d45`).
+Uma busca completa, sem truncamento, nas subárvores SMART-MEGA
+autorizadas localizou somente 26 `contest_*.json` em dois conjuntos
+explicitamente nomeados `SYNTHETIC_ONLY_13` e
+`SYNTHETIC_ONLY_OFFICIAL_QUEUE_13`, 13 cada
+(`netcmd_5dae1aad45d342ff95b5b553ef4e33d0`).
+
+**Disponibilidade de vídeo real também está bloqueada:**
+`SMART_CAIXA_MEDIA_SOURCE_CURRENT.json` informa
+`YOUTUBE_SIGN_IN_REQUIRED`; `SMART_CAIXA_OBSERVATIONAL_QUALITY_CURRENT.json`
+registra 50 concursos na fila, 50 `SOURCE_ACCESS_BLOCKED`,
+`real_media_verified=false`, **zero quadros decodificados** e peso
+preditivo zero
+(`netcmd_ba8e67d9bba04157b39fd49bc85cb0bb`).
+O ZIP de migração SMART-MEGA inspecionado não contém
+`contest_*.json`. Não existe prova de que 13 checkpoints de vídeo
+reais estejam disponíveis na fonte anterior.
+
+**Regressão de proteção:** duas falhas reproduzidas RED demonstraram
+que o auditor anterior aceitava pastas `SYNTHETIC_ONLY*` como observação
+física; o novo auditor as classifica
+`SYNTHETIC_SOURCE_QUARANTINED`, sem episódios nem métricas de
+utilidade real, preservando `predictive_weight=0`.
+Essa classificação nominal é uma defesa contra fontes rotuladas
+explicitamente sintéticas, não uma certificação independente de que
+outra origem é real.
+
+A execução do consumidor em vídeos reais permanece
+`BLOCKED_SOURCE_ABSENT`. Requer fornecimento dos vídeos por
+acesso autorizado e geração de checkpoints reais com evidência
+temporal independente. Não burlar `YOUTUBE_SIGN_IN_REQUIRED`.
+O estado atual auditado permanece registrado em
+`B2_MODERN_TRANSPORT_AND_REAL_MEDIA_20261021.json`.

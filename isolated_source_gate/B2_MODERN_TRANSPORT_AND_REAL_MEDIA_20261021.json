@@ -1,0 +1,69 @@
+{
+  "schema": "SMART_B2_MODERN_TRANSPORT_AND_REAL_MEDIA_GATE_V1",
+  "audit_date": "2026-10-21",
+  "repository": "andrebarros78/SMART-MEGA",
+  "host": "PC-ESCOLA",
+  "physical_node_id": "f9d3fc77-3bc3-470b-9808-51eaf2ac3b2f",
+  "executor_node_id": "B2-LEARNING-NODE-01",
+  "transport": {
+    "state": "MODERN_SIGNED_SHELL_OPERATIONAL",
+    "name": "TAILSCALE_SIGNED_LONG_POLL",
+    "operation": "shell.exec",
+    "previous_unsupported_operation": "powershell.exec",
+    "previous_refusal": "federated_external_operation_requires_modern_transport",
+    "governed_source": "governor_windows.network_dispatch.MODERN_PC_TRANSPORT_OPS",
+    "healthy_node_receipt": "netcmd_fbd4b1a109014c62802ac824200bf374",
+    "read_only_shell_hostname_receipt": "netcmd_891de83dccab434fb8beeef1e3612faf",
+    "hostname_stdout": "PC-ESCOLA",
+    "read_only_shell_python_version_receipt": "netcmd_7c64f796eed34ca5b31c1b78f82eb940",
+    "python_version_stdout": "Python 3.13.15",
+    "gateway_authenticated": true,
+    "executor_affinity_verified": true,
+    "authority_transferred": false,
+    "modified_governor_service": false,
+    "restarted_service": false
+  },
+  "physical_source_discovery": {
+    "original_root": "C:\\SMART-MEGA\\runtime\\video_observation",
+    "original_root_exists": false,
+    "original_root_receipt": "netcmd_ea8ff422e0344152a3fddca4d8939405",
+    "official_queue_expected_root": "C:\\ProgramData\\B2-Learning-Work\\SMART-MEGA-VISUAL-INVENTORY-20261013\\real_video_checkpoints",
+    "official_queue_expected_root_exists": false,
+    "expected_root_receipt": "netcmd_fee4cad077034a2189e76523cdf49d45",
+    "project_only_completed_scan_receipt": "netcmd_5dae1aad45d342ff95b5b553ef4e33d0",
+    "project_only_scan_truncated": false,
+    "synthetic_only_checkpoints": 13,
+    "synthetic_official_queue_checkpoints": 13,
+    "total_synthetic_labelled_checkpoints": 26,
+    "actual_real_video_checkpoints_verified": 0,
+    "reported_13_from_20261009_ever_proven_real": false,
+    "migration_zip_checkpoint_members": 0
+  },
+  "media_source_gate": {
+    "receipt": "netcmd_ba8e67d9bba04157b39fd49bc85cb0bb",
+    "state": "BLOCKED",
+    "reason": "YOUTUBE_SIGN_IN_REQUIRED",
+    "real_media_verified": false,
+    "official_contests_in_queue": 50,
+    "quality_blocked_count": 50,
+    "checkpoints_reporting_decoded_frames": 0,
+    "predictive_weight": 0.0
+  },
+  "learning_gate": {
+    "physical_real_files_consumed": 0,
+    "real_observational_utility": null,
+    "pit_independently_attested": false,
+    "model_authority": "NOT_GRANTED",
+    "predictive_evidence": "NOT_ESTABLISHED",
+    "predictive_weight": 0.0,
+    "source_mutation": false,
+    "synthetic_only_classification": "SYNTHETIC_SOURCE_QUARANTINED",
+    "next_gate": "OBTAIN_AUTHORIZED_OFFICIAL_VIDEO_ACCESS_AND_CREATE_REAL_VERIFIABLE_CHECKPOINTS"
+  },
+  "scope_limitations": [
+    "Findings apply to explicitly scanned SMART-MEGA project and B2 authorized roots and listed ZIP archives, not all disks.",
+    "Metadata/hash of hypothetical historical source cannot replace independent PIT availability evidence.",
+    "50 SOURCE_ACCESS_BLOCKED queue entries do not equal 50 decoded video observations.",
+    "Synthetics cannot be counted toward real signal capture or predictive learning."
+  ]
+}

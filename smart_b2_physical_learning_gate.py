@@ -43,6 +43,7 @@ def _result(status: str, root: Path, target: str, cutoff: str, expected: int) ->
         "cutoff_utc": cutoff,
         "cutoff_basis": "CALLER_SUPPLIED_NOT_EXTERNALLY_ATTESTED",
         "physical_source_claim": "LOCAL_FILESYSTEM_ONLY_IF_READ_SUCCESS",
+        "source_classification": "UNVERIFIED",
         "expected_checkpoint_count": expected,
         "physical_files_read": 0,
         "file_integrity": None,
@@ -86,6 +87,14 @@ def audit_b2_physical_learning(
 
     root = Path(checkpoint_dir)
     result = _result("PHYSICAL_SOURCE_UNAVAILABLE", root, target, cutoff, expected_count)
+    # B2 has historical fixture roots explicitly named SYNTHETIC_ONLY_13 and
+    # SYNTHETIC_ONLY_OFFICIAL_QUEUE_13. Do not treat successful JSON parses
+    # as proof of real physical draw-video observations.
+    parts = str(root).replace("\\", "/").upper().split("/")
+    if any(component.startswith("SYNTHETIC_ONLY") for component in parts):
+        result["status"] = "SYNTHETIC_SOURCE_QUARANTINED"
+        result["source_classification"] = "SYNTHETIC_FIXTURE"
+        return result
     if root.is_symlink() or not root.is_dir():
         return result
 
@@ -138,6 +147,7 @@ def audit_b2_physical_learning(
         source_digests[contest] = digest
         rows[contest] = row
 
+    result["source_classification"] = "LOCAL_CHECKPOINT_CONTENT_UNATTESTED"
     result["checkpoint_sha256"] = dict(sorted(source_digests.items(), key=lambda x: int(x[0])))
     manifest = json.dumps(result["checkpoint_sha256"], sort_keys=True, separators=(",", ":"))
     result["snapshot_manifest_sha256"] = _sha(manifest.encode("utf-8"))
