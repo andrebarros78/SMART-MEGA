@@ -44,7 +44,11 @@ modelos multimodais, acesso à fonte CAIXA nem autoridade de resultado/prediçã
   dependências/autorizações específicas. A arquitetura episódica e de grafo
   aqui é implementação nativa inspirada nesses projetos, não execução
   integral dos motores externos.
-- O CI integral do SMART-MEGA ainda carece de um ambiente isolado com as
+- A política canônica atual é
+  `SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021`:
+  GitHub permanece repositório, execução governada em conector externo
+  é autorizada e GitHub Actions é proibido.
+- A regressão integral ainda requer ambiente isolado com as
   dependências reais da `requirements.lock.txt`; os erros de ambiente
   não podem ser reclassificados como testes aprovados.
 - **Gates invariantes**: CAIXA BLOQUEADA, peso preditivo 0.0,

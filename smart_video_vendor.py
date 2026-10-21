@@ -31,6 +31,9 @@ def _manifest(root: Path) -> list[dict]:
     lock = json.loads((root / 'VENDOR_LOCK.json').read_text(encoding='utf-8'))
     if lock.get('schema') != 'SMART_VENDOR_LEARNING_LOCK_V1' or lock.get('predictive_weight') != 0.0:
         raise ValueError('INVALID_VENDOR_MANIFEST')
+    from smart_github_native_policy import POLICY_ID
+    if lock.get('production_policy') != POLICY_ID:
+        raise ValueError('VENDOR_EXECUTION_POLICY_STALE')
     items = lock.get('sources')
     if not isinstance(items, list) or len(items) != len(KNOWN) or {x.get('name') for x in items} != KNOWN:
         raise ValueError('INVALID_VENDOR_ITEMS')

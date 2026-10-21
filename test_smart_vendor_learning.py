@@ -14,6 +14,12 @@ class VendorLearningIntegrationTests(unittest.TestCase):
         self.assertEqual(set(report['verified']), {'watch-skill', 'mcp-video-analyzer', 'm3-agent', 'TaskMem'})
         self.assertEqual(report['predictive_weight'], 0.0)
 
+    def test_vendor_lock_tracks_canonical_current_execution_policy(self):
+        from smart_github_native_policy import POLICY_ID
+        lock = json.loads((Path(__file__).parent /
+                           "vendor/visual_learning/VENDOR_LOCK.json").read_text())
+        self.assertEqual(lock["production_policy"], POLICY_ID)
+
     def test_taskmem_original_normalization_is_callable(self):
         self.assertEqual(normalize_observation_entities('FACE_12 and face 9'), '<face_12> and <face_9>')
 
