@@ -83,3 +83,25 @@ def test_fake_actions_files_do_not_restore_execution_authority():
         registry = build_registry(root)
         assert registry["external_entrypoints"] == {}
         assert registry["gate"]["status"] == "FAIL"
+
+
+def test_f01_python_source_hashes_are_identical_for_lf_and_crlf_worktrees():
+    with tempfile.TemporaryDirectory() as scratch:
+        lf = Path(scratch, "lf")
+        crlf = Path(scratch, "crlf")
+        for root, newline in ((lf, b"\n"), (crlf, b"\r\n")):
+            root.mkdir()
+            (root / "smart_github_operator.py").write_bytes(
+                newline.join((b'STATIC_EXECUTION_DEPENDENCIES = ("smart_operator.py",)',
+                              b'if __name__ == "__main__":',
+                              b'    pass', b''))
+            )
+            (root / "smart_operator.py").write_bytes(newline.join(
+                (b'def run():', b'    return "ok"', b'')
+            ))
+        canonical = build_registry(lf)
+        checkout = build_registry(crlf)
+        assert canonical["inventory_sha256"] == checkout["inventory_sha256"]
+        left = {x["source_file"]: x["sha256"] for x in canonical["components"]}
+        right = {x["source_file"]: x["sha256"] for x in checkout["components"]}
+        assert left == right

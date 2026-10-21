@@ -278,7 +278,10 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        content_hashes[rel] = hashlib.sha256(raw).hexdigest()
+        # Python text may be checked out as CRLF by .gitattributes while
+        # canonical Git blobs use LF. Hash the same logical source on Windows
+        # and Linux; otherwise the persisted registry fails on a clean clone.
+        content_hashes[rel] = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
         except (SyntaxError, UnicodeDecodeError) as exc:
@@ -402,6 +405,7 @@ def build_registry(root: Path) -> dict:
                 "TEST", "ARCHIVE", "QUARANTINE", "UNCLASSIFIED"
             ],
             "production_definition": "Python module statically reachable from canonical CLI authorized for externally governed execution",
+            "python_source_sha256_normalization": "CRLF_TO_LF_BEFORE_HASHING",
             "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
             "runtime_execution_claimed": False,
         },

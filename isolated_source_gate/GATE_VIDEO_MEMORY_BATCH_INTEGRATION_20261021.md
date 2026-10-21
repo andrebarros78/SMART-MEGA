@@ -59,3 +59,17 @@
 - Gate presente na branch do PR #68. Suíte integral e validação
   prospectiva com dados físicos reais permanecem separadas; **sem
   promoção de `main` nem fonte CAIXA habilitada**.
+
+## Portabilidade dos registros de governança
+
+A instalação canônica inclui uma regra `.gitattributes` com
+`eol=crlf` para diversos arquivos Python. Sem normalização, o Git
+armazena blobs LF, mas F01 produz SHA-256 distintos nos checkouts CRLF,
+invalidando registros F01/F05/F10 de um commit perfeitamente limpo.
+Corrigido o cálculo da identidade dos **arquivos Python** para
+normalizar CRLF → LF antes de gerar hashes de componentes e inventário.
+O SHA-256 de checkpoint JSON de vídeo não é normalizado: sua proteção
+permanece estritamente byte a byte. Adicionado teste de igualdade de
+inventário para duas árvores Python semanticamente idênticas, uma LF
+e outra CRLF. Os registros F01/F05/F10 são reconstruídos com o novo
+contrato. Essa correção não declara execução dinâmica de ferramentas.
