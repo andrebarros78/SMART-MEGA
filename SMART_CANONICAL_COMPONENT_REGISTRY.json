@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "6cbf0b63bcbf83c79b1d775f5d5dd08bd045fb21f9d2c7da0851cf562a703840",
+  "source_reachability_inventory_sha256": "764661fc3580093cee78cf1a723511a8f2edc2bc247fd1106edafe368f54ccbc",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 526,
+    "component_count": 528,
     "active": 96,
     "shadow": 1,
-    "diagnostic": 227,
+    "diagnostic": 229,
     "validation_only": 25,
     "quarantined": 0,
     "deprecated": 1,
@@ -4702,6 +4702,32 @@
       "production_reachable": true
     },
     {
+      "component_id": "smart_b2_physical_learning_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_b2_physical_learning_gate.py",
+      "implementation_sha256": "65f6a1ad73051a0bf1fe4fba2c389fd1ce34fb3b1f1dac3533b83baec7b93eda",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "consumers": [
+        "test_smart_b2_physical_learning_gate"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smart_bounded_online_learning",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_bounded_online_learning.py",
@@ -9203,6 +9229,7 @@
       ],
       "consumers": [
         "isolated_source_gate.visual_evidence_memory",
+        "smart_b2_physical_learning_gate",
         "test_smart_vendor_learning",
         "test_smart_video_batch_memory_integration",
         "test_smart_video_learning_vendor_e2e",
@@ -9233,6 +9260,7 @@
         "smart_http_guard"
       ],
       "consumers": [
+        "smart_b2_physical_learning_gate",
         "smart_video_learning",
         "test_checkpoint_cache_pit",
         "test_smart_video_learning_vendor_e2e",
@@ -9895,6 +9923,30 @@
         "smart_sequential_prospective_proof",
         "test_smart_b2_evolution_20260909",
         "test_smart_independent_audit"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_b2_physical_learning_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_b2_physical_learning_gate.py",
+      "implementation_sha256": "476d114c88b267070704f21642683b061626109116a9267f1177983856605d68",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_visual_memory_gate"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -10791,7 +10843,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "328a88bbe5540a232df6768a0952d041664e95fbcfa3858743baca3640078643",
+      "implementation_sha256": "8c663cbb1f05b65462470b5bceda43a18ac42eb090a2de1cd22bfa556e1bef85",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13637,6 +13689,7 @@
         "smart_video_observation"
       ],
       "consumers": [
+        "test_smart_b2_physical_learning_gate",
         "test_smart_video_batch_memory_integration"
       ],
       "entrypoints": [],
@@ -13930,5 +13983,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "e21746b15e97e98222329e0b1c922444533aab4569d10b33bd40e82e48e0ccd0"
+  "registry_sha256": "0c4d735f7b20814a470a6b4565cadc549685f74496e0360d14c3a439cb5972e8"
 }

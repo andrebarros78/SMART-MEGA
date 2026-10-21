@@ -41,21 +41,21 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "6cbf0b63bcbf83c79b1d775f5d5dd08bd045fb21f9d2c7da0851cf562a703840",
+  "inventory_sha256": "764661fc3580093cee78cf1a723511a8f2edc2bc247fd1106edafe368f54ccbc",
   "summary": {
-    "python_components": 526,
+    "python_components": 528,
     "workflow_entrypoints": 0,
     "external_entrypoints": 1,
     "production_components": 96,
     "shadow_components": 1,
-    "diagnostic_components": 44,
+    "diagnostic_components": 45,
     "validation_components": 25,
-    "test_components": 184,
+    "test_components": 185,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 49,
+    "independent_entrypoints": 50,
     "import_cycles": 2,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -81,6 +81,7 @@
       "smart_50_round_simulation.py",
       "smart_adversarial_claim_audit.py",
       "smart_agent_ecosystem_governance.py",
+      "smart_b2_physical_learning_gate.py",
       "smart_canonical_component_registry.py",
       "smart_canonical_result_store_reconcile.py",
       "smart_canonical_root_rebind.py",
@@ -4432,6 +4433,30 @@
       "sha256": "06db061e83cc0a70660d41dc2f06c4f420177a1043f8ca65c56c8b76edfaae9d"
     },
     {
+      "component_id": "smart_b2_physical_learning_gate",
+      "source_file": "smart_b2_physical_learning_gate.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_b2_physical_learning_gate"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "65f6a1ad73051a0bf1fe4fba2c389fd1ce34fb3b1f1dac3533b83baec7b93eda"
+    },
+    {
       "component_id": "smart_bounded_online_learning",
       "source_file": "smart_bounded_online_learning.py",
       "role": "PRODUCTION",
@@ -8687,6 +8712,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "isolated_source_gate.visual_evidence_memory",
+        "smart_b2_physical_learning_gate",
         "test_smart_vendor_learning",
         "test_smart_video_batch_memory_integration",
         "test_smart_video_learning_vendor_e2e",
@@ -8717,6 +8743,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_b2_physical_learning_gate",
         "smart_video_learning",
         "test_checkpoint_cache_pit",
         "test_smart_video_learning_vendor_e2e",
@@ -9336,6 +9363,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "7fcf7035941978fe5696a9d5cda6927c699bcb5b69bec3408a6c68a4bbb71884"
+    },
+    {
+      "component_id": "test_smart_b2_physical_learning_gate",
+      "source_file": "test_smart_b2_physical_learning_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_visual_memory_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "476d114c88b267070704f21642683b061626109116a9267f1177983856605d68"
     },
     {
       "component_id": "test_smart_bounded_online_learning",
@@ -10163,7 +10212,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "328a88bbe5540a232df6768a0952d041664e95fbcfa3858743baca3640078643"
+      "sha256": "8c663cbb1f05b65462470b5bceda43a18ac42eb090a2de1cd22bfa556e1bef85"
     },
     {
       "component_id": "test_smart_f09_sdk_llm_selective",
@@ -12759,6 +12808,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "test_smart_b2_physical_learning_gate",
         "test_smart_video_batch_memory_integration"
       ],
       "reachable": false,
