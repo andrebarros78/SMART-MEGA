@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "6ae3ed95bff7a4fd8f761b466b1a77f26b7de039e500dac68b8bfba3978c91e6",
+  "source_reachability_inventory_sha256": "3a857cb595e5c3682130e57592984e244b4a41afe366a06b78427494b1fe8dba",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6287,10 +6287,13 @@
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
-        "test_smart_github_native_policy"
+        "smart_github_operator",
+        "test_smart_github_native_policy",
+        "test_smart_github_operator"
       ],
       "entrypoints": [
-        "smart_github_native_policy"
+        "smart_github_native_policy",
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6307,12 +6310,13 @@
       "component_id": "smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_operator.py",
-      "implementation_sha256": "9a1934826053f1dd0c2f8ac797cfe21f57bf28813a72b1c00e0169a69608f697",
+      "implementation_sha256": "47dd261592e65939d82d674fedfcaa8884116c5c50e949623d1035649e12b5c0",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_calibration_safety_gate",
         "smart_frozen_card_reader",
+        "smart_github_native_policy",
         "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -11607,11 +11611,12 @@
       "component_id": "test_smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_github_operator.py",
-      "implementation_sha256": "7d4dbc9aad7ebadb52dad21116705712b5e7feb07d4a05a83f5c8c5a53d8b0de",
+      "implementation_sha256": "3c99ee386c3ae4c76a25573dc72fd0c5ea47870c99328e653464e077bb1af50c",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_frozen_card_reader",
+        "smart_github_native_policy",
         "smart_github_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -14286,5 +14291,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "a221fb109f82075748eed275d897d0380375be5c0eaabb215206d8cbdcbddcf0"
+  "registry_sha256": "7f912c7e299c4fb850de02c693086073d04497342b567d5752ac1b1aa08bfde8"
 }
