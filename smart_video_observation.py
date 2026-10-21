@@ -719,14 +719,10 @@ def learned_motion_prior(
     # Bounded reads: checkpoints can be large, untrusted and concurrently written.
     # Prefer the most recent eligible past contests. Old/future files must
     # never consume the bounded reading budget.
-    prior_files: list[tuple[int, Path]] = []
-    for path in root.glob("contest_[0-9]*.json"):
-        part = path.stem.removeprefix("contest_")
-        if part.isascii() and part.isdecimal() and 1 <= len(part) <= 12:
-            order = int(part)
-            if order < target_n:
-                prior_files.append((order, path))
-    for _order, path in sorted(prior_files, key=lambda pair: pair[0], reverse=True)[:512]:
+    # Vendor-inspired staged indexing: enumerate metadata first, then validate
+    # the original checkpoint bytes/fingerprint/PIT below (never trust the index).
+    from isolated_source_gate.video_learning_fastpath import candidate_checkpoints
+    for path in candidate_checkpoints(root, target, limit=512):
         try:
             if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
                 continue
