@@ -127,6 +127,7 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
         raise ValueError("official result batch schema invalid")
     is_portal_transcription = obj["schema"] == portal_schema
     is_public = obj["schema"] == public_schema
+    is_api_claim = not (is_public or is_portal_transcription)
     expected_authority = (
         portal_authority if is_portal_transcription
         else public_authority if is_public
@@ -147,6 +148,14 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
         or obj.get("capture_transport") != "TWO_PUBLIC_WEB_SOURCES_CROSS_CHECK"
     ):
         raise ValueError("public results cannot claim API or scientific authority")
+    if is_api_claim and (
+        obj.get("raw_api_independently_verified") not in (None, False)
+        or obj.get("scientific_certification_authorized") is True
+        or obj.get("predictive_weight_change_authorized") is True
+    ):
+        # A writable, self-hashed JSON file cannot attest HTTP transport,
+        # independent official origin or predictive/scientific authority.
+        raise ValueError("self-declared API transport or scientific authority is unverified")
     observed = obj.get("sha256")
     body = dict(obj); body.pop("sha256", None)
     if not isinstance(observed, str) or observed != _sha_json(body):
@@ -173,8 +182,8 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
         elif is_portal_transcription:
             if row.get("source") != "CAIXA_PORTAL_TRANSCRIPTION":
                 raise ValueError("portal batch result source invalid")
-        elif row.get("source") in {"OPERATOR", "CAIXA_PORTAL_TRANSCRIPTION", "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL"}:
-            raise ValueError("API result batch source cannot be a transcription")
+        elif row.get("source") not in {None, "CAIXA_CONTEST_API"}:
+            raise ValueError("API result batch source is not an accepted unverified claim")
         if target in payloads:
             raise ValueError("official result batch contains duplicate target")
         payloads[target] = row
@@ -200,11 +209,17 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
                     raise ValueError("public result crosscheck provenance mismatch")
     evidence = {
         "schema": obj["schema"],
-        "raw_api_independently_verified": False if is_portal_transcription or is_public else None,
+        # The hash authenticates local file consistency, NOT a network fetch.
+        "raw_api_independently_verified": False,
+        "official_transport_attested": False,
+        "scientific_certification_authorized": False,
+        "predictive_weight_change_authorized": False,
+        "declared_authority": obj["authority"],
         "file": batch_path.name,
         "file_sha256": sha256_file(batch_path),
         "document_sha256": observed,
-        "authority": obj["authority"],
+        "authority": ("CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT"
+                      if is_api_claim else obj["authority"]),
         "retrieved_at_utc": obj.get("retrieved_at_utc"),
         "capture_transport": obj.get("capture_transport"),
         "targets": ordered,

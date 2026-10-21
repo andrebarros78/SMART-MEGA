@@ -147,6 +147,11 @@ def test_official_payload_batch_is_self_hashed_contiguous_and_endpoint_bound(tmp
     assert sorted(payloads) == [3, 4]
     assert evidence["document_sha256"] == batch["sha256"]
     assert evidence["targets"] == [3, 4]
+    assert evidence["authority"] == "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT"
+    assert evidence["declared_authority"] == "CAIXA_LOTERIAS_OFFICIAL_API"
+    assert evidence["raw_api_independently_verified"] is False
+    assert evidence["scientific_certification_authorized"] is False
+    assert evidence["predictive_weight_change_authorized"] is False
 
 
 def test_catchup_finishes_adjudicated_learning_before_history_advance(tmp_path, monkeypatch):
@@ -288,3 +293,78 @@ def test_catchup_rejects_incoherent_hold_before_history_read(tmp_path, monkeypat
     )
     with pytest.raises(ValueError, match="HOLD lifecycle"):
         catchup.catch_up_missed_results(tmp_path, through_target=11)
+
+
+def test_locally_self_hashed_caixa_batch_cannot_claim_independent_transport(tmp_path):
+    import hashlib
+    import pytest
+
+    batch = {
+        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+        "capture_transport": "OPERATOR_TYPED_CLAIM_NOT_HTTP_PROOF",
+        "raw_api_independently_verified": True,
+        "results": [
+            {**_payload(3, "05/09/2026", [13, 14, 15, 16, 17, 18]),
+             "source": "CAIXA_CONTEST_API",
+             "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3"},
+        ],
+    }
+    batch["sha256"] = hashlib.sha256(json.dumps(
+        batch, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode()).hexdigest()
+    file = tmp_path / "forged-selfhash.json"
+    file.write_text(json.dumps(batch), encoding="utf-8")
+    with pytest.raises(ValueError, match="self-declared|transport"):
+        catchup.load_official_payload_batch(file)
+
+
+def test_caixa_api_url_and_claimed_capture_alone_cannot_promote_authority(tmp_path):
+    import hashlib
+
+    batch = {
+        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+        "capture_transport": "FAKE_CAIXA_HTTP_200",
+        "capture_status_http": 200,
+        "retrieved_at_utc": "2026-09-09T12:00:00Z",
+        "results": [
+            {**_payload(3, "05/09/2026", [13, 14, 15, 16, 17, 18]),
+             "source": "CAIXA_CONTEST_API",
+             "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3"},
+        ],
+    }
+    batch["sha256"] = hashlib.sha256(json.dumps(
+        batch, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode()).hexdigest()
+    file = tmp_path / "claim.json"
+    file.write_text(json.dumps(batch), encoding="utf-8")
+    rows, evidence = catchup.load_official_payload_batch(file)
+    assert rows[3]["source"] == "CAIXA_CONTEST_API"
+    assert evidence["authority"] == "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT"
+    assert evidence["raw_api_independently_verified"] is False
+    assert evidence["capture_transport"] == "FAKE_CAIXA_HTTP_200"
+    assert evidence["official_transport_attested"] is False
+
+
+def test_caixa_api_batch_rejects_unsupported_source_label(tmp_path):
+    import hashlib
+    import pytest
+
+    batch = {
+        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+        "results": [
+            {**_payload(3, "05/09/2026", [13, 14, 15, 16, 17, 18]),
+             "source": "FAKE_CAIXA_API_VERIFIED",
+             "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3"},
+        ],
+    }
+    batch["sha256"] = hashlib.sha256(json.dumps(
+        batch, ensure_ascii=False, sort_keys=True, separators=(",", ":")
+    ).encode()).hexdigest()
+    file = tmp_path / "unknown-source.json"
+    file.write_text(json.dumps(batch), encoding="utf-8")
+    with pytest.raises(ValueError, match="API result batch source"):
+        catchup.load_official_payload_batch(file)
+

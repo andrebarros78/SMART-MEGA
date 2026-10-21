@@ -102,7 +102,14 @@ def complete_to_model_card(root: str | Path, target: int,
                 row.get("source") != "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL" for row in payloads.values()
             ):
                 raise ValueError("public corroboration must remain non-API-verified")
-        elif batch_authority != "CAIXA_LOTERIAS_OFFICIAL_API":
+        elif batch_authority == "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT":
+            if (evidence.get("raw_api_independently_verified") is not False
+                    or any(row.get("source") not in {None, "CAIXA_CONTEST_API"}
+                           for row in payloads.values())):
+                raise ValueError("local CAIXA API claim must remain non-API-verified")
+        elif batch_authority == "CAIXA_LOTERIAS_OFFICIAL_API":
+            raise ValueError("self-declared official API transport is not independent evidence")
+        else:
             raise ValueError("official batch lacks validated source and exact target sequence")
 
     if state in {"FROZEN", "ADJUDICATED"}:

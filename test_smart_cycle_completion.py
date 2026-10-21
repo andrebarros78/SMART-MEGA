@@ -18,7 +18,8 @@ class TestCycleCompletion(unittest.TestCase):
                          "target_contest": 3073, "numbers": [2, 11, 20, 34, 43, 60],
                          "result_used_in_generation": False}
         batch = ({3072: {"numero": 3072, "listaDezenas": ["02", "06", "09", "16", "31", "40"]}},
-                 {"authority": "CAIXA_LOTERIAS_OFFICIAL_API", "targets": [3072]})
+                 {"authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+                  "raw_api_independently_verified": False, "targets": [3072]})
 
         def lifecycle(root):
             return dict(state_record)
@@ -176,6 +177,47 @@ class TestCycleCompletion(unittest.TestCase):
                  "raw_api_independently_verified": True, "targets": [3072]})
             with self.assertRaisesRegex(ValueError, "non-API-verified"):
                 cycle.complete_to_model_card(Path(root), 3073, "portal.json", handlers)
+        self.assertNotIn(("complete-result", 3071), calls)
+
+    def test_local_api_claim_is_operational_but_not_independently_verified(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda path: (
+                {3072: {"numero": 3072, "source": "CAIXA_CONTEST_API"}},
+                {"authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+                 "declared_authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+                 "raw_api_independently_verified": False,
+                 "official_transport_attested": False, "targets": [3072]})
+            result = cycle.complete_to_model_card(
+                Path(root), 3073, "local-claim.json", handlers
+            )
+        self.assertEqual(result["status"], "MODEL_CARD_GENERATED")
+        self.assertIn(("catch-up", 3072, "local-claim.json"), calls)
+
+    def test_self_declared_caixa_api_authority_cannot_bypass_provenance(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda _: (
+                {3072: {"numero": 3072, "source": "CAIXA_CONTEST_API"}},
+                {"authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+                 "raw_api_independently_verified": True, "targets": [3072]})
+            with self.assertRaisesRegex(ValueError, "self-declared|transport"):
+                cycle.complete_to_model_card(
+                    Path(root), 3073, "untrusted-batch.json", handlers
+                )
+        self.assertNotIn(("complete-result", 3071), calls)
+
+    def test_downgraded_batch_rejects_fabricated_verified_flag(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda _: (
+                {3072: {"numero": 3072, "source": "CAIXA_CONTEST_API"}},
+                {"authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+                 "raw_api_independently_verified": True, "targets": [3072]})
+            with self.assertRaisesRegex(ValueError, "non-API-verified"):
+                cycle.complete_to_model_card(
+                    Path(root), 3073, "forged-batch.json", handlers
+                )
         self.assertNotIn(("complete-result", 3071), calls)
 
     def test_unconfirmed_complete_result_stops_without_catchup(self):
