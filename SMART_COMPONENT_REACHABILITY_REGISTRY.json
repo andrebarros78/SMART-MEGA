@@ -41,21 +41,21 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "7e3c6f1c17e0b6791b3131b20f1e7330017415e727d7f54150032d030460e685",
+  "inventory_sha256": "17468630fd50e8a976cdf818dcdf176d40a020facfd78dc1064561006fda3931",
   "summary": {
-    "python_components": 528,
+    "python_components": 530,
     "workflow_entrypoints": 0,
     "external_entrypoints": 1,
     "production_components": 96,
     "shadow_components": 1,
-    "diagnostic_components": 45,
+    "diagnostic_components": 46,
     "validation_components": 25,
-    "test_components": 185,
+    "test_components": 186,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 50,
+    "independent_entrypoints": 51,
     "import_cycles": 2,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -125,7 +125,8 @@
       "smart_signal_drift_calibration.py",
       "smart_v2_production.py",
       "smart_video_learning.py",
-      "smart_video_observation.py"
+      "smart_video_observation.py",
+      "smart_video_official_media_admission.py"
     ]
   },
   "import_cycles": [
@@ -4440,11 +4441,13 @@
       "entrypoints": [],
       "producers": [
         "smart_video_learning",
-        "smart_video_observation"
+        "smart_video_observation",
+        "smart_video_official_media_admission"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_b2_physical_learning_gate"
+        "test_smart_b2_physical_learning_gate",
+        "test_smart_video_official_media_admission"
       ],
       "reachable": false,
       "production_reachable": false,
@@ -4454,7 +4457,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "f0262addbf1a7ec3474401802adbc960ac00c5a72c59f7b00bd01beea1b3831c"
+      "sha256": "28556af759353730d0eb26acedbf8b3b7af29e6017cc7b7e91a75ecee2e26baf"
     },
     {
       "component_id": "smart_bounded_online_learning",
@@ -8760,6 +8763,28 @@
       "sha256": "98d0195abf81aeff5a257e0ccd4b3f4adc47103385d82700c1f11d9cfe90f06f"
     },
     {
+      "component_id": "smart_video_official_media_admission",
+      "source_file": "smart_video_official_media_admission.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_video_official_media_admission"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "2e9c0e715854706206ca9e6656e040b95c217bce30900c6d64ef2178ba9e0802"
+    },
+    {
       "component_id": "smart_video_vendor",
       "source_file": "smart_video_vendor.py",
       "role": "DIAGNOSTIC",
@@ -10212,7 +10237,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "8c663cbb1f05b65462470b5bceda43a18ac42eb090a2de1cd22bfa556e1bef85"
+      "sha256": "18e1a4893937ad90ccad4d927093775c24355b4dfadb1ad305c0273c0de46a7e"
     },
     {
       "component_id": "test_smart_f09_sdk_llm_selective",
@@ -12795,6 +12820,28 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "9e9cd016567c5c8b2a9f06b828f5f96a7e2c56894b34759c00c36c6ba7ac89bf"
+    },
+    {
+      "component_id": "test_smart_video_official_media_admission",
+      "source_file": "test_smart_video_official_media_admission.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_b2_physical_learning_gate",
+        "smart_video_official_media_admission"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "dc40b553ae60280f9bf55112e47e81d1b2c49652d31a68b294222687f3fe7c75"
     },
     {
       "component_id": "test_smart_visual_memory_gate",

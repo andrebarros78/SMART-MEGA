@@ -77,6 +77,8 @@ def audit_b2_physical_learning(
     cutoff_utc: str,
     *,
     expected_count: int = 13,
+    official_queue_dir: str | Path | None = None,
+    official_probe: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     target = str(target_contest)
     if not target.isascii() or not target.isdecimal() or int(target) < 1:
@@ -87,6 +89,19 @@ def audit_b2_physical_learning(
 
     root = Path(checkpoint_dir)
     result = _result("PHYSICAL_SOURCE_UNAVAILABLE", root, target, cutoff, expected_count)
+    if official_queue_dir is not None:
+        from smart_video_official_media_admission import audit_official_media_admission
+        admission = audit_official_media_admission(
+            official_queue_dir, target, probe=official_probe,
+        )
+        result["official_media_admission"] = admission
+        # Never ingest a purported official B2 checkpoint when the queue's
+        # source-access authority is blocked, absent, or unverified. The
+        # metadata-only source gate is intentionally incapable of granting
+        # authorization to create checkpoints.
+        result["status"] = admission["status"]
+        result["source_classification"] = "OFFICIAL_SOURCE_NOT_ADMITTED"
+        return result
     # B2 has historical fixture roots explicitly named SYNTHETIC_ONLY_13 and
     # SYNTHETIC_ONLY_OFFICIAL_QUEUE_13. Do not treat successful JSON parses
     # as proof of real physical draw-video observations.
@@ -214,10 +229,23 @@ def main() -> int:
     parser.add_argument("--target-contest", required=True)
     parser.add_argument("--cutoff-utc", required=True)
     parser.add_argument("--expected-count", type=int, default=13)
+    parser.add_argument("--official-queue-dir",
+                        help="B2 official queue root; enforces existing source gate before frame consumption")
+    parser.add_argument("--official-probe-json",
+                        help="Public metadata probe receipt only; never a cookie or a source release")
     args = parser.parse_args()
+    if args.official_probe_json and not args.official_queue_dir:
+        parser.error("--official-probe-json requires --official-queue-dir")
+    probe = None
+    if args.official_probe_json:
+        probe_path = Path(args.official_probe_json)
+        if probe_path.is_symlink() or not probe_path.is_file() or probe_path.stat().st_size > 32768:
+            parser.error("official probe receipt missing, symlinked or oversized")
+        probe = json.loads(probe_path.read_text("utf-8"))
     result = audit_b2_physical_learning(
         args.checkpoint_dir, args.target_contest, args.cutoff_utc,
         expected_count=args.expected_count,
+        official_queue_dir=args.official_queue_dir, official_probe=probe,
     )
     print(json.dumps(result, ensure_ascii=False, indent=2))
     return 0 if result["status"] == "OBSERVATIONAL_SHADOW_ONLY" else 2

@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "7e3c6f1c17e0b6791b3131b20f1e7330017415e727d7f54150032d030460e685",
+  "source_reachability_inventory_sha256": "17468630fd50e8a976cdf818dcdf176d40a020facfd78dc1064561006fda3931",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 528,
+    "component_count": 530,
     "active": 96,
     "shadow": 1,
-    "diagnostic": 229,
+    "diagnostic": 231,
     "validation_only": 25,
     "quarantined": 0,
     "deprecated": 1,
@@ -4705,15 +4705,17 @@
       "component_id": "smart_b2_physical_learning_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_b2_physical_learning_gate.py",
-      "implementation_sha256": "f0262addbf1a7ec3474401802adbc960ac00c5a72c59f7b00bd01beea1b3831c",
+      "implementation_sha256": "28556af759353730d0eb26acedbf8b3b7af29e6017cc7b7e91a75ecee2e26baf",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_video_learning",
-        "smart_video_observation"
+        "smart_video_observation",
+        "smart_video_official_media_admission"
       ],
       "consumers": [
-        "test_smart_b2_physical_learning_gate"
+        "test_smart_b2_physical_learning_gate",
+        "test_smart_video_official_media_admission"
       ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
@@ -9279,6 +9281,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "smart_video_official_media_admission",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_official_media_admission.py",
+      "implementation_sha256": "2e9c0e715854706206ca9e6656e040b95c217bce30900c6d64ef2178ba9e0802",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_video_official_media_admission"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smart_video_vendor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_video_vendor.py",
@@ -10843,7 +10869,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "8c663cbb1f05b65462470b5bceda43a18ac42eb090a2de1cd22bfa556e1bef85",
+      "implementation_sha256": "18e1a4893937ad90ccad4d927093775c24355b4dfadb1ad305c0273c0de46a7e",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13678,6 +13704,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_video_official_media_admission",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_video_official_media_admission.py",
+      "implementation_sha256": "dc40b553ae60280f9bf55112e47e81d1b2c49652d31a68b294222687f3fe7c75",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_b2_physical_learning_gate",
+        "smart_video_official_media_admission"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_visual_memory_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_visual_memory_gate.py",
@@ -13983,5 +14033,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "8e1cb06fbb7ae952456926e8558047ab53b2347794495080da712b806ddd7fbf"
+  "registry_sha256": "0f6eed4e2b1cb5d205c999dadb34c1a5787ae8d21552a640c5c140c063c78841"
 }
