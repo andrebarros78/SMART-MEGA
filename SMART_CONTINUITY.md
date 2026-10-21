@@ -1,3 +1,9 @@
+# Aviso de supersessão — SMART_GITHUB_NATIVE_ONLY_20261021
+
+Este arquivo contém registro histórico, **não instruções operacionais atuais**. Para SMART-MEGA V6, a única autoridade ativa é GitHub `andrebarros78/SMART-MEGA`, branch `main`, conforme `AGENTS.md` e `SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md` seção 13. Indicações antigas de retomada em PC, VPS, LMCP, rede federada ou checkout local foram revogadas. Execução e testes somente no GitHub Actions com runners hospedados pelo GitHub. Não confundir relatos passados com permissões presentes.
+
+---
+
 # SMART-MEGA — continuidade canônica (09/10/2026)
 
 Repositório: GitHub `andrebarros78/SMART-MEGA`, branch `main`. A raiz de execução é o Git top-level do checkout atual. O código preditivo não teve pesos alterados.
