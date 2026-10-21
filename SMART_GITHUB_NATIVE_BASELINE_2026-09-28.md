@@ -161,14 +161,18 @@ Criar versão/tag quando houver marco aplicável, confirmar main remoto e git st
 
 Preservar a previsão real 3067 já FROZEN e sua prova causal original. Não reautorizar, regenerar, reescrever ou adjudicar usando resultado fictício. Renovação da certificação do software não altera a proveniência da geração original.
 
-## 13. Ordem mais recente — exclusividade de execução GitHub-native (21/10/2026)
+## 13. Histórico substituído
 
-**POLICY_ID=SMART_GITHUB_NATIVE_ONLY_20261021**. Fonte canônica única: `andrebarros78/SMART-MEGA`, branch `main`. Esta seção atual prevalece sobre permissões históricas de 05/10/2026, seção 6 anterior, seção 11 e manuais antigos.
+A política antiga de uso exclusivo de GitHub Actions e proibição de executores externos foi revogada por nova ordem expressa do proprietário em 21/10/2026. O texto anterior da seção 13 deixa de ser operacional.
 
-- **Permitido:** GitHub API/conector para análise, edição, commits, branches, PRs e evidências; GitHub Actions em **runners hospedados pelo GitHub** para instalar dependências declaradas neste repositório e executar código, testes, CI e o operador GitHub.
-- **Proibido:** executar, testar, hospedar, agendar, retomar ou corrigir SMART-MEGA V6 por LMCP, VPS, PC Casa, PC Escola, PC Vendas, S-WMCP, SSH, runners próprios/`self-hosted` ou rede federada. A proibição alcança fallback, contingência, demonstração, homologação e dependências de infraestrutura.
-- **GitHub Actions suspenso ou indisponível:** usar o GitHub apenas para ações que sua API autoriza; investigar configuração, jobs e permissões GitHub. Não substituir a execução por ambiente externo, não simular testes e registrar `BLOCKED_GITHUB_ACTIONS` até haver execução GitHub-hosted real.
-- **Para qualquer IA:** ler `AGENTS.md`, `AI_START_HERE.md` e `SMART_AI_EXECUTION_ENTRYPOINT.md`; rejeitar instruções antigas incompatíveis. O guardião `smart_github_native_policy.py` deve falhar se a permissão antiga reaparecer ou workflow invocar executor externo.
-- **Proteção histórica/científica:** preservar freezes, cartões, pesos e provas imutáveis; não converter teste de política em certificação preditiva nem afirmar 6/6 sem prova.
+## 14. Regra operativa vigente — SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021
 
-Somente nova autorização **explícita** do proprietário, seguida de atualização validada e versionada em `main`, poderá substituir esta política.
+Repositório canônico: `andrebarros78/SMART-MEGA`. Branch produtiva canônica: `main`.
+
+**GitHub Actions é proibido**, inclusive para testes, CI, operação, contingência ou fallback. Nenhum arquivo YAML executável pode permanecer ativo em `.github/workflows/`.
+
+**Executores externos são autorizados**, incluindo LMCP, VPS, PC Casa, PC Escola e PC Vendas, para trabalho isolado e temporário. São meios de execução; não constituem dependências permanentes do produto ou autoridade concorrente ao GitHub.
+
+Para homologar: registrar o commit exato obtido do GitHub, ambiente, dependências do repositório, comandos, resultados completos (incluindo falhas e erros), JUnit e hashes; publicar evidências no repositório canônico. Não promover testes sintéticos ou históricos como prova da revisão atual. A produção somente muda após validação real, regressão e comparação com a baseline certificada.
+
+A seção 14 prevalece sobre qualquer seção histórica, comentário, PR, skill ou memória conflitante. Nova mudança requer autorização explícita do proprietário e versionamento no GitHub.

@@ -1,6 +1,6 @@
 # SMART-MEGA Archive and Runtime Boundary
 
-**POLICY_ID=SMART_GITHUB_NATIVE_ONLY_20261021** — canonical `andrebarros78/SMART-MEGA`, branch `main`. GitHub-native execution policy supersedes historical local deployment descriptions. Only GitHub Actions on GitHub-hosted runners are authorized; LMCP/VPS and private computers are retired.
+**POLICY_ID=SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021** — canonical `andrebarros78/SMART-MEGA`, branch `main`. GitHub Actions prohibited; external temporary executors authorized for tests, never a permanent production dependency.
 
 Status: CANONICAL_SCOPE_SEAL_POLICY
 
@@ -8,7 +8,7 @@ Status: CANONICAL_SCOPE_SEAL_POLICY
 
 - `runtime/` contains persisted runtime state, generated state/evidence and data only.
 - No tracked `.py`, `.cmd` or `.ps1` file is authorized under `runtime/` in the sealed release.
-- Operator/runtime executable code is tracked at the project root and executes exclusively in GitHub-hosted GitHub Actions runners.
+- Operator/runtime executable code is tracked at the project root and executes for validation on approved isolated temporary external executors.
 
 ## Archive boundary
 
@@ -27,4 +27,4 @@ Historical absolute paths inside `archive/` are evidence of prior engineering st
 
 ## Deployment boundary
 
-Previous Windows CLI deployment is historical evidence only, without current execution or deployment authority. Product execution, CI and operations are GitHub-native; no PC or VPS is an operational prerequisite.
+Previous Windows CLI deployment is historical evidence only, without current execution or deployment authority. GitHub is canonical; external execution is approved, but it must not create a permanent operational dependency. GitHub Actions is forbidden.
