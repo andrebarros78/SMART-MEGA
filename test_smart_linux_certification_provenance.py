@@ -69,7 +69,8 @@ class TestLinuxProvenance(unittest.TestCase):
                             "https://github.com/andrebarros78/SMART-MEGA.git"],
                            cwd=root, check=True)
             with self.assertRaisesRegex(PermissionError, "retired"):
-                fn(root, "a" * 40, str(uuid.uuid4()), "wmcp-cloud-01")
+                fn(root, "a" * 40, str(uuid.uuid4()), "wmcp-cloud-01",
+                   executor_kind="FEDERATED_PC")
 
     def test_product_certifier_validates_exact_linux_execution(self):
         fn = extracted("smart_product_certification.py", "regression_source_binding",

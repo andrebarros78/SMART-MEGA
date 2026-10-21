@@ -140,10 +140,20 @@ def test_regression_source_binding_rejects_source_drift(tmp_path: Path) -> None:
     junit = tmp_path / "SMART_AUDIT_JUNIT_CURRENT.xml"
     junit.write_text("<testsuites><testsuite tests='1' failures='0' errors='0' skipped='0'><testcase classname='x' name='y'/></testsuite></testsuites>", encoding="utf-8")
     fp = certification.code_fingerprint(tmp_path)
+    # The old GitHub Actions receipt can never certify current code.
+    # A correctly shaped external receipt must still fail on source drift.
+    from uuid import uuid4
+    execution_id = str(uuid4())
     authority = {
         "certified_source_commit": source,
-        "certified_ci_run_id": "123",
-        "certified_execution": {"kind": "GITHUB_ACTIONS", "run_id": "123"},
+        "certified_ci_run_id": execution_id,
+        "certified_execution": {
+            "kind": "EXTERNAL_GOVERNED_EXECUTOR",
+            "execution_id": execution_id,
+            "hostname": "test-executor",
+            "source_commit": source,
+            "origin": "https://github.com/andrebarros78/SMART-MEGA.git",
+        },
         "certified_source_code_fingerprint_sha256": fp["sha256"],
         "certified_regression_junit_sha256": sha256_file(junit),
     }

@@ -314,7 +314,7 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certi
                     "from smart_github_certify import refresh; "
                     "report=refresh(Path.cwd(), Path('SMART_AUDIT_JUNIT_CANDIDATE.xml'), "
                     "sys.argv[1], sys.argv[2], executor_host=socket.gethostname(), "
-                    "executor_kind='LMCP_LINUX_VPS'); print(json.dumps(report,ensure_ascii=False))"
+                    "executor_kind='EXTERNAL_GOVERNED_EXECUTOR'); print(json.dumps(report,ensure_ascii=False))"
                 )
                 certificate = subprocess.run(
                     [sys.executable, "-E", "-c", script,
@@ -329,7 +329,7 @@ def execute(root: Path, profile: str, *, evidence_dir: Path | None = None, certi
                 verified = (certificate.returncode == 0
                             and certified.get("status") == "CONSTRUCTION_PROVEN"
                             and certified.get("source_commit") == provenance["source_commit"]
-                            and certified.get("execution", {}).get("kind") == "LMCP_LINUX_VPS"
+                            and certified.get("execution", {}).get("kind") == "EXTERNAL_GOVERNED_EXECUTOR"
                             and certified.get("tests") == base["test_count"])
                 base.update({
                     "status": "PASS" if verified else "FAIL",
