@@ -33,8 +33,12 @@ def _authority(path: Path) -> None:
 
 
 def _junit(path: Path, *, failures: int = 0) -> None:
+    cases = ''.join(
+        f'<testcase name="case_{index}">' + ('<failure/>' if index < failures else '')
+        + '</testcase>' for index in range(7)
+    )
     path.write_text(
-        f'<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="{failures}" skipped="0" tests="7" time="1.0"></testsuite></testsuites>',
+        f'<?xml version="1.0" encoding="utf-8"?><testsuites name="pytest tests"><testsuite name="pytest" errors="0" failures="{failures}" skipped="0" tests="7" time="1.0">{cases}</testsuite></testsuites>',
         encoding="utf-8",
     )
 

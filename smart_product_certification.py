@@ -8,7 +8,7 @@ import socket
 import re
 import subprocess
 from datetime import datetime, timezone
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 
 from smart_source_identity import sha256_source_bytes, sha256_source_file
@@ -36,19 +36,19 @@ def _sha256_json(value: Any) -> str:
 
 
 def _code_files(root: Path) -> list[Path]:
-    files = sorted(set(root.glob("smart_*.py")) | set(root.glob("test_*.py")))
+    files = sorted(set(root.glob("smart_*.py")) | set(root.glob("test_*.py")) | set((root / "tests").rglob("*.py")))
     authority_files = tuple(CRITICAL_SOURCE_FILES) + AUXILIARY_CODE_FILES
-    metadata_files = ("requirements.txt", "requirements.lock.txt", "smart_python.cmd", "pytest.ini", "SMART_DATA_CONTRACT.md")
+    metadata_files = ("requirements.txt", "requirements.lock.txt", "smart_python.cmd", "pytest.ini", "conftest.py", "SMART_DATA_CONTRACT.md")
     for name in authority_files + metadata_files:
         p = root / name
         if p.is_file():
             files.append(p)
     # Explicit name ordering keeps the fingerprint identical on Windows and POSIX.
-    return sorted(set(files), key=lambda path: path.name)
+    return sorted(set(files), key=lambda path: path.relative_to(root).as_posix())
 
 
 def code_fingerprint(root: Path) -> dict[str, Any]:
-    rows = [{"path": p.name, "sha256": sha256_source_file(p)} for p in _code_files(root)]
+    rows = [{"path": p.relative_to(root).as_posix(), "sha256": sha256_source_file(p)} for p in _code_files(root)]
     return {"file_count": len(rows), "files": rows, "sha256": _sha256_json(rows)}
 
 
@@ -112,15 +112,25 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
     source = authority.get("certified_source_commit")
     run_id = authority.get("certified_ci_run_id")
     execution = authority.get("certified_execution")
-    # Old federated/VPS or unattributed receipts remain historical evidence,
-    # never a source of fresh certification under SMART_GITHUB_NATIVE_ONLY_20261021.
+    # Accept only the new governed contract. Historic GitHub Actions, LMCP
+    # labels and self-declared/partial identities cannot gain fresh authority.
     execution_valid = (
         isinstance(execution, dict)
-        and execution.get("kind") == "GITHUB_ACTIONS"
+        and execution.get("kind") == "EXTERNAL_GOVERNED_EXECUTOR"
         and isinstance(run_id, str)
-        and run_id.isdecimal()
-        and int(run_id) > 0
-        and execution.get("run_id") == run_id
+        and re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            run_id) is not None
+        and execution.get("execution_id") == run_id
+        and execution.get("source_commit") == source
+        and isinstance(execution.get("hostname"), str)
+        and bool(execution.get("hostname"))
+        and execution.get("origin") in {
+            "https://github.com/andrebarros78/SMART-MEGA.git",
+            "https://github.com/andrebarros78/SMART-MEGA",
+            "git@github.com:andrebarros78/SMART-MEGA.git",
+            "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+        }
     )
     recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
     checks = {
@@ -139,7 +149,10 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
             matches = True
             for row in fingerprint.get("files", []):
                 path = row.get("path")
-                if not isinstance(path, str) or "/" in path or path in {"", ".", ".."}:
+                if (not isinstance(path, str) or not path or "\\" in path
+                        or PurePosixPath(path).is_absolute()
+                        or ".." in PurePosixPath(path).parts
+                        or path != PurePosixPath(path).as_posix() or path == "."):
                     matches = False
                     break
                 blob = subprocess.run(["git", "show", f"{source}:{path}"],

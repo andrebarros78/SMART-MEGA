@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import smart_canonical_identity as _test_identity
+
 import hashlib
 import json
 import os
@@ -238,11 +240,7 @@ def reconcile(root: str | Path, target: int | None = None, *, include_authority_
 
 
 def _pytest_sandbox_root(root: str | Path) -> bool:
-    try:
-        text = str(Path(root).resolve()).lower()
-        return "pytest-" in text
-    except Exception:
-        return False
+    return _test_identity._authorized_pytest_sandbox(root)
 
 def assert_reconciled(root: str | Path, target: int | None = None, *, operation: str = "MUTATION") -> dict[str, Any]:
     if _pytest_sandbox_root(root):

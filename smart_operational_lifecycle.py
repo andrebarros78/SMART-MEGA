@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import smart_canonical_identity as _test_identity
+
 from smart_crash_safe_io import atomic_write_text
 import hashlib, json, os, tempfile
 from datetime import datetime, timezone
@@ -19,11 +21,7 @@ class LifecycleError(RuntimeError):
     pass
 
 def _pytest_sandbox_root(root: str | Path) -> bool:
-    try:
-        text = str(Path(root).resolve()).lower()
-        return "pytest-" in text
-    except Exception:
-        return False
+    return _test_identity._authorized_pytest_sandbox(root)
 
 def _synthetic_lifecycle(state: str, target_contest: int | None = None) -> dict[str, Any]:
     doc={"schema":SCHEMA,"state":state,"revision":1,"project":"SMART-MEGA","effective_version":"6.3.2","target_contest":target_contest,"completed_contest":None,"previous_state":None,"transition":"PYTEST_SANDBOX_SYNTHETIC","transition_actor":"pytest_sandbox","transition_utc":datetime.now(timezone.utc).isoformat(),"previous_lifecycle_sha256":None,"authority":"PYTEST_SANDBOX_ONLY","legacy_documents_are_evidence_not_authority":True,"migration_mode":"PYTEST_SANDBOX"}
@@ -92,6 +90,8 @@ def load_lifecycle(root: str | Path) -> dict[str, Any]:
                     pass
             return _synthetic_lifecycle(state, target)
         raise
+    if doc.get("authority") == "PYTEST_SANDBOX_ONLY" and not _pytest_sandbox_root(root):
+        raise LifecycleError("synthetic test lifecycle has no operational authority")
     if doc.get("state") not in STATES: raise LifecycleError(f"unsupported lifecycle state: {doc.get('state')}")
     if not isinstance(doc.get("revision"),int) or doc["revision"] < 1: raise LifecycleError("invalid lifecycle revision")
     return doc

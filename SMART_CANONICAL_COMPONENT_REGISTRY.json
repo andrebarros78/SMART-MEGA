@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "3a857cb595e5c3682130e57592984e244b4a41afe366a06b78427494b1fe8dba",
+  "source_reachability_inventory_sha256": "39624520b160d86664a1693ea762f2414702554747a5e2a51bbf5563e91b96fa",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 530,
+    "component_count": 534,
     "active": 112,
     "shadow": 1,
-    "diagnostic": 217,
+    "diagnostic": 221,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4094,12 +4094,13 @@
       "component_id": "conftest",
       "type": "PYTHON_COMPONENT",
       "implementation": "conftest.py",
-      "implementation_sha256": "dd12d3d49e34a25a415a0ce284feaaa7bb2b89544d144771bc911ece80a309ad",
+      "implementation_sha256": "7363cb9fc509212f8ab4acb73874d440e40aa833efa96c3ae54aae8da104f4f1",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_3054_terminal_executor",
         "smart_agent_skill_orchestration",
+        "smart_canonical_identity",
         "smart_full_process_pipeline",
         "smart_learning_epoch_reset",
         "smart_operator"
@@ -4535,7 +4536,7 @@
       "component_id": "smart_agent_skill_orchestration",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_agent_skill_orchestration.py",
-      "implementation_sha256": "55a2cd7894820adcf091d52158c3ea8a7b6923102d40d395ee4f3e8cf4ef1b43",
+      "implementation_sha256": "de0cf9980cf6c2136fffc5f8de58fb23e3c95ec5197d1ab6ec84b4beeb8849a4",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4796,11 +4797,12 @@
       "component_id": "smart_canonical_identity",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_canonical_identity.py",
-      "implementation_sha256": "161e7aa1d5f037351825670e34efba83230fa7836035a386ecc614e1b913efe1",
+      "implementation_sha256": "5121db6bfe6a0ca2c9faa38e942cfd3cb0c48126697f4eb9a338a8bd56c99bf1",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
+        "conftest",
         "smart_3054_terminal_executor",
         "smart_agent_ecosystem_governance",
         "smart_agent_runtime",
@@ -4813,9 +4815,11 @@
         "smart_full_process_pipeline",
         "smart_learning_epoch_reset",
         "smart_missed_catchup",
+        "smart_mission_status",
         "smart_official_result_ingest",
         "smart_operation_lock",
         "smart_operation_recovery",
+        "smart_operational_lifecycle",
         "smart_operator",
         "smart_portfolio_pipeline",
         "smart_product_certification",
@@ -6192,7 +6196,7 @@
       "component_id": "smart_full_process_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_full_process_pipeline.py",
-      "implementation_sha256": "049c4fdf81116ba3fdac0f313efea60ff0abec8a9094a280863e533a0878d421",
+      "implementation_sha256": "ddcbc1165f69ee492787647826362372c46f2e0d5a80872a21018486b8e17728",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6248,7 +6252,7 @@
       "component_id": "smart_github_certify",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_certify.py",
-      "implementation_sha256": "198d203c96772c22409d4dc4de8906649ee8842f6429dd764bab5e4d1567cae6",
+      "implementation_sha256": "eb391bfcc1d32ab21a1983d91cc2feeaca99eda20f230ae91703c8b3091d798b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6257,10 +6261,12 @@
         "smart_authority_freshness",
         "smart_continuous_red_team",
         "smart_global_integrity",
+        "smart_linux_ci",
         "smart_product_certification",
         "smart_startup_reconciler"
       ],
       "consumers": [
+        "test_smart_external_attestation",
         "test_smart_federated_certification",
         "test_smart_github_only_certification"
       ],
@@ -6349,13 +6355,14 @@
       "component_id": "smart_global_integrity",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_global_integrity.py",
-      "implementation_sha256": "815e13a32df18987973983aa86c0ce4b490e0b69253c043caf085d93b20290e9",
+      "implementation_sha256": "82cad5f3258a23ca29ccc5fa90ac1f2c364572e4e848f6616be5e7091a174cf8",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_continuous_red_team",
         "smart_critical_code_manifest",
         "smart_material_deficiency_registry",
+        "smart_regression_evidence",
         "smart_source_identity"
       ],
       "consumers": [
@@ -6372,6 +6379,7 @@
         "test_smart_architecture_hardening_20260905",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_evidence_only_promotion",
+        "test_smart_forensic_junit_integrity",
         "test_smart_global_integrity",
         "test_smart_mission_coverage_closure_20260906",
         "test_smart_product_certification_critical_surface",
@@ -6693,7 +6701,7 @@
       "component_id": "smart_learning_epoch_reset",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_learning_epoch_reset.py",
-      "implementation_sha256": "d4e899585fe91b3752f239f74e47fb4d90e359b43e2505bbe7efd83ca4178e61",
+      "implementation_sha256": "eeab0c1a3726533a86f6f33721b1759f75d95bf84e32ee9d9f265aa86d652a60",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6758,16 +6766,18 @@
       "component_id": "smart_linux_ci",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_linux_ci.py",
-      "implementation_sha256": "aba3150b19a63770411628f0fa1f8214dad959f8cf921f6b1be6bdd822b10016",
+      "implementation_sha256": "c48b9269130ddc6de091c564dc23442fbd26e43aa8df6fb26457b6d9ce45381f",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_regression_evidence"
       ],
       "consumers": [
+        "smart_github_certify",
         "test_smart_linux_ci"
       ],
       "entrypoints": [
+        "smart_github_certify",
         "smart_linux_ci"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6960,11 +6970,12 @@
       "component_id": "smart_mission_status",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_mission_status.py",
-      "implementation_sha256": "88e8f5d01fea36fa21afc20be991b6dcb2dca31ce37e04f0693e8d37acace14d",
+      "implementation_sha256": "c059182e2ba8c967489ce4fe3bf9a27783d68d5c220419cec7f04351fb6ec1de",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
-        "smart_authority_freshness"
+        "smart_authority_freshness",
+        "smart_canonical_identity"
       ],
       "consumers": [
         "SMART_STATE_ARCHIVE.D038_TOTAL_INTEGRATION_PASS_NODE_FIX_20260912T195914Z.smart_3054_terminal_executor",
@@ -7193,7 +7204,7 @@
       "component_id": "smart_operation_lock",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operation_lock.py",
-      "implementation_sha256": "8deef763f3d334feffd85e7cb080afad1e57d3a8c986c5f8d467341139a9de51",
+      "implementation_sha256": "0d9f04d1573d660ff23d469f1619410b7a33058407ee6177e3e564e6a369cab4",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7258,10 +7269,11 @@
       "component_id": "smart_operational_lifecycle",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operational_lifecycle.py",
-      "implementation_sha256": "d09c2a0fcfbb4de3224bf0015b5343135f4345956b82bab6cd745db06c036340",
+      "implementation_sha256": "5afb294f7166b72c86c0ba768078b3651cb32f761b207e90d6ed6eb6b452b812",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
+        "smart_canonical_identity",
         "smart_crash_safe_io"
       ],
       "consumers": [
@@ -7306,7 +7318,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "1da8ecd7ca7c68d6f4b357610f51e5d4da2e1085ef7f62088a84900cd3a1be37",
+      "implementation_sha256": "b6734f5033cb920b9ef6aa14c40051bba6d11c11e6815f06af93b0e5e235f90b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7578,7 +7590,7 @@
       "component_id": "smart_portfolio_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_portfolio_pipeline.py",
-      "implementation_sha256": "b3812152dc59e314932168dc2b4c4ccbee4eef39bc1822868490584c6cb97e7c",
+      "implementation_sha256": "b660dbf71c73005ee482b1ec04d80b2dce492af297fd88780004facd2d1d1703",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7889,7 +7901,7 @@
       "component_id": "smart_product_certification",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_product_certification.py",
-      "implementation_sha256": "91f795cfb33acf78be85ffa63ad4f725ba166107bf2a0a7ee7c7652205b4ee65",
+      "implementation_sha256": "4cff1c7534de6f1c6567113705fd9d7ec1d902db82b28aee39072112ab71fcd8",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7922,7 +7934,9 @@
         "smart_operator",
         "test_smart_current_continuity_generation",
         "test_smart_d015_critical_operational_coverage",
+        "test_smart_external_attestation",
         "test_smart_federated_certification",
+        "test_smart_forensic_source_binding",
         "test_smart_github_only_certification",
         "test_smart_operator_e2e_recovery",
         "test_smart_operator_unprepared_missed_recovery_20260915",
@@ -8285,7 +8299,7 @@
       "component_id": "smart_regression_evidence",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_regression_evidence.py",
-      "implementation_sha256": "f58ada863ebb65f01fa664c66d7e5e9d41f252e3f1f2a085ca0393239148e25c",
+      "implementation_sha256": "9473d9a907b229c4ecd4e4ce722fc34f81c3418bb96d0b7f61d722b3523021dd",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -8294,11 +8308,13 @@
         "archive.reconciliation_runtime_residue_20260911.runtime.integrity_gate_3055_v3",
         "smart_canonical_root_rebind",
         "smart_engineering_activation",
+        "smart_global_integrity",
         "smart_learning_epoch_reset",
         "smart_linux_ci",
         "smart_product_certification",
         "smart_prospective_authority_lock",
         "smart_regression_runner",
+        "test_smart_forensic_junit_integrity",
         "test_smart_full_activation_epoch",
         "test_smart_prospective_authority_lock",
         "test_smart_regression_evidence",
@@ -8327,7 +8343,7 @@
       "component_id": "smart_regression_runner",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_regression_runner.py",
-      "implementation_sha256": "fb0768729f15b1c42e8a77742e04e854c498a7d08b1b0651df2dc9996758101e",
+      "implementation_sha256": "b2dcac9d224f74a219642d1fe07b7afe5b104bb5e35bc8af501eb3e58c02b4f6",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -8337,6 +8353,7 @@
         "smart_source_identity"
       ],
       "consumers": [
+        "test_smart_forensic_source_binding",
         "test_smart_regression_runner"
       ],
       "entrypoints": [],
@@ -9127,7 +9144,7 @@
       "component_id": "smart_startup_reconciler",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_startup_reconciler.py",
-      "implementation_sha256": "47b0a41404557b3fce52404a4ca0bbd637c3fb13aca7e2d94722236983e679a1",
+      "implementation_sha256": "382190f83c6325b8a4d8ae870c66b6c6241b3da737a7fc43d74d91256728e95a",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -10336,7 +10353,7 @@
       "component_id": "test_smart_canonical_root_rebind",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_canonical_root_rebind.py",
-      "implementation_sha256": "597862f3edc6935bbfe494f915fdb342c81f8886a8971368674e0d40feb3af6b",
+      "implementation_sha256": "936a950deb3b66311dc3ba43b7da4a1a2d8f55998281fa233d1215df79612b70",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -10938,6 +10955,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_external_attestation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_external_attestation.py",
+      "implementation_sha256": "96c0c5c4bdcadecf52124ed2ad94c2e1807fa0fe149164b260ff884609fe12ec",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_certify",
+        "smart_product_certification"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_f02_dependency_direction",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f02_dependency_direction.py",
@@ -11325,12 +11366,81 @@
       "component_id": "test_smart_federated_certification",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_federated_certification.py",
-      "implementation_sha256": "c07ed5721816877e40072f9356c7511fcaba5384fed4fea850da8cee3ec1d9c9",
+      "implementation_sha256": "feac6351c7059d4636abf79004f34c592de6697e8cad0620750833f714e53904",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_github_certify",
         "smart_product_certification"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_forensic_junit_integrity",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_forensic_junit_integrity.py",
+      "implementation_sha256": "21a6518c52470741883ea1a4f59959cf1a7f2eefe3a77b1d7a4ceecd99685df1",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_global_integrity",
+        "smart_regression_evidence"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_forensic_sandbox_boundary",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_forensic_sandbox_boundary.py",
+      "implementation_sha256": "84a5cba38009ba963f9911383aa107108c2799e115bbef3cac8db1edbfda15ba",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_forensic_source_binding",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_forensic_source_binding.py",
+      "implementation_sha256": "3d47aa5400094f499aee06599c2996667c23ab06589736e1cc7877be89dae392",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_product_certification",
+        "smart_regression_runner"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -11587,7 +11697,7 @@
       "component_id": "test_smart_github_only_certification",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_github_only_certification.py",
-      "implementation_sha256": "96e5e9029a63d0d5bf78cc625b0ccf94df6615f5505347761363af9e78b4d84e",
+      "implementation_sha256": "830ac4f3b217df86399766ff0b32179af8756f473d5d05f39d44ca95023964f9",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11638,7 +11748,7 @@
       "component_id": "test_smart_global_integrity",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_global_integrity.py",
-      "implementation_sha256": "eebf1a43ab27b660346f5830e38791b04cfeb08e2698ab31e472dacd7be07236",
+      "implementation_sha256": "a6545054b4147437616327871689ee75aa245b1d99b8c7f338b6d45fc1cc8b26",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11880,7 +11990,7 @@
       "component_id": "test_smart_linux_certification_provenance",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_linux_certification_provenance.py",
-      "implementation_sha256": "1153ac5da3f08715a5224108afd1517a9c1d7a985896d063f7b894410d704193",
+      "implementation_sha256": "ac5e0c07df64e4bb0d7293c6b8b4162d9d3108e64c1c0ced296c430aa0642684",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11903,7 +12013,7 @@
       "component_id": "test_smart_linux_ci",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_linux_ci.py",
-      "implementation_sha256": "35a5785004683ada46f754b242d2ca66438e0cc7571d17f87e676c02f7ab1b4c",
+      "implementation_sha256": "8ee38196fd0211fbf92538a5b8fd07b3e9ea0a8cc1172eb4296d6fa834e432b7",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13105,7 +13215,7 @@
       "component_id": "test_smart_product_certification_critical_surface",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_product_certification_critical_surface.py",
-      "implementation_sha256": "9d47fe1fb4de6aaf617ed5b0cbc35a83c218f6ebff2841a739bdff7abdae8cda",
+      "implementation_sha256": "b0ba38707aabaad140d9ce1a6ff52de0ad36bb40036ea3a6dc045f029dfcacf6",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13371,7 +13481,7 @@
       "component_id": "test_smart_regression_evidence",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_regression_evidence.py",
-      "implementation_sha256": "2ba6fb864640bd0f860407d3cebbaf5336a6993d9569b1f07572c928ad11d598",
+      "implementation_sha256": "8a5e886124ce140c487c4e951f1b9d81369461e60703c58e39d6b848ddb710a0",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13394,7 +13504,7 @@
       "component_id": "test_smart_regression_runner",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_regression_runner.py",
-      "implementation_sha256": "4e187fe33d67759d726a2b85a9085f9211e3c048b473c16e683096ac6fd7be09",
+      "implementation_sha256": "48e553125e55ad7b6bb91ea8badd96de65775a8158ad98a21bbbc4a7d8572c34",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14291,5 +14401,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "7f912c7e299c4fb850de02c693086073d04497342b567d5752ac1b1aa08bfde8"
+  "registry_sha256": "67f832c7aeb9be1685163dd7c1f8ca719d4ad69728a3ea6483d1b8a92e255039"
 }

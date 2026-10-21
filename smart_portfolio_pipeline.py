@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 from smart_canonical_identity import canonical_root
 
 import argparse
@@ -184,7 +185,7 @@ def main() -> None:
     args = parser.parse_args()
     freeze_path = Path(args.freeze)
     out_path = Path(args.out)
-    if "pytest-" in str(freeze_path).lower():
+    if _test_identity._authorized_pytest_sandbox(freeze_path):
         root = freeze_path.parent.resolve()
     else:
         root = canonical_root()

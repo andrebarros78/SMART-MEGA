@@ -22,23 +22,37 @@ def sha256_file(path: Path) -> str:
 
 def junit_summary(path: Path) -> dict[str, Any]:
     root = ET.parse(path).getroot()
-    suites = [root] if root.tag == "testsuite" else list(root.findall("testsuite"))
-    if root.tag == "testsuites" and root.attrib.get("tests") is not None:
-        tests = int(root.attrib.get("tests", 0))
-        failures = int(root.attrib.get("failures", 0))
-        errors = int(root.attrib.get("errors", 0))
-        skipped = int(root.attrib.get("skipped", 0))
-    else:
-        tests = sum(int(s.attrib.get("tests", 0)) for s in suites)
-        failures = sum(int(s.attrib.get("failures", 0)) for s in suites)
-        errors = sum(int(s.attrib.get("errors", 0)) for s in suites)
-        skipped = sum(int(s.attrib.get("skipped", 0)) for s in suites)
+    if root.tag not in {"testsuite", "testsuites"}:
+        raise ValueError("unsupported JUnit root")
+
+    def observed_counts(node) -> dict[str, int]:
+        cases = list(node.iter("testcase"))
+        return {
+            "tests": len(cases),
+            "failures": sum(case.find("failure") is not None for case in cases),
+            "errors": sum(case.find("error") is not None for case in cases),
+            "skipped": sum(case.find("skipped") is not None for case in cases),
+        }
+
+    counts = observed_counts(root)
+    consistent = True
+    for node in root.iter():
+        if node.tag not in {"testsuite", "testsuites"}:
+            continue
+        observed = observed_counts(node)
+        for name, count in observed.items():
+            if name in node.attrib:
+                try:
+                    consistent = consistent and int(node.attrib[name]) == count
+                except ValueError:
+                    consistent = False
+    tests, failures, errors, skipped = (counts[name] for name in ("tests", "failures", "errors", "skipped"))
     return {
         "tests": tests,
         "failures": failures,
         "errors": errors,
         "skipped": skipped,
-        "status": "PASS" if failures == 0 and errors == 0 and tests > 0 else "FAIL",
+        "status": "PASS" if consistent and failures == 0 and errors == 0 and skipped == 0 and tests > 0 else "FAIL",
         "sha256": sha256_file(path),
     }
 

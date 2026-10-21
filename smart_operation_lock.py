@@ -1,5 +1,7 @@
 from __future__ import annotations
 
+import smart_canonical_identity as _test_identity
+
 import hashlib
 import json
 import os
@@ -148,8 +150,7 @@ def update_current_process_lock(root: str | Path, *, target_contest: int | None=
     path=root/METADATA_FILE
     current=_read_metadata(path)
     if not current or current.get("status")!="ACTIVE":
-        text=str(root).lower()
-        if "pytest-" in text:
+        if _test_identity._authorized_pytest_sandbox(root):
             body={"schema":SCHEMA,"status":"ACTIVE","lock_id":"PYTEST_SANDBOX_SYNTHETIC","host":socket.gethostname(),"pid":os.getpid(),"operation":"PYTEST_SANDBOX","target_contest":target_contest,"epoch_id":epoch_id,"transaction_id":transaction_id,"acquired_utc":datetime.now(timezone.utc).isoformat(),"recovery":{"synthetic":True}}
             return _write_metadata(path,body)
         raise OperationalLockError("no active operation lock metadata")

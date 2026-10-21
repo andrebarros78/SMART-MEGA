@@ -7,7 +7,13 @@ import smart_regression_runner as runner
 
 def _write_junit(path: Path, *, tests: int, failures: int = 0, errors: int = 0) -> None:
     root = ET.Element("testsuites", tests=str(tests), failures=str(failures), errors=str(errors), skipped="0", time="0.1")
-    ET.SubElement(root, "testsuite", name="suite", tests=str(tests), failures=str(failures), errors=str(errors), skipped="0", time="0.1")
+    suite = ET.SubElement(root, "testsuite", name="suite", tests=str(tests), failures=str(failures), errors=str(errors), skipped="0", time="0.1")
+    for index in range(tests):
+        case = ET.SubElement(suite, "testcase", name=f"case_{index}")
+        if index < failures:
+            ET.SubElement(case, "failure")
+        elif index < failures + errors:
+            ET.SubElement(case, "error")
     ET.ElementTree(root).write(path, encoding="utf-8", xml_declaration=True)
 
 
