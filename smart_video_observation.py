@@ -722,6 +722,8 @@ def learned_motion_prior(
     # Vendor-inspired staged indexing: enumerate metadata first, then validate
     # the original checkpoint bytes/fingerprint/PIT below (never trust the index).
     from isolated_source_gate.video_learning_fastpath import candidate_checkpoints
+    from isolated_source_gate.checkpoint_cache import CheckpointCache
+    cache = CheckpointCache(root / ".checkpoint_cache.sqlite")
     for path in candidate_checkpoints(root, target, limit=512):
         try:
             if path.is_symlink() or not path.is_file() or path.stat().st_size > 1024 * 1024:
@@ -731,9 +733,8 @@ def learned_motion_prior(
         stem = path.stem.removeprefix("contest_")
         if not stem.isascii() or not stem.isdecimal() or int(stem) >= target_n:
             continue
-        raw = path.read_bytes()
         try:
-            row = json.loads(raw)
+            row, verified_sha256 = cache.read(path)
             if (not isinstance(row, dict) or str(row.get("contest_id")) != stem
                     or forbidden_labels.intersection(row)
                     or row.get("extractor_version") != EXTRACTOR_VERSION
@@ -777,9 +778,10 @@ def learned_motion_prior(
                 continue
             medians.append(statistics.median((t - lo) / (hi - lo) for t in events))
             seen_videos.add(source)
-            digests[stem] = hashlib.sha256(raw).hexdigest()
+            digests[stem] = verified_sha256
         except (ValueError, KeyError, TypeError, OverflowError, OSError, json.JSONDecodeError):
             continue
+    cache.close()
     if medians:
         center = statistics.median(medians)
         spread = statistics.pstdev(medians)
