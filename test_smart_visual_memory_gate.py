@@ -145,6 +145,19 @@ class VisualMemoryGateTests(unittest.TestCase):
             self.assertEqual(clean["episodic"][0]["observed_at_utc"],
                              "2026-10-10T12:00:00+00:00")
 
+    def test_checkpoint_root_symlink_cannot_write_through_cache(self):
+        from smart_video_observation import learned_motion_prior
+        with tempfile.TemporaryDirectory() as temp:
+            actual = Path(temp, "actual")
+            actual.mkdir()
+            self.make_checkpoint(actual, 100)
+            linked = Path(temp, "linked")
+            linked.symlink_to(actual, target_is_directory=True)
+            result = learned_motion_prior(linked, "103",
+                                          cutoff_utc="2026-10-11T00:00:00Z")
+            self.assertEqual(result["training_contests"], [])
+            self.assertFalse((actual / ".checkpoint_cache.sqlite").exists())
+
     def test_cli_memory_consumer_matches_python_api(self):
         import subprocess
         import sys

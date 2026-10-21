@@ -13,6 +13,8 @@ from pathlib import Path
 class CheckpointCache:
     def __init__(self, path: str | Path):
         self.path = Path(path)
+        if self.path.is_symlink() or self.path.parent.is_symlink():
+            raise ValueError("SYMLINK_CACHE_PATH")
         self.hits = 0
         self.misses = 0
         self.invalidations = 0

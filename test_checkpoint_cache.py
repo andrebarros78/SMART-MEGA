@@ -77,6 +77,15 @@ class CacheTests(unittest.TestCase):
             self.assertEqual(cache.metrics()["hits"], 1)
             cache.close()
 
+    def test_symlinked_cache_database_denied(self):
+        with tempfile.TemporaryDirectory() as root:
+            real = Path(root, "foreign.sqlite")
+            real.write_bytes(b"")
+            pointer = Path(root, "cache.sqlite")
+            pointer.symlink_to(real)
+            with self.assertRaisesRegex(ValueError, "SYMLINK"):
+                CheckpointCache(pointer)
+
     def test_symlink_denied(self):
         with tempfile.TemporaryDirectory() as root:
             file = Path(root, "contest_100.json")

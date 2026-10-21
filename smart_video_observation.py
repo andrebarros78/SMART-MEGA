@@ -705,7 +705,7 @@ def learned_motion_prior(
         "predictive_evidence": PREDICTIVE_EVIDENCE,
         "scope": "SCIENTIFIC_VIDEO_MOTION_ONLY",
     }
-    if not target.isascii() or not target.isdecimal() or not root.is_dir():
+    if not target.isascii() or not target.isdecimal() or root.is_symlink() or not root.is_dir():
         return empty
     target_n = int(target)
     same_host = (
