@@ -109,6 +109,7 @@ def _probe_status(probe: dict[str, Any] | None, video_id: str) -> tuple[str, dic
         "status": "NO_RECENT_PUBLIC_PROBE", "video_id": video_id,
         "oembed_http_status": None, "watch_http_status": None,
         "oembed_sha256": None, "receipt": None,
+        "receipt_cryptographically_verified": False,
         "scope": "PUBLIC_VIDEO_METADATA_ONLY",
     }
     if probe is None:
@@ -146,7 +147,10 @@ def _probe_status(probe: dict[str, Any] | None, video_id: str) -> tuple[str, dic
             and probe.get("oembed_author_url") == EXPECTED_AUTHOR_URL
             and _COMMAND.fullmatch(receipt)
             and timestamp_valid):
-        metadata["status"] = "VERIFIED_METADATA_ONLY"
+        # The consumer can validate receipt syntax, not independently query
+        # the signed network-command journal. Never promote a caller-supplied
+        # netcmd ID or self-reported oEmbed digest to an authenticated proof.
+        metadata["status"] = "REPORTED_METADATA_ONLY"
         metadata["oembed_sha256"] = probe["oembed_sha256"]
     else:
         metadata["status"] = "UNVERIFIED_METADATA"

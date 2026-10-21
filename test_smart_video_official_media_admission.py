@@ -76,7 +76,7 @@ class OfficialMediaAdmissionTests(unittest.TestCase):
         probe = dict(self.probe, decoded_frames=999, ready=True)
         output = audit_official_media_admission(self.root, "3013", probe=probe)
         self.assertEqual(output["status"], "OFFICIAL_MEDIA_SOURCE_BLOCKED")
-        self.assertEqual(output["public_metadata"]["status"], "VERIFIED_METADATA_ONLY")
+        self.assertEqual(output["public_metadata"]["status"], "REPORTED_METADATA_ONLY")
         self.assertEqual(output["public_metadata"]["watch_http_status"], 429)
         self.assertEqual(output["source_gate_reason"], "YOUTUBE_SIGN_IN_REQUIRED")
         self.assertFalse(output["media_capture_authorized"])
@@ -122,9 +122,23 @@ class OfficialMediaAdmissionTests(unittest.TestCase):
 
     def test_oembed_success_does_not_mask_video_page_rate_limit(self):
         output = audit_official_media_admission(self.root, "3013", probe=self.probe)
-        self.assertEqual(output["public_metadata"]["status"], "VERIFIED_METADATA_ONLY")
+        self.assertEqual(output["public_metadata"]["status"], "REPORTED_METADATA_ONLY")
         self.assertEqual(output["video_access_status"], "HTTP_429_RESTRICTED")
         self.assertIsNone(output["capture_manifest_sha256"])
+
+    def test_receipt_identifier_format_does_not_cryptographically_attest_payload(self):
+        forged = dict(
+            self.probe, oembed_sha256="f" * 64,
+            oembed_command_id="netcmd_" + "d" * 32,
+        )
+        output = audit_official_media_admission(
+            self.root, "3013", probe=forged,
+        )
+        self.assertEqual(
+            output["public_metadata"]["status"], "REPORTED_METADATA_ONLY"
+        )
+        self.assertFalse(output["public_metadata"]["receipt_cryptographically_verified"])
+        self.assertFalse(output["media_capture_authorized"])
 
     def test_public_author_url_impostor_rejected_as_metadata(self):
         probe = dict(self.probe, oembed_author_url="https://www.youtube.com/@impostor")
@@ -147,7 +161,7 @@ class OfficialMediaAdmissionTests(unittest.TestCase):
              / "B2_CAIXA_PUBLIC_MEDIA_PROBE_20261021.json").read_text("utf-8")
         )
         output = audit_official_media_admission(self.root, "3013", probe=actual)
-        self.assertEqual(output["public_metadata"]["status"], "VERIFIED_METADATA_ONLY")
+        self.assertEqual(output["public_metadata"]["status"], "REPORTED_METADATA_ONLY")
         self.assertEqual(output["video_access_status"], "HTTP_429_RESTRICTED")
         self.assertEqual(output["status"], "OFFICIAL_MEDIA_SOURCE_BLOCKED")
         self.assertFalse(output["checkpoint_generation_authorized"])

@@ -69,3 +69,16 @@ aquisição de **quadros oficiais** bloqueada (HTTP 429, gate persistente).
 Não foram criados checkpoints de vídeo real, nem atestada utilidade
 observacional real; declarar qualquer uma dessas etapas como PASS
 seria falso. B2 e `main` preservados.
+
+## Revisão de prova do recibo
+
+A classificação do código foi endurecida para
+`REPORTED_METADATA_ONLY`: apesar do recibo real do B2 ter sido
+observado através da ferramenta governada, o **arquivo JSON de probe**
+só contém um identificador `netcmd_...`, sem verificar sua assinatura
+contra a autoridade de execução. O validador local declara
+`receipt_cryptographically_verified=false` e não equipara hash
+autodeclarado a atestação independente. Uma versão futura só poderá
+promover tal atributo com consulta e validação do recibo na autoridade
+autenticada. O bloqueio da fonte, o consumidor e os pesos permanecem
+inalterados.
