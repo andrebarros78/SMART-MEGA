@@ -1,7 +1,7 @@
 """SQLite WAL transactional isolated source gate; no production pointer writes."""
 import json,sqlite3
 from pathlib import Path
-from source_gate_admin import transition,digest
+from .source_gate_admin import transition,digest
 class IsolatedGate:
  def __init__(self,path):
   path=Path(path)
