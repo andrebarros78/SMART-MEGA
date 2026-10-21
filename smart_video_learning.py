@@ -56,6 +56,16 @@ def get_visual_features(
         checkpoint_dir, contest, hypothesis_id, source_url=source_url,
         cutoff_utc=cutoff,
     )
+    # Defensive PIT boundary on the official consumer output, independent of the
+    # upstream checkpoint reader. Do not silently accept later contest evidence.
+    sources = prior.get("training_contests")
+    if not isinstance(sources, list):
+        raise ValueError("PIT_SOURCE_CONTRACT_INVALID")
+    for source_contest in sources:
+        value = str(source_contest)
+        if (not value.isascii() or not value.isdecimal()
+                or int(value) >= int(contest)):
+            raise ValueError("PIT_FUTURE_OR_TARGET_CONTEST")
     return {
         "schema": "SMART_VISUAL_FEATURES_V1",
         "target_contest": contest,
