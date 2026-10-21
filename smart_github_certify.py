@@ -19,6 +19,7 @@ from smart_authority_freshness import audit as audit_authority_freshness, verify
 from smart_global_integrity import build_global_integrity_proof, verify_global_integrity
 from smart_continuous_red_team import run_suite as run_red_team_suite, verify_latest_report, write_report as write_red_team_report
 from smart_startup_reconciler import reconcile as reconcile_startup
+from smart_source_identity import sha256_source_file
 
 ARTIFACTS = (
     "SMART_AUDIT_JUNIT_CURRENT.xml", "SMART_CANONICAL_ROOT.json",
@@ -26,6 +27,34 @@ ARTIFACTS = (
     "SMART_GLOBAL_INTEGRITY_PROOF.json", "SMART_3052_IMPLEMENTATION_GATE.json",
     "SMART_P09_RED_TEAM_LATEST.json", "SMART_AGENT_ECOSYSTEM_ACQUISITIONS_20260915.json",
 )
+
+
+def require_current_coverage_sources(root: Path) -> None:
+    """Reject historical coverage before updating any operational authority."""
+    from smart_global_integrity import REQUIRED_GLOBAL_COVERAGE_SOURCES
+
+    root = Path(root).resolve()
+    proof = json.loads((root / "SMART_GLOBAL_INTEGRITY_PROOF.json").read_text(encoding="utf-8-sig"))
+    rows = proof.get("coverage")
+    expected = set(REQUIRED_GLOBAL_COVERAGE_SOURCES)
+    if (not isinstance(rows, list) or len(rows) != len(expected)
+            or any(not isinstance(row, dict) for row in rows)
+            or {row.get("source_key") for row in rows} != expected):
+        raise ValueError("current source-bound coverage inventory required")
+    reports = {}
+    for row in rows:
+        relative = row.get("report_file")
+        if not isinstance(relative, str):
+            raise ValueError("current source-bound coverage report required")
+        path = root / relative
+        if path.is_symlink() or not path.resolve().is_relative_to(root) or not path.is_file():
+            raise ValueError("current source-bound coverage report is unsafe or missing")
+        if relative not in reports:
+            reports[relative] = json.loads(path.read_text(encoding="utf-8-sig"))
+        source = row["source_key"]
+        entry = reports[relative].get("files", {}).get(source, {})
+        if entry.get("source_sha256") != sha256_source_file(root / source):
+            raise ValueError(f"current source-bound coverage required: {source}")
 
 
 def execution_provenance(root: Path, source_commit: str, run_id: str,
@@ -98,6 +127,8 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
             or observed.get("failures") != 0 or observed.get("errors") != 0
             or observed.get("skipped") != 0):
         raise ValueError("regression coverage below immutable baseline or skipped tests")
+
+    require_current_coverage_sources(root)
 
     attributes = root / ".gitattributes"
     lines = attributes.read_text(encoding="utf-8").splitlines() if attributes.is_file() else []
