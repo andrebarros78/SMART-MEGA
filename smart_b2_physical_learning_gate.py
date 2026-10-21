@@ -71,6 +71,77 @@ def _result(status: str, root: Path, target: str, cutoff: str, expected: int) ->
     }
 
 
+
+def _decoder_quality(
+    rows: dict[str, dict[str, Any]],
+    eligible: list[int],
+    episode_events: dict[int, int],
+) -> dict[str, Any]:
+    """Measure self-reported decoder counter support, never frame authenticity.
+
+    The presence of motion timestamps does not prove any frame was decoded.
+    Only time-eligible episodes from the official observational consumer
+    are considered; the counters remain declarations within the JSON file.
+    """
+    supported = missing = invalid = supported_events = total_frames = 0
+    for contest in eligible:
+        row = rows[str(contest)]
+        coarse, refined = row.get("coarse"), row.get("analyzed_windows")
+        if coarse is None and refined is None:
+            missing += 1
+            continue
+        if (not isinstance(coarse, list) or not isinstance(refined, list)
+                or not 1 <= len(coarse) <= 64 or not 1 <= len(refined) <= 64):
+            invalid += 1
+            continue
+        frame_counts = []
+        consistent = True
+        for windows in (coarse, refined):
+            ok = [window for window in windows
+                  if isinstance(window, dict) and window.get("status") == "OK"]
+            if not ok:
+                consistent = False
+                break
+            for window in ok:
+                read, analyzed = window.get("read_frames"), window.get("analyzed_frames")
+                if (type(read) is not int or type(analyzed) is not int
+                        or not (2 <= analyzed <= read <= 1_000_000)):
+                    consistent = False
+                    break
+                frame_counts.append(read)
+            if not consistent:
+                break
+        if consistent:
+            supported += 1
+            supported_events += episode_events[contest]
+            total_frames += sum(frame_counts)
+        else:
+            invalid += 1
+    events_total = sum(episode_events.get(contest, 0) for contest in eligible)
+    return {
+        "basis": "UNTRUSTED_CHECKPOINT_COUNTERS_ONLY",
+        "candidate_episodes": len(eligible),
+        "candidate_counter_coverage_ratio": (
+            round(supported / len(eligible), 6) if eligible else None
+        ),
+        "motion_event_counter_coverage_ratio": (
+            round(supported_events / events_total, 6) if events_total else None
+        ),
+        "with_consistent_decoder_counters": supported,
+        "without_decoder_counters": missing,
+        "invalid_decoder_counters": invalid,
+        "motion_events_with_decoder_counter_support": supported_events,
+        "reported_frames_read_in_supported_episodes": total_frames,
+        "frame_content_authenticity_established": False,
+        "independently_verified_decoded_frames": None,
+        "limitation": (
+            "Checkpoint frame counters are only internal declarations. "
+            "They do not prove original media identity, decoded pixels, "
+            "independent capture time or predictive utility."
+        ),
+    }
+
+
 def audit_b2_physical_learning(
     checkpoint_dir: str | Path,
     target_contest: str,
@@ -198,7 +269,12 @@ def audit_b2_physical_learning(
         result["status"] = "PHYSICAL_CONSUMER_REJECTED"
         return result
     event_counts = [x["motion_event_count"] for x in episodes["episodic"]]
+    decoder_quality = _decoder_quality(
+        rows, eligible,
+        {x["contest_id"]: x["motion_event_count"] for x in episodes["episodic"]},
+    )
     result["observational_utility"] = {
+        "decoder_quality": decoder_quality,
         "scope": "DESCRIPTIVE_VIDEO_MOTION_ONLY",
         "verified_physical_checkpoints": len(rows),
         "candidate_checkpoints": sum(r.get("status") == "CANDIDATE" for r in rows.values()),

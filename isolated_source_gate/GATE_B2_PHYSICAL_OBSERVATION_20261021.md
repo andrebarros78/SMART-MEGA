@@ -131,3 +131,50 @@ O estado atual auditado permanece registrado em
 `B2_MODERN_TRANSPORT_AND_REAL_MEDIA_20261021.json`.
 
 **Frescor do relatório:** a fonte e a qualidade da fila foram atualizadas pela última vez em 17/10/2026 UTC e a lista de concursos em 14/10/2026 UTC, conforme metadados do próprio B2 (recibo `netcmd_c30aec7c65244ac09d3bbd3729f64848`). `YOUTUBE_SIGN_IN_REQUIRED` é a **última situação registrada**, não um novo teste de login executado em 21/10.
+
+## Gate posterior — evidência de quadros e cobertura da qualidade (21/10/2026)
+
+A auditoria física aceitava episódios de movimento como métricas
+observacionais quando o checkpoint não informava se algum quadro havia
+sido decodificado. Essa ausência não pode ser interpretada como quadros
+vistos, especialmente porque fixtures sem vídeo podem conter eventos
+de movimento preenchidos diretamente no JSON.
+
+O resultado `observational_utility.decoder_quality` agora classifica
+**somente os episódios elegíveis após filtros de concurso e cutoff PIT**:
+
+- `with_consistent_decoder_counters`: há ao menos uma janela `coarse`
+  e uma `analyzed_windows` com status `OK`, contadores inteiros
+  (não booleanos), no limite 2 <= analyzed_frames <= read_frames
+  <= 1.000.000; limites por conjunto: 1 a 64 janelas;
+- `without_decoder_counters`: os dois conjuntos estão ausentes;
+- `invalid_decoder_counters`: as janelas são incompletas,
+  inconsistentes ou usam contadores inválidos;
+- `motion_events_with_decoder_counter_support`: eventos associados
+  somente a episódios com os dois conjuntos consistentes;
+- `candidate_counter_coverage_ratio` e
+  `motion_event_counter_coverage_ratio`: cobertura descritiva com
+  denominadores dos episódios de fato elegíveis; `null` quando
+  não houver denominador adequado;
+- `independently_verified_decoded_frames=null` e
+  `frame_content_authenticity_established=false`: os contadores
+  continuam **autodeclarações do checkpoint**, não identidade da
+  mídia nem prova de pixels, tempo ou acerto.
+
+Esse gate não muda o peso preditivo (permanece 0.0), não ativa M3-Agent,
+TaskMem ou fonte externa, não escreve no diretório da origem B2 e não
+certifica retrospectivamente que um sinal existia antes da aposta.
+Os testes RED/ GREEN cobrem falta de contadores, contadores válidos,
+inversão read/analyzed, booleanos, números exorbitantes e exclusão
+temporal de checkpoints posteriores ao cutoff. Toda alteração permanece
+fora da main até homologação do commit correspondente.
+
+
+**Ensaio remoto B2 (somente leitura):** o comando
+`netcmd_6f8f768089e349968b705a3e0155641c` constatou os 26
+`contest_*.json` nos dois conjuntos `SYNTHETIC_ONLY*`. Todos os
+26 possuem `status=CANDIDATE`, mas **nenhum** apresenta as duas
+coleções de janelas com contadores de frames suficientes para esta
+auditoria. Consequentemente, a cobertura de suporte de decodificação
+observada nos conjuntos sintéticos é 0/26; **isso não é um resultado
+sobre vídeos reais**, nem prova valor preditivo.

@@ -52,6 +52,97 @@ class B2PhysicalLearningGateTests(unittest.TestCase):
             self.assertFalse((root / ".visual_learning_memory.sqlite").exists())
             self.assertEqual(result["predictive_weight"], 0.0)
 
+    def test_motion_episodes_without_decoder_counters_are_unverified(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for n in (100, 101, 102):
+                self.fixture.make_checkpoint(root, n)
+            result = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=3
+            )
+            q = result["observational_utility"]["decoder_quality"]
+            self.assertEqual(q["candidate_episodes"], 3)
+            self.assertEqual(q["with_consistent_decoder_counters"], 0)
+            self.assertEqual(q["without_decoder_counters"], 3)
+            self.assertEqual(q["invalid_decoder_counters"], 0)
+            self.assertEqual(q["motion_events_with_decoder_counter_support"], 0)
+            self.assertEqual(q["candidate_counter_coverage_ratio"], 0.0)
+            self.assertEqual(q["motion_event_counter_coverage_ratio"], 0.0)
+            self.assertIsNone(q["independently_verified_decoded_frames"])
+            self.assertEqual(q["basis"], "UNTRUSTED_CHECKPOINT_COUNTERS_ONLY")
+            self.assertEqual(result["predictive_weight"], 0.0)
+
+    def test_frame_counter_coverage_counts_only_consistent_coarse_and_refined_windows(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for n in (100, 101, 102):
+                cp = self.fixture.make_checkpoint(root, n)
+                if n != 102:
+                    data = json.loads(cp.read_text())
+                    data["coarse"] = [{"status": "OK", "read_frames": 20, "analyzed_frames": 11}]
+                    data["analyzed_windows"] = [{"status": "OK", "read_frames": 30, "analyzed_frames": 13}]
+                    cp.write_text(json.dumps(data))
+                else:
+                    data = json.loads(cp.read_text())
+                    data["coarse"] = [{"status": "OK", "read_frames": 0, "analyzed_frames": 10}]
+                    data["analyzed_windows"] = [{"status": "OK", "read_frames": 24, "analyzed_frames": 16}]
+                    cp.write_text(json.dumps(data))
+            result = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=3
+            )
+            q = result["observational_utility"]["decoder_quality"]
+            self.assertEqual(q["candidate_episodes"], 3)
+            self.assertEqual(q["with_consistent_decoder_counters"], 2)
+            self.assertEqual(q["invalid_decoder_counters"], 1)
+            self.assertEqual(q["motion_events_with_decoder_counter_support"], 6)
+            self.assertEqual(q["candidate_counter_coverage_ratio"], 0.666667)
+            self.assertEqual(q["motion_event_counter_coverage_ratio"], 0.666667)
+            self.assertEqual(q["reported_frames_read_in_supported_episodes"], 100)
+            self.assertFalse(q["frame_content_authenticity_established"])
+
+    def test_fake_boolean_and_oversized_frame_counters_never_support_events(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for n in (100, 101):
+                cp = self.fixture.make_checkpoint(root, n)
+                data = json.loads(cp.read_text())
+                data["coarse"] = [{
+                    "status": "OK", "read_frames": True if n == 100 else 10_000_000,
+                    "analyzed_frames": 5,
+                }]
+                data["analyzed_windows"] = [{
+                    "status": "OK", "read_frames": 20, "analyzed_frames": 10,
+                }]
+                cp.write_text(json.dumps(data))
+            result = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=2,
+            )
+            q = result["observational_utility"]["decoder_quality"]
+            self.assertEqual(q["with_consistent_decoder_counters"], 0)
+            self.assertEqual(q["invalid_decoder_counters"], 2)
+            self.assertEqual(q["reported_frames_read_in_supported_episodes"], 0)
+            self.assertEqual(q["motion_events_with_decoder_counter_support"], 0)
+
+    def test_future_checkpoint_is_not_counted_in_frame_quality(self):
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            for n in (100, 101, 102):
+                cp = self.fixture.make_checkpoint(root, n)
+                data = json.loads(cp.read_text())
+                data["coarse"] = [{"status": "OK", "read_frames": 20, "analyzed_frames": 8}]
+                data["analyzed_windows"] = [{"status": "OK", "read_frames": 18, "analyzed_frames": 7}]
+                if n == 102:
+                    data["created_at_utc"] = "2026-10-12T00:00:00Z"
+                cp.write_text(json.dumps(data))
+            result = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=3
+            )
+            q = result["observational_utility"]["decoder_quality"]
+            self.assertEqual(q["candidate_episodes"], 2)
+            self.assertEqual(q["with_consistent_decoder_counters"], 2)
+            self.assertEqual(q["motion_events_with_decoder_counter_support"], 6)
+            self.assertFalse(result["pit_independently_attested"])
+
     def test_future_dated_checkpoint_is_excluded_not_cloaked_as_pit(self):
         with tempfile.TemporaryDirectory() as parent:
             root = Path(parent, "b2")
@@ -99,6 +190,14 @@ class B2PhysicalLearningGateTests(unittest.TestCase):
             self.assertEqual(result["physical_files_read"], 13)
             self.assertEqual(result["observational_utility"]["eligible_episodes"], 13)
             self.assertEqual(result["observational_utility"]["observed_motion_events"], 39)
+            self.assertEqual(
+                result["observational_utility"]["decoder_quality"]["motion_events_with_decoder_counter_support"],
+                0,
+            )
+            self.assertEqual(
+                result["observational_utility"]["decoder_quality"]["candidate_counter_coverage_ratio"],
+                0.0,
+            )
             self.assertEqual(result["temporal_provenance"]["independently_attested"], 0)
             self.assertEqual(result["predictive_weight"], 0.0)
 
