@@ -38,6 +38,7 @@ FOCUSED_MODULES = (
     "test_smart_terminal_degraded_audit_execution",
     "test_smart_linux_ci",
     "test_smart_linux_certification_provenance",
+    "test_smart_frozen_card_reader",
 )
 
 
