@@ -17,6 +17,7 @@ from typing import Any, Callable
 
 from smart_video_official_catalog import CHANNEL, read_current
 from smart_video_source_access import read_source_gate
+from isolated_source_gate.source_gate_versioned_reader import read_effective_gate
 from smart_video_observation import (
     EXTRACTOR_VERSION, PREDICTIVE_EVIDENCE, ObservationConfig,
     _observation_fingerprint, _checkpoint_path, resolve_stream,
@@ -321,7 +322,12 @@ def run_official_queue(
             result["sync_only"] = True
             result["queue_state_sha256"] = state["sha256"]
             return result
-        access = read_source_gate(q_root)
+        # No real LMCP authority verifier is installed: fail closed in this isolated branch.
+        # The legacy BLOCKED pointer takes precedence even if the isolated ledger says RELEASED.
+        access = read_effective_gate(
+            q_root, q_root / ".isolated_source_gate.sqlite",
+            read_source_gate, authority_registry_verified=False,
+        )
         if access['state'] == 'BLOCKED':
             records, body = _reconcile_and_report(
                 catalog, eligible, collisions, cp_root, q_root,
