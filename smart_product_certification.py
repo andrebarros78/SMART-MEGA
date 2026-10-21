@@ -112,26 +112,16 @@ def regression_source_binding(root: Path, junit_path: Path, fingerprint: dict[st
     source = authority.get("certified_source_commit")
     run_id = authority.get("certified_ci_run_id")
     execution = authority.get("certified_execution")
-    if execution is None:
-        execution_valid = isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0
-    elif isinstance(execution, dict) and execution.get("kind") == "GITHUB_ACTIONS":
-        execution_valid = isinstance(run_id, str) and run_id.isdecimal() and int(run_id) > 0 and execution.get("run_id") == run_id
-    elif isinstance(execution, dict) and execution.get("kind") == "FEDERATED_PC":
-        execution_id = execution.get("execution_id")
-        execution_valid = run_id is None and isinstance(execution_id, str) and re.fullmatch(
-            r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", execution_id
-        ) is not None and isinstance(execution.get("hostname"), str) and bool(execution["hostname"].strip()) and execution["hostname"] == execution["hostname"].strip()
-    elif isinstance(execution, dict) and execution.get("kind") == "LMCP_LINUX_VPS":
-        execution_id = execution.get("execution_id")
-        execution_valid = (
-            run_id is None
-            and execution.get("hostname") == "wmcp-cloud-01"
-            and execution.get("provider") == "LMCP"
-            and isinstance(execution_id, str)
-            and re.fullmatch(r"[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}", execution_id) is not None
-        )
-    else:
-        execution_valid = False
+    # Old federated/VPS or unattributed receipts remain historical evidence,
+    # never a source of fresh certification under SMART_GITHUB_NATIVE_ONLY_20261021.
+    execution_valid = (
+        isinstance(execution, dict)
+        and execution.get("kind") == "GITHUB_ACTIONS"
+        and isinstance(run_id, str)
+        and run_id.isdecimal()
+        and int(run_id) > 0
+        and execution.get("run_id") == run_id
+    )
     recorded_fingerprint = authority.get("certified_source_code_fingerprint_sha256")
     checks = {
         "source_commit_recorded": isinstance(source, str) and re.fullmatch(r"[0-9a-f]{40}", source) is not None,

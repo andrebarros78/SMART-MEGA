@@ -143,6 +143,7 @@ def test_regression_source_binding_rejects_source_drift(tmp_path: Path) -> None:
     authority = {
         "certified_source_commit": source,
         "certified_ci_run_id": "123",
+        "certified_execution": {"kind": "GITHUB_ACTIONS", "run_id": "123"},
         "certified_source_code_fingerprint_sha256": fp["sha256"],
         "certified_regression_junit_sha256": sha256_file(junit),
     }

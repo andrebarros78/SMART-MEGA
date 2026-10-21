@@ -26,7 +26,7 @@ def extracted(path: str, name: str, **symbols):
 
 
 class TestLinuxProvenance(unittest.TestCase):
-    def test_explicit_linux_vps_provenance(self):
+    def test_explicit_linux_vps_provenance_is_retired(self):
         fn = extracted("smart_github_certify.py", "execution_provenance",
                        os=SimpleNamespace(environ={}),
                        socket=SimpleNamespace(gethostname=lambda: "wmcp-cloud-01"),
@@ -38,12 +38,9 @@ class TestLinuxProvenance(unittest.TestCase):
                             "https://github.com/andrebarros78/SMART-MEGA.git"],
                            cwd=root, check=True)
             uid = str(uuid.uuid4())
-            record = fn(root, "a" * 40, uid, "wmcp-cloud-01",
-                        executor_kind="LMCP_LINUX_VPS")
-            self.assertEqual(record["kind"], "LMCP_LINUX_VPS")
-            self.assertEqual(record["execution_id"], uid)
-            self.assertEqual(record["hostname"], "wmcp-cloud-01")
-            self.assertEqual(record["provider"], "LMCP")
+            with self.assertRaisesRegex(PermissionError, "retired"):
+                fn(root, "a" * 40, uid, "wmcp-cloud-01",
+                   executor_kind="LMCP_LINUX_VPS")
 
     def test_linux_vps_label_cannot_be_claimed_by_wrong_host(self):
         fn = extracted("smart_github_certify.py", "execution_provenance",
@@ -60,7 +57,7 @@ class TestLinuxProvenance(unittest.TestCase):
                 fn(root, "a" * 40, str(uuid.uuid4()), "other-host",
                    executor_kind="LMCP_LINUX_VPS")
 
-    def test_old_federated_pc_provenance_remains_default(self):
+    def test_old_federated_pc_provenance_is_retired(self):
         fn = extracted("smart_github_certify.py", "execution_provenance",
                        os=SimpleNamespace(environ={}),
                        socket=SimpleNamespace(gethostname=lambda: "wmcp-cloud-01"),
@@ -71,8 +68,8 @@ class TestLinuxProvenance(unittest.TestCase):
             subprocess.run(["git", "remote", "add", "origin",
                             "https://github.com/andrebarros78/SMART-MEGA.git"],
                            cwd=root, check=True)
-            self.assertEqual(fn(root, "a" * 40, str(uuid.uuid4()), "wmcp-cloud-01")["kind"],
-                             "FEDERATED_PC")
+            with self.assertRaisesRegex(PermissionError, "retired"):
+                fn(root, "a" * 40, str(uuid.uuid4()), "wmcp-cloud-01")
 
     def test_product_certifier_validates_exact_linux_execution(self):
         fn = extracted("smart_product_certification.py", "regression_source_binding",
@@ -105,7 +102,8 @@ class TestLinuxProvenance(unittest.TestCase):
             }
             (root / "SMART_CANONICAL_ROOT.json").write_text(json.dumps(authority))
             ok = fn(root, junit, fp)
-            self.assertEqual(ok["status"], "PASS")
+            self.assertEqual(ok["status"], "FAIL")
+            self.assertFalse(ok["checks"]["execution_recorded"])
             identity["hostname"] = "PC-ESCOLA"
             (root / "SMART_CANONICAL_ROOT.json").write_text(json.dumps(authority))
             denied = fn(root, junit, fp)
