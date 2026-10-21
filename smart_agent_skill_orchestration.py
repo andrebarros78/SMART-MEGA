@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 from smart_canonical_identity import canonical_root
 from smart_operational_lifecycle import runtime_phase as lifecycle_runtime_phase
 
@@ -498,7 +499,7 @@ def resolve_runtime_phase(root: str | Path, phase: str = "AUTO") -> str:
         if hold.get("status") == "AWAITING_OPERATOR_APPLY_OR_GENERATE" and hold.get("prepare_allowed") is False and hold.get("generation_allowed") is False:
             return "POST_RESULT_HOLD"
     inferred = lifecycle_runtime_phase(root)
-    if inferred == "BUILD" and "pytest-" in str(root).lower():
+    if inferred == "BUILD" and _test_identity._authorized_pytest_sandbox(root):
         return "POST_FREEZE"
     return inferred
 

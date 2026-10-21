@@ -134,7 +134,7 @@ class LinuxCIContract(unittest.TestCase):
         from xml.etree import ElementTree as ET
         with tempfile.TemporaryDirectory() as d:
             root = Path(d)
-            xml = b'<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite tests="2" failures="0" errors="0" skipped="0"/></testsuites>'
+            xml = b'<testsuites tests="2" failures="0" errors="0" skipped="0"><testsuite tests="2" failures="0" errors="0" skipped="0"><testcase name="a"/><testcase name="b"/></testsuite></testsuites>'
             (root / "SMART_AUDIT_JUNIT_CANDIDATE.xml").write_bytes(xml)
             (root / "SMART_AUDIT_JUNIT_CURRENT.xml").write_bytes(xml)
             digest = hashlib.sha256(xml).hexdigest()

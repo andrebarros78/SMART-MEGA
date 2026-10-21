@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 from smart_crash_safe_io import atomic_write_text
 from smart_canonical_identity import canonical_root
 
@@ -44,8 +45,7 @@ def write_active_epoch(path: Path, doc: dict[str, Any], *, expected_sha256: str 
     if path.exists():
         current=verify_active_epoch(path)
         if expected_sha256 is None:
-            test_path = str(path.resolve()).lower()
-            if "pytest-" in test_path :
+            if _test_identity._authorized_pytest_sandbox(path):
                 expected_sha256 = current.get("sha256")
             else:
                 raise RuntimeError("active epoch CAS requires expected_sha256 for overwrite")

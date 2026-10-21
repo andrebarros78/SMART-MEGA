@@ -8,7 +8,7 @@ import subprocess
 import tempfile
 import unittest
 import uuid
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from types import SimpleNamespace
 from unittest.mock import patch
 
@@ -19,7 +19,7 @@ def extracted(path: str, name: str, **symbols):
     source = Path(__file__).resolve().with_name(path).read_text()
     node = next(n for n in ast.parse(source).body
                 if isinstance(n, ast.FunctionDef) and n.name == name)
-    ns = {"Path": Path, "re": re, "uuid": uuid, "subprocess": subprocess,
+    ns = {"Path": Path, "PurePosixPath": PurePosixPath, "re": re, "uuid": uuid, "subprocess": subprocess,
           "hashlib": hashlib, "json": json, **symbols}
     exec(compile(ast.Module(body=[node], type_ignores=[]), path, "exec"), ns)
     return ns[name]
@@ -89,7 +89,7 @@ class TestLinuxProvenance(unittest.TestCase):
             commit = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root,
                                     text=True, capture_output=True, check=True).stdout.strip()
             junit = root / "test.xml"
-            junit.write_text('<testsuite tests="1" failures="0" errors="0"></testsuite>')
+            junit.write_text('<testsuite tests="1" failures="0" errors="0"><testcase name="a"/></testsuite>')
             identity = {"kind": "LMCP_LINUX_VPS", "provider": "LMCP",
                         "execution_id": str(uuid.uuid4()), "hostname": "wmcp-cloud-01"}
             fp = {"sha256": "f" * 64, "files": [

@@ -1,0 +1,134 @@
+{
+  "regression": {
+    "schema": "SMART_FORENSIC_COMPLETE_CASE_INVENTORY_1",
+    "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+    "source_fingerprint_sha256": "975f375cbdf366fa32cc34b4da8c1daf780b07e7ec31b832c5d9669374fa01b0",
+    "actual_case_inventory": 1517,
+    "raw_declared_tests_total": 1525,
+    "subtest_surplus": 8,
+    "exact_inventory_match": true,
+    "partitions_disjoint": true,
+    "pytest_exit_codes": [
+      0,
+      0,
+      0,
+      0
+    ],
+    "normalization": "raw pytest reports retained unchanged; only aggregate suite counters rebuilt from exact independently collected testcase inventory; subtests retained in raw logs",
+    "summary": {
+      "tests": 1517,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "status": "PASS",
+      "sha256": "64a1b3d04ab13187a689f4ba27110f233e753759d22b1f4a8e3022ebc5a381a6"
+    },
+    "parts": [
+      {
+        "part": 1,
+        "cases": 337,
+        "raw_declared_tests": 337,
+        "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+        "pytest_exit_code": 0
+      },
+      {
+        "part": 2,
+        "cases": 292,
+        "raw_declared_tests": 295,
+        "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+        "pytest_exit_code": 0
+      },
+      {
+        "part": 3,
+        "cases": 433,
+        "raw_declared_tests": 438,
+        "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+        "pytest_exit_code": 0
+      },
+      {
+        "part": 4,
+        "cases": 455,
+        "raw_declared_tests": 455,
+        "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+        "pytest_exit_code": 0
+      }
+    ],
+    "github_actions_used": false,
+    "completed_utc": "2026-10-21T22:33:07.253546+00:00"
+  },
+  "binding": {
+    "schema": "SMART_FORENSIC_FINAL_BINDING_1",
+    "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+    "source_fingerprint_sha256": "975f375cbdf366fa32cc34b4da8c1daf780b07e7ec31b832c5d9669374fa01b0",
+    "regression": {
+      "tests": 1517,
+      "failures": 0,
+      "errors": 0,
+      "skipped": 0,
+      "status": "PASS",
+      "sha256": "64a1b3d04ab13187a689f4ba27110f233e753759d22b1f4a8e3022ebc5a381a6"
+    },
+    "canonical_root_binding": {
+      "status": "PASS",
+      "file": "SMART_CANONICAL_ROOT.json",
+      "file_sha256": "a9aba43a3ed965cfb9b3900050cc3442d660d9f5cb4aec0f0ec7574867d88903",
+      "authority_sha256": "d09aa08cdbff5f1a00b11aacf8b0b8bd8c19744212419fc715764354f537ff86",
+      "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
+      "junit_sha256": "64a1b3d04ab13187a689f4ba27110f233e753759d22b1f4a8e3022ebc5a381a6",
+      "tests": 1517,
+      "failures": 0,
+      "errors": 0,
+      "checks": {
+        "authority_file_present": true,
+        "junit_file_present": true,
+        "authority_json_valid": true,
+        "authority_self_hash_valid": true,
+        "authority_project_valid": true,
+        "authority_root_matches": true,
+        "authority_state_canonical_only": true,
+        "legacy_alias_physically_absent": true,
+        "junit_file_bound": true,
+        "junit_sha_bound": true,
+        "regression_counts_bound": true
+      }
+    },
+    "regression_source_binding": {
+      "status": "PASS",
+      "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+      "ci_run_id": "60794a3d-2451-4718-84be-24d06dbd4c60",
+      "execution": {
+        "kind": "EXTERNAL_GOVERNED_EXECUTOR",
+        "execution_id": "60794a3d-2451-4718-84be-24d06dbd4c60",
+        "hostname": "wmcp-cloud-01",
+        "source_commit": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+        "origin": "https://github.com/andrebarros78/SMART-MEGA.git"
+      },
+      "code_fingerprint_sha256": "975f375cbdf366fa32cc34b4da8c1daf780b07e7ec31b832c5d9669374fa01b0",
+      "junit_sha256": "64a1b3d04ab13187a689f4ba27110f233e753759d22b1f4a8e3022ebc5a381a6",
+      "checks": {
+        "source_commit_recorded": true,
+        "execution_recorded": true,
+        "fingerprint_bound": true,
+        "junit_bound": true,
+        "source_commit_ancestor": true,
+        "source_files_match_tested_commit": true
+      }
+    },
+    "scientific_frozen_state_unchanged_vs_baseline": true,
+    "github_actions_used": false,
+    "checked_utc": "2026-10-21T22:33:24.769053+00:00"
+  },
+  "clone_preparation": {
+    "head": "b04f4e75fd1bab1ed77c3b039172203dc0f65a3f",
+    "tree": "79a6e273ff0dc149904f1a6a7e9784fa5dd5c0cf",
+    "test_inventory": 1517,
+    "parts": [
+      337,
+      292,
+      433,
+      455
+    ],
+    "source_fingerprint_sha256": "975f375cbdf366fa32cc34b4da8c1daf780b07e7ec31b832c5d9669374fa01b0",
+    "clones_raw_identical": true
+  }
+}

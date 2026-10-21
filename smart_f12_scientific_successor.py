@@ -67,6 +67,44 @@ OPERATOR_SOURCE_REVERSALS = (
     ),
 )
 
+# These reversals are comparison-only. Production never executes the old
+# directory-name shortcuts. The final bytes must still match the immutable
+# approved hash, so no scoring or parameter change is authorized here.
+AUTHORIZATION_SOURCE_REVERSALS = (
+    (b"import smart_canonical_identity as _test_identity\n", b""),
+    (b"if _test_identity._authorized_pytest_sandbox(root):",
+     b'if "pytest-" in str(root).lower():'),
+    (b"if not (_test_identity._authorized_pytest_sandbox(root) and epoch_dir.resolve() == root.resolve()):",
+     b'if not ("pytest-" in str(root).lower() and epoch_dir.resolve() == root.resolve()):'),
+)
+GUARD_SOURCE_REVERSALS = {
+    "smart_portfolio_pipeline.py": (
+        AUTHORIZATION_SOURCE_REVERSALS[0],
+        (b"if _test_identity._authorized_pytest_sandbox(freeze_path):",
+         b'if "pytest-" in str(freeze_path).lower():'),
+    ),
+    "smart_learning_epoch_reset.py": (
+        AUTHORIZATION_SOURCE_REVERSALS[0],
+        (b"            if _test_identity._authorized_pytest_sandbox(path):",
+         b'            test_path = str(path.resolve()).lower()\n            if "pytest-" in test_path :'),
+    ),
+}
+
+
+def reconstruct_guard_only_source(path: str, value: bytes) -> bytes | None:
+    """Accept only exact inverse guard substitutions and the pinned F11 hash."""
+    expected = BASELINE_SOURCE_SHA256[path]
+    for variant in _canonical_variants(value):
+        restored = variant
+        for candidate, original in GUARD_SOURCE_REVERSALS[path]:
+            if restored.count(candidate) != 1:
+                break
+            restored = restored.replace(candidate, original, 1)
+        else:
+            if _matches_expected_code(restored, expected):
+                return restored
+    return None
+
 
 def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
     '''Return the exact pre-operator F12 pipeline; reject arbitrary diffs.'''
@@ -75,14 +113,16 @@ def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
     # Search the same EOL variants already accepted by the pinned SHA proof.
     # Multiline source reversals must not depend on Git's checkout EOL policy.
     for variant in _canonical_variants(value):
-        restored = variant
-        for candidate, original in OPERATOR_SOURCE_REVERSALS:
-            if restored.count(candidate) != 1:
-                break
-            restored = restored.replace(candidate, original, 1)
-        else:
-            if _matches_expected_code(restored, APPROVED_F12_PIPELINE_SHA256):
-                return restored
+        for reversals in (OPERATOR_SOURCE_REVERSALS, AUTHORIZATION_SOURCE_REVERSALS,
+                          AUTHORIZATION_SOURCE_REVERSALS + OPERATOR_SOURCE_REVERSALS):
+            restored = variant
+            for candidate, original in reversals:
+                if restored.count(candidate) != 1:
+                    break
+                restored = restored.replace(candidate, original, 1)
+            else:
+                if _matches_expected_code(restored, APPROVED_F12_PIPELINE_SHA256):
+                    return restored
     return None
 
 
@@ -146,10 +186,13 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         if path == PREDICTIVE_FILE:
             original = reconstruct_predecessor(raw)
             same = original is not None and _matches_expected_code(original, expected)
+        elif path in GUARD_SOURCE_REVERSALS:
+            same = same or reconstruct_guard_only_source(path, raw) is not None
         sources[path] = {"approved_f11_source_preserved": bool(same),
                          "current_canonical_lf_sha256": _sha256(raw.replace(b"\r\n", b"\n")),
                          "f11_source_sha256": expected,
-                         "repair_scope": path == PREDICTIVE_FILE}
+                         "repair_scope": path == PREDICTIVE_FILE,
+                         "authorization_guard_scope": path in GUARD_SOURCE_REVERSALS}
     live_f11 = evaluate_f11(root)
     operator_delta_proven = reconstruct_approved_f12_source((root / PREDICTIVE_FILE).read_bytes()) is not None
     check = {
@@ -159,7 +202,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
             and archived.get("sha256") == _json_sha({k: v for k, v in archived.items() if k != "sha256"}),
         "f11_historical_evidence_integrity": reproduced["checks"]["historical_artifacts_git_blob_identical_to_F10"]
             and all(reproduced["checks"].values()),
-        "all_other_production_sources_unchanged": all(
+        "all_other_predictive_sources_preserved_after_exact_guard_reversal": all(
             row["approved_f11_source_preserved"] for row in sources.values()
             if not row["repair_scope"]
         ),
@@ -180,7 +223,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "schema": SCHEMA,
         "status": "PASS" if all(check.values()) else "FAIL",
         "project": "SMART-MEGA",
-        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__OPERATOR_SCHEDULE_ADAPTER",
+        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__OPERATOR_SCHEDULE_AND_AUTHORIZATION_GUARDS",
         "historical_baseline_head": BASELINE_HEAD,
         "historical_f11_report_file": F11_ARCHIVE,
         "historical_f11_report_sha256": _sha256((root / F11_ARCHIVE).read_bytes()),
@@ -193,7 +236,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "prospective_advantage_proven": False,
         "six_of_six_proven": False,
         "additional_prospective_samples_since_F11": 0,
-        "note": "The immutable F11 predictor is reconstructed byte-for-byte after reversing only the exact approved F12 causal guard and operator-target scheduling delta. This proves a restricted source change, not superior lottery prediction.",
+        "note": "The immutable F11 predictor is reconstructed byte-for-byte after reversing only the exact approved F12 causal guard, operator-target scheduling delta and authorization-guard substitutions. Reversal bytes are never executed. This proves a restricted source change, not superior lottery prediction.",
     }
     report["sha256"] = _json_sha(report)
     return report

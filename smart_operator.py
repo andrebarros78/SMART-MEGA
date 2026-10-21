@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 from smart_crash_safe_io import atomic_write_text
 from smart_idempotency import resolve_key as resolve_idempotency_key, replay as replay_idempotency, commit as commit_idempotency, idempotent_operation
 from smart_canonical_identity import canonical_root
@@ -283,7 +284,7 @@ def _reserve_next_cycle_authority(root: Path, target: int, transaction_id: str, 
         "prepared_epoch_id": str(prepared_epoch_id),
         "authority_sha256_before_reservation": original_sha,
     })
-    if not authority_path.exists() and "pytest-" in str(root).lower():
+    if not authority_path.exists() and _test_identity._authorized_pytest_sandbox(root):
         return _write_operator_hashed_doc(authority_path, updated)
     return _write_operator_hashed_doc(authority_path, updated, expected_sha256=original_sha)
 
@@ -325,7 +326,7 @@ def _consume_reserved_next_cycle_authority(root: Path, target: int, transaction_
     if int(active.get("target_contest", -1)) != int(target) or active.get("epoch_id") != str(prepared_epoch_id):
         raise PermissionError("active epoch does not prove reserved authority materialization")
     active_path = root / ACTIVE_PATH
-    if "pytest-" in str(root).lower():
+    if _test_identity._authorized_pytest_sandbox(root):
         active = dict(active)
         active.setdefault("sha256", "p" * 64)
     else:
@@ -576,7 +577,7 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
         try:
             previous_active = verify_active_epoch(active_path)
         except Exception:
-            if "pytest-" in str(root).lower():
+            if _test_identity._authorized_pytest_sandbox(root):
                 raise FileExistsError("active epoch already exists")
             raise
         previous_ledger = root / previous_active["state_paths"]["ledger"]
@@ -654,7 +655,7 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
         "canonical_ledger_seed_sha256": ledger_seed["sha256"],
         "canonical_ledger_seed_event_count": ledger_seed["event_count"],
     })
-    if "pytest-" in str(root).lower() and "sha256" not in active:
+    if _test_identity._authorized_pytest_sandbox(root) and "sha256" not in active:
         active = dict(active); active["sha256"] = "p" * 64
     authority_consumption = _consume_reserved_next_cycle_authority(root, int(target), transaction_id, epoch_id, active)
     lifecycle_prepared = transition_lifecycle(root, "PREPARING", "PREPARED", target_contest=int(target), actor="operator_prepare_complete", evidence={"active_epoch": {"file": ACTIVE_PATH.name, "sha256": active["sha256"], "epoch_id": active["epoch_id"]}})

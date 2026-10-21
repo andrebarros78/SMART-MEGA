@@ -216,18 +216,19 @@ def _validate_coverage_set(rows: list[dict[str, Any]]) -> None:
 
 
 def junit_summary(path: Path) -> dict[str, int]:
+    from smart_regression_evidence import junit_summary as verified_junit_summary
+
     path = Path(path)
     if not path.is_file():
         raise ValueError('full regression JUnit file missing')
     try:
-        root = ET.parse(path).getroot()
+        summary = verified_junit_summary(path)
     except ET.ParseError as exc:
         raise ValueError('full regression JUnit XML is malformed') from exc
-    suites = [root] if root.tag == 'testsuite' else list(root.findall('testsuite'))
-    if not suites:
-        raise ValueError('JUnit contains no test suites')
-    out = {k: sum(int(float(s.attrib.get(k, 0))) for s in suites) for k in ('tests', 'failures', 'errors', 'skipped')}
-    if out['tests'] <= 0 or out['failures'] != 0 or out['errors'] != 0:
+    except ValueError as exc:
+        raise ValueError('JUnit contains no test suites') from exc
+    out = {name: summary[name] for name in ('tests', 'failures', 'errors', 'skipped')}
+    if summary['status'] != 'PASS':
         raise ValueError(f'full regression JUnit not clean: {out}')
     return out
 
