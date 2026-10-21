@@ -1097,6 +1097,12 @@ def freeze_operation(root: str | Path, target: int, *, idempotency_key: str | No
 
 
 
+def show_card_operation(root: str | Path, target: int) -> dict[str, Any]:
+    """Read a verified previously frozen MODEL card without adjudication."""
+    from smart_frozen_card_reader import read_frozen_card
+    return read_frozen_card(root, int(target))
+
+
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Generate the active frozen card or a non-certified next-contest contingency."""
     root = Path(canonical_root(root)).resolve()
@@ -1572,6 +1578,7 @@ def main(argv: list[str] | None = None) -> None:
     a = sub.add_parser("adjudicate"); a.add_argument("--target", type=int, required=True); a.add_argument("--result-data", required=True)
     op_result = sub.add_parser("register-result"); op_result.add_argument("--target", type=int, required=True); op_result.add_argument("--result-file", required=True)
     gen_card = sub.add_parser("generate-card"); gen_card.add_argument("--target", type=int, required=True)
+    sc = sub.add_parser("show-card"); sc.add_argument("--target", type=int, required=True)
     r = sub.add_parser("post-result-report"); r.add_argument("--target", type=int, required=True)
     rv = sub.add_parser("review"); rv.add_argument("--target", type=int, required=True); rv.add_argument("--review-file", required=True)
     h = sub.add_parser("hold"); h.add_argument("--target", type=int, required=True); h.add_argument("--hold-file", default=str(POST_RESULT_HOLD_PATH))
@@ -1592,6 +1599,7 @@ def main(argv: list[str] | None = None) -> None:
     elif args.action == "adjudicate": out = adjudicate_operation(root, args.target, args.result_data)
     elif args.action == "register-result": out = register_result_operation(root, args.target, args.result_file)
     elif args.action == "generate-card": out = generate_card_operation(root, args.target)
+    elif args.action == "show-card": out = show_card_operation(root, args.target)
     elif args.action == "post-result-report": out = post_result_report_operation(root, args.target)
     elif args.action == "review": out = review_operation(root, args.target, args.review_file)
     elif args.action == "hold": out = hold_operation(root, args.target, args.hold_file)
