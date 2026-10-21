@@ -88,9 +88,12 @@ def test_successful_operation_publishes_its_state_to_git(
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
-    monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
-    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    # This test covers the Git transaction with a local bare fixture;
+    # authorization and remote identity are independently covered below.
+    monkeypatch.setattr(github_operator, "_require_external_operator_authority",
+                        lambda root, operation, target: None)
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
     if not should_publish:
         with pytest.raises(subprocess.CalledProcessError):
             github_operator.execute("prepare", "3067")
@@ -419,3 +422,76 @@ def test_pre_draw_guard_requires_exact_contest_and_strict_verified_status(monkey
     )
     with pytest.raises(ValueError, match="same target"):
         github_operator._require_verified_pre_draw_window(schedule, 3073)
+
+
+@pytest.mark.parametrize("mutation", [
+    "missing_approval", "wrong_operation", "wrong_commit",
+    "github_actions", "workflow_dispatch", "wrong_branch",
+    "wrong_origin", "stale_main", "policy_fail",
+])
+def test_external_operator_authority_fails_closed(monkeypatch, tmp_path, mutation):
+    from types import SimpleNamespace
+    import smart_github_native_policy
+
+    commit = "a" * 40
+    git_map = {
+        ("rev-parse", "HEAD"): commit,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "https://github.com/andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): commit + "\trefs/heads/main",
+    }
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map[args])
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{commit}")
+    if mutation == "missing_approval":
+        monkeypatch.delenv("SMART_MEGA_OPERATOR_APPROVAL", raising=False)
+    elif mutation == "wrong_operation":
+        monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"freeze:3067:{commit}")
+    elif mutation == "wrong_commit":
+        monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{'b' * 40}")
+    elif mutation == "github_actions":
+        monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    elif mutation == "workflow_dispatch":
+        monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    elif mutation == "wrong_branch":
+        git_map[("symbolic-ref", "--short", "HEAD")] = "test"
+    elif mutation == "wrong_origin":
+        git_map[("remote", "get-url", "origin")] = "https://github.com/attacker/SMART-MEGA.git"
+    elif mutation == "stale_main":
+        git_map[("ls-remote", "origin", "refs/heads/main")] = "b" * 40 + "\trefs/heads/main"
+    elif mutation == "policy_fail":
+        monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "FAIL"})
+    with pytest.raises(PermissionError):
+        github_operator._require_external_operator_authority(tmp_path, "prepare", "3067")
+
+
+def test_external_operator_authority_accepts_bound_clean_main(monkeypatch, tmp_path):
+    import smart_github_native_policy
+    commit = "c" * 40
+    git_map = {
+        ("rev-parse", "HEAD"): commit,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "git@github.com:andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): commit + "\trefs/heads/main",
+    }
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map[args])
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{commit}")
+    github_operator._require_external_operator_authority(tmp_path, "prepare", "3067")
+
+
+
+@pytest.mark.parametrize("env_name,env_value", [
+    ("GITHUB_ACTIONS", "true"),
+    ("GITHUB_EVENT_NAME", "workflow_dispatch"),
+])
+def test_actions_cannot_even_invoke_read_only_operator(monkeypatch, env_name, env_value):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv(env_name, env_value)
+    with pytest.raises(PermissionError, match="forbidden"):
+        github_operator.execute("status")

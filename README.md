@@ -43,10 +43,13 @@ Backup, snapshot, regressão ampla, refatoração, hardening, nova infraestrutur
 O desenvolvimento e a operação usam apenas este repositório. Os antigos workflows de `.github/workflows/` foram desativados. A execução deve ser feita em executor externo autorizado. LMCP, VPS e PCs autorizados podem executar tarefas transitórias, sem se tornarem dependências permanentes. GitHub Actions é proibido. O GitHub `main` é a única autoridade persistente. Identificar o executor real, o commit e os hashes das provas, persistir as alterações no GitHub e verificar o commit remoto.
 
 - `CI` e `Repository Integrity`: verificam o commit no GitHub.
-- [SMART-MEGA GitHub Operator](https://github.com/andrebarros78/SMART-MEGA/actions/workflows/operator.yml): escolha manualmente `Run workflow` em `main`, informe a ação e o concurso quando necessário. `status` apenas observa; as demais ações seguem os contratos do operador.
-- `adjudicate` e `review` exigem um arquivo de resultado ou revisão já versionado em `main`. `catch-up` pode receber um arquivo versionado. O operador verifica a entrada e só confirma alterações operacionais no GitHub quando a execução termina com sucesso.
+- **Operador digital:** executar `smart_github_operator.py` em um checkout temporário e isolado de `main` do GitHub. GitHub Actions, `workflow_dispatch` e a página antiga de workflows não são pontos de entrada autorizados.
+- Leitura (sem escrita): `python smart_github_operator.py --operation status` e, com concurso, `--operation show-card --target N`.
+- Para mutação, conferir `git rev-parse HEAD`, `git ls-remote origin refs/heads/main` e a origem canônica. Definir `SMART_MEGA_OPERATOR_APPROVAL` exatamente como `OPERACAO:CONCURSO:SHA40`, por exemplo `prepare:3073:<SHA-do-HEAD>`; então executar `python smart_github_operator.py --operation prepare --target 3073`.
+- O token de aprovação é uma **confirmação explícita para impedir acionamentos acidentais**, não assinatura criptográfica: somente credenciais GitHub com permissão `contents:write` conseguem publicar. O operador rejeita GitHub Actions, commits locais defasados, branches divergentes, origens externas, política inválida e artefatos não operacionais. Ao terminar, confirma o SHA remoto.
+- Adjudicação e revisão exigem arquivos de entrada já versionados no GitHub; geração prospectiva exige prova pré-sorteio. Nenhum executor permanece necessário depois da operação. **Não existe serviço digital 24/7 comprovado apenas por haver código na `main`.**
 
-Uma execução que falha não publica estado. Uma operação concluída precisa gerar commit em `main` e confirmar o SHA remoto. O token do workflow requer permissão `contents: write`; se uma regra de proteção impedir a gravação, o job falha sem declarar sucesso.
+Uma execução que falha não publica o estado. O próprio commit remoto, e não o checkout temporário, é a autoridade operacional.
 
 Testes devem ser proporcionais ao comportamento alterado. Regressão integral só é executada quando o impacto for sistêmico, quando um gate existente realmente a exigir para a mudança ou quando solicitada explicitamente.
 

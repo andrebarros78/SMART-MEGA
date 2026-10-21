@@ -1,7 +1,7 @@
-"""Execute one SMART-MEGA operator action on a GitHub-hosted runner.
+"""Execute one SMART-MEGA operator action on an authorized external checkout.
 
-The repository on main is the only durable operational state. A failed action
-never publishes its runner-local changes.
+GitHub main remains the only durable operational state. GitHub Actions is
+forbidden. A failed action never publishes executor-local changes.
 """
 from __future__ import annotations
 
@@ -267,16 +267,50 @@ def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
             raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
 
 
+def _require_external_operator_authority(root: Path, operation: str, target: str) -> None:
+    """Authorize one intentional mutation, never GitHub Actions or a stale checkout.
+
+    The approval token prevents accidental writes; Git push credentials still
+    decide whether an operator can write to the canonical remote.
+    """
+    from smart_github_native_policy import verify as verify_execution_policy
+
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions or GitHub event execution is prohibited")
+    source = _git(root, "rev-parse", "HEAD")
+    if not re.fullmatch(r"[0-9a-f]{40}", source):
+        raise PermissionError("invalid source commit for external operator")
+    expected = f"{operation}:{target}:{source}"
+    if os.environ.get("SMART_MEGA_OPERATOR_APPROVAL") != expected:
+        raise PermissionError("explicit operation:target:commit approval is required")
+    if _git(root, "symbolic-ref", "--short", "HEAD") != "main":
+        raise PermissionError("external operator must use canonical main branch")
+    origin = _git(root, "remote", "get-url", "origin")
+    if origin not in {
+        "https://github.com/andrebarros78/SMART-MEGA.git",
+        "https://github.com/andrebarros78/SMART-MEGA",
+        "git@github.com:andrebarros78/SMART-MEGA.git",
+        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+    }:
+        raise PermissionError("external operator origin is not the canonical GitHub repository")
+    remote_line = _git(root, "ls-remote", "origin", "refs/heads/main")
+    matches = remote_line.split()
+    if len(matches) != 2 or matches[1] != "refs/heads/main" or matches[0] != source:
+        raise PermissionError("canonical GitHub main moved or is not provably current")
+    if verify_execution_policy(root).get("status") != "PASS":
+        raise PermissionError("external execution policy is not PASS")
+
+
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions and GitHub-event execution are forbidden")
     root = Path(__file__).resolve().parent
     if Path(_git(root, "rev-parse", "--show-toplevel")).resolve() != root:
         raise RuntimeError("operator must run at the Git top-level")
-    if operation not in READ_ONLY and (
-        os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
-        or os.environ.get("GITHUB_REF") != "refs/heads/main"
-        or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"
-    ):
-        raise PermissionError("mutations require explicit dispatch on canonical GitHub main")
+    if operation not in READ_ONLY:
+        _require_external_operator_authority(root, operation, target)
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout is dirty before operator action")
     if payload:
@@ -296,8 +330,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
             raise RuntimeError(f"read-only operation changed canonical files: {changes[:20]}")
         result_readiness = None
         if operation == "preflight" and observation.get("status") == "ALREADY_FROZEN":
-            # Reuse the existing GitHub workflow choice; OAuth credentials may
-            # not edit workflow dispatch definitions. Keep F15 frozen semantics.
+            # Keep F15 frozen semantics using the existing read-only CLI.
             readiness_run = subprocess.run(
                 command_args("result-preflight", target),
                 cwd=root, text=True, capture_output=True, check=False, timeout=180,
