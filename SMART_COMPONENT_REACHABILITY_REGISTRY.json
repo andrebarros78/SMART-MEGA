@@ -1,6 +1,6 @@
 {
   "schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "scope": "STATIC_PYTHON_REACHABILITY_FROM_CANONICAL_GITHUB_WORKFLOWS",
+  "scope": "STATIC_PYTHON_REACHABILITY_FROM_GITHUB_CANONICAL_EXTERNAL_ENTRYPOINTS",
   "classification_policy": {
     "allowed_roles": [
       "PRODUCTION",
@@ -12,36 +12,37 @@
       "QUARANTINE",
       "UNCLASSIFIED"
     ],
-    "production_definition": "Python module statically reachable from a Python entrypoint invoked by .github/workflows",
+    "production_definition": "Python module statically reachable from an approved external executor entrypoint using the canonical GitHub source",
     "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
     "runtime_execution_claimed": false
   },
   "workflow_entrypoints": {
     "smart_canonical_component_registry.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_component_reachability.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_disconnection_gate.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_f12_scientific_successor.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_github_certify.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_github_operator.py": [
-      ".github/workflows/operator.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_repository_integrity.py": [
-      ".github/workflows/repository-integrity.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
     "smart_skill_adapter_registry.py": [
-      ".github/workflows/ci.yml"
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ]
   },
+  "entrypoint_authority": "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021",
   "required_production_files": [
     "smart_champion_challenger.py",
     "smart_full_process_pipeline.py",
@@ -53,20 +54,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "e365d1ca17554fe3b4a47cfa9d57a1d42ad1709eb7537a06a2e594fe1e95ae23",
+  "inventory_sha256": "fcad54417dd0526e68e741a4ceb67092025cc3b256dfc7acfdc006e930987c75",
   "summary": {
-    "python_components": 506,
+    "python_components": 530,
     "workflow_entrypoints": 8,
-    "production_components": 104,
+    "production_components": 110,
     "shadow_components": 1,
-    "diagnostic_components": 27,
+    "diagnostic_components": 29,
     "validation_components": 23,
-    "test_components": 175,
+    "test_components": 191,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 38,
+    "independent_entrypoints": 40,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -103,8 +104,10 @@
       "smart_finalize_capability_integration_v3.py",
       "smart_finalize_deployment.py",
       "smart_frontier_adjudicator.py",
+      "smart_github_native_policy.py",
       "smart_historical_training_intake.py",
       "smart_hypothesis_state_reconciler.py",
+      "smart_linux_ci.py",
       "smart_monte_carlo_convergence.py",
       "smart_official_dataset_reconcile.py",
       "smart_portfolio_backtest.py",
@@ -362,7 +365,7 @@
       "component_id": "adjudicate_signal_challenger",
       "source_file": "adjudicate_signal_challenger.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -3891,7 +3894,7 @@
       "component_id": "freeze_next_research",
       "source_file": "freeze_next_research.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -3948,7 +3951,7 @@
       "component_id": "smart_3054_adjudication_preflight",
       "source_file": "smart_3054_adjudication_preflight.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4102,7 +4105,7 @@
       "component_id": "smart_agent_ecosystem_governance",
       "source_file": "smart_agent_ecosystem_governance.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_certify"
       ],
@@ -4133,7 +4136,7 @@
       "component_id": "smart_agent_handoff_runtime",
       "source_file": "smart_agent_handoff_runtime.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4163,7 +4166,7 @@
       "component_id": "smart_agent_runtime",
       "source_file": "smart_agent_runtime.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4228,7 +4231,7 @@
       "component_id": "smart_agent_skill_functional_gate",
       "source_file": "smart_agent_skill_functional_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4266,7 +4269,7 @@
       "component_id": "smart_agent_skill_orchestration",
       "source_file": "smart_agent_skill_orchestration.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4320,7 +4323,7 @@
       "component_id": "smart_ai_fine_tuning",
       "source_file": "smart_ai_fine_tuning.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4354,7 +4357,7 @@
       "component_id": "smart_authority_freshness",
       "source_file": "smart_authority_freshness.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4391,7 +4394,7 @@
       "component_id": "smart_bounded_online_learning",
       "source_file": "smart_bounded_online_learning.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4424,7 +4427,7 @@
       "component_id": "smart_calibration_safety_gate",
       "source_file": "smart_calibration_safety_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4448,7 +4451,7 @@
       "component_id": "smart_canonical_component_registry",
       "source_file": "smart_canonical_component_registry.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_canonical_component_registry",
         "smart_disconnection_gate"
@@ -4477,7 +4480,7 @@
       "component_id": "smart_canonical_history_advance",
       "source_file": "smart_canonical_history_advance.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4511,13 +4514,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "1e337c0094afc21741e6554a43b7aedd6691334c2fb01dcbf699beea0ae23118"
+      "sha256": "e198d6d307f513e0abc89d04c37d0b21d26ad9debd053ff4bd8c477bfa88114d"
     },
     {
       "component_id": "smart_canonical_identity",
       "source_file": "smart_canonical_identity.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4618,7 +4621,7 @@
       "component_id": "smart_cap60_experiment_engine",
       "source_file": "smart_cap60_experiment_engine.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4643,7 +4646,7 @@
       "component_id": "smart_cap60_parallel",
       "source_file": "smart_cap60_parallel.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4696,7 +4699,7 @@
       "component_id": "smart_cartography_extended",
       "source_file": "smart_cartography_extended.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4760,7 +4763,7 @@
       "component_id": "smart_champion_challenger",
       "source_file": "smart_champion_challenger.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -4809,6 +4812,7 @@
         "smart_agent_skill_orchestration",
         "smart_canonical_history_advance",
         "smart_causal_shadow_runner",
+        "smart_frozen_terminal_recovery",
         "smart_full_process_pipeline",
         "smart_learning_epoch_reset",
         "smart_missed_catchup",
@@ -4857,7 +4861,7 @@
       "component_id": "smart_component_reachability",
       "source_file": "smart_component_reachability.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_canonical_component_registry",
         "smart_component_reachability",
@@ -4882,13 +4886,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "a87d3f894f273cb438c7253375b8383df28012a2e361d27d1fa47960b1243338"
+      "sha256": "4caed6378b51832975b4cfbbcd39dac1141f8efbdd1ca7e776f02085f2452efc"
     },
     {
       "component_id": "smart_consumer_integration",
       "source_file": "smart_consumer_integration.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -4964,7 +4968,7 @@
       "component_id": "smart_context_regime",
       "source_file": "smart_context_regime.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5003,7 +5007,7 @@
       "component_id": "smart_contextual_meta_weights",
       "source_file": "smart_contextual_meta_weights.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5028,6 +5032,30 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc"
+    },
+    {
+      "component_id": "smart_contingency_card",
+      "source_file": "smart_contingency_card.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_operator",
+        "test_smart_contingency_card"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "73b5e16d1912a6dd3ba92b85771e531f3175d5c4adba3b8552ab1619696d81c7"
     },
     {
       "component_id": "smart_continuity_consolidator",
@@ -5063,7 +5091,7 @@
       "component_id": "smart_continuous_red_team",
       "source_file": "smart_continuous_red_team.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5135,7 +5163,7 @@
       "component_id": "smart_crash_safe_io",
       "source_file": "smart_crash_safe_io.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5169,7 +5197,7 @@
       "component_id": "smart_critical_code_manifest",
       "source_file": "smart_critical_code_manifest.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5201,7 +5229,7 @@
       "component_id": "smart_current_epoch_contract",
       "source_file": "smart_current_epoch_contract.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5251,10 +5279,34 @@
       "sha256": "aae40a0cc00f6f2b321740d40f782c4ed84efe88c082953235737c0f4b897765"
     },
     {
+      "component_id": "smart_cycle_completion",
+      "source_file": "smart_cycle_completion.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_operator",
+        "test_smart_cycle_completion"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "7023339610ece7a556d63f582fa179459dceffcdd91571690b85121a28fd4d88"
+    },
+    {
       "component_id": "smart_data_quality_gate",
       "source_file": "smart_data_quality_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5291,7 +5343,7 @@
       "component_id": "smart_disconnection_gate",
       "source_file": "smart_disconnection_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate"
       ],
@@ -5318,7 +5370,7 @@
       "component_id": "smart_engineering_activation",
       "source_file": "smart_engineering_activation.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5360,7 +5412,7 @@
       "component_id": "smart_evidence_only_promotion",
       "source_file": "smart_evidence_only_promotion.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5466,7 +5518,7 @@
       "component_id": "smart_f11_predictive_nonregression",
       "source_file": "smart_f11_predictive_nonregression.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_f12_scientific_successor"
       ],
@@ -5491,7 +5543,7 @@
       "component_id": "smart_f12_scientific_successor",
       "source_file": "smart_f12_scientific_successor.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_f12_scientific_successor"
       ],
@@ -5516,7 +5568,7 @@
       "component_id": "smart_false_negative_rescue",
       "source_file": "smart_false_negative_rescue.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5545,7 +5597,7 @@
       "component_id": "smart_falsification_lab",
       "source_file": "smart_falsification_lab.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5648,7 +5700,7 @@
       "component_id": "smart_fine_tuning_lifecycle",
       "source_file": "smart_fine_tuning_lifecycle.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -5699,7 +5751,7 @@
       "component_id": "smart_frontier_signal_lab",
       "source_file": "smart_frontier_signal_lab.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -5728,10 +5780,65 @@
       "sha256": "928b9a54290b26539a2c3f15deb637dd9580c4ab544664ea7ac0371ad1daaf76"
     },
     {
+      "component_id": "smart_frozen_card_reader",
+      "source_file": "smart_frozen_card_reader.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_github_operator",
+        "smart_operator",
+        "test_smart_frozen_card_reader",
+        "test_smart_github_operator"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "404f7dcb58632e831278c412b1dfad63b28b3843d39c8e5f32c7aa26081d7d02"
+    },
+    {
+      "component_id": "smart_frozen_terminal_recovery",
+      "source_file": "smart_frozen_terminal_recovery.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity"
+      ],
+      "producers": [
+        "smart_champion_challenger",
+        "smart_sequential_prospective_proof"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_startup_reconciler",
+        "test_smart_frozen_terminal_recovery"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "9cc2e48d2bea9da1f86532165f7b4493cc29101aa05bbfc0410ccfb3b2de4eeb"
+    },
+    {
       "component_id": "smart_full_process_pipeline",
       "source_file": "smart_full_process_pipeline.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -5785,7 +5892,7 @@
       "component_id": "smart_github_certify",
       "source_file": "smart_github_certify.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_certify"
       ],
@@ -5800,7 +5907,8 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_federated_certification"
+        "test_smart_federated_certification",
+        "test_smart_github_only_certification"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -5810,18 +5918,40 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "4c3b4b86f12c659b513f840be8b02b0c1731904622e193bda00d2e2f7bc11bc2"
+      "sha256": "198d203c96772c22409d4dc4de8906649ee8842f6429dd764bab5e4d1567cae6"
+    },
+    {
+      "component_id": "smart_github_native_policy",
+      "source_file": "smart_github_native_policy.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_github_native_policy"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "9c946d93e31d33182a0aee60413e7acae37ba9aee0c68ae65d9f864042518c31"
     },
     {
       "component_id": "smart_github_operator",
       "source_file": "smart_github_operator.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
       "producers": [
         "smart_calibration_safety_gate",
+        "smart_frozen_card_reader",
         "smart_operator",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -5847,13 +5977,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "42f1fc6c7ecd89f008843e1e63a077d656030632a119542f95dac5b59ad3cb17"
+      "sha256": "9a1934826053f1dd0c2f8ac797cfe21f57bf28813a72b1c00e0169a69608f697"
     },
     {
       "component_id": "smart_global_integrity",
       "source_file": "smart_global_integrity.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -5901,7 +6031,7 @@
       "component_id": "smart_historical_binding",
       "source_file": "smart_historical_binding.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -5949,7 +6079,7 @@
       "component_id": "smart_http_guard",
       "source_file": "smart_http_guard.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -5998,7 +6128,7 @@
       "component_id": "smart_idempotency",
       "source_file": "smart_idempotency.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6008,7 +6138,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
-        "test_smart_operator_reauthorization"
+        "test_smart_operator_reauthorization",
+        "test_smart_terminal_pending_idempotency"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -6018,13 +6149,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "58f007b5b843510c8d66295859cc4c3a754bc13cb4e565353a5cb3ef1a6d1918"
+      "sha256": "68d90b28171a7acfa936b16fbaf8319a0d028c4635ba95a7da5ba6446f958e9e"
     },
     {
       "component_id": "smart_independent_audit",
       "source_file": "smart_independent_audit.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6076,7 +6207,7 @@
       "component_id": "smart_independent_oracle",
       "source_file": "smart_independent_oracle.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6110,7 +6241,7 @@
       "component_id": "smart_learning_activation_authority",
       "source_file": "smart_learning_activation_authority.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6144,7 +6275,7 @@
       "component_id": "smart_learning_activation_gate",
       "source_file": "smart_learning_activation_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6176,7 +6307,7 @@
       "component_id": "smart_learning_epoch_reset",
       "source_file": "smart_learning_epoch_reset.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6238,10 +6369,33 @@
       "sha256": "d4e899585fe91b3752f239f74e47fb4d90e359b43e2505bbe7efd83ca4178e61"
     },
     {
+      "component_id": "smart_linux_ci",
+      "source_file": "smart_linux_ci.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_regression_evidence"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_linux_ci"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "aba3150b19a63770411628f0fa1f8214dad959f8cf921f6b1be6bdd822b10016"
+    },
+    {
       "component_id": "smart_manual_generation_authority",
       "source_file": "smart_manual_generation_authority.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6265,7 +6419,7 @@
       "component_id": "smart_material_deficiency_policy",
       "source_file": "smart_material_deficiency_policy.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6293,7 +6447,7 @@
       "component_id": "smart_material_deficiency_registry",
       "source_file": "smart_material_deficiency_registry.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6331,7 +6485,7 @@
       "component_id": "smart_meta_governor",
       "source_file": "smart_meta_governor.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6368,7 +6522,7 @@
       "component_id": "smart_missed_catchup",
       "source_file": "smart_missed_catchup.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6382,6 +6536,7 @@
         "smart_official_result_ingest",
         "smart_operational_lifecycle",
         "smart_product_certification",
+        "smart_public_result_capture",
         "smart_rollover",
         "smart_storage_surfaces",
         "smart_terminal_executor"
@@ -6399,13 +6554,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "c9c1877c662b87d8f58c2c47c5f732f000ea5783df8936f80d6bec2083477173"
+      "sha256": "5a29092d9564e1c5f57087f3a0239faa3210380da0a3e7b5ed9177f07c8e54a4"
     },
     {
       "component_id": "smart_mission_status",
       "source_file": "smart_mission_status.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6469,7 +6624,7 @@
       "component_id": "smart_multi_challengers",
       "source_file": "smart_multi_challengers.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6531,7 +6686,7 @@
       "component_id": "smart_official_evidence_consensus",
       "source_file": "smart_official_evidence_consensus.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6560,7 +6715,7 @@
       "component_id": "smart_official_result_ingest",
       "source_file": "smart_official_result_ingest.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6594,13 +6749,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "bac6cfeb0cea0e2418e480b83a95c5c2ff51bbad569d895a0cf2aa2edc7566f1"
+      "sha256": "c9c3a25078df12b472f42cf309c00af62426dc6f3b5f6561d5da732a0f7e7254"
     },
     {
       "component_id": "smart_official_result_validation",
       "source_file": "smart_official_result_validation.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6609,7 +6764,8 @@
       "consumers": [
         "smart_official_result_ingest",
         "smart_operator_result",
-        "test_smart_operator_result_standalone"
+        "test_smart_operator_result_standalone",
+        "test_smart_portal_transcription_recovery"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -6625,7 +6781,7 @@
       "component_id": "smart_operation_lock",
       "source_file": "smart_operation_lock.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
@@ -6657,7 +6813,7 @@
       "component_id": "smart_operation_recovery",
       "source_file": "smart_operation_recovery.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6686,7 +6842,7 @@
       "component_id": "smart_operational_lifecycle",
       "source_file": "smart_operational_lifecycle.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6732,7 +6888,7 @@
       "component_id": "smart_operator",
       "source_file": "smart_operator.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6744,8 +6900,11 @@
         "smart_cap60_parallel",
         "smart_champion_challenger",
         "smart_consumer_integration",
+        "smart_contingency_card",
         "smart_crash_safe_io",
         "smart_current_epoch_contract",
+        "smart_cycle_completion",
+        "smart_frozen_card_reader",
         "smart_full_process_pipeline",
         "smart_historical_binding",
         "smart_idempotency",
@@ -6807,13 +6966,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "6c7e50214662bee712a2d2ae4ce7abbd771425a8f8783235024138d6b987d0ac"
+      "sha256": "1da8ecd7ca7c68d6f4b357610f51e5d4da2e1085ef7f62088a84900cd3a1be37"
     },
     {
       "component_id": "smart_operator_contract",
       "source_file": "smart_operator_contract.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6836,13 +6995,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "2003021897efb34dc32af5600a3784f0a5666dbafc86beb07f67a8d8d7fe8257"
+      "sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1"
     },
     {
       "component_id": "smart_operator_result",
       "source_file": "smart_operator_result.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -6876,7 +7035,7 @@
       "component_id": "smart_path_semantics",
       "source_file": "smart_path_semantics.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6953,7 +7112,7 @@
       "component_id": "smart_portfolio_optimizer",
       "source_file": "smart_portfolio_optimizer.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -6987,7 +7146,7 @@
       "component_id": "smart_portfolio_pipeline",
       "source_file": "smart_portfolio_pipeline.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7023,7 +7182,7 @@
       "component_id": "smart_post_result_report",
       "source_file": "smart_post_result_report.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7047,7 +7206,7 @@
       "component_id": "smart_primary_card_selector",
       "source_file": "smart_primary_card_selector.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7102,7 +7261,7 @@
       "component_id": "smart_procedural_actionability_gate",
       "source_file": "smart_procedural_actionability_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7274,7 +7433,7 @@
       "component_id": "smart_product_certification",
       "source_file": "smart_product_certification.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7314,6 +7473,7 @@
         "test_smart_current_continuity_generation",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_federated_certification",
+        "test_smart_github_only_certification",
         "test_smart_operator_e2e_recovery",
         "test_smart_operator_unprepared_missed_recovery_20260915",
         "test_smart_product_certification_critical_surface",
@@ -7329,7 +7489,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "5ddaad9c1c6025722f2e32f4ce744c8fa104da34d98a8ab4411645a2dbcf3e2d"
+      "sha256": "91f795cfb33acf78be85ffa63ad4f725ba166107bf2a0a7ee7c7652205b4ee65"
     },
     {
       "component_id": "smart_promote_cartography_1000",
@@ -7356,7 +7516,7 @@
       "component_id": "smart_promotion_gate",
       "source_file": "smart_promotion_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7390,7 +7550,7 @@
       "component_id": "smart_proof_chain",
       "source_file": "smart_proof_chain.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7413,7 +7573,7 @@
       "component_id": "smart_prospective_authority",
       "source_file": "smart_prospective_authority.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7441,7 +7601,7 @@
       "component_id": "smart_prospective_authority_lock",
       "source_file": "smart_prospective_authority_lock.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7482,7 +7642,7 @@
       "component_id": "smart_prospective_cycle",
       "source_file": "smart_prospective_cycle.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7502,6 +7662,30 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "df9d69c0942d27fe0082037763b55e52aff64d022f5c0702546acf1c72b53761"
+    },
+    {
+      "component_id": "smart_public_result_capture",
+      "source_file": "smart_public_result_capture.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_missed_catchup",
+        "test_smart_public_result_capture"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "3015b8eb4e8be8353023a3bd344d908dd12b4576ae596ff74328a53bfd6a2e16"
     },
     {
       "component_id": "smart_rag_excel",
@@ -7532,7 +7716,7 @@
       "component_id": "smart_randomness_cartography",
       "source_file": "smart_randomness_cartography.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7569,7 +7753,7 @@
       "component_id": "smart_rank_score_calibration",
       "source_file": "smart_rank_score_calibration.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7625,7 +7809,7 @@
       "component_id": "smart_regression_evidence",
       "source_file": "smart_regression_evidence.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7641,6 +7825,7 @@
         "smart_canonical_root_rebind",
         "smart_engineering_activation",
         "smart_learning_epoch_reset",
+        "smart_linux_ci",
         "smart_product_certification",
         "smart_prospective_authority_lock",
         "smart_regression_runner",
@@ -7708,7 +7893,7 @@
       "component_id": "smart_repository_integrity",
       "source_file": "smart_repository_integrity.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_repository_integrity"
       ],
@@ -7735,7 +7920,7 @@
       "component_id": "smart_rollover",
       "source_file": "smart_rollover.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7769,7 +7954,7 @@
       "component_id": "smart_runtime_guard",
       "source_file": "smart_runtime_guard.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7804,7 +7989,7 @@
       "component_id": "smart_scientific_state_guard",
       "source_file": "smart_scientific_state_guard.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -7825,10 +8010,34 @@
       "sha256": "8361dfa98aeeef9616c07c6f577ecb74001a868a1f11295fa1b967fa01447d10"
     },
     {
+      "component_id": "smart_scoped_history_gate",
+      "source_file": "smart_scoped_history_gate.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_terminal_engine",
+        "test_smart_scoped_history_gate"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "cc873a462cfe702697020ff3314a69dc70881501a5863dd5e86fd3f315d23f4a"
+    },
+    {
       "component_id": "smart_sequential_prospective_proof",
       "source_file": "smart_sequential_prospective_proof.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -7850,6 +8059,7 @@
         "smart_3054_terminal_executor",
         "smart_canonical_history_advance",
         "smart_champion_challenger",
+        "smart_frozen_terminal_recovery",
         "smart_terminal_engine",
         "test_p14_critical_branch_coverage",
         "test_smart_b2_evolution_20260909",
@@ -7922,7 +8132,7 @@
       "component_id": "smart_signal_agent",
       "source_file": "smart_signal_agent.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8022,7 +8232,7 @@
       "component_id": "smart_signal_attribution",
       "source_file": "smart_signal_attribution.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -8071,7 +8281,7 @@
       "component_id": "smart_signal_expansion_governance",
       "source_file": "smart_signal_expansion_governance.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8109,7 +8319,7 @@
       "component_id": "smart_signal_interactions",
       "source_file": "smart_signal_interactions.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8142,7 +8352,7 @@
       "component_id": "smart_signal_marginal_utility",
       "source_file": "smart_signal_marginal_utility.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8176,7 +8386,7 @@
       "component_id": "smart_signal_quality",
       "source_file": "smart_signal_quality.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8214,7 +8424,7 @@
       "component_id": "smart_signal_redundancy_consensus",
       "source_file": "smart_signal_redundancy_consensus.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8248,7 +8458,7 @@
       "component_id": "smart_signal_weights",
       "source_file": "smart_signal_weights.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8288,7 +8498,7 @@
       "component_id": "smart_skill_adapter_registry",
       "source_file": "smart_skill_adapter_registry.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8322,7 +8532,7 @@
       "component_id": "smart_skill_runtime",
       "source_file": "smart_skill_runtime.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8358,7 +8568,7 @@
       "component_id": "smart_source_identity",
       "source_file": "smart_source_identity.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8381,6 +8591,7 @@
         "smart_regression_runner",
         "smart_terminal_engine",
         "test_smart_f17_terminal_stale_coverage",
+        "test_smart_linux_certification_provenance",
         "test_smart_source_identity"
       ],
       "reachable": true,
@@ -8397,7 +8608,7 @@
       "component_id": "smart_startup_reconciler",
       "source_file": "smart_startup_reconciler.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
@@ -8406,6 +8617,7 @@
       "producers": [
         "smart_authority_freshness",
         "smart_canonical_identity",
+        "smart_frozen_terminal_recovery",
         "smart_operation_lock",
         "smart_operational_lifecycle",
         "smart_transaction_journal"
@@ -8428,13 +8640,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "ecc090236fd4bc4705cc84edb80a942043eef6186049bd712f79bc1eb4faba5b"
+      "sha256": "47b0a41404557b3fce52404a4ca0bbd637c3fb13aca7e2d94722236983e679a1"
     },
     {
       "component_id": "smart_storage_surfaces",
       "source_file": "smart_storage_surfaces.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -8462,7 +8674,7 @@
       "component_id": "smart_target_schedule",
       "source_file": "smart_target_schedule.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8486,6 +8698,7 @@
         "smart_learning_epoch_reset",
         "smart_operator",
         "test_smart_coverage_governance",
+        "test_smart_github_operator",
         "test_smart_october_2026_schedule_archive",
         "test_smart_operator_schedule_authority",
         "test_smart_target_schedule",
@@ -8507,7 +8720,7 @@
       "component_id": "smart_terminal_engine",
       "source_file": "smart_terminal_engine.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -8526,6 +8739,7 @@
         "smart_operator_result",
         "smart_prospective_authority",
         "smart_prospective_authority_lock",
+        "smart_scoped_history_gate",
         "smart_sequential_prospective_proof",
         "smart_signal_agent",
         "smart_source_identity",
@@ -8549,13 +8763,13 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "5b14c3d731808f52da30a1e739bcefba9d5c66d59afebd35445282bc52478dd1"
+      "sha256": "69e1fdf6399481b6fffcd7cb328118f5335bd47c16afc2a3aee7cf42751d0a6b"
     },
     {
       "component_id": "smart_terminal_executor",
       "source_file": "smart_terminal_executor.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_operator"
       ],
@@ -8614,7 +8828,7 @@
       "component_id": "smart_total_integration_gate",
       "source_file": "smart_total_integration_gate.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -8657,7 +8871,7 @@
       "component_id": "smart_transaction_journal",
       "source_file": "smart_transaction_journal.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_github_certify",
         "smart_github_operator",
@@ -8687,7 +8901,7 @@
       "component_id": "smart_v2_engine",
       "source_file": "smart_v2_engine.py",
       "role": "PRODUCTION",
-      "classification_reason": "statically reachable from canonical GitHub workflow entrypoint",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
         "smart_github_certify",
@@ -9433,7 +9647,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "efa27accffb936a39cd03b3ee8d3dbd42843d8f3855f517ee4f4ae3b1e5d8e8d"
+      "sha256": "9f8f2ec16672361a767cab7b13dad4006dd0fe38bedf062f39be45a4722bc149"
     },
     {
       "component_id": "test_smart_canonical_history_advance_dtype",
@@ -9667,7 +9881,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "885a529c9ad5a5e1edc54f6e40755601698053ab2db28e56edfd7b923542c19c"
+      "sha256": "0358b598926f2540ffe9ed035627bc2f0aa694c02ef07b6a6a63dd517c45a243"
     },
     {
       "component_id": "test_smart_consumer_integration",
@@ -9734,6 +9948,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "1b2411323702dedeb9d566a8d2f5d999612228a46fe16a61c5076c336e9f0d9b"
+    },
+    {
+      "component_id": "test_smart_contingency_card",
+      "source_file": "test_smart_contingency_card.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_contingency_card"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "3f850c57fa165af4caec9cc437177cecbd022f009ced8c8da1259f468919a8d7"
     },
     {
       "component_id": "test_smart_continuity_consolidator",
@@ -9876,6 +10111,46 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "efb2d0268f03ad37264731d1f6ccf1984e607206ff165c61e5f72e41b6a85428"
+    },
+    {
+      "component_id": "test_smart_cycle_completion",
+      "source_file": "test_smart_cycle_completion.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_cycle_completion"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "79dd6c3857e70ac7b2f9d79f64d0bcc446ac999b6a10d5f5f7b9a51c5b60a326"
+    },
+    {
+      "component_id": "test_smart_cycle_wiring",
+      "source_file": "test_smart_cycle_wiring.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "26c37dad6fb6791eccb3703e30205bdf9fb69cb71e4ea041a6e2b0df2aadd16d"
     },
     {
       "component_id": "test_smart_d015_critical_operational_coverage",
@@ -10385,7 +10660,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "9f31f1e887fc005fc03d89445c7afffd0bae0d04dfbf607028b6a6f2f486ed03"
+      "sha256": "c07ed5721816877e40072f9356c7511fcaba5384fed4fea850da8cee3ec1d9c9"
     },
     {
       "component_id": "test_smart_frontier_adjudicator",
@@ -10452,6 +10727,48 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "581e97e8be05f6b3ca6a6cd15f45343326bc98a2c61cca16aa05f851ddfa0752"
+    },
+    {
+      "component_id": "test_smart_frozen_card_reader",
+      "source_file": "test_smart_frozen_card_reader.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_frozen_card_reader"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "b7c3e3fb291a4cdb881000bb443f240e20da2a73817eb00b417a573d85416fc2"
+    },
+    {
+      "component_id": "test_smart_frozen_terminal_recovery",
+      "source_file": "test_smart_frozen_terminal_recovery.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_frozen_terminal_recovery"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "857d46236f5ff5b0f9ce8e7ee1db7d68b5726e71e56c2507cfba0e8618df765a"
     },
     {
       "component_id": "test_smart_full_activation_epoch",
@@ -10543,13 +10860,58 @@
       "sha256": "64302e56d5a8b99e04ce676202c6a4340ec65693f31cefceb2b0c6d45ce4c2dd"
     },
     {
+      "component_id": "test_smart_github_native_policy",
+      "source_file": "test_smart_github_native_policy.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_github_native_policy"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "836a1d2b8c4511cd7d8334222c433a17c8428bbdaa4965e3eb58535e9b91c059"
+    },
+    {
+      "component_id": "test_smart_github_only_certification",
+      "source_file": "test_smart_github_only_certification.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_github_certify",
+        "smart_product_certification"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "96e5e9029a63d0d5bf78cc625b0ccf94df6615f5505347761363af9e78b4d84e"
+    },
+    {
       "component_id": "test_smart_github_operator",
       "source_file": "test_smart_github_operator.py",
       "role": "TEST",
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
+        "smart_frozen_card_reader",
         "smart_github_operator",
+        "smart_target_schedule",
         "smart_transaction_journal"
       ],
       "declared_execution_dependencies": [],
@@ -10562,7 +10924,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "4abdec27873ded6f60732d8d351beaa4c86f26d05dab6944ad6f688a9e406741"
+      "sha256": "7d4dbc9aad7ebadb52dad21116705712b5e7feb07d4a05a83f5c8c5a53d8b0de"
     },
     {
       "component_id": "test_smart_global_integrity",
@@ -10787,6 +11149,48 @@
       "sha256": "8a1327e5462f6fb728c839b2129b61814da19475ccbed1d31f6c5c4ece0e2a46"
     },
     {
+      "component_id": "test_smart_linux_certification_provenance",
+      "source_file": "test_smart_linux_certification_provenance.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_source_identity"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "1153ac5da3f08715a5224108afd1517a9c1d7a985896d063f7b894410d704193"
+    },
+    {
+      "component_id": "test_smart_linux_ci",
+      "source_file": "test_smart_linux_ci.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_linux_ci"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "35a5785004683ada46f754b242d2ca66438e0cc7571d17f87e676c02f7ab1b4c"
+    },
+    {
       "component_id": "test_smart_material_deficiency_registry",
       "source_file": "test_smart_material_deficiency_registry.py",
       "role": "TEST",
@@ -10877,7 +11281,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "32e259472d7219e0f7546374245529425ffb876211620489b91f505351316bad"
+      "sha256": "3b8671c3f2bc237b4aecc9d0ed0d1fe55f9223ce0d12cc35d0991d94e0887c43"
     },
     {
       "component_id": "test_smart_mission_coverage_closure_20260906",
@@ -11151,6 +11555,25 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "386fceb565c58a1a95465c843515904a40732c632893e28ba02ee1edeae4fc03"
+    },
+    {
+      "component_id": "test_smart_operator_complete_result",
+      "source_file": "test_smart_operator_complete_result.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "3aea1c82ac0e516138f376730c58ccee6ba7cae80d67f690a3438a2a2bf2ddf3"
     },
     {
       "component_id": "test_smart_operator_direct_terminal_default",
@@ -11484,6 +11907,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4e826f31c403eb71db107a13eeb7fc8d71d3c09783ad1e662251ea106fd1f5da"
+    },
+    {
+      "component_id": "test_smart_portal_transcription_recovery",
+      "source_file": "test_smart_portal_transcription_recovery.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_official_result_validation"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "e56a71e571f8fbbecafcf93b263eab8b7dda54a33f9f8500e5e6033750438cd8"
     },
     {
       "component_id": "test_smart_portfolio_optimizer",
@@ -11848,7 +12292,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "a74ba1fe074efc5d729c00eb95cf78fdde78884182a48b254c3c2a15d3005600"
+      "sha256": "9d47fe1fb4de6aaf617ed5b0cbc35a83c218f6ebff2841a739bdff7abdae8cda"
     },
     {
       "component_id": "test_smart_promote_cartography_1000",
@@ -11957,6 +12401,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "8c9ef7859937a4136b3bb1be9469371f9727813808090cf204fa9b05fd3ff520"
+    },
+    {
+      "component_id": "test_smart_public_result_capture",
+      "source_file": "test_smart_public_result_capture.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_public_result_capture"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "c937fc86c819cf0a00f89cc63e1570e24e80420925a50c247c68918dc4c08198"
     },
     {
       "component_id": "test_smart_rag_excel",
@@ -12142,6 +12607,25 @@
       "sha256": "43f4812e3e421689db64cb5cd197496cd52640498de5f59139522a216a2ea855"
     },
     {
+      "component_id": "test_smart_result_transport_provenance",
+      "source_file": "test_smart_result_transport_provenance.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "4d772c94a578905fc1d056922eef86c89623680b392a2ea1f092d1a7289a4d53"
+    },
+    {
       "component_id": "test_smart_rollover_journal_recovery",
       "source_file": "test_smart_rollover_journal_recovery.py",
       "role": "TEST",
@@ -12183,6 +12667,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "44848561a517ffe0fecc7351935c94218d3732f7878eff8a46cfc1c40b180654"
+    },
+    {
+      "component_id": "test_smart_scoped_history_gate",
+      "source_file": "test_smart_scoped_history_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_scoped_history_gate"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "b51232ea70e1a45620de23371a436f6380138675c699565ee1ac83b656e6b35a"
     },
     {
       "component_id": "test_smart_sequential_prospective_proof",
@@ -12513,6 +13018,25 @@
       "sha256": "a71c05dccb356998cc3c619ff648c5412333d6c712da0f87385e366d2677c9ad"
     },
     {
+      "component_id": "test_smart_terminal_degraded_audit_execution",
+      "source_file": "test_smart_terminal_degraded_audit_execution.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "c9cfb5bc8f74299bf7e09211413f1fdfdd7970542064e71aa0f245f85063f8b3"
+    },
+    {
       "component_id": "test_smart_terminal_executor_active_epoch",
       "source_file": "test_smart_terminal_executor_active_epoch.py",
       "role": "TEST",
@@ -12535,6 +13059,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "2c686139cbb13390e3063ed85e73bfbd045db64ae403175d552bd12b0b45f457"
+    },
+    {
+      "component_id": "test_smart_terminal_pending_idempotency",
+      "source_file": "test_smart_terminal_pending_idempotency.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_idempotency"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "213d5723224280626a82d8944aa35ff1a3d611b08d8bdb2de52f675a12b8268d"
     },
     {
       "component_id": "test_smart_total_integration_gate",

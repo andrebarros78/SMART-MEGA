@@ -131,19 +131,37 @@ def _has_main_guard(tree: ast.AST) -> bool:
     return False
 
 
+# Legacy registry key "workflow_entrypoints" is retained for schema compatibility.
+# Entry points now belong to the canonical GitHub source, NOT GitHub Actions.
+EXTERNAL_EXECUTION_ENTRYPOINTS = (
+    "smart_canonical_component_registry.py",
+    "smart_component_reachability.py",
+    "smart_disconnection_gate.py",
+    "smart_f12_scientific_successor.py",
+    "smart_github_certify.py",
+    "smart_github_operator.py",
+    "smart_repository_integrity.py",
+    "smart_skill_adapter_registry.py",
+)
+EXTERNAL_EXECUTION_POLICY = "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+
+
 def _workflow_entrypoints(root: Path, known_by_path: dict[str, str]) -> dict[str, list[str]]:
-    result: dict[str, list[str]] = defaultdict(list)
-    workflow_dir = root / ".github" / "workflows"
-    if not workflow_dir.exists():
-        return {}
-    rx = re.compile(r"\bpython(?:\s+-[A-Za-z]+)*\s+([A-Za-z0-9_./-]+\.py)\b")
-    for wf in sorted(workflow_dir.glob("*.y*ml")):
-        text = wf.read_text(encoding="utf-8")
-        for raw in rx.findall(text):
-            rel = raw.replace("\\", "/").lstrip("./")
-            if rel in known_by_path:
-                result[rel].append(wf.relative_to(root).as_posix())
-    return {k: sorted(set(v)) for k, v in sorted(result.items())}
+    """Resolve explicitly supported external entrypoints, never workflow YAML."""
+    workflows = root / ".github" / "workflows"
+    if workflows.is_symlink():
+        raise ValueError("GitHub Actions workflow directory is forbidden")
+    active = (
+        sorted(p for p in workflows.rglob("*") if p.is_file() and p.suffix.lower() in {".yml", ".yaml"})
+        if workflows.is_dir() else []
+    )
+    if active:
+        raise ValueError("GitHub Actions is forbidden: runnable workflow manifests found")
+    return {
+        path: [f"EXTERNAL_EXECUTOR:{EXTERNAL_EXECUTION_POLICY}"]
+        for path in EXTERNAL_EXECUTION_ENTRYPOINTS
+        if path in known_by_path
+    }
 
 
 def _reachable(graph: dict[str, set[str]], roots: Iterable[str]) -> set[str]:
@@ -213,7 +231,7 @@ def _classify(path: str, reachable: bool) -> tuple[str, str]:
     if path.startswith("tests/") or name.startswith("test_") or name == "conftest.py":
         return "TEST", "test namespace"
     if reachable:
-        return "PRODUCTION", "statically reachable from canonical GitHub workflow entrypoint"
+        return "PRODUCTION", "statically reachable from approved external entrypoint with GitHub canonical source"
     if "shadow" in name:
         return "SHADOW", "unreachable shadow-labelled component"
     if any(token in name for token in VALIDATION_TOKENS):
@@ -352,17 +370,18 @@ def build_registry(root: Path) -> dict:
 
     return {
         "schema": SCHEMA,
-        "scope": "STATIC_PYTHON_REACHABILITY_FROM_CANONICAL_GITHUB_WORKFLOWS",
+        "scope": "STATIC_PYTHON_REACHABILITY_FROM_GITHUB_CANONICAL_EXTERNAL_ENTRYPOINTS",
         "classification_policy": {
             "allowed_roles": [
                 "PRODUCTION", "SHADOW", "DIAGNOSTIC", "VALIDATION",
                 "TEST", "ARCHIVE", "QUARANTINE", "UNCLASSIFIED"
             ],
-            "production_definition": "Python module statically reachable from a Python entrypoint invoked by .github/workflows",
+            "production_definition": "Python module statically reachable from an approved external executor entrypoint using the canonical GitHub source",
             "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
             "runtime_execution_claimed": False,
         },
         "workflow_entrypoints": workflow_paths,
+        "entrypoint_authority": EXTERNAL_EXECUTION_POLICY,
         "required_production_files": sorted(REQUIRED_PRODUCTION_FILES),
         "inventory_sha256": hashlib.sha256(inventory_material).hexdigest(),
         "summary": {
