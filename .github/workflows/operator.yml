@@ -15,6 +15,10 @@ on:
         options:
           - status
           - preflight
+          - result-preflight
+          - show-card
+          - complete-result
+          - recover-cycle
           - authorize-next-cycle
           - prepare
           - authorize-generation
@@ -56,6 +60,8 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: requirements.lock.txt
+      - name: Enforce GitHub-native execution policy (stdlib)
+        run: python smart_github_native_policy.py
       - run: python -m pip install -r requirements.lock.txt
       - run: python -m pip check
       - name: Inspect current operator state without mutation
@@ -83,6 +89,8 @@ jobs:
           python-version: "3.13"
           cache: pip
           cache-dependency-path: requirements.lock.txt
+      - name: Enforce GitHub-native execution policy (stdlib)
+        run: python smart_github_native_policy.py
       - run: python -m pip install -r requirements.lock.txt
       - run: python -m pip check
       - name: Execute and persist exactly one operator action

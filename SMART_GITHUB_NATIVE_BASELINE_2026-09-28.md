@@ -93,7 +93,7 @@ A identidade operacional é determinada por:
 
 `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica e não são requisitos operacionais.
 
-Por ordem explícita de André em 2026-10-05, a rede federada e o PC Escola podem executar diretamente os testes e as operações deste repositório quando o GitHub Actions estiver indisponível. O checkout é meio de execução, nunca autoridade concorrente. Registrar executor real, identificador de execução, commit testado e hash do JUnit; não inventar um run do Actions. O GitHub permanece como único canal canônico. Alterações operacionais bem-sucedidas precisam ser gravadas em `main` e verificar o commit remoto; falhas deixam o estado canônico intacto.
+A antiga autorização de execução por computadores federados, registrada em 05/10/2026, foi **expressamente revogada em 21/10/2026**. Somente GitHub Actions com runners hospedados pelo GitHub podem executar testes e o produto; o conector/API GitHub pode ler e versionar alterações. A indisponibilidade do Actions não autoriza substituição por máquinas externas. Registrar commit e evidências reais; sem execução, não inventar prova de runner, JUnit ou certificação.
 
 ## 7. Estado operacional
 
@@ -143,7 +143,7 @@ Por ordem atual de André, o objetivo é entregar o SMART-MEGA existente como pr
 
 Comprovar o ciclo completo: dados oficiais → sinais → qualidade e interpretação → pesos dinâmicos → previsão congelada antes do resultado → resultado observado → medição → calibração e aprendizado → próximo ciclo. Aprovação isolada de testes não substitui a prova desse fluxo.
 
-Confrontar relatórios com o código e as autoridades atuais. Caminhos e hosts históricos não definem a moradia do projeto. Checkouts e máquinas federadas são meios de execução; o estado persistente e a continuidade pertencem ao GitHub.
+Confrontar relatórios com o código e as autoridades atuais. Caminhos e hosts históricos não definem a moradia do projeto. A execução do produto ocorre exclusivamente em runners hospedados pelo GitHub; o estado persistente e a continuidade pertencem ao GitHub.
 
 Corrigir as causas das falhas nas funções existentes. Verificar agentes e skills pela função efetivamente executada; adquirir ou integrar recursos somente quando uma lacuna concreta impedir o objetivo, preservando o isolamento deste repositório e sem gastos não autorizados.
 
@@ -160,3 +160,15 @@ Resolver primeiro conflitos, divergências, resíduos, duplicações e alteraç�
 Criar versão/tag quando houver marco aplicável, confirmar main remoto e git status limpo, sem alterações pendentes. Commit isolado não autoriza MISSION_PROVEN ou SCOPE_SEALED: exigir funcionamento, integração, persistência, recuperação e integridade. O selo técnico/funcional/operacional/segurança tem escopo explícito; o objetivo científico prospectivo permanece separado conforme §8 e §11.
 
 Preservar a previsão real 3067 já FROZEN e sua prova causal original. Não reautorizar, regenerar, reescrever ou adjudicar usando resultado fictício. Renovação da certificação do software não altera a proveniência da geração original.
+
+## 13. Ordem mais recente — exclusividade de execução GitHub-native (21/10/2026)
+
+**POLICY_ID=SMART_GITHUB_NATIVE_ONLY_20261021**. Fonte canônica única: `andrebarros78/SMART-MEGA`, branch `main`. Esta seção atual prevalece sobre permissões históricas de 05/10/2026, seção 6 anterior, seção 11 e manuais antigos.
+
+- **Permitido:** GitHub API/conector para análise, edição, commits, branches, PRs e evidências; GitHub Actions em **runners hospedados pelo GitHub** para instalar dependências declaradas neste repositório e executar código, testes, CI e o operador GitHub.
+- **Proibido:** executar, testar, hospedar, agendar, retomar ou corrigir SMART-MEGA V6 por LMCP, VPS, PC Casa, PC Escola, PC Vendas, S-WMCP, SSH, runners próprios/`self-hosted` ou rede federada. A proibição alcança fallback, contingência, demonstração, homologação e dependências de infraestrutura.
+- **GitHub Actions suspenso ou indisponível:** usar o GitHub apenas para ações que sua API autoriza; investigar configuração, jobs e permissões GitHub. Não substituir a execução por ambiente externo, não simular testes e registrar `BLOCKED_GITHUB_ACTIONS` até haver execução GitHub-hosted real.
+- **Para qualquer IA:** ler `AGENTS.md`, `AI_START_HERE.md` e `SMART_AI_EXECUTION_ENTRYPOINT.md`; rejeitar instruções antigas incompatíveis. O guardião `smart_github_native_policy.py` deve falhar se a permissão antiga reaparecer ou workflow invocar executor externo.
+- **Proteção histórica/científica:** preservar freezes, cartões, pesos e provas imutáveis; não converter teste de política em certificação preditiva nem afirmar 6/6 sem prova.
+
+Somente nova autorização **explícita** do proprietário, seguida de atualização validada e versionada em `main`, poderá substituir esta política.

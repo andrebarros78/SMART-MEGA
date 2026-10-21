@@ -21,7 +21,7 @@ READ_ONLY = {"status", "preflight", "result-preflight", "show-card"}
 TARGET_ACTIONS = {
     "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
     "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "register-result", "generate-card",
-    "post-result-report", "review", "hold", "terminal", "show-card", "recover-cycle",
+    "post-result-report", "review", "hold", "terminal", "show-card", "recover-cycle", "complete-result",
 }
 ACTIONS = READ_ONLY | TARGET_ACTIONS
 PAYLOAD_REQUIRED = {"adjudicate", "review", "register-result"}
@@ -174,6 +174,48 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
             "run_id": run_id, "confidence": confidence}
 
 
+
+def _verified_cycle_card_publication(root: Path, observation: dict, changes: list[str],
+                                    target: str) -> tuple[dict, dict]:
+    """Reuse the native freeze publication gate for the resumable cycle.
+
+    A cycle status is not itself a freeze proof. Recover the immutable proof
+    from the verified model card and require the card to be NEW in this commit.
+    """
+    from smart_frozen_card_reader import read_frozen_card, verify_result
+
+    if (not isinstance(observation, dict)
+            or observation.get("status") != "MODEL_CARD_GENERATED"
+            or observation.get("retroactive_generation") is not False
+            or observation.get("scientific_6of6_proven") is True):
+        raise ValueError("recover-cycle has not proven new prospective model generation")
+    supplied = observation.get("card")
+    verified = read_frozen_card(root, int(target))
+    if not verify_result(verified) or supplied != verified:
+        raise ValueError("recover-cycle frozen model card does not match immutable evidence")
+
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    active = json.loads(active_path.read_text(encoding="utf-8-sig"))
+    authority = active.get("freeze_authority")
+    source = authority.get("file") if isinstance(authority, dict) else None
+    if (not isinstance(source, str) or not allowed_artifact(source)
+            or "\\" in source or any(part in {"..", "."} for part in PurePosixPath(source).parts)):
+        raise ValueError("recover-cycle freeze evidence path is unsafe")
+    freeze_file = root / source
+    if freeze_file.is_symlink() or not freeze_file.is_file():
+        raise ValueError("recover-cycle freeze evidence is absent")
+    proof_file = freeze_file.parent / "FULL_PROCESS_PROOF.json"
+    if proof_file.is_symlink() or not proof_file.is_file():
+        raise ValueError("recover-cycle full-process proof is absent")
+    proof = json.loads(proof_file.read_text(encoding="utf-8-sig"))
+    frozen = _verified_freeze_publication(root, {"proof": proof}, changes, target)
+    if (verified.get("primary_card_sha256") != frozen["sha256"]
+            or verified.get("numbers") != frozen["numbers"]
+            or verified.get("target_contest") != int(target)):
+        raise ValueError("recover-cycle published card differs from model reader")
+    return frozen, proof
+
+
 def _pin_artifact_bytes(root: Path, changes: list[str]) -> bool:
     """Keep generated hash-bound files byte-identical after future checkouts."""
     attributes = root / ".gitattributes"
@@ -266,11 +308,17 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
                 "observation": observation, "result_preflight": result_readiness, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
-    frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation in {"freeze", "generate-card"} else None
-    if operation in {"freeze", "generate-card"}:
+    frozen_card = None
+    freeze_proof = None
+    if operation == "recover-cycle":
+        frozen_card, freeze_proof = _verified_cycle_card_publication(root, observation, changes, target)
+    elif operation in {"freeze", "generate-card"}:
+        frozen_card = _verified_freeze_publication(root, observation, changes, target)
+        freeze_proof = observation["proof"]
+    if frozen_card is not None:
         from smart_calibration_safety_gate import historical_baseline, verify_freeze_calibration
         historical_baseline(root)
-        verify_freeze_calibration(root, observation["proof"])
+        verify_freeze_calibration(root, freeze_proof)
     rejected = [path for path in changes if not allowed_artifact(path)]
     if rejected:
         raise RuntimeError(f"operator changed non-operational files: {rejected[:20]}")
