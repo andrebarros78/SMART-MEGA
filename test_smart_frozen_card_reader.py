@@ -89,6 +89,21 @@ class FrozenCardConsumer(unittest.TestCase):
             after = {p.relative_to(local): p.read_bytes() for p in local.rglob("*") if p.is_file()}
             self.assertEqual(before, after)
 
+    def test_github_operator_readonly_shows_actual_card_numbers(self):
+        import subprocess
+        import sys
+        completed = subprocess.run(
+            [sys.executable, "smart_github_operator.py", "--operation", "show-card",
+             "--target", "3071"],
+            cwd=ROOT, text=True, capture_output=True, timeout=25,
+        )
+        self.assertEqual(completed.returncode, 0, completed.stderr)
+        doc = json.loads(completed.stdout)
+        self.assertEqual(doc.get("operation"), "show-card")
+        self.assertEqual(doc.get("model_card", {}).get("numbers"), [10, 11, 27, 38, 43, 53])
+        self.assertEqual(doc.get("model_card", {}).get("status"), "FROZEN_MODEL_CARD_VERIFIED")
+        self.assertIsNone(doc.get("commit"))
+
     def test_response_tampering_does_not_verify(self):
         doc = reader.read_frozen_card(ROOT, 3071)
         doc["numbers"][0] = 1
