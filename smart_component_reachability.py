@@ -30,6 +30,9 @@ REQUIRED_PRODUCTION_FILES = {
     "smart_terminal_engine.py",
 }
 KNOWN_OPERATOR_PIPELINE_CYCLE = {"smart_operator.py", "smart_full_process_pipeline.py"}
+# This is the actual repo-owned CLI gateway an authorized external executor may
+# invoke; declaring it as a static root does not authorize a real execution.
+GOVERNED_EXTERNAL_OPERATOR = "smart_github_operator.py"
 
 
 def _python_files(root: Path) -> list[Path]:
@@ -146,6 +149,40 @@ def _workflow_entrypoints(root: Path, known_by_path: dict[str, str]) -> dict[str
     return {k: sorted(set(v)) for k, v in sorted(result.items())}
 
 
+def _governed_external_entrypoints(
+    root: Path, by_path: dict[str, str], parsed: dict[str, ast.AST],
+    main_guards: dict[str, bool], execution_paths: dict[str, list[str]],
+) -> tuple[dict[str, list[str]], dict]:
+    """Canonical policy and real CLI path, never a forged execution receipt."""
+    from smart_github_native_policy import POLICY_ID, PolicyViolation, verify
+    evidence = {
+        "authority_kind": "GOVERNED_EXTERNAL_EXECUTION_STATIC_CONTRACT",
+        "policy_id": POLICY_ID,
+        "runtime_executed": False,
+        "github_actions_authorized": False,
+        "root_contract_valid": False,
+    }
+    try:
+        policy = verify(root)
+    except (OSError, UnicodeError, PolicyViolation):
+        return {}, evidence
+    if (policy.get("status") != "PASS"
+            or policy.get("github_actions_authorized") is not False
+            or policy.get("external_executors_authorized") is not True
+            or (root / GOVERNED_EXTERNAL_OPERATOR).is_symlink()):
+        return {}, evidence
+    module = by_path.get(GOVERNED_EXTERNAL_OPERATOR)
+    if (not module or module not in parsed
+            or not main_guards.get(module, False)
+            or GOVERNED_EXTERNAL_OPERATOR not in by_path
+            or "smart_operator.py" not in execution_paths.get(module, [])):
+        return {}, evidence
+    evidence["root_contract_valid"] = True
+    return {GOVERNED_EXTERNAL_OPERATOR: [
+        "GOVERNED_EXTERNAL:" + GOVERNED_EXTERNAL_OPERATOR
+    ]}, evidence
+
+
 def _reachable(graph: dict[str, set[str]], roots: Iterable[str]) -> set[str]:
     seen: set[str] = set()
     q = deque(roots)
@@ -213,7 +250,7 @@ def _classify(path: str, reachable: bool) -> tuple[str, str]:
     if path.startswith("tests/") or name.startswith("test_") or name == "conftest.py":
         return "TEST", "test namespace"
     if reachable:
-        return "PRODUCTION", "statically reachable from canonical GitHub workflow entrypoint"
+        return "PRODUCTION", "statically reachable from canonical governed external CLI gateway"
     if "shadow" in name:
         return "SHADOW", "unreachable shadow-labelled component"
     if any(token in name for token in VALIDATION_TOKENS):
@@ -280,8 +317,14 @@ def build_registry(root: Path) -> dict:
                 execution_edges.add(target)
         graph[module] = imports | execution_edges
 
-    workflow_paths = _workflow_entrypoints(root, by_path)
-    roots = sorted(by_path[p] for p in workflow_paths)
+    # Workflows were retired by the canonical governance policy. A static
+    # external CLI entrypoint is valid only if the policy and on-disk gateway
+    # contract agree. The executor itself must produce separate run evidence.
+    external_paths, entrypoint_provenance = _governed_external_entrypoints(
+        root, by_path, parsed, main_guards, execution_paths
+    )
+    workflow_paths: dict[str, list[str]] = {}
+    roots = sorted(by_path[p] for p in external_paths)
     reachable = _reachable(graph, roots)
     roots_by_node = _root_reachability(graph, roots)
     consumers: dict[str, set[str]] = defaultdict(set)
@@ -347,27 +390,30 @@ def build_registry(root: Path) -> dict:
         f"{path}:{content_hashes[path]}" for path in sorted(content_hashes)
     ).encode("utf-8")
     gate_pass = not (
-        parse_errors or execution_dependency_errors or unclassified or production_unreachable or required_missing or required_unreachable
+        parse_errors or execution_dependency_errors or unclassified or production_unreachable or required_missing or required_unreachable or not entrypoint_provenance["root_contract_valid"]
     )
 
     return {
         "schema": SCHEMA,
-        "scope": "STATIC_PYTHON_REACHABILITY_FROM_CANONICAL_GITHUB_WORKFLOWS",
+        "scope": "STATIC_PYTHON_REACHABILITY_FROM_GOVERNED_EXTERNAL_CLI",
         "classification_policy": {
             "allowed_roles": [
                 "PRODUCTION", "SHADOW", "DIAGNOSTIC", "VALIDATION",
                 "TEST", "ARCHIVE", "QUARANTINE", "UNCLASSIFIED"
             ],
-            "production_definition": "Python module statically reachable from a Python entrypoint invoked by .github/workflows",
+            "production_definition": "Python module statically reachable from canonical CLI authorized for externally governed execution",
             "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
             "runtime_execution_claimed": False,
         },
         "workflow_entrypoints": workflow_paths,
+        "external_entrypoints": external_paths,
+        "entrypoint_provenance": entrypoint_provenance,
         "required_production_files": sorted(REQUIRED_PRODUCTION_FILES),
         "inventory_sha256": hashlib.sha256(inventory_material).hexdigest(),
         "summary": {
             "python_components": len(components),
-            "workflow_entrypoints": len(roots),
+            "workflow_entrypoints": 0,
+            "external_entrypoints": len(roots),
             "production_components": sum(c["role"] == "PRODUCTION" for c in components),
             "shadow_components": sum(c["role"] == "SHADOW" for c in components),
             "diagnostic_components": sum(c["role"] == "DIAGNOSTIC" for c in components),
@@ -391,6 +437,7 @@ def build_registry(root: Path) -> dict:
             "production_unreachable": production_unreachable,
             "required_production_missing": required_missing,
             "required_production_unreachable": required_unreachable,
+            "external_entrypoint_contract_valid": entrypoint_provenance["root_contract_valid"],
         },
         "known_debt_observations": {
             "operator_pipeline_cycle_detected": known_cycle_detected,

@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "e365d1ca17554fe3b4a47cfa9d57a1d42ad1709eb7537a06a2e594fe1e95ae23",
+  "source_reachability_inventory_sha256": "56f02e37dab0db8445ddc134e6ce7496c935ff55de3f4c0c6ce02f3848c90adb",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,11 +24,11 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 506,
-    "active": 104,
+    "component_count": 525,
+    "active": 96,
     "shadow": 1,
-    "diagnostic": 201,
-    "validation_only": 23,
+    "diagnostic": 226,
+    "validation_only": 25,
     "quarantined": 0,
     "deprecated": 1,
     "archived": 176,
@@ -4161,11 +4161,7 @@
         "test_smart_coverage_governance"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4177,6 +4173,79 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "isolated_source_gate.checkpoint_cache",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "isolated_source_gate/checkpoint_cache.py",
+      "implementation_sha256": "a52ba0ad4baa8eb04dc5374f6a876ceae3951ac026e64909e6fc2a1e6c452e1b",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_video_observation",
+        "test_checkpoint_cache"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "isolated_source_gate.video_learning_fastpath",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "isolated_source_gate/video_learning_fastpath.py",
+      "implementation_sha256": "6566ff3613edbc5034feb8b7c088e9ba5b840a41ea45100e1b43beeecb647f37",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_video_observation",
+        "test_video_learning_fastpath"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "isolated_source_gate.visual_evidence_memory",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "isolated_source_gate/visual_evidence_memory.py",
+      "implementation_sha256": "3369c234a9b9584bbff0cfdb183bf1f6172b46adf202524830e2420f786fdf74",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning"
+      ],
+      "consumers": [
+        "smart_video_learning"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "p14_coverage_plugin",
@@ -4368,8 +4437,8 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_agent_ecosystem_governance.py",
       "implementation_sha256": "196e5e3110a92ad2a51bac289bfca437503f752e1feba3d1c8bbab4bf81c8021",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
       "producers": [
         "smart_agent_skill_orchestration",
         "smart_canonical_identity",
@@ -4382,10 +4451,8 @@
         "smart_github_certify",
         "test_smart_agent_ecosystem_governance"
       ],
-      "entrypoints": [
-        "smart_github_certify"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -4393,8 +4460,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_agent_handoff_runtime",
@@ -4411,11 +4478,7 @@
         "test_smart_f09_sdk_llm_selective"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4476,11 +4539,7 @@
         "test_smart_v631_portable_restore"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4514,11 +4573,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4568,11 +4623,7 @@
         "test_smart_v631_portable_restore"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4604,11 +4655,7 @@
         "test_smart_ai_fine_tuning"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "BOUNDED_HYPERPARAMETER_SELECTION",
@@ -4641,11 +4688,7 @@
         "test_smart_operator_preflight"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4676,11 +4719,7 @@
         "test_smart_bounded_online_learning"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -4724,22 +4763,20 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_canonical_component_registry.py",
       "implementation_sha256": "6576430705d2bb90557db51040b98bee35d960bc80ff035aac112ba183e9d453",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
       "producers": [
         "smart_component_reachability"
       ],
       "consumers": [
         "smart_disconnection_gate",
+        "test_smart_external_executor_reachability",
         "test_smart_f05_canonical_component_registry",
         "test_smart_f08_parallel_components",
         "test_smart_f10_disconnection"
       ],
-      "entrypoints": [
-        "smart_canonical_component_registry",
-        "smart_disconnection_gate"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -4747,8 +4784,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_canonical_history_advance",
@@ -4830,11 +4867,7 @@
         "smart_terminal_engine"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5000,11 +5033,7 @@
         "test_smart_cartography_extended"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5131,11 +5160,7 @@
         "test_smart_v631_portable_restore"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "PREDICTION_PACKAGE_AND_PRE_RESULT_FREEZE",
@@ -5152,25 +5177,24 @@
       "component_id": "smart_component_reachability",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_component_reachability.py",
-      "implementation_sha256": "a87d3f894f273cb438c7253375b8383df28012a2e361d27d1fa47960b1243338",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
-      "producers": [],
+      "implementation_sha256": "e8de9a83fbbcfe373ba4b72dbbd13e686a80ab16f4a46f243da609b156d7db98",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_native_policy"
+      ],
       "consumers": [
         "smart_canonical_component_registry",
         "smart_disconnection_gate",
         "test_smart_component_reachability",
+        "test_smart_external_executor_reachability",
         "test_smart_f02_dependency_direction",
         "test_smart_f03_terminal_engine_migration",
         "test_smart_f08_parallel_components",
         "test_smart_f10_disconnection"
       ],
-      "entrypoints": [
-        "smart_canonical_component_registry",
-        "smart_component_reachability",
-        "smart_disconnection_gate"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -5178,8 +5202,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_consumer_integration",
@@ -5287,11 +5311,7 @@
         "test_smart_coverage_core"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5319,11 +5339,7 @@
         "test_smart_contextual_meta_weights"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5406,11 +5422,7 @@
         "test_smart_sequential_prospective_proof"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5463,11 +5475,7 @@
         "smart_rollover"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5497,11 +5505,7 @@
         "smart_product_certification"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5550,11 +5554,7 @@
         "test_smart_prospective_authority_lock"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5589,11 +5589,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5610,21 +5606,21 @@
       "component_id": "smart_disconnection_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_disconnection_gate.py",
-      "implementation_sha256": "9db6bdc7710c97128712e5b17b180647cf3bb80701e2f33ab99517eb3d402608",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "implementation_sha256": "a291c8cf1329b424c3a30e1ec9468785e00ae7272dcced137213a084bdd03b6d",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
       "producers": [
         "smart_canonical_component_registry",
         "smart_component_reachability",
+        "smart_github_native_policy",
         "smart_skill_adapter_registry"
       ],
       "consumers": [
+        "test_smart_external_executor_reachability",
         "test_smart_f10_disconnection"
       ],
-      "entrypoints": [
-        "smart_disconnection_gate"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -5632,8 +5628,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_engineering_activation",
@@ -5660,11 +5656,7 @@
         "test_smart_full_activation_epoch"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5699,11 +5691,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5796,18 +5784,16 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_f11_predictive_nonregression.py",
       "implementation_sha256": "f369d6cedc5f8786d71e94253fa55cb039f5f39719975fa5bbb41ecd98f4f59b",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
       "producers": [],
       "consumers": [
         "smart_f12_scientific_successor",
         "test_smart_f11_predictive_nonregression",
         "test_smart_f12_scientific_successor"
       ],
-      "entrypoints": [
-        "smart_f12_scientific_successor"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -5815,26 +5801,24 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_f12_scientific_successor.py",
       "implementation_sha256": "3230505fadd066bba331a291c985697a7fe9d9cf81f40524a577566df7b8cf78",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
       "producers": [
         "smart_f11_predictive_nonregression"
       ],
       "consumers": [
         "test_smart_f12_scientific_successor"
       ],
-      "entrypoints": [
-        "smart_f12_scientific_successor"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -5842,8 +5826,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -5859,11 +5843,7 @@
         "test_smart_post_result_report"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -5894,11 +5874,7 @@
         "test_smart_falsification_lab"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6137,8 +6113,8 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_certify.py",
       "implementation_sha256": "4c3b4b86f12c659b513f840be8b02b0c1731904622e193bda00d2e2f7bc11bc2",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "VALIDATION",
+      "state": "VALIDATION_ONLY",
       "producers": [
         "smart_agent_ecosystem_governance",
         "smart_agent_runtime",
@@ -6151,10 +6127,8 @@
       "consumers": [
         "test_smart_federated_certification"
       ],
-      "entrypoints": [
-        "smart_github_certify"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "VALIDATION_ONLY",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -6162,8 +6136,36 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_github_native_policy",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_github_native_policy.py",
+      "implementation_sha256": "9c946d93e31d33182a0aee60413e7acae37ba9aee0c68ae65d9f864042518c31",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_component_reachability",
+        "smart_disconnection_gate",
+        "smart_video_vendor",
+        "test_smart_external_executor_reachability",
+        "test_smart_github_native_policy",
+        "test_smart_vendor_learning"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_github_operator",
@@ -6235,11 +6237,7 @@
         "test_smart_sequential_prospective_proof"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6317,6 +6315,7 @@
         "smart_official_result_ingest",
         "smart_procedural_cronogram_acquire",
         "smart_procedural_youtube_recent_acquire",
+        "smart_video_observation",
         "test_smart_http_guard"
       ],
       "entrypoints": [
@@ -6422,11 +6421,7 @@
         "test_supersede_chain_integrity"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6458,11 +6453,7 @@
         "test_smart_signal_weight_numeric_contracts"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6494,11 +6485,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6528,11 +6515,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6593,11 +6576,7 @@
         "test_smart_operator_seed_rollover_20260910"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6649,11 +6628,7 @@
         "smart_product_certification"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6689,11 +6664,7 @@
         "test_smart_mission_coverage_closure_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6728,11 +6699,7 @@
         "test_smart_meta_governor"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6807,11 +6774,7 @@
         "test_smart_mission_status_integrity"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6874,11 +6837,7 @@
         "test_smart_multi_challengers"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7035,9 +6994,7 @@
         "test_smart_operation_lock_cross_platform"
       ],
       "entrypoints": [
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7112,11 +7069,7 @@
         "test_smart_withdraw_lifecycle_recovery"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7226,11 +7179,7 @@
         "test_smart_f02_dependency_direction"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7295,11 +7244,7 @@
         "smart_sequential_prospective_proof"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7381,11 +7326,7 @@
         "test_smart_portfolio_pipeline"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7419,11 +7360,7 @@
         "test_smart_primary_card_contract"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "FINAL_SINGLE_CARD_SELECTION_FROM_FROZEN_SCORES",
@@ -7476,11 +7413,7 @@
         "test_smart_primary_card_selector"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "FINAL_SINGLE_CARD_COMBINATORIAL_SELECTOR",
@@ -7753,11 +7686,7 @@
         "test_smart_source_identity"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7812,11 +7741,7 @@
         "test_smart_promotion_gate"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7908,11 +7833,7 @@
         "test_smart_prospective_authority_lock"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8001,11 +7922,7 @@
         "test_smart_randomness_cartography"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8040,11 +7957,7 @@
         "test_smart_rank_score_calibration"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8101,11 +8014,7 @@
         "test_smart_regression_runner"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8172,8 +8081,8 @@
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_repository_integrity.py",
       "implementation_sha256": "2407ba142edcc09873dedb7f8b10588a6c5d91089c698e77ef9e6f80076f007f",
-      "role": "PRODUCTION",
-      "state": "ACTIVE",
+      "role": "VALIDATION",
+      "state": "VALIDATION_ONLY",
       "producers": [
         "smart_canonical_identity",
         "smart_learning_epoch_reset",
@@ -8182,10 +8091,8 @@
       "consumers": [
         "test_smart_repository_integrity"
       ],
-      "entrypoints": [
-        "smart_repository_integrity"
-      ],
-      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "entrypoints": [],
+      "execution_mode": "VALIDATION_ONLY",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -8193,8 +8100,8 @@
       "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
       "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
       "retirement_status": "NOT_RETIRED",
-      "reachable": true,
-      "production_reachable": true
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_rollover",
@@ -8252,11 +8159,7 @@
         "test_smart_runtime_guard"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8323,11 +8226,7 @@
         "test_supersede_chain_integrity"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8480,11 +8379,7 @@
         "test_smart_signal_weight_numeric_contracts"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "DIRECT_SIGNAL_SCORING_AND_RANKING",
@@ -8573,11 +8468,7 @@
         "test_smart_signal_expansion_governance"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8608,11 +8499,7 @@
         "test_smart_signal_interactions"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8644,11 +8531,7 @@
         "test_smart_signal_marginal_utility"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8684,11 +8567,7 @@
         "test_smart_signal_agent"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8720,11 +8599,7 @@
         "test_smart_signal_redundancy_consensus"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8762,11 +8637,7 @@
         "test_smart_signal_weight_numeric_contracts"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8792,15 +8663,12 @@
       "consumers": [
         "smart_disconnection_gate",
         "smart_skill_runtime",
+        "test_smart_external_executor_reachability",
         "test_smart_f07_skill_adapters",
         "test_smart_f10_disconnection"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8832,11 +8700,7 @@
         "test_smart_skill_runtime"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8873,11 +8737,7 @@
         "test_smart_source_identity"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8914,9 +8774,7 @@
         "test_smart_startup_withdraw_reconciliation"
       ],
       "entrypoints": [
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -8987,11 +8845,7 @@
         "test_smart_temporal_freeze_guard_20260906"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -9143,11 +8997,7 @@
         "test_smart_total_integration_gate"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -9177,9 +9027,7 @@
         "test_smart_rollover_journal_recovery"
       ],
       "entrypoints": [
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -9279,11 +9127,7 @@
         "test_smart_v2_engine"
       ],
       "entrypoints": [
-        "smart_disconnection_gate",
-        "smart_github_certify",
-        "smart_github_operator",
-        "smart_repository_integrity",
-        "smart_skill_adapter_registry"
+        "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -9346,6 +9190,94 @@
       "production_reachable": false
     },
     {
+      "component_id": "smart_video_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_learning.py",
+      "implementation_sha256": "29926e028d6d0be97b0c7aa3b2edbd79b9f6a760167b45b68afeec7d12d41beb",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "isolated_source_gate.visual_evidence_memory",
+        "smart_video_observation",
+        "smart_video_vendor"
+      ],
+      "consumers": [
+        "isolated_source_gate.visual_evidence_memory",
+        "test_smart_vendor_learning",
+        "test_smart_video_learning_vendor_e2e",
+        "test_smart_visual_memory_gate"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_video_observation",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_observation.py",
+      "implementation_sha256": "98d0195abf81aeff5a257e0ccd4b3f4adc47103385d82700c1f11d9cfe90f06f",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "isolated_source_gate.checkpoint_cache",
+        "isolated_source_gate.video_learning_fastpath",
+        "smart_http_guard"
+      ],
+      "consumers": [
+        "smart_video_learning",
+        "test_checkpoint_cache_pit",
+        "test_smart_video_learning_vendor_e2e",
+        "test_smart_visual_memory_gate"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_video_vendor",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_vendor.py",
+      "implementation_sha256": "4ec2c9f3d2f6f99545232b5054c10fb032384c577a75834ea7fbbe293f0a6b3e",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_native_policy",
+        "vendor.visual_learning.runtime.m3_prompts",
+        "vendor.visual_learning.runtime.taskmem_short_term_memory"
+      ],
+      "consumers": [
+        "smart_video_learning",
+        "test_smart_vendor_learning"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smartmega_apply_post_result_report_20260920",
       "type": "PYTHON_COMPONENT",
       "implementation": "smartmega_apply_post_result_report_20260920.py",
@@ -9377,6 +9309,52 @@
         "adjudicate_signal_challenger",
         "smart_champion_challenger",
         "test_smart_coverage_governance"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_checkpoint_cache",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_checkpoint_cache.py",
+      "implementation_sha256": "2297b7694dbe65c7deb039c80dbf782efc920e268fb9b72c9fa0edbbf90844bd",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "isolated_source_gate.checkpoint_cache"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_checkpoint_cache_pit",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_checkpoint_cache_pit.py",
+      "implementation_sha256": "99972b54a8d4a58162542561a373b3dc938a31c540d14835dabf2244001f66b0",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_observation"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -10635,6 +10613,33 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_external_executor_reachability",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_external_executor_reachability.py",
+      "implementation_sha256": "19d2810686b60dbd392ed602d75642279f5582184a6ef555aec0bbb5a49310d3",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_canonical_component_registry",
+        "smart_component_reachability",
+        "smart_disconnection_gate",
+        "smart_github_native_policy",
+        "smart_skill_adapter_registry"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_f02_dependency_direction",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f02_dependency_direction.py",
@@ -10785,7 +10790,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "fa88c460f04cc2f3d1dea7bdc6b2b08fc77f85315504f6899260111607d735c8",
+      "implementation_sha256": "328a88bbe5540a232df6768a0952d041664e95fbcfa3858743baca3640078643",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11197,6 +11202,29 @@
         "smart_current_epoch_contract",
         "smart_learning_epoch_reset",
         "smart_operator"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_github_native_policy",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_github_native_policy.py",
+      "implementation_sha256": "836a1d2b8c4511cd7d8334222c433a17c8428bbdaa4965e3eb58535e9b91c059",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_native_policy"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -13524,6 +13552,79 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_vendor_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_vendor_learning.py",
+      "implementation_sha256": "7a11c73974912052ead1a6346466fe8d25255bf22ca2548a2377ff799c7f174b",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_native_policy",
+        "smart_video_learning",
+        "smart_video_vendor"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_video_learning_vendor_e2e",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_video_learning_vendor_e2e.py",
+      "implementation_sha256": "9e9cd016567c5c8b2a9f06b828f5f96a7e2c56894b34759c00c36c6ba7ac89bf",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_visual_memory_gate",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_visual_memory_gate.py",
+      "implementation_sha256": "841b8eb7ee3e6783795f705120d90fd4b5e41e9bd957a41e1d04983d220eb03e",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_learning",
+        "smart_video_observation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_withdraw_lifecycle_recovery",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_withdraw_lifecycle_recovery.py",
@@ -13556,6 +13657,29 @@
       "producers": [
         "smart_independent_audit",
         "smart_sequential_prospective_proof"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_video_learning_fastpath",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_video_learning_fastpath.py",
+      "implementation_sha256": "56ee8b81de4041b2e1ca87623a17391e8ae4152387d90d5fc06f2194ac2e9e8a",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "isolated_source_gate.video_learning_fastpath"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -13689,7 +13813,95 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": false,
       "production_reachable": false
+    },
+    {
+      "component_id": "vendor.visual_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "vendor/visual_learning/__init__.py",
+      "implementation_sha256": "4aa6af135431fd706a03ab35b2290f2ef14180eb28296791c434b62d42167c98",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "vendor.visual_learning.runtime",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "vendor/visual_learning/runtime/__init__.py",
+      "implementation_sha256": "bd2a64dfa6f41a4940009625daece5b3b6b1ac63aa43024534ed4a56b6d877ac",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "vendor.visual_learning.runtime.m3_prompts",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "vendor/visual_learning/runtime/m3_prompts.py",
+      "implementation_sha256": "e9967c958b67481e5e0635dcaf3f16df52e1ead8d7433e32417f2c1932a93740",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_video_vendor"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "vendor.visual_learning.runtime.taskmem_short_term_memory",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "vendor/visual_learning/runtime/taskmem_short_term_memory.py",
+      "implementation_sha256": "c0f158ba70535822affd76d4e5595b23f1742066a2da28a6e7b0ca2aa8e69b9e",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_video_vendor"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     }
   ],
-  "registry_sha256": "269b97a2d540b71339600bee7cf371414467f702c25bafe306273ae670e811dc"
+  "registry_sha256": "ad8122e46bb8abbba75dbb720faa0d9be5cc2d1b008c67f8e7b3b6ffa8b3beb7"
 }
