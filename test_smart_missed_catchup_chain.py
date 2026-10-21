@@ -200,3 +200,91 @@ def test_catchup_never_advances_when_adjudicated_learning_fails(tmp_path, monkey
     with pytest.raises(ValueError, match="official sequence invalid"):
         catchup.catch_up_missed_results(tmp_path, 3)
     assert (tmp_path / "Mega-Sena.xlsx").read_bytes() == b"unchanged"
+
+
+
+def test_backward_hold_rejected_before_history_io_or_authority_mutation(tmp_path, monkeypatch):
+    """Reject an obsolete target without opening the workbook or rewriting HOLD."""
+    import pytest
+
+    originals = {
+        "Mega-Sena.xlsx": b"historical canonical bytes",
+        "SMART_OPERATIONAL_LIFECYCLE.json": b"historical lifecycle bytes",
+        "SMART_NEXT_CYCLE_HOLD.json": b"historical HOLD bytes",
+    }
+    for filename, original in originals.items():
+        (tmp_path / filename).write_bytes(original)
+    monkeypatch.setattr(
+        catchup, "verify_product_certification",
+        lambda *a, **k: {"sha256": "c" * 64},
+    )
+    monkeypatch.setattr(
+        catchup, "load_lifecycle",
+        lambda root: {"state": "HOLD", "target_contest": 11, "completed_contest": 10},
+    )
+    monkeypatch.setattr(
+        catchup, "_history",
+        lambda *_: pytest.fail("outdated request must be rejected before workbook read"),
+    )
+    with pytest.raises(ValueError, match="backward"):
+        catchup.catch_up_missed_results(tmp_path, through_target=9)
+    for filename, original in originals.items():
+        assert (tmp_path / filename).read_bytes() == original
+
+
+def test_backward_adjudicated_rejected_before_learning_or_history_advance(tmp_path, monkeypatch):
+    """An already-adjudicated draw cannot be skipped by a recovery for its predecessor."""
+    import pytest
+
+    originals = {
+        "Mega-Sena.xlsx": b"historical canonical bytes",
+        "SMART_ACTIVE_EPOCH.json": b"historical epoch bytes",
+        "SMART_OPERATIONAL_LIFECYCLE.json": b"historical lifecycle bytes",
+    }
+    for filename, original in originals.items():
+        (tmp_path / filename).write_bytes(original)
+    monkeypatch.setattr(
+        catchup, "verify_product_certification",
+        lambda *a, **k: {"sha256": "c" * 64},
+    )
+    monkeypatch.setattr(
+        catchup, "load_lifecycle",
+        lambda root: {"state": "ADJUDICATED", "target_contest": 11, "completed_contest": 10},
+    )
+    monkeypatch.setattr(
+        catchup, "verify_active_epoch",
+        lambda _: {"target_contest": 11, "state_paths": {"ledger": "ledger.json"}},
+    )
+    monkeypatch.setattr(catchup, "_assert_completed_active", lambda *a: 11)
+    monkeypatch.setattr(
+        catchup, "complete_adjudicated_sequence",
+        lambda *a: pytest.fail("invalid request must not update model learning"),
+    )
+    monkeypatch.setattr(
+        catchup, "advance_completed_epoch",
+        lambda *a: pytest.fail("invalid request must not advance canonical history"),
+    )
+    with pytest.raises(ValueError, match="backward"):
+        catchup.catch_up_missed_results(tmp_path, through_target=10)
+    for filename, original in originals.items():
+        assert (tmp_path / filename).read_bytes() == original
+
+
+def test_catchup_rejects_incoherent_hold_before_history_read(tmp_path, monkeypatch):
+    """Protect against a mismatched HOLD target/completed pair."""
+    import pytest
+
+    monkeypatch.setattr(
+        catchup, "verify_product_certification",
+        lambda *a, **k: {"sha256": "c" * 64},
+    )
+    monkeypatch.setattr(
+        catchup, "load_lifecycle",
+        lambda root: {"state": "HOLD", "target_contest": 12, "completed_contest": 10},
+    )
+    monkeypatch.setattr(
+        catchup, "_history",
+        lambda *_: pytest.fail("inconsistent lifecycle must fail before history read"),
+    )
+    with pytest.raises(ValueError, match="HOLD lifecycle"):
+        catchup.catch_up_missed_results(tmp_path, through_target=11)

@@ -242,8 +242,25 @@ def catch_up_missed_results(
         raise ValueError("catch-up clock must be timezone-aware")
     certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)
     lifecycle_before = load_lifecycle(root)
-    if lifecycle_before.get("state") not in {"ADJUDICATED", "REVIEWED", "HOLD"}:
+    state = lifecycle_before.get("state")
+    if state not in {"ADJUDICATED", "REVIEWED", "HOLD"}:
         raise ValueError("missed-result catch-up requires ADJUDICATED, REVIEWED, or HOLD lifecycle")
+    # Fail before learning, history advancement or any operational authority
+    # write. The previous backward check ran only AFTER advancing an active
+    # adjudicated epoch, which could mutate state for an invalid request.
+    if state == "HOLD":
+        completed = lifecycle_before.get("completed_contest")
+        current_target = lifecycle_before.get("target_contest")
+        if (type(completed) is not int or type(current_target) is not int
+                or completed < 1 or current_target != completed + 1):
+            raise ValueError("catch-up HOLD lifecycle sequence invalid")
+        minimum_completed_contest = completed
+    else:
+        minimum_completed_contest = lifecycle_before.get("target_contest")
+        if type(minimum_completed_contest) is not int or minimum_completed_contest < 1:
+            raise ValueError("catch-up adjudicated lifecycle target invalid")
+    if through_target < minimum_completed_contest:
+        raise ValueError("catch-up through target cannot move canonical history backward")
 
     canonical = root / "Mega-Sena.xlsx"
     active_path = root / "SMART_ACTIVE_EPOCH.json"
