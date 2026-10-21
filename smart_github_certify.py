@@ -31,7 +31,7 @@ ARTIFACTS = (
 
 def require_current_coverage_sources(root: Path) -> None:
     """Reject historical coverage before updating any operational authority."""
-    from smart_global_integrity import REQUIRED_GLOBAL_COVERAGE_SOURCES
+    from smart_global_integrity import REQUIRED_GLOBAL_COVERAGE_SOURCES, coverage_summary
 
     root = Path(root).resolve()
     proof = json.loads((root / "SMART_GLOBAL_INTEGRITY_PROOF.json").read_text(encoding="utf-8-sig"))
@@ -55,6 +55,7 @@ def require_current_coverage_sources(root: Path) -> None:
         entry = reports[relative].get("files", {}).get(source, {})
         if entry.get("source_sha256") != sha256_source_file(root / source):
             raise ValueError(f"current source-bound coverage required: {source}")
+        coverage_summary(root, relative, source)
 
 
 def execution_provenance(root: Path, source_commit: str, run_id: str,
