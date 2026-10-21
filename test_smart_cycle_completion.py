@@ -134,6 +134,50 @@ class TestCycleCompletion(unittest.TestCase):
                 cycle.complete_to_model_card(Path(root), 3073, "batch.json", handlers)
         self.assertEqual(calls[-1], ("generate", 3073))
 
+    def test_lower_authority_public_portal_is_operational_not_api_certified(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda path: (
+                {3072: {"numero": 3072, "source": "CAIXA_PORTAL_TRANSCRIPTION"}},
+                {"authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+                 "raw_api_independently_verified": False, "targets": [3072]})
+            result = cycle.complete_to_model_card(Path(root), 3073, "portal.json", handlers)
+        self.assertEqual(result["status"], "MODEL_CARD_GENERATED")
+        self.assertIn(("complete-result", 3071), calls)
+
+    def test_public_crosscheck_accepted_operationally_without_api_certification(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda path: (
+                {3072: {"numero": 3072, "source": "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL"}},
+                {"authority": "TWO_PUBLIC_SOURCES_NOT_CAIXA_API_VERIFIED",
+                 "raw_api_independently_verified": False, "targets": [3072]})
+            result = cycle.complete_to_model_card(Path(root), 3073, "public.json", handlers)
+        self.assertEqual(result["status"], "MODEL_CARD_GENERATED")
+        self.assertIn(("catch-up", 3072, "public.json"), calls)
+
+    def test_public_crosscheck_falsely_api_verified_is_rejected(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda path: (
+                {3072: {"numero": 3072, "source": "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL"}},
+                {"authority": "TWO_PUBLIC_SOURCES_NOT_CAIXA_API_VERIFIED",
+                 "raw_api_independently_verified": True, "targets": [3072]})
+            with self.assertRaisesRegex(ValueError, "non-API-verified"):
+                cycle.complete_to_model_card(Path(root), 3073, "public.json", handlers)
+        self.assertNotIn(("complete-result", 3071), calls)
+
+    def test_portal_impostor_cannot_claim_api_verification(self):
+        with TemporaryDirectory() as root:
+            handlers, calls, _, _ = self.context()
+            handlers.read_batch = lambda path: (
+                {3072: {"numero": 3072, "source": "CAIXA_PORTAL_TRANSCRIPTION"}},
+                {"authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+                 "raw_api_independently_verified": True, "targets": [3072]})
+            with self.assertRaisesRegex(ValueError, "non-API-verified"):
+                cycle.complete_to_model_card(Path(root), 3073, "portal.json", handlers)
+        self.assertNotIn(("complete-result", 3071), calls)
+
     def test_unconfirmed_complete_result_stops_without_catchup(self):
         with TemporaryDirectory() as root:
             handlers, calls, _, _ = self.context()
