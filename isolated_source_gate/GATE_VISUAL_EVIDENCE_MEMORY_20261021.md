@@ -53,3 +53,27 @@ modelos multimodais, acesso à fonte CAIXA nem autoridade de resultado/prediçã
   não podem ser reclassificados como testes aprovados.
 - **Gates invariantes**: CAIXA BLOQUEADA, peso preditivo 0.0,
   `main` preservada. Sem declaração de publicação produtiva.
+
+## Homologação governada após atualização da política canônica
+
+- Política `SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021`
+  confirmada como `PASS`, sem GitHub Actions ou dependência de runner hospedado.
+- Integração alinhada ao commit canônico `8a97289b0fe8b207a394c52292ed9580e478cea8`.
+  PR #68 utiliza uma branch derivada dessa revisão e não altera `main`.
+- Executor independente SentinelX (`wmcp-cloud-01`): **41/41 testes
+  focais `unittest` PASS**, incluindo PIT, adulteração de memória, migração
+  de esquema, CLI e rejeição de symlinks no banco e na origem dos checkpoints.
+- Benchmark de referência `visual_memory_gate_benchmark_20261021.json` na
+  área isolada LMCP, SHA-256
+  `50e30973e6f23f2efafdf982914dfc97fd97c896288c5cd5616ffeccef55c703`.
+- **Bloqueio F01 pré-existente na nova `main`:** o registro de
+  alcançabilidade ainda busca roots em `.github/workflows`. O novo contrato
+  proibiu/removou esses arquivos, logo os roots são zero e nove módulos
+  produtivos são marcados inalcançáveis. Resultado `F01_GATE=FAIL` idêntico
+  tanto no checkout `main` `8a97289` quanto no candidato; não é regressão
+  causada pela memória. Adaptar F01/F10 ao **verdadeiro ponto de entrada
+  externo, comprovado e autorizado**, sem inventar execução, constitui gate
+  arquitetural separado para homologação integral.
+- A suíte completa com dependências em conformidade e checkpoints físicos
+  ainda não foi certificada. Não tratar a regressão focal como aprovação
+  científica ou autorização de promoção produtiva.
