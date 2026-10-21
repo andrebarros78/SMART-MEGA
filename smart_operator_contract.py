@@ -28,7 +28,7 @@ def contract() -> dict[str, Any]:
         "product_completion_independent_of_operation": True,
         "operator_selects_target": True,
         "target_required_for_prepare_and_freeze": True,
-        "supported_actions": ["status", "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up", "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "post-result-report", "complete-result", "review", "hold", "generate-card", "show-card", "terminal"],
+        "supported_actions": ["status", "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up", "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "post-result-report", "complete-result", "recover-cycle", "review", "hold", "generate-card", "show-card", "terminal"],
         "post_result_review_required_before_next_prepare": True,
         "prepare_requires_explicit_next_cycle_authority": True,
         "automatic_next_target_prepare_forbidden": True,
