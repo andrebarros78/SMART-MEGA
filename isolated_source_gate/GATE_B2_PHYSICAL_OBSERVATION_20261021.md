@@ -129,3 +129,5 @@ acesso autorizado e geração de checkpoints reais com evidência
 temporal independente. Não burlar `YOUTUBE_SIGN_IN_REQUIRED`.
 O estado atual auditado permanece registrado em
 `B2_MODERN_TRANSPORT_AND_REAL_MEDIA_20261021.json`.
+
+**Frescor do relatório:** a fonte e a qualidade da fila foram atualizadas pela última vez em 17/10/2026 UTC e a lista de concursos em 14/10/2026 UTC, conforme metadados do próprio B2 (recibo `netcmd_c30aec7c65244ac09d3bbd3729f64848`). `YOUTUBE_SIGN_IN_REQUIRED` é a **última situação registrada**, não um novo teste de login executado em 21/10.
