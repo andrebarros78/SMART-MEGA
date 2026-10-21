@@ -1,6 +1,6 @@
 """Fail-closed isolated reader; legacy BLOCKED always wins."""
 from pathlib import Path
-from source_gate_storage import IsolatedGate
+from .source_gate_storage import IsolatedGate
 def read_effective_gate(queue_root,ledger_path,legacy_reader,authority_registry_verified=False):
  root=Path(queue_root)
  if root.is_symlink():raise ValueError('ROOT_SYMLINK')
