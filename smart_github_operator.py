@@ -335,7 +335,13 @@ def main() -> int:
     if args.operation in READ_ONLY:
         observation = proof.pop("observation")
         proof["observation_status"] = observation.get("status")
-        proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest")
+        if args.operation == "show-card":
+            # Display the audited frozen MODEL numbers instead of discarding
+            # the observation during the common read-only status rendering.
+            if observation.get("status") != "FROZEN_MODEL_CARD_VERIFIED":
+                raise RuntimeError("read-only model card consumer did not verify evidence")
+            proof["model_card"] = observation
+        proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest") if args.operation != "show-card" else observation.get("target_contest")
         proof["reconciled_state"] = (observation.get("reconciled_state") or {}).get("status")
         if isinstance(proof.get("result_preflight"), dict):
             proof["result_readiness_status"] = proof["result_preflight"].get("status")
