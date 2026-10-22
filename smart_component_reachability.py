@@ -263,7 +263,9 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        content_hashes[rel] = hashlib.sha256(raw).hexdigest()
+        # Normalize text checkout EOL for the code-identity graph, not media
+        # or checkpoint payloads. Windows checkout rules must not change F01.
+        content_hashes[rel] = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
         except (SyntaxError, UnicodeDecodeError) as exc:
@@ -383,6 +385,7 @@ def build_registry(root: Path) -> dict:
             "production_definition": "Python module statically reachable from an approved external executor entrypoint using the canonical GitHub source",
             "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
             "runtime_execution_claimed": False,
+            "python_source_sha256_normalization": "CRLF_TO_LF_BEFORE_HASHING",
         },
         "workflow_entrypoints": workflow_paths,
         "entrypoint_authority": EXTERNAL_EXECUTION_POLICY,

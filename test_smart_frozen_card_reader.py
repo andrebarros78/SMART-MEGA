@@ -30,7 +30,9 @@ class FrozenCardConsumer(unittest.TestCase):
 
     def test_invalid_target_rejected(self):
         for target in (True, -1, 0, "3071", 3072):
-            with self.subTest(target=target), self.assertRaises(ValueError):
+            # Retain all invalid-target assertions as normal unittest
+            # checks so the strict JUnit testcase ledger stays consistent.
+            with self.assertRaises(ValueError):
                 reader.read_frozen_card(ROOT, target)
 
     def test_tampered_primary_card_fails(self):

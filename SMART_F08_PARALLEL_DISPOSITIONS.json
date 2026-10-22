@@ -1,7 +1,7 @@
 {
   "schema": "SMART_F08_PARALLEL_DISPOSITIONS_V1",
   "source": "SMART_COMPONENT_REACHABILITY_REGISTRY.json",
-  "production_entrypoint_policy": "CANONICAL_WORKFLOWS_ONLY",
+  "production_entrypoint_policy": "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021",
   "classification": "EXPLICIT_STATIC_NONPRODUCTION_BOUNDARY",
   "decision": "RETIRE_UNREACHABLE_LEGACY_KEEP_TEST_COMPAT; PRESERVE_SHADOW; ISOLATE_RESEARCH_INPUTS; KEEP_VALIDATION; KEEP_DIAGNOSTICS",
   "rules": {
@@ -40,6 +40,7 @@
       "p14_coverage_plugin.py",
       "smart_50_round_simulation.py",
       "smart_adversarial_claim_audit.py",
+      "smart_b2_physical_learning_gate.py",
       "smart_canonical_result_store_reconcile.py",
       "smart_context_calibration_confirm.py",
       "smart_context_calibration_confirm_v2.py",
@@ -61,7 +62,8 @@
       "smart_signal_50_round_simulation.py",
       "smart_signal_drift_calibration.py",
       "smart_test_helpers.py",
-      "smart_validation_gate.py"
+      "smart_validation_gate.py",
+      "smart_video_official_media_admission.py"
     ],
     "DIAGNOSTIC_ONLY": [
       "smart_canonical_root_rebind.py",
@@ -69,15 +71,19 @@
       "smart_contract_registry.py",
       "smart_execution_checkpoint.py",
       "smart_frontier_adjudicator.py",
-      "smart_release_attestation.py"
+      "smart_release_attestation.py",
+      "smart_video_learning.py",
+      "smart_video_observation.py",
+      "smart_video_pit_evidence.py",
+      "smart_video_vendor.py"
     ]
   },
   "reasoning": {
     "RETIRED_FROM_PRODUCTION": "Historical/legacy executables unreachable from canonical workflows; retain in place for audited compatibility only.",
     "SHADOW_ONLY": "Explicit shadow comparison; no effect on champion, weights, ranking or freeze.",
     "RESEARCH_ISOLATED": "Procedural and historical/RAG acquisition research remains outside production until causal evaluation.",
-    "VALIDATION_ONLY": "Synthetic simulations and backtests remain non-authoritative testing evidence, not predictive promotion.",
-    "DIAGNOSTIC_ONLY": "Separate maintenance diagnostics are not production decision paths."
+    "VALIDATION_ONLY": "Nonproduction validation scripts remain unreachable from main's approved externally governed CLI entrypoints. Approved certification roots are tracked in F01 and do not imply predictive authority.",
+    "DIAGNOSTIC_ONLY": "Unreachable diagnostics stay outside productive and predictive authority; statically reachable governance CLIs are tracked in F01, not this inventory."
   },
   "scope_boundary": "F08 classifies and enforces nonproduction routing; does not claim dynamic execution, physical relocation or scientific superiority."
 }

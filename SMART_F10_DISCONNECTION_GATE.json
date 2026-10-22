@@ -3,6 +3,7 @@
   "status": "PASS",
   "claim_boundary": "Proves static route integrity and fail-closed disconnection mutations. Dynamic execution is validated separately by F06/F07/F09 integration tests; static ACTIVE alone is not dynamic-execution evidence.",
   "checks": {
+    "external_governed_entrypoint_bound": true,
     "source_registries_pass": true,
     "registry_component_identity": true,
     "registry_source_inventory_bound": true,
@@ -16,6 +17,13 @@
     "capability_aliases_match_owners_and_permissions": true
   },
   "errors": [],
+  "external_entrypoint_provenance": {
+    "policy_id": "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021",
+    "authority_kind": "GITHUB_CANONICAL_EXTERNAL_EXECUTOR_STATIC_CONTRACT",
+    "runtime_executed": false,
+    "github_actions_authorized": false,
+    "root_contract_valid": true
+  },
   "required_edges": {
     "smart_github_operator.py": [
       "smart_operator"
@@ -54,8 +62,8 @@
       "smart_operator"
     ]
   },
-  "reachability_inventory_sha256": "7bff1eb7781b5eba461d723ea91510ee96a6eb92209297a0163a8a4cbf4568ae",
-  "canonical_registry_sha256": "1e517ce6224a8d4f68d0e46e9da82c1edbf60b113c3d6006f53b1845895dd3bd",
+  "reachability_inventory_sha256": "389c1b5c41cb334eb0f76c993cb60af6123ceb3f6e7205a8687341ef58fbb936",
+  "canonical_registry_sha256": "40e664bae54f61a7bcd20335d14c0bf66e37cd7dd577a66de7b55286c3377a60",
   "skill_registry_sha256": "c306df47f5a83556458de6bc00c7cd337fe449798ec743a8bef307c0b2521c75",
-  "sha256": "ffa41c21d7beb399af8a34143c0e7729003ed94a1ee9dcb0f9449ef955b08259"
+  "sha256": "0405d0218a14bfac93745e53cda582557d740807c4f7a5a58caf5b6341318d50"
 }

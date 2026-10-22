@@ -70,6 +70,47 @@ def audit_disconnections(
         if not condition:
             errors.append(description)
 
+    # Reconcile to the current main's explicit multi-entrypoint external
+    # executor contract. These are *static roots*, not a dynamic run receipt.
+    from smart_component_reachability import (
+        EXTERNAL_EXECUTION_ENTRYPOINTS, EXTERNAL_EXECUTION_POLICY,
+    )
+    from smart_github_native_policy import POLICY_ID, PolicyViolation, verify
+    expected_external = {
+        path: ["EXTERNAL_EXECUTOR:" + EXTERNAL_EXECUTION_POLICY]
+        for path in EXTERNAL_EXECUTION_ENTRYPOINTS
+        if path in by_path
+    }
+    try:
+        policy = verify(root)
+    except (OSError, UnicodeError, PolicyViolation):
+        policy = {}
+    provenance = {
+        "policy_id": POLICY_ID,
+        "authority_kind": "GITHUB_CANONICAL_EXTERNAL_EXECUTOR_STATIC_CONTRACT",
+        "runtime_executed": bool(
+            reach.get("classification_policy", {}).get("runtime_execution_claimed")
+        ),
+        "github_actions_authorized": policy.get("github_actions_authorized"),
+        "root_contract_valid": (
+            reach.get("workflow_entrypoints") == expected_external
+            and reach.get("entrypoint_authority") == EXTERNAL_EXECUTION_POLICY
+            and "smart_github_operator.py" in expected_external
+            and "smart_fast_result_ingest.py" in expected_external
+            and by_path.get("smart_github_operator.py", {}).get("production_reachable") is True
+            and by_path.get("smart_fast_result_ingest.py", {}).get("production_reachable") is True
+            and policy.get("status") == "PASS"
+            and policy.get("external_executors_authorized") is True
+            and policy.get("github_actions_authorized") is False
+            and reach.get("classification_policy", {}).get("runtime_execution_claimed") is False
+        ),
+    }
+    check(
+        "external_governed_entrypoint_bound",
+        provenance["root_contract_valid"],
+        "canonical externally governed entrypoints missing, unauthorized, or falsely claim execution",
+    )
+
     check("source_registries_pass",
           reach["gate"]["status"] == components["gate"]["status"] == adapters["gate"]["status"] == "PASS",
           "upstream canonical/skill/reachability gate is not PASS")
@@ -145,6 +186,7 @@ def audit_disconnections(
         "claim_boundary": "Proves static route integrity and fail-closed disconnection mutations. Dynamic execution is validated separately by F06/F07/F09 integration tests; static ACTIVE alone is not dynamic-execution evidence.",
         "checks": checks,
         "errors": sorted(errors),
+        "external_entrypoint_provenance": provenance,
         "required_edges": {k: list(v) for k, v in REQUIRED_EDGES.items()},
         "prohibited_edges": {k: list(v) for k, v in PROHIBITED_PRODUCTION_EDGES.items()},
         "reachability_inventory_sha256": reach["inventory_sha256"],

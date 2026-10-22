@@ -1,0 +1,342 @@
+"""SMART-MEGA V6 B2 read-only physical checkpoint observational gate.
+
+The consumer operates only on *temporary isolated copies* of the validated
+source bytes. Source timestamps are self-reported, NOT independent PIT proof.
+This module never permits promotion of observational metrics into lottery
+outcomes or predictive authority.
+"""
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import re
+import statistics
+import tempfile
+from datetime import datetime, timezone
+from pathlib import Path
+from typing import Any
+
+from smart_video_learning import (
+    audit_checkpoint_inventory,
+    get_visual_features,
+    get_visual_learning_memory,
+    _cutoff,
+)
+from smart_video_observation import PREDICTIVE_EVIDENCE
+
+SCHEMA = "SMART_B2_PHYSICAL_LEARNING_AUDIT_V1"
+SOURCE_PATTERN = re.compile(r"contest_([1-9][0-9]{0,11})\.json\Z")
+MAX_BYTES = 1024 * 1024
+
+
+def _sha(value: bytes) -> str:
+    return hashlib.sha256(value).hexdigest()
+
+
+def _result(status: str, root: Path, target: str, cutoff: str, expected: int) -> dict[str, Any]:
+    return {
+        "schema": SCHEMA,
+        "status": status,
+        "physical_source_path": str(root),
+        "target_contest": target,
+        "cutoff_utc": cutoff,
+        "cutoff_basis": "CALLER_SUPPLIED_NOT_EXTERNALLY_ATTESTED",
+        "physical_source_claim": "LOCAL_FILESYSTEM_ONLY_IF_READ_SUCCESS",
+        "source_classification": "UNVERIFIED",
+        "expected_checkpoint_count": expected,
+        "physical_files_read": 0,
+        "file_integrity": None,
+        "checkpoint_sha256": {},
+        "snapshot_manifest_sha256": None,
+        "temporal_provenance": {
+            "self_reported_pre_cutoff": 0,
+            "self_reported_post_cutoff": 0,
+            "independently_attested": 0,
+            "metadata_class": "UNTRUSTED_SOURCE_DECLARATION",
+        },
+        "pit_independently_attested": False,
+        "observational_utility": None,
+        "measured_predictive_gain": None,
+        "predictive_evidence": PREDICTIVE_EVIDENCE,
+        "predictive_weight": 0.0,
+        "original_source_modified": False,
+        "read_only_source": True,
+        "model_execution_enabled": False,
+        "limitations": [
+            "File and checkpoint hashes establish current content identity, not historical existence.",
+            "created_at_utc and filesystem modification times cannot independently attest pre-cutoff capture.",
+            "Event observations are not proven Mega-Sena ball events or predictive gains.",
+        ],
+    }
+
+
+
+def _decoder_quality(
+    rows: dict[str, dict[str, Any]],
+    eligible: list[int],
+    episode_events: dict[int, int],
+) -> dict[str, Any]:
+    """Measure self-reported decoder counter support, never frame authenticity.
+
+    The presence of motion timestamps does not prove any frame was decoded.
+    Only time-eligible episodes from the official observational consumer
+    are considered; the counters remain declarations within the JSON file.
+    """
+    supported = missing = invalid = supported_events = total_frames = 0
+    for contest in eligible:
+        row = rows[str(contest)]
+        coarse, refined = row.get("coarse"), row.get("analyzed_windows")
+        if coarse is None and refined is None:
+            missing += 1
+            continue
+        if (not isinstance(coarse, list) or not isinstance(refined, list)
+                or not 1 <= len(coarse) <= 64 or not 1 <= len(refined) <= 64):
+            invalid += 1
+            continue
+        frame_counts = []
+        consistent = True
+        for windows in (coarse, refined):
+            ok = [window for window in windows
+                  if isinstance(window, dict) and window.get("status") == "OK"]
+            if not ok:
+                consistent = False
+                break
+            for window in ok:
+                read, analyzed = window.get("read_frames"), window.get("analyzed_frames")
+                if (type(read) is not int or type(analyzed) is not int
+                        or not (2 <= analyzed <= read <= 1_000_000)):
+                    consistent = False
+                    break
+                frame_counts.append(read)
+            if not consistent:
+                break
+        if consistent:
+            supported += 1
+            supported_events += episode_events[contest]
+            total_frames += sum(frame_counts)
+        else:
+            invalid += 1
+    events_total = sum(episode_events.get(contest, 0) for contest in eligible)
+    return {
+        "basis": "UNTRUSTED_CHECKPOINT_COUNTERS_ONLY",
+        "candidate_episodes": len(eligible),
+        "candidate_counter_coverage_ratio": (
+            round(supported / len(eligible), 6) if eligible else None
+        ),
+        "motion_event_counter_coverage_ratio": (
+            round(supported_events / events_total, 6) if events_total else None
+        ),
+        "with_consistent_decoder_counters": supported,
+        "without_decoder_counters": missing,
+        "invalid_decoder_counters": invalid,
+        "motion_events_with_decoder_counter_support": supported_events,
+        "reported_frames_read_in_supported_episodes": total_frames,
+        "frame_content_authenticity_established": False,
+        "independently_verified_decoded_frames": None,
+        "limitation": (
+            "Checkpoint frame counters are only internal declarations. "
+            "They do not prove original media identity, decoded pixels, "
+            "independent capture time or predictive utility."
+        ),
+    }
+
+
+def audit_b2_physical_learning(
+    checkpoint_dir: str | Path,
+    target_contest: str,
+    cutoff_utc: str,
+    *,
+    expected_count: int = 13,
+    official_queue_dir: str | Path | None = None,
+    official_probe: dict[str, Any] | None = None,
+    pit_evidence_dir: str | Path | None = None,
+    trusted_pit_issuers: dict[str, dict[str, str]] | None = None,
+) -> dict[str, Any]:
+    target = str(target_contest)
+    if not target.isascii() or not target.isdecimal() or int(target) < 1:
+        raise ValueError("INVALID_TARGET_CONTEST")
+    cutoff = _cutoff(cutoff_utc)
+    if type(expected_count) is not int or not 1 <= expected_count <= 512:
+        raise ValueError("INVALID_CHECKPOINT_EXPECTATION")
+
+    root = Path(checkpoint_dir)
+    result = _result("PHYSICAL_SOURCE_UNAVAILABLE", root, target, cutoff, expected_count)
+    if official_queue_dir is not None:
+        from smart_video_official_media_admission import audit_official_media_admission
+        admission = audit_official_media_admission(
+            official_queue_dir, target, probe=official_probe,
+        )
+        result["official_media_admission"] = admission
+        # Never ingest a purported official B2 checkpoint when the queue's
+        # source-access authority is blocked, absent, or unverified. The
+        # metadata-only source gate is intentionally incapable of granting
+        # authorization to create checkpoints.
+        result["status"] = admission["status"]
+        result["source_classification"] = "OFFICIAL_SOURCE_NOT_ADMITTED"
+        return result
+    # B2 has historical fixture roots explicitly named SYNTHETIC_ONLY_13 and
+    # SYNTHETIC_ONLY_OFFICIAL_QUEUE_13. Do not treat successful JSON parses
+    # as proof of real physical draw-video observations.
+    parts = str(root).replace("\\", "/").upper().split("/")
+    if any(component.startswith("SYNTHETIC_ONLY") for component in parts):
+        result["status"] = "SYNTHETIC_SOURCE_QUARANTINED"
+        result["source_classification"] = "SYNTHETIC_FIXTURE"
+        return result
+    if root.is_symlink() or not root.is_dir():
+        return result
+
+    inventory = audit_checkpoint_inventory(root, expected_count=expected_count)
+    result["file_integrity"] = {
+        "status": inventory["status"],
+        "files_discovered": inventory["files_discovered"],
+        "valid_count": inventory["valid_count"],
+        "invalid_count": inventory["invalid_count"],
+        "truncated": inventory["truncated"],
+        "records": inventory["records"],
+    }
+    result["physical_files_read"] = inventory["valid_count"] + inventory["invalid_count"]
+    if inventory["invalid_count"] or inventory["truncated"]:
+        result["status"] = "PHYSICAL_INTEGRITY_REJECTED"
+        return result
+    if inventory["status"] != "CHECKPOINT_INTEGRITY_PASS":
+        result["status"] = "PHYSICAL_COUNT_NOT_VERIFIED"
+        return result
+
+    # Copy once, then compare each saved source digest to the independently
+    # checked inventory. Consume the isolated copy only: original B2 root
+    # remains free of SQLite indexes, learning states and other writes.
+    bytes_by_id: dict[str, bytes] = {}
+    rows: dict[str, dict[str, Any]] = {}
+    pre, post = 0, 0
+    source_digests: dict[str, str] = {}
+    for recorded in inventory["records"]:
+        contest = str(recorded["contest_id"])
+        path = root / f"contest_{contest}.json"
+        if (not SOURCE_PATTERN.fullmatch(path.name)
+                or path.is_symlink() or not path.is_file()):
+            result["status"] = "PHYSICAL_INTEGRITY_REJECTED"
+            return result
+        if path.stat().st_size > MAX_BYTES:
+            result["status"] = "PHYSICAL_INTEGRITY_REJECTED"
+            return result
+        raw = path.read_bytes()
+        digest = _sha(raw)
+        if digest != recorded.get("sha256"):
+            result["status"] = "PHYSICAL_MUTATED_DURING_AUDIT"
+            return result
+        row = json.loads(raw)
+        observed = datetime.fromisoformat(_cutoff(row["created_at_utc"]))
+        if observed <= datetime.fromisoformat(cutoff):
+            pre += 1
+        else:
+            post += 1
+        bytes_by_id[contest] = raw
+        source_digests[contest] = digest
+        rows[contest] = row
+
+    result["source_classification"] = "LOCAL_CHECKPOINT_CONTENT_UNATTESTED"
+    result["checkpoint_sha256"] = dict(sorted(source_digests.items(), key=lambda x: int(x[0])))
+    manifest = json.dumps(result["checkpoint_sha256"], sort_keys=True, separators=(",", ":"))
+    result["snapshot_manifest_sha256"] = _sha(manifest.encode("utf-8"))
+    result["temporal_provenance"]["self_reported_pre_cutoff"] = pre
+    result["temporal_provenance"]["self_reported_post_cutoff"] = post
+
+    try:
+        with tempfile.TemporaryDirectory(prefix="smartmega-b2-shadow-") as scratch:
+            isolated = Path(scratch)
+            for contest, raw in bytes_by_id.items():
+                (isolated / f"contest_{contest}.json").write_bytes(raw)
+            features = get_visual_features(target, cutoff, isolated)
+            episodes = get_visual_learning_memory(target, cutoff, isolated)
+            expected = features["source_sha256"]
+            actual = {
+                str(x["contest_id"]): x["checkpoint_sha256"] for x in episodes["episodic"]
+            }
+            if (features["predictive_weight"] != 0.0
+                    or episodes["predictive_weight"] != 0.0
+                    or episodes["predictive_evidence"] != "NOT_ESTABLISHED"
+                    or episodes["source_gate"] != "BLOCKED"
+                    or expected != actual
+                    or episodes["semantic"]["observed_event_count"]
+                        != episodes["graph"]["edge_count"]):
+                raise ValueError("CONSUMER_INTEGRITY_MISMATCH")
+    except (OSError, ValueError, KeyError, TypeError, OverflowError) as exc:
+        result["status"] = "PHYSICAL_CONSUMER_REJECTED"
+        result["consumer_rejection_class"] = type(exc).__name__
+        return result
+
+    eligible = features["source_contests"]
+    if not all(0 < n < int(target) for n in eligible):
+        result["status"] = "PHYSICAL_CONSUMER_REJECTED"
+        return result
+    event_counts = [x["motion_event_count"] for x in episodes["episodic"]]
+    decoder_quality = _decoder_quality(
+        rows, eligible,
+        {x["contest_id"]: x["motion_event_count"] for x in episodes["episodic"]},
+    )
+    result["observational_utility"] = {
+        "decoder_quality": decoder_quality,
+        "scope": "DESCRIPTIVE_VIDEO_MOTION_ONLY",
+        "verified_physical_checkpoints": len(rows),
+        "candidate_checkpoints": sum(r.get("status") == "CANDIDATE" for r in rows.values()),
+        "eligible_episodes": len(eligible),
+        "excluded_from_consumer": len(rows) - len(eligible),
+        "eligible_contest_ids": eligible,
+        "observed_motion_events": sum(event_counts),
+        "events_per_eligible_episode_median": (
+            statistics.median(event_counts) if event_counts else None
+        ),
+        "graph_edges": episodes["graph"]["edge_count"],
+        "normalized_event_histogram": episodes["semantic"][
+            "observational_motion_histogram_10_bins"
+        ],
+        "cache_index_hit": episodes["metrics"]["index_hit"],
+        "source_sha256": expected,
+        "provenance_sha256": episodes["provenance_sha256"],
+        "utility_for_prediction": "NOT_MEASURED",
+        "downstream_card_consumption": "NOT_MEASURED",
+    }
+    if pit_evidence_dir is not None:
+        from smart_video_pit_evidence import audit_pit_frame_batch
+        result["pit_witness_audit"] = audit_pit_frame_batch(
+            pit_evidence_dir, source_digests, eligible, trusted_pit_issuers or {},
+            target_contest=target, cutoff_utc=cutoff,
+        )
+        # No signed frame claim, even from a pinned Ed25519 witness, can
+        # independently prove the historical issuance time or media rights.
+        result["pit_independently_attested"] = False
+    result["status"] = "OBSERVATIONAL_SHADOW_ONLY"
+    return result
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description="B2 physical checkpoint read-only learning gate")
+    parser.add_argument("--checkpoint-dir", required=True)
+    parser.add_argument("--target-contest", required=True)
+    parser.add_argument("--cutoff-utc", required=True)
+    parser.add_argument("--expected-count", type=int, default=13)
+    parser.add_argument("--official-queue-dir",
+                        help="B2 official queue root; enforces existing source gate before frame consumption")
+    parser.add_argument("--official-probe-json",
+                        help="Public metadata probe receipt only; never a cookie or a source release")
+    args = parser.parse_args()
+    if args.official_probe_json and not args.official_queue_dir:
+        parser.error("--official-probe-json requires --official-queue-dir")
+    probe = None
+    if args.official_probe_json:
+        probe_path = Path(args.official_probe_json)
+        if probe_path.is_symlink() or not probe_path.is_file() or probe_path.stat().st_size > 32768:
+            parser.error("official probe receipt missing, symlinked or oversized")
+        probe = json.loads(probe_path.read_text("utf-8"))
+    result = audit_b2_physical_learning(
+        args.checkpoint_dir, args.target_contest, args.cutoff_utc,
+        expected_count=args.expected_count,
+        official_queue_dir=args.official_queue_dir, official_probe=probe,
+    )
+    print(json.dumps(result, ensure_ascii=False, indent=2))
+    return 0 if result["status"] == "OBSERVATIONAL_SHADOW_ONLY" else 2
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
