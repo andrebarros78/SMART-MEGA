@@ -150,6 +150,8 @@ def audit_b2_physical_learning(
     expected_count: int = 13,
     official_queue_dir: str | Path | None = None,
     official_probe: dict[str, Any] | None = None,
+    pit_evidence_dir: str | Path | None = None,
+    trusted_pit_issuers: dict[str, dict[str, str]] | None = None,
 ) -> dict[str, Any]:
     target = str(target_contest)
     if not target.isascii() or not target.isdecimal() or int(target) < 1:
@@ -295,6 +297,15 @@ def audit_b2_physical_learning(
         "utility_for_prediction": "NOT_MEASURED",
         "downstream_card_consumption": "NOT_MEASURED",
     }
+    if pit_evidence_dir is not None:
+        from smart_video_pit_evidence import audit_pit_frame_batch
+        result["pit_witness_audit"] = audit_pit_frame_batch(
+            pit_evidence_dir, source_digests, eligible, trusted_pit_issuers or {},
+            target_contest=target, cutoff_utc=cutoff,
+        )
+        # No signed frame claim, even from a pinned Ed25519 witness, can
+        # independently prove the historical issuance time or media rights.
+        result["pit_independently_attested"] = False
     result["status"] = "OBSERVATIONAL_SHADOW_ONLY"
     return result
 

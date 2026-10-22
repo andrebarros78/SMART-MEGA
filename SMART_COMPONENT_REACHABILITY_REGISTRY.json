@@ -65,15 +65,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "67a4c48724045d8f782be6c37d67baf5183900aa18e1a871b884115624e144a1",
+  "inventory_sha256": "41869e6f230b62eb4e5989eecc2e3dd09d5b3e10e76536ac0d9c0756350a86e3",
   "summary": {
-    "python_components": 563,
+    "python_components": 565,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
-    "diagnostic_components": 39,
+    "diagnostic_components": 40,
     "validation_components": 23,
-    "test_components": 211,
+    "test_components": 212,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4497,7 +4497,8 @@
       "producers": [
         "smart_video_learning",
         "smart_video_observation",
-        "smart_video_official_media_admission"
+        "smart_video_official_media_admission",
+        "smart_video_pit_evidence"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
@@ -4512,7 +4513,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "eacc63e1fdb0a3de4928130fa222c878247abea39378c267b8e2d2b9f7ca4a39"
+      "sha256": "457e1a0042c31d2ff3019c526c6cfd7842ed64a1fd508e3681001408bfce9563"
     },
     {
       "component_id": "smart_bounded_online_learning",
@@ -9436,6 +9437,28 @@
       "sha256": "95745bc6b110ce2f4e08cc5cda452168170c5ccd815ab5fd7193bc6721bf1701"
     },
     {
+      "component_id": "smart_video_pit_evidence",
+      "source_file": "smart_video_pit_evidence.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_video_pit_evidence"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "3f1bcddf59a1be2c2c8497093a9b170c3d2f1a81f4d8361a3dc51c5513c58918"
+    },
+    {
       "component_id": "smart_video_vendor",
       "source_file": "smart_video_vendor.py",
       "role": "DIAGNOSTIC",
@@ -10060,7 +10083,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "7988147ba93ef98d7be9f7c6105e0bb8bdff412c43b04f444882a4c184753c1a"
+      "sha256": "0016ca4de8409253a5666032809a8383ba2d28b8139402b9aabb1bf4e249b262"
     },
     {
       "component_id": "test_smart_bounded_online_learning",
@@ -10972,7 +10995,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6dc774a424eebdef7ffa948d81faa19718cc2001fdea160fdb1c4e789ca9d7a5"
+      "sha256": "63f109c4e8817a053d37f92c9e68dd07e1953cb485e197e0b214c9c47794c0a7"
     },
     {
       "component_id": "test_smart_f09_sdk_llm_selective",
@@ -13962,6 +13985,27 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "650b47822cc17af6b4a74da1efbcd7a425439ae3ad7928fde64a040c3c25c301"
+    },
+    {
+      "component_id": "test_smart_video_pit_evidence",
+      "source_file": "test_smart_video_pit_evidence.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_video_pit_evidence"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "714b274129c6d12429e54384f01b262560ec896e2f7080dad52cb27369c03461"
     },
     {
       "component_id": "test_smart_visual_memory_gate",

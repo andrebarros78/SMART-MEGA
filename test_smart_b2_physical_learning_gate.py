@@ -13,6 +13,65 @@ class B2PhysicalLearningGateTests(unittest.TestCase):
     def setUp(self):
         self.fixture = VisualMemoryGateTests()
 
+    def test_signed_frame_witness_connects_to_real_checkpoint_digest_without_promoting_pit(self):
+        import base64
+        import hashlib
+        from cryptography.hazmat.primitives import serialization
+        from cryptography.hazmat.primitives.asymmetric.ed25519 import Ed25519PrivateKey
+
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder, "checkpoints")
+            root.mkdir()
+            for n in (100, 101, 102):
+                self.fixture.make_checkpoint(root, n)
+            evidence = Path(folder, "pit")
+            evidence.mkdir()
+            frame = evidence / "contest_100_frame.png"
+            frame.write_bytes(b"\x89PNG\r\n\x1a\n" + b"pixels-test-only")
+            priv = Ed25519PrivateKey.generate()
+            pub = priv.public_key().public_bytes(
+                serialization.Encoding.Raw, serialization.PublicFormat.Raw
+            ).hex()
+            trusted = {"local-test-issuer": {
+                "ed25519_public_key_hex": pub,
+                "role": "INDEPENDENT_TIMESTAMP_WITNESS",
+                "source": "OPERATOR_PINNED_TRUST_ANCHOR",
+            }}
+            witness = {
+                "schema": "SMART_VIDEO_PIT_FRAME_WITNESS_V1",
+                "issuer_id": "local-test-issuer",
+                "target_contest": "103", "source_contest": "100",
+                "observed_utc": "2026-10-10T00:00:00Z",
+                "frame_sha256": hashlib.sha256(frame.read_bytes()).hexdigest(),
+                "frame_basename": frame.name, "frame_size_bytes": frame.stat().st_size,
+                "checkpoint_sha256": hashlib.sha256(
+                    (root / "contest_100.json").read_bytes()
+                ).hexdigest(),
+                "media_sha256": "a" * 64, "video_id": "ZP3mCk4_ku0",
+                "source_authority": "UNVERIFIED", "synthetic": False,
+            }
+            canon = json.dumps(witness, sort_keys=True, ensure_ascii=False,
+                               separators=(",", ":")).encode("utf-8")
+            witness["signature_b64"] = base64.b64encode(priv.sign(canon)).decode("ascii")
+            (evidence / "contest_100_pit_witness.json").write_text(json.dumps(witness))
+            report = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=3,
+                pit_evidence_dir=evidence, trusted_pit_issuers=trusted,
+            )
+            self.assertEqual(report["status"], "OBSERVATIONAL_SHADOW_ONLY")
+            self.assertEqual(report["pit_witness_audit"]["signed_frame_bindings"], 1)
+            self.assertEqual(report["pit_witness_audit"]["missing_frame_bindings"], 2)
+            self.assertEqual(report["pit_witness_audit"]["independently_timestamped"], 0)
+            self.assertFalse(report["pit_independently_attested"])
+            self.assertEqual(report["predictive_weight"], 0.0)
+            frame.write_bytes(b"corrupted")
+            altered = audit_b2_physical_learning(
+                root, "103", "2026-10-11T00:00:00Z", expected_count=3,
+                pit_evidence_dir=evidence, trusted_pit_issuers=trusted,
+            )
+            self.assertEqual(altered["pit_witness_audit"]["signed_frame_bindings"], 0)
+            self.assertEqual(altered["pit_witness_audit"]["invalid_frame_bindings"], 1)
+
     def test_missing_physical_source_is_blocked_not_reported_as_zero_observations(self):
         with tempfile.TemporaryDirectory() as parent:
             result = audit_b2_physical_learning(

@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "67a4c48724045d8f782be6c37d67baf5183900aa18e1a871b884115624e144a1",
+  "source_reachability_inventory_sha256": "41869e6f230b62eb4e5989eecc2e3dd09d5b3e10e76536ac0d9c0756350a86e3",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 563,
+    "component_count": 565,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 249,
+    "diagnostic": 251,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4747,13 +4747,14 @@
       "component_id": "smart_b2_physical_learning_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_b2_physical_learning_gate.py",
-      "implementation_sha256": "eacc63e1fdb0a3de4928130fa222c878247abea39378c267b8e2d2b9f7ca4a39",
+      "implementation_sha256": "457e1a0042c31d2ff3019c526c6cfd7842ed64a1fd508e3681001408bfce9563",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_video_learning",
         "smart_video_observation",
-        "smart_video_official_media_admission"
+        "smart_video_official_media_admission",
+        "smart_video_pit_evidence"
       ],
       "consumers": [
         "test_smart_b2_physical_learning_gate",
@@ -9959,6 +9960,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "smart_video_pit_evidence",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_video_pit_evidence.py",
+      "implementation_sha256": "3f1bcddf59a1be2c2c8497093a9b170c3d2f1a81f4d8361a3dc51c5513c58918",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [
+        "smart_b2_physical_learning_gate",
+        "test_smart_video_pit_evidence"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "smart_video_vendor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_video_vendor.py",
@@ -10621,7 +10646,7 @@
       "component_id": "test_smart_b2_physical_learning_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_b2_physical_learning_gate.py",
-      "implementation_sha256": "7988147ba93ef98d7be9f7c6105e0bb8bdff412c43b04f444882a4c184753c1a",
+      "implementation_sha256": "0016ca4de8409253a5666032809a8383ba2d28b8139402b9aabb1bf4e249b262",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11615,7 +11640,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "6dc774a424eebdef7ffa948d81faa19718cc2001fdea160fdb1c4e789ca9d7a5",
+      "implementation_sha256": "63f109c4e8817a053d37f92c9e68dd07e1953cb485e197e0b214c9c47794c0a7",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14895,6 +14920,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_video_pit_evidence",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_video_pit_evidence.py",
+      "implementation_sha256": "714b274129c6d12429e54384f01b262560ec896e2f7080dad52cb27369c03461",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_video_pit_evidence"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_visual_memory_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_visual_memory_gate.py",
@@ -15291,5 +15339,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "b07b2efd167e323fd74d808397c297b26d381c6e8d52531556886f5c56f635bc"
+  "registry_sha256": "053b5d889914c25821bb4cea5c034bfaeec4e693f1e757d4bd88495cc1f92b2b"
 }
