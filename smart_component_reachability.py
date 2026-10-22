@@ -20,6 +20,7 @@ VALIDATION_TOKENS = (
 )
 REQUIRED_PRODUCTION_FILES = {
     "smart_github_operator.py",
+    "smart_fast_result_ingest.py",
     "smart_operator.py",
     "smart_full_process_pipeline.py",
     "smart_champion_challenger.py",
@@ -140,6 +141,7 @@ EXTERNAL_EXECUTION_ENTRYPOINTS = (
     "smart_f12_scientific_successor.py",
     "smart_github_certify.py",
     "smart_github_operator.py",
+    "smart_fast_result_ingest.py",
     "smart_github_native_policy.py",
     "smart_linux_ci.py",
     "smart_repository_integrity.py",
