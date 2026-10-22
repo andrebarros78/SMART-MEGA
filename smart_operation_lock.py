@@ -85,49 +85,57 @@ class OperationLock:
         meta_path=self.root/METADATA_FILE
         lock_path.parent.mkdir(parents=True,exist_ok=True)
         handle=open(lock_path,"a+b")
-        if lock_path.stat().st_size < 1:
-            handle.write(b"0"); handle.flush(); os.fsync(handle.fileno())
         try:
-            _acquire_os_lock(handle)
-        except OSError as exc:
-            owner=_read_metadata(meta_path)
+            if lock_path.stat().st_size < 1:
+                handle.write(b"0"); handle.flush(); os.fsync(handle.fileno())
+            try:
+                _acquire_os_lock(handle)
+            except OSError as exc:
+                owner=_read_metadata(meta_path)
+                raise OperationalLockError(f"SMART-MEGA operation lock is held; owner={owner}") from exc
+            prior=_read_metadata(meta_path)
+            recovered=bool(prior and prior.get("status")=="ACTIVE")
+            body={
+                "schema":SCHEMA,
+                "status":"ACTIVE",
+                "lock_id":self.lock_id,
+                "host":socket.gethostname(),
+                "pid":os.getpid(),
+                "operation":self.operation,
+                "target_contest":self.target_contest,
+                "epoch_id":self.epoch_id,
+                "transaction_id":self.transaction_id,
+                "acquired_utc":datetime.now(timezone.utc).isoformat(),
+                "recovery":{"stale_metadata_recovered":recovered,
+                            "previous_lock_id":prior.get("lock_id") if prior else None,
+                            "previous_metadata_sha256":prior.get("sha256") if prior else None,
+                            "os_lock_is_authority":True},
+            }
+            self.metadata=_write_metadata(meta_path,body)
+        except BaseException:
             handle.close()
-            raise OperationalLockError(f"SMART-MEGA operation lock is held; owner={owner}") from exc
-        prior=_read_metadata(meta_path)
-        recovered=bool(prior and prior.get("status")=="ACTIVE")
-        body={
-            "schema":SCHEMA,
-            "status":"ACTIVE",
-            "lock_id":self.lock_id,
-            "host":socket.gethostname(),
-            "pid":os.getpid(),
-            "operation":self.operation,
-            "target_contest":self.target_contest,
-            "epoch_id":self.epoch_id,
-            "transaction_id":self.transaction_id,
-            "acquired_utc":datetime.now(timezone.utc).isoformat(),
-            "recovery":{"stale_metadata_recovered":recovered,
-                        "previous_lock_id":prior.get("lock_id") if prior else None,
-                        "previous_metadata_sha256":prior.get("sha256") if prior else None,
-                        "os_lock_is_authority":True},
-        }
-        self.metadata=_write_metadata(meta_path,body)
+            raise
         self._handle=handle
         return self.metadata
 
     def release(self) -> dict[str, Any] | None:
-        if self._handle is None:
+        handle=self._handle
+        if handle is None:
             return self.metadata
-        meta_path=self.root/METADATA_FILE
-        current=_read_metadata(meta_path)
-        if current and current.get("lock_id")==self.lock_id:
-            body={k:v for k,v in current.items() if not k.startswith("_") and k!="sha256"}
-            body["status"]="RELEASED"
-            body["released_utc"]=datetime.now(timezone.utc).isoformat()
-            self.metadata=_write_metadata(meta_path,body)
-        _release_os_lock(self._handle)
-        self._handle.close()
-        self._handle=None
+        try:
+            meta_path=self.root/METADATA_FILE
+            current=_read_metadata(meta_path)
+            if current and current.get("lock_id")==self.lock_id:
+                body={k:v for k,v in current.items() if not k.startswith("_") and k!="sha256"}
+                body["status"]="RELEASED"
+                body["released_utc"]=datetime.now(timezone.utc).isoformat()
+                self.metadata=_write_metadata(meta_path,body)
+        finally:
+            self._handle=None
+            try:
+                _release_os_lock(handle)
+            finally:
+                handle.close()
         return self.metadata
 
     def __enter__(self):
