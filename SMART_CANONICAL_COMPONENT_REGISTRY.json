@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "98c8089c5a00c6717b515615c9e4a02926403b4c180e397c60f079e1631e4523",
+  "source_reachability_inventory_sha256": "2d4da86ae34b30cd4d0ad96b4c61ca3e347bd7c61209a70f7ff6959dffbad0c2",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6754,7 +6754,8 @@
         "test_smart_generation_proof_guard",
         "test_smart_operator_missed_recovery_20260910",
         "test_smart_operator_real_freeze_recovery",
-        "test_smart_operator_seed_rollover_20260910"
+        "test_smart_operator_seed_rollover_20260910",
+        "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -14374,12 +14375,13 @@
       "component_id": "tests.test_smart_operator_failure_boundaries_20261021",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_operator_failure_boundaries_20261021.py",
-      "implementation_sha256": "966774ddd3babb2b6ab8717abfebc4c40dd5eaa81344584cf556c2a1d7db8860",
+      "implementation_sha256": "e6f67d943ec8527db89d76397a1dfab2666b444fac44ed1cbe4328ce9bfb7833",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_cycle_completion",
         "smart_frozen_card_reader",
+        "smart_learning_epoch_reset",
         "smart_missed_catchup",
         "smart_operational_lifecycle",
         "smart_operator",
@@ -14547,5 +14549,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "98ffb74e6577d8ebf67d3365e0dec7a7280c920cdd0d91247ba014e681b0703d"
+  "registry_sha256": "bd8620b8e2e1da090772364c4e2749bea341f8b1e75c6a41ecb3a4d0032a58a6"
 }

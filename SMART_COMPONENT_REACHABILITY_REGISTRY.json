@@ -60,7 +60,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "98c8089c5a00c6717b515615c9e4a02926403b4c180e397c60f079e1631e4523",
+  "inventory_sha256": "2d4da86ae34b30cd4d0ad96b4c61ca3e347bd7c61209a70f7ff6959dffbad0c2",
   "summary": {
     "python_components": 538,
     "workflow_entrypoints": 10,
@@ -6384,7 +6384,8 @@
         "test_smart_generation_proof_guard",
         "test_smart_operator_missed_recovery_20260910",
         "test_smart_operator_real_freeze_recovery",
-        "test_smart_operator_seed_rollover_20260910"
+        "test_smart_operator_seed_rollover_20260910",
+        "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -13463,6 +13464,7 @@
       "producers": [
         "smart_cycle_completion",
         "smart_frozen_card_reader",
+        "smart_learning_epoch_reset",
         "smart_missed_catchup",
         "smart_operational_lifecycle",
         "smart_operator",
@@ -13482,7 +13484,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "966774ddd3babb2b6ab8717abfebc4c40dd5eaa81344584cf556c2a1d7db8860"
+      "sha256": "e6f67d943ec8527db89d76397a1dfab2666b444fac44ed1cbe4328ce9bfb7833"
     },
     {
       "component_id": "tests.test_smart_operator_recovery_rollback_20261021",

@@ -785,3 +785,32 @@ def test_prepare_binds_real_active_epoch_hash_to_consumed_authority(tmp_path, mo
     assert authority["prepared_epoch_id"] == active["epoch_id"]
     assert lifecycle.load_lifecycle(tmp_path)["state"] == "PREPARED"
     assert (tmp_path / active["data_file"]).read_bytes() == (tmp_path / "Mega-Sena.xlsx").read_bytes()
+
+
+def test_terminal_success_commits_real_lifecycle_transition_once(tmp_path, monkeypatch):
+    import smart_operational_lifecycle as lifecycle
+    from smart_learning_epoch_reset import SCHEMA, write_active_epoch
+    write_active_epoch(tmp_path / op.ACTIVE_PATH, {
+        "schema": SCHEMA, "project": "SMART-MEGA", "status": "FROZEN", "epoch_id": "e4",
+        "target_contest": 4, "cutoff_contest": 3, "result_used": False,
+        "freeze_authority": {"sha256": "f" * 64},
+    })
+    lifecycle.initialize_from_legacy(tmp_path)
+    assert lifecycle.load_lifecycle(tmp_path)["state"] == "FROZEN"
+    monkeypatch.setattr(op, "canonical_root", lambda root: tmp_path)
+    calls = []
+    def execute(root, target, *, allow_terminal_write):
+        calls.append((root, target, allow_terminal_write))
+        return {"status": "COMPLETED", "adjudication_status": "ADJUDICATED", "sequence_valid": True}
+    monkeypatch.setattr(op.terminal_executor, "execute", execute)
+    before_active = (tmp_path / op.ACTIVE_PATH).read_bytes()
+    result = original(op.terminal_operation)(tmp_path, 4, allow_terminal_write=False)
+    persisted = lifecycle.load_lifecycle(tmp_path)
+    assert persisted["state"] == "ADJUDICATED" and persisted["revision"] == 2
+    assert persisted["transition_actor"] == "terminal_adjudicate_complete"
+    assert result["operational_lifecycle"]["sha256"] == persisted["sha256"]
+    assert calls == [(tmp_path, 4, False)]
+    assert (tmp_path / op.ACTIVE_PATH).read_bytes() == before_active
+    original(op.terminal_operation)(tmp_path, 4, allow_terminal_write=False)
+    assert lifecycle.load_lifecycle(tmp_path)["sha256"] == persisted["sha256"]
+    assert not (tmp_path / op.NEXT_CYCLE_AUTHORITY_PATH).exists()
