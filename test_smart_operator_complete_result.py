@@ -15,7 +15,7 @@ def _operator_function():
         if isinstance(item, ast.FunctionDef) and item.name == "complete_result_operation"
     )
     namespace = {"Path": Path, "Any": Any}
-    exec(compile(ast.Module(body=[node], type_ignores=[]), "<complete-result>", "exec"), namespace)
+    exec(compile(ast.Module(body=[node], type_ignores=[]), str(Path(__file__).resolve().with_name("smart_operator.py")), "exec"), namespace)
     return namespace["complete_result_operation"], namespace
 
 

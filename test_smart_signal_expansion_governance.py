@@ -139,7 +139,8 @@ def test_candidate_constructor_and_state_guards():
     with pytest.raises(ValueError): CandidateSignalState('x','freq',-1)
 
 
-def test_freeze_hashes_and_snapshots_p11_registry(tmp_path: Path):
+@pytest.mark.parametrize("absolute_registry", [False, True])
+def test_freeze_hashes_and_snapshots_p11_registry(tmp_path: Path, absolute_registry):
     rng=np.random.default_rng(1111); rows=[]
     for i in range(1,86):
         draw=np.sort(rng.choice(np.arange(1,61),6,replace=False))
@@ -147,7 +148,7 @@ def test_freeze_hashes_and_snapshots_p11_registry(tmp_path: Path):
         row.update({f'Bola{j}':int(draw[j-1]) for j in range(1,7)}); rows.append(row)
     data=tmp_path/'m.xlsx'; pd.DataFrame(rows).to_excel(data,index=False)
     out=tmp_path/'freeze.json'; ledger=tmp_path/'ledger.json'; state=tmp_path/'state.json'
-    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35, enforce_temporal_guard=False)
+    res=cc.freeze_champion_challenger(data,86,out,ledger,state,start=35, enforce_temporal_guard=False, expansion_registry_path=(Path(cc.__file__).resolve().parent / cc.REGISTRY_PATH).resolve() if absolute_registry else cc.REGISTRY_PATH)
     assert res['status']=='FROZEN'
     obj=json.loads(out.read_text()); led=json.loads(ledger.read_text()); fr=led['events'][0]
     assert len(obj['signal_expansion_governance_sha256'])==64
