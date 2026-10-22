@@ -1,0 +1,156 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "TERMINAL",
+  "idempotency_key": "1d8b2bcaffc4f364ad48daee26b597d39e96ffbc36841fb80c3b03c3c65049f0",
+  "target": 3071,
+  "result": {
+    "schema": "SMART_TERMINAL_EXECUTOR_ACTIVE_EPOCH_1",
+    "created_at_utc": "2026-10-22T12:07:35.569263+00:00",
+    "target_contest": 3071,
+    "status": "MISSION_ACTIVE_RESULT_ADJUDICATED_NO_6OF6",
+    "official_result_available": true,
+    "actual_numbers": [
+      12,
+      22,
+      41,
+      45,
+      51,
+      52
+    ],
+    "official_evidence_status": "OPERATOR_ATTESTED_RESULT",
+    "terminal_source_corroboration_authorized": false,
+    "ingest_status": "SMART_OFFICIAL_RESULT_INGEST_1",
+    "adjudication_status": "ADJUDICATED",
+    "champion_hits": 0,
+    "challenger_hits": 0,
+    "learned_state_last_contest": 3071,
+    "sequence_valid": true,
+    "independent_audit_status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+    "audited_pair_count": null,
+    "canonical_result_store_status": "PASS",
+    "terminal_evaluation": {
+      "schema": "SMART_TERMINAL_RULE_EVALUATION_1",
+      "target_contest": 3071,
+      "status": "MISSION_ACTIVE_RESULT_ADJUDICATED_NO_6OF6",
+      "eligible_for_mission_proven": false,
+      "frozen_top6": [
+        10,
+        11,
+        27,
+        38,
+        43,
+        53
+      ],
+      "actual_numbers": [
+        12,
+        22,
+        41,
+        45,
+        51,
+        52
+      ],
+      "recomputed_hits": 0,
+      "adjudication_count": 1,
+      "total_adjudication_count": 13,
+      "audited_pair_count": null,
+      "checks": {
+        "freeze_hash_immutable": true,
+        "freeze_before_result": true,
+        "causal_cutoff_3053": true,
+        "single_active_production_top6": true,
+        "official_primary_validated": true,
+        "official_numbers_match_adjudication": true,
+        "sequential_proof_valid": true,
+        "independent_audit_pass": false,
+        "all_attempts_counted": false,
+        "no_future_leakage": false,
+        "source_corroborated": false,
+        "exact_6of6": false,
+        "retroactive_rewrite_absent": true
+      }
+    },
+    "mission_state": "MISSION_ACTIVE",
+    "terminal_6of6_proven": false,
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "ADJUDICATED",
+      "revision": 51,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3071,
+      "completed_contest": 3070,
+      "previous_state": "FROZEN",
+      "transition": "FROZEN_TO_ADJUDICATED",
+      "transition_actor": "terminal_adjudicate_complete",
+      "transition_utc": "2026-10-22T12:07:35.581367+00:00",
+      "previous_lifecycle_sha256": "18a0d31a08ff84a6a80966dd51ff87ae8d952c61b5232f5010b34d33c8ff20a5",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "fe35d4c62feccff651f1adfdcd73268b4bc10c2d4352eebd731e42acb1b195fb"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3069.json",
+          "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3071:operator-3071-10553e1b5911-20261015T184134194917Z",
+        "reserved_authority_sha256": "5ac2c3951a45465fe14a6d463a24bfb498c79543fee3152858f288e8c2c81cb4",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "ebf5637022c91b52c88d22e0b38733b8fc7d81e66ddaee5e2d7dbf004d270048",
+          "epoch_id": "operator-3071-10553e1b5911-20261015T184134194917Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3070/operator-3070-ee1bc13734e4-20261013T225858165681Z/ARCHIVE_MANIFEST.json",
+          "sha256": "d8c9340af8aaed541465871db826a7561480dfcabe84c6f32b4141891c20a68a"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3069,
+          "through_target": 3069,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
+              "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
+              "target_contest": 3069
+            }
+          ],
+          "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
+            "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
+            "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
+            "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
+            "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+            "targets": [
+              3069
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "d92e0b9316cb1fa83120370c055be3fd61c2a4f49c6d3811e9fa2f17307a5fc4"
+    }
+  }
+}
