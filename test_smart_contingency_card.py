@@ -102,7 +102,7 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         node = next(n for n in ast.parse(source).body
                     if isinstance(n, ast.FunctionDef) and n.name == "generate_card_operation")
         environment["Any"] = Any
-        exec(compile(ast.Module(body=[node], type_ignores=[]), "<operator-generate-card>", "exec"), environment)
+        exec(compile(ast.Module(body=[node], type_ignores=[]), str(Path(__file__).resolve().with_name("smart_operator.py")), "exec"), environment)
         return environment["generate_card_operation"]
 
     def test_unadjudicated_previous_cycle_routes_to_contingency(self):

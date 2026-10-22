@@ -106,7 +106,7 @@ def _find_valid_pre_freeze_withdrawal(root: Path, target: int, epoch_id: str) ->
             obj = json.loads(path.read_text(encoding="utf-8"))
         except Exception:
             continue
-        if obj.get("schema") != "SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1":
+        if not isinstance(obj, dict) or obj.get("schema") != "SMART_OPERATOR_PRE_FREEZE_WITHDRAWAL_1":
             continue
         observed = obj.get("sha256")
         canonical = dict(obj); canonical.pop("sha256", None); canonical.pop("proof_file", None)

@@ -1,0 +1,123 @@
+{
+  "source_commit": "2aa7bedd6416b3c5924a870f8fa58e8017df8c42",
+  "source_fingerprint_sha256": "80965bfc4c12f27f5fccd21720e32da6bf401811aaa4ee65b07acfe466f4f03f",
+  "tests": 1711,
+  "raw_declared_tests": 1719,
+  "passed_subtests": 8,
+  "summary": {
+    "tests": 1711,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "sha256": "858101f694a1382483b1a0c15ce219bc88cac9999b1cfe6a493dda2ac6adbb47"
+  },
+  "partitions": [
+    {
+      "part": 1,
+      "cases": 357,
+      "raw_declared_tests": 357,
+      "passed_subtests_without_separate_testcase_nodes": 0,
+      "evidence_directory": "full-part-1",
+      "coverage_config_sha256": "5b0478f58b3f824d3336b4c416884ce6670dc99508d54756e5ab3229d9fcd348",
+      "child_process_instrumentation": false,
+      "receipt_sha256": "ea78a2734ccc8383d7f11b976669b85595a838896629e0ef17d0b7d461c050c5",
+      "junit_sha256": "f22c6ce1140c9db816740a439f1c35bb693219c9ff35444bf0bb7f51b87c73f5",
+      "log_sha256": "e53ea30179366cfba1bc5398a1d495613a0ae3c3b1271f596e68f31623af7b80"
+    },
+    {
+      "part": 2,
+      "cases": 465,
+      "raw_declared_tests": 468,
+      "passed_subtests_without_separate_testcase_nodes": 3,
+      "evidence_directory": "full-part-2",
+      "coverage_config_sha256": "52f38950f6f07c1ea22f58490b4df84acb3adcbf15606c6831396dce8ca9691d",
+      "child_process_instrumentation": false,
+      "receipt_sha256": "03508971d240664ee7bf853a6cf153b198aae5bed0c46341f183bc77bb9d672f",
+      "junit_sha256": "d38db0d57532fac9d56252f6494796ab238f8dd104b8f97f54b4339d742f9144",
+      "log_sha256": "d133858d13fe418bd82ede9e210e691dc7ac1c8d7ee17aaae68cfa7906bcb8c4"
+    },
+    {
+      "part": 3,
+      "cases": 434,
+      "raw_declared_tests": 439,
+      "passed_subtests_without_separate_testcase_nodes": 5,
+      "evidence_directory": "full-part-3",
+      "coverage_config_sha256": "b7f449c81d76a2af371c1e7fdd4d27515a99f816abbb55f651563994233c887c",
+      "child_process_instrumentation": false,
+      "receipt_sha256": "7bfe44f3b2c9c598ef7f29846bb7c9dbbae1d6251b714c8f4cda880cccfc2aee",
+      "junit_sha256": "dc17e4429f6e5fd85c60eda907f04bfd723028aa2ab430ee38955dabf0fda50e",
+      "log_sha256": "40f9ebc5e95ec9c75d10dade674c74a357309182e3bbad16e293aa4292fdf17e"
+    },
+    {
+      "part": 4,
+      "cases": 455,
+      "raw_declared_tests": 455,
+      "passed_subtests_without_separate_testcase_nodes": 0,
+      "evidence_directory": "full-part-4",
+      "coverage_config_sha256": "846177278870bc2922712c6b7f75aff454b6069dce847d27a45a7d76a102908a",
+      "child_process_instrumentation": false,
+      "receipt_sha256": "7d463e2e5975a066fe99e7cd401cdf6688661d0c71f8927ca21b7055efe3ec2e",
+      "junit_sha256": "232c2513600492c1d3ac87acdc2684e4444ada6b57dfd7cf630c2d936fa4241d",
+      "log_sha256": "9093a68662536ee8473fedf1ce875a35cea0ab14e39787d912baa9878e62a692"
+    }
+  ],
+  "supplemental_real_redteam": {
+    "schema": "SMART_FRESH_REAL_REDTEAM_COVERAGE_1",
+    "source_commit": "2aa7bedd6416b3c5924a870f8fa58e8017df8c42",
+    "source_fingerprint_sha256": "80965bfc4c12f27f5fccd21720e32da6bf401811aaa4ee65b07acfe466f4f03f",
+    "command": [
+      "/srv/lmcp-data/storage/workspaces/SMART-MEGA-FORENSIC-20261021T2048-venv/bin/python",
+      "-m",
+      "coverage",
+      "run",
+      "--rcfile=/srv/lmcp-data/storage/workspaces/SMART-MEGA-COVERAGE-20261022T0133-evidence/r2/redteam/coverage.ini",
+      "/srv/lmcp-data/storage/workspaces/SMART-MEGA-COVERAGE-20261022T0133/smart_continuous_red_team.py"
+    ],
+    "returncode": 0,
+    "scenario_count": 10,
+    "all_scenarios_pass": true,
+    "report_sha256": "79626f6200c1349ca31acf625bf462f8bfa95a7e7df69e29091fce22a9de8cb3",
+    "source_hashes": {
+      "smart_bounded_online_learning.py": "60e7954726683c2f1a1215eda2c03761be17c39c54ee6904fecf310ae858f952",
+      "smart_signal_expansion_governance.py": "da79f712d821a65df762cd784ff0f5c670fc33f4bc3abd7332021db3366f83cd",
+      "smart_sequential_prospective_proof.py": "84aa584418c1e597620278e1836d3062cbed005cc1e8d8e670bfb52972397fd7",
+      "smart_promotion_gate.py": "d9ff730c2775087e4486d71be819a313f4445d84b8b2827d5c9ae5e68b081e91",
+      "smart_independent_audit.py": "4674f1fb3f061b055b48486f97fe52019a545042678cbf30d25a4abc855996a1",
+      "smart_evidence_only_promotion.py": "1ec7a367a89fc17873eb5d7532cbe70f8eebef19b99e5de858eb4b27e5eaf5da",
+      "smart_continuous_red_team.py": "a76dbb3b7361bb4ce8aaccee6a613e226093c49bac75ec204800f219e390f671",
+      "smart_global_integrity.py": "b6129a02424eafc48a214e9bb1fa8c0706eec1ed0522952203a9a80b70709943",
+      "smart_champion_challenger.py": "8230a5ba604e6f4f708ce7f3e03a7df69119b471fe1d0695f45c5dbbd197a996",
+      "adjudicate_signal_challenger.py": "f49fd60d73581d5cf29b822669736257e2b49fca3c48d319e5dc0f1f33c36bf4",
+      "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
+      "smart_portfolio_optimizer.py": "61c713e317378023ef8b9c90342f088e1120e9e762c73a256153cffece546104",
+      "smart_portfolio_pipeline.py": "b660dbf71c73005ee482b1ec04d80b2dce492af297fd88780004facd2d1d1703",
+      "smart_agent_skill_orchestration.py": "cc8dac954d7fa1eeb86ba4f5da2a6a615647e25f50eae2ab88c125467ab2e7b3",
+      "smart_agent_runtime.py": "b6669b0a506662af02511c090b286235404e2b0a494758757e7aaac145ff955f",
+      "smart_agent_skill_functional_gate.py": "d7b39fea1759d2c810d8f879fcac486faeb13c1966edbe3ab40f544975318b90",
+      "smart_learning_activation_gate.py": "e0b50355f5299fcca89b508f751c6c46c0a5a0eed2ede5086f2cc25bf1b13141",
+      "smart_learning_activation_authority.py": "a50f39ec820e40a15ed04e6a371317fce16b43fefbf1eef638fa767ecb7410b4",
+      "smart_data_quality_gate.py": "47b96b6b76f5f0f1385ac53f0b007f71a5c7f74f117bd09e18ca6509b4d6b417",
+      "smart_independent_oracle.py": "255a7efc3d6f3ba830af06b4c509d36f78440dee057a630cd24183a230eb31ec",
+      "smart_material_deficiency_registry.py": "6fabf63650f0dfced1610a9ce9b877c3e932ec729fe4171a9e4ba70c2be6a9b1",
+      "smart_operator.py": "0266b4ecdaeda83c6890f019e0cca458f04577507b475c8c86b46d45b1305569",
+      "smart_canonical_history_advance.py": "1d344fd3463631d9caaf37335c4886d04f0b186a33c993dc47ba83ec5c07e535"
+    },
+    "source_fingerprint_stable": true,
+    "scientific_state_stable": true,
+    "git_clean_after": true,
+    "github_actions_used": false,
+    "started_at": "2026-10-22T03:23:36.062118+00:00",
+    "completed_at": "2026-10-22T03:24:55.693349+00:00",
+    "status": "PASS"
+  },
+  "junit_normalization": "Aggregate counters rebuilt from real testcase nodes only after zero exit codes, exact independent inventory, disjoint partitions and logged passed-subtest surplus agreement. Raw reports retained unchanged; no testcase invented.",
+  "github_actions_used": false,
+  "certification": {
+    "returncode": 0,
+    "execution_id": "e44077e9-c217-4975-bf9a-c315bf8c4022",
+    "executor_host": "wmcp-cloud-01",
+    "source_fingerprint_stable": true,
+    "scientific_state_unchanged": true
+  }
+}
