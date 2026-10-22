@@ -1,0 +1,273 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "PREPARE",
+  "idempotency_key": "8ba61dc08514dd776387e5c2376c451ff51be04a41dd6f79801d15f62cea8d86",
+  "target": 3073,
+  "result": {
+    "status": "READY_TO_FREEZE",
+    "product_certification_sha256": "e328c7e41ee7eaeee1f7a754ebdc938ff3e94d0abd72a47af26593d5476c2cb4",
+    "active_epoch": {
+      "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+      "status": "RESET_READY",
+      "project": "SMART-MEGA",
+      "epoch_id": "operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "created_utc": "2026-10-22T16:29:15.813287+00:00",
+      "product_certification_file": "SMART_PRODUCT_CERTIFICATION.json",
+      "product_certification_sha256": "e328c7e41ee7eaeee1f7a754ebdc938ff3e94d0abd72a47af26593d5476c2cb4",
+      "operator_selected_target": true,
+      "state_paths": {
+        "ledger": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/SMART_SIGNAL_LEDGER.json",
+        "state": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/SMART_SIGNAL_STATE.json",
+        "activation_authority": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+        "expansion_registry": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+        "freeze": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/SMART_3073_CHAMPION_CHALLENGER_FREEZE.json"
+      },
+      "data_file": "runtime/learning_epochs/operator-3073-e328c7e41ee7-20261022T162914785832Z/Mega-Sena_cutoff_3072.xlsx",
+      "data_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "canonical_source_file": "Mega-Sena.xlsx",
+      "canonical_source_sha256_at_prepare": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "immutable_history_snapshot": true,
+      "cutoff_contest": 3072,
+      "target_contest": 3073,
+      "authority_mode": "OPERATOR_SELECTED_TARGET",
+      "current_engineering_role": "PRODUCT_CERTIFIED_OPERATION",
+      "first_possible_authoritative_target_for_current_engineering": 3073,
+      "target_schedule": {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "target_contest": 3073,
+        "previous_contest": 3072,
+        "target_date": null,
+        "weekday": null,
+        "scheduled_datetime": null,
+        "scheduled_timezone": null,
+        "source_file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+        "source_sha256": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+        "source_count": 1,
+        "authority": "OPERATOR_SELECTED_TARGET",
+        "operator_selected_target": true,
+        "draw_time_independently_verified": false,
+        "schedule_consensus": false,
+        "result_used": false
+      },
+      "temporal_guard": {
+        "schema": "SMART_PRE_DRAW_TEMPORAL_GUARD_1",
+        "status": "OPERATOR_UNVERIFIED_DRAW_TIME",
+        "target_contest": 3073,
+        "checked_at_utc": "2026-10-22T16:29:14.785832+00:00",
+        "scheduled_datetime": null,
+        "seconds_until_draw": null,
+        "minimum_lead_seconds": null,
+        "before_scheduled_draw": false,
+        "operator_selected": true,
+        "result_used": false
+      },
+      "result_used": false,
+      "freeze_authority": null,
+      "learning_state_authority": null,
+      "supersedes_active_epoch_sha256": null,
+      "canonical_ledger_seed_sha256": "2db47ccf48790bcef0d00870f554c3f2911b0ed37393f389d400a16c379b09c1",
+      "canonical_ledger_seed_event_count": 132,
+      "revision": 1,
+      "previous_active_sha256": null,
+      "sha256": "e42394a636187e7de7efbeca61a30332201da45e70ff95f97cb30c9c57d6c89b"
+    },
+    "history": {
+      "target_contest": 3073,
+      "cutoff_contest": 3072,
+      "history_max": 3072,
+      "data_file": "C:\\Users\\Public\\SMART-MEGA-CONTEST3073-20261022\\Mega-Sena.xlsx",
+      "data_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "row_count": 3072
+    },
+    "schedule": {
+      "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+      "target_contest": 3073,
+      "previous_contest": 3072,
+      "target_date": null,
+      "weekday": null,
+      "scheduled_datetime": null,
+      "scheduled_timezone": null,
+      "source_file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+      "source_sha256": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+      "source_count": 1,
+      "authority": "OPERATOR_SELECTED_TARGET",
+      "operator_selected_target": true,
+      "draw_time_independently_verified": false,
+      "schedule_consensus": false,
+      "result_used": false
+    },
+    "prior_epoch_reconciliation": null,
+    "canonical_result_store_reconciliation": null,
+    "ledger_seed": {
+      "status": "SEEDED",
+      "sha256": "2db47ccf48790bcef0d00870f554c3f2911b0ed37393f389d400a16c379b09c1",
+      "event_count": 132
+    },
+    "next_cycle_authority": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "AUTHORIZED",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "review_file": "SMART_POST_RESULT_REVIEW_3072.json",
+      "review_file_sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360",
+      "review_sha256": "4f0eecd2a60a20620713af54e398a041a4e21010f73869d5ed3b6a0aef3a5dc7",
+      "canonical_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-10-22T16:27:12.968516+00:00",
+      "consumed": false,
+      "consumed_utc": null,
+      "prepared_epoch_id": null,
+      "reservation_transaction_id": null,
+      "reserved_utc": null,
+      "consumption_transaction_id": null,
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+      "prior_consumed_target_contest": 3071,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 22,
+      "previous_document_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+      "sha256": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010"
+    },
+    "next_cycle_authority_consumption": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "CONSUMED",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "review_file": "SMART_POST_RESULT_REVIEW_3072.json",
+      "review_file_sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360",
+      "review_sha256": "4f0eecd2a60a20620713af54e398a041a4e21010f73869d5ed3b6a0aef3a5dc7",
+      "canonical_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-10-22T16:27:12.968516+00:00",
+      "consumed": true,
+      "consumed_utc": "2026-10-22T16:29:15.890916+00:00",
+      "prepared_epoch_id": "operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "reservation_transaction_id": "PREPARE:3073:operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "reserved_utc": "2026-10-22T16:29:14.841295+00:00",
+      "consumption_transaction_id": "PREPARE:3073:operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+      "prior_consumed_target_contest": 3071,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 24,
+      "previous_document_sha256": "f2f51367a0d84a514f9b6bf37bcfa93f6f843520d730c7776660b3f55a9407df",
+      "authority_sha256_before_reservation": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+      "active_epoch_sha256_at_consumption": "e42394a636187e7de7efbeca61a30332201da45e70ff95f97cb30c9c57d6c89b",
+      "authority_sha256_before_consumption": "f2f51367a0d84a514f9b6bf37bcfa93f6f843520d730c7776660b3f55a9407df",
+      "sha256": "3a7240c54024a9b19b93a2d56775a37edbd4276a8d73d21255412295f43556d6"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "PREPARED",
+      "revision": 55,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "previous_state": "PREPARING",
+      "transition": "PREPARING_TO_PREPARED",
+      "transition_actor": "operator_prepare_complete",
+      "transition_utc": "2026-10-22T16:29:15.933797+00:00",
+      "previous_lifecycle_sha256": "88a50751baa8e2301096d0a5c5bc8aca88f8867eaee1a6f685d77191e41e3eeb",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "2e76a0ec141d4dc9b01fddd41980f144cd854f1e7ee73141ca7dc5b1c66b817a"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3072.json",
+          "sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3073:operator-3073-e328c7e41ee7-20261022T162914785832Z",
+        "reserved_authority_sha256": "f2f51367a0d84a514f9b6bf37bcfa93f6f843520d730c7776660b3f55a9407df",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "e42394a636187e7de7efbeca61a30332201da45e70ff95f97cb30c9c57d6c89b",
+          "epoch_id": "operator-3073-e328c7e41ee7-20261022T162914785832Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3071/operator-3071-10553e1b5911-20261015T184134194917Z/ARCHIVE_MANIFEST.json",
+          "sha256": "8c2a3b3f9b218fc3f935120223cda22f54f9c9a6cfb8a35f9276e0d9a900d6a4"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3072,
+          "through_target": 3072,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3072.json",
+              "sha256": "0146949640422e871a7bb66c33314c9f43c234426f1f18eb691ad82a1d65ab74",
+              "target_contest": 3072
+            }
+          ],
+          "product_certification_sha256": "a873d9901dbf0492e249e027cc96ba22e9655f053056875d3c77bb1e96616f05",
+          "official_result_batch": {
+            "schema": "SMART_CAIXA_PORTAL_TRANSCRIPTION_BATCH_1",
+            "raw_api_independently_verified": false,
+            "official_transport_attested": false,
+            "scientific_certification_authorized": false,
+            "predictive_weight_change_authorized": false,
+            "declared_authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+            "file": "SMART_CAIXA_PORTAL_RESULT_BATCH_3072_20261022.json",
+            "file_sha256": "1a38408fc0692c7256ac10a8558acecf04caedefbdee4569c1bc921fc5778142",
+            "document_sha256": "4b0966b4a6fdc148a4e7755f96da728b798018957e0f3cf654ed00e550061dd1",
+            "authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+            "retrieved_at_utc": "2026-10-22T12:08:05.771599+00:00",
+            "capture_transport": "PUBLIC_CAIXA_PAGE_TRANSCRIPTION",
+            "targets": [
+              3072
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "194e8cda3a6fb0c7f02672c7eeb0a7ff499d7293eb8c19f76b0298a6fd58374b"
+    },
+    "prepare_transaction_id": "PREPARE:3073:operator-3073-e328c7e41ee7-20261022T162914785832Z",
+    "next_cycle_authority_reservation": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "RESERVED",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "review_file": "SMART_POST_RESULT_REVIEW_3072.json",
+      "review_file_sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360",
+      "review_sha256": "4f0eecd2a60a20620713af54e398a041a4e21010f73869d5ed3b6a0aef3a5dc7",
+      "canonical_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-10-22T16:27:12.968516+00:00",
+      "consumed": false,
+      "consumed_utc": null,
+      "prepared_epoch_id": "operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "reservation_transaction_id": "PREPARE:3073:operator-3073-e328c7e41ee7-20261022T162914785832Z",
+      "reserved_utc": "2026-10-22T16:29:14.841295+00:00",
+      "consumption_transaction_id": null,
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+      "prior_consumed_target_contest": 3071,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 23,
+      "previous_document_sha256": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+      "authority_sha256_before_reservation": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+      "sha256": "f2f51367a0d84a514f9b6bf37bcfa93f6f843520d730c7776660b3f55a9407df"
+    }
+  }
+}
