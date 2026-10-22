@@ -1,27 +1,27 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "FROZEN",
-  "revision": 50,
+  "state": "HOLD",
+  "revision": 52,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3071,
-  "completed_contest": 3070,
-  "previous_state": "FREEZING",
-  "transition": "FREEZING_TO_FROZEN",
-  "transition_actor": "full_process_freeze_complete",
-  "transition_utc": "2026-10-15T18:49:44.331970+00:00",
-  "previous_lifecycle_sha256": "6c13b82e5889557666f2350cdeb89e59d3566768f5c3fa77c6f7b0decdd824e0",
+  "target_contest": 3073,
+  "completed_contest": 3072,
+  "previous_state": "ADJUDICATED",
+  "transition": "ADJUDICATED_TO_HOLD_MISSED_RESULT_RECOVERY",
+  "transition_actor": "smart_missed_catchup",
+  "transition_utc": "2026-10-22T12:10:46.581651+00:00",
+  "previous_lifecycle_sha256": "d92e0b9316cb1fa83120370c055be3fd61c2a4f49c6d3811e9fa2f17307a5fc4",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "fe35d4c62feccff651f1adfdcd73268b4bc10c2d4352eebd731e42acb1b195fb"
+      "sha256": "2e76a0ec141d4dc9b01fddd41980f144cd854f1e7ee73141ca7dc5b1c66b817a"
     },
     "post_result_review": {
-      "file": "SMART_POST_RESULT_REVIEW_3069.json",
-      "sha256": "7cb7349b6ba725c6c65af87ab30e77340cdce476e1b6d421777028af6496aa20"
+      "file": "SMART_POST_RESULT_REVIEW_3072.json",
+      "sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360"
     },
     "legacy_active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
@@ -43,32 +43,37 @@
       "epoch_id": "operator-3071-10553e1b5911-20261015T184134194917Z"
     },
     "rollover_archive": {
-      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3070/operator-3070-ee1bc13734e4-20261013T225858165681Z/ARCHIVE_MANIFEST.json",
-      "sha256": "d8c9340af8aaed541465871db826a7561480dfcabe84c6f32b4141891c20a68a"
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3071/operator-3071-10553e1b5911-20261015T184134194917Z/ARCHIVE_MANIFEST.json",
+      "sha256": "8c2a3b3f9b218fc3f935120223cda22f54f9c9a6cfb8a35f9276e0d9a900d6a4"
     },
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
     "missed_result_catchup": {
-      "start_target": 3069,
-      "through_target": 3069,
+      "start_target": 3072,
+      "through_target": 3072,
       "proofs": [
         {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3069.json",
-          "sha256": "4f9862e6771c420d6095d37ff9dc21fcfa093533f6f57e6a2f61fd2bf0c723d3",
-          "target_contest": 3069
+          "file": "SMART_MISSED_TARGET_RECOVERY_3072.json",
+          "sha256": "0146949640422e871a7bb66c33314c9f43c234426f1f18eb691ad82a1d65ab74",
+          "target_contest": 3072
         }
       ],
-      "product_certification_sha256": "cf9f29251f9e15ca21a8a64808416d05c93352a1279a7182ca9450cb60822a77",
+      "product_certification_sha256": "a873d9901dbf0492e249e027cc96ba22e9655f053056875d3c77bb1e96616f05",
       "official_result_batch": {
-        "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
-        "file": "SMART_OFFICIAL_RESULT_BATCH_3069.json",
-        "file_sha256": "9f7a54bd16b1ffb0ddca83e478d5d7b1b6336ec5f9b80332432a56f3f170fcb2",
-        "document_sha256": "24b7e54f3b254c0b407745daf614e6cf35e13a6838aff03e37d986feef34dd66",
-        "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
-        "retrieved_at_utc": "2026-10-11T15:34:04.8691886Z",
-        "capture_transport": "PC_CASA_S_WMCP_INVOKE_RESTMETHOD_FIELD_PROJECTION",
+        "schema": "SMART_CAIXA_PORTAL_TRANSCRIPTION_BATCH_1",
+        "raw_api_independently_verified": false,
+        "official_transport_attested": false,
+        "scientific_certification_authorized": false,
+        "predictive_weight_change_authorized": false,
+        "declared_authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+        "file": "SMART_CAIXA_PORTAL_RESULT_BATCH_3072_20261022.json",
+        "file_sha256": "1a38408fc0692c7256ac10a8558acecf04caedefbdee4569c1bc921fc5778142",
+        "document_sha256": "4b0966b4a6fdc148a4e7755f96da728b798018957e0f3cf654ed00e550061dd1",
+        "authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+        "retrieved_at_utc": "2026-10-22T12:08:05.771599+00:00",
+        "capture_transport": "PUBLIC_CAIXA_PAGE_TRANSCRIPTION",
         "targets": [
-          3069
+          3072
         ]
       }
     },
@@ -77,5 +82,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "18a0d31a08ff84a6a80966dd51ff87ae8d952c61b5232f5010b34d33c8ff20a5"
+  "sha256": "d1fba275fd2dc7ecfcaf6137d51a6854e1ad89ab94ceb0da8a4deae2fe70ed92"
 }
