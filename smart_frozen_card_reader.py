@@ -54,6 +54,61 @@ def _safe_file(root: Path, relative: Any, label: str) -> Path:
     return p
 
 
+def _immutable_archive(root: Path, target: int) -> dict[str, Any]:
+    """Resolve one independently hash-bound epoch; never reconstruct a past card."""
+    base = root / "SMART_STATE_ARCHIVE" / "adjudicated-epochs" / str(target)
+    candidates = sorted(base.glob("*/ARCHIVE_MANIFEST.json")) if base.is_dir() else []
+    if len(candidates) != 1:
+        raise ValueError("unique immutable archive not found for requested frozen contest")
+    manifest_path = _safe_file(root, candidates[0].relative_to(root).as_posix(), "archive manifest")
+    manifest = _self_hashed(_read(manifest_path), "archive manifest")
+    if (manifest.get("schema") != "SMART_ADJUDICATED_EPOCH_ARCHIVE_1"
+            or manifest.get("status") != "ARCHIVED_IMMUTABLE"
+            or manifest.get("target_contest") != target
+            or manifest.get("byte_for_byte_verified") is not True
+            or manifest.get("immutability_policy") != "CONTENT_ADDRESSED_READ_ONLY_ARCHIVE"):
+        raise ValueError("archive manifest authority invalid")
+    files = manifest.get("source_files")
+    if (not isinstance(files, dict) or not files
+            or manifest.get("file_count") != len(files)):
+        raise ValueError("archive manifest source inventory invalid")
+    epoch_id = manifest.get("epoch_id")
+    if (not isinstance(epoch_id, str) or not epoch_id
+            or "/" in epoch_id or "\\" in epoch_id
+            or epoch_id in {".", ".."} or manifest_path.parent.name != epoch_id):
+        raise ValueError("archive manifest epoch identity invalid")
+    pointer_relative = (manifest_path.parent.relative_to(root) / "SMART_ACTIVE_EPOCH.json").as_posix()
+    pointer_path = _safe_file(root, pointer_relative, "archive active pointer")
+    if file_sha256(pointer_path) != manifest.get("source_active_pointer_sha256"):
+        raise ValueError("archive active pointer SHA-256 mismatch")
+    active = _self_hashed(_read(pointer_path), "active")
+    if active.get("target_contest") != target or active.get("epoch_id") != epoch_id:
+        raise ValueError("archive pointer target/epoch mismatch")
+    return {"manifest": manifest, "directory": manifest_path.parent, "active": active}
+
+
+def _archived_file(root: Path, original: Any, label: str, archive: dict[str, Any]) -> Path:
+    if not isinstance(original, str) or not original:
+        raise ValueError(f"{label} archive source path invalid")
+    declared = Path(original)
+    if declared.is_absolute() or any(part in {".", ".."} for part in declared.parts):
+        raise ValueError(f"{label} archive source traversal")
+    prefix = Path("runtime") / "learning_epochs" / archive["manifest"]["epoch_id"]
+    if not declared.is_relative_to(prefix):
+        raise ValueError(f"{label} archive source epoch mismatch")
+    name = declared.relative_to(prefix)
+    if not name.parts:
+        raise ValueError(f"{label} archive source basename missing")
+    expected = archive["manifest"]["source_files"].get(name.as_posix())
+    if not isinstance(expected, str) or len(expected) != 64:
+        raise ValueError(f"{label} archive evidence not declared")
+    archived_relative = (archive["directory"].relative_to(root) / "epoch" / name).as_posix()
+    physical = _safe_file(root, archived_relative, label)
+    if file_sha256(physical) != expected:
+        raise ValueError(f"{label} archive artifact SHA-256 mismatch")
+    return physical
+
+
 def _read(path: Path) -> dict[str, Any]:
     obj = json.loads(path.read_text(encoding="utf-8-sig"))
     if not isinstance(obj, dict):
@@ -90,7 +145,12 @@ def read_frozen_card(root: str | Path, target: int) -> dict[str, Any]:
     root = Path(root).resolve()
     if not root.is_dir():
         raise FileNotFoundError("canonical project root missing")
-    active = _self_hashed(_read(_safe_file(root, "SMART_ACTIVE_EPOCH.json", "active")), "active")
+    archive = None
+    if (root / "SMART_ACTIVE_EPOCH.json").is_file():
+        active = _self_hashed(_read(_safe_file(root, "SMART_ACTIVE_EPOCH.json", "active")), "active")
+    else:
+        archive = _immutable_archive(root, target)
+        active = archive["active"]
     if active.get("status") != "FROZEN" or active.get("target_contest") != target:
         raise ValueError("requested contest is not frozen in active model epoch")
     cutoff = target - 1
@@ -99,7 +159,8 @@ def read_frozen_card(root: str | Path, target: int) -> dict[str, Any]:
     authority = active.get("freeze_authority")
     if not isinstance(authority, dict) or authority.get("target_contest") != target or authority.get("cutoff_contest") != cutoff:
         raise ValueError("freeze authority target mismatch")
-    freeze_file = _safe_file(root, authority.get("file"), "freeze")
+    freeze_file = (_archived_file(root, authority.get("file"), "freeze", archive)
+                   if archive is not None else _safe_file(root, authority.get("file"), "freeze"))
     freeze_sha = file_sha256(freeze_file)
     if freeze_sha != authority.get("sha256"):
         raise ValueError("freeze SHA-256 mismatch")
@@ -110,21 +171,26 @@ def read_frozen_card(root: str | Path, target: int) -> dict[str, Any]:
             and freeze.get("causal_cutoff") is True
             and freeze.get("data_sha256") == active.get("data_sha256")):
         raise ValueError("freeze causal evidence mismatch")
-    proof_file = _safe_file(root, str(freeze_file.relative_to(root).parent / "FULL_PROCESS_PROOF.json"), "proof")
+    original_freeze = Path(str(authority.get("file")))
+    original_proof = (original_freeze.parent / "FULL_PROCESS_PROOF.json").as_posix()
+    proof_file = (_archived_file(root, original_proof, "proof", archive)
+                  if archive is not None else _safe_file(root, original_proof, "proof"))
     proof = _self_hashed(_read(proof_file), "proof")
     if (proof.get("status") != "PASS" or proof.get("target_contest") != target
             or proof.get("cutoff_contest") != cutoff
             or proof.get("result_used") is not False
             or proof.get("freeze_sha256") != freeze_sha
-            or proof.get("freeze_file") != str(freeze_file.relative_to(root)).replace("\\", "/")
+            or proof.get("freeze_file") != original_freeze.as_posix()
             or proof.get("data_sha256") != freeze["data_sha256"]):
         raise ValueError("proof target or frozen-source mismatch")
-    card_file = _safe_file(root, proof.get("primary_card_file"), "card")
+    card_file = (_archived_file(root, proof.get("primary_card_file"), "card", archive)
+                 if archive is not None else _safe_file(root, proof.get("primary_card_file"), "card"))
     card_sha = file_sha256(card_file)
     if card_sha != proof.get("primary_card_sha256"):
         raise ValueError("card SHA-256 mismatch")
     card = _self_hashed(_read(card_file), "card")
-    portfolio_file = _safe_file(root, proof.get("portfolio_file"), "portfolio")
+    portfolio_file = (_archived_file(root, proof.get("portfolio_file"), "portfolio", archive)
+                      if archive is not None else _safe_file(root, proof.get("portfolio_file"), "portfolio"))
     portfolio_sha = file_sha256(portfolio_file)
     if portfolio_sha != proof.get("portfolio_sha256") or portfolio_sha != card.get("portfolio_sha256"):
         raise ValueError("portfolio SHA-256 mismatch")

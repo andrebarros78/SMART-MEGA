@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "db8ac0a55d1d26470944cb6a592962e7c2212d838b62d004d8ed19ac90f8a06f",
+  "inventory_sha256": "6eb0809758bb38fab1e8dceef8aecd0fb0d755d713137fdbfa2ddc1b3a984bc3",
   "summary": {
-    "python_components": 540,
+    "python_components": 541,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 200,
+    "test_components": 201,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5872,6 +5872,7 @@
       "consumers": [
         "smart_github_operator",
         "smart_operator",
+        "test_smart_frozen_card_archive_3071",
         "test_smart_frozen_card_reader",
         "test_smart_github_operator",
         "tests.test_smart_operator_failure_boundaries_20261021"
@@ -5884,7 +5885,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "404f7dcb58632e831278c412b1dfad63b28b3843d39c8e5f32c7aa26081d7d02"
+      "sha256": "2000bad03bacf05cf2d0e910da3597bbc5a4e99d1871bb698f33956b17d415a8"
     },
     {
       "component_id": "smart_frozen_terminal_recovery",
@@ -11050,6 +11051,27 @@
       "sha256": "581e97e8be05f6b3ca6a6cd15f45343326bc98a2c61cca16aa05f851ddfa0752"
     },
     {
+      "component_id": "test_smart_frozen_card_archive_3071",
+      "source_file": "test_smart_frozen_card_archive_3071.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_frozen_card_reader"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "0a9aebf0ff1348e599ab05b759056d8f83d25f10e756b3f86725243fda87df16"
+    },
+    {
       "component_id": "test_smart_frozen_card_reader",
       "source_file": "test_smart_frozen_card_reader.py",
       "role": "TEST",
@@ -11068,7 +11090,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "b7c3e3fb291a4cdb881000bb443f240e20da2a73817eb00b417a573d85416fc2"
+      "sha256": "2c38e02a68f1c4e4fbe107f602d37fbd14d377edd205247a776d8d003a89d97a"
     },
     {
       "component_id": "test_smart_frozen_terminal_recovery",

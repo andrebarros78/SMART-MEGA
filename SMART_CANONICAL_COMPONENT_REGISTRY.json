@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "db8ac0a55d1d26470944cb6a592962e7c2212d838b62d004d8ed19ac90f8a06f",
+  "source_reachability_inventory_sha256": "6eb0809758bb38fab1e8dceef8aecd0fb0d755d713137fdbfa2ddc1b3a984bc3",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 540,
+    "component_count": 541,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 226,
+    "diagnostic": 227,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -6206,13 +6206,14 @@
       "component_id": "smart_frozen_card_reader",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_frozen_card_reader.py",
-      "implementation_sha256": "404f7dcb58632e831278c412b1dfad63b28b3843d39c8e5f32c7aa26081d7d02",
+      "implementation_sha256": "2000bad03bacf05cf2d0e910da3597bbc5a4e99d1871bb698f33956b17d415a8",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
         "smart_github_operator",
         "smart_operator",
+        "test_smart_frozen_card_archive_3071",
         "test_smart_frozen_card_reader",
         "test_smart_github_operator",
         "tests.test_smart_operator_failure_boundaries_20261021"
@@ -11736,10 +11737,33 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_frozen_card_archive_3071",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_frozen_card_archive_3071.py",
+      "implementation_sha256": "0a9aebf0ff1348e599ab05b759056d8f83d25f10e756b3f86725243fda87df16",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_frozen_card_reader"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_frozen_card_reader",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_frozen_card_reader.py",
-      "implementation_sha256": "b7c3e3fb291a4cdb881000bb443f240e20da2a73817eb00b417a573d85416fc2",
+      "implementation_sha256": "2c38e02a68f1c4e4fbe107f602d37fbd14d377edd205247a776d8d003a89d97a",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14706,5 +14730,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "01689dde8f9b039eea7f902ed07e4cea1155b8e4e4abf700a2b67964223fae9c"
+  "registry_sha256": "1910f6020fc2816d2cfba34500176fea85a92fc4f17d20947260a5212267ac19"
 }
