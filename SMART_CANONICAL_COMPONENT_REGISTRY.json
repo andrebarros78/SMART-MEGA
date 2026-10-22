@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "41869e6f230b62eb4e5989eecc2e3dd09d5b3e10e76536ac0d9c0756350a86e3",
+  "source_reachability_inventory_sha256": "bfedc74f87a07c66c2cbd191f28d04de910a06b12f413ca8542057990c81636c",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 565,
+    "component_count": 566,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 251,
+    "diagnostic": 252,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -6504,7 +6504,7 @@
       "component_id": "smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_operator.py",
-      "implementation_sha256": "8bf9abbd83cf8de3d50dcd0fd3dc1fc734472168e0d6a132242023cfebab3607",
+      "implementation_sha256": "ec4948d10e01bb43fdf5694cf94173532c71a95b4637f99cedbf090d3299c66c",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6520,6 +6520,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "test_smart_github_operator",
+        "test_smart_github_operator_ci_readonly",
         "test_smart_operator_result_integration",
         "test_smart_operator_single_command_card",
         "test_smart_result_consumption_readiness",
@@ -12327,6 +12328,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_github_operator_ci_readonly",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_github_operator_ci_readonly.py",
+      "implementation_sha256": "bba7140688f57d880a9cc17a383b8d55409a52ee42bc325cb576f68bd64d700c",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_operator"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_global_integrity",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_global_integrity.py",
@@ -15339,5 +15363,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "053b5d889914c25821bb4cea5c034bfaeec4e693f1e757d4bd88495cc1f92b2b"
+  "registry_sha256": "932763c570267da995a5658c028e1f5352c39fb2886bded1e6e04069fd5f3c9c"
 }

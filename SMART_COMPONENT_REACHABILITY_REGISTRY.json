@@ -65,15 +65,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "41869e6f230b62eb4e5989eecc2e3dd09d5b3e10e76536ac0d9c0756350a86e3",
+  "inventory_sha256": "bfedc74f87a07c66c2cbd191f28d04de910a06b12f413ca8542057990c81636c",
   "summary": {
-    "python_components": 565,
+    "python_components": 566,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 40,
     "validation_components": 23,
-    "test_components": 212,
+    "test_components": 213,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6173,6 +6173,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "test_smart_github_operator",
+        "test_smart_github_operator_ci_readonly",
         "test_smart_operator_result_integration",
         "test_smart_operator_single_command_card",
         "test_smart_result_consumption_readiness",
@@ -6186,7 +6187,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "8bf9abbd83cf8de3d50dcd0fd3dc1fc734472168e0d6a132242023cfebab3607"
+      "sha256": "ec4948d10e01bb43fdf5694cf94173532c71a95b4637f99cedbf090d3299c66c"
     },
     {
       "component_id": "smart_global_integrity",
@@ -11606,6 +11607,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "f33312e3c1b1610cbc77d8e7250da277113fb670df9da948a95314ebc4ea6dca"
+    },
+    {
+      "component_id": "test_smart_github_operator_ci_readonly",
+      "source_file": "test_smart_github_operator_ci_readonly.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_github_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "bba7140688f57d880a9cc17a383b8d55409a52ee42bc325cb576f68bd64d700c"
     },
     {
       "component_id": "test_smart_global_integrity",

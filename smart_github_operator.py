@@ -68,6 +68,35 @@ def _git(root: Path, *args: str) -> str:
     return result.stdout.strip()
 
 
+def _status_porcelain(root: Path) -> str:
+    """Keep the leading porcelain status columns (unlike _git's strip)."""
+    return subprocess.run(
+        ["git", "status", "--porcelain=v1", "--untracked-files=all"],
+        cwd=root, capture_output=True, text=True, check=True, timeout=60,
+    ).stdout
+
+
+def _allow_regression_candidate_readonly(
+    operation: str,
+    status_porcelain: str,
+    regression_sandbox: str,
+) -> bool:
+    """Do not misclassify the runner's sole transient JUnit path as writes.
+
+    This exception is only for reading one frozen card while the official
+    regression runner deletes/recreates its tracked candidate report. It
+    cannot authorize staged edits, other dirty paths, or write operations.
+    """
+    return (
+        operation == "show-card"
+        and regression_sandbox == "1"
+        and status_porcelain.splitlines() in (
+            [" D SMART_AUDIT_JUNIT_CANDIDATE.xml"],
+            [" M SMART_AUDIT_JUNIT_CANDIDATE.xml"],
+        )
+    )
+
+
 def _git_paths(root: Path, *args: str) -> set[str]:
     result = subprocess.run(
         ["git", *args], cwd=root, capture_output=True, check=True, timeout=60
@@ -311,7 +340,11 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         raise RuntimeError("operator must run at the Git top-level")
     if operation not in READ_ONLY:
         _require_external_operator_authority(root, operation, target)
-    if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
+    checkout_status = _status_porcelain(root)
+    ci_candidate_only = _allow_regression_candidate_readonly(
+        operation, checkout_status, os.environ.get("SMART_PYTEST_SANDBOX_ROOTS", "")
+    )
+    if checkout_status and not ci_candidate_only:
         raise RuntimeError("checkout is dirty before operator action")
     if payload:
         _tracked_payload(root, payload)
@@ -326,7 +359,9 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     changes = _changes(root)
     _require_no_unpersisted_state(root)
     if operation in READ_ONLY:
-        if changes:
+        if changes and not (
+            ci_candidate_only and changes == ["SMART_AUDIT_JUNIT_CANDIDATE.xml"]
+        ):
             raise RuntimeError(f"read-only operation changed canonical files: {changes[:20]}")
         result_readiness = None
         if operation == "preflight" and observation.get("status") == "ALREADY_FROZEN":
