@@ -45,3 +45,27 @@ def test_raw_signal_change_audit_counts_only_real_value_movements():
     assert proof["signals_with_changed_values"] == 1
     assert proof["total_changed_number_cells"] == 1
     assert abs(proof["total_absolute_signal_change"] - 0.1) < 1e-12
+
+
+def test_score_change_audit_computes_exact_60_number_deltas():
+    from smart_learning_impact_audit import _score_changes
+    old = {str(n): float(n) / 60 for n in range(1, 61)}
+    new = dict(old)
+    new["43"] += 0.075
+    new["10"] -= 0.025
+    result = _score_changes(old, new)
+    assert result["numbers_changing_score"] == 2
+    assert abs(result["total_absolute_score_change"] - 0.10) < 1e-10
+    assert result["maximum_score_change_number"] == 43
+
+
+def test_released_audit_fails_closed_without_oos_advantage():
+    from smart_learning_impact_audit import audit
+    from pathlib import Path
+    root = Path(__file__).resolve().parent
+    result = audit(root)
+    assert result["promotion_decision"] == "KEEP_CHAMPION"
+    assert result["promotion_eligible"] is False
+    assert result["promotion_report"]["n"] == len(result["prospective_frozen_result_comparison"])
+    assert len(result["prospective_frozen_result_comparison"]) == 4
+    assert all("champion_scores" in item and "challenger_scores" in item for item in result["transitions"])

@@ -41,9 +41,16 @@ def prepare_rag_freeze_evidence(
     if destination.exists() or destination.is_symlink():
         raise FileExistsError("RAG preparation receipt is create-only")
     proof = build_preparation_proof(root, excel=data_file, as_of_contest=cutoff)
+    source_path = Path(data_file).resolve()
+    if not source_path.is_file() or not source_path.is_relative_to(root):
+        raise ValueError("RAG source must be the immutable historical snapshot within project")
     manifest, checks = proof.get("manifest"), proof.get("checks")
     if not isinstance(manifest, dict) or not isinstance(checks, dict):
         raise ValueError("invalid RAG preparation evidence")
+    if (manifest.get("source_sha256") != _digest(source_path.read_bytes())
+            or manifest.get("source_file") not in (None, source_path.name)
+            or manifest.get("source_contest_max") != cutoff):
+        raise ValueError("RAG source snapshot does not match the generation cutoff")
     if proof.get("status") != "PASS":
         raise ValueError("RAG preparation did not pass")
     if manifest.get("as_of_contest") != cutoff or manifest.get("temporal_cutoff_enforced") is not True:

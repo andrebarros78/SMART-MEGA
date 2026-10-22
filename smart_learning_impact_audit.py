@@ -46,6 +46,23 @@ def _weight_changes(first: dict, second: dict) -> dict:
     }
 
 
+def _score_changes(first: dict, second: dict) -> dict:
+    """Quantify score movement over the same 60-number domain."""
+    import math
+    keys = {str(n) for n in range(1, 61)}
+    if not isinstance(first, dict) or not isinstance(second, dict) or set(first) != keys or set(second) != keys:
+        raise ValueError("incomplete score vector")
+    deltas = {n: abs(float(first[str(n)]) - float(second[str(n)])) for n in range(1, 61)}
+    if not all(math.isfinite(value) for value in deltas.values()):
+        raise ValueError("nonfinite score vector")
+    return {
+        "numbers_changing_score": sum(v > 1e-12 for v in deltas.values()),
+        "total_absolute_score_change": sum(deltas.values()),
+        "maximum_score_change": max(deltas.values()),
+        "maximum_score_change_number": max(deltas, key=lambda n: (deltas[n], -n)),
+    }
+
+
 def _raw_signal_changes(first: dict, second: dict) -> dict:
     """Compare all 12 signal vectors, not only their trained weights."""
     if not isinstance(first, dict) or not isinstance(second, dict) or set(first) != set(second):
@@ -109,10 +126,10 @@ def audit(root: Path) -> dict:
             "signal_agent_sha256": obj["signal_agent_sha256"],
             "champion": {"top6": [int(x) for x in champion["top6"]],
                          "ranking60": champion["ranking60"],
-                         "expert_weights": champion["expert_weights"]},
+                         "expert_weights": champion["expert_weights"], "aggregate_scores": champion["aggregate_scores"]},
             "challenger": {"top6": [int(x) for x in challenger["top6"]],
                            "ranking60": challenger["ranking60"],
-                           "weights": challenger["weights"], "raw_signals": challenger["raw_signals"]},
+                           "weights": challenger["weights"], "aggregate_scores": challenger["aggregate_scores"], "raw_signals": challenger["raw_signals"]},
             "primary_card": [int(x) for x in card["numbers"]],
             "freeze_file": str(path.relative_to(root)).replace("\\", "/"),
         })
@@ -130,6 +147,8 @@ def audit(root: Path) -> dict:
             "champion_weights": _weight_changes(before["champion"]["expert_weights"], after["champion"]["expert_weights"]),
             "challenger_weights": _weight_changes(before["challenger"]["weights"], after["challenger"]["weights"]),
             "raw_signal_values": _raw_signal_changes(before["challenger"]["raw_signals"], after["challenger"]["raw_signals"]),
+            "champion_scores": _score_changes(before["champion"]["aggregate_scores"], after["champion"]["aggregate_scores"]),
+            "challenger_scores": _score_changes(before["challenger"]["aggregate_scores"], after["challenger"]["aggregate_scores"]),
             "champion_ranking": _ranking_changes(before["champion"]["ranking60"], after["champion"]["ranking60"]),
             "challenger_ranking": _ranking_changes(before["challenger"]["ranking60"], after["challenger"]["ranking60"]),
             "primary_card_changed": sorted(before["primary_card"]) != sorted(after["primary_card"]),
@@ -160,7 +179,20 @@ def audit(root: Path) -> dict:
                         "challenger_minus_champion": challenger_hits - champion_hits,
                         "report_freeze_verified": True,
                         "independent_official_source_verified_by_this_audit": False})
+    from smart_promotion_gate import assess_promotion_records
+    # Observational evidence does not grant live promotion authority.
+    e_value = 1.0
+    for item in results:
+        e_value *= 1.0 + 0.25 * item["challenger_minus_champion"] / 6.0
+    promotion_report = assess_promotion_records(results, e_value=e_value)
+    independent_result_proof = bool(results) and all(
+        row["independent_official_source_verified_by_this_audit"] is True for row in results
+    )
     return {
+        "promotion_report": promotion_report,
+        "promotion_decision": "KEEP_CHAMPION",
+        "promotion_eligible": False,
+        "independent_result_proof": independent_result_proof,
         "schema": "SMART_LEARNING_IMPACT_AUDIT_1",
         "status": "OBSERVATION_ONLY",
         "snapshots": snapshots,
