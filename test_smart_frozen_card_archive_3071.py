@@ -28,6 +28,25 @@ class TestImmutableArchivedCard(unittest.TestCase):
         shutil.copytree(ARCHIVE, place)
         return place
 
+    def test_old_archived_card_is_readable_during_newer_active_epoch(self):
+        from smart_frozen_card_reader import sha256_json
+        with tempfile.TemporaryDirectory() as temp:
+            root = Path(temp)
+            archive = self._copy_archive(root)
+            old = json.loads((archive / 'SMART_ACTIVE_EPOCH.json').read_text())
+            old['target_contest'] = 3073
+            old['cutoff_contest'] = 3072
+            old['freeze_authority'] = dict(old['freeze_authority'])
+            old['freeze_authority']['target_contest'] = 3073
+            old['freeze_authority']['cutoff_contest'] = 3072
+            old.pop('sha256', None)
+            old['sha256'] = sha256_json(old)
+            (root / 'SMART_ACTIVE_EPOCH.json').write_text(json.dumps(old),encoding='utf-8')
+            card = read_frozen_card(root, 3071)
+            self.assertEqual(card['status'], 'FROZEN_MODEL_CARD_VERIFIED')
+            self.assertEqual(card['numbers'], [10,11,27,38,43,53])
+            self.assertFalse(card['result_used_in_generation'])
+
     def test_manifest_tampering_rejected(self):
         with tempfile.TemporaryDirectory() as temp:
             root = Path(temp)

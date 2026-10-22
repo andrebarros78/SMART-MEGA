@@ -148,6 +148,10 @@ def read_frozen_card(root: str | Path, target: int) -> dict[str, Any]:
     archive = None
     if (root / "SMART_ACTIVE_EPOCH.json").is_file():
         active = _self_hashed(_read(_safe_file(root, "SMART_ACTIVE_EPOCH.json", "active")), "active")
+        if active.get("target_contest") != target:
+            # A newer live cycle must not hide immutable older predictions.
+            archive = _immutable_archive(root, target)
+            active = archive["active"]
     else:
         archive = _immutable_archive(root, target)
         active = archive["active"]
