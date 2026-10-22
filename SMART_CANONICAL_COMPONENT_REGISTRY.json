@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "4e99f7edb8a215297c1fc3e1d1b8355fe58890f920071e8c5b542b7465a3a412",
+  "source_reachability_inventory_sha256": "db8ac0a55d1d26470944cb6a592962e7c2212d838b62d004d8ed19ac90f8a06f",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 538,
-    "active": 112,
+    "component_count": 540,
+    "active": 113,
     "shadow": 1,
-    "diagnostic": 225,
+    "diagnostic": 226,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -303,6 +303,7 @@
         "tests.test_smart_coverage_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -4164,6 +4165,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4225,6 +4227,7 @@
         "test_smart_3054_adjudication_preflight"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -4414,6 +4417,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4479,6 +4483,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4517,6 +4522,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4572,6 +4578,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4608,6 +4615,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4645,6 +4653,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4680,6 +4689,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4783,6 +4793,7 @@
         "tests.test_smart_coverage_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -4814,6 +4825,7 @@
         "smart_canonical_root_rebind",
         "smart_champion_challenger",
         "smart_engineering_activation",
+        "smart_fast_result_ingest",
         "smart_finalize_deployment",
         "smart_full_process_pipeline",
         "smart_learning_epoch_reset",
@@ -4838,6 +4850,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4920,6 +4933,7 @@
         "smart_cap60_parallel"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -4951,6 +4965,7 @@
         "test_smart_shadow_latency_regression"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -5008,6 +5023,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5140,6 +5156,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5160,7 +5177,7 @@
       "component_id": "smart_component_reachability",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_component_reachability.py",
-      "implementation_sha256": "b6bd0fd842ffd159dd0c8ba529204820f5eb19754306af153f27bbe4a6558c16",
+      "implementation_sha256": "9d5d7686b10553e16d6a39d460dcd66c9d0ca026d1ff752da6b8cdebe2f34a45",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -5210,6 +5227,7 @@
         "test_smart_consumer_integration"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -5296,6 +5314,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5328,6 +5347,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5357,6 +5377,7 @@
         "test_smart_contingency_card"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -5442,6 +5463,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5499,6 +5521,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5533,6 +5556,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5587,6 +5611,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5617,6 +5642,7 @@
         "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -5653,6 +5679,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5724,6 +5751,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5763,6 +5791,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5923,6 +5952,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5958,6 +5988,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5994,6 +6025,36 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": false,
       "production_reachable": false
+    },
+    {
+      "component_id": "smart_fast_result_ingest",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_fast_result_ingest.py",
+      "implementation_sha256": "3bb64f264b1f28f4ee0fcac15c2d5ec2660655ffeec441094281c7a9eb8ab574",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
+        "smart_canonical_identity",
+        "smart_missed_catchup",
+        "smart_operational_lifecycle",
+        "smart_operator"
+      ],
+      "consumers": [
+        "test_smart_fast_result_ingest"
+      ],
+      "entrypoints": [
+        "smart_fast_result_ingest"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
     },
     {
       "component_id": "smart_finalize_capability_integration_v3",
@@ -6065,6 +6126,7 @@
         "test_smart_f04_fine_tuning_lifecycle"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6126,6 +6188,7 @@
         "test_smart_frontier_signal_lab"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6155,6 +6218,7 @@
         "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6184,6 +6248,7 @@
         "test_smart_frozen_terminal_recovery"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -6242,6 +6307,7 @@
         "test_smart_temporal_freeze_guard_20260906"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6398,6 +6464,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6428,6 +6495,7 @@
         "smart_operator"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6482,6 +6550,7 @@
         "test_smart_http_guard"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6535,6 +6604,7 @@
         "test_smart_terminal_pending_idempotency"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6587,6 +6657,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6623,6 +6694,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6659,6 +6731,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6693,6 +6766,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6759,6 +6833,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6817,6 +6892,7 @@
         "smart_operator"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -6844,6 +6920,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6885,6 +6962,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6924,6 +7002,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6963,11 +7042,13 @@
         "smart_terminal_executor"
       ],
       "consumers": [
+        "smart_fast_result_ingest",
         "smart_operator",
         "test_smart_missed_catchup_chain",
         "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7006,6 +7087,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7073,6 +7155,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7132,6 +7215,7 @@
         "test_smart_official_evidence_consensus"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7174,6 +7258,7 @@
         "test_smart_official_result_ingest"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7202,6 +7287,7 @@
         "test_smart_portal_transcription_recovery"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7234,6 +7320,7 @@
         "test_smart_operation_lock_cross_platform"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -7267,6 +7354,7 @@
         "test_smart_f02_dependency_direction"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7297,6 +7385,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_agent_skill_orchestration",
         "smart_current_epoch_contract",
+        "smart_fast_result_ingest",
         "smart_full_process_pipeline",
         "smart_missed_catchup",
         "smart_operation_recovery",
@@ -7314,6 +7403,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7378,6 +7468,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
+        "smart_fast_result_ingest",
         "smart_github_operator",
         "test_smart_b2_evolution_20260909",
         "test_smart_cap60_parallel",
@@ -7405,6 +7496,7 @@
         "tests.test_smart_operator_recovery_rollback_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7433,6 +7525,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7472,6 +7565,7 @@
         "test_smart_result_consumption_readiness"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7502,6 +7596,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7588,6 +7683,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7627,6 +7723,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7657,6 +7754,7 @@
         "tests.test_smart_operator_failure_boundaries_20261021"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7685,6 +7783,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7744,6 +7843,7 @@
         "test_smart_procedural_actionability_gate"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -7967,6 +8067,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8026,6 +8127,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8054,6 +8156,7 @@
         "smart_operator"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8084,6 +8187,7 @@
         "test_smart_prospective_authority_module"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8122,6 +8226,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8152,6 +8257,7 @@
         "test_smart_prospective_cycle"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8178,6 +8284,7 @@
         "test_smart_public_result_capture"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8241,6 +8348,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8280,6 +8388,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8344,6 +8453,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_linux_ci",
@@ -8463,6 +8573,7 @@
         "test_smart_rollover_journal_recovery"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8497,6 +8608,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8526,6 +8638,7 @@
         "smart_storage_surfaces"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8552,6 +8665,7 @@
         "test_smart_scoped_history_gate"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8596,6 +8710,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8753,6 +8868,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8785,6 +8901,7 @@
         "test_smart_signal_attribution"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -8846,6 +8963,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8881,6 +8999,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8917,6 +9036,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8957,6 +9077,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8993,6 +9114,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9035,6 +9157,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9069,6 +9192,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9105,6 +9229,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9149,6 +9274,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9190,6 +9316,7 @@
         "test_smart_startup_withdraw_reconciliation"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -9222,6 +9349,7 @@
         "smart_rollover"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -9265,6 +9393,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9319,6 +9448,7 @@
         "test_smart_terminal_executor_active_epoch"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -9355,6 +9485,7 @@
         "test_smart_terminal_executor_active_epoch"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -9422,6 +9553,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -9455,6 +9587,7 @@
         "test_smart_rollover_journal_recovery"
       ],
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -9558,6 +9691,7 @@
       ],
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -11374,6 +11508,29 @@
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_hypothesis_state_reconciler"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_fast_result_ingest",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_fast_result_ingest.py",
+      "implementation_sha256": "632a714c6efb843ee6a0474517aaa2f771f34788cd61f70378ea429601b05452",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_fast_result_ingest"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -14549,5 +14706,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "bf5a638bd915e967dd5e7aa8cf493787911e37505dddc270893ddf8ebf3b184b"
+  "registry_sha256": "01689dde8f9b039eea7f902ed07e4cea1155b8e4e4abf700a2b67964223fae9c"
 }

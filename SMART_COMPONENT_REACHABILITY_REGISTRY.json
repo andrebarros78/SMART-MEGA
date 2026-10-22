@@ -35,6 +35,9 @@
     "smart_github_operator.py": [
       "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
+    "smart_fast_result_ingest.py": [
+      "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+    ],
     "smart_github_native_policy.py": [
       "EXTERNAL_EXECUTOR:SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
     ],
@@ -51,6 +54,7 @@
   "entrypoint_authority": "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021",
   "required_production_files": [
     "smart_champion_challenger.py",
+    "smart_fast_result_ingest.py",
     "smart_full_process_pipeline.py",
     "smart_github_operator.py",
     "smart_operator.py",
@@ -60,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "4e99f7edb8a215297c1fc3e1d1b8355fe58890f920071e8c5b542b7465a3a412",
+  "inventory_sha256": "db8ac0a55d1d26470944cb6a592962e7c2212d838b62d004d8ed19ac90f8a06f",
   "summary": {
-    "python_components": 538,
-    "workflow_entrypoints": 10,
-    "production_components": 112,
+    "python_components": 540,
+    "workflow_entrypoints": 11,
+    "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 199,
+    "test_components": 200,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -371,6 +375,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -3903,6 +3908,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -3959,6 +3965,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -4145,6 +4152,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4175,6 +4183,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4240,6 +4249,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4278,6 +4288,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4333,6 +4344,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4367,6 +4379,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4404,6 +4417,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4489,6 +4503,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -4531,6 +4546,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4548,6 +4564,7 @@
         "smart_canonical_root_rebind",
         "smart_champion_challenger",
         "smart_engineering_activation",
+        "smart_fast_result_ingest",
         "smart_finalize_deployment",
         "smart_full_process_pipeline",
         "smart_learning_epoch_reset",
@@ -4634,6 +4651,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -4659,6 +4677,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -4713,6 +4732,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4777,6 +4797,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -4897,7 +4918,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "b6bd0fd842ffd159dd0c8ba529204820f5eb19754306af153f27bbe4a6558c16"
+      "sha256": "9d5d7686b10553e16d6a39d460dcd66c9d0ca026d1ff752da6b8cdebe2f34a45"
     },
     {
       "component_id": "smart_consumer_integration",
@@ -4905,6 +4926,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -4982,6 +5004,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5021,6 +5044,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5050,6 +5074,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -5105,6 +5130,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5178,6 +5204,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5212,6 +5239,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5244,6 +5272,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5297,6 +5326,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -5323,6 +5353,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5387,6 +5418,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5429,6 +5461,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5585,6 +5618,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5614,6 +5648,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -5658,6 +5693,34 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da"
+    },
+    {
+      "component_id": "smart_fast_result_ingest",
+      "source_file": "smart_fast_result_ingest.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_fast_result_ingest"
+      ],
+      "producers": [
+        "smart_canonical_identity",
+        "smart_missed_catchup",
+        "smart_operational_lifecycle",
+        "smart_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_fast_result_ingest"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "3bb64f264b1f28f4ee0fcac15c2d5ec2660655ffeec441094281c7a9eb8ab574"
     },
     {
       "component_id": "smart_finalize_capability_integration_v3",
@@ -5716,6 +5779,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -5767,6 +5831,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -5799,6 +5864,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -5826,6 +5892,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -5855,6 +5922,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6011,6 +6079,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6062,6 +6131,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6110,6 +6180,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -6159,6 +6230,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6187,6 +6259,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6240,6 +6313,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6274,6 +6348,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6308,6 +6383,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6340,6 +6416,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6432,6 +6509,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -6457,6 +6535,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6485,6 +6564,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6524,6 +6604,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6560,6 +6641,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6579,6 +6661,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_fast_result_ingest",
         "smart_operator",
         "test_smart_missed_catchup_chain",
         "tests.test_smart_operator_failure_boundaries_20261021"
@@ -6600,6 +6683,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6665,6 +6749,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6726,6 +6811,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6755,6 +6841,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6795,6 +6882,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -6821,6 +6909,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -6853,6 +6942,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6883,6 +6973,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -6899,6 +6990,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "smart_agent_skill_orchestration",
         "smart_current_epoch_contract",
+        "smart_fast_result_ingest",
         "smart_full_process_pipeline",
         "smart_missed_catchup",
         "smart_operation_recovery",
@@ -6930,6 +7022,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -6974,6 +7067,7 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
         "conftest",
+        "smart_fast_result_ingest",
         "smart_github_operator",
         "test_smart_b2_evolution_20260909",
         "test_smart_cap60_parallel",
@@ -7017,6 +7111,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7045,6 +7140,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -7080,6 +7176,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7157,6 +7254,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7191,6 +7289,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7227,6 +7326,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -7253,6 +7353,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7307,6 +7408,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -7480,6 +7582,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7567,6 +7670,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7600,6 +7704,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -7623,6 +7728,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -7652,6 +7758,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7692,6 +7799,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -7717,6 +7825,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -7767,6 +7876,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7804,6 +7914,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -7860,6 +7971,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_linux_ci",
@@ -7974,6 +8086,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -8009,6 +8122,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8043,6 +8157,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -8067,6 +8182,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [],
@@ -8092,6 +8208,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8188,6 +8305,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8287,6 +8405,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -8337,6 +8456,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8375,6 +8495,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8408,6 +8529,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8442,6 +8564,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8480,6 +8603,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8514,6 +8638,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8554,6 +8679,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8588,6 +8714,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8624,6 +8751,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8665,6 +8793,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -8703,6 +8832,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -8732,6 +8862,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8777,6 +8908,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -8826,6 +8958,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_operator"
       ],
       "producers": [
@@ -8886,6 +9019,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -8928,6 +9062,7 @@
       "role": "PRODUCTION",
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity"
@@ -8959,6 +9094,7 @@
       "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
       "entrypoints": [
         "smart_disconnection_gate",
+        "smart_fast_result_ingest",
         "smart_github_certify",
         "smart_github_operator",
         "smart_repository_integrity",
@@ -10717,6 +10853,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "43f486ac36234cdd3b0d9e68cac06404275d6e0d9386a0c0616fcbd0627cfd8a"
+    },
+    {
+      "component_id": "test_smart_fast_result_ingest",
+      "source_file": "test_smart_fast_result_ingest.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_fast_result_ingest"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "632a714c6efb843ee6a0474517aaa2f771f34788cd61f70378ea429601b05452"
     },
     {
       "component_id": "test_smart_federated_certification",
