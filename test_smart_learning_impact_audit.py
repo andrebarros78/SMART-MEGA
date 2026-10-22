@@ -34,3 +34,14 @@ def test_canonical_impact_is_observational_and_requires_real_frozen_cards():
     assert transitions[(3067, 3068)]["single_result_attributable"] is True
     assert transitions[(3070, 3071)]["primary_card_changed"] is False
     assert (root / "SMART_OPERATIONAL_LIFECYCLE.json").read_bytes() == before
+
+
+def test_raw_signal_change_audit_counts_only_real_value_movements():
+    from smart_learning_impact_audit import _raw_signal_changes
+    baseline = {"freq25": {"values": {str(n): 0.5 for n in range(1, 61)}}}
+    updated = {"freq25": {"values": {str(n): (0.6 if n == 1 else 0.5) for n in range(1, 61)}}}
+    proof = _raw_signal_changes(baseline, updated)
+    assert proof["signals"] == 1
+    assert proof["signals_with_changed_values"] == 1
+    assert proof["total_changed_number_cells"] == 1
+    assert abs(proof["total_absolute_signal_change"] - 0.1) < 1e-12

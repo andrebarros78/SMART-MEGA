@@ -46,6 +46,39 @@ def _weight_changes(first: dict, second: dict) -> dict:
     }
 
 
+def _raw_signal_changes(first: dict, second: dict) -> dict:
+    """Compare all 12 signal vectors, not only their trained weights."""
+    if not isinstance(first, dict) or not isinstance(second, dict) or set(first) != set(second):
+        raise ValueError("raw signal universe differs between freezes")
+    per_signal = {}
+    total_cells = 0
+    total_change = 0.0
+    for signal in sorted(first):
+        a = first[signal].get("values")
+        b = second[signal].get("values")
+        expected = {str(n) for n in range(1, 61)}
+        if not isinstance(a, dict) or not isinstance(b, dict) or set(a) != expected or set(b) != expected:
+            raise ValueError(f"incomplete 60-number raw signal: {signal}")
+        deltas = [abs(float(a[str(n)]) - float(b[str(n)])) for n in range(1, 61)]
+        if any(not __import__("math").isfinite(d) for d in deltas):
+            raise ValueError(f"nonfinite raw signal change: {signal}")
+        changed = sum(d > 1e-12 for d in deltas)
+        amount = sum(deltas)
+        total_cells += changed
+        total_change += amount
+        per_signal[signal] = {
+            "numbers_changed": changed,
+            "absolute_value_change": amount,
+            "maximum_number_change": max(deltas),
+        }
+    return {
+        "signals": len(per_signal),
+        "signals_with_changed_values": sum(x["numbers_changed"] > 0 for x in per_signal.values()),
+        "total_changed_number_cells": total_cells,
+        "total_absolute_signal_change": total_change,
+        "per_signal": per_signal,
+    }
+
 def audit(root: Path) -> dict:
     root = Path(root).resolve()
     freezes = []
@@ -79,7 +112,7 @@ def audit(root: Path) -> dict:
                          "expert_weights": champion["expert_weights"]},
             "challenger": {"top6": [int(x) for x in challenger["top6"]],
                            "ranking60": challenger["ranking60"],
-                           "weights": challenger["weights"]},
+                           "weights": challenger["weights"], "raw_signals": challenger["raw_signals"]},
             "primary_card": [int(x) for x in card["numbers"]],
             "freeze_file": str(path.relative_to(root)).replace("\\", "/"),
         })
@@ -96,6 +129,7 @@ def audit(root: Path) -> dict:
             "same_signal_agent": before["signal_agent_sha256"] == after["signal_agent_sha256"],
             "champion_weights": _weight_changes(before["champion"]["expert_weights"], after["champion"]["expert_weights"]),
             "challenger_weights": _weight_changes(before["challenger"]["weights"], after["challenger"]["weights"]),
+            "raw_signal_values": _raw_signal_changes(before["challenger"]["raw_signals"], after["challenger"]["raw_signals"]),
             "champion_ranking": _ranking_changes(before["champion"]["ranking60"], after["champion"]["ranking60"]),
             "challenger_ranking": _ranking_changes(before["challenger"]["ranking60"], after["challenger"]["ranking60"]),
             "primary_card_changed": sorted(before["primary_card"]) != sorted(after["primary_card"]),
