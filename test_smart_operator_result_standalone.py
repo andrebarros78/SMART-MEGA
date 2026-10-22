@@ -35,7 +35,9 @@ class StandaloneResultTest(unittest.TestCase):
         self.assertEqual(validate_official_payload(sample, 3071)["numbers"], sample["listaDezenas"])
         for invalid in ([12, 12, 41, 45, 51, 52], [0, 22, 41, 45, 51, 52],
                         [12, 22, 41, 45, 51, 61]):
-            with self.subTest(invalid=invalid), self.assertRaises(ValueError):
+            # Preserve all negative inputs; pytest 9's passed unittest
+            # subtests inflate JUnit totals without serializing testcases.
+            with self.assertRaises(ValueError):
                 validate_official_payload({**sample, "listaDezenas": invalid}, 3071)
         with self.assertRaises(ValueError):
             validate_official_payload({**sample, "numero": 3070}, 3071)
