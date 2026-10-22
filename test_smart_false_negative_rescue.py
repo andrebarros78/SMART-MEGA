@@ -222,8 +222,8 @@ def test_partial_authenticated_feedback_only_moves_shadow_scores():
     if not (root / "SMART_CANONICAL_ROOT.json").is_file():
         return
     profile = build_profile_from_reports(root, through_contest=3067)
-    assert profile["source_contests"] == [3067]
-    assert profile["quarantined_count"] == 3
+    assert profile["source_contests"] == [3062, 3067]  # SHA-exact 3062 ledger recovered
+    assert profile["quarantined_count"] == 2  # 3060/3061 still untrusted
     assert profile["evidence_coverage"] == "DEGRADED_PARTIAL_EVIDENCE"
     assert profile["status"] == "DEGRADED_PARTIAL_EVIDENCE"
     scores = {str(n): 0.5 for n in range(1, 61)}

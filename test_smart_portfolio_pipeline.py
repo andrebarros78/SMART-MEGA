@@ -77,3 +77,26 @@ def test_pipeline_builds_rescue_profile_at_freeze_cutoff(tmp_path, monkeypatch):
     result=spp.build_portfolio_package(path,config=PortfolioConfig(game_count=1,candidate_pool_size=6,time_limit_seconds=5))
     assert seen["through_contest"] == 9
     assert result["primary_card"]["false_negative_rescue"]["result_used"] is False
+
+
+def test_identical_primary_card_never_claims_independence(tmp_path, monkeypatch):
+    """Selector may legitimately produce the unchanged champion six."""
+    freeze = _freeze(tmp_path)
+    frozen = json.loads(freeze.read_text(encoding="utf-8"))
+    top6 = [1, 2, 21, 22, 41, 42]
+    frozen["champion"]["top6"] = top6
+    frozen["champion"]["aggregate_scores"] = {
+        str(n): float(100 - top6.index(n)) if n in top6 else float(60 - n) * 0.001
+        for n in range(1, 61)
+    }
+    freeze.write_text(json.dumps(frozen), encoding="utf-8")
+    monkeypatch.setattr(spp, "build_profile_from_reports", lambda *args, **kwargs: None)
+    result = build_portfolio_package(
+        freeze,
+        config=PortfolioConfig(game_count=1, candidate_pool_size=6, time_limit_seconds=5),
+    )
+    assert result["primary_card"]["numbers"] == top6
+    assert "primary_card_not_forced_to_champion_top6" not in result["checks"]
+    assert result["checks"]["primary_card_matches_selector_output"] is True
+    assert result["primary_card_comparison"]["identical_to_champion_top6"] is True
+    assert result["primary_card_comparison"]["independent_selection_gain_proven"] is False
