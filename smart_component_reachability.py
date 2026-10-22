@@ -10,7 +10,7 @@ from pathlib import Path
 from typing import Iterable
 
 SCHEMA = "SMART_COMPONENT_REACHABILITY_REGISTRY_V1"
-EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__"}
+EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", "venv", ".tox", "node_modules"}
 ARCHIVE_PREFIXES = ("archive/", "SMART_STATE_ARCHIVE/", "portable_evidence/", "release_evidence/")
 QUARANTINE_PREFIXES = (".external_",)
 VALIDATION_TOKENS = (
@@ -20,6 +20,7 @@ VALIDATION_TOKENS = (
 )
 REQUIRED_PRODUCTION_FILES = {
     "smart_github_operator.py",
+    "smart_fast_result_ingest.py",
     "smart_operator.py",
     "smart_full_process_pipeline.py",
     "smart_champion_challenger.py",
@@ -30,9 +31,6 @@ REQUIRED_PRODUCTION_FILES = {
     "smart_terminal_engine.py",
 }
 KNOWN_OPERATOR_PIPELINE_CYCLE = {"smart_operator.py", "smart_full_process_pipeline.py"}
-# This is the actual repo-owned CLI gateway an authorized external executor may
-# invoke; declaring it as a static root does not authorize a real execution.
-GOVERNED_EXTERNAL_OPERATOR = "smart_github_operator.py"
 
 
 def _python_files(root: Path) -> list[Path]:
@@ -134,53 +132,40 @@ def _has_main_guard(tree: ast.AST) -> bool:
     return False
 
 
+# Legacy registry key "workflow_entrypoints" is retained for schema compatibility.
+# Entry points now belong to the canonical GitHub source, NOT GitHub Actions.
+EXTERNAL_EXECUTION_ENTRYPOINTS = (
+    "smart_canonical_component_registry.py",
+    "smart_component_reachability.py",
+    "smart_disconnection_gate.py",
+    "smart_f12_scientific_successor.py",
+    "smart_github_certify.py",
+    "smart_github_operator.py",
+    "smart_fast_result_ingest.py",
+    "smart_github_native_policy.py",
+    "smart_linux_ci.py",
+    "smart_repository_integrity.py",
+    "smart_skill_adapter_registry.py",
+)
+EXTERNAL_EXECUTION_POLICY = "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
+
+
 def _workflow_entrypoints(root: Path, known_by_path: dict[str, str]) -> dict[str, list[str]]:
-    result: dict[str, list[str]] = defaultdict(list)
-    workflow_dir = root / ".github" / "workflows"
-    if not workflow_dir.exists():
-        return {}
-    rx = re.compile(r"\bpython(?:\s+-[A-Za-z]+)*\s+([A-Za-z0-9_./-]+\.py)\b")
-    for wf in sorted(workflow_dir.glob("*.y*ml")):
-        text = wf.read_text(encoding="utf-8")
-        for raw in rx.findall(text):
-            rel = raw.replace("\\", "/").lstrip("./")
-            if rel in known_by_path:
-                result[rel].append(wf.relative_to(root).as_posix())
-    return {k: sorted(set(v)) for k, v in sorted(result.items())}
-
-
-def _governed_external_entrypoints(
-    root: Path, by_path: dict[str, str], parsed: dict[str, ast.AST],
-    main_guards: dict[str, bool], execution_paths: dict[str, list[str]],
-) -> tuple[dict[str, list[str]], dict]:
-    """Canonical policy and real CLI path, never a forged execution receipt."""
-    from smart_github_native_policy import POLICY_ID, PolicyViolation, verify
-    evidence = {
-        "authority_kind": "GOVERNED_EXTERNAL_EXECUTION_STATIC_CONTRACT",
-        "policy_id": POLICY_ID,
-        "runtime_executed": False,
-        "github_actions_authorized": False,
-        "root_contract_valid": False,
+    """Resolve explicitly supported external entrypoints, never workflow YAML."""
+    workflows = root / ".github" / "workflows"
+    if workflows.is_symlink():
+        raise ValueError("GitHub Actions workflow directory is forbidden")
+    active = (
+        sorted(p for p in workflows.rglob("*") if p.is_file() and p.suffix.lower() in {".yml", ".yaml"})
+        if workflows.is_dir() else []
+    )
+    if active:
+        raise ValueError("GitHub Actions is forbidden: runnable workflow manifests found")
+    return {
+        path: [f"EXTERNAL_EXECUTOR:{EXTERNAL_EXECUTION_POLICY}"]
+        for path in EXTERNAL_EXECUTION_ENTRYPOINTS
+        if path in known_by_path
     }
-    try:
-        policy = verify(root)
-    except (OSError, UnicodeError, PolicyViolation):
-        return {}, evidence
-    if (policy.get("status") != "PASS"
-            or policy.get("github_actions_authorized") is not False
-            or policy.get("external_executors_authorized") is not True
-            or (root / GOVERNED_EXTERNAL_OPERATOR).is_symlink()):
-        return {}, evidence
-    module = by_path.get(GOVERNED_EXTERNAL_OPERATOR)
-    if (not module or module not in parsed
-            or not main_guards.get(module, False)
-            or GOVERNED_EXTERNAL_OPERATOR not in by_path
-            or "smart_operator.py" not in execution_paths.get(module, [])):
-        return {}, evidence
-    evidence["root_contract_valid"] = True
-    return {GOVERNED_EXTERNAL_OPERATOR: [
-        "GOVERNED_EXTERNAL:" + GOVERNED_EXTERNAL_OPERATOR
-    ]}, evidence
 
 
 def _reachable(graph: dict[str, set[str]], roots: Iterable[str]) -> set[str]:
@@ -250,7 +235,7 @@ def _classify(path: str, reachable: bool) -> tuple[str, str]:
     if path.startswith("tests/") or name.startswith("test_") or name == "conftest.py":
         return "TEST", "test namespace"
     if reachable:
-        return "PRODUCTION", "statically reachable from canonical governed external CLI gateway"
+        return "PRODUCTION", "statically reachable from approved external entrypoint with GitHub canonical source"
     if "shadow" in name:
         return "SHADOW", "unreachable shadow-labelled component"
     if any(token in name for token in VALIDATION_TOKENS):
@@ -278,9 +263,8 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        # Python text may be checked out as CRLF by .gitattributes while
-        # canonical Git blobs use LF. Hash the same logical source on Windows
-        # and Linux; otherwise the persisted registry fails on a clean clone.
+        # Normalize text checkout EOL for the code-identity graph, not media
+        # or checkpoint payloads. Windows checkout rules must not change F01.
         content_hashes[rel] = hashlib.sha256(raw.replace(b"\r\n", b"\n")).hexdigest()
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
@@ -320,14 +304,8 @@ def build_registry(root: Path) -> dict:
                 execution_edges.add(target)
         graph[module] = imports | execution_edges
 
-    # Workflows were retired by the canonical governance policy. A static
-    # external CLI entrypoint is valid only if the policy and on-disk gateway
-    # contract agree. The executor itself must produce separate run evidence.
-    external_paths, entrypoint_provenance = _governed_external_entrypoints(
-        root, by_path, parsed, main_guards, execution_paths
-    )
-    workflow_paths: dict[str, list[str]] = {}
-    roots = sorted(by_path[p] for p in external_paths)
+    workflow_paths = _workflow_entrypoints(root, by_path)
+    roots = sorted(by_path[p] for p in workflow_paths)
     reachable = _reachable(graph, roots)
     roots_by_node = _root_reachability(graph, roots)
     consumers: dict[str, set[str]] = defaultdict(set)
@@ -393,31 +371,29 @@ def build_registry(root: Path) -> dict:
         f"{path}:{content_hashes[path]}" for path in sorted(content_hashes)
     ).encode("utf-8")
     gate_pass = not (
-        parse_errors or execution_dependency_errors or unclassified or production_unreachable or required_missing or required_unreachable or not entrypoint_provenance["root_contract_valid"]
+        parse_errors or execution_dependency_errors or unclassified or production_unreachable or required_missing or required_unreachable
     )
 
     return {
         "schema": SCHEMA,
-        "scope": "STATIC_PYTHON_REACHABILITY_FROM_GOVERNED_EXTERNAL_CLI",
+        "scope": "STATIC_PYTHON_REACHABILITY_FROM_GITHUB_CANONICAL_EXTERNAL_ENTRYPOINTS",
         "classification_policy": {
             "allowed_roles": [
                 "PRODUCTION", "SHADOW", "DIAGNOSTIC", "VALIDATION",
                 "TEST", "ARCHIVE", "QUARANTINE", "UNCLASSIFIED"
             ],
-            "production_definition": "Python module statically reachable from canonical CLI authorized for externally governed execution",
-            "python_source_sha256_normalization": "CRLF_TO_LF_BEFORE_HASHING",
+            "production_definition": "Python module statically reachable from an approved external executor entrypoint using the canonical GitHub source",
             "unreachable_default": "DIAGNOSTIC pending F08 reconciliation",
             "runtime_execution_claimed": False,
+            "python_source_sha256_normalization": "CRLF_TO_LF_BEFORE_HASHING",
         },
         "workflow_entrypoints": workflow_paths,
-        "external_entrypoints": external_paths,
-        "entrypoint_provenance": entrypoint_provenance,
+        "entrypoint_authority": EXTERNAL_EXECUTION_POLICY,
         "required_production_files": sorted(REQUIRED_PRODUCTION_FILES),
         "inventory_sha256": hashlib.sha256(inventory_material).hexdigest(),
         "summary": {
             "python_components": len(components),
-            "workflow_entrypoints": 0,
-            "external_entrypoints": len(roots),
+            "workflow_entrypoints": len(roots),
             "production_components": sum(c["role"] == "PRODUCTION" for c in components),
             "shadow_components": sum(c["role"] == "SHADOW" for c in components),
             "diagnostic_components": sum(c["role"] == "DIAGNOSTIC" for c in components),
@@ -441,7 +417,6 @@ def build_registry(root: Path) -> dict:
             "production_unreachable": production_unreachable,
             "required_production_missing": required_missing,
             "required_production_unreachable": required_unreachable,
-            "external_entrypoint_contract_valid": entrypoint_provenance["root_contract_valid"],
         },
         "known_debt_observations": {
             "operator_pipeline_cycle_detected": known_cycle_detected,

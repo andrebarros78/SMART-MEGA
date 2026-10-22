@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 
 import hashlib
 import json
@@ -206,7 +207,7 @@ def _validate_semantics(doc: dict[str, Any], *, root: Path | None = None) -> Non
             raise ValueError("unclassified or stale terminal claim exists while mission is active")
     else:
         _validate_terminal_proof(doc, root=root, observed=observed)
-        if "pytest-" not in str(root).lower() or (root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json").is_file():
+        if not _test_identity._authorized_pytest_sandbox(root) or (root / "SMART_MATERIAL_DEFICIENCY_REGISTRY.json").is_file():
             from smart_authority_freshness import audit as audit_authority_freshness
             freshness = audit_authority_freshness(root)
             if freshness.get("terminal_compatible") is not True: raise ValueError("current authority set is not compatible")

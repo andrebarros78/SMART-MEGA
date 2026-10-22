@@ -30,6 +30,7 @@ from smart_learning_epoch_reset import verify_active_epoch
 from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
+from smart_scoped_history_gate import inspect_freeze_evidence
 
 SCHEMA = "SMART_TERMINAL_ENGINE_LEGACY_COMPAT_V1"
 TARGET = 3054
@@ -817,6 +818,7 @@ def evaluate_terminal_rule(
     total_adjudication_count = sum(1 for event in ledger.get("events", []) if event.get("event_type") == "ADJUDICATION")
     prospective = audit.get("prospective_ledger", {})
     primary = consensus.get("primary", {})
+    audited_pairs = prospective.get("pair_count")
     checks = {
         "freeze_hash_immutable": freeze_event.get("freeze_sha256") == expected_freeze_sha256,
         "freeze_before_result": freeze_event.get("frozen_before_result") is True and freeze.get("frozen_before_result") is True,
@@ -826,7 +828,7 @@ def evaluate_terminal_rule(
         "official_numbers_match_adjudication": sorted(int(x) for x in primary.get("numbers", [])) == actual,
         "sequential_proof_valid": sequence_validation.get("valid") is True and sequence_validation.get("proof_recorded") is True,
         "independent_audit_pass": audit.get("status") == "PASS" and prospective.get("status") == "PASS",
-        "all_attempts_counted": int(prospective.get("pair_count", -1)) == total_adjudication_count,
+        "all_attempts_counted": type(audited_pairs) is int and audited_pairs >= 0 and audited_pairs == total_adjudication_count,
         "no_future_leakage": prospective.get("no_future_leakage") is True,
         "source_corroborated": consensus.get("terminal_source_corroboration_authorized") is True,
         "exact_6of6": recomputed_hits == 6 and int(adjudication.get("champion_hits", -1)) == 6,
@@ -987,8 +989,20 @@ def probe(root: str | Path, fetcher: Fetcher | None = None) -> dict[str, Any]:
 
 
 
-def _precheck_historical_freeze_evidence(root: Path, ledger: dict[str, Any]) -> None:
-    """Reject missing hash-bound historical freezes before result persistence."""
+def _precheck_historical_freeze_evidence(
+    root: Path, ledger: dict[str, Any], *,
+    allow_unverified_history: bool = False,
+    current_sha256: str | None = None,
+) -> dict[str, Any] | None:
+    """Guard current freeze; retain missing prior freezes as unverified only when scoped.
+
+    The legacy/independent proof path keeps its original strict behavior.
+    """
+    if allow_unverified_history:
+        return inspect_freeze_evidence(
+            root, ledger, TARGET, independent_audit._resolve_audit_evidence,
+            current_sha256=current_sha256,
+        )
     targets = {TARGET}
     targets.update(
         int(event["target_contest"])
@@ -1010,7 +1024,35 @@ def _precheck_historical_freeze_evidence(root: Path, ledger: dict[str, Any]) -> 
             raise ValueError(
                 f"historical freeze evidence unavailable for contest {contest}"
             ) from exc
+    return None
 
+
+def _unverified_history_audit(root: Path, scope: dict[str, Any]) -> dict[str, Any]:
+    """Persist incomplete scientific audit without silently promoting history."""
+    if (scope.get("status") != "DEGRADED_HISTORICAL_EVIDENCE_MISSING"
+            or scope.get("active_freeze_verified") is not True
+            or scope.get("promotion_authority") is not False
+            or not scope.get("unverified_contests")):
+        raise ValueError("unverified-history audit requires verified current freeze and real history gaps")
+    result = {
+        "schema": "SMART_HISTORICAL_EVIDENCE_NONPROMOTION_AUDIT_1",
+        "status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+        "target_contest": TARGET,
+        "historical_verified": False,
+        "scientific_coverage_certified": False,
+        "independent_full_audit_completed": False,
+        "promotion_authority": False,
+        "terminal_promotion_permitted": False,
+        "active_freeze_verified": True,
+        "unverified_contests": list(scope["unverified_contests"]),
+        "prospective_ledger": {
+            "status": "NOT_PROVEN_HISTORICAL_EVIDENCE_MISSING",
+            "pair_count": None,
+            "no_future_leakage": False,
+        },
+    }
+    _atomic_write_json(root / INDEPENDENT_AUDIT_FILE, result)
+    return result
 
 
 def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:
@@ -1025,7 +1067,13 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     adjudications = _target_events(ledger, "ADJUDICATION")
     if len(adjudications) > 1:
         raise ValueError("multiple 3054 adjudications are forbidden")
-    _precheck_historical_freeze_evidence(root, ledger)
+    scoped = _precheck_historical_freeze_evidence(
+        root, ledger,
+        allow_unverified_history=binding.get("mode") in {
+            "ACTIVE_EPOCH", "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY"
+        },
+        current_sha256=binding["freeze_sha256"],
+    )
     if not adjudications:
         readiness = _preflight_readiness(root, binding)
         if readiness.get("readiness_status") != "PASS":
@@ -1057,7 +1105,11 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     adjudication = _ensure_adjudication(root, normalized["numbers"], binding=binding)
     learned = _ensure_learned_state(root, binding=binding)
     sequence_validation = _ensure_learning_and_sequence(root, binding=binding)
-    audit = _run_independent_audit(root, binding=binding)
+    audit = (
+        _unverified_history_audit(root, scoped)
+        if scoped is not None and scoped["unverified_contests"]
+        else _run_independent_audit(root, binding=binding)
+    )
     result_store = history_advance.advance_completed_epoch(root, binding["active"]) if binding.get("mode") == "ACTIVE_EPOCH" else _advance_canonical_result_store(root)
     ledger = champion_challenger.load_ledger(binding["ledger"])
     consensus = _read_json(root / CONSENSUS_FILE)

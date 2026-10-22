@@ -70,24 +70,46 @@ def audit_disconnections(
         if not condition:
             errors.append(description)
 
-    from smart_component_reachability import GOVERNED_EXTERNAL_OPERATOR
-    from smart_github_native_policy import POLICY_ID
+    # Reconcile to the current main's explicit multi-entrypoint external
+    # executor contract. These are *static roots*, not a dynamic run receipt.
+    from smart_component_reachability import (
+        EXTERNAL_EXECUTION_ENTRYPOINTS, EXTERNAL_EXECUTION_POLICY,
+    )
+    from smart_github_native_policy import POLICY_ID, PolicyViolation, verify
     expected_external = {
-        GOVERNED_EXTERNAL_OPERATOR: [
-            "GOVERNED_EXTERNAL:" + GOVERNED_EXTERNAL_OPERATOR,
-        ],
+        path: ["EXTERNAL_EXECUTOR:" + EXTERNAL_EXECUTION_POLICY]
+        for path in EXTERNAL_EXECUTION_ENTRYPOINTS
+        if path in by_path
     }
-    provenance = reach.get("entrypoint_provenance") or {}
-    check("external_governed_entrypoint_bound",
-          reach.get("external_entrypoints") == expected_external
-          and reach.get("workflow_entrypoints") == {}
-          and provenance.get("policy_id") == POLICY_ID
-          and provenance.get("root_contract_valid") is True
-          and provenance.get("github_actions_authorized") is False
-          and provenance.get("runtime_executed") is False
-          and provenance.get("authority_kind") == "GOVERNED_EXTERNAL_EXECUTION_STATIC_CONTRACT"
-          and by_path.get(GOVERNED_EXTERNAL_OPERATOR, {}).get("production_reachable") is True,
-          "canonical external CLI entrypoint missing, unauthorized, or falsely claims execution")
+    try:
+        policy = verify(root)
+    except (OSError, UnicodeError, PolicyViolation):
+        policy = {}
+    provenance = {
+        "policy_id": POLICY_ID,
+        "authority_kind": "GITHUB_CANONICAL_EXTERNAL_EXECUTOR_STATIC_CONTRACT",
+        "runtime_executed": bool(
+            reach.get("classification_policy", {}).get("runtime_execution_claimed")
+        ),
+        "github_actions_authorized": policy.get("github_actions_authorized"),
+        "root_contract_valid": (
+            reach.get("workflow_entrypoints") == expected_external
+            and reach.get("entrypoint_authority") == EXTERNAL_EXECUTION_POLICY
+            and "smart_github_operator.py" in expected_external
+            and "smart_fast_result_ingest.py" in expected_external
+            and by_path.get("smart_github_operator.py", {}).get("production_reachable") is True
+            and by_path.get("smart_fast_result_ingest.py", {}).get("production_reachable") is True
+            and policy.get("status") == "PASS"
+            and policy.get("external_executors_authorized") is True
+            and policy.get("github_actions_authorized") is False
+            and reach.get("classification_policy", {}).get("runtime_execution_claimed") is False
+        ),
+    }
+    check(
+        "external_governed_entrypoint_bound",
+        provenance["root_contract_valid"],
+        "canonical externally governed entrypoints missing, unauthorized, or falsely claim execution",
+    )
 
     check("source_registries_pass",
           reach["gate"]["status"] == components["gate"]["status"] == adapters["gate"]["status"] == "PASS",

@@ -109,7 +109,26 @@ def ingest(source: Path, output: Path, proof: Path, target: int, payload: dict[s
         if project_root is None:
             raise ValueError("operator result required; automatic CAIXA ingestion disabled")
         payload, _ = operator_fetch(project_root, target)
-    endpoint = None if payload.get("source") == "OPERATOR" else API_URL.format(contest=int(target))
+    incoming_source = payload.get("source")
+    if incoming_source == "OPERATOR":
+        result_authority, source_verified, endpoint = "OPERATOR", False, None
+    elif incoming_source == "CAIXA_PORTAL_TRANSCRIPTION":
+        result_authority, source_verified = "CAIXA_PORTAL_TRANSCRIPTION", False
+        endpoint = "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx"
+        if payload.get("endpoint") != endpoint:
+            raise ValueError("CAIXA portal transcription endpoint mismatch")
+    elif incoming_source == "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL":
+        result_authority, source_verified, endpoint = incoming_source, False, None
+    elif incoming_source == "CAIXA_CONTEST_API":
+        # A caller-supplied label and an API URL do not attest an actual HTTP fetch.
+        result_authority, source_verified = "CAIXA_CONTEST_API", False
+        endpoint = API_URL.format(contest=int(target))
+    elif incoming_source is None:
+        # Direct or batch-supplied JSON cannot inherit independent API authority.
+        # Only a separate, verifiable transport attestation could establish it.
+        result_authority, source_verified, endpoint = "UNATTRIBUTED_LOCAL_PAYLOAD", False, None
+    else:
+        raise ValueError("unknown result origin: refusing to assert API verification")
     official = validate_official_payload(payload, target)
     source_sha = sha256_file(source)
     frame = build_extended_frame(source, target, official)
@@ -118,8 +137,8 @@ def ingest(source: Path, output: Path, proof: Path, target: int, payload: dict[s
         "schema": SCHEMA,
         "created_utc": datetime.now(timezone.utc).isoformat(),
         "official_endpoint": endpoint,
-        "result_input_authority": "OPERATOR" if payload.get("source") == "OPERATOR" else "CAIXA_CONTEST_API",
-        "source_independently_verified": payload.get("source") != "OPERATOR",
+        "result_input_authority": result_authority,
+        "source_independently_verified": source_verified,
         "target_contest": int(target),
         "draw_date": official["draw_date_text"],
         "actual_numbers": official["numbers"],

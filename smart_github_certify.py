@@ -1,4 +1,4 @@
-"""Refresh GitHub-native construction certification from a tested Actions commit."""
+"""Refresh construction certification from externally tested canonical GitHub code."""
 from __future__ import annotations
 
 import hashlib
@@ -8,8 +8,6 @@ from datetime import datetime, timezone
 from pathlib import Path
 import re
 import shutil
-import socket
-import uuid
 import subprocess
 
 from smart_agent_runtime import sha256_file
@@ -21,6 +19,7 @@ from smart_authority_freshness import audit as audit_authority_freshness, verify
 from smart_global_integrity import build_global_integrity_proof, verify_global_integrity
 from smart_continuous_red_team import run_suite as run_red_team_suite, verify_latest_report, write_report as write_red_team_report
 from smart_startup_reconciler import reconcile as reconcile_startup
+from smart_source_identity import sha256_source_file
 
 ARTIFACTS = (
     "SMART_AUDIT_JUNIT_CURRENT.xml", "SMART_CANONICAL_ROOT.json",
@@ -30,46 +29,107 @@ ARTIFACTS = (
 )
 
 
-def execution_provenance(root: Path, source_commit: str, run_id: str, executor_host: str | None = None) -> dict:
-    """Identify the real executor without impersonating a GitHub Actions run."""
+def require_current_coverage_sources(root: Path) -> None:
+    """Reject historical coverage before updating any operational authority."""
+    from smart_global_integrity import REQUIRED_GLOBAL_COVERAGE_SOURCES, coverage_summary
+
+    root = Path(root).resolve()
+    proof = json.loads((root / "SMART_GLOBAL_INTEGRITY_PROOF.json").read_text(encoding="utf-8-sig"))
+    rows = proof.get("coverage")
+    expected = set(REQUIRED_GLOBAL_COVERAGE_SOURCES)
+    if (not isinstance(rows, list) or len(rows) != len(expected)
+            or any(not isinstance(row, dict) for row in rows)
+            or {row.get("source_key") for row in rows} != expected):
+        raise ValueError("current source-bound coverage inventory required")
+    reports = {}
+    for row in rows:
+        relative = row.get("report_file")
+        if not isinstance(relative, str):
+            raise ValueError("current source-bound coverage report required")
+        path = root / relative
+        if path.is_symlink() or not path.resolve().is_relative_to(root) or not path.is_file():
+            raise ValueError("current source-bound coverage report is unsafe or missing")
+        if relative not in reports:
+            reports[relative] = json.loads(path.read_text(encoding="utf-8-sig"))
+        source = row["source_key"]
+        entry = reports[relative].get("files", {}).get(source, {})
+        if entry.get("source_sha256") != sha256_source_file(root / source):
+            raise ValueError(f"current source-bound coverage required: {source}")
+        coverage_summary(root, relative, source)
+
+
+def execution_provenance(root: Path, source_commit: str, run_id: str,
+                         executor_host: str | None = None, *,
+                         executor_kind: str = "EXTERNAL_GOVERNED_EXECUTOR") -> dict:
+    """Record approved, source-bound external verification, never Actions.
+
+    GitHub is canonical for source, not an execution environment. This binding
+    is an integrity/authorization check, not a cryptographic host signature.
+    """
+    import socket
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions are prohibited for certification")
+    if executor_kind != "EXTERNAL_GOVERNED_EXECUTOR":
+        raise PermissionError("retired or GitHub Actions certification authority")
     if not isinstance(source_commit, str) or not re.fullmatch(r"[0-9a-f]{40}", source_commit):
         raise ValueError("invalid tested source commit")
-    if executor_host is None:
-        if os.environ.get("GITHUB_REPOSITORY") != "andrebarros78/SMART-MEGA":
-            raise PermissionError("certification requires canonical GitHub repository")
-        if not isinstance(run_id, str) or not run_id.isdecimal() or int(run_id) <= 0:
-            raise ValueError("invalid GitHub run identity")
-        return {"kind": "GITHUB_ACTIONS", "run_id": run_id}
-    if not isinstance(executor_host, str) or executor_host != socket.gethostname():
-        raise PermissionError("federated executor hostname does not match this machine")
-    try:
-        execution_id = str(uuid.UUID(run_id))
-    except (ValueError, TypeError, AttributeError) as exc:
-        raise ValueError("federated execution requires a UUID") from exc
-    if execution_id != run_id:
-        raise ValueError("federated execution UUID must be canonical")
-    origin = subprocess.run(["git", "remote", "get-url", "origin"], cwd=root,
-                            capture_output=True, text=True, check=True, timeout=30).stdout.strip()
+    if (not isinstance(run_id, str) or re.fullmatch(
+            r"[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}",
+            run_id) is None):
+        raise ValueError("external execution identity must be UUIDv4")
+    if (not isinstance(executor_host, str) or not executor_host
+            or executor_host != socket.gethostname()):
+        raise PermissionError("executor host identity mismatch")
+    if os.environ.get("SMART_MEGA_CERTIFICATION_APPROVAL") != source_commit:
+        raise PermissionError("GitHub canonical source requires explicit certification approval")
+    root = Path(root).resolve()
+    def git(*args: str) -> str:
+        return subprocess.run(["git", *args], cwd=root, capture_output=True,
+                              text=True, check=True, timeout=45).stdout.strip()
+    if Path(git("rev-parse", "--show-toplevel")).resolve() != root:
+        raise PermissionError("certification checkout is not the canonical Git root")
+    if git("rev-parse", "HEAD") != source_commit:
+        raise PermissionError("checked-out Git source differs from approved SHA")
+    origin = git("remote", "get-url", "origin")
     if origin not in {
-        "https://github.com/andrebarros78/SMART-MEGA",
         "https://github.com/andrebarros78/SMART-MEGA.git",
+        "https://github.com/andrebarros78/SMART-MEGA",
         "git@github.com:andrebarros78/SMART-MEGA.git",
         "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
     }:
-        raise PermissionError("federated certification requires canonical Git origin")
-    return {"kind": "FEDERATED_PC", "execution_id": execution_id, "hostname": executor_host}
-
+        raise PermissionError("certification Git origin is not canonical")
+    return {
+        "kind": "EXTERNAL_GOVERNED_EXECUTOR", "execution_id": run_id,
+        "hostname": executor_host, "source_commit": source_commit, "origin": origin,
+    }
 
 def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
-            executor_host: str | None = None) -> dict:
+            executor_host: str | None = None, executor_kind: str = "EXTERNAL_GOVERNED_EXECUTOR") -> dict:
     root = root.resolve()
-    execution = execution_provenance(root, source_commit, run_id, executor_host)
+    execution = execution_provenance(root, source_commit, run_id, executor_host, executor_kind=executor_kind)
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=root, capture_output=True,
                           text=True, check=True).stdout.strip()
     if head != source_commit:
         raise ValueError("certification source differs from checked-out commit")
-    if not candidate.is_file() or candidate.resolve() == (root / ARTIFACTS[0]).resolve():
-        raise ValueError("CI JUnit candidate missing or not independent of current proof")
+    if (not candidate.is_file() or candidate.is_symlink()
+            or candidate.resolve() == (root / ARTIFACTS[0]).resolve()):
+        raise ValueError("regression JUnit candidate missing or not independent of current proof")
+
+    # Validate the external result BEFORE changing any tracked authority.
+    # Use the immutable source-commit baseline, never the mutable checkout file.
+    from smart_linux_ci import baseline_junit_counts
+    baseline = baseline_junit_counts(root)
+    if baseline is None:
+        raise ValueError("immutable Git JUnit baseline unavailable")
+    observed = junit_summary(candidate)
+    if (observed.get("status") != "PASS"
+            or observed.get("tests", 0) < baseline["tests"]
+            or observed.get("failures") != 0 or observed.get("errors") != 0
+            or observed.get("skipped") != 0):
+        raise ValueError("regression coverage below immutable baseline or skipped tests")
+
+    require_current_coverage_sources(root)
 
     attributes = root / ".gitattributes"
     lines = attributes.read_text(encoding="utf-8").splitlines() if attributes.is_file() else []
@@ -92,10 +152,10 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
         "git_ref_sha": source_commit,
         "git_head": f"commit: {source_commit}",
         "authority_refreshed_at": datetime.now(timezone.utc).isoformat(),
-        "authority_refresh_reason": "GITHUB_NATIVE_CI_PROVENANCE" if executor_host is None else "FEDERATED_EXECUTION_PROVENANCE",
+        "authority_refresh_reason": "GITHUB_CANONICAL_EXTERNAL_REGRESSION_PROVENANCE",
         "certified_execution": execution,
         "certified_source_commit": source_commit,
-        "certified_ci_run_id": run_id if executor_host is None else None,
+        "certified_ci_run_id": run_id,
         "certified_source_code_fingerprint_sha256": fp["sha256"],
         "certified_regression_junit": junit.name,
         "certified_regression_junit_sha256": sha256_file(junit),
@@ -150,7 +210,7 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
     if startup["status"] != "OK":
         raise RuntimeError(f"operator startup requires recovery: {startup['failed_checks']}")
     return {"status": cert["status"], "tests": regression["tests"],
-            "source_commit": source_commit, "ci_run_id": run_id if executor_host is None else None,
+            "source_commit": source_commit, "ci_run_id": run_id,
             "execution": execution,
             "junit_sha256": sha256_file(junit), "certification_sha256": cert["sha256"],
             "governance_sha256": governance["sha256"],
@@ -159,6 +219,14 @@ def refresh(root: Path, candidate: Path, source_commit: str, run_id: str, *,
 
 
 if __name__ == "__main__":
-    result = refresh(Path.cwd(), Path("SMART_AUDIT_JUNIT_GITHUB.xml"),
-                     os.environ.get("GITHUB_SHA", ""), os.environ.get("GITHUB_RUN_ID", ""))
+    import argparse
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--candidate", required=True, type=Path)
+    parser.add_argument("--source-commit", required=True)
+    parser.add_argument("--execution-id", required=True)
+    args = parser.parse_args()
+    import socket
+    result = refresh(Path.cwd(), args.candidate, args.source_commit,
+                     args.execution_id, executor_host=socket.gethostname(),
+                     executor_kind="EXTERNAL_GOVERNED_EXECUTOR")
     print(json.dumps(result, ensure_ascii=False, sort_keys=True))

@@ -116,10 +116,46 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
     if not batch_path.is_file():
         raise FileNotFoundError(batch_path)
     obj = json.loads(batch_path.read_text(encoding="utf-8-sig"))
-    if not isinstance(obj, dict) or obj.get("schema") != OFFICIAL_BATCH_SCHEMA:
+    portal_schema = "SMART_CAIXA_PORTAL_TRANSCRIPTION_BATCH_1"
+    portal_authority = "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED"
+    portal_url = "https://loterias.caixa.gov.br/Paginas/Mega-Sena.aspx"
+    public_schema = "SMART_PUBLIC_CORROBORATED_RESULT_BATCH_1"
+    public_authority = "TWO_PUBLIC_SOURCES_NOT_CAIXA_API_VERIFIED"
+    if not isinstance(obj, dict) or obj.get("schema") not in {
+        OFFICIAL_BATCH_SCHEMA, portal_schema, public_schema
+    }:
         raise ValueError("official result batch schema invalid")
-    if obj.get("authority") != "CAIXA_LOTERIAS_OFFICIAL_API":
+    is_portal_transcription = obj["schema"] == portal_schema
+    is_public = obj["schema"] == public_schema
+    is_api_claim = not (is_public or is_portal_transcription)
+    expected_authority = (
+        portal_authority if is_portal_transcription
+        else public_authority if is_public
+        else "CAIXA_LOTERIAS_OFFICIAL_API"
+    )
+    if obj.get("authority") != expected_authority:
         raise ValueError("official result batch authority invalid")
+    if is_portal_transcription and (
+        obj.get("raw_api_independently_verified") is not False
+        or obj.get("portal_url") != portal_url
+        or obj.get("capture_transport") != "PUBLIC_CAIXA_PAGE_TRANSCRIPTION"
+    ):
+        raise ValueError("portal transcription cannot claim independent API verification")
+    if is_public and (
+        obj.get("raw_api_independently_verified") is not False
+        or obj.get("scientific_certification_authorized") is not False
+        or obj.get("predictive_weight_change_authorized") is not False
+        or obj.get("capture_transport") != "TWO_PUBLIC_WEB_SOURCES_CROSS_CHECK"
+    ):
+        raise ValueError("public results cannot claim API or scientific authority")
+    if is_api_claim and (
+        obj.get("raw_api_independently_verified") not in (None, False)
+        or obj.get("scientific_certification_authorized") is True
+        or obj.get("predictive_weight_change_authorized") is True
+    ):
+        # A writable, self-hashed JSON file cannot attest HTTP transport,
+        # independent official origin or predictive/scientific authority.
+        raise ValueError("self-declared API transport or scientific authority is unverified")
     observed = obj.get("sha256")
     body = dict(obj); body.pop("sha256", None)
     if not isinstance(observed, str) or observed != _sha_json(body):
@@ -133,21 +169,57 @@ def load_official_payload_batch(path: str | Path) -> tuple[dict[int, dict[str, A
             raise ValueError("official result batch row invalid")
         target = int(row.get("numero", -1))
         validate_official_payload(row, target)
-        expected_endpoint = f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{target}"
+        expected_endpoint = (
+            None if is_public
+            else portal_url if is_portal_transcription
+            else f"https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/{target}"
+        )
         if row.get("endpoint") != expected_endpoint:
             raise ValueError(f"official result batch endpoint mismatch for target {target}")
+        if is_public:
+            if row.get("source") != "PUBLIC_CROSSCHECK_UNVERIFIED_OFFICIAL":
+                raise ValueError("public batch result source invalid")
+        elif is_portal_transcription:
+            if row.get("source") != "CAIXA_PORTAL_TRANSCRIPTION":
+                raise ValueError("portal batch result source invalid")
+        elif row.get("source") not in {None, "CAIXA_CONTEST_API"}:
+            raise ValueError("API result batch source is not an accepted unverified claim")
         if target in payloads:
             raise ValueError("official result batch contains duplicate target")
         payloads[target] = row
     ordered = sorted(payloads)
     if ordered != list(range(ordered[0], ordered[-1] + 1)):
         raise ValueError("official result batch target sequence contains gaps")
+    if is_public:
+        providers = obj.get("providers")
+        from smart_public_result_capture import SOURCES
+        if (not isinstance(providers, list) or len(providers) != 2
+                or {p.get("provider") for p in providers if isinstance(p, dict)} != set(SOURCES)):
+            raise ValueError("two independent public sources required")
+        for item in providers:
+            if not isinstance(item, dict):
+                raise ValueError("public provider evidence invalid")
+            for target in ordered:
+                expected_url = SOURCES[item["provider"]].format(target=target)
+                if (item.get("url") != expected_url
+                        or item.get("draw_date") != payloads[target].get("dataApuracao")
+                        or sorted(item.get("numbers") or []) != sorted(int(n) for n in payloads[target]["listaDezenas"])
+                        or not isinstance(item.get("html_sha256"), str)
+                        or len(item["html_sha256"]) != 64):
+                    raise ValueError("public result crosscheck provenance mismatch")
     evidence = {
-        "schema": OFFICIAL_BATCH_SCHEMA,
+        "schema": obj["schema"],
+        # The hash authenticates local file consistency, NOT a network fetch.
+        "raw_api_independently_verified": False,
+        "official_transport_attested": False,
+        "scientific_certification_authorized": False,
+        "predictive_weight_change_authorized": False,
+        "declared_authority": obj["authority"],
         "file": batch_path.name,
         "file_sha256": sha256_file(batch_path),
         "document_sha256": observed,
-        "authority": obj["authority"],
+        "authority": ("CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT"
+                      if is_api_claim else obj["authority"]),
         "retrieved_at_utc": obj.get("retrieved_at_utc"),
         "capture_transport": obj.get("capture_transport"),
         "targets": ordered,
@@ -185,8 +257,25 @@ def catch_up_missed_results(
         raise ValueError("catch-up clock must be timezone-aware")
     certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)
     lifecycle_before = load_lifecycle(root)
-    if lifecycle_before.get("state") not in {"ADJUDICATED", "REVIEWED", "HOLD"}:
+    state = lifecycle_before.get("state")
+    if state not in {"ADJUDICATED", "REVIEWED", "HOLD"}:
         raise ValueError("missed-result catch-up requires ADJUDICATED, REVIEWED, or HOLD lifecycle")
+    # Fail before learning, history advancement or any operational authority
+    # write. The previous backward check ran only AFTER advancing an active
+    # adjudicated epoch, which could mutate state for an invalid request.
+    if state == "HOLD":
+        completed = lifecycle_before.get("completed_contest")
+        current_target = lifecycle_before.get("target_contest")
+        if (type(completed) is not int or type(current_target) is not int
+                or completed < 1 or current_target != completed + 1):
+            raise ValueError("catch-up HOLD lifecycle sequence invalid")
+        minimum_completed_contest = completed
+    else:
+        minimum_completed_contest = lifecycle_before.get("target_contest")
+        if type(minimum_completed_contest) is not int or minimum_completed_contest < 1:
+            raise ValueError("catch-up adjudicated lifecycle target invalid")
+    if through_target < minimum_completed_contest:
+        raise ValueError("catch-up through target cannot move canonical history backward")
 
     canonical = root / "Mega-Sena.xlsx"
     active_path = root / "SMART_ACTIVE_EPOCH.json"

@@ -43,7 +43,7 @@ def _strict_top6(value, label: str) -> list[int]:
 def _resolve_evidence_file(raw: object, fr: dict) -> Path:
     path = Path(str(raw))
     if path.is_absolute() or path.is_file():
-        return path
+        return path.absolute()
 
     freeze_file = Path(str(fr.get('freeze_file', '')))
     if freeze_file.is_absolute():
@@ -80,9 +80,12 @@ def _resolve_freeze_file(raw: object, expected_sha256: object, ledger_path: Path
         seen.add(key)
         if not candidate.is_file():
             continue
-        existing.append(candidate)
-        if isinstance(expected_sha256, str) and sha256(candidate) == expected_sha256:
-            matches.append(candidate)
+        # Hash and return the same absolute file inspected above. The shared
+        # sha256 helper roots relative paths at its own module, not at cwd.
+        checked = candidate.absolute()
+        existing.append(checked)
+        if isinstance(expected_sha256, str) and sha256(checked) == expected_sha256:
+            matches.append(checked)
 
     if len(matches) == 1:
         return matches[0]

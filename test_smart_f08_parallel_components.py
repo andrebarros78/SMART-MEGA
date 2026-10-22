@@ -19,7 +19,7 @@ def _audit():
     groups = manifest["groups"]
     paths = [p for members in groups.values() for p in members]
     assert len(paths) == len(set(paths))
-    assert len(paths) == 61
+    assert len(paths) == 52
     assert "smart_video_official_media_admission.py" in groups["VALIDATION_ONLY"]
     assert "smart_b2_physical_learning_gate.py" in groups["VALIDATION_ONLY"]
     assert {"smart_video_learning.py", "smart_video_observation.py",

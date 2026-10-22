@@ -1,7 +1,7 @@
-"""Execute one SMART-MEGA operator action on a GitHub-hosted runner.
+"""Execute one SMART-MEGA operator action on an authorized external checkout.
 
-The repository on main is the only durable operational state. A failed action
-never publishes its runner-local changes.
+GitHub main remains the only durable operational state. GitHub Actions is
+forbidden. A failed action never publishes executor-local changes.
 """
 from __future__ import annotations
 
@@ -17,11 +17,11 @@ import sys
 from smart_transaction_journal import JOURNAL_PATH
 
 REPOSITORY = "andrebarros78/SMART-MEGA"
-READ_ONLY = {"status", "preflight", "result-preflight"}
+READ_ONLY = {"status", "preflight", "result-preflight", "show-card"}
 TARGET_ACTIONS = {
     "preflight", "result-preflight", "prepare", "withdraw", "recover-missed", "catch-up",
     "authorize-next-cycle", "authorize-generation", "freeze", "adjudicate", "register-result", "generate-card",
-    "post-result-report", "review", "hold", "terminal",
+    "post-result-report", "review", "hold", "terminal", "show-card", "recover-cycle", "complete-result",
 }
 ACTIONS = READ_ONLY | TARGET_ACTIONS
 PAYLOAD_REQUIRED = {"adjudicate", "review", "register-result"}
@@ -30,6 +30,7 @@ PAYLOAD_OPTION = {
     "register-result": "--result-file",
     "review": "--review-file",
     "catch-up": "--payload-file",
+    "recover-cycle": "--payload-file",
 }
 SUFFIXES = {".json", ".md", ".xml", ".txt", ".xlsx", ".csv", ".pdf", ".log"}
 TRANSIENT_IGNORED = (
@@ -51,7 +52,8 @@ def command_args(operation: str, target: str = "", payload: str = "") -> list[st
         raise ValueError(f"{operation} requires a repository payload path")
     if payload and operation not in PAYLOAD_OPTION:
         raise ValueError(f"{operation} does not accept a payload")
-    args = [sys.executable, "smart_operator.py", operation]
+    args = ([sys.executable, "smart_frozen_card_reader.py", "--root", str(Path(__file__).resolve().parent)]
+            if operation == "show-card" else [sys.executable, "smart_operator.py", operation])
     if operation in TARGET_ACTIONS:
         args += ["--through" if operation == "catch-up" else "--target", target]
     if payload:
@@ -122,11 +124,26 @@ def _require_no_unpersisted_state(root: Path) -> None:
         raise RuntimeError(f"operator generated ignored state: {material[:20]}")
 
 
+def _require_verified_pre_draw_window(schedule: dict, target: int) -> dict:
+    """Fail closed if the selected draw's actual publication window is unproven."""
+    from smart_target_schedule import assert_pre_draw_window
+
+    if (not isinstance(schedule, dict)
+            or type(schedule.get("target_contest")) is not int
+            or schedule["target_contest"] != target):
+        raise ValueError("freeze schedule target does not match primary card")
+    checked = assert_pre_draw_window(schedule)
+    if (not isinstance(checked, dict)
+            or checked.get("status") != "PASS"
+            or checked.get("before_scheduled_draw") is not True
+            or checked.get("target_contest") != target):
+        raise ValueError("freeze publication requires verified pre-draw window for same target")
+    return checked
+
+
 def _verified_freeze_publication(root: Path, observation: dict, changes: list[str],
                                  target: str) -> dict:
     """Allow a frozen card into main only while its pre-draw window is open."""
-    from smart_target_schedule import assert_pre_draw_window
-
     proof = observation.get("proof")
     if not isinstance(proof, dict) or proof.get("status") != "PASS" or proof.get("result_used") is not False:
         raise ValueError("freeze lacks a valid prospective full-process proof")
@@ -167,9 +184,51 @@ def _verified_freeze_publication(root: Path, observation: dict, changes: list[st
             or len(set(numbers)) != 6):
         raise ValueError("frozen primary card must contain six distinct numbers")
     schedule = proof.get("target_schedule")
-    assert_pre_draw_window(schedule)
+    _require_verified_pre_draw_window(schedule, int(target))
     return {"numbers": numbers, "file": card_file, "sha256": file_sha, "schedule": schedule,
             "run_id": run_id, "confidence": confidence}
+
+
+
+def _verified_cycle_card_publication(root: Path, observation: dict, changes: list[str],
+                                    target: str) -> tuple[dict, dict]:
+    """Reuse the native freeze publication gate for the resumable cycle.
+
+    A cycle status is not itself a freeze proof. Recover the immutable proof
+    from the verified model card and require the card to be NEW in this commit.
+    """
+    from smart_frozen_card_reader import read_frozen_card, verify_result
+
+    if (not isinstance(observation, dict)
+            or observation.get("status") != "MODEL_CARD_GENERATED"
+            or observation.get("retroactive_generation") is not False
+            or observation.get("scientific_6of6_proven") is True):
+        raise ValueError("recover-cycle has not proven new prospective model generation")
+    supplied = observation.get("card")
+    verified = read_frozen_card(root, int(target))
+    if not verify_result(verified) or supplied != verified:
+        raise ValueError("recover-cycle frozen model card does not match immutable evidence")
+
+    active_path = root / "SMART_ACTIVE_EPOCH.json"
+    active = json.loads(active_path.read_text(encoding="utf-8-sig"))
+    authority = active.get("freeze_authority")
+    source = authority.get("file") if isinstance(authority, dict) else None
+    if (not isinstance(source, str) or not allowed_artifact(source)
+            or "\\" in source or any(part in {"..", "."} for part in PurePosixPath(source).parts)):
+        raise ValueError("recover-cycle freeze evidence path is unsafe")
+    freeze_file = root / source
+    if freeze_file.is_symlink() or not freeze_file.is_file():
+        raise ValueError("recover-cycle freeze evidence is absent")
+    proof_file = freeze_file.parent / "FULL_PROCESS_PROOF.json"
+    if proof_file.is_symlink() or not proof_file.is_file():
+        raise ValueError("recover-cycle full-process proof is absent")
+    proof = json.loads(proof_file.read_text(encoding="utf-8-sig"))
+    frozen = _verified_freeze_publication(root, {"proof": proof}, changes, target)
+    if (verified.get("primary_card_sha256") != frozen["sha256"]
+            or verified.get("numbers") != frozen["numbers"]
+            or verified.get("target_contest") != int(target)):
+        raise ValueError("recover-cycle published card differs from model reader")
+    return frozen, proof
 
 
 def _pin_artifact_bytes(root: Path, changes: list[str]) -> bool:
@@ -208,16 +267,50 @@ def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
             raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
 
 
+def _require_external_operator_authority(root: Path, operation: str, target: str) -> None:
+    """Authorize one intentional mutation, never GitHub Actions or a stale checkout.
+
+    The approval token prevents accidental writes; Git push credentials still
+    decide whether an operator can write to the canonical remote.
+    """
+    from smart_github_native_policy import verify as verify_execution_policy
+
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions or GitHub event execution is prohibited")
+    source = _git(root, "rev-parse", "HEAD")
+    if not re.fullmatch(r"[0-9a-f]{40}", source):
+        raise PermissionError("invalid source commit for external operator")
+    expected = f"{operation}:{target}:{source}"
+    if os.environ.get("SMART_MEGA_OPERATOR_APPROVAL") != expected:
+        raise PermissionError("explicit operation:target:commit approval is required")
+    if _git(root, "symbolic-ref", "--short", "HEAD") != "main":
+        raise PermissionError("external operator must use canonical main branch")
+    origin = _git(root, "remote", "get-url", "origin")
+    if origin not in {
+        "https://github.com/andrebarros78/SMART-MEGA.git",
+        "https://github.com/andrebarros78/SMART-MEGA",
+        "git@github.com:andrebarros78/SMART-MEGA.git",
+        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+    }:
+        raise PermissionError("external operator origin is not the canonical GitHub repository")
+    remote_line = _git(root, "ls-remote", "origin", "refs/heads/main")
+    matches = remote_line.split()
+    if len(matches) != 2 or matches[1] != "refs/heads/main" or matches[0] != source:
+        raise PermissionError("canonical GitHub main moved or is not provably current")
+    if verify_execution_policy(root).get("status") != "PASS":
+        raise PermissionError("external execution policy is not PASS")
+
+
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
+    if (os.environ.get("GITHUB_ACTIONS", "").lower() in {"true", "1"}
+            or os.environ.get("GITHUB_EVENT_NAME")):
+        raise PermissionError("GitHub Actions and GitHub-event execution are forbidden")
     root = Path(__file__).resolve().parent
     if Path(_git(root, "rev-parse", "--show-toplevel")).resolve() != root:
         raise RuntimeError("operator must run at the Git top-level")
-    if operation not in READ_ONLY and (
-        os.environ.get("GITHUB_REPOSITORY") != REPOSITORY
-        or os.environ.get("GITHUB_REF") != "refs/heads/main"
-        or os.environ.get("GITHUB_EVENT_NAME") != "workflow_dispatch"
-    ):
-        raise PermissionError("mutations require explicit dispatch on canonical GitHub main")
+    if operation not in READ_ONLY:
+        _require_external_operator_authority(root, operation, target)
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout is dirty before operator action")
     if payload:
@@ -237,8 +330,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
             raise RuntimeError(f"read-only operation changed canonical files: {changes[:20]}")
         result_readiness = None
         if operation == "preflight" and observation.get("status") == "ALREADY_FROZEN":
-            # Reuse the existing GitHub workflow choice; OAuth credentials may
-            # not edit workflow dispatch definitions. Keep F15 frozen semantics.
+            # Keep F15 frozen semantics using the existing read-only CLI.
             readiness_run = subprocess.run(
                 command_args("result-preflight", target),
                 cwd=root, text=True, capture_output=True, check=False, timeout=180,
@@ -264,11 +356,17 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
                 "observation": observation, "result_preflight": result_readiness, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
-    frozen_card = _verified_freeze_publication(root, observation, changes, target) if operation in {"freeze", "generate-card"} else None
-    if operation in {"freeze", "generate-card"}:
+    frozen_card = None
+    freeze_proof = None
+    if operation == "recover-cycle":
+        frozen_card, freeze_proof = _verified_cycle_card_publication(root, observation, changes, target)
+    elif operation in {"freeze", "generate-card"}:
+        frozen_card = _verified_freeze_publication(root, observation, changes, target)
+        freeze_proof = observation["proof"]
+    if frozen_card is not None:
         from smart_calibration_safety_gate import historical_baseline, verify_freeze_calibration
         historical_baseline(root)
-        verify_freeze_calibration(root, observation["proof"])
+        verify_freeze_calibration(root, freeze_proof)
     rejected = [path for path in changes if not allowed_artifact(path)]
     if rejected:
         raise RuntimeError(f"operator changed non-operational files: {rejected[:20]}")
@@ -297,8 +395,9 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout still contains uncommitted state")
     if frozen_card is not None:
-        from smart_target_schedule import assert_pre_draw_window
-        assert_pre_draw_window(frozen_card["schedule"])
+        # Recheck after the commit, before the push: the pre-draw cutoff can
+        # expire while files are validated and artifacts are committed.
+        _require_verified_pre_draw_window(frozen_card["schedule"], int(target))
     _git(root, "push", "origin", "HEAD:main")
     remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
     if remote != commit:
@@ -334,7 +433,13 @@ def main() -> int:
     if args.operation in READ_ONLY:
         observation = proof.pop("observation")
         proof["observation_status"] = observation.get("status")
-        proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest")
+        if args.operation == "show-card":
+            # Display the audited frozen MODEL numbers instead of discarding
+            # the observation during the common read-only status rendering.
+            if observation.get("status") != "FROZEN_MODEL_CARD_VERIFIED":
+                raise RuntimeError("read-only model card consumer did not verify evidence")
+            proof["model_card"] = observation
+        proof["active_target"] = (observation.get("active_operation") or {}).get("target_contest") if args.operation != "show-card" else observation.get("target_contest")
         proof["reconciled_state"] = (observation.get("reconciled_state") or {}).get("status")
         if isinstance(proof.get("result_preflight"), dict):
             proof["result_readiness_status"] = proof["result_preflight"].get("status")

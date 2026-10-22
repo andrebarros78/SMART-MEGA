@@ -1,6 +1,27 @@
 from pathlib import Path
 import pytest
 
+
+@pytest.fixture(autouse=True)
+def isolated_legacy_sandbox_boundary(tmp_path_factory, monkeypatch):
+    """Keep legacy fixture compatibility out of production interpreters.
+
+    Only pytest's actual temporary tree can receive the adapter. Checkouts,
+    similarly named folders elsewhere, subprocesses and CLI users cannot.
+    """
+    import smart_canonical_identity as identity
+
+    base = tmp_path_factory.getbasetemp().resolve()
+    checkout = identity.OPERATIONAL_ROOT.resolve()
+
+    def fixture_root(candidate):
+        if candidate is None:
+            return False
+        resolved = Path(candidate).resolve()
+        return resolved != checkout and resolved.is_relative_to(base)
+
+    monkeypatch.setattr(identity, "_authorized_pytest_sandbox", fixture_root)
+
 _SANDBOX_MODULES = {
 "test_smart_11of10_critical_path_coverage","test_smart_architecture_hardening_20260905",
 "test_smart_d015_critical_operational_coverage","test_smart_full_process_temporal_guard",

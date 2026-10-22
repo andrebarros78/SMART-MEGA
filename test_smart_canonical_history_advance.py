@@ -75,6 +75,57 @@ def test_advance_completed_epoch_is_atomic_and_idempotent(tmp_path: Path, monkey
     assert second['status'] == 'ALREADY_CURRENT'
 
 
+
+def test_replay_preserves_original_pass_receipt_bytes(tmp_path: Path, monkeypatch):
+    canonical, through, _, _, active = _fixture(tmp_path, monkeypatch)
+    first = cha.advance_completed_epoch(tmp_path, active)
+    assert first['status'] == 'PASS'
+    receipt = tmp_path / 'SMART_CANONICAL_HISTORY_ADVANCE_4.json'
+    original = receipt.read_bytes()
+    original_sha = _sha(receipt)
+    again = cha.advance_completed_epoch(tmp_path, active)
+    assert again['status'] == 'ALREADY_CURRENT'
+    assert again['existing_proof_preserved'] is True
+    assert again['persisted_proof_sha256'] == original_sha
+    assert receipt.read_bytes() == original
+    assert json.loads(receipt.read_text())['status'] == 'PASS'
+
+
+def test_replay_keeps_first_pass_after_metadata_enrichment(tmp_path: Path, monkeypatch):
+    canonical, through, _, _, active = _fixture(tmp_path, monkeypatch)
+    assert cha.advance_completed_epoch(tmp_path, active)['status'] == 'PASS'
+    receipt = tmp_path / 'SMART_CANONICAL_HISTORY_ADVANCE_4.json'
+    original = receipt.read_bytes()
+    frame = pd.read_excel(canonical)
+    frame.loc[frame['Concurso'] == 4, 'Ganhadores 6 acertos'] = 0
+    frame.to_excel(canonical, index=False)
+    replay = cha.advance_completed_epoch(tmp_path, active)
+    assert replay['status'] == 'ALREADY_CURRENT'
+    assert replay['canonical_metadata_enrichment_preserved'] is True
+    assert receipt.read_bytes() == original
+
+
+@pytest.mark.parametrize('corrupt', ['self_hash', 'target'])
+def test_replay_rejects_modified_original_receipt(tmp_path: Path, monkeypatch, corrupt):
+    _, _, _, _, active = _fixture(tmp_path, monkeypatch)
+    assert cha.advance_completed_epoch(tmp_path, active)['status'] == 'PASS'
+    receipt = tmp_path / 'SMART_CANONICAL_HISTORY_ADVANCE_4.json'
+    forged = json.loads(receipt.read_text())
+    if corrupt == 'self_hash':
+        forged['sha256'] = '0' * 64
+    else:
+        forged['target_contest'] = 5
+        forged.pop('sha256')
+        forged['sha256'] = hashlib.sha256(json.dumps(
+            forged, ensure_ascii=False, sort_keys=True, separators=(',', ':')
+        ).encode('utf-8')).hexdigest()
+    receipt.write_text(json.dumps(forged), encoding='utf-8')
+    malicious = receipt.read_bytes()
+    with pytest.raises(ValueError, match='existing canonical history advance proof invalid'):
+        cha.advance_completed_epoch(tmp_path, active)
+    assert receipt.read_bytes() == malicious
+
+
 def test_advance_rejects_prefix_change(tmp_path: Path, monkeypatch):
     canonical, through, result, ledger, active = _fixture(tmp_path, monkeypatch)
     df = pd.read_excel(through)

@@ -42,8 +42,14 @@ def _write_coverage(root: Path, name: str = 'cov.json', source: str = 'a.py') ->
 
 def _write_junit(root: Path, failures: int = 0, errors: int = 0, tests: int = 3, skipped: int = 0) -> Path:
     p = root / 'junit.xml'
+    cases = ''.join(
+        f'<testcase name="case_{index}">'
+        + ('<failure/>' if index < failures else '<error/>' if index < failures + errors
+           else '<skipped/>' if index < failures + errors + skipped else '')
+        + '</testcase>' for index in range(tests)
+    )
     p.write_text(
-        f'<testsuites><testsuite tests="{tests}" failures="{failures}" errors="{errors}" skipped="{skipped}"></testsuite></testsuites>',
+        f'<testsuites><testsuite tests="{tests}" failures="{failures}" errors="{errors}" skipped="{skipped}">{cases}</testsuite></testsuites>',
         encoding='utf-8',
     )
     return p

@@ -88,9 +88,12 @@ def test_successful_operation_publishes_its_state_to_git(
             "print(json.dumps({'status':'PREPARED'}))",
         ],
     )
-    monkeypatch.setenv("GITHUB_REPOSITORY", "andrebarros78/SMART-MEGA")
-    monkeypatch.setenv("GITHUB_REF", "refs/heads/main")
-    monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    # This test covers the Git transaction with a local bare fixture;
+    # authorization and remote identity are independently covered below.
+    monkeypatch.setattr(github_operator, "_require_external_operator_authority",
+                        lambda root, operation, target: None)
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
     if not should_publish:
         with pytest.raises(subprocess.CalledProcessError):
             github_operator.execute("prepare", "3067")
@@ -169,6 +172,32 @@ def test_freeze_card_requires_bound_artifact_and_open_pre_draw_window(tmp_path: 
     }}
     with pytest.raises(ValueError, match="freeze window closed"):
         github_operator._verified_freeze_publication(tmp_path, {"proof": expired}, [relative], "3067")
+    manual_schedule = {**proof, "target_schedule": {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "authority": "OPERATOR_SELECTED_TARGET",
+        "operator_selected_target": True,
+        "result_used": False,
+        "scheduled_datetime": None,
+        "target_contest": 3067,
+    }}
+    with pytest.raises(ValueError, match="verified pre-draw window"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": manual_schedule}, [relative], "3067"
+        )
+    wrong_contest_schedule = {**proof, "target_schedule": {
+        **proof["target_schedule"], "target_contest": 3074,
+    }}
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": wrong_contest_schedule}, [relative], "3067"
+        )
+    invalid_type_schedule = {**proof, "target_schedule": {
+        **proof["target_schedule"], "target_contest": True,
+    }}
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._verified_freeze_publication(
+            tmp_path, {"proof": invalid_type_schedule}, [relative], "3067"
+        )
 
 def test_operator_cli_failure_returns_standardized_error(monkeypatch, capsys):
     monkeypatch.setattr(sys, "argv", [
@@ -245,3 +274,224 @@ def test_native_transaction_journal_survives_git_publication(tmp_path: Path):
     )
     assert (clone / JOURNAL_PATH).read_bytes() == original
     assert read_entries(clone) == entries
+
+
+def _prospective_cycle_fixture(tmp_path: Path, monkeypatch):
+    """Model reader is isolated; publication still verifies card bytes and cutoff."""
+    from smart_frozen_card_reader import sha256_json
+    import smart_frozen_card_reader
+
+    target = 3073
+    freeze_file = tmp_path / "runtime/learning_epochs/e3073/SMART_FREEZE_3073.json"
+    freeze_file.parent.mkdir(parents=True, exist_ok=True)
+    freeze_file.write_text("{}", encoding="utf-8")
+    (tmp_path / "SMART_ACTIVE_EPOCH.json").write_text(json.dumps({
+        "freeze_authority": {"file": str(freeze_file.relative_to(tmp_path)).replace("\\", "/")}
+    }), encoding="utf-8")
+    relative = "runtime/learning_epochs/e3073/SMART_3073_PRIMARY_CARD.json"
+    path = tmp_path / relative
+    card = {
+        "status": "FROZEN", "result_used": False, "target_contest": target,
+        "product_role": "FINAL_SINGLE_CARD_PRODUCT", "freeze_sha256": "a" * 64,
+        "numbers": [2, 11, 20, 34, 43, 60], "run_id": "epoch-3073",
+        "confidence": {"status": "UNPROVEN_PROSPECTIVE", "level": "LOW",
+                       "calibrated": False, "probability_six_hits": None,
+                       "guaranteed": False},
+    }
+    card["sha256"] = sha256_json(card)
+    path.write_text(json.dumps(card), encoding="utf-8")
+    card_sha = hashlib.sha256(path.read_bytes()).hexdigest()
+    proof = {
+        "status": "PASS", "result_used": False, "target_contest": target,
+        "epoch_id": "epoch-3073", "freeze_sha256": "a" * 64,
+        "primary_card": card, "primary_card_file": relative,
+        "primary_card_sha256": card_sha,
+        "target_schedule": {
+            "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+            "target_contest": target, "scheduled_datetime": "2100-01-01T21:00:00-03:00"
+        },
+    }
+    (freeze_file.parent / "FULL_PROCESS_PROOF.json").write_text(
+        json.dumps(proof), encoding="utf-8"
+    )
+    verified = {
+        "schema": "SMART_FROZEN_MODEL_CARD_READ_1",
+        "status": "FROZEN_MODEL_CARD_VERIFIED", "target_contest": target,
+        "numbers": card["numbers"], "primary_card_sha256": card_sha,
+        "readonly": True, "result_used_in_generation": False,
+        "certified_predictive_advantage": False,
+        "past_draw_can_be_reused_as_future_prediction": False,
+    }
+    verified["sha256"] = sha256_json(verified)
+    monkeypatch.setattr(smart_frozen_card_reader, "read_frozen_card",
+                        lambda root, selected: verified if selected == target else None)
+    return relative, verified, proof
+
+
+def test_native_github_dispatch_exposes_existing_cycle_and_postresult_actions():
+    assert command_args("complete-result", "3071")[-4:] == [
+        "smart_operator.py", "complete-result", "--target", "3071"
+    ]
+    assert command_args("recover-cycle", "3073", "SMART_PUBLIC_RESULT_BATCH_3072.json")[-6:] == [
+        "smart_operator.py", "recover-cycle", "--target", "3073",
+        "--payload-file", "SMART_PUBLIC_RESULT_BATCH_3072.json"
+    ]
+    assert command_args("show-card", "3071")[-2:] == ["--target", "3071"]
+    with pytest.raises(ValueError, match="target"):
+        command_args("recover-cycle", "")
+    with pytest.raises(ValueError, match="does not accept"):
+        command_args("complete-result", "3071", "SMART_RESULT.json")
+
+
+def test_native_cycle_publishes_only_new_evidence_bound_prospective_card(tmp_path, monkeypatch):
+    relative, verified, proof = _prospective_cycle_fixture(tmp_path, monkeypatch)
+    observation = {
+        "status": "MODEL_CARD_GENERATED", "retroactive_generation": False,
+        "scientific_6of6_proven": False, "target_contest": 3073,
+        "card": verified,
+    }
+    frozen, recovered = github_operator._verified_cycle_card_publication(
+        tmp_path, observation, [relative], "3073"
+    )
+    assert frozen["sha256"] == verified["primary_card_sha256"]
+    assert frozen["numbers"] == verified["numbers"]
+    assert recovered == proof
+    with pytest.raises(ValueError, match="new persistent artifact"):
+        github_operator._verified_cycle_card_publication(tmp_path, observation, [], "3073")
+
+
+def test_native_cycle_rejects_replay_invented_card_or_false_certification(tmp_path, monkeypatch):
+    relative, verified, _ = _prospective_cycle_fixture(tmp_path, monkeypatch)
+    observation = {
+        "status": "MODEL_CARD_GENERATED", "retroactive_generation": False,
+        "scientific_6of6_proven": False, "card": verified,
+    }
+    tampered = dict(observation, card={**verified, "numbers": [1, 2, 3, 4, 5, 6]})
+    with pytest.raises(ValueError, match="immutable evidence"):
+        github_operator._verified_cycle_card_publication(tmp_path, tampered, [relative], "3073")
+    for altered in (
+        dict(observation, status="MODEL_CARD_ALREADY_FROZEN"),
+        dict(observation, retroactive_generation=True),
+        dict(observation, scientific_6of6_proven=True),
+    ):
+        with pytest.raises(ValueError, match="new prospective"):
+            github_operator._verified_cycle_card_publication(tmp_path, altered, [relative], "3073")
+
+
+def test_native_cycle_rejects_wrong_target_and_missing_full_proof(tmp_path, monkeypatch):
+    relative, verified, _ = _prospective_cycle_fixture(tmp_path, monkeypatch)
+    observation = {"status": "MODEL_CARD_GENERATED", "retroactive_generation": False,
+                   "card": verified}
+    with pytest.raises(ValueError, match="new prospective|immutable evidence"):
+        github_operator._verified_cycle_card_publication(tmp_path, observation, [relative], "3074")
+    (tmp_path / "runtime/learning_epochs/e3073/FULL_PROCESS_PROOF.json").unlink()
+    with pytest.raises(ValueError, match="proof is absent"):
+        github_operator._verified_cycle_card_publication(tmp_path, observation, [relative], "3073")
+
+
+
+def test_pre_draw_guard_requires_exact_contest_and_strict_verified_status(monkeypatch):
+    import smart_target_schedule
+
+    schedule = {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "target_contest": 3073,
+        "scheduled_datetime": "2100-01-01T21:00:00-03:00",
+    }
+    checked = github_operator._require_verified_pre_draw_window(schedule, 3073)
+    assert checked["status"] == "PASS"
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._require_verified_pre_draw_window(schedule, 3074)
+    with pytest.raises(ValueError, match="schedule target"):
+        github_operator._require_verified_pre_draw_window(
+            {**schedule, "target_contest": True}, 3073
+        )
+
+    monkeypatch.setattr(
+        smart_target_schedule, "assert_pre_draw_window",
+        lambda _: {"status": "OPERATOR_UNVERIFIED_DRAW_TIME",
+                   "target_contest": 3073, "before_scheduled_draw": False},
+    )
+    with pytest.raises(ValueError, match="verified pre-draw window"):
+        github_operator._require_verified_pre_draw_window(schedule, 3073)
+
+    monkeypatch.setattr(
+        smart_target_schedule, "assert_pre_draw_window",
+        lambda _: {"status": "PASS", "target_contest": 3074,
+                   "before_scheduled_draw": True},
+    )
+    with pytest.raises(ValueError, match="same target"):
+        github_operator._require_verified_pre_draw_window(schedule, 3073)
+
+
+@pytest.mark.parametrize("mutation", [
+    "missing_approval", "wrong_operation", "wrong_commit",
+    "github_actions", "workflow_dispatch", "wrong_branch",
+    "wrong_origin", "stale_main", "policy_fail",
+])
+def test_external_operator_authority_fails_closed(monkeypatch, tmp_path, mutation):
+    from types import SimpleNamespace
+    import smart_github_native_policy
+
+    commit = "a" * 40
+    git_map = {
+        ("rev-parse", "HEAD"): commit,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "https://github.com/andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): commit + "\trefs/heads/main",
+    }
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map[args])
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{commit}")
+    if mutation == "missing_approval":
+        monkeypatch.delenv("SMART_MEGA_OPERATOR_APPROVAL", raising=False)
+    elif mutation == "wrong_operation":
+        monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"freeze:3067:{commit}")
+    elif mutation == "wrong_commit":
+        monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{'b' * 40}")
+    elif mutation == "github_actions":
+        monkeypatch.setenv("GITHUB_ACTIONS", "true")
+    elif mutation == "workflow_dispatch":
+        monkeypatch.setenv("GITHUB_EVENT_NAME", "workflow_dispatch")
+    elif mutation == "wrong_branch":
+        git_map[("symbolic-ref", "--short", "HEAD")] = "test"
+    elif mutation == "wrong_origin":
+        git_map[("remote", "get-url", "origin")] = "https://github.com/attacker/SMART-MEGA.git"
+    elif mutation == "stale_main":
+        git_map[("ls-remote", "origin", "refs/heads/main")] = "b" * 40 + "\trefs/heads/main"
+    elif mutation == "policy_fail":
+        monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "FAIL"})
+    with pytest.raises(PermissionError):
+        github_operator._require_external_operator_authority(tmp_path, "prepare", "3067")
+
+
+def test_external_operator_authority_accepts_bound_clean_main(monkeypatch, tmp_path):
+    import smart_github_native_policy
+    commit = "c" * 40
+    git_map = {
+        ("rev-parse", "HEAD"): commit,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "git@github.com:andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): commit + "\trefs/heads/main",
+    }
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map[args])
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv("SMART_MEGA_OPERATOR_APPROVAL", f"prepare:3067:{commit}")
+    github_operator._require_external_operator_authority(tmp_path, "prepare", "3067")
+
+
+
+@pytest.mark.parametrize("env_name,env_value", [
+    ("GITHUB_ACTIONS", "true"),
+    ("GITHUB_EVENT_NAME", "workflow_dispatch"),
+])
+def test_actions_cannot_even_invoke_read_only_operator(monkeypatch, env_name, env_value):
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    monkeypatch.setenv(env_name, env_value)
+    with pytest.raises(PermissionError, match="forbidden"):
+        github_operator.execute("status")

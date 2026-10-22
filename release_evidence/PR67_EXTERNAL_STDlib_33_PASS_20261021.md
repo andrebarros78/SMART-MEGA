@@ -1,0 +1,58 @@
+# SMART-MEGA V6 — execução independente sem GitHub Actions
+
+Fonte canônica: andrebarros78/SMART-MEGA, PR #67, commit testado **9694319143778581cdc19fe525299b182cce6f3a**.
+Executor autorizado: LMCP Linux, host **wmcp-cloud-01**; checkout exclusivo /srv/lmcp/workspaces/SMART-MEGA-V6-PR67-GATE-20261021-ISOLATED.
+Missão m_07fd0f84bb754368afc5ba603f46dfdd, comando c_0906ad316fb044328a3f9e1db4910393, exit_code=0.
+Suite: Python 3.12.3 stdlib unittest; 33 testes, 0 falhas, 0 erros.
+SHA-256 do log no executor: `f9549f5aa79ba9217f8af8c1a71a40725d906e3c86145454c3b9d09bb33ae3c2`.
+Proveniência: relatório extraído do resultado persistido da missão LMCP, sem GitHub Actions, sem dependências de outros projetos.
+Limitação: regressão FOCADA, não valida toda a suíte e não autoriza por si só promoção a main nem alegação científica 6/6.
+A instalação de dependências adicionais no LMCP requer operação administrativa assinada e foi negada; essa negativa não foi contornada.
+
+## Saída registrada
+```text
+SOURCE_COMMIT=9694319143778581cdc19fe525299b182cce6f3a
+EXECUTOR_HOST=wmcp-cloud-01
+PYTHON_VERSION=Python 3.12.3
+REGRESSION_EXIT=0
+test_archived_workflow_text_not_runnable (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_archived_workflow_text_not_runnable) ... ok
+test_external_execution_allowed_without_github_actions (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_external_execution_allowed_without_github_actions) ... ok
+test_injected_github_origin_forbidden (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_injected_github_origin_forbidden) ... ok
+test_legacy_actions_only_rule_denied (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_legacy_actions_only_rule_denied) ... ok
+test_live_workflow_denied (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_live_workflow_denied) ... ok
+test_nested_live_workflow_denied (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_nested_live_workflow_denied) ... ok
+test_policy_id_required_everywhere (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_policy_id_required_everywhere) ... ok
+test_symlink_workflows_denied (test_smart_github_native_policy.CanonicalGitHubExecutionPolicyTests.test_symlink_workflows_denied) ... ok
+test_3071_frozen_to_3073_model_generation_is_one_command (test_smart_cycle_completion.TestCycleCompletion.test_3071_frozen_to_3073_model_generation_is_one_command) ... ok
+test_does_not_accept_existing_old_card_as_new_target (test_smart_cycle_completion.TestCycleCompletion.test_does_not_accept_existing_old_card_as_new_target) ... ok
+test_downgraded_batch_rejects_fabricated_verified_flag (test_smart_cycle_completion.TestCycleCompletion.test_downgraded_batch_rejects_fabricated_verified_flag) ... ok
+test_existing_frozen_current_card_replayed_without_mutation (test_smart_cycle_completion.TestCycleCompletion.test_existing_frozen_current_card_replayed_without_mutation) ... ok
+test_incomplete_batch_blocks_before_mutation (test_smart_cycle_completion.TestCycleCompletion.test_incomplete_batch_blocks_before_mutation) ... ok
+test_local_api_claim_is_operational_but_not_independently_verified (test_smart_cycle_completion.TestCycleCompletion.test_local_api_claim_is_operational_but_not_independently_verified) ... ok
+test_lower_authority_public_portal_is_operational_not_api_certified (test_smart_cycle_completion.TestCycleCompletion.test_lower_authority_public_portal_is_operational_not_api_certified) ... ok
+test_missing_batch_blocks_before_mutation (test_smart_cycle_completion.TestCycleCompletion.test_missing_batch_blocks_before_mutation) ... ok
+test_missing_result_does_not_mutate_anything (test_smart_cycle_completion.TestCycleCompletion.test_missing_result_does_not_mutate_anything) ... ok
+test_portal_impostor_cannot_claim_api_verification (test_smart_cycle_completion.TestCycleCompletion.test_portal_impostor_cannot_claim_api_verification) ... ok
+test_prevent_target_skip_with_unverified_batch (test_smart_cycle_completion.TestCycleCompletion.test_prevent_target_skip_with_unverified_batch) ... ok
+test_public_crosscheck_accepted_operationally_without_api_certification (test_smart_cycle_completion.TestCycleCompletion.test_public_crosscheck_accepted_operationally_without_api_certification) ... ok
+test_public_crosscheck_falsely_api_verified_is_rejected (test_smart_cycle_completion.TestCycleCompletion.test_public_crosscheck_falsely_api_verified_is_rejected) ... ok
+test_resume_from_adjudicated_stage (test_smart_cycle_completion.TestCycleCompletion.test_resume_from_adjudicated_stage) ... ok
+test_resume_from_hold_without_repeating_consumed_result (test_smart_cycle_completion.TestCycleCompletion.test_resume_from_hold_without_repeating_consumed_result) ... ok
+test_retroactive_target_is_rejected (test_smart_cycle_completion.TestCycleCompletion.test_retroactive_target_is_rejected) ... ok
+test_self_declared_caixa_api_authority_cannot_bypass_provenance (test_smart_cycle_completion.TestCycleCompletion.test_self_declared_caixa_api_authority_cannot_bypass_provenance) ... ok
+test_unconfirmed_complete_result_stops_without_catchup (test_smart_cycle_completion.TestCycleCompletion.test_unconfirmed_complete_result_stops_without_catchup) ... ok
+test_cli_is_registered_without_automatic_network_fallback (test_smart_cycle_wiring.TestCycleWiring.test_cli_is_registered_without_automatic_network_fallback) ... ok
+test_github_operator_routes_explicit_cycle_to_original_product (test_smart_cycle_wiring.TestCycleWiring.test_github_operator_routes_explicit_cycle_to_original_product) ... ok
+test_real_operator_declares_recover_cycle (test_smart_cycle_wiring.TestCycleWiring.test_real_operator_declares_recover_cycle) ... ok
+test_explicit_linux_vps_provenance_is_retired (test_smart_linux_certification_provenance.TestLinuxProvenance.test_explicit_linux_vps_provenance_is_retired) ... ok
+test_linux_vps_label_cannot_be_claimed_by_wrong_host (test_smart_linux_certification_provenance.TestLinuxProvenance.test_linux_vps_label_cannot_be_claimed_by_wrong_host) ... ok
+test_old_federated_pc_provenance_is_retired (test_smart_linux_certification_provenance.TestLinuxProvenance.test_old_federated_pc_provenance_is_retired) ... ok
+test_product_certifier_validates_exact_linux_execution (test_smart_linux_certification_provenance.TestLinuxProvenance.test_product_certifier_validates_exact_linux_execution) ... ok
+
+----------------------------------------------------------------------
+Ran 33 tests in 0.293s
+
+OK
+f9549f5aa79ba9217f8af8c1a71a40725d906e3c86145454c3b9d09bb33ae3c2  /tmp/smart-mega-pr67-stdlib-regression.log
+
+```

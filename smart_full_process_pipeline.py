@@ -1,4 +1,5 @@
 from __future__ import annotations
+import smart_canonical_identity as _test_identity
 from smart_canonical_identity import canonical_root
 
 import hashlib
@@ -241,7 +242,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     assert_reconciled(root, int(active["target_contest"]), operation="FULL_PROCESS_FREEZE")
     epoch_id = active.get("epoch_id")
     if not isinstance(epoch_id, str) or not epoch_id:
-        if "pytest-" in str(root).lower():
+        if _test_identity._authorized_pytest_sandbox(root):
             epoch_id = "PYTEST_SANDBOX_EPOCH"
         else:
             raise ValueError("active epoch missing epoch_id")
@@ -271,7 +272,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     freeze_path = _resolve(root, paths["freeze"])
     data_path = _resolve(root, str(active["data_file"]))
     epoch_dir = ledger_path.parent
-    if not ("pytest-" in str(root).lower() and epoch_dir.resolve() == root.resolve()):
+    if not (_test_identity._authorized_pytest_sandbox(root) and epoch_dir.resolve() == root.resolve()):
         require_within(epoch_dir, root / "runtime", label="full-process epoch")
     frontier_report_path = epoch_dir / "SMART_FRONTIER_HISTORICAL.json"
     frontier_freeze_path = epoch_dir / f"SMART_{int(active['target_contest'])}_FRONTIER_SHADOW_FREEZE.json"

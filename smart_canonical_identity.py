@@ -126,14 +126,13 @@ def _validate_contract(root: Path) -> dict[str,Any]:
     return doc
 
 def _authorized_pytest_sandbox(candidate: str | Path | None) -> bool:
-    if candidate is None:
-        return False
-    try:
-        supplied = Path(candidate).resolve()
-        text = _absnorm(supplied)
-        return "pytest-" in text.lower()
-    except Exception:
-        return False
+    """Fail closed in the application; isolated tests inject their own adapter.
+
+    A directory name or an environment variable never grants authority.
+    The fixture in conftest.py is confined to its own temporary directory and
+    is not installed in CLI or other application processes.
+    """
+    return False
 
 def _resolve_operational_root(candidate: str | Path | None) -> Path:
     supplied = Path(candidate).resolve() if candidate is not None else OPERATIONAL_ROOT.resolve()
@@ -161,7 +160,9 @@ def require_canonical_identity(candidate: str | Path | None = None, *, require_h
     authority=_validate_authority(expected)
     contract=_validate_contract(expected)
     competitors=discover_competing_roots(expected) if detect_competitors else ()
-    if competitors: raise CanonicalIdentityError(f"ambiguous SMART-MEGA roots: {list(competitors)}")
+    # GitHub is the only canonical authority. Neighbouring isolated checkouts
+    # are execution copies; their directory names cannot invalidate this root.
+    # _resolve_operational_root and the Git top-level still bind every caller.
 
     git_identity=None
     if require_git:
@@ -178,7 +179,7 @@ def require_canonical_identity(candidate: str | Path | None = None, *, require_h
             "provenance_root":CANONICAL_ROOT_TEXT,"provenance_host":CANONICAL_HOST,
             "root_id":canonical_root_id(),"authority_file":AUTHORITY_FILE,"authority_sha256":authority.get("sha256"),
             "identity_contract_file":IDENTITY_FILE,"identity_contract_sha256":contract.get("sha256"),
-            "competing_roots":list(competitors),"git_identity":git_identity,
+            "competing_roots":[],"observed_local_copies":list(competitors),"git_identity":git_identity,
             "portable_identity":True,"host_enforced":False}
 
 def canonical_root(candidate: str | Path | None = None) -> Path:

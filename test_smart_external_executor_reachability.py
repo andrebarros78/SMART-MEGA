@@ -13,21 +13,20 @@ ROOT = Path(__file__).resolve().parent
 
 
 def test_external_authorized_entrypoint_reaches_operator():
+    from smart_component_reachability import EXTERNAL_EXECUTION_ENTRYPOINTS
     r = build_registry(ROOT)
     assert r["gate"]["status"] == "PASS", r["gate"]
-    assert r["entrypoint_provenance"]["policy_id"] == POLICY_ID
-    assert r["entrypoint_provenance"]["authority_kind"] == "GOVERNED_EXTERNAL_EXECUTION_STATIC_CONTRACT"
-    assert r["entrypoint_provenance"]["runtime_executed"] is False
-    assert r["workflow_entrypoints"] == {}
-    assert r["external_entrypoints"] == {
-        "smart_github_operator.py": ["GOVERNED_EXTERNAL:smart_github_operator.py"]
-    }
-    assert r["summary"]["workflow_entrypoints"] == 0
-    assert r["summary"]["external_entrypoints"] == 1
-    required = r["gate"]["required_production_unreachable"]
-    assert required == []
-    row = next(x for x in r["components"] if x["source_file"] == "smart_github_operator.py")
-    assert row["production_reachable"] is True
+    assert r["entrypoint_authority"] == POLICY_ID
+    expected = {name: ["EXTERNAL_EXECUTOR:" + POLICY_ID]
+                for name in EXTERNAL_EXECUTION_ENTRYPOINTS}
+    assert r["workflow_entrypoints"] == expected
+    assert r["summary"]["workflow_entrypoints"] == len(expected)
+    assert r["classification_policy"]["runtime_execution_claimed"] is False
+    assert r["classification_policy"]["python_source_sha256_normalization"] == "CRLF_TO_LF_BEFORE_HASHING"
+    assert r["gate"]["required_production_unreachable"] == []
+    for name in ("smart_github_operator.py", "smart_fast_result_ingest.py"):
+        row = next(x for x in r["components"] if x["source_file"] == name)
+        assert row["production_reachable"] is True
 
 
 def test_f10_enforces_external_root_contract():
@@ -37,7 +36,7 @@ def test_f10_enforces_external_root_contract():
     assert result["checks"]["external_governed_entrypoint_bound"] is True
     assert result["external_entrypoint_provenance"]["policy_id"] == POLICY_ID
     broken = copy.deepcopy(r)
-    broken["external_entrypoints"] = {}
+    broken["workflow_entrypoints"] = {}
     audit = audit_disconnections(ROOT, reachability=broken, canonical=canonical(ROOT), skills=skills(ROOT))
     assert audit["status"] == "FAIL"
     assert audit["checks"]["external_governed_entrypoint_bound"] is False
@@ -45,7 +44,7 @@ def test_f10_enforces_external_root_contract():
 
 def test_false_dynamic_execution_claim_rejected():
     r = build_registry(ROOT)
-    r["entrypoint_provenance"]["runtime_executed"] = True
+    r["classification_policy"]["runtime_execution_claimed"] = True
     audit = audit_disconnections(ROOT, reachability=r, canonical=canonical(ROOT), skills=skills(ROOT))
     assert audit["status"] == "FAIL"
     assert audit["checks"]["external_governed_entrypoint_bound"] is False
@@ -60,7 +59,7 @@ def test_synthetic_unverified_policy_denies_external_roots():
         )
         (root / "smart_operator.py").write_text('x = 1\n')
         registry = build_registry(root)
-        assert registry["external_entrypoints"] == {}
+        assert registry["gate"]["required_production_missing"]
         assert registry["gate"]["status"] == "FAIL"
 
 
@@ -80,9 +79,12 @@ def test_fake_actions_files_do_not_restore_execution_authority():
         workflows = root / ".github/workflows"
         workflows.mkdir(parents=True)
         (workflows / "ci.yml").write_text("python smart_github_operator.py\n")
-        registry = build_registry(root)
-        assert registry["external_entrypoints"] == {}
-        assert registry["gate"]["status"] == "FAIL"
+        try:
+            build_registry(root)
+        except ValueError as exc:
+            assert "GitHub Actions is forbidden" in str(exc)
+        else:
+            raise AssertionError("Runnable GitHub Actions must be rejected")
 
 
 def test_f01_python_source_hashes_are_identical_for_lf_and_crlf_worktrees():

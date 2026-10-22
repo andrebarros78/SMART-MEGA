@@ -1,0 +1,67 @@
+{
+  "schema": "SMART_FORENSIC_COVERAGE_RECONCILIATION_1",
+  "baseline_main": "8b6030863a77d2f10508c8afd180f1975b5cabd6",
+  "source_commit": "2aa7bedd6416b3c5924a870f8fa58e8017df8c42",
+  "source_tree": "881360a48e62351d8d8727052683fbabf1433cc6",
+  "source_fingerprint_sha256": "80965bfc4c12f27f5fccd21720e32da6bf401811aaa4ee65b07acfe466f4f03f",
+  "source_file_count": 361,
+  "regression": {
+    "tests": 1711,
+    "failures": 0,
+    "errors": 0,
+    "skipped": 0,
+    "status": "PASS",
+    "sha256": "858101f694a1382483b1a0c15ce219bc88cac9999b1cfe6a493dda2ac6adbb47"
+  },
+  "coverage_totals": {
+    "covered_lines": 5830,
+    "num_statements": 5830,
+    "percent_covered": 100.0,
+    "percent_covered_display": "100",
+    "missing_lines": 0,
+    "excluded_lines": 8,
+    "num_branches": 2470,
+    "num_partial_branches": 0,
+    "covered_branches": 2470,
+    "missing_branches": 0
+  },
+  "required_modules": 23,
+  "certification": {
+    "product": "CONSTRUCTION_PROVEN",
+    "governance": "PASS",
+    "global_integrity": "PASS",
+    "authority_freshness": "PASS",
+    "startup": "OK"
+  },
+  "readonly_acceptance": {
+    "status": "PASS",
+    "source_commit": "2aa7bedd6416b3c5924a870f8fa58e8017df8c42",
+    "source_fingerprint_sha256": "80965bfc4c12f27f5fccd21720e32da6bf401811aaa4ee65b07acfe466f4f03f",
+    "target_contest": 3071,
+    "operator_status": "OK",
+    "preflight_status": "ALREADY_FROZEN",
+    "frozen_card_status": "FROZEN_MODEL_CARD_VERIFIED",
+    "frozen_card_payload_sha256": "e9b0476a238913c13f8f6d2be2269a82b9cc3c20c8cdc176338b295bd3a1a966",
+    "scientific_state_unchanged": true,
+    "source_fingerprint_stable": true,
+    "automatic_next_cycle_authority_created": false,
+    "github_actions_used": false
+  },
+  "main_branch_protected_at_validation": false,
+  "scientific_frozen_state_unchanged": true,
+  "prospective_6of6_promotion": false,
+  "github_actions_used": false,
+  "current_proof_uses_only_complete_fresh_2aa7_executions": true,
+  "diagnostic_limitations": [
+    "Earlier misrouted executor attempts are excluded. Some previous-round logs were overwritten; those attempts are not authoritative evidence.",
+    "The first dedicated Red Team fixture omitted its module copy and failed; only the corrected complete run is used."
+  ],
+  "raw_archive": {
+    "file": "RAW_EVIDENCE.tar.gz",
+    "sha256": "c2ef5a290c6000a68281f4b6932e528d9f7a0d5456d158af20a93f9584f3dec8",
+    "bytes": 2036929,
+    "files": 86,
+    "manifest_entries": 85
+  },
+  "completed_at": "2026-10-22T03:52:03.110056+00:00"
+}

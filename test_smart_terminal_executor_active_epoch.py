@@ -87,7 +87,7 @@ def test_execute_waits_fail_closed_when_official_result_unavailable(tmp_path, mo
 
 
 
-def test_precheck_stops_partial_adjudication_before_fetch_when_historical_freeze_missing(
+def test_precheck_stops_partial_adjudication_before_fetch_without_bound_active_freeze(
     tmp_path, monkeypatch
 ):
     import smart_terminal_engine as engine
@@ -111,9 +111,11 @@ def test_precheck_stops_partial_adjudication_before_fetch_when_historical_freeze
                         lambda path: json.loads(ledger_path.read_text(encoding="utf-8")))
 
     def unexpected_fetch(_):
-        raise AssertionError("fetcher must not run before historical evidence precheck")
+        raise AssertionError("fetcher must not run before active freeze precheck")
 
-    with pytest.raises(ValueError, match="historical freeze evidence unavailable for contest 9000"):
+    # Missing prior freezes are non-promotable in scoped recovery; an unbound
+    # CURRENT freeze is fatal and must block before any official fetch.
+    with pytest.raises(ValueError, match="current target requires exactly one hash-bound active freeze"):
         engine.execute(tmp_path, fetcher=unexpected_fetch)
     assert ledger_path.read_text(encoding="utf-8") == original
 
