@@ -1,0 +1,117 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "AUTHORIZE",
+  "idempotency_key": "3814d123ac09676d48248d71d21fe114d1475d0599e3fcc34e206ec453806ae0",
+  "target": 3073,
+  "result": {
+    "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+    "status": "AUTHORIZED",
+    "target_contest": 3073,
+    "completed_contest": 3072,
+    "review_file": "SMART_POST_RESULT_REVIEW_3072.json",
+    "review_file_sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360",
+    "review_sha256": "4f0eecd2a60a20620713af54e398a041a4e21010f73869d5ed3b6a0aef3a5dc7",
+    "canonical_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+    "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+    "authorized_utc": "2026-10-22T16:27:12.968516+00:00",
+    "consumed": false,
+    "consumed_utc": null,
+    "prepared_epoch_id": null,
+    "reservation_transaction_id": null,
+    "reserved_utc": null,
+    "consumption_transaction_id": null,
+    "supersedes_completed_cycle_authority": true,
+    "prior_consumed_authority_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+    "prior_consumed_target_contest": 3071,
+    "prior_consumed_status": "CONSUMED",
+    "revision": 22,
+    "previous_document_sha256": "1c1b88d1d940659331bb08ccf086deb0707c7eec24f6765ce2c36897a4f6c345",
+    "sha256": "ec47b3e862c579f869cfd7085bae223e8e72aff990b151bdfa76a9ea72c9b010",
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "AUTHORIZED",
+      "revision": 53,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "previous_state": "HOLD",
+      "transition": "HOLD_TO_AUTHORIZED",
+      "transition_actor": "operator_authorize_next_cycle",
+      "transition_utc": "2026-10-22T16:27:13.028517+00:00",
+      "previous_lifecycle_sha256": "d1fba275fd2dc7ecfcaf6137d51a6854e1ad89ab94ceb0da8a4deae2fe70ed92",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "2e76a0ec141d4dc9b01fddd41980f144cd854f1e7ee73141ca7dc5b1c66b817a"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3072.json",
+          "sha256": "48d3f293c5b5e1faaedf055951f30c8538cd2a1913b1561a44a24203b8f17360"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3071:operator-3071-10553e1b5911-20261015T184134194917Z",
+        "reserved_authority_sha256": "5ac2c3951a45465fe14a6d463a24bfb498c79543fee3152858f288e8c2c81cb4",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "ebf5637022c91b52c88d22e0b38733b8fc7d81e66ddaee5e2d7dbf004d270048",
+          "epoch_id": "operator-3071-10553e1b5911-20261015T184134194917Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3071/operator-3071-10553e1b5911-20261015T184134194917Z/ARCHIVE_MANIFEST.json",
+          "sha256": "8c2a3b3f9b218fc3f935120223cda22f54f9c9a6cfb8a35f9276e0d9a900d6a4"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3072,
+          "through_target": 3072,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3072.json",
+              "sha256": "0146949640422e871a7bb66c33314c9f43c234426f1f18eb691ad82a1d65ab74",
+              "target_contest": 3072
+            }
+          ],
+          "product_certification_sha256": "a873d9901dbf0492e249e027cc96ba22e9655f053056875d3c77bb1e96616f05",
+          "official_result_batch": {
+            "schema": "SMART_CAIXA_PORTAL_TRANSCRIPTION_BATCH_1",
+            "raw_api_independently_verified": false,
+            "official_transport_attested": false,
+            "scientific_certification_authorized": false,
+            "predictive_weight_change_authorized": false,
+            "declared_authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+            "file": "SMART_CAIXA_PORTAL_RESULT_BATCH_3072_20261022.json",
+            "file_sha256": "1a38408fc0692c7256ac10a8558acecf04caedefbdee4569c1bc921fc5778142",
+            "document_sha256": "4b0966b4a6fdc148a4e7755f96da728b798018957e0f3cf654ed00e550061dd1",
+            "authority": "CAIXA_PUBLIC_PORTAL_TRANSCRIPTION_NOT_API_VERIFIED",
+            "retrieved_at_utc": "2026-10-22T12:08:05.771599+00:00",
+            "capture_transport": "PUBLIC_CAIXA_PAGE_TRANSCRIPTION",
+            "targets": [
+              3072
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "cc77df2a30ac7a0522bb10ea9fac23170845dc34e458379b71bbf08a202c8577"
+    }
+  }
+}
