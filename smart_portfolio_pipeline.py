@@ -75,6 +75,11 @@ def build_portfolio_package(
     objective_gap = abs(float(portfolio["objective_value"]) - float(portfolio["best_objective_bound"]))
     champion_top6 = [int(x) for x in champion["top6"]]
     rescue_profile = build_profile_from_reports(Path(__file__).resolve().parent, through_contest=cutoff)
+    # 3060/3061 absence is documented, never a prerequisite to generate a
+    # new prospective card. Unknown quarantine cases still demand review.
+    continuation = (rescue_profile or {}).get("historical_freeze_continuation") or {}
+    if continuation and continuation.get("operational_continuation_allowed") is not True:
+        raise ValueError("unreviewed historical quarantine: card generation requires review")
     rescue_scores, rescue_audit = apply_rescue(champion["aggregate_scores"], rescue_profile)
     rescue_ranking60 = sorted(range(1, 61), key=lambda n: (-float(rescue_scores[str(n)]), n))
     primary_selection = select_primary_card(
