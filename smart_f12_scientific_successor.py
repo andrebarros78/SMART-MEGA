@@ -113,10 +113,26 @@ CALIBRATION_AUDIT_REVERSALS = (
 )
 
 
+# This predecessor-only inverse removes the explicitly recorded 3060/3061
+# continuation decision. The real selector always keeps these unsigned
+# observations in quarantine. No missing freeze is fabricated or promoted.
+HISTORICAL_CONTINUATION_REVERSALS = (
+    (
+        b'    # 3060/3061 absence is documented, never a prerequisite to generate a\n'
+        b'    # new prospective card. Unknown quarantine cases still demand review.\n'
+        b'    continuation = (rescue_profile or {}).get("historical_freeze_continuation") or {}\n'
+        b'    if continuation and continuation.get("operational_continuation_allowed") is not True:\n'
+        b'        raise ValueError("unreviewed historical quarantine: card generation requires review")\n',
+        b'',
+    ),
+)
+
+
 GUARD_SOURCE_REVERSALS = {
     "smart_signal_agent.py": CALIBRATION_AUDIT_REVERSALS,
     "smart_portfolio_pipeline.py": (
         *SELECTOR_EVIDENCE_REVERSALS,
+        *HISTORICAL_CONTINUATION_REVERSALS,
         AUTHORIZATION_SOURCE_REVERSALS[0],
         (b"if _test_identity._authorized_pytest_sandbox(freeze_path):",
          b'if "pytest-" in str(freeze_path).lower():'),
