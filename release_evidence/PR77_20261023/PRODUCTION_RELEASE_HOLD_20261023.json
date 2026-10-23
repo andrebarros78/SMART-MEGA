@@ -1,0 +1,54 @@
+{
+  "schema": "SMART_MEGA_V6_RELEASE_HOLD_1",
+  "date": "2026-10-23",
+  "state": "RELEASE_HOLD_SECURITY_ENFORCED",
+  "pull_request": 77,
+  "source_commit_verified": "4223265a9b9b6d342a0e9c5e9615880ddbb5db21",
+  "code_fingerprint_sha256": "d3a8452eb6447ad3004c71d0559861ff5759df1ab8e3cb4a6b97293ea1de5ac6",
+  "tested": {
+    "cases": 1757,
+    "passed": 1757,
+    "failed": 0,
+    "skipped": 0,
+    "junit_sha256": "f0b1237e01236231f1b5b32942c857fe889db3492093c3b6b5a71b507b5bf482"
+  },
+  "certifier": {
+    "status": "CONSTRUCTION_PROVEN",
+    "governance": "PASS",
+    "global_integrity": "PASS",
+    "receipt": "release_evidence/PR77_20261023/SMART_FINAL_CONSTRUCTION_CERTIFICATION_RECEIPT.json"
+  },
+  "hold": {
+    "file": "SMART_P09_RED_TEAM_LATEST.json",
+    "old_blob_sha1": "2e8ceae5b13fe048c1d74c2827de943458ba3f0e",
+    "certified_blob_sha1": "de66aa99b0ac65c253c366754671946b7f7f3f17",
+    "original_red_team_status": "PASS_BUT_STALE_TO_CURRENT_BEHAVIORAL_SOURCE",
+    "source_of_difference": "smart_signal_agent.py",
+    "reason": "The existing P09 behavioral hash references the previous smart_signal_agent.py source fingerprint; global verifier demands current hashes.",
+    "publication_error": "GitHub/OpenAI connector security settings refused publication of the updated P09 blob.",
+    "do_not_retry_through_alternate_channel": true,
+    "no_partial_authority_promotion": true,
+    "release_merge_authorized": false,
+    "production_promotion_authorized": false
+  },
+  "resolved_requirements": [
+    "1,757-case exact-source regression",
+    "Current source coverage",
+    "Product certifier",
+    "Component reachability",
+    "Governance and integrity certificate built in isolated workspace"
+  ],
+  "remaining_requirements": [
+    "Approved security-compliant P09 publication route",
+    "Atomically publish nine interdependent certification artifacts with exact fingerprints",
+    "Reverify on GitHub",
+    "GitHub-authorized merge to protected main",
+    "Post-merge production card smoke and no-regression checks"
+  ],
+  "scientific_policy": {
+    "champion": "KEEP_CHAMPION",
+    "predictive_advantage": "UNPROVEN",
+    "calibration_promoted": false
+  },
+  "mission_proven": false
+}
