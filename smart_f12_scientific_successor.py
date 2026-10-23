@@ -77,8 +77,29 @@ AUTHORIZATION_SOURCE_REVERSALS = (
     (b"if not (_test_identity._authorized_pytest_sandbox(root) and epoch_dir.resolve() == root.resolve()):",
      b'if not ("pytest-" in str(root).lower() and epoch_dir.resolve() == root.resolve()):'),
 )
+# Comparison-only inversions of non-predictive, source-bound evidence changes.
+# Reconstructed hashes must still match the immutable pre-change F11 bytes.
+RAG_EVIDENCE_REVERSALS = (
+    (b'        from smart_rag_freeze_evidence import prepare_rag_freeze_evidence\n'
+     b'        rag_evidence = prepare_rag_freeze_evidence(root, data_path, cutoff, epoch_dir, target)\n', b''),
+    (b'        "rag_preparation_evidence": rag_evidence,\n', b''),
+)
+SELECTOR_EVIDENCE_REVERSALS = (
+    (b'        "primary_card_matches_selector_output": primary_card_numbers == [int(n) for n in primary_selection["selected_numbers"]],',
+     b'        "primary_card_not_forced_to_champion_top6": primary_card_numbers != sorted(champion_top6) or primary_selection["selected_band_counts"] == primary_selection["pure_top6_band_counts"],'),
+    (b'''        "primary_card_comparison": {
+            "identical_to_champion_top6": sorted(primary_card_numbers) == sorted(champion_top6),
+            "independent_selection_gain_proven": False,
+            "score_source": "champion",
+            "selection_computed": True,
+        },
+''', b''),
+)
+
+
 GUARD_SOURCE_REVERSALS = {
     "smart_portfolio_pipeline.py": (
+        *SELECTOR_EVIDENCE_REVERSALS,
         AUTHORIZATION_SOURCE_REVERSALS[0],
         (b"if _test_identity._authorized_pytest_sandbox(freeze_path):",
          b'if "pytest-" in str(freeze_path).lower():'),
@@ -110,6 +131,17 @@ def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
     '''Return the exact pre-operator F12 pipeline; reject arbitrary diffs.'''
     if _matches_expected_code(value, APPROVED_F12_PIPELINE_SHA256):
         return value
+    # Accept only the exact read-only RAG receipt additions before applying
+    # the historic operator/scheduling reversals. Reject all unrelated code.
+    for variant in _canonical_variants(value):
+        modified = variant
+        for insertion, original in RAG_EVIDENCE_REVERSALS:
+            if modified.count(insertion) != 1:
+                break
+            modified = modified.replace(insertion, original, 1)
+        else:
+            value = modified
+            break
     # Search the same EOL variants already accepted by the pinned SHA proof.
     # Multiline source reversals must not depend on Git's checkout EOL policy.
     for variant in _canonical_variants(value):
