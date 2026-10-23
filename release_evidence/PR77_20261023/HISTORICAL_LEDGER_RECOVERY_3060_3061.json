@@ -1,0 +1,60 @@
+{
+  "schema": "SMART_FORENSIC_RECOVERY_3060_3061_1",
+  "source_head": "ab8725500f3b12dea958723ebd0c651196db55cc",
+  "status": "LEDGERS_AUTHENTICATED_FREEZES_UNAVAILABLE",
+  "recoveries": [
+    {
+      "contest": 3060,
+      "status": "RECOVERED_LEDGER_EXACT_SHA256",
+      "report_sha256": "b43f29faf657e3222701085456b457cf6c6274cf55f03e1bc74fc6f531de8430",
+      "expected_ledger_sha256": "79df86b5c72ea29453ee3a4f714eea480040318c0b7fd6f97d028d0b25f3a851",
+      "verified_ledger_sha256": "79df86b5c72ea29453ee3a4f714eea480040318c0b7fd6f97d028d0b25f3a851",
+      "source_canonical_ledger": "SMART_STATE_ARCHIVE/canonical-ledger/SMART_SIGNAL_LEDGER.26f67fe060f17db1514b9464172f4ec3e33f51ce036ea30896345eb5ee178d27.json",
+      "source_canonical_sha256": "26f67fe060f17db1514b9464172f4ec3e33f51ce036ea30896345eb5ee178d27",
+      "snapshot_events": 72,
+      "source_events": 82,
+      "serialization": "JSON ensure_ascii=False indent=2 CRLF no trailing newline",
+      "artifact_path": "SMART_STATE_ARCHIVE/hash-bound-learning/3060/SMART_SIGNAL_LEDGER.79df86b5c72ea29453ee3a4f714eea480040318c0b7fd6f97d028d0b25f3a851.json.gz",
+      "compressed_sha256": "95515e89d5421fe5e3fe2babbc5d5b6255782eae685c895849479b611a2588c1",
+      "compressed_bytes": 433845,
+      "freeze_sha256_required": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+      "freeze_restored": false,
+      "prediction_or_quarantine_promotion": false
+    },
+    {
+      "contest": 3061,
+      "status": "RECOVERED_LEDGER_EXACT_SHA256",
+      "report_sha256": "6b6b88d6fea81e50245ccd7d6b93569bcdc9ac2fb4b5ce5f5b0f55755ed147b7",
+      "expected_ledger_sha256": "0cfebd6b8477c996643a530dfb0d1d7799d3f1535f7ba545a1a51a243be9eab5",
+      "verified_ledger_sha256": "0cfebd6b8477c996643a530dfb0d1d7799d3f1535f7ba545a1a51a243be9eab5",
+      "source_canonical_ledger": "SMART_STATE_ARCHIVE/canonical-ledger/SMART_SIGNAL_LEDGER.26f67fe060f17db1514b9464172f4ec3e33f51ce036ea30896345eb5ee178d27.json",
+      "source_canonical_sha256": "26f67fe060f17db1514b9464172f4ec3e33f51ce036ea30896345eb5ee178d27",
+      "snapshot_events": 80,
+      "source_events": 82,
+      "serialization": "JSON ensure_ascii=False indent=2 CRLF no trailing newline",
+      "artifact_path": "SMART_STATE_ARCHIVE/hash-bound-learning/3061/SMART_SIGNAL_LEDGER.0cfebd6b8477c996643a530dfb0d1d7799d3f1535f7ba545a1a51a243be9eab5.json.gz",
+      "compressed_sha256": "efd72c4868bae8787368d925db15b6b05d22df538a4df3f880e2db712a86e11b",
+      "compressed_bytes": 490270,
+      "freeze_sha256_required": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+      "freeze_restored": false,
+      "prediction_or_quarantine_promotion": false
+    }
+  ],
+  "consumer_verification": {
+    "through_contest": 3072,
+    "status": "DEGRADED_PARTIAL_EVIDENCE",
+    "observations": 5,
+    "quarantined_count": 2,
+    "quarantined_reasons": {
+      "SMART_POST_RESULT_REPORT_3060.json": "post-result report freeze evidence unavailable or hash-divergent: 3060",
+      "SMART_POST_RESULT_REPORT_3061.json": "post-result report freeze evidence unavailable or hash-divergent: 3061"
+    },
+    "predictive_weights_enabled_from_3060_3061": false
+  },
+  "disallowed_claims": [
+    "no historical freeze reconstructed",
+    "no missing official data invented",
+    "no scientific advantage proven",
+    "no regression recertified from this receipt"
+  ]
+}
