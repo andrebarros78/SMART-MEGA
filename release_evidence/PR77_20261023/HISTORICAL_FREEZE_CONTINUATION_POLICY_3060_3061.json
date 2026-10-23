@@ -1,0 +1,38 @@
+{
+  "schema": "SMART_DEFERRED_HISTORICAL_FREEZE_CONTINUITY_1",
+  "scope": "SMART-MEGA V6 PR #77 — evidence-only recording and operational continuation",
+  "decision": "SEARCH_NOT_REQUIRED_FOR_CONTINUATION",
+  "reason": "3060/3061 original freezes are not available as SHA-exact artifacts; historical evidence must not block construction or prospective generation.",
+  "deferred": [
+    {
+      "contest": 3060,
+      "missing_artifact": "runtime/learning_epochs/operator-3060-3d68e4e7078f-20260920T030716468383Z/SMART_3060_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_original_sha256": "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+      "authenticated_ledger_sha256": "79df86b5c72ea29453ee3a4f714eea480040318c0b7fd6f97d028d0b25f3a851",
+      "evidence_status": "QUARANTINED_FREEZE_UNVERIFIED"
+    },
+    {
+      "contest": 3061,
+      "missing_artifact": "runtime/learning_epochs/operator-3061-1d798ed37904-20260922T195353823390Z/SMART_3061_CHAMPION_CHALLENGER_FREEZE.json",
+      "expected_original_sha256": "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+      "authenticated_ledger_sha256": "0cfebd6b8477c996643a530dfb0d1d7799d3f1535f7ba545a1a51a243be9eab5",
+      "evidence_status": "QUARANTINED_FREEZE_UNVERIFIED"
+    }
+  ],
+  "contract": {
+    "continue_engineering_without_original_freezes": true,
+    "continue_prospective_card_generation_without_original_freezes": true,
+    "stop_researching_original_freezes_as_release_prerequisite": true,
+    "allow_missing_reports_in_training": false,
+    "reconstruct_missing_freezes_retroactively": false,
+    "allow_automatic_weight_promotion": false,
+    "allow_scientific_6of6_claim": false,
+    "keep_champion": true,
+    "certify_changed_code_separately": true
+  },
+  "provenance": {
+    "source": "release_evidence/PR77_20261023/HISTORICAL_LEDGER_RECOVERY_3060_3061.json",
+    "details": "Exact ledger digests are recorded there. Historical freeze original digests are read from source-signed post-result reports. No original freeze was recovered by this change."
+  },
+  "modification_policy": "Do not rewrite signed historical freeze or post-result reports. A later authentic discovery can be evaluated separately; restoration is not a dependency of current engineering."
+}
