@@ -100,3 +100,44 @@ def test_identical_primary_card_never_claims_independence(tmp_path, monkeypatch)
     assert result["checks"]["primary_card_matches_selector_output"] is True
     assert result["primary_card_comparison"]["identical_to_champion_top6"] is True
     assert result["primary_card_comparison"]["independent_selection_gain_proven"] is False
+
+
+def test_pipeline_continues_with_quarantined_3060_3061_without_activating_weights(tmp_path, monkeypatch):
+    from smart_false_negative_rescue import assess_historical_freeze_continuation
+    freeze = _freeze(tmp_path)
+    reasons = {
+        f"SMART_POST_RESULT_REPORT_{n}.json":
+            f"post-result report freeze evidence unavailable or hash-divergent: {n}"
+        for n in (3060, 3061)
+    }
+    profile = {
+        "sha256": "fixture",
+        "observations": 0,
+        "evidence_coverage": "DEGRADED_PARTIAL_EVIDENCE",
+        "quarantined_count": 2,
+        "historical_freeze_continuation": assess_historical_freeze_continuation(reasons),
+    }
+    monkeypatch.setattr(spp, "build_profile_from_reports", lambda *args, **kwargs: profile)
+    result = build_portfolio_package(
+        freeze, config=PortfolioConfig(game_count=1, candidate_pool_size=6, time_limit_seconds=5)
+    )
+    assert result["status"] == "PASS"
+    rescue = result["primary_card"]["false_negative_rescue"]
+    assert rescue["status"] == "DEGRADED_SHADOW_ONLY"
+    assert rescue["nonzero_deltas"] == {}
+    assert rescue["historical_freeze_continuation"]["operational_continuation_allowed"] is True
+
+
+def test_pipeline_does_not_silently_whitelist_unknown_quarantine(tmp_path, monkeypatch):
+    from smart_false_negative_rescue import assess_historical_freeze_continuation
+    freeze = _freeze(tmp_path)
+    policy = assess_historical_freeze_continuation({
+        "SMART_POST_RESULT_REPORT_3069.json":
+        "post-result report freeze evidence unavailable or hash-divergent: 3069"
+    })
+    monkeypatch.setattr(spp, "build_profile_from_reports",
+                        lambda *args, **kwargs: {"historical_freeze_continuation": policy})
+    with pytest.raises(ValueError, match="unreviewed historical quarantine"):
+        build_portfolio_package(
+            freeze, config=PortfolioConfig(game_count=1, candidate_pool_size=6, time_limit_seconds=5)
+        )
