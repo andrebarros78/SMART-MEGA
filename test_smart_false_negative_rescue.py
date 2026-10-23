@@ -244,3 +244,61 @@ def test_bogus_same_name_archive_cannot_authorize_foreign_contest(tmp_path):
             tmp_path, "runtime/learning_epochs/operator-3069-other/SMART_SIGNAL_LEDGER.json",
             "a" * 64, 3067, "ledger"
         )
+
+
+def test_missing_3060_3061_freezes_are_registered_not_operational_prerequisites():
+    from smart_false_negative_rescue import (
+        DEFERRED_HISTORICAL_FREEZE_SHA256, assess_historical_freeze_continuation,
+    )
+    reasons = {
+        f"SMART_POST_RESULT_REPORT_{n}.json":
+            f"post-result report freeze evidence unavailable or hash-divergent: {n}"
+        for n in (3060, 3061)
+    }
+    policy = assess_historical_freeze_continuation(reasons)
+    assert policy["status"] == "PROCEED_WITH_VERIFIED_EVIDENCE"
+    assert policy["operational_continuation_allowed"] is True
+    assert policy["historical_freeze_search_required_for_continuation"] is False
+    assert {row["contest"] for row in policy["deferred_freezes"]} == {3060, 3061}
+    assert {row["required_freeze_sha256"] for row in policy["deferred_freezes"]} == set(
+        DEFERRED_HISTORICAL_FREEZE_SHA256.values()
+    )
+    assert all(not row["restore_required_to_continue"] for row in policy["deferred_freezes"])
+    assert policy["deferred_reports_eligible_for_calibration"] is False
+    assert policy["retroactive_freeze_reconstruction_allowed"] is False
+    assert policy["automatic_challenger_promotion_authorized"] is False
+
+
+def test_deferral_is_limited_to_declared_historical_reports():
+    from smart_false_negative_rescue import assess_historical_freeze_continuation
+    deferred = "SMART_POST_RESULT_REPORT_3060.json"
+    unknown = "SMART_POST_RESULT_REPORT_3069.json"
+    policy = assess_historical_freeze_continuation({
+        deferred: "post-result report freeze evidence unavailable or hash-divergent: 3060",
+        unknown: "post-result report freeze evidence unavailable or hash-divergent: 3069",
+    })
+    assert policy["status"] == "REVIEW_OTHER_QUARANTINE"
+    assert policy["operational_continuation_allowed"] is False
+    assert [row["contest"] for row in policy["deferred_freezes"]] == [3060]
+    assert [row["report"] for row in policy["other_quarantine"]] == [unknown]
+
+
+def test_deferred_freeze_policy_is_consumed_but_never_promotes_shadow_feedback():
+    from pathlib import Path
+    root = Path(__file__).resolve().parent
+    profile = build_profile_from_reports(root, through_contest=3072)
+    policy = profile["historical_freeze_continuation"]
+    assert profile["quarantined_reports"] == [
+        "SMART_POST_RESULT_REPORT_3060.json",
+        "SMART_POST_RESULT_REPORT_3061.json",
+    ]
+    assert policy["operational_continuation_allowed"] is True
+    assert profile["observations"] == 5
+    assert 3060 not in profile["source_contests"]
+    assert 3061 not in profile["source_contests"]
+    scores = {str(n): 0.5 for n in range(1, 61)}
+    after, audit = apply_rescue(scores, profile)
+    assert after == scores
+    assert audit["status"] == "DEGRADED_SHADOW_ONLY"
+    assert audit["nonzero_deltas"] == {}
+    assert audit["historical_freeze_continuation"] == policy
