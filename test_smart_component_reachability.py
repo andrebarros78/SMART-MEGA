@@ -78,3 +78,11 @@ def test_f01_external_native_policy_and_linux_runner_are_reachable():
         assert row["role"] == "PRODUCTION"
         assert row["production_reachable"] is True
         assert row["predictive_authority"] == "NOT_ESTABLISHED_BY_STATIC_REACHABILITY"
+
+def test_f01_source_hash_is_eol_independent():
+    import hashlib
+    from smart_component_reachability import _source_hash
+    canonical = b"print(1)\nprint(2)\n"
+    crlf = canonical.replace(b"\n", b"\r\n")
+    assert _source_hash(canonical) == _source_hash(crlf)
+    assert _source_hash(canonical) == hashlib.sha256(canonical).hexdigest()
