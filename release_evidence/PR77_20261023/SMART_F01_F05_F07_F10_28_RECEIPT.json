@@ -1,0 +1,32 @@
+{
+  "schema": "SMART_F01_F05_F07_F10_RECONCILIATION_RECEIPT_1",
+  "source_code_commit": "2313ce7c1f8add7cf7938526b4bb56ce9d77c31b",
+  "branch": "fix/forensic-feedback-20261022",
+  "execution_host": "DESKTOP-JNS08PU",
+  "execution_id": "ps-d8b9948da3124437a3f7fe80a6735371",
+  "outcome": {
+    "tests": 28,
+    "passed": 28,
+    "failed": 0,
+    "errors": 0,
+    "duration_seconds": 382.52,
+    "junit_sha256": "0E25317212554FB3B457FF599802342E95CB466D3009232FD9AAE81409269AAB",
+    "junit_file": "release_evidence/PR77_20261023/SMART_F01_F05_F07_F10_28_JUNIT.xml"
+  },
+  "registry_dependencies": [
+    "SMART_COMPONENT_REACHABILITY_REGISTRY.json",
+    "SMART_CANONICAL_COMPONENT_REGISTRY.json",
+    "SMART_SKILL_ADAPTER_REGISTRY.json",
+    "SMART_F10_DISCONNECTION_GATE.json"
+  ],
+  "registry_checks": {
+    "f01_components": 548,
+    "f01_production": 120,
+    "f01_unreachable_production": 0,
+    "f05_gate": "PASS",
+    "f07_gate": "PASS",
+    "f10_gate": "PASS",
+    "f10_checks": 11
+  },
+  "note": "Registries were generated from code on isolated PR77 checkout and compared with tests. No speculative 6/6 claim. Full suite continuation is independent and has not been declared PASS."
+}
