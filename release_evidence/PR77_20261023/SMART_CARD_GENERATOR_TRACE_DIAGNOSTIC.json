@@ -1,0 +1,65 @@
+{
+  "schema": "SMART_V6_PRIMARY_CARD_TRACE_DIAGNOSTIC_1",
+  "source_commit": "2313ce7c1f8add7cf7938526b4bb56ce9d77c31b",
+  "scope": "Current production candidate consumer design — read-only source inspection plus 77 passing tests",
+  "stages": [
+    {
+      "step": "features",
+      "source": "smart_v2_engine.py; smart_signal_agent.py",
+      "observed": "12 registered signals, causally generated from historical draws, with profiles and quality metrics",
+      "consumer": "SmartSignalAgent._predict_from_scores",
+      "status": "IMPLEMENTED"
+    },
+    {
+      "step": "dynamic_signal_weights",
+      "source": "smart_signal_agent.py; smart_signal_weights.py",
+      "observed": "quality/utility/context/redundancy produce normalized signal weights, 60 aggregate scores and rank60",
+      "consumer": "challenger frozen score/ranking",
+      "status": "IMPLEMENTED"
+    },
+    {
+      "step": "rank_calibration",
+      "source": "smart_rank_score_calibration.py",
+      "observed": "historical rank outcomes update calibrator after result; default strength=0.0 neutralizes probability adjustment",
+      "consumer": "rank_score_calibration evidence",
+      "status": "OBSERVATION_ONLY_DEFAULT"
+    },
+    {
+      "step": "60_probabilities",
+      "source": "smart_signal_agent.py; smart_rank_score_calibration.py",
+      "observed": "60 values attached and SHA-256 re-signed; neutralized mode yields 0.1 per number, probability_sum~6",
+      "consumer": "frozen calibration evidence / retrospective Brier",
+      "status": "SIGNED_SHADOW_ONLY"
+    },
+    {
+      "step": "candidates",
+      "source": "smart_portfolio_optimizer.py; smart_portfolio_pipeline.py",
+      "observed": "candidate pool and auxiliary portfolio optimize frozen champion aggregate scores, not neutralized calibrated probabilities",
+      "consumer": "bounded primary selector",
+      "status": "IMPLEMENTED_CHAMPION_SCORES"
+    },
+    {
+      "step": "primary_card",
+      "source": "smart_primary_card_selector.py; smart_full_process_pipeline.py",
+      "observed": "one sorted 6-of-60 card selected from frozen champion scores and recorded with freeze/portfolio/selector proofs, with no target result consumed",
+      "consumer": "SMART_<target>_PRIMARY_CARD.json",
+      "status": "FUNCTIONAL_IN_CONTROLLED_TESTS"
+    }
+  ],
+  "governance": {
+    "champion": "KEEP_CHAMPION",
+    "predictive_advantage": "UNPROVEN",
+    "probability_six_hits": "NOT_ESTIMATED",
+    "card_selection_from_calibrated_probabilities": false,
+    "archived_freezes_3060_3061_release_prerequisite": false,
+    "full_current_head_regression": "RUNNING_NOT_YET_PROVEN",
+    "product_main_promoted": false
+  },
+  "linked_test": {
+    "tests_passed": 77,
+    "failures": 0,
+    "junit_sha256": "BFD7F4D51C037BEEED9F8794F272EA6BDB9E6A4DFFC5FE3B5ED356853E368833",
+    "receipt": "release_evidence/PR77_20261023/SMART_CONSUMER_E2E_77_RECEIPT.json"
+  },
+  "limitation": "Construction and historical signal influence are not evidence of statistical superiority over uniform lottery selection. The calibration/probability branch is deliberately non-operative in the final-card selector absent out-of-sample evidence."
+}
