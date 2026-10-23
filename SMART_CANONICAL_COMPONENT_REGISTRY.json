@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "c183493854676ad7e39610b97f062e3ff0d011da428d6b5e525c7bad3989332b",
+  "source_reachability_inventory_sha256": "65a7c770f3034a8a6ea7524a6df55b9c82bee9f4a11acdb243ca17af9b61a606",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -5917,7 +5917,7 @@
       "component_id": "smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_f12_scientific_successor.py",
-      "implementation_sha256": "3d864998712132448324a75ad2d9677283e9754d1b80023bc170ec9d0923f7b5",
+      "implementation_sha256": "35228a0e8dcc45136864e9eb7833ef1d20fa6d4ca3ba8b731fcfdb168941b7f0",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -5944,7 +5944,7 @@
       "component_id": "smart_false_negative_rescue",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_false_negative_rescue.py",
-      "implementation_sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745",
+      "implementation_sha256": "40267ff17a5d51f5e882aaab780deadc09f83349c36792e2007c0e0fca52a452",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -5952,6 +5952,7 @@
         "smart_portfolio_pipeline",
         "smart_shadow_impact_probe",
         "test_smart_false_negative_rescue",
+        "test_smart_portfolio_pipeline",
         "test_smart_post_result_report",
         "test_smart_recover_provenance"
       ],
@@ -7740,7 +7741,7 @@
       "component_id": "smart_portfolio_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_portfolio_pipeline.py",
-      "implementation_sha256": "bfe95e275d01d5a8b66c84e2a1dd72cf98d7297ea4dfc2e9168658e59b33c3ef",
+      "implementation_sha256": "1c5f6893502846eca3f78fd5f02b0f734fac40193fe5175c87f2384dec8dfcbb",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8906,7 +8907,7 @@
       "component_id": "smart_signal_agent",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_signal_agent.py",
-      "implementation_sha256": "f68ecf2fc552df69bfff5ca7d3d1462333b7e5aa3a9b3544e502c45f516dd826",
+      "implementation_sha256": "f55f4ce815dd0f66ec17115fb75b2630026b14d597bae958303844c64ba6ba69",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -11513,7 +11514,7 @@
       "component_id": "test_smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f12_scientific_successor.py",
-      "implementation_sha256": "0c04cd8f259a024179d88e4af7133e7893a960c962132394abd0c81f3de3c6fd",
+      "implementation_sha256": "e715870360b92504f93a8405533a76323028e4afc7ff0ba1846f8f3c79f82570",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11582,7 +11583,7 @@
       "component_id": "test_smart_false_negative_rescue",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_false_negative_rescue.py",
-      "implementation_sha256": "9ecfe2f8bfb5219bd9ec16b42eb315b4fe81ad2244f0422b1efd3e00d8bb249a",
+      "implementation_sha256": "16e85b9374b093f4079a364bdef31a224e630243ef2c3472927db2799a6ff13e",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13249,10 +13250,11 @@
       "component_id": "test_smart_portfolio_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_portfolio_pipeline.py",
-      "implementation_sha256": "1cd0bf0acad2b3f33b37726775630beac12f672410774209718e2c43ff2333c7",
+      "implementation_sha256": "add615974157744cdf9c90740491039c0fc6ff6f853232757d90071b3d1294cf",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_false_negative_rescue",
         "smart_portfolio_backtest",
         "smart_portfolio_optimizer",
         "smart_portfolio_pipeline"
@@ -13835,7 +13837,7 @@
       "component_id": "test_smart_rank_score_calibration",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_rank_score_calibration.py",
-      "implementation_sha256": "c442a89b08e400e1c357ba4ab8d7ce6a9c0b490d70982068d565d5c2c2d7991f",
+      "implementation_sha256": "a97861c2e5d4b68aa517e95e619b7b5834916c06307fe653e25e2d4c69be3844",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14938,5 +14940,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "ebdc8691dd48228dac6cba68a446cb9425774de15fe320f780f5f39384095809"
+  "registry_sha256": "4fa569316e54fad697cf2f088b4567962f12ac6812a47ac4bec62b2c57972ff9"
 }
