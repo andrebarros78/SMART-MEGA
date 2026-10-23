@@ -97,7 +97,24 @@ SELECTOR_EVIDENCE_REVERSALS = (
 )
 
 
+# Exact comparison-only inverse of the validated SHA-256 bookkeeping repair.
+# No model scores, weights, candidate policy or historical data are modified.
+# The restored source must still match the immutable F11 fingerprint bytewise.
+CALIBRATION_AUDIT_REVERSALS = (
+    (
+        b"\n\n        # The per-number probability vector is part of the signed audit.\n"
+        b"        # Rebind its digest after attaching all 60 values; historical freezes\n"
+        b"        # remain immutable and no predictive calibration is activated here.\n"
+        b"        signed_calibration = dict(calibration_audit)\n"
+        b"        signed_calibration.pop('sha256', None)\n"
+        b"        calibration_audit['sha256'] = sha256_json(signed_calibration)",
+        b"",
+    ),
+)
+
+
 GUARD_SOURCE_REVERSALS = {
+    "smart_signal_agent.py": CALIBRATION_AUDIT_REVERSALS,
     "smart_portfolio_pipeline.py": (
         *SELECTOR_EVIDENCE_REVERSALS,
         AUTHORIZATION_SOURCE_REVERSALS[0],
