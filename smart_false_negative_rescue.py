@@ -5,6 +5,13 @@ from dataclasses import asdict,dataclass
 from pathlib import Path
 from typing import Any,Mapping
 SCHEMA="SMART_FALSE_NEGATIVE_RESCUE_1"
+# A missing historical freeze is not a prerequisite for continuing operations.
+# Its post-result report remains excluded until the original signed bytes exist.
+DEFERRED_HISTORICAL_FREEZE_SHA256 = {
+    3060: "d165b881fa53d6c848e1e643bd95ef33ee46a95b62a7182ce3ffffe30783c871",
+    3061: "3cf380a204d9e682f77c3d1c3f168c0643e3e43e351aff1b95d10c4f1123f1f8",
+}
+
 @dataclass(frozen=True)
 class FalseNegativeRescueConfig:
     min_observations:int=3; max_number_boost:float=0.035; band_boost:float=0.018; false_positive_penalty:float=0.012; low_band_extra_cap:float=0.012
@@ -132,6 +139,40 @@ def _trusted_canonical_report(root:Path,path:Path,obj:dict[str,Any],contest:int,
     return recovered
 
 
+def assess_historical_freeze_continuation(quarantined_reasons:Mapping[str,str])->dict[str,Any]:
+    """Separate operational continuity from scientific evidence admissibility.
+
+    Deferred 3060/3061 freezes are NOT reconstructed and their reports never
+    become training samples simply because the engineering work continues.
+    Unexpected/quarantined evidence remains visible for separate review.
+    """
+    deferred=[]; other=[]
+    for name,reason in sorted(quarantined_reasons.items()):
+        matched=False
+        for contest,digest in DEFERRED_HISTORICAL_FREEZE_SHA256.items():
+            expected=f"SMART_POST_RESULT_REPORT_{contest}.json"
+            if name==expected and reason==f"post-result report freeze evidence unavailable or hash-divergent: {contest}":
+                deferred.append({"contest":contest,"report":name,
+                                 "required_freeze_sha256":digest,
+                                 "status":"UNVERIFIED_EXCLUDED",
+                                 "restore_required_to_continue":False})
+                matched=True
+                break
+        if not matched:
+            other.append({"report":name,"reason":reason})
+    return {
+        "schema":"SMART_HISTORICAL_FREEZE_CONTINUATION_1",
+        "status":"PROCEED_WITH_VERIFIED_EVIDENCE" if not other else "REVIEW_OTHER_QUARANTINE",
+        "operational_continuation_allowed":not bool(other),
+        "historical_freeze_search_required_for_continuation":False,
+        "deferred_freezes":deferred,
+        "other_quarantine":other,
+        "deferred_reports_eligible_for_calibration":False,
+        "retroactive_freeze_reconstruction_allowed":False,
+        "automatic_challenger_promotion_authorized":False,
+    }
+
+
 def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|None=None,through_contest:int|None=None)->dict[str,Any]:
     root=Path(root).resolve(); cfg=config or FalseNegativeRescueConfig()
     strict=(root/'SMART_CANONICAL_ROOT.json').is_file()
@@ -180,6 +221,7 @@ def build_profile_from_reports(root:str|Path,config:FalseNegativeRescueConfig|No
              "causal_cutoff_enforced":cutoff is not None,
              "observations":total,"source_contests":[int(x["contest"]) for x in obs],
              "duplicates_ignored":duplicates_ignored,"quarantined_reports":quarantined,
+             "historical_freeze_continuation":assess_historical_freeze_continuation(quarantined_reasons),
              "quarantined_count":len(quarantined),"config":asdict(cfg),
              "false_negative_counts":fn,"false_positive_counts":fp,
              "band_false_negative_counts":band_fn,"recent_observations":obs[-20:],
@@ -214,7 +256,8 @@ def apply_rescue(aggregate_scores:Mapping[int|str,float],profile:Mapping[str,Any
                "result_used":False,"profile_sha256":profile.get("sha256"),
                "evidence_coverage":profile["evidence_coverage"],
                "quarantined_count":profile.get("quarantined_count",0),
-               "shadow_nonzero_deltas":deltas,"nonzero_deltas":{}}
+               "shadow_nonzero_deltas":deltas,"nonzero_deltas":{},
+               "historical_freeze_continuation":profile.get("historical_freeze_continuation")}
         audit["sha256"]=sha256_json(audit)
         return scores,audit
     audit={"schema":SCHEMA,"status":"PASS","observations":obs,"result_used":False,"profile_sha256":profile.get('sha256'),"nonzero_deltas":deltas}
