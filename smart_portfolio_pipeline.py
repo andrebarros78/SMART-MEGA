@@ -47,7 +47,7 @@ def build_portfolio_package(
     out_path: str | Path | None = None,
     config: PortfolioConfig = CANONICAL_PORTFOLIO_CONFIG,
 ) -> dict[str, Any]:
-    freeze_path = Path(freeze_path)
+    freeze_path = Path(freeze_path).resolve()
     freeze = json.loads(freeze_path.read_text(encoding="utf-8-sig"))
     target = int(freeze.get("target_contest"))
     cutoff = int(freeze.get("cutoff_contest"))
@@ -74,7 +74,12 @@ def build_portfolio_package(
     portfolio = optimize_from_freeze(freeze_path, config=config, head="champion")
     objective_gap = abs(float(portfolio["objective_value"]) - float(portfolio["best_objective_bound"]))
     champion_top6 = [int(x) for x in champion["top6"]]
-    rescue_profile = build_profile_from_reports(Path(__file__).resolve().parent, through_contest=cutoff)
+    # Only use feedback belonging to the same source root as the frozen model.
+    # Production freezes live under this repository; isolated test/replay freezes
+    # must not silently consume reports from the module import location.
+    module_root = Path(__file__).resolve().parent
+    feedback_root = module_root if freeze_path.is_relative_to(module_root) else freeze_path.parent
+    rescue_profile = build_profile_from_reports(feedback_root, through_contest=cutoff)
     # 3060/3061 absence is documented, never a prerequisite to generate a
     # new prospective card. Unknown quarantine cases still demand review.
     continuation = (rescue_profile or {}).get("historical_freeze_continuation") or {}
