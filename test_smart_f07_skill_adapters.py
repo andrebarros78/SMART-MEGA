@@ -82,3 +82,16 @@ def test_f07_total_integration_gate_checks_adapter_consumption():
     gate = proof["gates"]["G10_SKILL_ADAPTER_CONSUMPTION"]
     assert all(gate.values())
     assert len(proof["skill_adapter_registry_sha256"]) == 64
+
+
+def test_f07_native_python_target_line_endings_normalized(tmp_path):
+    import hashlib
+    from smart_skill_adapter_registry import sha256_file
+    py=tmp_path/"native.py"
+    canonical=b"print(1)\nprint(2)\n"
+    py.write_bytes(canonical.replace(b"\n",b"\r\n"))
+    assert sha256_file(py)==hashlib.sha256(canonical).hexdigest()
+    evidence=tmp_path/"immutable.json"
+    bytes_evidence=b"{\r\n}\r\n"
+    evidence.write_bytes(bytes_evidence)
+    assert sha256_file(evidence)==hashlib.sha256(bytes_evidence).hexdigest()

@@ -8,6 +8,7 @@ import re
 from collections import defaultdict, deque
 from pathlib import Path
 from typing import Iterable
+from smart_source_identity import sha256_source_bytes
 
 SCHEMA = "SMART_COMPONENT_REACHABILITY_REGISTRY_V1"
 EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", "venv", ".tox", "node_modules"}
@@ -243,6 +244,11 @@ def _classify(path: str, reachable: bool) -> tuple[str, str]:
     return "DIAGNOSTIC", "not reachable from canonical production entrypoints; retained for F08 reconciliation"
 
 
+def _source_hash(raw: bytes) -> str:
+    """Source identity ignores only Python EOL formatting."""
+    return sha256_source_bytes(raw)
+
+
 def build_registry(root: Path) -> dict:
     root = root.resolve()
     files = _python_files(root)
@@ -263,7 +269,7 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        content_hashes[rel] = hashlib.sha256(raw).hexdigest()
+        content_hashes[rel] = _source_hash(raw)
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
         except (SyntaxError, UnicodeDecodeError) as exc:

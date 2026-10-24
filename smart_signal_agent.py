@@ -555,6 +555,13 @@ class SmartSignalAgent:
 
         calibration_audit['probabilities_by_number'] = calibrated_probabilities
 
+        # The per-number probability vector is part of the signed audit.
+        # Rebind its digest after attaching all 60 values; historical freezes
+        # remain immutable and no predictive calibration is activated here.
+        signed_calibration = dict(calibration_audit)
+        signed_calibration.pop('sha256', None)
+        calibration_audit['sha256'] = sha256_json(signed_calibration)
+
         multi = build_multi_challengers(sc, weights, metrics, families, redundancy_audit, self.context_engine.metrics(), audit_detail=audit_detail)
 
         if multi['policies']['quality_dynamic']['top6'] != top6:

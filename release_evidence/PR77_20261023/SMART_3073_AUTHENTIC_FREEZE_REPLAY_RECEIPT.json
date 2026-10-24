@@ -1,0 +1,41 @@
+{
+  "schema": "SMART_AUTHENTIC_HISTORICAL_GENERATOR_REPLAY_1",
+  "source": "SMART-MEGA PR77",
+  "tested_source_commit": "e899d120625c59eceb01909fcfb058da50655cd9",
+  "tested_source_code_fingerprint_sha256": "d3a8452eb6447ad3004c71d0559861ff5759df1ab8e3cb4a6b97293ea1de5ac6",
+  "execution": {
+    "host": "DESKTOP-JNS08PU",
+    "execution_id": "ps-a451dbf78f0049dda288437ef53f4bb4",
+    "environment": "isolated canonical GitHub checkout pr77-release-20261023"
+  },
+  "input": {
+    "archive_branch": "operation/contest-3073-20261022",
+    "archive_git_blob_sha1": "8f3e69bc0012eb3383302272ee9f6175eb289961",
+    "freeze_original_sha256": "41ddfa45d9f25f6a3937561091ce81efd76f3ae38b8c7ccee64797dc8a5b2e87",
+    "target_contest": 3073,
+    "cutoff_contest": 3072,
+    "provenance": "Original Git blob extracted byte-for-byte by git cat-file, independently SHA-256 verified. Text reserialization was rejected."
+  },
+  "result": {
+    "status": "PASS",
+    "card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "matches_archived_pre_result_card": true,
+    "champion_identical": true,
+    "false_negative_rescue": "DEGRADED_SHADOW_ONLY",
+    "weights_promoted": false
+  },
+  "boundary": {
+    "retrospective_replay_not_future_prediction": true,
+    "actual_draw_not_used_by_generator": true,
+    "out_of_sample_superiority_proven": false,
+    "card_accurate_six_hits": false,
+    "production_merge_performed": false
+  }
+}

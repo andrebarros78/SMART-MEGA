@@ -55,7 +55,14 @@ def audit(root: str|Path='.') -> dict:
             external_project_paths.append(str(candidate))
     req_pins=_declared_pins(root/'requirements.txt')
     lock_pins=_declared_pins(root/'requirements.lock.txt')
-    installed={_norm(d.metadata['Name']):d.version for d in importlib.metadata.distributions() if d.metadata.get('Name')}
+    # Resolve the effective distribution on sys.path, not the last entry from
+    # both venv and system-site-packages, which may hide the imported pin.
+    installed={}
+    for name in req_pins:
+        try:
+            installed[name]=importlib.metadata.version(name)
+        except importlib.metadata.PackageNotFoundError:
+            installed[name]=None
     unpinned=[]
     for raw in (root/'requirements.txt').read_text(encoding='utf-8-sig').splitlines():
         line=raw.strip()

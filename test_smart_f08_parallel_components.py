@@ -19,7 +19,7 @@ def _audit():
     groups = manifest["groups"]
     paths = [p for members in groups.values() for p in members]
     assert len(paths) == len(set(paths))
-    assert len(paths) == 47
+    assert len(paths) == 48
     observed = {
         r["source_file"]
         for r in reach["components"]
@@ -56,9 +56,31 @@ def test_f08_parallel_scientific_boundaries_are_preserved():
     groups = manifest["groups"]
     assert "smart_3054_terminal_executor.py" in groups["RETIRED_FROM_PRODUCTION"]
     assert "smart_causal_shadow_runner.py" in groups["SHADOW_ONLY"]
-    assert {"smart_rag_excel.py", "smart_procedural_signal_intake.py"} <= set(groups["RESEARCH_ISOLATED"])
+    assert "smart_procedural_signal_intake.py" in groups["RESEARCH_ISOLATED"]
+    assert "smart_rag_excel.py" not in set(sum(groups.values(), []))
     assert {"smart_50_round_simulation.py", "smart_signal_50_round_simulation.py",
             "smart_signal_2000_simulation.py", "smart_portfolio_backtest.py"} <= set(groups["VALIDATION_ONLY"])
     assert all(manifest["rules"].values())
     standalone = set(reach["known_debt_observations"]["independent_entrypoints"])
     assert len(standalone & set(sum(groups.values(), []))) >= 38
+
+
+
+def test_f08_rag_and_historical_intake_reachable_only_as_evidence():
+    manifest, reach, canonical = _audit()
+    evidence = manifest["evidence_only_production"]
+    assert evidence["cutoff_required"] is True
+    assert evidence["source_integrity_proof_required"] is True
+    assert evidence["predictive_weight_authority"] is False
+    assert evidence["freeze_mutation_authority"] is False
+    assert evidence["promotion_authority"] is False
+    by_source = {row["source_file"]: row for row in reach["components"]}
+    by_impl = {row["implementation"]: row for row in canonical["components"]}
+    for source in evidence["sources"]:
+        assert by_source[source]["role"] == "PRODUCTION"
+        assert by_source[source]["production_reachable"] is True
+        component = by_impl[source]
+        assert component["state"] == "ACTIVE"
+        assert component["predictive_authority"] == "NONE"
+        assert component["weight_authority"] == "NONE"
+        assert component["freeze_authority"] == "NONE"

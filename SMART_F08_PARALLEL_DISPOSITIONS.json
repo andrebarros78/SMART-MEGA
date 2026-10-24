@@ -24,11 +24,10 @@
       "smartmega_apply_post_result_report_20260920.py"
     ],
     "SHADOW_ONLY": [
-      "smart_causal_shadow_runner.py"
+      "smart_causal_shadow_runner.py",
+      "smart_shadow_impact_probe.py"
     ],
     "RESEARCH_ISOLATED": [
-      "smart_historical_training_intake.py",
-      "smart_rag_excel.py",
       "smart_procedural_signal_intake.py",
       "smart_procedural_caption_extract.py",
       "smart_procedural_cronogram_acquire.py",
@@ -48,6 +47,7 @@
       "smart_falsification_power_audit.py",
       "smart_finalize_deployment.py",
       "smart_hypothesis_state_reconciler.py",
+      "smart_learning_impact_audit.py",
       "smart_monte_carlo_convergence.py",
       "smart_official_dataset_reconcile.py",
       "smart_portfolio_backtest.py",
@@ -69,6 +69,7 @@
       "smart_contract_registry.py",
       "smart_execution_checkpoint.py",
       "smart_frontier_adjudicator.py",
+      "smart_recover_provenance.py",
       "smart_release_attestation.py"
     ]
   },
@@ -79,5 +80,18 @@
     "VALIDATION_ONLY": "Synthetic simulations and backtests remain non-authoritative testing evidence, not predictive promotion.",
     "DIAGNOSTIC_ONLY": "Separate maintenance diagnostics are not production decision paths."
   },
-  "scope_boundary": "F08 classifies and enforces nonproduction routing; does not claim dynamic execution, physical relocation or scientific superiority."
+  "scope_boundary": "F08 classifies and enforces nonproduction routing; does not claim dynamic execution, physical relocation or scientific superiority.",
+  "evidence_only_production": {
+    "sources": [
+      "smart_historical_training_intake.py",
+      "smart_rag_excel.py",
+      "smart_rag_freeze_evidence.py"
+    ],
+    "role": "CAUSAL_READ_ONLY_SOURCE_VALIDATION_AND_RETRIEVAL",
+    "cutoff_required": true,
+    "predictive_weight_authority": false,
+    "freeze_mutation_authority": false,
+    "promotion_authority": false,
+    "source_integrity_proof_required": true
+  }
 }

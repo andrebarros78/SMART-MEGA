@@ -1,0 +1,39 @@
+{
+  "schema": "SMART_HISTORICAL_FREEZE_CONTINUATION_TEST_RECEIPT_1",
+  "tested_source": "GitHub fix/forensic-feedback-20261022 after the code and test updates",
+  "test_executor": "LMCP Linux wmcp-cloud-01 Python 3.12.3 isolated temporary Python execution",
+  "runs": [
+    {
+      "command_id": "c_333a050fcdd344d3b4b66899b7a8aff2",
+      "exit_code": 0,
+      "status": "PASS",
+      "observed": "SYNTAX_COMPILE_PASS 4; INTEGRATION_PASS 2 quarantined, operational continuation allowed, 0 weights promoted",
+      "scope": "exact four GitHub Python file contents compiled; profile-and-rescue isolated fixture"
+    },
+    {
+      "command_id": "c_a91c59fcb2434e74b749043e7b5f6320",
+      "exit_code": 1,
+      "status": "TEST_HARNESS_ERROR",
+      "observed": "test-only Config stub omitted numbers_per_game field, before production pipeline exercised",
+      "scope": "isolation harness, no SMART-MEGA source modified"
+    },
+    {
+      "command_id": "c_83dbdef146254b41a009238299cb9f80",
+      "exit_code": 0,
+      "status": "PASS",
+      "observed": "PIPELINE_CONTINUATION_PASS [1,2,3,4,5,6] DEGRADED_SHADOW_ONLY; UNKNOWN_QUARANTINE_FAIL_CLOSED_PASS",
+      "scope": "exact GitHub production modules, simulated optimizer/selector, no lottery prediction and no production side effects"
+    }
+  ],
+  "assertions": {
+    "missing_3060_3061_do_not_prevent_card_pipeline": true,
+    "missing_3060_3061_not_accepted_as_calibration": true,
+    "other_unknown_quarantine_rejected": true,
+    "freeze_reconstructed": false,
+    "automatic_weights_promoted": false,
+    "full_suite_executed": false,
+    "production_certified_on_latest_head": false
+  },
+  "limitations": "Does not replace original optimizer integration, 1750-test full suite, Windows certification, live production check, scientific out-of-sample proof.",
+  "next_action": "Re-run full governed regression and renew SHA/HEAD-bound engineering certificates on latest branch before any merge. Do not wait for 3060/3061 freezes."
+}

@@ -281,6 +281,12 @@ def test_agent_integrates_rank_calibration_strictly_after_results():
 
     probs = pred.rank_score_calibration['probabilities_by_number']
 
+    # Binding all 60 probabilities must renew the signed calibration audit.
+    from smart_signal_agent import sha256_json
+    signed_calibration = dict(pred.rank_score_calibration)
+    claimed_sha256 = signed_calibration.pop('sha256')
+    assert claimed_sha256 == sha256_json(signed_calibration)
+
     assert len(probs) == 60
 
     assert abs(sum(probs.values()) - 6.0) < 1e-8

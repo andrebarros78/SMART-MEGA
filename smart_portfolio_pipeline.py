@@ -75,6 +75,11 @@ def build_portfolio_package(
     objective_gap = abs(float(portfolio["objective_value"]) - float(portfolio["best_objective_bound"]))
     champion_top6 = [int(x) for x in champion["top6"]]
     rescue_profile = build_profile_from_reports(Path(__file__).resolve().parent, through_contest=cutoff)
+    # 3060/3061 absence is documented, never a prerequisite to generate a
+    # new prospective card. Unknown quarantine cases still demand review.
+    continuation = (rescue_profile or {}).get("historical_freeze_continuation") or {}
+    if continuation and continuation.get("operational_continuation_allowed") is not True:
+        raise ValueError("unreviewed historical quarantine: card generation requires review")
     rescue_scores, rescue_audit = apply_rescue(champion["aggregate_scores"], rescue_profile)
     rescue_ranking60 = sorted(range(1, 61), key=lambda n: (-float(rescue_scores[str(n)]), n))
     primary_selection = select_primary_card(
@@ -107,7 +112,7 @@ def build_portfolio_package(
         "single_game_control_valid": isinstance(control.get("games"), list) and len(control["games"]) == 1 and len(control["games"][0]) == 6,
         "primary_card_is_single_game": len(primary_card_numbers) == 6 and len(set(primary_card_numbers)) == 6,
         "primary_card_selector_pass": primary_selection.get("status") == "PASS",
-        "primary_card_not_forced_to_champion_top6": primary_card_numbers != sorted(champion_top6) or primary_selection["selected_band_counts"] == primary_selection["pure_top6_band_counts"],
+        "primary_card_matches_selector_output": primary_card_numbers == [int(n) for n in primary_selection["selected_numbers"]],
         "portfolio_not_primary_product": True,
         "solver_optimal": portfolio["solver_status"] == "OPTIMAL",
         "objective_gap_zero": objective_gap <= 1e-6,
@@ -141,6 +146,12 @@ def build_portfolio_package(
         "product_role": "AUXILIARY_MULTICARD_PORTFOLIO",
         "primary_card_role": "FINAL_SINGLE_CARD_PRODUCT",
         "primary_card": primary_card,
+        "primary_card_comparison": {
+            "identical_to_champion_top6": sorted(primary_card_numbers) == sorted(champion_top6),
+            "independent_selection_gain_proven": False,
+            "score_source": "champion",
+            "selection_computed": True,
+        },
         "false_negative_rescue": rescue_audit,
         "champion_top6_role": "PRIMARY_SINGLE_CARD_SOURCE",
         "generated_utc": datetime.now(timezone.utc).isoformat(),

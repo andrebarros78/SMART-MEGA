@@ -330,6 +330,8 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     files_before = _files_under(epoch_dir)
     ledger_bytes = ledger_path.read_bytes()
     try:
+        from smart_rag_freeze_evidence import prepare_rag_freeze_evidence
+        rag_evidence = prepare_rag_freeze_evidence(root, data_path, cutoff, epoch_dir, target)
         fine_tuning = ensure_pre_freeze_authority(
             data_path,
             target,
@@ -499,6 +501,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "freeze_window": freeze_window.to_dict(),
         "data_file": active["data_file"],
         "data_sha256": active["data_sha256"],
+        "rag_preparation_evidence": rag_evidence,
         "reset_ledger_sha256": reset_ledger_sha,
         "final_ledger_sha256": freeze_result["ledger_sha256"],
         "state_sha256": freeze_result["state_sha256"],

@@ -83,3 +83,19 @@ def test_f12_scientific_successor_accepts_pinned_source_across_git_eol_styles():
     tampered = raw.replace(b"expected_value != effective_value", b"expected_value == effective_value", 1)
     assert tampered != raw
     assert reconstruct_predecessor(tampered) is None
+
+
+def test_f12_calibration_sha_repair_is_exactly_reversible_without_changing_f11():
+    """Only the verified probability audit hash repair may differ from F11."""
+    filename = "smart_signal_agent.py"
+    source = (ROOT / filename).read_bytes()
+    restored = reconstruct_guard_only_source(filename, source)
+    assert restored is not None
+    assert _matches_expected_code(restored, BASELINE_SOURCE_SHA256[filename])
+    tampered = source.replace(
+        b"calibration_audit['sha256'] = sha256_json(signed_calibration)",
+        b"calibration_audit['sha256'] = '0' * 64",
+        1,
+    )
+    assert tampered != source
+    assert reconstruct_guard_only_source(filename, tampered) is None

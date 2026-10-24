@@ -6,6 +6,8 @@ import json
 from pathlib import Path
 from typing import Any
 
+from smart_source_identity import sha256_source_file
+
 from smart_agent_skill_orchestration import AGENTS, LANES
 
 SCHEMA = "SMART_SKILL_ADAPTER_REGISTRY_V1"
@@ -23,7 +25,9 @@ def sha256_json(value: Any) -> str:
 
 
 def sha256_file(path: Path) -> str:
-    return hashlib.sha256(path.read_bytes()).hexdigest()
+    """Normalize Python source EOL only; preserve forensic evidence byte hashes."""
+    return (sha256_source_file(path) if path.suffix == ".py"
+            else hashlib.sha256(path.read_bytes()).hexdigest())
 
 
 def build_registry(root: str | Path) -> dict[str, Any]:

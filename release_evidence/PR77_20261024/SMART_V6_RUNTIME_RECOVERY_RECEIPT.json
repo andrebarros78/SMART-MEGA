@@ -1,0 +1,82 @@
+{
+  "schema": "SMART_V6_RUNTIME_RECOVERY_20261024_1",
+  "status": "RUNTIME_EXECUTOR_RECOVERY_PROVEN_PRODUCTION_HOLD",
+  "recorded_date": "2026-10-24",
+  "host": "DESKTOP-JNS08PU",
+  "project_id": "smart-mega-v6-canonical",
+  "isolated_project_root": "C:\\New Projet\\SMART-MEGA-V6-CANONICAL",
+  "isolation": {
+    "ready": true,
+    "mode": "windows-account",
+    "project_acl": true,
+    "capsule_acl": true,
+    "cross_project_denials": true
+  },
+  "broker": {
+    "prior_problem": "privileged broker sealed manifest contained 8 projects; canonical contained 9 including SMART V6",
+    "method": "existing audited WMCP scripts/sync_sealed_runtime_config.ps1 with verified pre-sync backup",
+    "canonical_manifest_sha256": "6A40497FB72F77EE2BAC356749FC6FCED63400DA6EB57B61E8A4F9D226798A5E",
+    "synced_seal_sha256": "DF6185853D9AB72C56F833C674C513BB4023DCB59E9D968EAFC320A938C44A4A",
+    "postcondition": "both sealed broker and worker runtime manifest have 9 projects, identical SHA256; Windows-MCP-Process-Broker restarted; credential .dpapi present",
+    "backup_local": "C:\\New Projet\\WMCP 3.1\\_backup\\broker-sync-v6-20261024-061235"
+  },
+  "execution": {
+    "supervisor_task": "Windows-MCP-Project-Supervisor-1fa4e21aa0",
+    "state_observed": "ready",
+    "execution_enabled": true,
+    "first_smoke": {
+      "operation": "process.echo",
+      "task_id": "task-4d708993d6554012bd50c37ee6326d0c",
+      "command_id": "cmd-c5c9d95de79c4a58bcb928bba04bd730",
+      "state": "completed",
+      "exit_code": 0,
+      "result_sha256": "2935a05b6d80e0929e68c1d679b61874fc81f3004450de7eca8ba750efeec948",
+      "event_seq": [
+        1,
+        2,
+        3,
+        4
+      ]
+    },
+    "recovery_test": {
+      "action": "controlled restart of dedicated V6 supervisor task",
+      "task_state": "Running",
+      "follow_up_task": "task-df4f326cdab04fbc9a58a2a39f896016",
+      "command_id": "cmd-da169df3a57141f3ac0df04aa655a09b",
+      "state": "completed",
+      "result_sha256": "d39811e00582739f91499f9cf8513b255e1c660cd7f261849d20669ae20f5a96",
+      "recovery_proven": true,
+      "transient_capacity_guard": "effective_limit=0 under high CPU, admission eventually recovered without guard change"
+    },
+    "other_projects": "WMCP, B7 standalone, B7 Digital, ECC health observed true immediately after broker restart",
+    "final_health": {
+      "healthy": true,
+      "supervisor_state": "ready",
+      "execution_enabled": true,
+      "queue_completed": 2
+    }
+  },
+  "limits": {
+    "generated_card": false,
+    "model_card_validation_performed": false,
+    "merging_authorized": false,
+    "scientific_predictive_advantage_proven": false,
+    "production_ready": false,
+    "current_operator_lifecycle": {
+      "state": "HOLD",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "hold_next_target": 3073
+    }
+  },
+  "open_requirements": [
+    "Verify current operational contest state and operator readiness without generating card",
+    "Certified P09 and linked authorities must be approved and published atomically",
+    "Merge by branch protection and perform deployment smoke; continue OOS validation"
+  ],
+  "references": {
+    "pr": 77,
+    "github_security_issue": 78,
+    "runtime_issue": 79
+  }
+}
