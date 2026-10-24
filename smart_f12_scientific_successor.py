@@ -128,11 +128,30 @@ HISTORICAL_CONTINUATION_REVERSALS = (
 )
 
 
+# Comparison-only reversal of the root-bound feedback correction.
+# The operational root binding remains active; only F11 evidence reconstruction
+# reverses these exact bytes and verifies the original pinned source digest.
+FREEZE_ROOT_BINDING_REVERSALS = (
+    (b'    freeze_path = Path(freeze_path).resolve()\n',
+     b'    freeze_path = Path(freeze_path)\n'),
+    (
+        b'    # Only use feedback belonging to the same source root as the frozen model.\n'
+        b'    # Production freezes live under this repository; isolated test/replay freezes\n'
+        b'    # must not silently consume reports from the module import location.\n'
+        b'    module_root = Path(__file__).resolve().parent\n'
+        b'    feedback_root = module_root if freeze_path.is_relative_to(module_root) else freeze_path.parent\n'
+        b'    rescue_profile = build_profile_from_reports(feedback_root, through_contest=cutoff)\n',
+        b'    rescue_profile = build_profile_from_reports(Path(__file__).resolve().parent, through_contest=cutoff)\n',
+    ),
+)
+
+
 GUARD_SOURCE_REVERSALS = {
     "smart_signal_agent.py": CALIBRATION_AUDIT_REVERSALS,
     "smart_portfolio_pipeline.py": (
         *SELECTOR_EVIDENCE_REVERSALS,
         *HISTORICAL_CONTINUATION_REVERSALS,
+        *FREEZE_ROOT_BINDING_REVERSALS,
         AUTHORIZATION_SOURCE_REVERSALS[0],
         (b"if _test_identity._authorized_pytest_sandbox(freeze_path):",
          b'if "pytest-" in str(freeze_path).lower():'),
@@ -142,6 +161,15 @@ GUARD_SOURCE_REVERSALS = {
         (b"            if _test_identity._authorized_pytest_sandbox(path):",
          b'            test_path = str(path.resolve()).lower()\n            if "pytest-" in test_path :'),
     ),
+}
+
+
+# These two source changes are not F11-identical. Their exact reviewed PR80
+# bytes are pinned separately, rather than mislabelled as historical F11 source.
+# A different fine-tuning policy or execution gate must fail this integrity check.
+APPROVED_SCOPED_SUCCESSOR_SHA256 = {
+    "smart_ai_fine_tuning.py": "68711f2b748da8401f628c8be5837d66ec906dcfbc10f974be75295ca17f4f3f",
+    "smart_champion_challenger.py": "d8925e5cbdb398ae4ea243efdd0e495471c809851a754fb3a7520665144fb757",
 }
 
 
@@ -253,7 +281,10 @@ def evaluate(root: str | Path) -> dict[str, Any]:
             same = original is not None and _matches_expected_code(original, expected)
         elif path in GUARD_SOURCE_REVERSALS:
             same = same or reconstruct_guard_only_source(path, raw) is not None
+        scoped_successor_pinned = (path in APPROVED_SCOPED_SUCCESSOR_SHA256 and
+            _matches_expected_code(raw, APPROVED_SCOPED_SUCCESSOR_SHA256[path]))
         sources[path] = {"approved_f11_source_preserved": bool(same),
+                         "approved_scoped_successor_source_pinned": bool(scoped_successor_pinned),
                          "current_canonical_lf_sha256": _sha256(raw.replace(b"\r\n", b"\n")),
                          "f11_source_sha256": expected,
                          "repair_scope": path == PREDICTIVE_FILE,
@@ -267,9 +298,9 @@ def evaluate(root: str | Path) -> dict[str, Any]:
             and archived.get("sha256") == _json_sha({k: v for k, v in archived.items() if k != "sha256"}),
         "f11_historical_evidence_integrity": reproduced["checks"]["historical_artifacts_git_blob_identical_to_F10"]
             and all(reproduced["checks"].values()),
-        "all_other_predictive_sources_preserved_after_exact_guard_reversal": all(
-            row["approved_f11_source_preserved"] for row in sources.values()
-            if not row["repair_scope"]
+        "all_other_sources_f11_identical_or_explicitly_pinned_successor": all(
+            row["approved_f11_source_preserved"] or row["approved_scoped_successor_source_pinned"]
+            for row in sources.values() if not row["repair_scope"]
         ),
         "candidate_diff_exactly_explained_by_guard": sources[PREDICTIVE_FILE]["approved_f11_source_preserved"],
         "candidate_f11_live_rejects_source_change": live_f11["status"] == "FAIL"
@@ -288,7 +319,7 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "schema": SCHEMA,
         "status": "PASS" if all(check.values()) else "FAIL",
         "project": "SMART-MEGA",
-        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__OPERATOR_SCHEDULE_AND_AUTHORIZATION_GUARDS",
+        "scope": "F11_HISTORICAL_SCIENCE_PRESERVED__F12_CAUSAL_TRACE_REPAIR__PINNED_PR80_STATISTICAL_AND_ROOT_GUARDS",
         "historical_baseline_head": BASELINE_HEAD,
         "historical_f11_report_file": F11_ARCHIVE,
         "historical_f11_report_sha256": _sha256((root / F11_ARCHIVE).read_bytes()),
@@ -296,12 +327,14 @@ def evaluate(root: str | Path) -> dict[str, Any]:
         "sources": sources,
         "historical_comparison": reproduced["comparison"],
         "predictive_implementation_changed": False if check["candidate_diff_exactly_explained_by_guard"] else None,
+        "fine_tuning_promotion_policy_changed_since_f11": True,
+        "fine_tuning_superiority_proven": False,
         "engineering_consumer_trace_fix_approved": all(check.values()),
         "scientific_predictive_status": "UNPROVEN_PROSPECTIVE_6_OF_6",
         "prospective_advantage_proven": False,
         "six_of_six_proven": False,
         "additional_prospective_samples_since_F11": 0,
-        "note": "The immutable F11 predictor is reconstructed byte-for-byte after reversing only the exact approved F12 causal guard, operator-target scheduling delta and authorization-guard substitutions. Reversal bytes are never executed. This proves a restricted source change, not superior lottery prediction.",
+        "note": "Historical F11 report and original predictive generator are independently verified. New root-bound feedback and fine-tuning promotion guards are explicitly pinned as PR80 successor source changes, not misrepresented as F11-identical. Comparison-only reversals are never executed. This integrity check does not prove superior lottery prediction.",
     }
     report["sha256"] = _json_sha(report)
     return report
