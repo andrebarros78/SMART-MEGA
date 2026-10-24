@@ -1,0 +1,87 @@
+{
+  "schema": "SMART_V6_OPERATOR_HOMOLOGATION_RECEIPT_20261024_1",
+  "recorded_date": "2026-10-24",
+  "project": "SMART-MEGA V6",
+  "environment": "PC Casa / DESKTOP-JNS08PU",
+  "scope": "Operational readiness WITHOUT generating a card or merging main",
+  "source_commit": "4223265a9b9b6d342a0e9c5e9615880ddbb5db21",
+  "code_tests": {
+    "passed": 1757,
+    "failed": 0,
+    "regression_reference": "release_evidence/PR77_20261023/SMART_FULL_1757_MANIFEST.json",
+    "product_certification": "CONSTRUCTION_PROVEN",
+    "certification_reverified_locally": true
+  },
+  "runtime": {
+    "windows_isolation": "PASS",
+    "supervisor_ready_and_health_observed": true,
+    "execution_enabled": true,
+    "worker_runtime_observed": true,
+    "broker_manifest_projects": 9,
+    "worker_manifest_projects": 9,
+    "first_smoke": {
+      "task": "task-4d708993d6554012bd50c37ee6326d0c",
+      "result_sha256": "2935a05b6d80e0929e68c1d679b61874fc81f3004450de7eca8ba750efeec948",
+      "status": "completed"
+    },
+    "post_restart_smoke": {
+      "task": "task-df4f326cdab04fbc9a58a2a39f896016",
+      "result_sha256": "d39811e00582739f91499f9cf8513b255e1c660cd7f261849d20669ae20f5a96",
+      "status": "completed"
+    },
+    "resource_limits_preserved": true
+  },
+  "history_recovery": {
+    "status": "CAUGHT_UP_TO_HOLD",
+    "contest": 3073,
+    "operator_supplied_draw_date": "22/10/2026",
+    "operator_supplied_numbers": [
+      4,
+      13,
+      23,
+      28,
+      41,
+      58
+    ],
+    "result_input_authority": "OPERATOR",
+    "source_independently_verified": false,
+    "previous_completed": 3072,
+    "new_completed": 3073,
+    "new_target": 3074,
+    "new_lifecycle_state": "HOLD",
+    "canonical_dataset_sha256": "f16a57014da774bfdea88c66aa936496f3ed7410dc905ff0373d1829d195cac5",
+    "recovery_path": "SMART_MISSED_TARGET_RECOVERY_3073.json",
+    "prediction_authority_created": false,
+    "generation_authority_created": false,
+    "retroactive_generation_performed": false,
+    "backup_path": "C:\\New Projet\\SMART-MEGA-V6-CANONICAL\\_backup\\pre-catchup-3073-20261024",
+    "stale_staging_quarantined_to": "C:\\New Projet\\SMART-MEGA-V6-CANONICAL\\_backup\\orphaned-catchup-3073-20261024"
+  },
+  "preflight_3074": {
+    "status": "AWAITING_OPERATOR_AUTHORIZATION",
+    "phase": "OPERATOR_HOLD",
+    "reason": "NEXT_CYCLE_HOLD_REQUIRES_AUTHORIZE_NEXT_CYCLE",
+    "result_used": false,
+    "mutated_state": false,
+    "expected_by_design": true
+  },
+  "promotion": {
+    "github_main_unchanged": true,
+    "pr_number": 77,
+    "pr_merge_authorized": false,
+    "p09_file_stale": true,
+    "issue_for_authorized_p09_release": 78,
+    "production_deployed": false
+  },
+  "scientific": {
+    "champion": "KEEP_CHAMPION",
+    "predictive_advantage_proven": false,
+    "mission_proven": false
+  },
+  "next_conditions": [
+    "Approved and exact-hash P09 upload without bypassing security denials",
+    "Atomic release of interdependent certification authorities and remote verification",
+    "Branch-protection-compliant merge to main and post-merge production runtime smoke",
+    "Operator explicitly authorizes the next cycle before any real card; calibration is not promoted without OOS evidence"
+  ]
+}
