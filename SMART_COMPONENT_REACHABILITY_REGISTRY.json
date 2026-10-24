@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "65a7c770f3034a8a6ea7524a6df55b9c82bee9f4a11acdb243ca17af9b61a606",
+  "inventory_sha256": "9195ddc842dc01640a21ec2092eacbed184f34b994ca56bc11f29163e48e6021",
   "summary": {
-    "python_components": 548,
+    "python_components": 550,
     "workflow_entrypoints": 11,
     "production_components": 120,
     "shadow_components": 2,
     "diagnostic_components": 22,
     "validation_components": 24,
-    "test_components": 204,
+    "test_components": 206,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4362,7 +4362,8 @@
       "consumers": [
         "smart_champion_challenger",
         "smart_fine_tuning_lifecycle",
-        "test_smart_ai_fine_tuning"
+        "test_smart_ai_fine_tuning",
+        "test_smart_ai_fine_tuning_statistical_gate"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4372,7 +4373,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "242e10a04b16ff5789ee7465d76a42f0cbd901ca803e9ec4e7346e15496db4aa"
+      "sha256": "68711f2b748da8401f628c8be5837d66ec906dcfbc10f974be75295ca17f4f3f"
     },
     {
       "component_id": "smart_authority_freshness",
@@ -4861,6 +4862,7 @@
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
         "test_smart_bounded_online_learning",
+        "test_smart_canonical_execution_roots",
         "test_smart_coverage_governance",
         "test_smart_evidence_only_promotion",
         "test_smart_full_activation_epoch",
@@ -4889,7 +4891,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "8230a5ba604e6f4f708ce7f3e03a7df69119b471fe1d0695f45c5dbbd197a996"
+      "sha256": "d8925e5cbdb398ae4ea243efdd0e495471c809851a754fb3a7520665144fb757"
     },
     {
       "component_id": "smart_component_reachability",
@@ -5166,6 +5168,7 @@
         "smart_global_integrity",
         "test_p14_critical_branch_coverage",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_canonical_execution_roots",
         "test_smart_continuous_red_team",
         "test_smart_global_integrity",
         "test_smart_mission_coverage_closure_20260906",
@@ -6115,6 +6118,7 @@
         "test_p14_critical_branch_coverage",
         "test_p15_contract_strictness",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_canonical_execution_roots",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_evidence_only_promotion",
         "test_smart_forensic_coverage_binding",
@@ -7305,6 +7309,7 @@
         "smart_portfolio_backtest",
         "smart_portfolio_pipeline",
         "test_smart_11of10_critical_path_coverage",
+        "test_smart_canonical_execution_roots",
         "test_smart_portfolio_optimizer",
         "test_smart_portfolio_pipeline"
       ],
@@ -7342,6 +7347,7 @@
       "consumers": [
         "smart_champion_challenger",
         "test_smart_11of10_critical_path_coverage",
+        "test_smart_canonical_execution_roots",
         "test_smart_portfolio_pipeline",
         "test_smart_primary_card_contract",
         "tests.test_smart_coverage_boundaries_20261021"
@@ -7354,7 +7360,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "1c5f6893502846eca3f78fd5f02b0f734fac40193fe5175c87f2384dec8dfcbb"
+      "sha256": "eca6cf75ee38e0c33d07c4d291281fcaa054b561cd34be00865fbfc62a82d02c"
     },
     {
       "component_id": "smart_post_result_report",
@@ -9745,7 +9751,28 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6f098fab79f59d9e4b79b150e19c20eeb30241a8c73468d324f92b04655171ea"
+      "sha256": "9d63262a560db00272db95054db36fc0b4460e3638f66c0829565aa123c2e1b2"
+    },
+    {
+      "component_id": "test_smart_ai_fine_tuning_statistical_gate",
+      "source_file": "test_smart_ai_fine_tuning_statistical_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "3e700371d062231045b73438617a521691968dbf8b518c6c1c0f3828642aaba1"
     },
     {
       "component_id": "test_smart_architecture_alignment",
@@ -9935,6 +9962,31 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "98db138db8fd1462c0559b24a3f64d3a8da48c6244ca3228a93fdc4b03b65536"
+    },
+    {
+      "component_id": "test_smart_canonical_execution_roots",
+      "source_file": "test_smart_canonical_execution_roots.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_champion_challenger",
+        "smart_continuous_red_team",
+        "smart_global_integrity",
+        "smart_portfolio_optimizer",
+        "smart_portfolio_pipeline"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "a9e1192d5adb204379977fe7f527e88ea1ace95ee19f0415e912b656e86f45a7"
     },
     {
       "component_id": "test_smart_canonical_history_advance",
