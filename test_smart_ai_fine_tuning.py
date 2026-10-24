@@ -12,8 +12,8 @@ def test_selection_never_uses_holdout_and_baseline_wins_exact_tie():
  d={'1':[1,2,3,4,5,6]}; rows=[_row('baseline',10,10,0,20,d),_row('x',10,10,999,999,d)]; s=ft.select_without_holdout(rows); assert s['selected_candidate_id']=='baseline'; assert s['holdout_used_for_selection'] is False
 def test_holdout_regression_blocks_promotion_after_validation_win():
  b={'1':[1,2,3,4,5,6],'2':[1,2,3,4,5,6]}; x={'1':[1,2,3,4,5,7],'2':[1,2,3,4,5,6]}; rows=[_row('baseline',10,10,10,30,b),_row('x',11,12,9,32,x)]; s=ft.select_without_holdout(rows); a=ft.adjudicate_selected(rows,s); assert s['selected_candidate_id']=='x'; assert a['promotion_authorized'] is False; assert a['gains_vs_baseline']['holdout']==-1
-def test_material_non_regressive_validation_winner_can_promote():
- b={'1':[1,2,3,4,5,6],'2':[1,2,3,4,5,6]}; x={'1':[1,2,3,4,5,7],'2':[1,2,3,4,5,6]}; rows=[_row('baseline',10,10,10,30,b),_row('x',11,12,10,33,x)]; s=ft.select_without_holdout(rows); a=ft.adjudicate_selected(rows,s); assert a['promotion_authorized'] is True; assert a['decision_change_count']==1
+def test_material_non_regressive_validation_winner_without_paired_evidence_is_not_promoted():
+ b={'1':[1,2,3,4,5,6],'2':[1,2,3,4,5,6]}; x={'1':[1,2,3,4,5,7],'2':[1,2,3,4,5,6]}; rows=[_row('baseline',10,10,10,30,b),_row('x',11,12,10,33,x)]; s=ft.select_without_holdout(rows); a=ft.adjudicate_selected(rows,s); assert a['promotion_authorized'] is False; assert a['decision_change_count']==1; assert a['holdout_statistical_evidence']['verified'] is False
 def test_authority_roundtrip_is_hash_bound_and_causal(tmp_path):
  report={'schema':ft.SCHEMA,'status':'PASS','target_contest':3055,'cutoff_contest':3054,'data_sha256':'a'*64,'sha256':'b'*64,'adjudication':{'effective_candidate_id':'baseline','promotion_authorized':False},'results':[{'candidate':{'candidate_id':'baseline','eta':.5,'redundancy_threshold':.85,'meta_strength':.06}}]}
  a=ft.build_authority(report); p=tmp_path/'a.json'; p.write_text(json.dumps(a),encoding='utf-8'); loaded=ft.load_authority(p,target_contest=3055,data_sha256='a'*64); assert loaded['status']=='BASELINE_RETAINED'
