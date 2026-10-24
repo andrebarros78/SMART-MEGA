@@ -88,12 +88,16 @@ PROMOTION_LINEAGE_COMPONENTS = (
 
 
 
-def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> dict[str, Any] | None:
+def require_pre_3052_gate(target: int, gate_path: Path | None = None) -> dict[str, Any] | None:
 
     if int(target) < 3052:
 
         return None
 
+    # Bind the default gate to this repository, independent of the shell cwd.
+    # Explicit test/forensic paths remain supported without gaining production authority.
+    canonical_gate = Path(__file__).resolve().parent / PRE_3052_GATE_PATH
+    gate_path = canonical_gate if gate_path is None else Path(gate_path)
     if not gate_path.exists():
 
         raise ValueError('SMART pre-3052 implementation gate missing')
@@ -122,7 +126,7 @@ def require_pre_3052_gate(target: int, gate_path: Path = PRE_3052_GATE_PATH) -> 
 
     # Continuous Red Team freshness is enforced only after all 15 implementation gates open.
 
-    if gate_path.resolve() == PRE_3052_GATE_PATH.resolve():
+    if gate_path.resolve() == canonical_gate.resolve():
 
         from smart_continuous_red_team import verify_latest_report
 

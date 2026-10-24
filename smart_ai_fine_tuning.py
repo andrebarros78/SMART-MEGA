@@ -42,7 +42,7 @@ def _evaluate_one(args):
  agent=SmartSignalAgent(start=int(start),eta=float(c.eta),redundancy_threshold=float(c.redundancy_threshold),meta_strength=float(c.meta_strength),calibration_strength=0.0,marginal_strength=0.0)
  pred,bt=agent.predict_next(draws,contests,target_contest=int(target)); rows=list(bt['rows'])
  decisions={str(int(r['contest'])):[int(x) for x in r['challenger_top6']] for r in rows}
- return {'candidate':asdict(c),'calibration':_summary(rows,CALIBRATION_RANGE[0],min(CALIBRATION_RANGE[1],cutoff)),'validation':_summary(rows,VALIDATION_RANGE[0],min(VALIDATION_RANGE[1],cutoff)),'holdout':_summary(rows,HOLDOUT_START,cutoff),'global':_summary(rows,int(contests[int(start)]),cutoff),'next_top6':[int(x) for x in pred.top6],'architecture_profile':str(agent.architecture_profile),'effective_redundancy_threshold':float(agent.redundancy_threshold),'decisions':decisions}
+ return {'candidate':asdict(c),'calibration':_summary(rows,CALIBRATION_RANGE[0],min(CALIBRATION_RANGE[1],cutoff)),'validation':_summary(rows,VALIDATION_RANGE[0],min(VALIDATION_RANGE[1],cutoff)),'holdout':_summary(rows,HOLDOUT_START,cutoff),'global':_summary(rows,int(contests[int(start)]),cutoff),'next_top6':[int(x) for x in pred.top6],'architecture_profile':str(agent.architecture_profile),'effective_redundancy_threshold':float(agent.redundancy_threshold), 'decisions':decisions,'hit_trace':{str(int(r['contest'])):int(r['challenger_hits']) for r in rows}}
 def _rank_key(row,stage):
  s=row[stage]; return (int(s['hits']),float(s['mean_hits']),1 if row['candidate']['candidate_id']=='baseline' else 0)
 def select_without_holdout(results):
@@ -53,11 +53,78 @@ def select_without_holdout(results):
  return {'shortlist_ids':[r['candidate']['candidate_id'] for r in shortlist],'selected_candidate_id':selected['candidate']['candidate_id'],'selection_stages':['calibration','validation'],'holdout_used_for_selection':False}
 def _decision_change_count(a,b):
  keys=sorted(set(a['decisions'])&set(b['decisions']),key=int); return sum(a['decisions'][k]!=b['decisions'][k] for k in keys)
+MIN_PAIRED_HOLDOUT_CONTESTS = 100
+MIN_DISCORDANT_CONTESTS = 20
+PAIRED_HOLDOUT_ALPHA = 0.01
+
+
+def _paired_holdout_evidence(baseline, candidate):
+ """One-sided paired sign test on untouched contests, with fail-closed provenance.
+
+ No result from the target contest is accepted. This is a *retrospective*
+ engineering gate, never prospective proof or a claim of lottery predictability.
+ """
+ evidence = {
+  'schema': 'SMART_AI_PAIRED_HOLDOUT_GATE_1',
+  'verified': False, 'paired_contests': 0,
+  'positive_differences': 0, 'negative_differences': 0,
+  'ties': 0, 'holdout_delta_hits': 0,
+  'one_sided_p_value': None, 'alpha': PAIRED_HOLDOUT_ALPHA,
+  'minimum_contests': MIN_PAIRED_HOLDOUT_CONTESTS,
+  'minimum_discordant': MIN_DISCORDANT_CONTESTS,
+  'holdout_used_for_candidate_selection': False,
+  'prospective_superiority_proven': False,
+  'reason': 'paired_evidence_missing_or_invalid',
+ }
+ btrace, ctrace = baseline.get('hit_trace'), candidate.get('hit_trace')
+ if not isinstance(btrace, dict) or not isinstance(ctrace, dict):
+  return evidence
+ try:
+  # The per-contest trace is from the causal replay, not the candidate selector.
+  b = {int(k): int(v) for k, v in btrace.items()}
+  c = {int(k): int(v) for k, v in ctrace.items()}
+  if len(b) != len(btrace) or len(c) != len(ctrace):
+   return evidence
+  if any(type(v) is not int or v < 0 or v > 6 for v in list(btrace.values()) + list(ctrace.values())):
+   return evidence
+  be = baseline['holdout']; ce = candidate['holdout']
+  upper = min(int(be.get('end', max(b, default=0))), int(ce.get('end', max(c, default=0))))
+  if upper < HOLDOUT_START or any(k > upper for k in set(b) | set(c)):
+   return evidence
+  b = {k: v for k, v in b.items() if HOLDOUT_START <= k <= upper}
+  c = {k: v for k, v in c.items() if HOLDOUT_START <= k <= upper}
+  keys = set(b)
+  if keys != set(c) or len(keys) != int(be['n']) or len(keys) != int(ce['n']):
+   return evidence
+  if sum(b.values()) != int(be['hits']) or sum(c.values()) != int(ce['hits']):
+   return evidence
+ except (TypeError, ValueError, KeyError, OverflowError):
+  return evidence
+ n = len(keys)
+ pos = sum(c[k] > b[k] for k in keys)
+ neg = sum(c[k] < b[k] for k in keys)
+ disc = pos + neg
+ delta = sum(c[k] - b[k] for k in keys)
+ # Exact binomial upper tail P(Binomial(n_discordant, .5) >= wins).
+ pvalue = (sum(math.comb(disc, k) for k in range(pos, disc + 1)) / (1 << disc)) if disc else 1.0
+ meets_minimum = n >= MIN_PAIRED_HOLDOUT_CONTESTS and disc >= MIN_DISCORDANT_CONTESTS
+ verified = bool(meets_minimum and delta > 0 and pos > neg and pvalue <= PAIRED_HOLDOUT_ALPHA)
+ evidence.update(
+  verified=verified, paired_contests=n, positive_differences=pos,
+  negative_differences=neg, ties=n-disc, holdout_delta_hits=delta,
+  one_sided_p_value=float(pvalue),
+  reason='PAIRED_HOLDOUT_SIGNIFICANT' if verified else 'INSUFFICIENT_PAIRED_HOLDOUT_ADVANTAGE',
+ )
+ return evidence
+
+
 def adjudicate_selected(results,selection):
  by={r['candidate']['candidate_id']:r for r in results}; base=by['baseline']; sel=by[str(selection['selected_candidate_id'])]
  gains={k:int(sel[k]['hits'])-int(base[k]['hits']) for k in ('calibration','validation','holdout','global')}; changes=int(_decision_change_count(sel,base))
- nonreg=all(gains[k]>=0 for k in gains); promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and max(gains.values())>0 and changes>0)
- return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
+ nonreg=all(gains[k]>=0 for k in gains)
+ paired=_paired_holdout_evidence(base,sel)
+ promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
+ return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
  by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by[report['adjudication']['effective_candidate_id']]
@@ -89,8 +156,8 @@ def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,
  results.sort(key=lambda r:ids.index(r['candidate']['candidate_id'])); selection=select_without_holdout(results); adjudication=adjudicate_selected(results,selection)
  persisted=[]
  for row in results:
-  clean=dict(row); clean['decision_trace_sha256']=sha256_json(clean.pop('decisions')); persisted.append(clean)
- report={'schema':SCHEMA,'status':'PASS','target_contest':target,'cutoff_contest':cutoff,'data_file':str(data_file),'data_sha256':sha256_file(data_file),'start':int(start),'partitions':{'calibration':list(CALIBRATION_RANGE),'validation':list(VALIDATION_RANGE),'holdout':[HOLDOUT_START,cutoff]},'candidate_count':len(candidates),'selection':selection,'adjudication':adjudication,'results':persisted,'guardrails':{'future_result_used':False,'holdout_used_for_selection':False,'test_result_hyperparameter_selection_prohibited':True,'baseline_wins_exact_ties':True,'promotion_requires_material_decision_change':True,'promotion_requires_non_regression_all_partitions':True,'promotion_requires_positive_validation_gain':True}}
+  clean=dict(row); clean['decision_trace_sha256']=sha256_json(clean.pop('decisions')); clean['hit_trace_sha256']=sha256_json(clean.pop('hit_trace')); persisted.append(clean)
+ report={'schema':SCHEMA,'status':'PASS','target_contest':target,'cutoff_contest':cutoff,'data_file':str(data_file),'data_sha256':sha256_file(data_file),'start':int(start),'partitions':{'calibration':list(CALIBRATION_RANGE),'validation':list(VALIDATION_RANGE),'holdout':[HOLDOUT_START,cutoff]},'candidate_count':len(candidates),'selection':selection,'adjudication':adjudication,'results':persisted,'guardrails':{'future_result_used':False,'holdout_used_for_selection':False,'test_result_hyperparameter_selection_prohibited':True,'baseline_wins_exact_ties':True,'promotion_requires_material_decision_change':True,'promotion_requires_non_regression_all_partitions':True,'promotion_requires_positive_validation_gain':True,'promotion_requires_verified_paired_holdout':True,'paired_holdout_alpha':PAIRED_HOLDOUT_ALPHA}}
  report['sha256']=sha256_json(report); return report
 def write_report_and_authority(report,report_path:Path=REPORT_PATH,authority_path:Path=AUTHORITY_PATH):
  canonical=dict(report); observed=canonical.pop('sha256',None)
