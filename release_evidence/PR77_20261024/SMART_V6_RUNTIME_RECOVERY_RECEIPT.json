@@ -1,6 +1,6 @@
 {
   "schema": "SMART_V6_RUNTIME_RECOVERY_20261024_1",
-  "status": "PARTIAL_RUNTIME_RECOVERY_PROVEN_PRODUCTION_HOLD",
+  "status": "RUNTIME_EXECUTOR_RECOVERY_PROVEN_PRODUCTION_HOLD",
   "recorded_date": "2026-10-24",
   "host": "DESKTOP-JNS08PU",
   "project_id": "smart-mega-v6-canonical",
@@ -40,22 +40,36 @@
     },
     "recovery_test": {
       "action": "controlled restart of dedicated V6 supervisor task",
-      "result": "Windows Task Scheduler reports Running",
+      "task_state": "Running",
       "follow_up_task": "task-df4f326cdab04fbc9a58a2a39f896016",
-      "state_at_recording": "queued",
-      "note": "WMCP global capacity guard reported effective_limit=0 while PC CPU load was ~79%"
+      "command_id": "cmd-da169df3a57141f3ac0df04aa655a09b",
+      "state": "completed",
+      "result_sha256": "d39811e00582739f91499f9cf8513b255e1c660cd7f261849d20669ae20f5a96",
+      "recovery_proven": true,
+      "transient_capacity_guard": "effective_limit=0 under high CPU, admission eventually recovered without guard change"
     },
-    "other_projects": "WMCP, B7 standalone, B7 Digital, ECC health observed true immediately after broker restart"
+    "other_projects": "WMCP, B7 standalone, B7 Digital, ECC health observed true immediately after broker restart",
+    "final_health": {
+      "healthy": true,
+      "supervisor_state": "ready",
+      "execution_enabled": true,
+      "queue_completed": 2
+    }
   },
   "limits": {
     "generated_card": false,
     "model_card_validation_performed": false,
     "merging_authorized": false,
     "scientific_predictive_advantage_proven": false,
-    "production_ready": false
+    "production_ready": false,
+    "current_operator_lifecycle": {
+      "state": "HOLD",
+      "target_contest": 3073,
+      "completed_contest": 3072,
+      "hold_next_target": 3073
+    }
   },
   "open_requirements": [
-    "After-restart smoke must complete with exit_code=0 and full event receipt",
     "Verify current operational contest state and operator readiness without generating card",
     "Certified P09 and linked authorities must be approved and published atomically",
     "Merge by branch protection and perform deployment smoke; continue OOS validation"
