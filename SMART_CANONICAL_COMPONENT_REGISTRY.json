@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "65a7c770f3034a8a6ea7524a6df55b9c82bee9f4a11acdb243ca17af9b61a606",
+  "source_reachability_inventory_sha256": "9e7f9dd6dcacacf0f5472f78705148ab7ecef6a110ae7ca6942f557865cff454",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 548,
+    "component_count": 549,
     "active": 120,
     "shadow": 2,
-    "diagnostic": 225,
+    "diagnostic": 226,
     "validation_only": 24,
     "quarantined": 0,
     "deprecated": 1,
@@ -5079,7 +5079,7 @@
       "component_id": "smart_champion_challenger",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_champion_challenger.py",
-      "implementation_sha256": "8230a5ba604e6f4f708ce7f3e03a7df69119b471fe1d0695f45c5dbbd197a996",
+      "implementation_sha256": "d8925e5cbdb398ae4ea243efdd0e495471c809851a754fb3a7520665144fb757",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -5137,6 +5137,7 @@
         "test_smart_b2_evolution_20260909",
         "test_smart_b2_failclosed_coverage_20260909",
         "test_smart_bounded_online_learning",
+        "test_smart_canonical_execution_roots",
         "test_smart_coverage_governance",
         "test_smart_evidence_only_promotion",
         "test_smart_full_activation_epoch",
@@ -5458,6 +5459,7 @@
         "smart_global_integrity",
         "test_p14_critical_branch_coverage",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_canonical_execution_roots",
         "test_smart_continuous_red_team",
         "test_smart_global_integrity",
         "test_smart_mission_coverage_closure_20260906",
@@ -6461,6 +6463,7 @@
         "test_p14_critical_branch_coverage",
         "test_p15_contract_strictness",
         "test_smart_architecture_hardening_20260905",
+        "test_smart_canonical_execution_roots",
         "test_smart_d015_critical_operational_coverage",
         "test_smart_evidence_only_promotion",
         "test_smart_forensic_coverage_binding",
@@ -7715,6 +7718,7 @@
         "smart_portfolio_backtest",
         "smart_portfolio_pipeline",
         "test_smart_11of10_critical_path_coverage",
+        "test_smart_canonical_execution_roots",
         "test_smart_portfolio_optimizer",
         "test_smart_portfolio_pipeline"
       ],
@@ -7741,7 +7745,7 @@
       "component_id": "smart_portfolio_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_portfolio_pipeline.py",
-      "implementation_sha256": "1c5f6893502846eca3f78fd5f02b0f734fac40193fe5175c87f2384dec8dfcbb",
+      "implementation_sha256": "eca6cf75ee38e0c33d07c4d291281fcaa054b561cd34be00865fbfc62a82d02c",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7754,6 +7758,7 @@
       "consumers": [
         "smart_champion_challenger",
         "test_smart_11of10_critical_path_coverage",
+        "test_smart_canonical_execution_roots",
         "test_smart_portfolio_pipeline",
         "test_smart_primary_card_contract",
         "tests.test_smart_coverage_boundaries_20261021"
@@ -10503,6 +10508,33 @@
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_calibration_safety_gate"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_canonical_execution_roots",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_canonical_execution_roots.py",
+      "implementation_sha256": "a9e1192d5adb204379977fe7f527e88ea1ace95ee19f0415e912b656e86f45a7",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_champion_challenger",
+        "smart_continuous_red_team",
+        "smart_global_integrity",
+        "smart_portfolio_optimizer",
+        "smart_portfolio_pipeline"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -14940,5 +14972,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "4fa569316e54fad697cf2f088b4567962f12ac6812a47ac4bec62b2c57972ff9"
+  "registry_sha256": "fe35c02dcb76d92186a1a7f749a58fd7734149d4ee1bfdeb1f522c2b7cb9efb2"
 }
