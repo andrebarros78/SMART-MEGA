@@ -1,4 +1,7 @@
 from pathlib import Path
+from dataclasses import asdict
+
+from smart_ai_fine_tuning import candidate_space
 
 import smart_fine_tuning_lifecycle as lifecycle
 
@@ -16,7 +19,7 @@ def _report(data_sha: str, target: int):
         "candidate_count": 1,
         "selection": {"selected_candidate_id": "baseline", "holdout_used_for_selection": False},
         "adjudication": {"effective_candidate_id": "baseline", "promotion_authorized": False},
-        "results": [{"candidate": {"candidate_id": "baseline", "eta": 0.6931471805599453, "redundancy_threshold": 0.85, "meta_strength": 0.06}}],
+        "results": [{"candidate": asdict(candidate_space()[0])}],
         "guardrails": {"future_result_used": False, "holdout_used_for_selection": False},
     }
     report["sha256"] = lifecycle.sha256_json(report)
