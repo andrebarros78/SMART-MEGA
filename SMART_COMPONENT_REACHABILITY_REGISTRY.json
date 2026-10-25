@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "8440ac855654d11c290bf723a456a7e9816f75f59742063f9c552104a05758b1",
+  "inventory_sha256": "392f6c293b75630931fc02fb152cef8b9af4ae5f415c9898dd0201fb5680aed2",
   "summary": {
-    "python_components": 551,
+    "python_components": 552,
     "workflow_entrypoints": 11,
     "production_components": 120,
     "shadow_components": 2,
     "diagnostic_components": 22,
     "validation_components": 24,
-    "test_components": 207,
+    "test_components": 208,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4362,6 +4362,7 @@
       "consumers": [
         "smart_champion_challenger",
         "smart_fine_tuning_lifecycle",
+        "test_smart_ai_authority_cutoff_binding",
         "test_smart_ai_fine_tuning",
         "test_smart_ai_fine_tuning_statistical_gate",
         "test_smart_ai_prospective_promotion_gate",
@@ -4375,7 +4376,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "1e899d0dde5c2e82c3332f4bb8d1bfb3dbc93670124a24122fd11d099a8a466a"
+      "sha256": "6e27a0df529fcd110cdc4ca088a632bf8b34057cb60145178561d20bc955ef21"
     },
     {
       "component_id": "smart_authority_freshness",
@@ -5618,7 +5619,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "3eb0bdd205301007115218b1c3297ad3c5995c35c2d80f6e9cc7e51b744c4aca"
+      "sha256": "4a18ee1822bb93989dc3ccaaa3e066bfe717cb2f3329059d14482b08adb7cdec"
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -9733,6 +9734,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "9be090096a432186124baed6774421c62aed548389dd70e0ef6170b4e6eb0c2a"
+    },
+    {
+      "component_id": "test_smart_ai_authority_cutoff_binding",
+      "source_file": "test_smart_ai_authority_cutoff_binding.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "86f995139163a4d1f7aa49a159d4a887714191d316e51ffeafdfa23eed9b33d5"
     },
     {
       "component_id": "test_smart_ai_fine_tuning",
