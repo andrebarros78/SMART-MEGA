@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "b79763737d05772ce4b506448caa3398f043684f5396a0c4bed922922f15be3d",
+  "source_reachability_inventory_sha256": "8440ac855654d11c290bf723a456a7e9816f75f59742063f9c552104a05758b1",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -4614,7 +4614,8 @@
         "smart_fine_tuning_lifecycle",
         "test_smart_ai_fine_tuning",
         "test_smart_ai_fine_tuning_statistical_gate",
-        "test_smart_ai_prospective_promotion_gate"
+        "test_smart_ai_prospective_promotion_gate",
+        "test_smart_f04_fine_tuning_lifecycle"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -10300,7 +10301,7 @@
       "component_id": "test_smart_ai_fine_tuning",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_ai_fine_tuning.py",
-      "implementation_sha256": "9d63262a560db00272db95054db36fc0b4460e3638f66c0829565aa123c2e1b2",
+      "implementation_sha256": "606dea4d2d68a95e5d7b08282af8f32f2eeef9b38aefce3216a988135cb389a5",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -11403,10 +11404,11 @@
       "component_id": "test_smart_f04_fine_tuning_lifecycle",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f04_fine_tuning_lifecycle.py",
-      "implementation_sha256": "cb9114c6b01ee68b4b0659bf1183fe3edbd290064c2e69d7ca84b053303ab0fa",
+      "implementation_sha256": "45f13750784c0c1b9202bc4fe828795bd8271c4f11cbf51caf63a69dbc28bce6",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_ai_fine_tuning",
         "smart_fine_tuning_lifecycle"
       ],
       "consumers": [],
@@ -15023,5 +15025,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "2ddd5940da2ce592e4b6b2f384dbbd41fffc08676e2a80943baca2c8e1b59c32"
+  "registry_sha256": "6002bb53da7f5242980e653a21c5954c2ef3860f6c1a83c05281c00b59f24870"
 }
