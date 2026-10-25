@@ -123,11 +123,17 @@ def adjudicate_selected(results,selection):
  gains={k:int(sel[k]['hits'])-int(base[k]['hits']) for k in ('calibration','validation','holdout','global')}; changes=int(_decision_change_count(sel,base))
  nonreg=all(gains[k]>=0 for k in gains)
  paired=_paired_holdout_evidence(base,sel)
- promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
- return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
+ retrospective_eligible=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
+ # A retrospective holdout is a diagnostic, not independently verified prospective proof.
+ # No signed prospective verifier exists yet; operational promotion is fail-closed.
+ promoted=False
+ return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'retrospective_eligible':retrospective_eligible,'prospective_superiority_proven':False,'promotion_authorized':promoted,'status':'BASELINE_RETAINED_NO_PROSPECTIVE_PROOF','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
- by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by[report['adjudication']['effective_candidate_id']]
+ adjudication=report['adjudication']
+ if adjudication.get('promotion_authorized') is not False or adjudication.get('effective_candidate_id')!='baseline':
+  raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
+ by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by['baseline']
  obj={'schema':AUTHORITY_SCHEMA,'status':'AUTHORIZED' if report['adjudication']['promotion_authorized'] else 'BASELINE_RETAINED','target_contest':int(report['target_contest']),'cutoff_contest':int(report['cutoff_contest']),'data_sha256':str(report['data_sha256']),'fine_tuning_report_sha256':str(report['sha256']),'fine_tuning_report_file_sha256':None,'effective_candidate':effective['candidate'],'promotion_authorized':bool(report['adjudication']['promotion_authorized']),'causal_partitioning':True,'holdout_used_for_selection':False,'future_result_used':False}
  obj['sha256']=sha256_json(obj); return obj
 def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
@@ -139,6 +145,8 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  if int(obj.get('target_contest',-1))!=int(target_contest): raise ValueError('AI fine-tuning authority target mismatch')
  if data_sha256 is not None and obj.get('data_sha256')!=data_sha256: raise ValueError('AI fine-tuning authority data mismatch')
  Candidate(**obj.get('effective_candidate',{})).validate()
+ if obj.get('promotion_authorized') is not False or obj.get('status')!='BASELINE_RETAINED' or obj['effective_candidate'].get('candidate_id')!='baseline':
+  raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
  if obj.get('future_result_used') is not False or obj.get('holdout_used_for_selection') is not False: raise ValueError('AI fine-tuning authority violates causal partitioning')
  return obj
 def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,max_workers:int=4,candidates:list[Candidate]|None=None):

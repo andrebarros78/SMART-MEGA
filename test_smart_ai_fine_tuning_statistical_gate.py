@@ -49,7 +49,9 @@ def test_significant_paired_holdout_superiority_can_be_authorized():
         [base, challenger], tuning.select_without_holdout([base, challenger])
     )
     evidence = outcome["holdout_statistical_evidence"]
-    assert outcome["promotion_authorized"] is True
+    assert outcome["retrospective_eligible"] is True
+    assert outcome["promotion_authorized"] is False
+    assert outcome["effective_candidate_id"] == "baseline"
     assert evidence["verified"] is True
     assert evidence["paired_contests"] == 100
     assert evidence["positive_differences"] == 75
