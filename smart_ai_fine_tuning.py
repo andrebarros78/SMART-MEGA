@@ -134,6 +134,8 @@ def build_authority(report):
  if adjudication.get('promotion_authorized') is not False or adjudication.get('effective_candidate_id')!='baseline':
   raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
  by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by['baseline']
+ if effective['candidate'] != asdict(candidate_space()[0]):
+  raise ValueError('baseline parameters differ from canonical champion')
  obj={'schema':AUTHORITY_SCHEMA,'status':'AUTHORIZED' if report['adjudication']['promotion_authorized'] else 'BASELINE_RETAINED','target_contest':int(report['target_contest']),'cutoff_contest':int(report['cutoff_contest']),'data_sha256':str(report['data_sha256']),'fine_tuning_report_sha256':str(report['sha256']),'fine_tuning_report_file_sha256':None,'effective_candidate':effective['candidate'],'promotion_authorized':bool(report['adjudication']['promotion_authorized']),'causal_partitioning':True,'holdout_used_for_selection':False,'future_result_used':False}
  obj['sha256']=sha256_json(obj); return obj
 def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
@@ -147,6 +149,10 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  Candidate(**obj.get('effective_candidate',{})).validate()
  if obj.get('promotion_authorized') is not False or obj.get('status')!='BASELINE_RETAINED' or obj['effective_candidate'].get('candidate_id')!='baseline':
   raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
+ if obj.get('effective_candidate') != asdict(candidate_space()[0]):
+  raise ValueError('baseline parameters differ from canonical champion')
+ if obj.get('causal_partitioning') is not True:
+  raise ValueError('AI fine-tuning authority causal partitioning invalid')
  if obj.get('future_result_used') is not False or obj.get('holdout_used_for_selection') is not False: raise ValueError('AI fine-tuning authority violates causal partitioning')
  return obj
 def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,max_workers:int=4,candidates:list[Candidate]|None=None):
