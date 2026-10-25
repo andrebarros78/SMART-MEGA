@@ -168,7 +168,7 @@ GUARD_SOURCE_REVERSALS = {
 # bytes are pinned separately, rather than mislabelled as historical F11 source.
 # A different fine-tuning policy or execution gate must fail this integrity check.
 APPROVED_SCOPED_SUCCESSOR_SHA256 = {
-    "smart_ai_fine_tuning.py": "1e899d0dde5c2e82c3332f4bb8d1bfb3dbc93670124a24122fd11d099a8a466a",
+    "smart_ai_fine_tuning.py": "6e27a0df529fcd110cdc4ca088a632bf8b34057cb60145178561d20bc955ef21",
     "smart_champion_challenger.py": "d8925e5cbdb398ae4ea243efdd0e495471c809851a754fb3a7520665144fb757",
 }
 

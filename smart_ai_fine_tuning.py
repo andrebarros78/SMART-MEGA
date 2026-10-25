@@ -130,6 +130,7 @@ def adjudicate_selected(results,selection):
  return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'retrospective_eligible':retrospective_eligible,'prospective_superiority_proven':False,'promotion_authorized':promoted,'status':'BASELINE_RETAINED_NO_PROSPECTIVE_PROOF','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
+ if int(report.get('cutoff_contest',-1)) != int(report.get('target_contest',-1))-1: raise ValueError('fine-tuning authority cutoff mismatch')
  adjudication=report['adjudication']
  if adjudication.get('promotion_authorized') is not False or adjudication.get('effective_candidate_id')!='baseline':
   raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
@@ -145,6 +146,7 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  if obj.get('schema')!=AUTHORITY_SCHEMA: raise ValueError('AI fine-tuning authority schema invalid')
  if not isinstance(observed,str) or observed!=sha256_json(canonical): raise ValueError('AI fine-tuning authority self-hash invalid')
  if int(obj.get('target_contest',-1))!=int(target_contest): raise ValueError('AI fine-tuning authority target mismatch')
+ if int(obj.get('cutoff_contest',-1))!=int(target_contest)-1: raise ValueError('AI fine-tuning authority cutoff mismatch')
  if data_sha256 is not None and obj.get('data_sha256')!=data_sha256: raise ValueError('AI fine-tuning authority data mismatch')
  Candidate(**obj.get('effective_candidate',{})).validate()
  if obj.get('promotion_authorized') is not False or obj.get('status')!='BASELINE_RETAINED' or obj['effective_candidate'].get('candidate_id')!='baseline':
