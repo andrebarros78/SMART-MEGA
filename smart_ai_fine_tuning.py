@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import hashlib,json,math
 from concurrent.futures import ProcessPoolExecutor,as_completed
 from dataclasses import asdict,dataclass
@@ -88,7 +88,17 @@ def _paired_holdout_evidence(baseline, candidate):
   if any(type(v) is not int or v < 0 or v > 6 for v in list(btrace.values()) + list(ctrace.values())):
    return evidence
   be = baseline['holdout']; ce = candidate['holdout']
-  upper = min(int(be.get('end', max(b, default=0))), int(ce.get('end', max(c, default=0))))
+  if not isinstance(be, dict) or not isinstance(ce, dict):
+   return evidence
+  # Summary metadata must be present and exact; never infer limits or truncate counts.
+  fields = ('start', 'end', 'n', 'hits')
+  if any(type(summary.get(field)) is not int for summary in (be, ce) for field in fields):
+   return evidence
+  if be['start'] != HOLDOUT_START or ce['start'] != HOLDOUT_START:
+   return evidence
+  if be['end'] != ce['end']:
+   return evidence
+  upper = be['end']
   if upper < HOLDOUT_START or any(k > upper for k in set(b) | set(c)):
    return evidence
   b = {k: v for k, v in b.items() if HOLDOUT_START <= k <= upper}

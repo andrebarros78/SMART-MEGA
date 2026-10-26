@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "55b7d62a46d364860c58cfa724ecae20b61f7d1b8f51bbfaf0090eb095e74691",
+  "inventory_sha256": "9ba1ce276dff23c64629ee01364238f4bbe5c8ab9250f94dc6cad932a639cf75",
   "summary": {
-    "python_components": 553,
+    "python_components": 554,
     "workflow_entrypoints": 11,
     "production_components": 120,
     "shadow_components": 2,
     "diagnostic_components": 22,
     "validation_components": 24,
-    "test_components": 209,
+    "test_components": 210,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4365,6 +4365,7 @@
         "test_smart_ai_authority_cutoff_binding",
         "test_smart_ai_fine_tuning",
         "test_smart_ai_fine_tuning_statistical_gate",
+        "test_smart_ai_paired_holdout_boundaries",
         "test_smart_ai_paired_holdout_contiguity",
         "test_smart_ai_prospective_promotion_gate",
         "test_smart_f04_fine_tuning_lifecycle"
@@ -4377,7 +4378,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "f9df0391e92afcaddf707f965f540a6ac627b020b8c2b7325e4e3636cf79ab1c"
+      "sha256": "1ae2fab15661f623c9cc832c4a8d4bf1483cfb59b96113f957085b2802c60242"
     },
     {
       "component_id": "smart_authority_freshness",
@@ -5620,7 +5621,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "6da2418083ce7dcf42dca22739718bc832f52e9c91cafda5f8e8c8ca4b121854"
+      "sha256": "b98d4475c82fcd52ccf5888311372fa0ece915428a147329a7208b5bded9da9b"
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -9799,7 +9800,28 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "71404f3c876eb24b76c0dfd431485992cac72ccf1ee506bc74c7a86f86e7dbc9"
+      "sha256": "17beb7fa0977141ff2113d271ee52edc0ac176e1f94eaef331ed38e09a3647dc"
+    },
+    {
+      "component_id": "test_smart_ai_paired_holdout_boundaries",
+      "source_file": "test_smart_ai_paired_holdout_boundaries.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "034e43ff7651fe6f51834e422be3538612dab54f7046c04dadc0661aeee20f39"
     },
     {
       "component_id": "test_smart_ai_paired_holdout_contiguity",
