@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "55b7d62a46d364860c58cfa724ecae20b61f7d1b8f51bbfaf0090eb095e74691",
+  "source_reachability_inventory_sha256": "9ba1ce276dff23c64629ee01364238f4bbe5c8ab9250f94dc6cad932a639cf75",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 553,
+    "component_count": 554,
     "active": 120,
     "shadow": 2,
-    "diagnostic": 230,
+    "diagnostic": 231,
     "validation_only": 24,
     "quarantined": 0,
     "deprecated": 1,
@@ -4600,7 +4600,7 @@
       "component_id": "smart_ai_fine_tuning",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_ai_fine_tuning.py",
-      "implementation_sha256": "f9df0391e92afcaddf707f965f540a6ac627b020b8c2b7325e4e3636cf79ab1c",
+      "implementation_sha256": "1ae2fab15661f623c9cc832c4a8d4bf1483cfb59b96113f957085b2802c60242",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4615,6 +4615,7 @@
         "test_smart_ai_authority_cutoff_binding",
         "test_smart_ai_fine_tuning",
         "test_smart_ai_fine_tuning_statistical_gate",
+        "test_smart_ai_paired_holdout_boundaries",
         "test_smart_ai_paired_holdout_contiguity",
         "test_smart_ai_prospective_promotion_gate",
         "test_smart_f04_fine_tuning_lifecycle"
@@ -5924,7 +5925,7 @@
       "component_id": "smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_f12_scientific_successor.py",
-      "implementation_sha256": "6da2418083ce7dcf42dca22739718bc832f52e9c91cafda5f8e8c8ca4b121854",
+      "implementation_sha256": "b98d4475c82fcd52ccf5888311372fa0ece915428a147329a7208b5bded9da9b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -10349,7 +10350,7 @@
       "component_id": "test_smart_ai_fine_tuning_statistical_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_ai_fine_tuning_statistical_gate.py",
-      "implementation_sha256": "71404f3c876eb24b76c0dfd431485992cac72ccf1ee506bc74c7a86f86e7dbc9",
+      "implementation_sha256": "17beb7fa0977141ff2113d271ee52edc0ac176e1f94eaef331ed38e09a3647dc",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -10358,6 +10359,29 @@
       "consumers": [
         "test_smart_ai_prospective_promotion_gate"
       ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_ai_paired_holdout_boundaries",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_ai_paired_holdout_boundaries.py",
+      "implementation_sha256": "034e43ff7651fe6f51834e422be3538612dab54f7046c04dadc0661aeee20f39",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "consumers": [],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -15073,5 +15097,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "cffeeeb18549b3e39ac5804c09e41386b1eb9e785f87efedfecfbbe47369057f"
+  "registry_sha256": "eae5f0901a0e8138dc83ba34037cc427cbee14f0832c1822b2c35277a97029bc"
 }
