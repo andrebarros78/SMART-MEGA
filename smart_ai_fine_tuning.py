@@ -94,6 +94,9 @@ def _paired_holdout_evidence(baseline, candidate):
   b = {k: v for k, v in b.items() if HOLDOUT_START <= k <= upper}
   c = {k: v for k, v in c.items() if HOLDOUT_START <= k <= upper}
   keys = set(b)
+  # Reject jointly missing draws: paired traces must cover every holdout contest.
+  if keys != set(range(HOLDOUT_START, upper + 1)):
+   return evidence
   if keys != set(c) or len(keys) != int(be['n']) or len(keys) != int(ce['n']):
    return evidence
   if sum(b.values()) != int(be['hits']) or sum(c.values()) != int(ce['hits']):
