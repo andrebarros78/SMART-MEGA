@@ -495,3 +495,43 @@ def test_actions_cannot_even_invoke_read_only_operator(monkeypatch, env_name, en
     monkeypatch.setenv(env_name, env_value)
     with pytest.raises(PermissionError, match="forbidden"):
         github_operator.execute("status")
+
+
+@pytest.mark.parametrize("operation,target", [("status", ""), ("preflight", "3076")])
+def test_readonly_operator_rejects_failed_execution_policy(monkeypatch, tmp_path, operation, target):
+    import smart_github_native_policy
+    monkeypatch.setattr(github_operator, "__file__", str(tmp_path / "smart_github_operator.py"))
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: str(tmp_path) if args == ("rev-parse", "--show-toplevel") else "")
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "FAIL"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    with pytest.raises(PermissionError, match="execution policy"):
+        github_operator.execute(operation, target)
+
+
+
+@pytest.mark.parametrize("operation,target", [("status", ""), ("preflight", "3076")])
+def test_readonly_operator_valid_policy_retains_read_only_result(monkeypatch, tmp_path, operation, target):
+    from types import SimpleNamespace
+    import smart_github_native_policy
+
+    monkeypatch.setattr(github_operator, "__file__", str(tmp_path / "smart_github_operator.py"))
+    monkeypatch.setattr(
+        github_operator, "_git",
+        lambda root, *args: str(tmp_path) if args == ("rev-parse", "--show-toplevel") else "",
+    )
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.setattr(github_operator, "_changes", lambda root: [])
+    monkeypatch.setattr(github_operator, "_require_no_unpersisted_state", lambda root: None)
+    monkeypatch.setattr(
+        github_operator.subprocess, "run",
+        lambda args, **kwargs: SimpleNamespace(
+            returncode=0, stderr="", stdout=json.dumps({"status": "RECOVERY_REQUIRED"})
+        ),
+    )
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    observed = github_operator.execute(operation, target)
+    assert observed["observation"]["status"] == "RECOVERY_REQUIRED"
+    assert observed["commit"] is None
+    assert observed["operation"] == operation
