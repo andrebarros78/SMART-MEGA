@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "65a7c770f3034a8a6ea7524a6df55b9c82bee9f4a11acdb243ca17af9b61a606",
+  "inventory_sha256": "abb97101ad9d707bb57f09b7ae45437312b7d506ca81816c2621a0d7626a6337",
   "summary": {
-    "python_components": 548,
+    "python_components": 549,
     "workflow_entrypoints": 11,
     "production_components": 120,
     "shadow_components": 2,
     "diagnostic_components": 22,
     "validation_components": 24,
-    "test_components": 204,
+    "test_components": 205,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8501,7 +8501,8 @@
         "test_smart_signal_expansion_governance",
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
-        "test_smart_signal_weight_numeric_contracts"
+        "test_smart_signal_weight_numeric_contracts",
+        "test_smart_v2_redundancy_effective_cap"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -8511,7 +8512,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "f55f4ce815dd0f66ec17115fb75b2630026b14d597bae958303844c64ba6ba69"
+      "sha256": "73425b76200895ab000466d783798d721bc71c95b2ad13fd5b598a29d4697edb"
     },
     {
       "component_id": "smart_signal_attribution",
@@ -9298,7 +9299,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_redundancy_effective_cap"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -9308,7 +9310,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "cb2caf140f9c090de9c621ac946251d006e7a3c30d0a3df305669dbcdd5998e2"
+      "sha256": "514481a2868154c97c278160f63e5f5aeafdd9bb7ff0979e7e09c8018dfa77dc"
     },
     {
       "component_id": "smart_v2_production",
@@ -13678,6 +13680,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4c801d118b77db311cf06afa413dad7304ed1b35f6942b4ead92264a6e97bd52"
+    },
+    {
+      "component_id": "test_smart_v2_redundancy_effective_cap",
+      "source_file": "test_smart_v2_redundancy_effective_cap.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_signal_agent",
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "3c4e123068aaf3c98247e9e46c1499ee0a6030b838c9cd143e6d5cf8e9bab721"
     },
     {
       "component_id": "test_smart_v631_portable_restore",
