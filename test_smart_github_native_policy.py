@@ -72,5 +72,27 @@ class CanonicalGitHubExecutionPolicyTests(unittest.TestCase):
             verify(self.root)
 
 
+    def test_exact_obsolete_20261027_rules_are_rejected(self):
+        for obsolete in (
+            "Somente GitHub Actions com runners hospedados pelo GitHub podem executar testes e o produto.",
+            "A execu\u00e7\u00e3o do produto ocorre exclusivamente em runners hospedados pelo GitHub",
+            "PC Escola \u00e9 obrigat\u00f3rio para gerar cart\u00f5es",
+            "PC Casa \u00e9 obrigat\u00f3rio para gerar cart\u00f5es",
+        ):
+            with self.subTest(obsolete=obsolete):
+                p = self.root / "SMART_GITHUB_NATIVE_BASELINE_2026-09-28.md"
+                before = p.read_text(encoding="utf-8")
+                try:
+                    p.write_text(before + "\n" + obsolete + "\n", encoding="utf-8")
+                    with self.assertRaisesRegex(PolicyViolation, "obsolete|permanent"):
+                        verify(self.root)
+                finally:
+                    p.write_text(before, encoding="utf-8")
+
+    def test_actual_repository_policy_is_consistent(self):
+        self.assertEqual(verify(Path(__file__).resolve().parent)["status"], "PASS")
+
+
+
 if __name__ == "__main__":
     unittest.main()
