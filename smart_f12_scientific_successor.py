@@ -60,7 +60,7 @@ OPERATOR_SOURCE_REVERSALS = (
     ),
     (
         b'''        "target_authority_bound": (
-            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET"}
+            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET", "CAIXA_PREVIOUS_RESULT_API_RECEIPT"}
             and schedule.get("result_used") is False
         ),''',
         b'''        "official_schedule_bound": schedule.get("authority") == "CAIXA_ARCHIVED_CRONOGRAM_PDF" and schedule.get("result_used") is False,''',

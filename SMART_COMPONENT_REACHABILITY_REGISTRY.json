@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "7bff1eb7781b5eba461d723ea91510ee96a6eb92209297a0163a8a4cbf4568ae",
+  "inventory_sha256": "2799b9846f4cdc8f1e959a7c8b8dfe18aef352fa1305154eb1536964022b812e",
   "summary": {
-    "python_components": 541,
+    "python_components": 542,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 201,
+    "test_components": 202,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5609,7 +5609,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "168293ca9fa22a35ae28a177faf634fb51a5d4e1f91ce7641594acb26e52c87c"
+      "sha256": "08dc3f48e775799ec867d01f8de15f9db68da0c86c3b55ef309a965a490ebd8a"
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -5971,7 +5971,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "1ab263c5f15a8e22718185d498febd6ea1a8b0e7a0fa4e99dd3bee0c3f28ead1"
+      "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1"
     },
     {
       "component_id": "smart_github_certify",
@@ -6033,7 +6033,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "9c946d93e31d33182a0aee60413e7acae37ba9aee0c68ae65d9f864042518c31"
+      "sha256": "d8f00f0a82b73d2e3920348a8a9fb7ebca1fac993861c682a4c21e69e9556c5d"
     },
     {
       "component_id": "smart_github_operator",
@@ -6072,7 +6072,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "47dd261592e65939d82d674fedfcaa8884116c5c50e949623d1035649e12b5c0"
+      "sha256": "ac5954affb3ed2db2f3a99df041bf355ce0793413827e1a949034ffc593b9b48"
     },
     {
       "component_id": "smart_global_integrity",
@@ -8885,6 +8885,7 @@
         "smart_github_operator",
         "smart_learning_epoch_reset",
         "smart_operator",
+        "test_smart_caixa_schedule_override_3076",
         "test_smart_coverage_governance",
         "test_smart_github_operator",
         "test_smart_october_2026_schedule_archive",
@@ -8902,7 +8903,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "ee9c0dae94f3a019351336ee469aa25cbce0d80ab43e6f859a4a3f1b3af3e2d6"
+      "sha256": "f6d6be1eff775aa9ee6d26000149a74d1a3b5fdc632c59b24260b57520438367"
     },
     {
       "component_id": "smart_terminal_engine",
@@ -9796,6 +9797,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "67208e187e4b527511cfa96068b72decdd0b679ce9b9875bff5bf621d3e41de3"
+    },
+    {
+      "component_id": "test_smart_caixa_schedule_override_3076",
+      "source_file": "test_smart_caixa_schedule_override_3076.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_target_schedule"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "cb656ce7a0443469d91d2edc1f0a95a589062f6decff17e829c6ed51fa720e0a"
     },
     {
       "component_id": "test_smart_calibration_safety_gate",
@@ -11222,7 +11244,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "836a1d2b8c4511cd7d8334222c433a17c8428bbdaa4965e3eb58535e9b91c059"
+      "sha256": "4b1e02f702f766be16127a21432b1124b308a5cddd19237c0d752283628fea68"
     },
     {
       "component_id": "test_smart_github_only_certification",
@@ -11269,7 +11291,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "3c99ee386c3ae4c76a25573dc72fd0c5ea47870c99328e653464e077bb1af50c"
+      "sha256": "f380457b8f447e9987225a25fea2b8a2b063cf72cdb81c03c378c07723969162"
     },
     {
       "component_id": "test_smart_global_integrity",
