@@ -64,20 +64,20 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "7da1db1ebb9dcadaac406057f608e3ddea3e3f0641b7197a1c562d5f6df09297",
+  "inventory_sha256": "50c6d6041e8622f38ed33741c94d67ecf12fd8f81875f6d118417b3a61eb4bb8",
   "summary": {
-    "python_components": 551,
+    "python_components": 553,
     "workflow_entrypoints": 11,
     "production_components": 120,
-    "shadow_components": 2,
+    "shadow_components": 3,
     "diagnostic_components": 22,
     "validation_components": 24,
-    "test_components": 207,
+    "test_components": 208,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 39,
+    "independent_entrypoints": 40,
     "import_cycles": 1,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
@@ -131,6 +131,7 @@
       "smart_recover_provenance.py",
       "smart_refresh_falsification_report.py",
       "smart_regression_runner.py",
+      "smart_scientific_shadow_review.py",
       "smart_shadow_impact_probe.py",
       "smart_signal_2000_simulation.py",
       "smart_signal_50_round_simulation.py",
@@ -5581,6 +5582,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_f12_scientific_successor",
+        "smart_scientific_shadow_review",
         "test_smart_f11_predictive_nonregression",
         "test_smart_f12_scientific_successor"
       ],
@@ -5607,6 +5609,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_scientific_shadow_review",
         "test_smart_f12_scientific_successor"
       ],
       "reachable": true,
@@ -8247,6 +8250,30 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "3272d5713996827b44349a43df3dacad3f46eb9f9b6928644c5a933758c97ac6"
+    },
+    {
+      "component_id": "smart_scientific_shadow_review",
+      "source_file": "smart_scientific_shadow_review.py",
+      "role": "SHADOW",
+      "classification_reason": "unreachable shadow-labelled component",
+      "entrypoints": [],
+      "producers": [
+        "smart_f11_predictive_nonregression",
+        "smart_f12_scientific_successor"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_scientific_shadow_review"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "ad3bc7119c7e12a5cd8a467068366f484ff5db36541c3c818d89fcd940db0b89"
     },
     {
       "component_id": "smart_scientific_state_guard",
@@ -13257,6 +13284,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "f81c80a74f00d245f949f2ecd5d40c400388b200f190362e4ec94a515cc75cdc"
+    },
+    {
+      "component_id": "test_smart_scientific_shadow_review",
+      "source_file": "test_smart_scientific_shadow_review.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_scientific_shadow_review"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "5a88e3e4100bc23ccfa45a3775922cf62bbf7f99281441556fd4ac2fb33f3e6c"
     },
     {
       "component_id": "test_smart_scoped_history_gate",
