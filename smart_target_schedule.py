@@ -198,6 +198,73 @@ def _operator_selected_schedule(root: Path, target_contest: int) -> dict[str, An
     }
 
 
+
+def _verified_caixa_previous_result_schedule(root: Path, target: int, time_policy: str | Path) -> dict[str, Any] | None:
+    """Use a byte-pinned CAIXA previous-result receipt for a corrected next-draw date.
+
+    The receipt is a separately captured HTTPS response, stored immutably with
+    the repository. Only previous-draw fields are accepted; no target result
+    is read. A malformed or contradictory receipt fails closed.
+    """
+    relative = Path("runtime/procedural_sources/caixa_api_previous") / f"{target - 1}.json"
+    source = root / relative
+    if not source.exists():
+        return None
+    if source.is_symlink() or not source.is_file() or not source.resolve().is_relative_to(root):
+        raise ValueError("CAIXA next contest receipt path is unsafe")
+    raw = source.read_bytes()
+    if not raw or len(raw) > 262144:
+        raise ValueError("CAIXA next contest receipt size invalid")
+    try:
+        document = json.loads(raw.decode("utf-8-sig"))
+    except (ValueError, UnicodeError) as exc:
+        raise ValueError("CAIXA next contest receipt invalid JSON") from exc
+    if not isinstance(document, dict):
+        raise ValueError("CAIXA next contest receipt must be object")
+    if type(document.get("numero")) is not int or document["numero"] != target - 1:
+        raise ValueError("CAIXA previous contest identity mismatch")
+    if type(document.get("numeroConcursoProximo")) is not int or document["numeroConcursoProximo"] != target:
+        raise ValueError("CAIXA next contest identity mismatch")
+    previous = _previous_contest_date(root, target)
+    try:
+        reported_previous = datetime.strptime(document["dataApuracao"], "%d/%m/%Y")
+        next_date = datetime.strptime(document["dataProximoConcurso"], "%d/%m/%Y")
+    except (KeyError, ValueError, TypeError) as exc:
+        raise ValueError("CAIXA next contest dates invalid") from exc
+    if reported_previous.date() != previous.date() or next_date <= previous:
+        raise ValueError("CAIXA next contest date contradicts canonical history")
+    balls = document.get("listaDezenas")
+    try:
+        numeric_balls = [int(n) for n in balls]
+    except (ValueError, TypeError) as exc:
+        raise ValueError("CAIXA previous contest balls invalid") from exc
+    if len(numeric_balls) != 6 or len(set(numeric_balls)) != 6 or not all(1 <= n <= 60 for n in numeric_balls):
+        raise ValueError("CAIXA previous contest balls invalid")
+    policy, policy_path = load_draw_time_policy(root, time_policy)
+    time_text = policy["weekday_times"].get(str(next_date.weekday()))
+    if not isinstance(time_text, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", time_text):
+        raise ValueError("CAIXA verified next contest has no applicable draw-time policy")
+    hour, minute = map(int, time_text.split(":"))
+    scheduled = next_date.replace(hour=hour, minute=minute, tzinfo=ZoneInfo(policy["timezone"]))
+    source_hash = sha256_file(source)
+    return {
+        "schema": SCHEMA, "target_contest": target, "previous_contest": target - 1,
+        "previous_contest_date": previous.strftime("%d/%m/%Y"),
+        "target_date": next_date.strftime("%d/%m/%Y"),
+        "weekday": str(next_date.weekday()),
+        "scheduled_datetime": scheduled.isoformat(),
+        "scheduled_timezone": policy["timezone"],
+        "draw_time_policy_file": policy_path.relative_to(root).as_posix(),
+        "draw_time_policy_sha256": sha256_file(policy_path),
+        "draw_time_policy_authority": policy["authority"],
+        "source_file": relative.as_posix(), "source_sha256": source_hash,
+        "source_count": 1, "sources": [{"file": relative.as_posix(), "sha256": source_hash}],
+        "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+        "schedule_consensus": False,
+        "authority": "CAIXA_PREVIOUS_RESULT_API_RECEIPT",
+        "result_used": False,
+    }
+
 def resolve_target_schedule(
     root: str | Path,
     target_contest: int,
@@ -205,6 +272,9 @@ def resolve_target_schedule(
     time_policy: str | Path = DEFAULT_TIME_POLICY,
 ) -> dict[str, Any]:
     root = Path(root).resolve()
+    verified = _verified_caixa_previous_result_schedule(root, int(target_contest), time_policy)
+    if verified is not None:
+        return verified
     operator = _operator_selected_schedule(root, int(target_contest))
     if operator is not None:
         return operator

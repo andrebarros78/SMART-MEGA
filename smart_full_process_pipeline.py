@@ -477,7 +477,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "fine_tuning_future_result_unused": fine_tuning["future_result_used"] is False and fine_tuning["holdout_used_for_selection"] is False,
         "fine_tuning_consumed_by_challenger": _fine_tuning_consumed_by_challenger(freeze_obj, fine_tuning),
         "target_authority_bound": (
-            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET"}
+            schedule.get("authority") in {"CAIXA_ARCHIVED_CRONOGRAM_PDF", "OPERATOR_SELECTED_TARGET", "CAIXA_PREVIOUS_RESULT_API_RECEIPT"}
             and schedule.get("result_used") is False
         ),
     }
