@@ -62,7 +62,7 @@ Valores observados no congelamento 3075:
 - Sinal `freq1000`: **45,9125%** do peso agregado.
 - Participação condicional na família: **65,5893%**, acima de **60%**.
 
-A violação foi reproduzida com teste determinístico: **RED 1 FAIL** (`76,923%` condicional), **1 PASS**. Correção na branch `fix/mega-3075-expert-weight-cap-20261027`, commit `f047530289e57c7e427c048313c21f62f9c5f670`: reprojeção dos **pesos efetivos finais** no simplex com limite. Resultado: **GREEN 2 PASS** e **40 testes focados PASS** (um aviso Pydantic não fatal).
+O defeito também existia em `SmartSignalAgent._champion_policy_components`, que usava a mesma ordem incorreta de operações. Foram reproduzidos dois testes RED independentes, ambos com **76,923%** de influência onde o limite era **60%**. As duas rotinas foram corrigidas no ramo `fix/mega-3075-expert-weight-cap-20261027` (commits `f047530289e57c7e427c048313c21f62f9c5f670` e `573add19be3d2126e2ff42ad3ca310896b5fa5c4`), reprojetando os **pesos efetivos finais** no simplex limitado. Resultado final focal: **GREEN 3 PASS** e **41 testes de motor/agente/seletor PASS** (um aviso Pydantic não fatal).
 
 **PR #90 (draft):** https://github.com/andrebarros78/SMART-MEGA/pull/90  
 **Não incorporada à produção nem ao congelamento original.**
