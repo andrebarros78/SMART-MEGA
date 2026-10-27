@@ -40,8 +40,8 @@ def test_tiny_validation_advantage_is_not_enough_for_predictive_promotion():
     assert outcome["holdout_statistical_evidence"]["verified"] is False
 
 
-def test_significant_paired_holdout_superiority_can_be_authorized():
-    """A genuine predeclared candidate should be eligible when a clean 100-draw holdout proves a gain."""
+def test_significant_retrospective_holdout_is_research_only():
+    """A synthetic retrospective gain may verify significance, not authorize production."""
     b, c = _trace([0] * 100, [1] * 75 + [0] * 25)
     base = _candidate("baseline", 290, 205, 0, b)
     challenger = _candidate("candidate", 300, 215, 75, c)
@@ -49,7 +49,9 @@ def test_significant_paired_holdout_superiority_can_be_authorized():
         [base, challenger], tuning.select_without_holdout([base, challenger])
     )
     evidence = outcome["holdout_statistical_evidence"]
-    assert outcome["promotion_authorized"] is True
+    assert outcome["promotion_authorized"] is False
+    assert outcome["effective_candidate_id"] == "baseline"
+    assert evidence["prospective_superiority_proven"] is False
     assert evidence["verified"] is True
     assert evidence["paired_contests"] == 100
     assert evidence["positive_differences"] == 75
