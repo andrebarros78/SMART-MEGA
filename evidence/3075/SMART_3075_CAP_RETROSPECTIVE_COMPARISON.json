@@ -1,0 +1,82 @@
+{
+  "schema": "SMART_3075_CAP_REPAIR_RETROSPECTIVE_ONLY_1",
+  "status": "RESEARCH_SHADOW_NOT_PROMOTABLE",
+  "target_contest": 3075,
+  "cutoff_contest": 3074,
+  "future_result_3075_used_in_experiment": false,
+  "data_windows": {
+    "calibration": [
+      1500,
+      2499
+    ],
+    "validation": [
+      2500,
+      2850
+    ],
+    "holdout": [
+      2851,
+      3074
+    ],
+    "global": [
+      1001,
+      3074
+    ]
+  },
+  "baseline": {
+    "calibration": {
+      "n": 1000,
+      "hits": 607
+    },
+    "validation": {
+      "n": 351,
+      "hits": 244
+    },
+    "holdout": {
+      "n": 224,
+      "hits": 128
+    },
+    "global": {
+      "n": 2074,
+      "hits": 1274
+    }
+  },
+  "candidate": {
+    "calibration": {
+      "n": 1000,
+      "hits": 597
+    },
+    "validation": {
+      "n": 351,
+      "hits": 244
+    },
+    "holdout": {
+      "n": 224,
+      "hits": 131
+    },
+    "global": {
+      "n": 2074,
+      "hits": 1268
+    }
+  },
+  "paired_holdout": {
+    "candidate_wins": 5,
+    "baseline_wins": 2,
+    "ties": 217,
+    "one_sided_sign_test_p": 0.2265625
+  },
+  "weight_diagnostics": {
+    "expert_cap_within_family": 0.6,
+    "freq1000_share_before_cap_repair_on_last_replay": 0.6677673146696357,
+    "freq1000_share_after_cap_repair_on_last_replay": 0.6000000000000001,
+    "sum_weights_before": 1,
+    "sum_weights_after": 1
+  },
+  "source_version": "4223265a9b9b6d342a0e9c5e9615880ddbb5db21",
+  "candidate_replay_version": "f047530289e57c7e427c048313c21f62f9c5f670",
+  "also_fixed_in_code": "573add19be3d2126e2ff42ad3ca310896b5fa5c4",
+  "decision": "KEEP_CHAMPION",
+  "promotion_authorized": false,
+  "predictive_advantage_proven": false,
+  "reason": "holdout pairwise gain is statistically insufficient and global performance regressed; code-level arithmetic correction remains isolated for research",
+  "caution": "This is a retrospective engineering comparison, not prospective proof, and intentionally excludes the 3075 outcome."
+}
