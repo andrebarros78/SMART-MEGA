@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "9195ddc842dc01640a21ec2092eacbed184f34b994ca56bc11f29163e48e6021",
+  "source_reachability_inventory_sha256": "7da1db1ebb9dcadaac406057f608e3ddea3e3f0641b7197a1c562d5f6df09297",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 550,
+    "component_count": 551,
     "active": 120,
     "shadow": 2,
-    "diagnostic": 227,
+    "diagnostic": 228,
     "validation_only": 24,
     "quarantined": 0,
     "deprecated": 1,
@@ -4145,7 +4145,7 @@
       "component_id": "freeze_next_research",
       "type": "PYTHON_COMPONENT",
       "implementation": "freeze_next_research.py",
-      "implementation_sha256": "1a644c064d7f93485ac6396143938d0b943e9d920ec8bd0e4c76c609a3a79230",
+      "implementation_sha256": "bdd9a469297398d94e1f345ddbbd50aa2407bb182806e653ded4558832612777",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -4162,7 +4162,8 @@
         "smart_champion_challenger",
         "smart_independent_audit",
         "smart_shadow_impact_probe",
-        "test_smart_coverage_governance"
+        "test_smart_coverage_governance",
+        "test_smart_v2_redundancy_effective_cap"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -8913,7 +8914,7 @@
       "component_id": "smart_signal_agent",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_signal_agent.py",
-      "implementation_sha256": "f55f4ce815dd0f66ec17115fb75b2630026b14d597bae958303844c64ba6ba69",
+      "implementation_sha256": "73425b76200895ab000466d783798d721bc71c95b2ad13fd5b598a29d4697edb",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -8991,7 +8992,8 @@
         "test_smart_signal_expansion_governance",
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
-        "test_smart_signal_weight_numeric_contracts"
+        "test_smart_signal_weight_numeric_contracts",
+        "test_smart_v2_redundancy_effective_cap"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -9739,7 +9741,7 @@
       "component_id": "smart_v2_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_v2_engine.py",
-      "implementation_sha256": "cb2caf140f9c090de9c621ac946251d006e7a3c30d0a3df305669dbcdd5998e2",
+      "implementation_sha256": "514481a2868154c97c278160f63e5f5aeafdd9bb7ff0979e7e09c8018dfa77dc",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -9820,7 +9822,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_redundancy_effective_cap"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -14655,6 +14658,31 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_v2_redundancy_effective_cap",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_v2_redundancy_effective_cap.py",
+      "implementation_sha256": "89576f92f2c2c60426a77ad30efef830e274cfe9911f75d2e8ccd0ca86bc704b",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "freeze_next_research",
+        "smart_signal_agent",
+        "smart_v2_engine"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_v631_portable_restore",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_v631_portable_restore.py",
@@ -14996,5 +15024,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "645e15af5569494a2377ece1153b72f1ceaa3a01f504839defda0e72114ea05a"
+  "registry_sha256": "5b96aa7955521c6c409517d27dc2c6e40e22f2f1be84050b035c565f54715323"
 }
