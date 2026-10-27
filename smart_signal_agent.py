@@ -435,11 +435,13 @@ class SmartSignalAgent:
 
                 base_utility[n] = fw[fam] * ew[n]
 
-            adjusted = {n: ew[n] * penalties[n] for n in fn}
-
-            z = sum(adjusted.values())
-
-            adjusted = {n: v / z for n, v in adjusted.items()}
+            # Redundancy changes the conditional distribution: enforce the cap
+            # on FINAL family weights, not only the pre-penalty expert prior.
+            adjusted = e.regularize(
+                {n: ew[n] * penalties[n] for n in fn},
+                prior_mix=0.0,
+                cap=max(e.EXPERT_CAP_WITHIN_FAMILY, 1.0 / len(fn)),
+            )
 
             family_scores[fam] = sum(adjusted[n] * sc[n] for n in fn)
 

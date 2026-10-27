@@ -1,0 +1,51 @@
+{
+  "schema": "SMART_3076_RESEARCH_FREEZE_COMPARISON_1",
+  "created_at_utc": "2026-10-27T20:35:01.452871+00:00",
+  "target_contest": 3076,
+  "history_cutoff_contest": 3075,
+  "historical_data_sha256": "1340f65c0ffe5cb4e11d465547425043f2ec1474e43b182dc2234d89f025b6b9",
+  "original_auxiliary_shadow": {
+    "top6_sorted": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "engine_sha256": "2a49465414b7ff64526f6fcb94dfce0021e8b83bc66e344411b22c2c9284b335",
+    "artifact_sha256": "8ead0a9476476e64151f7a88fad697e0022611da4f3156b48cec149919c04699",
+    "freq1000_family_weight_fraction": 0.6594487425547083,
+    "cap_valid": false,
+    "classification": "STALE_FREEZE_PRODUCER_INVALID_AS_CORRECTED_CANDIDATE"
+  },
+  "corrected_auxiliary_shadow": {
+    "top6_ordered": [
+      10,
+      27,
+      11,
+      43,
+      38,
+      14
+    ],
+    "top6_sorted": [
+      10,
+      11,
+      14,
+      27,
+      38,
+      43
+    ],
+    "engine_sha256": "aa6071500847cee438d39da5c6d647fe0202ae4ed8d44406b0765b975e522053",
+    "artifact_sha256": "a7f1bf34f22445e2b68766feeb9483ab8572ffaab4f36121efdf19e005369040",
+    "freq1000_family_weight_fraction": 0.6,
+    "cap_valid": true,
+    "classification": "RESEARCH_ONLY_SHADOW"
+  },
+  "research_only": true,
+  "operational_card_authorized": false,
+  "promotion_authorized": false,
+  "forecast_skill_proven": false,
+  "assessment": "Corrected cap changes the sixth selected number in auxiliary research freeze (53 to 14). This is evidence of code propagation, not a demonstrated predictive improvement. The production HOLD state for contest 3076 is unchanged.",
+  "guard": "No draw result 3076 was used. Do not promote or backfit using contest 3075/3076 outcomes."
+}
