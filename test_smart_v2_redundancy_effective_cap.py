@@ -79,3 +79,42 @@ def test_agent_family_score_reapplies_cap_after_redundancy(monkeypatch):
         {"freq": 0.0, "ewma": 0.0},
     )
     assert np.allclose(family_scores["freq"], engine.EXPERT_CAP_WITHIN_FAMILY)
+
+
+def test_frozen_champion_current_policy_respects_final_expert_cap(monkeypatch):
+    """The actual freeze producer, not only the walk-forward simulation, must enforce the same cap."""
+    import freeze_next_research as freeze
+
+    original_softmax = engine.softmax
+
+    def extreme_prior(log_weights):
+        names = list(log_weights)
+        if "freq1000" in names:
+            return {
+                name: (0.90 if name == "freq1000" else 0.10 / (len(names) - 1))
+                for name in names
+            }
+        return original_softmax(log_weights)
+
+    monkeypatch.setattr(engine, "softmax", extreme_prior)
+    monkeypatch.setattr(
+        engine,
+        "redundancy_penalty",
+        lambda signals: (
+            {name: (1.0 if name == "freq1000" else 0.15) for name in signals},
+            np.eye(len(signals)),
+        ),
+    )
+    draws = np.array([
+        [1, 2, 3, 4, 5, 6],
+        [7, 8, 9, 10, 11, 12],
+        [13, 14, 15, 16, 17, 18],
+    ], dtype=int)
+    # No historical updates are needed; this isolates freeze's final normalization.
+    champion = freeze.current_policy(draws, start=len(draws))
+    freq_family = champion["family_weights"]["freq"]
+    relative = champion["expert_weights"]["freq1000"] / freq_family
+    assert relative <= engine.EXPERT_CAP_WITHIN_FAMILY + 1e-12
+    assert abs(sum(champion["expert_weights"].values()) - 1.0) < 1e-12
+    assert len(champion["top6"]) == len(set(champion["top6"])) == 6
+    assert sorted(champion["ranking60"]) == list(range(1, 61))
