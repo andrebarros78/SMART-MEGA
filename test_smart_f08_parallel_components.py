@@ -19,7 +19,7 @@ def _audit():
     groups = manifest["groups"]
     paths = [p for members in groups.values() for p in members]
     assert len(paths) == len(set(paths))
-    assert len(paths) == 51
+    assert len(paths) == 52
     observed = {
         r["source_file"]
         for r in reach["components"]
@@ -57,6 +57,7 @@ def test_f08_parallel_scientific_boundaries_are_preserved():
     assert "smart_3054_terminal_executor.py" in groups["RETIRED_FROM_PRODUCTION"]
     assert "smart_causal_shadow_runner.py" in groups["SHADOW_ONLY"]
     assert "smart_scientific_shadow_review.py" in groups["SHADOW_ONLY"]
+    assert "smart_scientific_paired_trace.py" in groups["DIAGNOSTIC_ONLY"]
     assert {"smart_paired_trace_guard.py", "smart_paired_trace_replay.py"} <= set(
         groups["DIAGNOSTIC_ONLY"]
     )
