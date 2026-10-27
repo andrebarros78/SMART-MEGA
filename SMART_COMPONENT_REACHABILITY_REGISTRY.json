@@ -64,7 +64,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "38b550a9d19287e5aae76f6d9d33e2ffa8278e5ba2ba7f41b56f27621906de19",
+  "inventory_sha256": "59d4d06af38db2761f42fb375b08724211147f4e9f0cb12314e4c347583420d9",
   "summary": {
     "python_components": 543,
     "workflow_entrypoints": 11,
@@ -6023,7 +6023,8 @@
       "consumers": [
         "smart_github_operator",
         "test_smart_github_native_policy",
-        "test_smart_github_operator"
+        "test_smart_github_operator",
+        "test_smart_result_consumption_readiness"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -12983,6 +12984,7 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
+        "smart_github_native_policy",
         "smart_github_operator",
         "smart_operator",
         "smart_operator_result"
@@ -13000,7 +13002,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "43f4812e3e421689db64cb5cd197496cd52640498de5f59139522a216a2ea855"
+      "sha256": "5ffcd64ef462fb3e9a41c358150c63baf77c174217c69235b46ddbf6f0088775"
     },
     {
       "component_id": "test_smart_result_transport_provenance",

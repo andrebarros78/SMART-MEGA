@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "38b550a9d19287e5aae76f6d9d33e2ffa8278e5ba2ba7f41b56f27621906de19",
+  "source_reachability_inventory_sha256": "59d4d06af38db2761f42fb375b08724211147f4e9f0cb12314e4c347583420d9",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -6372,7 +6372,8 @@
       "consumers": [
         "smart_github_operator",
         "test_smart_github_native_policy",
-        "test_smart_github_operator"
+        "test_smart_github_operator",
+        "test_smart_result_consumption_readiness"
       ],
       "entrypoints": [
         "smart_github_native_policy",
@@ -13840,10 +13841,11 @@
       "component_id": "test_smart_result_consumption_readiness",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_result_consumption_readiness.py",
-      "implementation_sha256": "43f4812e3e421689db64cb5cd197496cd52640498de5f59139522a216a2ea855",
+      "implementation_sha256": "5ffcd64ef462fb3e9a41c358150c63baf77c174217c69235b46ddbf6f0088775",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_github_native_policy",
         "smart_github_operator",
         "smart_operator",
         "smart_operator_result"
@@ -14780,5 +14782,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "2c8e16bf394eebb167e99ad274e420b0265deba9b713b611e9ceba7e28d770b6"
+  "registry_sha256": "f6bd04cb06ea8d026728da6b9d18a9d05514a8a5e0f414b95da885747af5aa3c"
 }

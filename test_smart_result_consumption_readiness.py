@@ -141,6 +141,7 @@ def test_existing_github_preflight_dispatch_exposes_readonly_result_gate(tmp_pat
     import subprocess
     import sys
     import smart_github_operator as runner
+    import smart_github_native_policy as native_policy
 
     root = tmp_path / "checkout"
     root.mkdir()
@@ -156,7 +157,10 @@ def test_existing_github_preflight_dispatch_exposes_readonly_result_gate(tmp_pat
                    check=True, capture_output=True)
     before = subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"])
 
+    dispatched = []
+
     def commands(operation, target="", payload=""):
+        dispatched.append(operation)
         if operation == "preflight":
             result = {"status": "ALREADY_FROZEN", "target_contest": 3068}
         elif operation == "result-preflight":
@@ -169,7 +173,28 @@ def test_existing_github_preflight_dispatch_exposes_readonly_result_gate(tmp_pat
 
     monkeypatch.setattr(runner, "__file__", str(root / "smart_github_operator.py"))
     monkeypatch.setattr(runner, "command_args", commands)
+
+    # The real security policy must reject this deliberately minimal checkout.
+    # A unit test may replace the authorization gates only after proving the
+    # unauthorized path cannot dispatch the subprocess or change Git state.
+    with pytest.raises(native_policy.PolicyViolation, match="missing or unsafe active policy document: AGENTS.md"):
+        runner.execute("preflight", "3068")
+    assert dispatched == []
+    assert subprocess.check_output(["git", "-C", str(root), "rev-parse", "HEAD"]) == before
+    assert not subprocess.check_output(["git", "-C", str(root), "status", "--porcelain"])
+
+    def simulated_verified_policy(check_root):
+        assert Path(check_root).resolve() == root.resolve()
+        return {"status": "PASS"}
+
+    def simulated_verified_main(check_root, commit):
+        assert Path(check_root).resolve() == root.resolve()
+        assert commit == before.decode().strip()
+
+    monkeypatch.setattr(native_policy, "verify", simulated_verified_policy)
+    monkeypatch.setattr(runner, "_require_current_github_main", simulated_verified_main)
     result = runner.execute("preflight", "3068")
+    assert dispatched == ["preflight", "result-preflight"]
     assert result["observation"]["status"] == "ALREADY_FROZEN"
     assert result["result_preflight"]["status"] == "READY_TO_CONSUME"
     assert result["commit"] is None
