@@ -267,6 +267,26 @@ def _verify_staged_bytes(root: Path, changes: list[str]) -> None:
             raise RuntimeError(f"staged artifact bytes differ from the hashed file: {path}")
 
 
+def _require_current_github_main(root: Path, source: str) -> None:
+    """Prevent a stale or substituted checkout from authorizing even read-only status."""
+    if not re.fullmatch(r"[0-9a-f]{40}", source):
+        raise PermissionError("invalid source commit for canonical GitHub checkout")
+    if _git(root, "symbolic-ref", "--short", "HEAD") != "main":
+        raise PermissionError("external operator must use canonical main branch")
+    origin = _git(root, "remote", "get-url", "origin")
+    if origin not in {
+        "https://github.com/andrebarros78/SMART-MEGA.git",
+        "https://github.com/andrebarros78/SMART-MEGA",
+        "git@github.com:andrebarros78/SMART-MEGA.git",
+        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
+    }:
+        raise PermissionError("external operator origin is not the canonical GitHub repository")
+    remote_line = _git(root, "ls-remote", "origin", "refs/heads/main")
+    matches = remote_line.split()
+    if len(matches) != 2 or matches[1] != "refs/heads/main" or matches[0] != source:
+        raise PermissionError("canonical GitHub main moved or is not provably current")
+
+
 def _require_external_operator_authority(root: Path, operation: str, target: str) -> None:
     """Authorize one intentional mutation, never GitHub Actions or a stale checkout.
 
@@ -284,22 +304,9 @@ def _require_external_operator_authority(root: Path, operation: str, target: str
     expected = f"{operation}:{target}:{source}"
     if os.environ.get("SMART_MEGA_OPERATOR_APPROVAL") != expected:
         raise PermissionError("explicit operation:target:commit approval is required")
-    if _git(root, "symbolic-ref", "--short", "HEAD") != "main":
-        raise PermissionError("external operator must use canonical main branch")
-    origin = _git(root, "remote", "get-url", "origin")
-    if origin not in {
-        "https://github.com/andrebarros78/SMART-MEGA.git",
-        "https://github.com/andrebarros78/SMART-MEGA",
-        "git@github.com:andrebarros78/SMART-MEGA.git",
-        "ssh://git@github.com/andrebarros78/SMART-MEGA.git",
-    }:
-        raise PermissionError("external operator origin is not the canonical GitHub repository")
-    remote_line = _git(root, "ls-remote", "origin", "refs/heads/main")
-    matches = remote_line.split()
-    if len(matches) != 2 or matches[1] != "refs/heads/main" or matches[0] != source:
-        raise PermissionError("canonical GitHub main moved or is not provably current")
     if verify_execution_policy(root).get("status") != "PASS":
         raise PermissionError("external execution policy is not PASS")
+    _require_current_github_main(root, source)
 
 
 def execute(operation: str, target: str = "", payload: str = "") -> dict:
@@ -313,6 +320,7 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         from smart_github_native_policy import verify as verify_execution_policy
         if verify_execution_policy(root).get("status") != "PASS":
             raise PermissionError("external execution policy is not PASS")
+        _require_current_github_main(root, _git(root, "rev-parse", "HEAD"))
     else:
         _require_external_operator_authority(root, operation, target)
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
@@ -356,8 +364,13 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
             if _changes(root):
                 raise RuntimeError("result preflight modified canonical files")
             _require_no_unpersisted_state(root)
+        # The canonical main may move during a long read; never present stale
+        # observations as current GitHub state.
+        source = _git(root, "rev-parse", "HEAD")
+        _require_current_github_main(root, source)
         return {"operation": operation, "target": target or None,
-                "observation": observation, "result_preflight": result_readiness, "commit": None}
+                "observation": observation, "result_preflight": result_readiness,
+                "source_commit": source, "commit": None}
     if not changes:
         raise RuntimeError("mutating operation returned without any persistent change")
     frozen_card = None
