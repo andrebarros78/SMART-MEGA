@@ -17,7 +17,9 @@ def current_policy(draws,start=1000,eta=math.log(2)):
         sc={n:pre[n][t] for n in names}; pen,_=e.redundancy_penalty(sc); fw=e.regularize(e.softmax(flog),prior_mix=e.PRIOR_MIX,cap=e.FAMILY_CAP); eff={}; fam_scores={}
         for f in fams:
             fn=[n for n in names if e.family_of(n)==f]; ew=e.regularize(e.softmax({n:elog[n] for n in fn}),prior_mix=e.PRIOR_MIX,cap=e.EXPERT_CAP_WITHIN_FAMILY)
-            adj={n:ew[n]*pen[n] for n in fn}; z=sum(adj.values()); adj={n:v/z for n,v in adj.items()}
+            # The final redundancy-adjusted expert weights must preserve the
+            # very same cap as the walk-forward motor and signal agent.
+            adj=e.regularize({n:ew[n]*pen[n] for n in fn},prior_mix=0.0,cap=max(e.EXPERT_CAP_WITHIN_FAMILY,1.0/len(fn)))
             for n in fn: eff[n]=fw[f]*adj[n]
             fam_scores[f]=sum(adj[n]*sc[n] for n in fn)
         agg=sum(eff[n]*sc[n] for n in names); return sc,fw,eff,fam_scores,agg
