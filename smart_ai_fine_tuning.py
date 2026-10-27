@@ -127,6 +127,9 @@ def adjudicate_selected(results,selection):
  return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
+ adjudication = report.get('adjudication') if isinstance(report.get('adjudication'), dict) else {}
+ if adjudication.get('promotion_authorized') is not False or adjudication.get('effective_candidate_id') != 'baseline':
+  raise ValueError('independent prospective proof missing: fine-tuning must retain baseline')
  by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by[report['adjudication']['effective_candidate_id']]
  obj={'schema':AUTHORITY_SCHEMA,'status':'AUTHORIZED' if report['adjudication']['promotion_authorized'] else 'BASELINE_RETAINED','target_contest':int(report['target_contest']),'cutoff_contest':int(report['cutoff_contest']),'data_sha256':str(report['data_sha256']),'fine_tuning_report_sha256':str(report['sha256']),'fine_tuning_report_file_sha256':None,'effective_candidate':effective['candidate'],'promotion_authorized':bool(report['adjudication']['promotion_authorized']),'causal_partitioning':True,'holdout_used_for_selection':False,'future_result_used':False}
  obj['sha256']=sha256_json(obj); return obj
@@ -138,6 +141,10 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  if not isinstance(observed,str) or observed!=sha256_json(canonical): raise ValueError('AI fine-tuning authority self-hash invalid')
  if int(obj.get('target_contest',-1))!=int(target_contest): raise ValueError('AI fine-tuning authority target mismatch')
  if data_sha256 is not None and obj.get('data_sha256')!=data_sha256: raise ValueError('AI fine-tuning authority data mismatch')
+ if (obj.get('promotion_authorized') is not False or obj.get('status') != 'BASELINE_RETAINED'
+     or not isinstance(obj.get('effective_candidate'), dict)
+     or obj['effective_candidate'].get('candidate_id') != 'baseline'):
+  raise ValueError('independent prospective proof missing: promoted fine-tuning authority rejected')
  Candidate(**obj.get('effective_candidate',{})).validate()
  if obj.get('future_result_used') is not False or obj.get('holdout_used_for_selection') is not False: raise ValueError('AI fine-tuning authority violates causal partitioning')
  return obj
@@ -162,8 +169,9 @@ def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,
 def write_report_and_authority(report,report_path:Path=REPORT_PATH,authority_path:Path=AUTHORITY_PATH):
  canonical=dict(report); observed=canonical.pop('sha256',None)
  if observed!=sha256_json(canonical): raise ValueError('fine-tuning report self-hash invalid')
+ authority=build_authority(report)
  report_path=Path(report_path); authority_path=Path(authority_path); report_path.write_text(json.dumps(report,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
- authority=build_authority(report); authority['fine_tuning_report_file_sha256']=sha256_file(report_path); authority.pop('sha256',None); authority['sha256']=sha256_json(authority); authority_path.write_text(json.dumps(authority,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
+ authority['fine_tuning_report_file_sha256']=sha256_file(report_path); authority.pop('sha256',None); authority['sha256']=sha256_json(authority); authority_path.write_text(json.dumps(authority,ensure_ascii=False,indent=2)+'\n',encoding='utf-8')
  return sha256_file(report_path),sha256_file(authority_path)
 def main():
  import argparse
