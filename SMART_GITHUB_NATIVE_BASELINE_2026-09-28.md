@@ -93,7 +93,7 @@ A identidade operacional é determinada por:
 
 `DESKTOP-4T6AS9K` e `C:\SMART-MEGA` são apenas proveniência histórica e não são requisitos operacionais.
 
-A antiga autorização de execução por computadores federados, registrada em 05/10/2026, foi **expressamente revogada em 21/10/2026**. Somente GitHub Actions com runners hospedados pelo GitHub podem executar testes e o produto; o conector/API GitHub pode ler e versionar alterações. A indisponibilidade do Actions não autoriza substituição por máquinas externas. Registrar commit e evidências reais; sem execução, não inventar prova de runner, JUnit ou certificação.
+**Regra vigente de 21/10/2026 (seção 14):** o GitHub `andrebarros78/SMART-MEGA`, branch `main`, é a única autoridade persistente de código, estado operacional e evidências; **não é um requisito de hospedagem da CPU**. GitHub Actions é **proibido**. LMCP, VPS e PCs autorizados são executores **externos, transitórios e substituíveis** para testes e operações. Nenhum hostname, equipamento ou caminho local é pré-requisito permanente. O ponto de entrada existente para executar operações e publicar o resultado no GitHub é `smart_github_operator.py`, em checkout isolado da `main` com SHA e origem remota verificados. Provas só valem vinculadas ao commit testado e publicadas no GitHub; não inventar runner, JUnit, cartão ou certificação.
 
 ## 7. Estado operacional
 
@@ -143,7 +143,7 @@ Por ordem atual de André, o objetivo é entregar o SMART-MEGA existente como pr
 
 Comprovar o ciclo completo: dados oficiais → sinais → qualidade e interpretação → pesos dinâmicos → previsão congelada antes do resultado → resultado observado → medição → calibração e aprendizado → próximo ciclo. Aprovação isolada de testes não substitui a prova desse fluxo.
 
-Confrontar relatórios com o código e as autoridades atuais. Caminhos e hosts históricos não definem a moradia do projeto. A execução do produto ocorre exclusivamente em runners hospedados pelo GitHub; o estado persistente e a continuidade pertencem ao GitHub.
+Confrontar relatórios com o código e as autoridades atuais. Caminhos e hosts históricos não definem a moradia do projeto. **A execução é feita pelo operador existente `smart_github_operator.py` em executor externo autorizado disponível**, usando checkout transitório da `main`; a persistência, os commits, as provas e a continuidade pertencem exclusivamente ao GitHub. Não condicionar a geração de cartão ao PC Escola/B2, PC Casa ou GitHub Actions. Distinguir sempre disponibilidade do executor, prontidão do operador e prova de vantagem preditiva. Não abrir outra infraestrutura quando o operador existente atender ao objetivo.
 
 Corrigir as causas das falhas nas funções existentes. Verificar agentes e skills pela função efetivamente executada; adquirir ou integrar recursos somente quando uma lacuna concreta impedir o objetivo, preservando o isolamento deste repositório e sem gastos não autorizados.
 
