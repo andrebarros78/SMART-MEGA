@@ -309,7 +309,11 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
     root = Path(__file__).resolve().parent
     if Path(_git(root, "rev-parse", "--show-toplevel")).resolve() != root:
         raise RuntimeError("operator must run at the Git top-level")
-    if operation not in READ_ONLY:
+    if operation in READ_ONLY:
+        from smart_github_native_policy import verify as verify_execution_policy
+        if verify_execution_policy(root).get("status") != "PASS":
+            raise PermissionError("external execution policy is not PASS")
+    else:
         _require_external_operator_authority(root, operation, target)
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout is dirty before operator action")

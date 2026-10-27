@@ -22,6 +22,10 @@ FORBIDDEN_OLD_RULES = (
     "Somente GitHub Actions em runners hospedados",
     "Only GitHub Actions on GitHub-hosted runners are authorized",
     "GitHub Actions ou executor federado autorizado",
+    "Somente GitHub Actions com runners hospedados pelo GitHub podem executar",
+    "A execu\u00e7\u00e3o do produto ocorre exclusivamente em runners hospedados pelo GitHub",
+    "PC Escola \u00e9 obrigat\u00f3rio para gerar cart\u00f5es",
+    "PC Casa \u00e9 obrigat\u00f3rio para gerar cart\u00f5es",
 )
 
 
