@@ -123,7 +123,7 @@ def adjudicate_selected(results,selection):
  gains={k:int(sel[k]['hits'])-int(base[k]['hits']) for k in ('calibration','validation','holdout','global')}; changes=int(_decision_change_count(sel,base))
  nonreg=all(gains[k]>=0 for k in gains)
  paired=_paired_holdout_evidence(base,sel)
- promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
+ promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'] and paired['prospective_superiority_proven'] is True)
  return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
