@@ -21,6 +21,8 @@ from smart_f11_predictive_nonregression import (
     evaluate as evaluate_f11,
 )
 from smart_f12_scientific_successor import evaluate as evaluate_f12
+from smart_scientific_paired_trace import audit_paired_trace
+from smart_paired_trace_replay import produce as produce_independent_trace
 
 SCHEMA = "SMART_SCIENTIFIC_SHADOW_SUCCESSION_REVIEW_1"
 EVIDENCE = "evidence/3075/SMART_3075_CAP_RETROSPECTIVE_COMPARISON.json"
@@ -107,10 +109,38 @@ def _validate_retrospective(evidence: dict[str, Any]) -> tuple[list[str], dict[s
 
 
 def review(root: str | Path, *,
-           evidence_override: dict[str, Any] | None = None) -> dict[str, Any]:
+           evidence_override: dict[str, Any] | None = None,
+           trace_override: dict[str, Any] | None = None,
+           frozen_snapshot: str | Path | None = None,
+           baseline_engine: str | Path | None = None) -> dict[str, Any]:
     root = Path(root).resolve()
     evidence = deepcopy(evidence_override) if evidence_override is not None else read_evidence(root)
     errors, metrics = _validate_retrospective(evidence)
+
+    # A pinned archive alone is NOT an independent per-contest replay.
+    # Only explicit externally verified, cutoff-pinned engine source inputs
+    # can upgrade the trace status. Failure never authorizes promotion.
+    independently_replayed = None
+    replay_failed = False
+    if frozen_snapshot is not None or baseline_engine is not None:
+        if frozen_snapshot is None or baseline_engine is None:
+            replay_failed = True
+        else:
+            try:
+                independently_replayed = produce_independent_trace(
+                    Path(frozen_snapshot), Path(baseline_engine), root
+                )
+            except (OSError, ValueError, RuntimeError, TypeError, ImportError,
+                    ArithmeticError, KeyError, AssertionError):
+                replay_failed = True
+    trace_audit = audit_paired_trace(
+        root, evidence, trace_override=trace_override,
+        independently_replayed=independently_replayed,
+    )
+    errors.extend(trace_audit["errors"])
+    if replay_failed:
+        errors.append("INDEPENDENT_PAIRED_REPLAY_FAILED")
+    metrics["holdout"]["per_draw_trace_verified"] = trace_audit["per_draw_prediction_replayed"]
 
     f11_arch = json.loads((root / "SMART_F11_PREDICTIVE_NONREGRESSION.json").read_text(encoding="utf-8-sig"))
     f12_arch = json.loads((root / "SMART_F12_SCIENTIFIC_SUCCESSOR.json").read_text(encoding="utf-8-sig"))
@@ -168,7 +198,9 @@ def review(root: str | Path, *,
     if (gains.get("global_gain", -1) < 0 or gains.get("validation_gain", -1) < 0
         or gains.get("calibration_gain", -1) < 0):
         blockers.append("GLOBAL_NONREGRESSION_FAILED")
-    blockers.extend(("NO_VERIFIED_PER_DRAW_PAIRED_TRACE", "PROSPECTIVE_SUPERIORITY_NOT_PROVEN"))
+    if not trace_audit["per_draw_prediction_replayed"]:
+        blockers.append("NO_VERIFIED_PER_DRAW_PAIRED_TRACE")
+    blockers.append("PROSPECTIVE_SUPERIORITY_NOT_PROVEN")
     blockers.extend(errors)
     report: dict[str, Any] = {
         "schema": SCHEMA,
@@ -181,6 +213,7 @@ def review(root: str | Path, *,
         "comparison_cutoff": evidence.get("cutoff_contest"),
         "comparisons": gains,
         "holdout": paired,
+        "paired_trace": trace_audit,
         "blockers": sorted(set(blockers)),
         "promotion_authorized": False,
         "prospective_advantage_proven": False,
@@ -195,9 +228,12 @@ def review(root: str | Path, *,
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only scientific shadow succession review")
     parser.add_argument("--write", type=Path, default=None)
+    parser.add_argument("--frozen-snapshot", type=Path, default=None)
+    parser.add_argument("--baseline-engine", type=Path, default=None)
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
-    result = review(root)
+    result = review(root, frozen_snapshot=args.frozen_snapshot,
+                    baseline_engine=args.baseline_engine)
     if args.write is not None:
         path = args.write if args.write.is_absolute() else root / args.write
         path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
