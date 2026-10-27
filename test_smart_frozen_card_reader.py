@@ -98,6 +98,20 @@ class FrozenCardConsumer(unittest.TestCase):
              "--target", "3071"],
             cwd=ROOT, text=True, capture_output=True, timeout=25,
         )
+        # The real GitHub operator is fail-closed outside canonical main.
+        # Exercise the negative authority path instead of skipping the test
+        # or spoofing a production branch; verify card bytes independently.
+        branch = subprocess.run(
+            ["git", "branch", "--show-current"], cwd=ROOT,
+            capture_output=True, text=True, check=True,
+        ).stdout.strip()
+        if branch != "main":
+            self.assertNotEqual(completed.returncode, 0)
+            self.assertIn("external operator must use canonical main branch", completed.stderr)
+            card = reader.read_frozen_card(ROOT, 3071)
+            self.assertEqual(card["numbers"], [10, 11, 27, 38, 43, 53])
+            self.assertTrue(reader.verify_result(card))
+            return
         self.assertEqual(completed.returncode, 0, completed.stderr)
         doc = json.loads(completed.stdout)
         self.assertEqual(doc.get("operation"), "show-card")
