@@ -106,11 +106,117 @@ def _validate_retrospective(evidence: dict[str, Any]) -> tuple[list[str], dict[s
     }
 
 
+TRACE_PATH = "evidence/3075/SMART_3075_PAIRED_HOLDOUT_TRACE_224.json"
+PINNED_TRACE_BLOB = "26ef3fe6d730a862e68c8b9f79a731aaa4a85447"
+PINNED_FROZEN_SNAPSHOT_SHA256 = "c87bde2b81af2a4c24800236b323711e7a96184ea7122b8cd958e7b78985caa6"
+
+
+def audit_trace_manifest(trace: dict[str, Any], evidence: dict[str, Any]) -> tuple[list[str], dict[str, Any]]:
+    """Check a pinned 224-row *document*, not independent outcomes or model replay."""
+    result = {
+        "per_draw_trace_manifest_consistent": False,
+        "per_draw_trace_manifest_n": 0,
+        "per_draw_trace_verified": False,
+        "independent_prediction_replay_performed": False,
+        "independent_official_results_verified": False,
+    }
+    try:
+        start, end, rows = trace["holdout_start"], trace["holdout_end"], trace["rows"]
+        if (trace.get("schema") != "SMART_PAIRED_HOLDOUT_TRACE_1"
+            or trace.get("target_contest") != 3075 or trace.get("cutoff_contest") != 3074
+            or type(start) is not int or type(end) is not int
+            or start != 2851 or end != 3074
+            or trace.get("future_result_used") is not False
+            or trace.get("promotion_authorized") is not False
+            or trace.get("snapshot_sha256") != PINNED_FROZEN_SNAPSHOT_SHA256
+            or not isinstance(trace.get("baseline_engine_git_blob"), str)
+            or not isinstance(trace.get("candidate_engine_git_blob"), str)
+            or not isinstance(rows, list) or len(rows) != 224):
+            raise ValueError("bad trace metadata")
+
+        baseline_hits = candidate_hits = candidate_wins = baseline_wins = ties = 0
+        for index, row in enumerate(rows):
+            contest = start + index
+            if (not isinstance(row, dict) or type(row.get("contest")) is not int
+                or row["contest"] != contest or type(row.get("prediction_cutoff")) is not int
+                or row["prediction_cutoff"] != contest - 1):
+                raise ValueError("point-in-time sequence inconsistent")
+            for key in ("baseline_top6", "candidate_top6"):
+                values = row.get(key)
+                if (not isinstance(values, list) or len(values) != 6
+                    or any(type(v) is not int or v < 1 or v > 60 for v in values)
+                    or len(set(values)) != 6):
+                    raise ValueError("invalid predicted card")
+            bh, ch = row.get("baseline_hits"), row.get("candidate_hits")
+            if (type(bh) is not int or type(ch) is not int or not 0 <= bh <= 6
+                or not 0 <= ch <= 6):
+                raise ValueError("invalid recorded hit count")
+            baseline_hits += bh
+            candidate_hits += ch
+            if ch > bh:
+                candidate_wins += 1
+            elif ch < bh:
+                baseline_wins += 1
+            else:
+                ties += 1
+
+        summary = trace["summary"]
+        expected = {
+            "baseline_hits": baseline_hits, "candidate_hits": candidate_hits,
+            "candidate_wins": candidate_wins, "baseline_wins": baseline_wins,
+            "ties": ties,
+        }
+        if (not isinstance(summary, dict)
+            or any(type(summary.get(k)) is not int or summary[k] != v
+                   for k, v in expected.items())
+            or type(summary.get("one_sided_p")) not in (int, float)
+            or not math.isfinite(summary["one_sided_p"])
+            or not math.isclose(summary["one_sided_p"], _paired_sign_test(candidate_wins, baseline_wins),
+                                abs_tol=1e-12, rel_tol=0.0)):
+            raise ValueError("summary does not match rows")
+        holdout = evidence["paired_holdout"]
+        if (baseline_hits != evidence["baseline"]["holdout"]["hits"]
+            or candidate_hits != evidence["candidate"]["holdout"]["hits"]
+            or candidate_wins != holdout["candidate_wins"]
+            or baseline_wins != holdout["baseline_wins"]
+            or ties != holdout["ties"]
+            or not math.isclose(summary["one_sided_p"], holdout["one_sided_sign_test_p"],
+                                abs_tol=1e-12, rel_tol=0.0)):
+            raise ValueError("archived aggregate mismatch")
+    except (KeyError, TypeError, ValueError, IndexError, OverflowError):
+        return ["PAIRED_TRACE_MANIFEST_INCONSISTENT"], result
+    result["per_draw_trace_manifest_consistent"] = True
+    result["per_draw_trace_manifest_n"] = len(rows)
+    return [], result
+
+
 def review(root: str | Path, *,
            evidence_override: dict[str, Any] | None = None) -> dict[str, Any]:
     root = Path(root).resolve()
     evidence = deepcopy(evidence_override) if evidence_override is not None else read_evidence(root)
     errors, metrics = _validate_retrospective(evidence)
+    trace_pinned = False
+    try:
+        trace_path = root / TRACE_PATH
+        raw = trace_path.read_bytes()
+        # A Git SHA-1 blob incorporates byte length; a tracked-path check alone
+        # cannot detect working-tree substitutions.
+        actual_blob = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + b"\0" + raw).hexdigest()
+        trace_pinned = (actual_blob == PINNED_TRACE_BLOB
+                        and _tracked_blob_sha(root, TRACE_PATH) == PINNED_TRACE_BLOB)
+        trace = json.loads(raw.decode("utf-8-sig"))
+        trace_errors, trace_audit = audit_trace_manifest(trace, evidence)
+        errors.extend(trace_errors)
+    except (OSError, ValueError, TypeError):
+        errors.append("PAIRED_TRACE_MANIFEST_INCONSISTENT")
+        trace_audit = {"per_draw_trace_manifest_consistent": False,
+                       "per_draw_trace_manifest_n": 0,
+                       "per_draw_trace_verified": False,
+                       "independent_prediction_replay_performed": False,
+                       "independent_official_results_verified": False}
+    if not trace_pinned:
+        errors.append("PAIRED_TRACE_NOT_GIT_PINNED")
+    metrics["holdout"].update(trace_audit)
 
     f11_arch = json.loads((root / "SMART_F11_PREDICTIVE_NONREGRESSION.json").read_text(encoding="utf-8-sig"))
     f12_arch = json.loads((root / "SMART_F12_SCIENTIFIC_SUCCESSOR.json").read_text(encoding="utf-8-sig"))
