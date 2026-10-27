@@ -52,3 +52,30 @@ def test_redundancy_cap_preserves_weights_when_penalties_are_neutral(monkeypatch
     ]
     assert max(within) <= engine.EXPERT_CAP_WITHIN_FAMILY + 1e-12
     assert abs(sum(within) - 1.0) < 1e-12
+
+
+def test_agent_family_score_reapplies_cap_after_redundancy(monkeypatch):
+    """Agent's champion-family score used the same post-cap normalization bug."""
+    from smart_signal_agent import SmartSignalAgent
+
+    names = ("freq1000", "freq25", "freq50", "ewma10")
+    scores = {
+        "freq1000": np.ones(60, dtype=float),
+        "freq25": np.zeros(60, dtype=float),
+        "freq50": np.zeros(60, dtype=float),
+        "ewma10": np.zeros(60, dtype=float),
+    }
+    monkeypatch.setattr(
+        engine,
+        "redundancy_penalty",
+        lambda sc: (
+            {"freq1000": 1.0, "freq25": 0.15, "freq50": 0.15, "ewma10": 1.0},
+            np.eye(len(names)),
+        ),
+    )
+    _, _, family_scores, _ = SmartSignalAgent._champion_policy_components(
+        scores,
+        {name: 0.0 for name in names},
+        {"freq": 0.0, "ewma": 0.0},
+    )
+    assert np.allclose(family_scores["freq"], engine.EXPERT_CAP_WITHIN_FAMILY)
