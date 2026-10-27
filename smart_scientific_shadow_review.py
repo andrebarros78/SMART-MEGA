@@ -12,6 +12,7 @@ from copy import deepcopy
 import hashlib
 import json
 import math
+import subprocess
 from pathlib import Path
 from typing import Any
 
@@ -26,6 +27,13 @@ SCHEMA = "SMART_SCIENTIFIC_SHADOW_SUCCESSION_REVIEW_1"
 EVIDENCE = "evidence/3075/SMART_3075_CAP_RETROSPECTIVE_COMPARISON.json"
 PINNED_EVIDENCE_BLOB = "94e91be77014c5a313aed5d51aaa90e327d9eba0"
 ARCHIVED_F12_SHA = "8d6dcee89c4f8ea686b43c508a5dddf46c5b8f00374d0655f3260c2719ef8502"
+PAIRED_TRACE = "evidence/3075/SMART_3075_PAIRED_HOLDOUT_TRACE_224.json"
+PINNED_PAIRED_TRACE_SHA256 = "3bb7a2535a657cde47d46515fe3b89a3359118a3642cffa912bd3218bbcb22cd"
+PINNED_PAIRED_TRACE_GIT_BLOB = "26ef3fe6d730a862e68c8b9f79a731aaa4a85447"
+PINNED_FROZEN_DATA_SHA256 = "c87bde2b81af2a4c24800236b323711e7a96184ea7122b8cd958e7b78985caa6"
+PINNED_BASELINE_ENGINE_BLOB = "e5b3c1829158d163cd82785b83421c370e1c93d0"
+PINNED_CANDIDATE_ENGINE_BLOB = "3b0340fee746a699cf0ea57f265760ebbbd861f0"
+
 
 
 def _sha(doc: dict[str, Any]) -> str:
@@ -106,11 +114,130 @@ def _validate_retrospective(evidence: dict[str, Any]) -> tuple[list[str], dict[s
     }
 
 
+
+
+def read_paired_trace(root: str | Path) -> dict[str, Any]:
+    """Read published holdout without granting the file predictive authority."""
+    return json.loads((Path(root) / PAIRED_TRACE).read_text(encoding="utf-8"))
+
+
+def produce_independent_trace(snapshot: Path, baseline: Path, root: Path) -> dict[str, Any]:
+    """Regenerate both engines against the separately SHA-pinned cutoff dataset."""
+    from smart_paired_trace_replay import produce
+    return produce(Path(snapshot), Path(baseline), Path(root))
+
+
+def _validate_pinned_trace(root: Path, evidence: dict[str, Any]) -> tuple[dict[str, Any] | None, list[str]]:
+    """Validate byte identity, chronological structure and *claimed* paired counts.
+
+    No self-supplied cards count as independent model replay. That proof needs
+    external frozen snapshot plus immutable baseline and re-execution below.
+    """
+    errors: list[str] = []
+    try:
+        raw = (root / PAIRED_TRACE).read_bytes()
+        # Git object hashing requires the binary Git object header.
+        git_blob = hashlib.sha1(b"blob " + str(len(raw)).encode("ascii") + bytes([0]) + raw).hexdigest()
+        if (hashlib.sha256(raw).hexdigest() != PINNED_PAIRED_TRACE_SHA256
+            or git_blob != PINNED_PAIRED_TRACE_GIT_BLOB
+            or _tracked_blob_sha(root, PAIRED_TRACE) != PINNED_PAIRED_TRACE_GIT_BLOB):
+            errors.append("PAIRED_TRACE_HASH_MISMATCH")
+        doc = read_paired_trace(root)
+        if (doc.get("schema") != "SMART_PAIRED_HOLDOUT_TRACE_1"
+            or doc.get("target_contest") != 3075
+            or doc.get("cutoff_contest") != 3074
+            or doc.get("holdout_start") != 2851
+            or doc.get("holdout_end") != 3074
+            or doc.get("snapshot_sha256") != PINNED_FROZEN_DATA_SHA256
+            or doc.get("baseline_engine_git_blob") != PINNED_BASELINE_ENGINE_BLOB
+            or doc.get("candidate_engine_git_blob") != PINNED_CANDIDATE_ENGINE_BLOB
+            or doc.get("promotion_authorized") is not False
+            or doc.get("future_result_used") is not False):
+            errors.append("PAIRED_TRACE_MANIFEST_INVALID")
+        rows = doc.get("rows")
+        if not isinstance(rows, list) or len(rows) != 224:
+            errors.append("PAIRED_TRACE_SEQUENCE_INVALID")
+            return doc, sorted(set(errors))
+        wins = losses = ties = b_total = c_total = 0
+        for offset, row in enumerate(rows):
+            contest = 2851 + offset
+            if (not isinstance(row, dict)
+                or type(row.get("contest")) is not int
+                or row["contest"] != contest
+                or type(row.get("prediction_cutoff")) is not int
+                or row["prediction_cutoff"] != contest - 1):
+                errors.append("PAIRED_TRACE_SEQUENCE_INVALID")
+                continue
+            cards_valid = True
+            for side in ("baseline", "candidate"):
+                card = row.get(side + "_top6")
+                if (not isinstance(card, list) or len(card) != 6
+                    or any(type(x) is not int or not 1 <= x <= 60 for x in card)
+                    or len(set(card)) != 6):
+                    cards_valid = False
+            b = row.get("baseline_hits")
+            c = row.get("candidate_hits")
+            if (not cards_valid or type(b) is not int or type(c) is not int
+                or not 0 <= b <= 6 or not 0 <= c <= 6):
+                errors.append("PAIRED_TRACE_AGGREGATE_MISMATCH")
+                continue
+            b_total += b
+            c_total += c
+            if c > b:
+                wins += 1
+            elif c < b:
+                losses += 1
+            else:
+                ties += 1
+        summary = doc.get("summary")
+        from smart_paired_trace_guard import paired_sign_test
+        expected = {
+            "baseline_hits": b_total, "candidate_hits": c_total,
+            "candidate_wins": wins, "baseline_wins": losses, "ties": ties,
+        }
+        historic = evidence.get("paired_holdout", {})
+        if (not isinstance(summary, dict)
+            or any(type(summary.get(k)) is not int or summary[k] != v
+                   for k, v in expected.items())
+            or not math.isclose(float(summary.get("one_sided_p", float("nan"))),
+                                paired_sign_test(wins, losses), abs_tol=1e-12, rel_tol=0)
+            or expected["baseline_hits"] != evidence["baseline"]["holdout"]["hits"]
+            or expected["candidate_hits"] != evidence["candidate"]["holdout"]["hits"]
+            or any(expected[k] != historic[k] for k in
+                   ("candidate_wins", "baseline_wins", "ties"))
+            or not math.isclose(float(summary.get("one_sided_p", float("nan"))),
+                                float(historic["one_sided_sign_test_p"]), abs_tol=1e-12, rel_tol=0)):
+            errors.append("PAIRED_TRACE_AGGREGATE_MISMATCH")
+        return doc, sorted(set(errors))
+    except (OSError, json.JSONDecodeError, KeyError, TypeError, ValueError, OverflowError, AttributeError):
+        return None, sorted(set(errors + ["PAIRED_TRACE_INVALID_OR_MISSING"]))
+
+
 def review(root: str | Path, *,
-           evidence_override: dict[str, Any] | None = None) -> dict[str, Any]:
+           evidence_override: dict[str, Any] | None = None,
+           frozen_snapshot: str | Path | None = None,
+           baseline_engine: str | Path | None = None) -> dict[str, Any]:
     root = Path(root).resolve()
     evidence = deepcopy(evidence_override) if evidence_override is not None else read_evidence(root)
     errors, metrics = _validate_retrospective(evidence)
+    trace, trace_errors = _validate_pinned_trace(root, evidence)
+    errors.extend(trace_errors)
+    trace_pinned = trace is not None and not trace_errors
+    per_draw_replayed = False
+    if (frozen_snapshot is None) != (baseline_engine is None):
+        errors.append("TRACE_REPLAY_INPUTS_INCOMPLETE")
+    elif frozen_snapshot is not None and baseline_engine is not None:
+        if trace_pinned:
+            try:
+                independently_replayed = produce_independent_trace(
+                    Path(frozen_snapshot), Path(baseline_engine), root)
+                if independently_replayed != trace:
+                    errors.append("TRACE_REPLAY_MISMATCH")
+                else:
+                    per_draw_replayed = True
+            except (ValueError, OSError, subprocess.CalledProcessError,
+                    KeyError, TypeError, ImportError) as exc:
+                errors.append("TRACE_REPLAY_FAILED")
 
     f11_arch = json.loads((root / "SMART_F11_PREDICTIVE_NONREGRESSION.json").read_text(encoding="utf-8-sig"))
     f12_arch = json.loads((root / "SMART_F12_SCIENTIFIC_SUCCESSOR.json").read_text(encoding="utf-8-sig"))
@@ -168,8 +295,14 @@ def review(root: str | Path, *,
     if (gains.get("global_gain", -1) < 0 or gains.get("validation_gain", -1) < 0
         or gains.get("calibration_gain", -1) < 0):
         blockers.append("GLOBAL_NONREGRESSION_FAILED")
-    blockers.extend(("NO_VERIFIED_PER_DRAW_PAIRED_TRACE", "PROSPECTIVE_SUPERIORITY_NOT_PROVEN"))
+    if not per_draw_replayed:
+        blockers.append("NO_VERIFIED_PER_DRAW_PAIRED_TRACE")
+    blockers.append("PROSPECTIVE_SUPERIORITY_NOT_PROVEN")
     blockers.extend(errors)
+    paired["trace_artifact_integrity_verified"] = trace_pinned
+    paired["per_draw_trace_verified"] = per_draw_replayed
+    paired["per_draw_prediction_replayed"] = per_draw_replayed
+    paired["trace_rows"] = len(trace.get("rows", [])) if trace_pinned else 0
     report: dict[str, Any] = {
         "schema": SCHEMA,
         "status": "INVALID_EVIDENCE" if errors else "PASS_SHADOW_ONLY",
@@ -195,9 +328,14 @@ def review(root: str | Path, *,
 def main() -> int:
     parser = argparse.ArgumentParser(description="Read-only scientific shadow succession review")
     parser.add_argument("--write", type=Path, default=None)
+    parser.add_argument("--frozen-snapshot", type=Path, default=None,
+                        help="Independently pinned 3074 cutoff XLSX, required for verified per-draw replay")
+    parser.add_argument("--baseline-engine", type=Path, default=None,
+                        help="Immutable F11 engine, SHA-pinned by paired replay producer")
     args = parser.parse_args()
     root = Path(__file__).resolve().parent
-    result = review(root)
+    result = review(root, frozen_snapshot=args.frozen_snapshot,
+                    baseline_engine=args.baseline_engine)
     if args.write is not None:
         path = args.write if args.write.is_absolute() else root / args.write
         path.write_text(json.dumps(result, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
