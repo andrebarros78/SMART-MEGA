@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "9546456c22212366325b6bf738184027972ef443146f0f8a478f82177bc26892",
+  "inventory_sha256": "54f3905f3a2331a7a5fa32aa5d006b8c59783f05ad54673feb2ffdb49f6fafaf",
   "summary": {
-    "python_components": 557,
+    "python_components": 558,
     "workflow_entrypoints": 11,
     "production_components": 120,
     "shadow_components": 3,
     "diagnostic_components": 24,
     "validation_components": 24,
-    "test_components": 210,
+    "test_components": 211,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -7225,6 +7225,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_paired_trace_replay",
+        "smart_scientific_shadow_review",
         "test_smart_paired_trace_guard",
         "test_smart_paired_trace_replay"
       ],
@@ -7249,6 +7250,7 @@
       ],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_scientific_shadow_review",
         "test_smart_paired_trace_replay"
       ],
       "reachable": false,
@@ -8307,11 +8309,14 @@
       "entrypoints": [],
       "producers": [
         "smart_f11_predictive_nonregression",
-        "smart_f12_scientific_successor"
+        "smart_f12_scientific_successor",
+        "smart_paired_trace_guard",
+        "smart_paired_trace_replay"
       ],
       "declared_execution_dependencies": [],
       "consumers": [
-        "test_smart_scientific_shadow_review"
+        "test_smart_scientific_shadow_review",
+        "test_smart_scientific_trace_link"
       ],
       "reachable": false,
       "production_reachable": false,
@@ -8321,7 +8326,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "d3e568433afc1c8777c29ae922a534022e0ec48cef73aeaa29f25aba6c0fc411"
+      "sha256": "2729541a31eaaf2e63c4db7fe8b50c4a8436d5e9e4b8a0718fbf0e11b48822a5"
     },
     {
       "component_id": "smart_scientific_state_guard",
@@ -13399,6 +13404,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "530c45e568c7792f865d11ffd98c40c27ca93788872a3b3f3503c35a51d79062"
+    },
+    {
+      "component_id": "test_smart_scientific_trace_link",
+      "source_file": "test_smart_scientific_trace_link.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_scientific_shadow_review"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "adffd41866ff3491f6d2a93e2b7f00bd9a28535b98c99c82f06adde945b6485c"
     },
     {
       "component_id": "test_smart_scoped_history_gate",
