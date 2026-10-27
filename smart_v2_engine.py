@@ -125,7 +125,9 @@ def walk_forward(draws,contests,start=1000,eta=math.log(2),pre=None,allowed=None
         for f in fams:
             fn=[n for n in names if family_of(n)==f]
             ew=regularize(softmax({n:elog[n] for n in fn}),prior_mix=PRIOR_MIX,cap=EXPERT_CAP_WITHIN_FAMILY)
-            adjusted={n:ew[n]*pen[n] for n in fn}; z=sum(adjusted.values()); adjusted={n:v/z for n,v in adjusted.items()}
+            # Redundancy adjustment may violate the expert cap; project the FINAL
+            # conditional weights back onto the capped simplex before scoring.
+            adjusted=regularize({n:ew[n]*pen[n] for n in fn},prior_mix=0.0,cap=max(EXPERT_CAP_WITHIN_FAMILY,1.0/len(fn)))
             for n in fn: eff[n]=fw[f]*adjusted[n]
             fam_scores[f]=sum(adjusted[n]*sc[n] for n in fn)
         agg=sum(eff[n]*sc[n] for n in names); top,_=rank_top6(agg); actual=set(draws[t]); hits=len(set(top)&actual)
