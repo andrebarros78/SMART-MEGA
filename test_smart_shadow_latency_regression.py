@@ -1,14 +1,14 @@
-"""Regression: verified immutable shadow replay does not recompute 3070 historical draws."""
+"""Regression: verified synthetic shadow replay avoids unnecessary Excel/model replays."""
 from __future__ import annotations
 import json
 from pathlib import Path
 import pytest
 import smart_cap60_parallel as parallel
-from test_smart_cap60_parallel import sandbox
+from test_smart_cap60_parallel import synthetic_sandbox
 
 def test_same_signed_shadow_is_reused_without_excel_or_model_replay(tmp_path, monkeypatch):
     root = Path(__file__).resolve().parent
-    isolated, relative = sandbox(root, tmp_path)
+    isolated, relative = synthetic_sandbox(root, tmp_path)
     first = parallel.produce(isolated, relative)
     assert first["status"] == "FROZEN_SHADOW_ONLY"
     # If the record is already signed, any second computation is wasted and
@@ -26,7 +26,7 @@ def test_same_signed_shadow_is_reused_without_excel_or_model_replay(tmp_path, mo
 
 def test_existing_shadow_rejects_changed_code_before_any_cached_return(tmp_path):
     root = Path(__file__).resolve().parent
-    isolated, relative = sandbox(root, tmp_path)
+    isolated, relative = synthetic_sandbox(root, tmp_path)
     parallel.produce(isolated, relative)
     original = (isolated / "smart_cap60_experiment_engine.py")
     original.write_bytes(original.read_bytes() + b"\n# modified-engine\n")
