@@ -516,10 +516,15 @@ def test_readonly_operator_valid_policy_retains_read_only_result(monkeypatch, tm
     import smart_github_native_policy
 
     monkeypatch.setattr(github_operator, "__file__", str(tmp_path / "smart_github_operator.py"))
-    monkeypatch.setattr(
-        github_operator, "_git",
-        lambda root, *args: str(tmp_path) if args == ("rev-parse", "--show-toplevel") else "",
-    )
+    main_sha = "c" * 40
+    git_map = {
+        ("rev-parse", "--show-toplevel"): str(tmp_path),
+        ("rev-parse", "HEAD"): main_sha,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "https://github.com/andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): main_sha + "\trefs/heads/main",
+    }
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map.get(args, ""))
     monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
     monkeypatch.setattr(github_operator, "_changes", lambda root: [])
     monkeypatch.setattr(github_operator, "_require_no_unpersisted_state", lambda root: None)
@@ -534,4 +539,78 @@ def test_readonly_operator_valid_policy_retains_read_only_result(monkeypatch, tm
     observed = github_operator.execute(operation, target)
     assert observed["observation"]["status"] == "RECOVERY_REQUIRED"
     assert observed["commit"] is None
+    assert observed["source_commit"] == main_sha
     assert observed["operation"] == operation
+
+
+@pytest.mark.parametrize("mutation", ["stale_main", "wrong_origin", "wrong_branch", "missing_source"])
+def test_readonly_operator_rejects_noncanonical_checkout(monkeypatch, tmp_path, mutation):
+    import smart_github_native_policy
+
+    head = "a" * 40
+    git_map = {
+        ("rev-parse", "--show-toplevel"): str(tmp_path),
+        ("rev-parse", "HEAD"): head,
+        ("symbolic-ref", "--short", "HEAD"): "main",
+        ("remote", "get-url", "origin"): "https://github.com/andrebarros78/SMART-MEGA.git",
+        ("ls-remote", "origin", "refs/heads/main"): head + "\trefs/heads/main",
+    }
+    if mutation == "stale_main":
+        git_map[("ls-remote", "origin", "refs/heads/main")] = "b" * 40 + "\trefs/heads/main"
+    elif mutation == "wrong_origin":
+        git_map[("remote", "get-url", "origin")] = "https://github.com/other/SMART-MEGA.git"
+    elif mutation == "wrong_branch":
+        git_map[("symbolic-ref", "--short", "HEAD")] = "experiment"
+    elif mutation == "missing_source":
+        git_map[("rev-parse", "HEAD")] = ""
+    monkeypatch.setattr(github_operator, "__file__", str(tmp_path / "smart_github_operator.py"))
+    monkeypatch.setattr(github_operator, "_git", lambda root, *args: git_map[args])
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    with pytest.raises(PermissionError):
+        github_operator.execute("preflight", "3076")
+
+
+@pytest.mark.parametrize("operation,target", [("status", ""), ("preflight", "3076")])
+def test_readonly_operator_rechecks_main_after_execution(monkeypatch, tmp_path, operation, target):
+    from types import SimpleNamespace
+    import smart_github_native_policy
+
+    sha = "a" * 40
+    calls = 0
+
+    def git(root, *args):
+        nonlocal calls
+        if args == ("rev-parse", "--show-toplevel"):
+            return str(tmp_path)
+        if args == ("rev-parse", "HEAD"):
+            return sha
+        if args == ("symbolic-ref", "--short", "HEAD"):
+            return "main"
+        if args == ("remote", "get-url", "origin"):
+            return "https://github.com/andrebarros78/SMART-MEGA.git"
+        if args == ("ls-remote", "origin", "refs/heads/main"):
+            calls += 1
+            return (sha if calls == 1 else "b" * 40) + "\trefs/heads/main"
+        if args == ("status", "--porcelain=v1", "--untracked-files=all"):
+            return ""
+        raise AssertionError(args)
+
+    monkeypatch.setattr(github_operator, "__file__", str(tmp_path / "smart_github_operator.py"))
+    monkeypatch.setattr(github_operator, "_git", git)
+    monkeypatch.setattr(smart_github_native_policy, "verify", lambda root: {"status": "PASS"})
+    monkeypatch.setattr(github_operator, "_changes", lambda root: [])
+    monkeypatch.setattr(github_operator, "_require_no_unpersisted_state", lambda root: None)
+    monkeypatch.setattr(
+        github_operator.subprocess,
+        "run",
+        lambda args, **kwargs: SimpleNamespace(
+            returncode=0, stderr="", stdout=json.dumps({"status": "RECOVERY_REQUIRED"})
+        ),
+    )
+    monkeypatch.delenv("GITHUB_ACTIONS", raising=False)
+    monkeypatch.delenv("GITHUB_EVENT_NAME", raising=False)
+    with pytest.raises(PermissionError, match="current|moved"):
+        github_operator.execute(operation, target)
+    assert calls == 2

@@ -93,6 +93,30 @@ class CanonicalGitHubExecutionPolicyTests(unittest.TestCase):
         self.assertEqual(verify(Path(__file__).resolve().parent)["status"], "PASS")
 
 
+    def test_markers_only_cannot_impersonate_authorized_policy(self):
+        path = self.root / "README.md"
+        path.write_text(
+            f"{POLICY_ID}\nandrebarros78/SMART-MEGA\nmain\n",
+            encoding="utf-8",
+        )
+        with self.assertRaises(PolicyViolation):
+            verify(self.root)
+
+    def test_rephrased_conflicting_requirements_fail_closed(self):
+        examples = (
+            "GitHub Actions sao obrigatorios para executar o produto.",
+            "Only GitHub Actions are allowed for production.",
+            "O PC Escola e indispensavel para gerar cartoes.",
+            "A execucao do motor exige o PC Casa.",
+        )
+        path = self.root / "AGENTS.md"
+        original = path.read_text(encoding="utf-8")
+        for statement in examples:
+            with self.subTest(statement=statement):
+                path.write_text(original + "\n" + statement + "\n", encoding="utf-8")
+                with self.assertRaises(PolicyViolation):
+                    verify(self.root)
+        path.write_text(original, encoding="utf-8")
 
 if __name__ == "__main__":
     unittest.main()

@@ -4,7 +4,9 @@ This gate uses only Python stdlib and never executes project workloads.
 """
 from __future__ import annotations
 
+import re
 import sys
+import unicodedata
 from pathlib import Path
 
 POLICY_ID = "SMART_GITHUB_CANONICAL_EXTERNAL_EXECUTION_NO_ACTIONS_20261021"
@@ -33,6 +35,30 @@ class PolicyViolation(RuntimeError):
     pass
 
 
+def _normalized_policy(content: str) -> str:
+    text = unicodedata.normalize("NFKD", content).casefold()
+    text = "".join(ch for ch in text if not unicodedata.combining(ch))
+    text = re.sub(r"[\x60*_]", "", text)
+    return " ".join(text.split())
+
+
+def _check_contract(content: str, rel: str) -> None:
+    text = _normalized_policy(content)
+    if not re.search(r"\bgithub actions\b.{0,60}\b(?:proibid[oa]s?|forbidden|banned|disabled|vedad[oa]s?)\b", text):
+        raise PolicyViolation(f"{rel}: missing explicit GitHub Actions prohibition")
+    if not re.search(r"\b(?:executores? extern[oa]s?|external (?:temporary )?executors?)\b.{0,85}\b(?:autorizad[oa]s?|permitid[oa]s?|authorized|allowed|approved)\b", text):
+        raise PolicyViolation(f"{rel}: missing explicit external executor authorization")
+    forbidden = (
+        r"\b(?:somente|apenas|exclusivamente|only)\s+github actions\b",
+        r"\bgithub actions\b.{0,60}\b(?:obrigatori[oa]s?|exclusiv[oa]s?|necessari[oa]s?|required|must|are allowed)\b",
+        r"\bpc (?:escola|casa)\s+(?:e|sera|deve ser)\s+(?:obrigatori[oa]s?|indispensavel|necessari[oa]s?)\b",
+        r"\b(?:exige|requer|depende do|depende de)\s+(?:o|do|da)?\s*pc (?:escola|casa)\b",
+    )
+    if any(re.search(pattern, text) for pattern in forbidden):
+        raise PolicyViolation(f"{rel}: obsolete permanent executor or Actions-only requirement")
+
+
+
 def verify(root: str | Path) -> dict[str, object]:
     root = Path(root).resolve()
     for rel in ACTIVE_INSTRUCTIONS:
@@ -46,6 +72,7 @@ def verify(root: str | Path) -> dict[str, object]:
         for old in FORBIDDEN_OLD_RULES:
             if old.casefold() in content.casefold():
                 raise PolicyViolation(f"{rel}: obsolete Actions-only permission")
+        _check_contract(content, rel)
     workflows = root / ".github" / "workflows"
     if workflows.is_symlink():
         raise PolicyViolation("symlinked Actions directory forbidden")
