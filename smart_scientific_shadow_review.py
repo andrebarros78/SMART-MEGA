@@ -128,6 +128,27 @@ def review(root: str | Path, *,
         "f11_historical_report_reproducible", "f11_historical_report_pass",
         "f11_historical_evidence_integrity", "no_prospective_superiority_fabricated",
     ))
+    # Only the *known* strict source-identity check may fail in the candidate.
+    # An unrelated historical, operator, leakage or temporal guard failure
+    # must invalidate even a read-only shadow certificate.
+    allowed_drift_check = "all_other_predictive_sources_preserved_after_exact_guard_reversal"
+    failed_checks = {name for name, ok in f12_checks.items() if ok is not True}
+    if failed_checks - {allowed_drift_check}:
+        errors.append("UNEXPECTED_F12_GUARD_FAILURE")
+    source_divergence = sorted(
+        path for path, item in f12_live["sources"].items()
+        if item["approved_f11_source_preserved"] is False
+    )
+    reviewed_diff_scope = {
+        "smart_ai_fine_tuning.py", "smart_champion_challenger.py",
+        "smart_portfolio_pipeline.py", "smart_signal_agent.py", "smart_v2_engine.py",
+    }
+    if not set(source_divergence).issubset(reviewed_diff_scope):
+        errors.append("UNREVIEWED_PREDICTIVE_SOURCE_DIFF")
+    if bool(failed_checks) == (f12_live["status"] == "PASS"):
+        errors.append("INCONSISTENT_F12_STATUS")
+    if source_divergence and allowed_drift_check not in failed_checks:
+        errors.append("INCONSISTENT_F12_SOURCE_REPORT")
     evidence_clean = evidence_override is None and _tracked_blob_sha(root, EVIDENCE) == PINNED_EVIDENCE_BLOB
     if not evidence_clean:
         errors.append("EVIDENCE_NOT_GIT_PINNED")
@@ -155,10 +176,7 @@ def review(root: str | Path, *,
         "historical_f11_reproduced": f11_ok,
         "archived_f12_certificate_intact": f12_arch_ok,
         "live_f12_status": f12_live["status"],
-        "source_divergence": sorted(
-            key for key, data in f12_live["sources"].items()
-            if data["approved_f11_source_preserved"] is False
-        ),
+        "source_divergence": source_divergence,
         "evidence_git_blob_verified": evidence_clean,
         "comparison_cutoff": evidence.get("cutoff_contest"),
         "comparisons": gains,
