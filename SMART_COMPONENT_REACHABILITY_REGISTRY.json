@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "2799b9846f4cdc8f1e959a7c8b8dfe18aef352fa1305154eb1536964022b812e",
+  "inventory_sha256": "38b550a9d19287e5aae76f6d9d33e2ffa8278e5ba2ba7f41b56f27621906de19",
   "summary": {
-    "python_components": 542,
+    "python_components": 543,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 202,
+    "test_components": 203,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8885,6 +8885,7 @@
         "smart_github_operator",
         "smart_learning_epoch_reset",
         "smart_operator",
+        "test_smart_caixa_previous_result_consistency",
         "test_smart_caixa_schedule_override_3076",
         "test_smart_coverage_governance",
         "test_smart_github_operator",
@@ -8903,7 +8904,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "f6d6be1eff775aa9ee6d26000149a74d1a3b5fdc632c59b24260b57520438367"
+      "sha256": "7bd27d06f679fd7e51709f27573308c05011dff47a81d1ac10ac71e27bd267df"
     },
     {
       "component_id": "smart_terminal_engine",
@@ -9799,6 +9800,27 @@
       "sha256": "67208e187e4b527511cfa96068b72decdd0b679ce9b9875bff5bf621d3e41de3"
     },
     {
+      "component_id": "test_smart_caixa_previous_result_consistency",
+      "source_file": "test_smart_caixa_previous_result_consistency.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_target_schedule"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "63dae08e8e8cf52186fd5e1acf580c373cff78d508f18ea1006e9f88bf17ab68"
+    },
+    {
       "component_id": "test_smart_caixa_schedule_override_3076",
       "source_file": "test_smart_caixa_schedule_override_3076.py",
       "role": "TEST",
@@ -9817,7 +9839,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "cb656ce7a0443469d91d2edc1f0a95a589062f6decff17e829c6ed51fa720e0a"
+      "sha256": "38db16d5c5559b43827e79ee5d51fc67f67fbbe8954c32b297c282b117471600"
     },
     {
       "component_id": "test_smart_calibration_safety_gate",

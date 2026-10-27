@@ -7,6 +7,9 @@ import smart_target_schedule as schedules
 
 
 def _receipt(root: Path, *, next_date='27/10/2026', next_contest=3076):
+    import pandas as pd
+    pd.DataFrame([{ "Concurso": 3075, "Data do Sorteio": "26/10/2026",
+        **{f"Bola{i}": x for i, x in enumerate((7, 10, 14, 27, 36, 55), 1)}}]).to_excel(root / "Mega-Sena.xlsx", index=False)
     path = root / 'runtime' / 'procedural_sources' / 'caixa_api_previous' / '3075.json'
     path.parent.mkdir(parents=True, exist_ok=True)
     path.write_text(json.dumps({

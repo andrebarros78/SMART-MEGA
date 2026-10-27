@@ -240,6 +240,29 @@ def _verified_caixa_previous_result_schedule(root: Path, target: int, time_polic
         raise ValueError("CAIXA previous contest balls invalid") from exc
     if len(numeric_balls) != 6 or len(set(numeric_balls)) != 6 or not all(1 <= n <= 60 for n in numeric_balls):
         raise ValueError("CAIXA previous contest balls invalid")
+    # The API receipt is authoritative only when it agrees with the already
+    # reconciled, previous-contest canonical record. Never use target results.
+    frame = pd.read_excel(root / "Mega-Sena.xlsx")
+    cols = [f"Bola{i}" for i in range(1, 7)]
+    if not {"Concurso", *cols}.issubset(frame.columns):
+        raise ValueError("canonical history lacks previous contest balls")
+    numbers = pd.to_numeric(frame["Concurso"], errors="raise")
+    matches = frame.loc[numbers == target - 1, cols]
+    if len(matches) != 1:
+        raise ValueError("canonical previous contest balls must occur exactly once")
+    try:
+        prior = []
+        for column in cols:
+            value = matches.iloc[0][column]
+            if isinstance(value, bool) or pd.isna(value) or float(value) != int(value):
+                raise ValueError("canonical previous contest balls invalid")
+            prior.append(int(value))
+    except (TypeError, ValueError, OverflowError) as exc:
+        raise ValueError("canonical previous contest balls invalid") from exc
+    if len(set(prior)) != 6 or not all(1 <= n <= 60 for n in prior):
+        raise ValueError("canonical previous contest balls invalid")
+    if sorted(prior) != sorted(numeric_balls):
+        raise ValueError("CAIXA previous contest balls contradict canonical history")
     policy, policy_path = load_draw_time_policy(root, time_policy)
     time_text = policy["weekday_times"].get(str(next_date.weekday()))
     if not isinstance(time_text, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", time_text):

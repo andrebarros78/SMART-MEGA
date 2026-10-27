@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "2799b9846f4cdc8f1e959a7c8b8dfe18aef352fa1305154eb1536964022b812e",
+  "source_reachability_inventory_sha256": "38b550a9d19287e5aae76f6d9d33e2ffa8278e5ba2ba7f41b56f27621906de19",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 542,
+    "component_count": 543,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 228,
+    "diagnostic": 229,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -9369,7 +9369,7 @@
       "component_id": "smart_target_schedule",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_target_schedule.py",
-      "implementation_sha256": "f6d6be1eff775aa9ee6d26000149a74d1a3b5fdc632c59b24260b57520438367",
+      "implementation_sha256": "7bd27d06f679fd7e51709f27573308c05011dff47a81d1ac10ac71e27bd267df",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9386,6 +9386,7 @@
         "smart_github_operator",
         "smart_learning_epoch_reset",
         "smart_operator",
+        "test_smart_caixa_previous_result_consistency",
         "test_smart_caixa_schedule_override_3076",
         "test_smart_coverage_governance",
         "test_smart_github_operator",
@@ -10371,10 +10372,33 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_caixa_previous_result_consistency",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_caixa_previous_result_consistency.py",
+      "implementation_sha256": "63dae08e8e8cf52186fd5e1acf580c373cff78d508f18ea1006e9f88bf17ab68",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_target_schedule"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_caixa_schedule_override_3076",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_caixa_schedule_override_3076.py",
-      "implementation_sha256": "cb656ce7a0443469d91d2edc1f0a95a589062f6decff17e829c6ed51fa720e0a",
+      "implementation_sha256": "38db16d5c5559b43827e79ee5d51fc67f67fbbe8954c32b297c282b117471600",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14756,5 +14780,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "fd6b55f981ac47492228e589ac780e2847d181653a6088846dca6627c034dc4f"
+  "registry_sha256": "2c8e16bf394eebb167e99ad274e420b0265deba9b713b611e9ceba7e28d770b6"
 }
