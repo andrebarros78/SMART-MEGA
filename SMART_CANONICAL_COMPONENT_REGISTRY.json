@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "7da1db1ebb9dcadaac406057f608e3ddea3e3f0641b7197a1c562d5f6df09297",
+  "source_reachability_inventory_sha256": "a8454c1e2244ff6d3b804792b36cacecb6cacc707a361827a0e011b798b4e532",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 551,
+    "component_count": 553,
     "active": 120,
-    "shadow": 2,
-    "diagnostic": 228,
+    "shadow": 3,
+    "diagnostic": 229,
     "validation_only": 24,
     "quarantined": 0,
     "deprecated": 1,
@@ -5900,6 +5900,7 @@
       "producers": [],
       "consumers": [
         "smart_f12_scientific_successor",
+        "smart_scientific_shadow_review",
         "test_smart_f11_predictive_nonregression",
         "test_smart_f12_scientific_successor"
       ],
@@ -5928,6 +5929,7 @@
         "smart_f11_predictive_nonregression"
       ],
       "consumers": [
+        "smart_scientific_shadow_review",
         "test_smart_f12_scientific_successor"
       ],
       "entrypoints": [
@@ -8726,6 +8728,32 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "smart_scientific_shadow_review",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_scientific_shadow_review.py",
+      "implementation_sha256": "d3e568433afc1c8777c29ae922a534022e0ec48cef73aeaa29f25aba6c0fc411",
+      "role": "SHADOW",
+      "state": "SHADOW",
+      "producers": [
+        "smart_f11_predictive_nonregression",
+        "smart_f12_scientific_successor"
+      ],
+      "consumers": [
+        "test_smart_scientific_shadow_review"
+      ],
+      "entrypoints": [],
+      "execution_mode": "SHADOW_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_scientific_state_guard",
@@ -14140,6 +14168,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_scientific_shadow_review",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_scientific_shadow_review.py",
+      "implementation_sha256": "530c45e568c7792f865d11ffd98c40c27ca93788872a3b3f3503c35a51d79062",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_scientific_shadow_review"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_scoped_history_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_scoped_history_gate.py",
@@ -15024,5 +15075,5 @@
       "production_reachable": true
     }
   ],
-  "registry_sha256": "5b96aa7955521c6c409517d27dc2c6e40e22f2f1be84050b035c565f54715323"
+  "registry_sha256": "67832f1d7d923aa19ca3e5b82659e3c227b37d78463675e1465ecb65e9116b8f"
 }
