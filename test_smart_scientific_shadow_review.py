@@ -94,3 +94,38 @@ def test_even_large_hypothetical_holdout_gain_does_not_override_prospective_gate
     assert report["promotion_authorized"] is False
     assert report["prospective_advantage_proven"] is False
     assert "PROSPECTIVE_SUPERIORITY_NOT_PROVEN" in report["blockers"]
+
+
+def test_reject_unexpected_live_f12_safety_check_failure(monkeypatch):
+    """Never turn an unrelated F12 regression into a 'safe shadow' certificate."""
+    import smart_scientific_shadow_review as gate
+    original = gate.evaluate_f12
+
+    def compromised(root):
+        result = original(root)
+        result["checks"]["p10_no_regression_vs_reference"] = False
+        result["status"] = "FAIL"
+        return result
+
+    monkeypatch.setattr(gate, "evaluate_f12", compromised)
+    result = gate.review(ROOT)
+    assert result["status"] == "INVALID_EVIDENCE"
+    assert "UNEXPECTED_F12_GUARD_FAILURE" in result["blockers"]
+
+
+def test_reject_unreviewed_additional_predictor_source_difference(monkeypatch):
+    """Scope is pinned; changing a sixth F11 source needs a new review."""
+    import smart_scientific_shadow_review as gate
+    original = gate.evaluate_f12
+
+    def compromised(root):
+        result = original(root)
+        result["sources"]["smart_primary_card_selector.py"]["approved_f11_source_preserved"] = False
+        result["checks"]["all_other_predictive_sources_preserved_after_exact_guard_reversal"] = False
+        result["status"] = "FAIL"
+        return result
+
+    monkeypatch.setattr(gate, "evaluate_f12", compromised)
+    result = gate.review(ROOT)
+    assert result["status"] == "INVALID_EVIDENCE"
+    assert "UNREVIEWED_PREDICTIVE_SOURCE_DIFF" in result["blockers"]
