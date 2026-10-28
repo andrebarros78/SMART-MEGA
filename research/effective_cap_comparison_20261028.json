@@ -1,0 +1,59 @@
+{
+  "schema": "SMART_MEGA_EFFECTIVE_CAP_RESEARCH_COMPARISON_1",
+  "status": "RESEARCH_ONLY_DO_NOT_PROMOTE",
+  "generated_utc": "2026-10-28T16:51:20.551103+00:00",
+  "baseline_git_commit": "5f0fb091984cf37e3e411b700cde78b82d493f41",
+  "dataset_file": "Mega-Sena.xlsx",
+  "dataset_sha256": "eaae20396b58cfecde4ad01b904c089ecb79031d71c57b8978af9f2aa96e6d74",
+  "dataset_last_contest": 3072,
+  "baseline_source_file": "smart_v2_engine.py",
+  "baseline_source_sha256": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+  "experimental_source_file": "research/effective_cap_variant.py",
+  "experimental_source_sha256": "a00cd9dbbef57f74325d8f8cecffed722c7806dfd300966d093ca837b2252634",
+  "walk_forward_start_index": 1000,
+  "same_input_same_parameters_except_effective_cap": true,
+  "development_1001_to_2250": {
+    "contests": 1250,
+    "baseline_hits": 749,
+    "experiment_hits": 742,
+    "cards_changed": 141,
+    "experiment_won_draws": 5,
+    "baseline_won_draws": 12
+  },
+  "validation_2251_to_2600": {
+    "contests": 350,
+    "baseline_hits": 231,
+    "experiment_hits": 228,
+    "cards_changed": 76,
+    "experiment_won_draws": 3,
+    "baseline_won_draws": 6
+  },
+  "chronological_later_test_2601_to_3072": {
+    "contests": 472,
+    "baseline_hits": 294,
+    "experiment_hits": 298,
+    "cards_changed": 142,
+    "experiment_won_draws": 6,
+    "baseline_won_draws": 2
+  },
+  "historical_full_1001_to_3072": {
+    "contests": 2072,
+    "baseline_hits": 1274,
+    "experiment_hits": 1268,
+    "cards_changed": 359,
+    "experiment_won_draws": 14,
+    "baseline_won_draws": 20
+  },
+  "baseline_exposure": {
+    "maximum_expert_family_share": 0.7069638044129883,
+    "violations_of_0_60_cap": 718
+  },
+  "experimental_exposure": {
+    "maximum_expert_family_share": 0.6000000000000001,
+    "violations_of_0_60_cap": 0
+  },
+  "prohibition": "No scientific prospective advantage established; do not modify champion, frozen predictions, original F11/F12 or official lifecycle.",
+  "predictive_superiority_proven": false,
+  "production_weights_modified": false,
+  "official_card_generated": false
+}
