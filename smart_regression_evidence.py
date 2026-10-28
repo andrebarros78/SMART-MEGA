@@ -115,6 +115,8 @@ def normalize_pytest_subtest_junit(
     summary_line = lines[0]
     passed = re.search(r"(?<!\w)(\d+) passed\b", summary_line)
     subtests = re.search(r"\b(\d+) subtests passed\b", summary_line)
+    if re.search(r"\b[1-9]\d*\s+deselected\b", summary_line):
+        raise ValueError("Pytest terminal summary contains deselected tests")
     if (passed is None or subtests is None
             or re.search(r"\b[1-9]\d*\s+(?:failed|errors?|skipped)\b", summary_line)):
         raise ValueError("Pytest terminal summary is not a clean passing run")

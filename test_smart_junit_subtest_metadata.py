@@ -8,7 +8,7 @@ import smart_regression_evidence as sre
 
 
 def _sample(tmp_path, *, base=1, subtests=2, reported=3, log_subtests=None,
-            failure=False, skipped=False):
+            failure=False, skipped=False, deselected=0):
     source=tmp_path/'original.xml'
     log=tmp_path/'terminal.log'
     out=tmp_path/'normalized.xml'
@@ -22,7 +22,7 @@ def _sample(tmp_path, *, base=1, subtests=2, reported=3, log_subtests=None,
         f'<?xml version="1.0" encoding="utf-8"?>'
         f'<testsuites><testsuite tests="{reported}" errors="0" failures="{int(failure)}" skipped="{int(skipped)}">'
         f'{body}</testsuite></testsuites>',encoding='utf-8')
-    log.write_text(f'{base} passed, 1 deselected, 0 warnings, {log_subtests} subtests passed in 0.22s\n',
+    log.write_text(f'{base} passed, {deselected} deselected, 0 warnings, {log_subtests} subtests passed in 0.22s\n',
                    encoding='utf-8')
     return source,log,out
 
@@ -74,4 +74,10 @@ def test_terminal_log_without_verified_subtests_rejected(tmp_path):
     log.write_text('1 passed in 0.22s\n',encoding='utf-8')
     with pytest.raises(ValueError):
         sre.normalize_pytest_subtest_junit(source,log,out)
+    assert not out.exists()
+
+def test_normalizer_rejects_deselected_tests_even_when_junit_counts_match(tmp_path):
+    source, log, out = _sample(tmp_path, deselected=1)
+    with pytest.raises(ValueError, match="deselected"):
+        sre.normalize_pytest_subtest_junit(source, log, out)
     assert not out.exists()
