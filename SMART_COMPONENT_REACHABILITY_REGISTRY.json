@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "59d4d06af38db2761f42fb375b08724211147f4e9f0cb12314e4c347583420d9",
+  "inventory_sha256": "f2e0ac970919a7e583cda5e9e3a5a0db490a9444f0c3ed66f83cad36dd48898a",
   "summary": {
-    "python_components": 543,
+    "python_components": 544,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 203,
+    "test_components": 204,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8890,6 +8890,7 @@
         "test_smart_caixa_schedule_override_3076",
         "test_smart_coverage_governance",
         "test_smart_github_operator",
+        "test_smart_mega_week_2026_schedule",
         "test_smart_october_2026_schedule_archive",
         "test_smart_operator_schedule_authority",
         "test_smart_target_schedule",
@@ -8905,7 +8906,7 @@
       "cycle_ids": [
         1
       ],
-      "sha256": "7bd27d06f679fd7e51709f27573308c05011dff47a81d1ac10ac71e27bd267df"
+      "sha256": "6bde4a3bba7b24e735a670116b7c065098d17225931d29371a28e24271c21fc6"
     },
     {
       "component_id": "smart_terminal_engine",
@@ -11623,6 +11624,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "b391babf10dc245a06f4d866b28c34a17603c13c802f87a0c26619ac2278e7bf"
+    },
+    {
+      "component_id": "test_smart_mega_week_2026_schedule",
+      "source_file": "test_smart_mega_week_2026_schedule.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_target_schedule"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "00b5cbe76bb1eb056f5e2099ee7bb2c3af3bacaa73f1cd763453255a08267e4f"
     },
     {
       "component_id": "test_smart_meta_governor",

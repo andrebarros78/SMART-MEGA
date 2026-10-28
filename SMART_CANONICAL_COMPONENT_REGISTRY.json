@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "59d4d06af38db2761f42fb375b08724211147f4e9f0cb12314e4c347583420d9",
+  "source_reachability_inventory_sha256": "f2e0ac970919a7e583cda5e9e3a5a0db490a9444f0c3ed66f83cad36dd48898a",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 543,
+    "component_count": 544,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 229,
+    "diagnostic": 230,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -9370,7 +9370,7 @@
       "component_id": "smart_target_schedule",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_target_schedule.py",
-      "implementation_sha256": "7bd27d06f679fd7e51709f27573308c05011dff47a81d1ac10ac71e27bd267df",
+      "implementation_sha256": "6bde4a3bba7b24e735a670116b7c065098d17225931d29371a28e24271c21fc6",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9391,6 +9391,7 @@
         "test_smart_caixa_schedule_override_3076",
         "test_smart_coverage_governance",
         "test_smart_github_operator",
+        "test_smart_mega_week_2026_schedule",
         "test_smart_october_2026_schedule_archive",
         "test_smart_operator_schedule_authority",
         "test_smart_target_schedule",
@@ -12363,6 +12364,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_mega_week_2026_schedule",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_mega_week_2026_schedule.py",
+      "implementation_sha256": "00b5cbe76bb1eb056f5e2099ee7bb2c3af3bacaa73f1cd763453255a08267e4f",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_target_schedule"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_meta_governor",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_meta_governor.py",
@@ -14782,5 +14806,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "f6bd04cb06ea8d026728da6b9d18a9d05514a8a5e0f414b95da885747af5aa3c"
+  "registry_sha256": "4dd8ffd0637e63931d1b5b044a51a735bb3083e013ba8d235fb0c13d68bb92cb"
 }

@@ -61,7 +61,43 @@ def load_draw_time_policy(root: str | Path, path: str | Path = DEFAULT_TIME_POLI
         datetime.strptime(str(effective), "%Y-%m-%d")
     except ValueError as exc:
         raise ValueError("Mega-Sena draw-time policy effective_from invalid") from exc
+    exceptional = obj.get("exceptional_contests", {})
+    if not isinstance(exceptional, dict):
+        raise ValueError("exceptional contest schedule must be an object")
+    for contest, spec in exceptional.items():
+        if not isinstance(contest, str) or re.fullmatch(r"[1-9][0-9]*", contest) is None:
+            raise ValueError("exceptional contest identifier invalid")
+        if not isinstance(spec, dict) or set(spec) != {"date", "time"}:
+            raise ValueError("exceptional contest date/time missing")
+        try:
+            datetime.strptime(spec["date"], "%Y-%m-%d")
+        except (TypeError, ValueError) as exc:
+            raise ValueError("exceptional contest date invalid") from exc
+        if not isinstance(spec["time"], str) or re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", spec["time"]) is None:
+            raise ValueError("exceptional contest time invalid")
+    if exceptional:
+        source = obj.get("exceptional_source")
+        if (not isinstance(source, dict)
+                or source.get("authority") != "CAIXA_MEGA_WEEK_2026_OFFICIAL"
+                or not isinstance(source.get("url"), str)
+                or not source["url"].startswith("https://caixanoticias.caixa.gov.br/")
+                or source.get("published_date") != "2026-09-29"):
+            raise ValueError("exceptional contest CAIXA source missing")
     return obj, resolved
+
+
+def _scheduled_contest_time(policy: dict[str, Any], target: int, date: datetime) -> tuple[str, str]:
+    """Honor only exact, self-hashed contest/date exceptions; never allow all Wednesdays."""
+    exceptional = policy.get("exceptional_contests", {})
+    spec = exceptional.get(str(target))
+    if spec is not None:
+        if spec["date"] != date.strftime("%Y-%m-%d"):
+            raise ValueError("special contest date contradicts CAIXA Mega Week authority")
+        return spec["time"], "CAIXA_MEGA_WEEK_2026_OFFICIAL"
+    regular = policy["weekday_times"].get(str(date.weekday()))
+    if not isinstance(regular, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", regular):
+        raise ValueError(f"CAIXA verified next contest has no applicable draw-time policy: target={target}")
+    return regular, policy["authority"]
 
 
 def assert_pre_draw_window(
@@ -264,9 +300,7 @@ def _verified_caixa_previous_result_schedule(root: Path, target: int, time_polic
     if sorted(prior) != sorted(numeric_balls):
         raise ValueError("CAIXA previous contest balls contradict canonical history")
     policy, policy_path = load_draw_time_policy(root, time_policy)
-    time_text = policy["weekday_times"].get(str(next_date.weekday()))
-    if not isinstance(time_text, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", time_text):
-        raise ValueError("CAIXA verified next contest has no applicable draw-time policy")
+    time_text, time_authority = _scheduled_contest_time(policy, target, next_date)
     hour, minute = map(int, time_text.split(":"))
     scheduled = next_date.replace(hour=hour, minute=minute, tzinfo=ZoneInfo(policy["timezone"]))
     source_hash = sha256_file(source)
@@ -279,7 +313,7 @@ def _verified_caixa_previous_result_schedule(root: Path, target: int, time_polic
         "scheduled_timezone": policy["timezone"],
         "draw_time_policy_file": policy_path.relative_to(root).as_posix(),
         "draw_time_policy_sha256": sha256_file(policy_path),
-        "draw_time_policy_authority": policy["authority"],
+        "draw_time_policy_authority": time_authority,
         "source_file": relative.as_posix(), "source_sha256": source_hash,
         "source_count": 1, "sources": [{"file": relative.as_posix(), "sha256": source_hash}],
         "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
@@ -351,9 +385,7 @@ def resolve_target_schedule(
     if nearest_date < effective_from:
         raise ValueError("target predates current Mega-Sena draw-time policy")
     weekday_key = str(nearest_date.weekday())
-    time_text = policy["weekday_times"].get(weekday_key)
-    if not isinstance(time_text, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", time_text):
-        raise ValueError(f"Mega-Sena draw time unavailable for weekday={weekday_key}")
+    time_text, time_authority = _scheduled_contest_time(policy, int(target_contest), nearest_date)
     hour, minute = (int(x) for x in time_text.split(":"))
     scheduled = nearest_date.replace(hour=hour, minute=minute, second=0, microsecond=0, tzinfo=ZoneInfo(policy["timezone"]))
 
@@ -377,7 +409,7 @@ def resolve_target_schedule(
         "scheduled_timezone": policy["timezone"],
         "draw_time_policy_file": str(policy_path.relative_to(root)).replace("\\", "/"),
         "draw_time_policy_sha256": sha256_file(policy_path),
-        "draw_time_policy_authority": policy["authority"],
+        "draw_time_policy_authority": time_authority,
         "source_file": sources[0]["file"],
         "source_sha256": sources[0]["sha256"],
         "source_line": row["source_line"],
