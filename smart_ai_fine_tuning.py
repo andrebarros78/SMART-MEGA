@@ -1,4 +1,4 @@
-﻿from __future__ import annotations
+from __future__ import annotations
 import hashlib,json,math
 from concurrent.futures import ProcessPoolExecutor,as_completed
 from dataclasses import asdict,dataclass
@@ -88,12 +88,25 @@ def _paired_holdout_evidence(baseline, candidate):
   if any(type(v) is not int or v < 0 or v > 6 for v in list(btrace.values()) + list(ctrace.values())):
    return evidence
   be = baseline['holdout']; ce = candidate['holdout']
-  upper = min(int(be.get('end', max(b, default=0))), int(ce.get('end', max(c, default=0))))
+  if not isinstance(be, dict) or not isinstance(ce, dict):
+   return evidence
+  # Summary metadata must be present and exact; never infer limits or truncate counts.
+  fields = ('start', 'end', 'n', 'hits')
+  if any(type(summary.get(field)) is not int for summary in (be, ce) for field in fields):
+   return evidence
+  if be['start'] != HOLDOUT_START or ce['start'] != HOLDOUT_START:
+   return evidence
+  if be['end'] != ce['end']:
+   return evidence
+  upper = be['end']
   if upper < HOLDOUT_START or any(k > upper for k in set(b) | set(c)):
    return evidence
   b = {k: v for k, v in b.items() if HOLDOUT_START <= k <= upper}
   c = {k: v for k, v in c.items() if HOLDOUT_START <= k <= upper}
   keys = set(b)
+  # Reject jointly missing draws: paired traces must cover every holdout contest.
+  if keys != set(range(HOLDOUT_START, upper + 1)):
+   return evidence
   if keys != set(c) or len(keys) != int(be['n']) or len(keys) != int(ce['n']):
    return evidence
   if sum(b.values()) != int(be['hits']) or sum(c.values()) != int(ce['hits']):
@@ -123,11 +136,20 @@ def adjudicate_selected(results,selection):
  gains={k:int(sel[k]['hits'])-int(base[k]['hits']) for k in ('calibration','validation','holdout','global')}; changes=int(_decision_change_count(sel,base))
  nonreg=all(gains[k]>=0 for k in gains)
  paired=_paired_holdout_evidence(base,sel)
- promoted=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
- return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'promotion_authorized':promoted,'status':'PROMOTED' if promoted else 'BASELINE_RETAINED_NO_PROVEN_GAIN','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
+ retrospective_eligible=bool(sel['candidate']['candidate_id']!='baseline' and nonreg and gains['validation']>0 and gains['holdout']>0 and changes>0 and paired['verified'])
+ # A retrospective holdout is a diagnostic, not independently verified prospective proof.
+ # No signed prospective verifier exists yet; operational promotion is fail-closed.
+ promoted=False
+ return {'selected_candidate_id':sel['candidate']['candidate_id'],'baseline_candidate_id':'baseline','gains_vs_baseline':gains,'decision_change_count':changes,'material_decision_effect':changes>0,'non_regressive_all_partitions':nonreg,'positive_validation_gain_required':True,'holdout_used_only_for_final_acceptance':True,'holdout_statistical_evidence':paired,'retrospective_eligible':retrospective_eligible,'prospective_superiority_proven':False,'promotion_authorized':promoted,'status':'BASELINE_RETAINED_NO_PROSPECTIVE_PROOF','effective_candidate_id':sel['candidate']['candidate_id'] if promoted else 'baseline'}
 def build_authority(report):
  if report.get('schema')!=SCHEMA or report.get('status')!='PASS': raise ValueError('fine-tuning report must be PASS')
- by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by[report['adjudication']['effective_candidate_id']]
+ if int(report.get('cutoff_contest',-1)) != int(report.get('target_contest',-1))-1: raise ValueError('fine-tuning authority cutoff mismatch')
+ adjudication=report['adjudication']
+ if adjudication.get('promotion_authorized') is not False or adjudication.get('effective_candidate_id')!='baseline':
+  raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
+ by={r['candidate']['candidate_id']:r for r in report['results']}; effective=by['baseline']
+ if effective['candidate'] != asdict(candidate_space()[0]):
+  raise ValueError('baseline parameters differ from canonical champion')
  obj={'schema':AUTHORITY_SCHEMA,'status':'AUTHORIZED' if report['adjudication']['promotion_authorized'] else 'BASELINE_RETAINED','target_contest':int(report['target_contest']),'cutoff_contest':int(report['cutoff_contest']),'data_sha256':str(report['data_sha256']),'fine_tuning_report_sha256':str(report['sha256']),'fine_tuning_report_file_sha256':None,'effective_candidate':effective['candidate'],'promotion_authorized':bool(report['adjudication']['promotion_authorized']),'causal_partitioning':True,'holdout_used_for_selection':False,'future_result_used':False}
  obj['sha256']=sha256_json(obj); return obj
 def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
@@ -137,8 +159,15 @@ def load_authority(path:Path,*,target_contest:int,data_sha256:str|None=None):
  if obj.get('schema')!=AUTHORITY_SCHEMA: raise ValueError('AI fine-tuning authority schema invalid')
  if not isinstance(observed,str) or observed!=sha256_json(canonical): raise ValueError('AI fine-tuning authority self-hash invalid')
  if int(obj.get('target_contest',-1))!=int(target_contest): raise ValueError('AI fine-tuning authority target mismatch')
+ if int(obj.get('cutoff_contest',-1))!=int(target_contest)-1: raise ValueError('AI fine-tuning authority cutoff mismatch')
  if data_sha256 is not None and obj.get('data_sha256')!=data_sha256: raise ValueError('AI fine-tuning authority data mismatch')
  Candidate(**obj.get('effective_candidate',{})).validate()
+ if obj.get('promotion_authorized') is not False or obj.get('status')!='BASELINE_RETAINED' or obj['effective_candidate'].get('candidate_id')!='baseline':
+  raise ValueError('prospective promotion proof unavailable: refusing promoted authority')
+ if obj.get('effective_candidate') != asdict(candidate_space()[0]):
+  raise ValueError('baseline parameters differ from canonical champion')
+ if obj.get('causal_partitioning') is not True:
+  raise ValueError('AI fine-tuning authority causal partitioning invalid')
  if obj.get('future_result_used') is not False or obj.get('holdout_used_for_selection') is not False: raise ValueError('AI fine-tuning authority violates causal partitioning')
  return obj
 def run_fine_tuning(data_file:Path,target_contest:int,*,start:int=DEFAULT_START,max_workers:int=4,candidates:list[Candidate]|None=None):

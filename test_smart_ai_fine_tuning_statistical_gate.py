@@ -12,7 +12,7 @@ def _candidate(candidate_id, calibration, validation, holdout_hits, hit_trace=No
                       "redundancy_threshold": 0.85, "meta_strength": 0.06},
         "calibration": {"hits": calibration, "n": 500, "mean_hits": calibration / 500},
         "validation": {"hits": validation, "n": 351, "mean_hits": validation / 351},
-        "holdout": {"hits": holdout_hits, "n": 100, "mean_hits": holdout_hits / 100},
+        "holdout": {"start": 2851, "end": 2950, "hits": holdout_hits, "n": 100, "mean_hits": holdout_hits / 100},
         "global": {"hits": calibration + validation + holdout_hits,
                    "n": 951, "mean_hits": (calibration + validation + holdout_hits) / 951},
         "decisions": {"2851": base_card if candidate_id == "baseline" else altered_card},
@@ -49,7 +49,9 @@ def test_significant_paired_holdout_superiority_can_be_authorized():
         [base, challenger], tuning.select_without_holdout([base, challenger])
     )
     evidence = outcome["holdout_statistical_evidence"]
-    assert outcome["promotion_authorized"] is True
+    assert outcome["retrospective_eligible"] is True
+    assert outcome["promotion_authorized"] is False
+    assert outcome["effective_candidate_id"] == "baseline"
     assert evidence["verified"] is True
     assert evidence["paired_contests"] == 100
     assert evidence["positive_differences"] == 75

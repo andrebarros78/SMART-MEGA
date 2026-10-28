@@ -99,3 +99,30 @@ def test_f12_calibration_sha_repair_is_exactly_reversible_without_changing_f11()
     )
     assert tampered != source
     assert reconstruct_guard_only_source(filename, tampered) is None
+
+
+def test_f12_rejects_unapproved_feedback_root_substitution():
+    source = (ROOT / "smart_portfolio_pipeline.py").read_bytes()
+    marker = b"feedback_root = module_root if freeze_path.is_relative_to(module_root) else freeze_path.parent"
+    assert source.count(marker) == 1
+    altered = source.replace(marker, b"feedback_root = Path.cwd()", 1)
+    assert reconstruct_guard_only_source("smart_portfolio_pipeline.py", altered) is None
+
+
+def test_f12_pins_new_promotion_policy_without_claiming_f11_identity():
+    from smart_f12_scientific_successor import APPROVED_SCOPED_SUCCESSOR_SHA256
+    actual = evaluate(ROOT)
+    for name in APPROVED_SCOPED_SUCCESSOR_SHA256:
+        source = actual["sources"][name]
+        assert source["approved_f11_source_preserved"] is False
+        assert source["approved_scoped_successor_source_pinned"] is True
+    assert actual["fine_tuning_promotion_policy_changed_since_f11"] is True
+    assert actual["fine_tuning_superiority_proven"] is False
+    assert actual["prospective_advantage_proven"] is False
+
+
+def test_f12_rejects_unpinned_new_promotion_policy():
+    from smart_f12_scientific_successor import APPROVED_SCOPED_SUCCESSOR_SHA256, _matches_expected_code
+    source = (ROOT / "smart_ai_fine_tuning.py").read_bytes()
+    assert _matches_expected_code(source, APPROVED_SCOPED_SUCCESSOR_SHA256["smart_ai_fine_tuning.py"])
+    assert not _matches_expected_code(source + b"\n# unreviewed\n", APPROVED_SCOPED_SUCCESSOR_SHA256["smart_ai_fine_tuning.py"])
