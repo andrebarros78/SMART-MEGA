@@ -30,3 +30,8 @@ def test_scoped_successor_persisted_report_matches_recomputed():
     import json
     stored = json.loads((ROOT / "SMART_F12_SCIENTIFIC_SUCCESSOR_V2.json").read_text())
     assert stored == evaluate(ROOT)
+
+
+def test_scoped_successor_pins_unchanged_main_f12_archive():
+    from smart_f12_scientific_successor_v2 import PINNED_F12_ARCHIVE_SHA256
+    assert PINNED_F12_ARCHIVE_SHA256 == "149b8ac92c6f25855cc6035c8d107608663c4f8e557f292fae7682cf1315b50b"
