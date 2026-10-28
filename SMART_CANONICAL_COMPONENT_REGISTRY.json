@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "66a91ed4ef52c64a56ea91be16f8f285e83747ccb878b9da4e7e2c0a09b30e44",
+  "source_reachability_inventory_sha256": "1e18e547f578bf9c65f144b382bdc91d39fecfa4cbc1f4fe20e1ca7b32667389",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 551,
+    "component_count": 553,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 237,
+    "diagnostic": 239,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4193,6 +4193,31 @@
       "consumers": [],
       "entrypoints": [],
       "execution_mode": "VALIDATION_ONLY",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "research.effective_cap_variant",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "research/effective_cap_variant.py",
+      "implementation_sha256": "ee4dbaad69a927d5c26abad1f9045f485b73b01556db26100522bc7707de5c58",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_v2_engine"
+      ],
+      "consumers": [
+        "test_smart_v2_post_redundancy_cap"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
       "predictive_authority": "NONE",
       "weight_authority": "NONE",
@@ -9688,6 +9713,7 @@
         "archive.smart_independent_audit.pre_integral_hardening_v2",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "freeze_next_research",
+        "research.effective_cap_variant",
         "smart_3054_adjudication_preflight",
         "smart_3054_full_cycle_sandbox",
         "smart_3054_terminal_executor",
@@ -9732,7 +9758,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_post_redundancy_cap"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -14632,6 +14659,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_v2_post_redundancy_cap",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_v2_post_redundancy_cap.py",
+      "implementation_sha256": "f6e01cb89919dee31a1a4d0be69fe4fbefd0fd0b398d25b6dd559f18cae89982",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "research.effective_cap_variant",
+        "smart_v2_engine"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_v2_production",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_v2_production.py",
@@ -14984,5 +15035,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "9329474a02cca4095d92b3f8f273302a470e493f8105bbe1e9a26b76ae3b74d1"
+  "registry_sha256": "944c34b36a4a0a9be511ce824b21437ecb9c6a960635086090f09d1ea6e5a818"
 }

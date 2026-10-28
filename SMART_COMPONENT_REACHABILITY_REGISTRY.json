@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "66a91ed4ef52c64a56ea91be16f8f285e83747ccb878b9da4e7e2c0a09b30e44",
+  "inventory_sha256": "1e18e547f578bf9c65f144b382bdc91d39fecfa4cbc1f4fe20e1ca7b32667389",
   "summary": {
-    "python_components": 551,
+    "python_components": 553,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
-    "diagnostic_components": 28,
+    "diagnostic_components": 29,
     "validation_components": 23,
-    "test_components": 210,
+    "test_components": 211,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -3959,6 +3959,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "f55b678dcaee5f6779e1d8e34ee12819a278668e1868a04cf828b09a4cefc1bc"
+    },
+    {
+      "component_id": "research.effective_cap_variant",
+      "source_file": "research/effective_cap_variant.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_v2_post_redundancy_cap"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "ee4dbaad69a927d5c26abad1f9045f485b73b01556db26100522bc7707de5c58"
     },
     {
       "component_id": "smart_3054_adjudication_preflight",
@@ -9178,6 +9201,7 @@
         "archive.smart_independent_audit.pre_integral_hardening_v2",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "freeze_next_research",
+        "research.effective_cap_variant",
         "smart_3054_adjudication_preflight",
         "smart_3054_full_cycle_sandbox",
         "smart_3054_terminal_executor",
@@ -9222,7 +9246,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_post_redundancy_cap"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -13707,6 +13732,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "fd9c1e5a43ae7fa0817c18e3417d1e0fe54371c61e6d1c36ab6d6ce5df3075aa"
+    },
+    {
+      "component_id": "test_smart_v2_post_redundancy_cap",
+      "source_file": "test_smart_v2_post_redundancy_cap.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "research.effective_cap_variant",
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "f6e01cb89919dee31a1a4d0be69fe4fbefd0fd0b398d25b6dd559f18cae89982"
     },
     {
       "component_id": "test_smart_v2_production",
