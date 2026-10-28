@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "639eb286db1cc735e5fea3c04347f6fb24d251ae1e6e71a096ec4c93cc5a6bad",
+  "source_reachability_inventory_sha256": "b6b65a4bacf252f22f12f09943347fe92729332f95eacba78c18cc93e25e53f3",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 549,
+    "component_count": 551,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 235,
+    "diagnostic": 237,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4610,6 +4610,7 @@
       ],
       "consumers": [
         "smart_champion_challenger",
+        "smart_f12_scientific_successor_v2",
         "smart_fine_tuning_lifecycle",
         "test_smart_ai_fine_tuning",
         "test_smart_ai_fine_tuning_statistical_gate",
@@ -5927,6 +5928,7 @@
         "smart_f11_predictive_nonregression"
       ],
       "consumers": [
+        "smart_f12_scientific_successor_v2",
         "test_smart_f12_scientific_successor"
       ],
       "entrypoints": [
@@ -5942,6 +5944,33 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "smart_f12_scientific_successor_v2",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_f12_scientific_successor_v2.py",
+      "implementation_sha256": "fd5cd2483a0a8b30c7d136f13bbd46db47099e47607959741ee54dcaa5e5e6fc",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_ai_fine_tuning",
+        "smart_f12_scientific_successor"
+      ],
+      "consumers": [
+        "test_smart_f12_scientific_successor",
+        "test_smart_f12_scientific_successor_v2"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_false_negative_rescue",
@@ -11495,12 +11524,36 @@
       "component_id": "test_smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f12_scientific_successor.py",
-      "implementation_sha256": "0c04cd8f259a024179d88e4af7133e7893a960c962132394abd0c81f3de3c6fd",
+      "implementation_sha256": "e82b1d9eec3035c0a02840b6d64f9fef080131f59fb5fa2afdd0afab3cb6ce5b",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_f11_predictive_nonregression",
-        "smart_f12_scientific_successor"
+        "smart_f12_scientific_successor",
+        "smart_f12_scientific_successor_v2"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_f12_scientific_successor_v2",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_f12_scientific_successor_v2.py",
+      "implementation_sha256": "12ad444a8c7fd45aedfc06f045c03836db419987395d022f6085cc326d3b8ef3",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_f12_scientific_successor_v2"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -14931,5 +14984,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "c9557e562df64b4c17aaf744a32dab01744cfa80700a571540c1919bc68484c2"
+  "registry_sha256": "cfcbff4912b40bcdc772d753e85a0f9011c3df913c97fc8e3c2325a91e09ce99"
 }
