@@ -82,3 +82,35 @@ def test_incomplete_or_inconsistent_holdout_evidence_fails_closed():
     )
     assert outcome["promotion_authorized"] is False
     assert outcome["holdout_statistical_evidence"]["verified"] is False
+
+
+def test_retrospective_holdout_rejects_missing_interior_contest_even_if_significant():
+    # A source may report 100 contests while silently omitting one from a
+    # nominally 101-contest window. This is cherry-pickable, not full coverage.
+    keys = [i for i in range(2851, 2952) if i != 2890]
+    baseline_trace = {str(i): 0 for i in keys}
+    candidate_trace = {str(i): (1 if i < 2927 else 0) for i in keys}
+    baseline = _candidate("baseline", 290, 205, 0, baseline_trace)
+    challenger = _candidate("candidate", 300, 215, sum(candidate_trace.values()), candidate_trace)
+    for row in (baseline, challenger):
+        row["holdout"].update(start=2851, end=2951, n=len(keys))
+    result = tuning.adjudicate_selected(
+        [baseline, challenger],
+        tuning.select_without_holdout([baseline, challenger]),
+    )
+    assert result["holdout_statistical_evidence"]["verified"] is False
+    assert result["promotion_authorized"] is False
+
+
+def test_retrospective_holdout_rejects_false_declared_start():
+    baseline_trace = {str(i): 0 for i in range(2851, 2951)}
+    candidate_trace = {str(i): (1 if i < 2926 else 0) for i in range(2851, 2951)}
+    baseline = _candidate("baseline", 290, 205, 0, baseline_trace)
+    challenger = _candidate("candidate", 300, 215, 75, candidate_trace)
+    for row in (baseline, challenger):
+        row["holdout"].update(start=2852, end=2950, n=100)
+    result = tuning.adjudicate_selected(
+        [baseline, challenger],
+        tuning.select_without_holdout([baseline, challenger]),
+    )
+    assert result["holdout_statistical_evidence"]["verified"] is False

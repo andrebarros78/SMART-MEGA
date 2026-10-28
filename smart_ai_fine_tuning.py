@@ -88,13 +88,21 @@ def _paired_holdout_evidence(baseline, candidate):
   if any(type(v) is not int or v < 0 or v > 6 for v in list(btrace.values()) + list(ctrace.values())):
    return evidence
   be = baseline['holdout']; ce = candidate['holdout']
+  # Do not allow missing, shifted or cherry-picked historical contests to
+  # masquerade as a fully verified paired holdout interval.
+  if (int(be.get('start', HOLDOUT_START)) != HOLDOUT_START
+      or int(ce.get('start', HOLDOUT_START)) != HOLDOUT_START
+      or int(be.get('end', max(b, default=0)))
+         != int(ce.get('end', max(c, default=0)))):
+   return evidence
   upper = min(int(be.get('end', max(b, default=0))), int(ce.get('end', max(c, default=0))))
   if upper < HOLDOUT_START or any(k > upper for k in set(b) | set(c)):
    return evidence
   b = {k: v for k, v in b.items() if HOLDOUT_START <= k <= upper}
   c = {k: v for k, v in c.items() if HOLDOUT_START <= k <= upper}
   keys = set(b)
-  if keys != set(c) or len(keys) != int(be['n']) or len(keys) != int(ce['n']):
+  if (keys != set(c) or len(keys) != int(be['n']) or len(keys) != int(ce['n'])
+      or len(keys) != upper - HOLDOUT_START + 1):
    return evidence
   if sum(b.values()) != int(be['hits']) or sum(c.values()) != int(ce['hits']):
    return evidence
