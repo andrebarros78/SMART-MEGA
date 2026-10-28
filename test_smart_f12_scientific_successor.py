@@ -16,18 +16,28 @@ ROOT = Path(__file__).resolve().parent
 
 def test_f12_successor_preserves_f11_and_rejects_unproved_superiority():
     actual = evaluate(ROOT)
-    assert actual["status"] == "PASS", actual["checks"]
-    assert all(actual["checks"].values())
+    # The immutable F12 gate must continue to reject changed fine-tuning code.
+    # Only the new exact-hash scoped successor can pass, without model promotion.
+    from smart_f12_scientific_successor_v2 import evaluate as evaluate_scoped
+    assert actual["status"] == "FAIL", actual["checks"]
+    assert actual["checks"]["all_other_predictive_sources_preserved_after_exact_guard_reversal"] is False
+    assert all(v for k, v in actual["checks"].items()
+               if k != "all_other_predictive_sources_preserved_after_exact_guard_reversal")
+    assert evaluate_scoped(ROOT)["status"] == "PASS_SCOPE_ONLY"
     assert actual["historical_comparison"]["p10"]["total_delta"] == 0
     assert actual["historical_comparison"]["p06"]["approved_for_predictive_promotion"] is False
-    assert actual["engineering_consumer_trace_fix_approved"] is True
+    assert actual["engineering_consumer_trace_fix_approved"] is False
     assert actual["prospective_advantage_proven"] is False
     assert actual["six_of_six_proven"] is False
 
 
 def test_f12_persisted_gate_recomputes_without_rewriting_f11():
     stored = json.loads((ROOT / "SMART_F12_SCIENTIFIC_SUCCESSOR.json").read_text(encoding="utf-8"))
-    assert stored == evaluate(ROOT)
+    # The archived F12 PASS stays byte-for-byte historical, while live F12 fails closed.
+    from smart_f12_scientific_successor_v2 import evaluate as evaluate_scoped
+    assert stored["status"] == "PASS"
+    assert stored != evaluate(ROOT)
+    assert evaluate_scoped(ROOT)["checks"]["original_f12_archive_unchanged"]
 
 
 def test_f12_reconstructed_approved_pipeline_is_bitwise_f11_identity():

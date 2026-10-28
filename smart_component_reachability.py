@@ -9,6 +9,8 @@ from collections import defaultdict, deque
 from pathlib import Path
 from typing import Iterable
 
+from smart_source_identity import sha256_source_bytes
+
 SCHEMA = "SMART_COMPONENT_REACHABILITY_REGISTRY_V1"
 EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", "venv", ".tox", "node_modules"}
 ARCHIVE_PREFIXES = ("archive/", "SMART_STATE_ARCHIVE/", "portable_evidence/", "release_evidence/")
@@ -263,7 +265,7 @@ def build_registry(root: Path) -> dict:
         by_module[module] = path
         by_path[rel] = module
         raw = path.read_bytes()
-        content_hashes[rel] = hashlib.sha256(raw).hexdigest()
+        content_hashes[rel] = sha256_source_bytes(raw)
         try:
             tree = ast.parse(raw.decode("utf-8-sig"), filename=rel)
         except (SyntaxError, UnicodeDecodeError) as exc:

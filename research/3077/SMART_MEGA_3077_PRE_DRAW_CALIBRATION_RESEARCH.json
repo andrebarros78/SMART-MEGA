@@ -1,0 +1,246 @@
+{
+  "actual_3076": [
+    6,
+    30,
+    32,
+    38,
+    49,
+    57
+  ],
+  "baseline_expected_hits_per_draw": 0.6,
+  "baseline_uniform_probability_exactly_one": 0.3790171193351851,
+  "created_utc": "2026-10-28T08:54:45.039807+00:00",
+  "draw_3077_unknown_at_execution": true,
+  "fixed_eta_metrics": {
+    "development": {
+      "contests": 1250,
+      "excess_hits": -1.0,
+      "hits_per_contest": 0.5992,
+      "hits_total": 749,
+      "one_sided_p_superiority_approx": 0.516046124434674,
+      "range": [
+        1001,
+        2250
+      ],
+      "uniform_expected_total": 750.0,
+      "z_against_uniform": -0.040232520337778584
+    },
+    "entire_historical_through_3075": {
+      "contests": 2075,
+      "excess_hits": 31.0,
+      "hits_per_contest": 0.6149397590361446,
+      "hits_total": 1276,
+      "one_sided_p_superiority_approx": 0.16651687950962735,
+      "range": [
+        1001,
+        3075
+      ],
+      "uniform_expected_total": 1245.0,
+      "z_against_uniform": 0.9680212461303848
+    },
+    "first_prospective_3076": {
+      "contests": 1,
+      "excess_hits": 0.4,
+      "hits_per_contest": 1.0,
+      "hits_total": 1,
+      "one_sided_p_superiority_approx": 0.2846869740343564,
+      "range": [
+        3076,
+        3076
+      ],
+      "uniform_expected_total": 0.6,
+      "z_against_uniform": 0.5689737591013783
+    },
+    "sealed_historical_test": {
+      "contests": 475,
+      "excess_hits": 11.0,
+      "hits_per_contest": 0.6231578947368421,
+      "hits_total": 296,
+      "one_sided_p_superiority_approx": 0.23640225053893338,
+      "range": [
+        2601,
+        3075
+      ],
+      "uniform_expected_total": 285.0,
+      "z_against_uniform": 0.7179234287353422
+    },
+    "validation": {
+      "contests": 350,
+      "excess_hits": 21.0,
+      "hits_per_contest": 0.66,
+      "hits_total": 231,
+      "one_sided_p_superiority_approx": 0.05516867839316568,
+      "range": [
+        2251,
+        2600
+      ],
+      "uniform_expected_total": 210.0,
+      "z_against_uniform": 1.596678651466657
+    }
+  },
+  "fixed_hyperparameters": {
+    "eta": 0.6931471805599453,
+    "expert_cap_within_family": 0.6,
+    "family_cap": 0.7,
+    "prior_mix": 0.2
+  },
+  "historical_test_used_for_parameter_selection": false,
+  "history_3075_sha256": "587c7a4df0b51fa2be5c964b82e92a783ab7c1ffa66b3748981f04b813ac8893",
+  "history_cutoff": 3076,
+  "history_sha256": "e44b0cbe7a816103c2994029e5f0ac1ab28c95c249ed980207d49ec312d16557",
+  "hits_3076": 1,
+  "max_absolute_weight_shift": 0.006072800169140413,
+  "next_3077_shadow_selection": [
+    10,
+    11,
+    27,
+    30,
+    38,
+    43
+  ],
+  "next_3077_shadow_selection_status": "RESEARCH_ONLY_NOT_CERTIFIED_NOT_A_BET",
+  "next_target": 3077,
+  "no_hindsight_change_to_3076": true,
+  "no_online_update_eta0_ablation_metrics": {
+    "development": {
+      "contests": 1250,
+      "excess_hits": -7.0,
+      "hits_per_contest": 0.5944,
+      "hits_total": 743,
+      "one_sided_p_superiority_approx": 0.6108854788781707,
+      "range": [
+        1001,
+        2250
+      ],
+      "uniform_expected_total": 750.0,
+      "z_against_uniform": -0.28162764236445004
+    },
+    "entire_historical_through_3075": {
+      "contests": 2075,
+      "excess_hits": 4.0,
+      "hits_per_contest": 0.6019277108433735,
+      "hits_total": 1249,
+      "one_sided_p_superiority_approx": 0.4502989970977611,
+      "range": [
+        1001,
+        3075
+      ],
+      "uniform_expected_total": 1245.0,
+      "z_against_uniform": 0.1249059672426303
+    },
+    "first_prospective_3076": {
+      "contests": 1,
+      "excess_hits": 0.4,
+      "hits_per_contest": 1.0,
+      "hits_total": 1,
+      "one_sided_p_superiority_approx": 0.2846869740343564,
+      "range": [
+        3076,
+        3076
+      ],
+      "uniform_expected_total": 0.6,
+      "z_against_uniform": 0.5689737591013783
+    },
+    "sealed_historical_test": {
+      "contests": 475,
+      "excess_hits": -4.0,
+      "hits_per_contest": 0.5915789473684211,
+      "hits_total": 281,
+      "one_sided_p_superiority_approx": 0.6029780629563246,
+      "range": [
+        2601,
+        3075
+      ],
+      "uniform_expected_total": 285.0,
+      "z_against_uniform": -0.26106306499466986
+    },
+    "validation": {
+      "contests": 350,
+      "excess_hits": 15.0,
+      "hits_per_contest": 0.6428571428571429,
+      "hits_total": 225,
+      "one_sided_p_superiority_approx": 0.12704220104303998,
+      "range": [
+        2251,
+        2600
+      ],
+      "uniform_expected_total": 210.0,
+      "z_against_uniform": 1.1404847510476122
+    }
+  },
+  "note": "Single 3076 observation is not a basis for changing eta, signal choices, model weights by hand or promoting a challenger. The current policy automatically updates its expert log-weights causally; report describes this shadow-only effect.",
+  "original_frozen_prediction_3076_reproduced": true,
+  "post_3076_expert_weights": {
+    "ewma10": 0.04844821760657802,
+    "ewma100": 0.02608573263222831,
+    "ewma25": 0.035029927860530705,
+    "ewma250": 0.162680222922797,
+    "ewma50": 0.02775589897786602,
+    "freq100": 0.03729868042700338,
+    "freq1000": 0.4555413196191554,
+    "freq25": 0.035792528823328305,
+    "freq250": 0.03891099738526374,
+    "freq50": 0.035924540952849714,
+    "freq500": 0.04432360511777041,
+    "freq_global": 0.05220832767462905
+  },
+  "post_3076_family_weights": {
+    "ewma": 0.30000000000000004,
+    "freq": 0.7
+  },
+  "pre_3076_expert_weights": {
+    "ewma10": 0.05025295902200009,
+    "ewma100": 0.025688008591722652,
+    "ewma25": 0.0353202993751082,
+    "ewma250": 0.1611938562170036,
+    "ewma50": 0.0275448767941655,
+    "freq100": 0.03604528277854598,
+    "freq1000": 0.4616141197882958,
+    "freq25": 0.03545766391616249,
+    "freq250": 0.03730570150196477,
+    "freq50": 0.03455088821781044,
+    "freq500": 0.04335103747283238,
+    "freq_global": 0.05167530632438809
+  },
+  "pre_3076_family_weights": {
+    "ewma": 0.30000000000000004,
+    "freq": 0.7
+  },
+  "predicted_3076": [
+    10,
+    11,
+    27,
+    38,
+    43,
+    53
+  ],
+  "predraw_3076_self_sha256": "a837312936d93532d50b197e882126e77bac75a74df522837b62bd83a37926e8",
+  "production_forecast_authority_created": false,
+  "production_model_weights_modified": false,
+  "schema": "SMART_MEGA_3077_PRE_DRAW_CALIBRATION_RESEARCH_1",
+  "sha256": "519e290a2f9d66a31ccd41795dede97d1d54373b3083f4f46147d01a8d8b4371",
+  "signal_weights_updated_by_existing_causal_rule_only": true,
+  "source_engine": "smart_v2_engine.py",
+  "source_engine_sha256": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+  "status": "DIAGNOSTIC_ONLY_NO_MODEL_PROMOTION",
+  "time_split": {
+    "development": [
+      1001,
+      2250
+    ],
+    "historical_test": [
+      2601,
+      3075
+    ],
+    "new_postdraw": [
+      3076,
+      3076
+    ],
+    "validation": [
+      2251,
+      2600
+    ]
+  },
+  "two_synthetic_3076_draws_same_original_forecast": true,
+  "two_synthetic_3077_draws_same_forecast": true
+}
