@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "9fac9a5d65723793b2f8464685dea4494be846ab35c8f1319412d61fe3d22574",
+  "inventory_sha256": "634c0b9a0f54f08704ac59ea9597b11274dab186f853187a98bdda1164be892b",
   "summary": {
-    "python_components": 545,
+    "python_components": 546,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 205,
+    "test_components": 206,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -7999,6 +7999,7 @@
         "smart_regression_runner",
         "test_smart_forensic_junit_integrity",
         "test_smart_full_activation_epoch",
+        "test_smart_junit_subtest_metadata",
         "test_smart_prospective_authority_lock",
         "test_smart_regression_evidence",
         "test_smart_regression_runner"
@@ -8011,7 +8012,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "9473d9a907b229c4ecd4e4ce722fc34f81c3418bb96d0b7f61d722b3523021dd"
+      "sha256": "c6482d187651932092bd635d3f5064b739a407abd2ac3390674bf9164e55cc95"
     },
     {
       "component_id": "smart_regression_runner",
@@ -11499,6 +11500,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4a1ab9b87c106d265a4ce8ddf665ea54785103b62aac0e3cd38d70d72a426287"
+    },
+    {
+      "component_id": "test_smart_junit_subtest_metadata",
+      "source_file": "test_smart_junit_subtest_metadata.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_regression_evidence"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "0744430a56219695a21aa7c0a0411bd35c63ea5f30aac71419e17d038b84985d"
     },
     {
       "component_id": "test_smart_learning_activation_authority",

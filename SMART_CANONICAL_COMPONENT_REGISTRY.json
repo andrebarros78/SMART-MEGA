@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "9fac9a5d65723793b2f8464685dea4494be846ab35c8f1319412d61fe3d22574",
+  "source_reachability_inventory_sha256": "634c0b9a0f54f08704ac59ea9597b11274dab186f853187a98bdda1164be892b",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 545,
+    "component_count": 546,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 231,
+    "diagnostic": 232,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -8436,7 +8436,7 @@
       "component_id": "smart_regression_evidence",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_regression_evidence.py",
-      "implementation_sha256": "9473d9a907b229c4ecd4e4ce722fc34f81c3418bb96d0b7f61d722b3523021dd",
+      "implementation_sha256": "c6482d187651932092bd635d3f5064b739a407abd2ac3390674bf9164e55cc95",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
@@ -8453,6 +8453,7 @@
         "smart_regression_runner",
         "test_smart_forensic_junit_integrity",
         "test_smart_full_activation_epoch",
+        "test_smart_junit_subtest_metadata",
         "test_smart_prospective_authority_lock",
         "test_smart_regression_evidence",
         "test_smart_regression_runner"
@@ -12227,6 +12228,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_junit_subtest_metadata",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_junit_subtest_metadata.py",
+      "implementation_sha256": "0744430a56219695a21aa7c0a0411bd35c63ea5f30aac71419e17d038b84985d",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_regression_evidence"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_learning_activation_authority",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_learning_activation_authority.py",
@@ -14835,5 +14859,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "8b8c6e6efbbc2fa6a2cbcb746442287c77a441064b165975795fc2b9664bbd29"
+  "registry_sha256": "af023b76a0ca640360e3bbdb94191ec62cc6aed8727a1b3ffc3a323cae0d835a"
 }
