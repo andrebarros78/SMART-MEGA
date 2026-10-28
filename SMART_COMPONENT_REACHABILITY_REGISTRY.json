@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "548489547cb940963eeb7eecec0377804415d4b1b9b1f721e03ca239608bb0eb",
+  "inventory_sha256": "cb02f96abfa0e8753f3c2a4f6e31e6728bc1eff56fbb00848abf926ab18403a5",
   "summary": {
-    "python_components": 546,
+    "python_components": 549,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
     "diagnostic_components": 27,
     "validation_components": 23,
-    "test_components": 206,
+    "test_components": 209,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -4360,7 +4360,10 @@
       "consumers": [
         "smart_champion_challenger",
         "smart_fine_tuning_lifecycle",
-        "test_smart_ai_fine_tuning"
+        "test_smart_ai_fine_tuning",
+        "test_smart_ai_fine_tuning_statistical_gate",
+        "test_smart_finetuning_authority_promotion_boundary",
+        "test_smart_retrospective_authority_prohibition"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -4370,7 +4373,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "242e10a04b16ff5789ee7465d76a42f0cbd901ca803e9ec4e7346e15496db4aa"
+      "sha256": "019691e8499ea32080416953dcb72249eac0444b6c795d2fc9cb6c6b772c2168"
     },
     {
       "component_id": "smart_authority_freshness",
@@ -9638,7 +9641,28 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "6f098fab79f59d9e4b79b150e19c20eeb30241a8c73468d324f92b04655171ea"
+      "sha256": "9d63262a560db00272db95054db36fc0b4460e3638f66c0829565aa123c2e1b2"
+    },
+    {
+      "component_id": "test_smart_ai_fine_tuning_statistical_gate",
+      "source_file": "test_smart_ai_fine_tuning_statistical_gate.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "0918724aa8f25d6007fe179e0617ab5f98e7921b0627412a1d3cefab78430393"
     },
     {
       "component_id": "test_smart_architecture_alignment",
@@ -10972,6 +10996,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "feac6351c7059d4636abf79004f34c592de6697e8cad0620750833f714e53904"
+    },
+    {
+      "component_id": "test_smart_finetuning_authority_promotion_boundary",
+      "source_file": "test_smart_finetuning_authority_promotion_boundary.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4b6447f540e6ffd2ca883be47d57ee98382196999fd03c863daac9dc4f93629c"
     },
     {
       "component_id": "test_smart_forensic_coverage_binding",
@@ -13093,6 +13138,27 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "03b1c6f91cff65cb287eae217f4e547102030bf1b57ec0812edc6ba61e82f73e"
+    },
+    {
+      "component_id": "test_smart_retrospective_authority_prohibition",
+      "source_file": "test_smart_retrospective_authority_prohibition.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_ai_fine_tuning"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4b7d9a731d274796fe8b0ce9d56f789d1e7d19e97fca0a61ea5581058e571430"
     },
     {
       "component_id": "test_smart_rollover_journal_recovery",
