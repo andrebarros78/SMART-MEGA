@@ -24,13 +24,14 @@ jobs:
     env:
       PYTHONDONTWRITEBYTECODE: '1'
       PYTHONUNBUFFERED: '1'
+      PYTEST_DISABLE_PLUGIN_AUTOLOAD: '1'
     steps:
       - uses: actions/checkout@v4
         with:
           persist-credentials: false
       - uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12'
           cache: pip
       - name: Install test dependencies
         run: |
@@ -39,7 +40,7 @@ jobs:
       - name: Full hermetic regression
         run: |
           mkdir -p test-results
-          python -m pytest -q --junitxml=test-results/pytest.xml
+          python -m pytest -q -p no:cacheprovider --junitxml=test-results/pytest.xml
       - name: Publish test report
         if: always()
         uses: actions/upload-artifact@v4
