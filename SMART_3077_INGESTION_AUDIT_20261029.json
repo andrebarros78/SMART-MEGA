@@ -1,0 +1,106 @@
+{
+  "schema": "SMART_MEGA_3077_INGESTION_AUDIT_1",
+  "status": "PASS_OPERATIONAL_CATCHUP_LOCAL_PENDING_GITHUB_MERGE",
+  "project": "andrebarros78/SMART-MEGA",
+  "source_branch": "ops/ingest-megasena-3077-20261029",
+  "base_main_commit": "5f0fb091984cf37e3e411b700cde78b82d493f41",
+  "ingestion_operation": "smart_operator.catch_up_missed_operation",
+  "target_contest": 3077,
+  "gap_start": 3073,
+  "gap_end": 3076,
+  "catchup_count": 5,
+  "source_batch_file": "SMART_OFFICIAL_RESULT_BATCH_3073_3077_20261029.json",
+  "source_capture_chain": "SMART_CAIXA_3073_3077_CAPTURE_CHAIN_20261029.json",
+  "raw_api_verified_by_direct_local_http": true,
+  "batch_does_not_self_certify_independent_transport": true,
+  "result": [
+    2,
+    14,
+    18,
+    31,
+    35,
+    40
+  ],
+  "canonical_history_rows": 3077,
+  "canonical_history_max_contest": 3077,
+  "canonical_history_sha256": "86e0c3490b016b7824a9ea6229ba8bd4eb20044c8aa39f3b34e4c1db3b15aa5b",
+  "lifecycle_status": "HOLD",
+  "completed_contest": 3077,
+  "next_contest": 3078,
+  "next_generation_allowed": false,
+  "retroactive_prediction_performed": false,
+  "automatic_weight_promotion_authorized": false,
+  "recovery_chain": [
+    {
+      "contest": 3073,
+      "result": [
+        4,
+        13,
+        23,
+        28,
+        41,
+        58
+      ],
+      "recovery_sha256": "27a7425c9a412dc4515d6b6cc339beaa1f44b7e376360b03634c4f471e8b23c5",
+      "canonical_sha256_after": "7e8394388101452234a0ef5927ab207c17de191d589d8daf3c08c751bc79f33f"
+    },
+    {
+      "contest": 3074,
+      "result": [
+        2,
+        3,
+        20,
+        25,
+        39,
+        57
+      ],
+      "recovery_sha256": "a25b7becd0a41da3b638d7cf82a7174ec80b7726367ede15370410960c9570b8",
+      "canonical_sha256_after": "890da8674200c6e2985d68e85e222d42b1462e9e49f8620c3455f07b1edc5433"
+    },
+    {
+      "contest": 3075,
+      "result": [
+        7,
+        10,
+        14,
+        27,
+        36,
+        55
+      ],
+      "recovery_sha256": "fbd256421802832acbbbc269abb47cb7b74d81b1c5ac0eda1bf243efb759b8ea",
+      "canonical_sha256_after": "a8702284711c7c0289940f1a9d21076c7b61f337580d3d7a011ea18617f5da8c"
+    },
+    {
+      "contest": 3076,
+      "result": [
+        6,
+        30,
+        32,
+        38,
+        49,
+        57
+      ],
+      "recovery_sha256": "28ac405a6cc8e37f3d136d8506122eb8d188f278eaa3276c1b1f35e8af8a5db0",
+      "canonical_sha256_after": "33cf499bdc530dff0b5cfabbe8fa73db13ed29e2857448a5588c8d15d108e4c9"
+    },
+    {
+      "contest": 3077,
+      "result": [
+        2,
+        14,
+        18,
+        31,
+        35,
+        40
+      ],
+      "recovery_sha256": "0becd6429ed750eeca923572ec330950f064f26bccb6b2a323498a8cbf65b125",
+      "canonical_sha256_after": "86e0c3490b016b7824a9ea6229ba8bd4eb20044c8aa39f3b34e4c1db3b15aa5b"
+    }
+  ],
+  "research_evaluation_file": "research/3077/SMART_MEGA_3077_POST_DRAW_EVALUATION_20261029.json",
+  "research_evaluation_hits": 0,
+  "ingestion_validation_tests": "43 passed, 1 warning",
+  "product_certification": "CONSTRUCTION_PROVEN_13_OF_13",
+  "created_utc": "2026-10-29T12:08:01.461735+00:00",
+  "sha256": "b3e62d5bae362e72ad211fcee765f0fd541db8a7f2cd8de968357b0f347319d2"
+}
