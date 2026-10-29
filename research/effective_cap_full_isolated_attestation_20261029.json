@@ -1,0 +1,48 @@
+{
+    "schema":  "SMART_MEGA_V6_FULL_ISOLATED_RESEARCH_HOMOLOGATION_1",
+    "status":  "PASS_FULL_RESEARCH_CONSTRUCTION_ONLY",
+    "project":  "andrebarros78/SMART-MEGA",
+    "source_branch":  "research/mega-v6-effective-cap-20261028",
+    "tested_source_commit":  "197dc2ea1e7033b7f3d91373a6b59fdc4036b199",
+    "tested_source_tree":  "39ec44b97e52effc2ea132ae60014d21b8043d83",
+    "main_untouched_commit":  "5f0fb091984cf37e3e411b700cde78b82d493f41",
+    "host":  "DESKTOP-JNS08PU",
+    "mcp_execution_id":  "ps-83fb33cebcf94d1d8e7deb5d6c606ec5",
+    "python":  "C:\\SMV6-PR94-VENV-20261027\\Scripts\\python.exe",
+    "python_mode":  "isolated_-I_clear_PYTHONPATH",
+    "command":  "python -I -m pytest -q -p no:cacheprovider --disable-warnings --maxfail=1 --junitxml=pytest_junit.xml",
+    "started_brt":  "2026-10-28T15:32:58.0977598-03:00",
+    "finished_brt":  "2026-10-28T16:10:34.5802195-03:00",
+    "exit_code":  0,
+    "junit":  {
+                  "declared_test_total":  1803,
+                  "serialized_testcases":  1787,
+                  "successful_subtests":  16,
+                  "passed":  1787,
+                  "failures":  0,
+                  "errors":  0,
+                  "skipped":  0,
+                  "seconds":  2250.632,
+                  "sha256":  "f1037fa2ce5cd6bf66629ff2a4f49d85bacb5111ae5103fe4f14f4072f489e99",
+                  "path":  "research/effective_cap_full_isolated_junit_20261028.xml"
+              },
+    "log":  {
+                "sha256":  "bff03d176aa21e1f52a66a69922e6528095d2faba38c800afa8e84b355f4a592",
+                "path":  "research/effective_cap_full_isolated_pytest_20261028.log",
+                "warnings":  45,
+                "terminal_summary":  "1787 passed, 45 warnings, 16 subtests passed in 2251.15s"
+            },
+    "prior_environment_defect":  {
+                                     "detected":  "Inherited PYTHONPATH included C:\\New Projet\\WMCP 3.1\\src",
+                                     "affected_check":  "no_external_project_path_in_sys_path",
+                                     "isolated_targeted_retest":  "3 passed in 2.99s",
+                                     "resolution":  "Use isolated Python -I without changing production code"
+                                 },
+    "research_model_promotion_authorized":  false,
+    "predictive_superiority_proven":  false,
+    "six_of_six_proven":  false,
+    "main_code_modified":  false,
+    "production_weights_modified":  false,
+    "frozen_cards_modified":  false,
+    "note":  "Technical research regression proof only. No observed statistical advantage or prospective promotion authorization."
+}

@@ -45,3 +45,21 @@ Em 28/10/2026, aproximadamente 14h44–14h50 (Brasília), foi iniciado o comando
 Reexecutar a suíte integral em executor com capacidade disponível; validar o JUnit completo, registrar o commit exato testado, reconciliar resultados/hashes sem autoproclamação, validar baseline limpa após a publicação e somente então decidir sobre homologação integral. A vantagem preditiva prospectiva continua `UNPROVEN`.
 
 **STATUS:** `RECONCILED_CLEAN_RESEARCH_HOMOLOGATION_PASS__FULL_REGRESSION_PENDING__PREDICTIVE_UNPROVEN`.
+
+## Fechamento suplementar - 29/10/2026 (Brasil)
+
+Este fechamento substitui o status anterior FULL_REGRESSION_PENDING no que diz respeito a homologacao tecnica da pesquisa. A tentativa anterior nao isolada falhou por PYTHONPATH externo herdado do WMCP, testado e corrigido via modo isolado python -I (3/3 testes focais aprovados).
+
+- Execucao terminal isolada: ps-83fb33cebcf94d1d8e7deb5d6c606ec5.
+- Commit efetivamente testado: 197dc2ea1e7033b7f3d91373a6b59fdc4036b199; source tree: 39ec44b97e52effc2ea132ae60014d21b8043d83.
+- Resultado terminal: exit code 0, **1787 testes aprovados, zero falhas, zero erros, zero ignorados, 16 subtestes aprovados e 45 warnings**.
+- JUnit: 1803 no cabecalho, 1787 testcases serializados, 16 subtestes aprovados incluidos na contagem do cabecalho; tempo 2250.632 segundos.
+- JUnit SHA256: f1037fa2ce5cd6bf66629ff2a4f49d85bacb5111ae5103fe4f14f4072f489e99.
+- Log SHA256: bff03d176aa21e1f52a66a69922e6528095d2faba38c800afa8e84b355f4a592.
+- JUnit integral versionado: research/effective_cap_full_isolated_junit_20261028.xml.
+- Log terminal versionado: research/effective_cap_full_isolated_pytest_20261028.log.
+- Atestado tecnico e genealogia de evidencias: research/effective_cap_full_isolated_attestation_20261029.json.
+- Escopo homologado: PASS_FULL_RESEARCH_CONSTRUCTION_ONLY.
+- Producao preservada; nenhuma promocao de challenger nem modificacao de pesos/cartoes congelados.
+- Superioridade prospectiva: UNPROVEN. Nao declarar MISSION_PROVEN ou 6/6 sem nova evidencia independente.
+- Estado Git remoto e baseline limpa exigem verificacao de HEAD e worktree apos publicacao deste fechamento.
