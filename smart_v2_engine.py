@@ -137,24 +137,8 @@ def walk_forward(draws,contests,start=1000,eta=math.log(2),pre=None,allowed=None
             ftop,_=rank_top6(fam_scores[f]); h=len(set(ftop)&actual); fam_hits[f]=h; flog[f]+=eta*(h-UNIFORM_EXPECTED_HITS)
         rows.append({'contest':int(contests[t]),'top6':top,'hits':hits,'expert_hits':indiv,'family_hits':fam_hits,'weights':eff,'family_weights':fw})
     total=sum(r['hits'] for r in rows); exp=len(rows)*UNIFORM_EXPECTED_HITS
-    # The final policy is for the *next* contest, after consuming the most
-    # recent observed draw. rows[-1]['weights'] belongs to the previous
-    # contest's pre-result forecast and would leave consumers one draw behind.
-    if rows:
-        sc={n:pre[n][len(draws)] for n in names}
-        pen,_=redundancy_penalty(sc)
-        lastfw=regularize(softmax(flog),prior_mix=PRIOR_MIX,cap=FAMILY_CAP)
-        lastw={}
-        for f in fams:
-            fn=[n for n in names if family_of(n)==f]
-            ew=regularize(softmax({n:elog[n] for n in fn}),prior_mix=PRIOR_MIX,cap=EXPERT_CAP_WITHIN_FAMILY)
-            adjusted={n:ew[n]*pen[n] for n in fn}
-            z=sum(adjusted.values())
-            adjusted={n:v/z for n,v in adjusted.items()}
-            for n in fn:
-                lastw[n]=lastfw[f]*adjusted[n]
-    else:
-        lastw={}; lastfw={}
+    # return final effective policy summary from last row
+    lastw=rows[-1]['weights'] if rows else {}; lastfw=rows[-1]['family_weights'] if rows else {}
     return WalkResult(rows,lastw,lastfw,total,exp,total-exp,maxcorr)
 
 
