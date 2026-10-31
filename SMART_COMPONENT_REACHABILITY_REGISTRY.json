@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "66a91ed4ef52c64a56ea91be16f8f285e83747ccb878b9da4e7e2c0a09b30e44",
+  "inventory_sha256": "cd9cd0581182a7673618f7b8df24950726a93488ceff6fa0cd3ae57ff9bf3d42",
   "summary": {
-    "python_components": 551,
+    "python_components": 553,
     "workflow_entrypoints": 11,
     "production_components": 113,
     "shadow_components": 1,
-    "diagnostic_components": 28,
+    "diagnostic_components": 29,
     "validation_components": 23,
-    "test_components": 210,
+    "test_components": 211,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -3929,7 +3929,8 @@
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
         "smart_independent_audit",
-        "test_smart_coverage_governance"
+        "test_smart_coverage_governance",
+        "test_smart_v2_final_weights"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -9210,6 +9211,7 @@
         "smart_signal_marginal_utility",
         "smart_signal_quality",
         "smart_terminal_engine",
+        "smart_v2_next_policy",
         "test_data_integrity",
         "test_smart_architecture_corrections_20260905",
         "test_smart_canonical_result_store_reconcile",
@@ -9222,7 +9224,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_final_weights"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -9233,6 +9236,29 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "cb2caf140f9c090de9c621ac946251d006e7a3c30d0a3df305669dbcdd5998e2"
+    },
+    {
+      "component_id": "smart_v2_next_policy",
+      "source_file": "smart_v2_next_policy.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [
+        "smart_v2_engine"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "test_smart_v2_final_weights"
+      ],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "286af4de4e0a5b9724d1d72bc4b5365c9b869959ffff763a32018514be153510"
     },
     {
       "component_id": "smart_v2_production",
@@ -13707,6 +13733,29 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "fd9c1e5a43ae7fa0817c18e3417d1e0fe54371c61e6d1c36ab6d6ce5df3075aa"
+    },
+    {
+      "component_id": "test_smart_v2_final_weights",
+      "source_file": "test_smart_v2_final_weights.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "freeze_next_research",
+        "smart_v2_engine",
+        "smart_v2_next_policy"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "be043ab05880b4d81d08986f8e70b859a9cd2778246fbf2aa293dc1471230daf"
     },
     {
       "component_id": "test_smart_v2_production",

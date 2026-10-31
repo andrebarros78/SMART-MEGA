@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "66a91ed4ef52c64a56ea91be16f8f285e83747ccb878b9da4e7e2c0a09b30e44",
+  "source_reachability_inventory_sha256": "cd9cd0581182a7673618f7b8df24950726a93488ceff6fa0cd3ae57ff9bf3d42",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 551,
+    "component_count": 553,
     "active": 113,
     "shadow": 1,
-    "diagnostic": 237,
+    "diagnostic": 239,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4161,7 +4161,8 @@
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
         "smart_independent_audit",
-        "test_smart_coverage_governance"
+        "test_smart_coverage_governance",
+        "test_smart_v2_final_weights"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -9720,6 +9721,7 @@
         "smart_signal_marginal_utility",
         "smart_signal_quality",
         "smart_terminal_engine",
+        "smart_v2_next_policy",
         "test_data_integrity",
         "test_smart_architecture_corrections_20260905",
         "test_smart_canonical_result_store_reconcile",
@@ -9732,7 +9734,8 @@
         "test_smart_signal_marginal_utility",
         "test_smart_signal_redundancy_consensus",
         "test_smart_signal_weight_numeric_contracts",
-        "test_smart_v2_engine"
+        "test_smart_v2_engine",
+        "test_smart_v2_final_weights"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -9752,6 +9755,31 @@
       "retirement_status": "NOT_RETIRED",
       "reachable": true,
       "production_reachable": true
+    },
+    {
+      "component_id": "smart_v2_next_policy",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_v2_next_policy.py",
+      "implementation_sha256": "286af4de4e0a5b9724d1d72bc4b5365c9b869959ffff763a32018514be153510",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_v2_engine"
+      ],
+      "consumers": [
+        "test_smart_v2_final_weights"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
     },
     {
       "component_id": "smart_v2_production",
@@ -14632,6 +14660,31 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_v2_final_weights",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_v2_final_weights.py",
+      "implementation_sha256": "be043ab05880b4d81d08986f8e70b859a9cd2778246fbf2aa293dc1471230daf",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "freeze_next_research",
+        "smart_v2_engine",
+        "smart_v2_next_policy"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_v2_production",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_v2_production.py",
@@ -14984,5 +15037,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "9329474a02cca4095d92b3f8f273302a470e493f8105bbe1e9a26b76ae3b74d1"
+  "registry_sha256": "a4f045664a7bc4bd13a841affd56107737e954895b180bcd662c8efe2a599749"
 }
