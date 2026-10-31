@@ -1,0 +1,72 @@
+{
+  "schema": "SMART_MEGA_3080_SINGLE_CARD_PRE_DRAW_DECISION_1",
+  "status": "PREDRAW_FORECAST_REGISTERED",
+  "product": "SINGLE_SIX_NUMBER_CARD",
+  "target_contest": 3080,
+  "historical_cutoff_contest": 3079,
+  "numbers": [
+    2,
+    5,
+    16,
+    36,
+    40,
+    43
+  ],
+  "formatted": "02 - 05 - 16 - 36 - 40 - 43",
+  "created_utc": "2026-10-31T22:02:50.878563+00:00",
+  "draw_datetime_brasilia": "2026-11-01T11:00:00-03:00",
+  "draw_schedule_source": "runtime/procedural_sources/caixa_api_previous/3079.json",
+  "draw_schedule_sha256": "8f077e86b549493992116d2cb9bf0d76e256654b8aa6a89998a4b626f20406a9",
+  "predraw_temporal_gate": "PASS",
+  "uses_target_result": false,
+  "official_generation_gate": "RECOVERY_REQUIRED_AUTHORITY_FRESHNESS",
+  "source_branch": "research/card-3080-causal-20261031",
+  "source_main_sha": "004494fe4d0854a4ef1bf674f0cf7424a9d65fae",
+  "dataset_file": "Mega-Sena.xlsx",
+  "dataset_sha256": "3fa1796b39a68abb11b0b9b7e0ec550c005175751d1de283853b7bbe7b485e57",
+  "signal_engine_sha256": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+  "selector_sha256": "97c6642203419924f61b257d15bcd352bb758f1745cb41eaea606f9afab249ba",
+  "selection_method": "short_windows native 6/60 aggregation and native primary_card_selector",
+  "native_selector_self_sha256": "400f1b46a11f459c2a524d95541dfbea872772c82ffa7aa018e68545d651cb49",
+  "signals": [
+    "freq25",
+    "freq50",
+    "freq100",
+    "ewma10",
+    "ewma25",
+    "ewma50"
+  ],
+  "weights": {
+    "ewma10": 0.06562858142966822,
+    "ewma25": 0.08882919746096153,
+    "ewma50": 0.1455422211093703,
+    "freq25": 0.10901757590328538,
+    "freq50": 0.3951683145433126,
+    "freq100": 0.19581410955340195
+  },
+  "historical_comparison": {
+    "period": "2980-3079",
+    "previous_model_total_hits": 51,
+    "selected_model_total_hits": 60,
+    "uniform_expected_total_hits": 60,
+    "selected_model_prizes": 0
+  },
+  "prior_candidate_superseded": {
+    "file": "artifacts/research/3080/SMART_MEGA_3080_EXPERIMENTAL_CARD.json",
+    "numbers": [
+      10,
+      11,
+      27,
+      35,
+      38,
+      43
+    ],
+    "reason": "superseded by validated short-window policy with reduced repetition; predictive superiority not proven"
+  },
+  "proven_superior_to_uniform": false,
+  "calibrated_six_hit_probability": null,
+  "guaranteed": false,
+  "stake_submitted": false,
+  "audit_notes": "Prospective selection before the target draw. Historic model choice is exploratory and does not prove an advantage in a fair random lottery.",
+  "sha256": "e96a718b282b4dec99287d85239a794c1ec5d8135c698673bf469f328fb844bf"
+}
