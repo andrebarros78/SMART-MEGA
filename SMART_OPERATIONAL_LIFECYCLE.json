@@ -1,27 +1,27 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
   "state": "HOLD",
-  "revision": 53,
+  "revision": 54,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3078,
-  "completed_contest": 3077,
+  "target_contest": 3080,
+  "completed_contest": 3079,
   "previous_state": "HOLD",
   "transition": "HOLD_TO_HOLD_MISSED_RESULT_RECOVERY",
   "transition_actor": "smart_missed_catchup",
-  "transition_utc": "2026-10-29T12:03:41.118685+00:00",
-  "previous_lifecycle_sha256": "d1fba275fd2dc7ecfcaf6137d51a6854e1ad89ab94ceb0da8a4deae2fe70ed92",
+  "transition_utc": "2026-10-31T21:08:57.131661+00:00",
+  "previous_lifecycle_sha256": "355ff16e604e0a79d1a3651cdf8c45dd58fd3a86c01b4e0a448dc88e7462728a",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "b040eed1811a0f12f57ba052d3c758d5cc942e95fc4f127dca49dd71f0023633"
+      "sha256": "7d080db47b8099bb7496e547f94d64d1df2406553dd1844255656446cf60446a"
     },
     "post_result_review": {
-      "file": "SMART_POST_RESULT_REVIEW_3077.json",
-      "sha256": "c7c987e575cdd55d62f8e2fbbf4b28cfb3306859fcc5ed54afca6dd539fd70ba"
+      "file": "SMART_POST_RESULT_REVIEW_3079.json",
+      "sha256": "876b1785596fd05e2fec45da2f162b67e9383ceacdc19a9a7f2bbce44b6b3d8c"
     },
     "legacy_active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
@@ -49,33 +49,18 @@
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
     "missed_result_catchup": {
-      "start_target": 3073,
-      "through_target": 3077,
+      "start_target": 3078,
+      "through_target": 3079,
       "proofs": [
         {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3073.json",
-          "sha256": "27a7425c9a412dc4515d6b6cc339beaa1f44b7e376360b03634c4f471e8b23c5",
-          "target_contest": 3073
+          "file": "SMART_MISSED_TARGET_RECOVERY_3078.json",
+          "sha256": "b8edb6cfdaccaaf95aaeb6cba16246f38b59a47f5b45b2b53115d72211d128ae",
+          "target_contest": 3078
         },
         {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3074.json",
-          "sha256": "a25b7becd0a41da3b638d7cf82a7174ec80b7726367ede15370410960c9570b8",
-          "target_contest": 3074
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3075.json",
-          "sha256": "fbd256421802832acbbbc269abb47cb7b74d81b1c5ac0eda1bf243efb759b8ea",
-          "target_contest": 3075
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3076.json",
-          "sha256": "28ac405a6cc8e37f3d136d8506122eb8d188f278eaa3276c1b1f35e8af8a5db0",
-          "target_contest": 3076
-        },
-        {
-          "file": "SMART_MISSED_TARGET_RECOVERY_3077.json",
-          "sha256": "0becd6429ed750eeca923572ec330950f064f26bccb6b2a323498a8cbf65b125",
-          "target_contest": 3077
+          "file": "SMART_MISSED_TARGET_RECOVERY_3079.json",
+          "sha256": "742c267c0f65518fccdf37dae4d83944cc96470d0b9cb8a8e95c2944c15d45f6",
+          "target_contest": 3079
         }
       ],
       "product_certification_sha256": "b5ffac2653c42f1e97a771a0c093d3f048748112dd222d66d8d26db55a31b020",
@@ -86,18 +71,15 @@
         "scientific_certification_authorized": false,
         "predictive_weight_change_authorized": false,
         "declared_authority": "CAIXA_LOTERIAS_OFFICIAL_API",
-        "file": "SMART_OFFICIAL_RESULT_BATCH_3073_3077_20261029.json",
-        "file_sha256": "d835722cd8736534629972bad65e5812077d18c21721a34bddfb03dc29040f18",
-        "document_sha256": "7aa6561c56d2451c3b74afeb92256ff6ce2973c9563f660755d89a713e8bf3d1",
+        "file": "SMART_OFFICIAL_RESULT_BATCH_3078_3079.json",
+        "file_sha256": "9fd07929806c99868aba519e5aedd0aebdd6d389b57331685e4135d817fcc5e6",
+        "document_sha256": "407b0b7251d0b60a3c6b0da83fcb0d6086de2118bbf08d1f0f9c5ff5c2cf6dc5",
         "authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
-        "retrieved_at_utc": "2026-10-29T12:01:42.064261+00:00",
-        "capture_transport": "LOCALLY_OBSERVED_HTTPS_WITH_SEPARATE_RAW_CAPTURE",
+        "retrieved_at_utc": "2026-10-31T21:08:28.119938+00:00",
+        "capture_transport": "LIVE_CAIXA_HTTP_OBSERVED_WITH_PUBLIC_CROSSCHECK_NO_ATTESTATION",
         "targets": [
-          3073,
-          3074,
-          3075,
-          3076,
-          3077
+          3078,
+          3079
         ]
       }
     },
@@ -106,5 +88,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "355ff16e604e0a79d1a3651cdf8c45dd58fd3a86c01b4e0a448dc88e7462728a"
+  "sha256": "d2d3e4d6156e617d6263feb432518f1e70e15edd3e5e1c958cd48663ed1c421e"
 }
