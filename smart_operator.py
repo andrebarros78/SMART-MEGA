@@ -39,6 +39,7 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_previous_epoch import reconcile_previous_epoch as _reconcile_previous_epoch
 from smart_operator_epoch_document import (
     epoch_artifact_paths as _epoch_artifact_paths,
     build_active_epoch_document as _build_active_epoch_document,
@@ -429,22 +430,14 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
     from smart_product_certification import DEFAULT_PATH as PRODUCT_CERT_PATH, verify_product_certification
     certification = verify_product_certification(root / PRODUCT_CERT_PATH, root=root, require_current_code=True)
     active_path = root / ACTIVE_PATH
-    reconciliation = None
-    result_store_reconciliation = None
-    if active_path.exists():
-        try:
-            previous_active = verify_active_epoch(active_path)
-        except Exception:
-            if _test_identity._authorized_pytest_sandbox(root):
-                raise FileExistsError("active epoch already exists")
-            raise
-        previous_ledger = root / previous_active["state_paths"]["ledger"]
-        previous_target = int(previous_active["target_contest"])
-        previous_events = load_ledger(previous_ledger).get("events", [])
-        if not any(ev.get("event_type") == "ADJUDICATION" and int(ev.get("target_contest", -1)) == previous_target for ev in previous_events):
-            raise ValueError("cannot supersede an unresolved prospective attempt; use the explicit pre-result withdrawal/unfreeze path")
-        reconciliation = reconcile_completed_epoch_ledger(root / "SMART_SIGNAL_LEDGER.json", previous_ledger, previous_target, root=root)
-        result_store_reconciliation = advance_completed_epoch(root, previous_active)
+    reconciliation, result_store_reconciliation = _reconcile_previous_epoch(
+        root, active_path,
+        verify_active_epoch=verify_active_epoch,
+        load_ledger=load_ledger,
+        reconcile_completed_epoch_ledger=reconcile_completed_epoch_ledger,
+        advance_completed_epoch=advance_completed_epoch,
+        authorized_pytest_sandbox=_test_identity._authorized_pytest_sandbox,
+    )
     canonical = root / "Mega-Sena.xlsx"
     history = validate_target_against_history(canonical, int(target))
     schedule = resolve_target_schedule(root, int(target))
