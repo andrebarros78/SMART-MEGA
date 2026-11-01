@@ -41,6 +41,7 @@ from smart_terminal_official_evidence import (
     load_existing_official_evidence as _official_load_existing,
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
+from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
 from smart_terminal_learned_state import (
     agent_from_prestate as _learned_agent_from_prestate,
@@ -376,65 +377,15 @@ def _default_operator_fetcher(root: Path) -> Fetcher:
 
 
 def probe(root: str | Path, fetcher: Fetcher | None = None) -> dict[str, Any]:
-    root = canonical_root(root)
-    root = Path(root).resolve()
-    if fetcher is None:
-        fetcher = _default_operator_fetcher(root)
-    binding = _runtime_binding(root)
-    if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
-        raise ValueError("active epoch freeze hash differs from immutable authority")
-    ledger = champion_challenger.load_ledger(binding["ledger"])
-    adjudications = _target_events(ledger, "ADJUDICATION")
-    existing = _load_existing_official_evidence(root)
-    if not adjudications:
-        readiness = _preflight_readiness(root, binding)
-        if readiness.get("readiness_status") != "PASS":
-            raise RuntimeError("3054 preflight is not PASS")
-    else:
-        readiness = {"readiness_status": "POST_RESULT_SEQUENCE_IN_PROGRESS_OR_COMPLETE"}
-    try:
-        payload, consensus = fetcher(TARGET)
-    except Exception as exc:
-        if existing is None and not adjudications:
-            return {
-                "schema": SCHEMA,
-                "target_contest": TARGET,
-                "status": "WAITING_OFFICIAL_RESULT",
-                "preflight_status": readiness["readiness_status"],
-                "official_result_available": False,
-                "canonical_writes_performed": False,
-                "error_type": type(exc).__name__,
-                "terminal_6of6_proven": False,
-            }
-        if existing is None:
-            raise
-        payload, consensus = existing
-        return {
-            "schema": SCHEMA,
-            "target_contest": TARGET,
-            "status": "OFFICIAL_RESULT_ALREADY_CAPTURED_REFRESH_UNAVAILABLE",
-            "preflight_status": readiness["readiness_status"],
-            "official_result_available": True,
-            "canonical_writes_performed": False,
-            "error_type": type(exc).__name__,
-            "terminal_source_corroboration_authorized": consensus.get("terminal_source_corroboration_authorized") is True,
-            "terminal_6of6_proven": False,
-        }
-    normalized = _normalized_primary(payload)
-    return {
-        "schema": SCHEMA,
-        "target_contest": TARGET,
-        "status": "OFFICIAL_RESULT_AVAILABLE",
-        "preflight_status": readiness["readiness_status"],
-        "official_result_available": True,
-        "actual_numbers": normalized["numbers"],
-        "draw_date": normalized["draw_date"],
-        "terminal_source_corroboration_authorized": consensus.get("terminal_source_corroboration_authorized") is True,
-        "result_input_authority": consensus.get("primary", {}).get("channel"),
-        "canonical_writes_performed": False,
-        "terminal_6of6_proven": False,
-    }
-
+    """Preserve legacy engine probe interface and runtime patch points."""
+    return _probe_terminal_result(
+        root, fetcher, target=TARGET, schema=SCHEMA, canonical_root=canonical_root,
+        default_operator_fetcher=_default_operator_fetcher,
+        runtime_binding=_runtime_binding, sha256_file=sha256_file,
+        load_ledger=champion_challenger.load_ledger, target_events=_target_events,
+        load_existing_official_evidence=_load_existing_official_evidence,
+        preflight_readiness=_preflight_readiness, normalize_primary=_normalized_primary,
+    )
 
 
 def _precheck_historical_freeze_evidence(
