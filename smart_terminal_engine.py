@@ -41,6 +41,7 @@ from smart_terminal_official_evidence import (
     load_existing_official_evidence as _official_load_existing,
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
+from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
 from smart_terminal_learned_state import (
@@ -513,26 +514,11 @@ def active_epoch_context(root: str | Path, target: int):
         selected = int(active.get("target_contest", -1))
         if int(target) != selected:
             raise ValueError("requested terminal target differs from active epoch")
-        state_paths = active.get("state_paths")
-        if not isinstance(state_paths, dict) or not state_paths.get("ledger"):
-            raise ValueError("active epoch ledger path missing")
-        epoch_rel = Path(str(state_paths["ledger"])).parent
-        names = ("SCHEMA", "TARGET", "CUTOFF", "PRE_RESULT_DATA", "RESULT_DATA", "INGEST_PROOF", "PRIMARY_PAYLOAD", "CONSENSUS_FILE", "LEARNED_STATE", "RESULT_STORE_PROOF", "TERMINAL_PROOF", "STATUS_FILE", "INDEPENDENT_AUDIT_FILE")
+        overrides = _epoch_runtime_names(active, selected)
+        names = tuple(overrides)
         saved = {name: globals()[name] for name in names}
         try:
-            SCHEMA = "SMART_TERMINAL_EXECUTOR_ACTIVE_EPOCH_1"
-            TARGET = selected
-            CUTOFF = selected - 1
-            PRE_RESULT_DATA = str(active.get("data_file", ""))
-            RESULT_DATA = (epoch_rel / f"Mega-Sena_through_{selected}.xlsx").as_posix()
-            INGEST_PROOF = (epoch_rel / f"SMART_OFFICIAL_RESULT_INGEST_{selected}.json").as_posix()
-            PRIMARY_PAYLOAD = (epoch_rel / f"SMART_{selected}_OFFICIAL_PRIMARY_PAYLOAD.json").as_posix()
-            CONSENSUS_FILE = (epoch_rel / f"SMART_{selected}_OFFICIAL_EVIDENCE_CURRENT.json").as_posix()
-            LEARNED_STATE = f"SMART_SIGNAL_STATE_{selected}_LEARNED.json"
-            RESULT_STORE_PROOF = f"SMART_CANONICAL_HISTORY_ADVANCE_{selected}.json"
-            TERMINAL_PROOF = (epoch_rel / f"SMART_TERMINAL_6OF6_PROOF_{selected}.json").as_posix()
-            STATUS_FILE = (epoch_rel / f"SMART_TERMINAL_EXECUTOR_STATUS_{selected}.json").as_posix()
-            INDEPENDENT_AUDIT_FILE = (epoch_rel / f"SMART_P14_INDEPENDENT_AUDIT_{selected}.json").as_posix()
+            globals().update(overrides)
             yield active
         finally:
             for name, value in saved.items():
