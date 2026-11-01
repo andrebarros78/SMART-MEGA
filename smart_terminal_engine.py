@@ -31,6 +31,8 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_official_ingest import ensure_ingest as _official_ingest_guard
+from smart_terminal_official_ingest import ensure_adjudication as _official_adjudication_guard
 from smart_terminal_official_evidence import (
     ensure_primary_payload as _official_ensure_primary,
     ensure_monotonic_consensus as _official_ensure_consensus,
@@ -200,58 +202,23 @@ def _load_existing_official_evidence(root: Path) -> tuple[dict[str, Any], dict[s
 
 
 def _ensure_ingest(root: Path, payload: dict[str, Any], binding: dict[str, Any] | None = None) -> dict[str, Any]:
-    output = root / RESULT_DATA
-    proof_path = root / INGEST_PROOF
-    normalized = _normalized_primary(payload)
-    if output.exists() or proof_path.exists():
-        if not output.exists() or not proof_path.exists():
-            raise ValueError("official result ingest is partially present")
-        proof = _read_json(proof_path)
-        if int(proof.get("target_contest", -1)) != TARGET or proof.get("actual_numbers") != normalized["numbers"]:
-            raise ValueError("existing official ingest proof conflicts with official result")
-        if proof.get("output_sha256") != sha256_file(output):
-            raise ValueError("existing official ingest output hash mismatch")
-        _, contests = load_draws(output)
-        if int(contests[-1]) != TARGET:
-            raise ValueError("existing official ingest output does not end at target")
-        return proof
-    binding = binding or _runtime_binding(root)
-    source = binding["data"]
-    if _contest_max(source) != CUTOFF:
-        raise ValueError("active pre-result dataset must end at cutoff before first target ingest")
-    return official_ingest.ingest(source, output, proof_path, TARGET, payload)
+    return _official_ingest_guard(
+        root, payload, binding, target=TARGET, cutoff=CUTOFF,
+        result_data=RESULT_DATA, ingest_proof=INGEST_PROOF,
+        normalize_primary=_normalized_primary, read_json=_read_json,
+        sha256_file=sha256_file, load_draws=load_draws,
+        runtime_binding=_runtime_binding, contest_max=_contest_max,
+        ingest=official_ingest.ingest,
+    )
 
 
 def _ensure_adjudication(root: Path, actual_numbers: list[int], binding: dict[str, Any] | None = None) -> dict[str, Any]:
-    binding = binding or _runtime_binding(root)
-    ledger_path = binding["ledger"]
-    expected_freeze_sha256 = binding["freeze_sha256"]
-    ledger = champion_challenger.load_ledger(ledger_path)
-    existing = _target_events(ledger, "ADJUDICATION")
-    if len(existing) > 1:
-        raise ValueError("multiple 3054 adjudications are forbidden")
-    if existing:
-        event = existing[0]
-        if sorted(int(x) for x in event.get("actual_numbers", [])) != sorted(actual_numbers):
-            raise ValueError("existing 3054 adjudication conflicts with official result")
-        if event.get("freeze_sha256") != expected_freeze_sha256:
-            raise ValueError("existing adjudication references a freeze outside the active epoch")
-        return {
-            "status": "ALREADY_ADJUDICATED_EVENT_PRESERVED",
-            "target_contest": TARGET,
-            "actual_numbers": event["actual_numbers"],
-            "champion_hits": int(event["champion_hits"]),
-            "challenger_hits": int(event["challenger_hits"]),
-            "e_value_after": float(event["e_value_after"]),
-        }
-    cwd = Path.cwd()
-    try:
-        os.chdir(root)
-        result = adjudicator.adjudicate(root / RESULT_DATA, TARGET, ledger_path)
-    finally:
-        os.chdir(cwd)
-    result["status"] = "ADJUDICATED"
-    return result
+    return _official_adjudication_guard(
+        root, actual_numbers, binding, target=TARGET, result_data=RESULT_DATA,
+        runtime_binding=_runtime_binding,
+        load_ledger=champion_challenger.load_ledger,
+        target_events=_target_events, adjudicate=adjudicator.adjudicate,
+    )
 
 
 def _agent_from_prestate(prestate: dict[str, Any], *, target_contest: int) -> SmartSignalAgent:
