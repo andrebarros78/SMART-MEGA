@@ -39,6 +39,10 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_preflight_integrity import (
+    active_epoch_integrity_checks as _active_epoch_integrity_checks,
+    classify_active_epoch as _classify_active_epoch,
+)
 from smart_operator_authority_transitions import (
     reserve_document as _reserve_authority_document,
     release_document as _release_authority_document,
@@ -345,50 +349,12 @@ def preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
         active_certification_sha256 = str(active.get("product_certification_sha256") or "")
         current_certification_sha256 = str(certification["sha256"])
         certification_matches = active_certification_sha256 == current_certification_sha256
-        paths = active.get("state_paths") or {}
-        data_path = root / str(active.get("data_file") or "")
-        ledger_path = root / str(paths.get("ledger") or "")
-        freeze_path = root / str(paths.get("freeze") or "")
-        canonical_path = root / str(active.get("canonical_source_file") or "Mega-Sena.xlsx")
-        ledger_valid = False
-        events = []
-        if ledger_path.is_file():
-            try:
-                ledger_doc = load_ledger(ledger_path)
-                events = ledger_doc.get("events", [])
-                ledger_valid = isinstance(events, list)
-            except Exception:
-                ledger_valid = False
-                events = []
-        target_events_absent = not any(
-            isinstance(ev, dict) and int(ev.get("target_contest", -1)) == target
-            for ev in events
+        integrity_checks = _active_epoch_integrity_checks(
+            root, active, target, sha256_file=sha256_file, load_ledger=load_ledger
         )
-        integrity_checks = {
-            "immutable_history_snapshot_declared": active.get("immutable_history_snapshot") is True,
-            "cutoff_matches_target_minus_one": int(active.get("cutoff_contest", -1)) == target - 1,
-            "result_not_used": active.get("result_used") is False,
-            "data_snapshot_present": data_path.is_file(),
-            "data_snapshot_hash_match": data_path.is_file() and sha256_file(data_path) == active.get("data_sha256"),
-            "canonical_source_present": canonical_path.is_file(),
-            "canonical_source_unchanged_since_prepare": canonical_path.is_file() and sha256_file(canonical_path) == active.get("canonical_source_sha256_at_prepare"),
-            "ledger_present": ledger_path.is_file(),
-            "ledger_valid": ledger_valid,
-            "ledger_seed_hash_match": ledger_path.is_file() and sha256_file(ledger_path) == active.get("canonical_ledger_seed_sha256"),
-            "target_events_absent": target_events_absent,
-            "freeze_artifact_absent": not freeze_path.is_file(),
-            "freeze_authority_absent": active.get("freeze_authority") is None,
-        }
-        integrity_ok = all(integrity_checks.values())
-        if not certification_matches:
-            status = "REPREPARE_REQUIRED"
-            reason = "ACTIVE_EPOCH_PRODUCT_CERTIFICATION_STALE"
-        elif not integrity_ok:
-            status = "BLOCKED_INTEGRITY"
-            reason = "ACTIVE_EPOCH_INTEGRITY_CHECK_FAILED"
-        else:
-            status = "READY_TO_FREEZE" if active.get("status") == "RESET_READY" else str(active.get("status") or "ACTIVE")
-            reason = None
+        status, reason, certification_matches, integrity_ok = _classify_active_epoch(
+            active, current_certification_sha256, integrity_checks
+        )
         return {
             "schema": "SMART_OPERATOR_PREFLIGHT_2",
             "status": status,
