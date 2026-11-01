@@ -147,7 +147,7 @@ def test_recovery_rejects_unbound_ledger_events(tmp_path, change):
     events = [event]
     freeze = {"freeze_sha256": FREEZE}
     if change == "missing_freeze":
-        freeze = None
+        freeze = False  # Explicit non-dict result; None means fixture default.
     elif change == "wrong_freeze":
         freeze["freeze_sha256"] = "e" * 64
     elif change == "no_adjudication":
