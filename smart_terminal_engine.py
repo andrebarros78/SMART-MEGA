@@ -41,6 +41,11 @@ from smart_terminal_official_evidence import (
     load_existing_official_evidence as _official_load_existing,
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
+from smart_terminal_learned_state import (
+    agent_from_prestate as _learned_agent_from_prestate,
+    verify_existing_learned_policy as _learned_verify_existing_policy,
+    ensure_learned_state as _learned_ensure_state,
+)
 from smart_terminal_sequential_learning import ensure_learning_and_sequence as _ensure_terminal_sequence
 from smart_terminal_stale_coverage import run_terminal_independent_audit as _run_stale_independent_audit
 from smart_terminal_stale_coverage import build_degraded_result_audit as _build_degraded_result_audit
@@ -224,96 +229,26 @@ def _ensure_adjudication(root: Path, actual_numbers: list[int], binding: dict[st
 
 
 def _agent_from_prestate(prestate: dict[str, Any], *, target_contest: int) -> SmartSignalAgent:
-    """Rebuild under frozen target policy; no automatic calibration promotion."""
-    target = int(target_contest)
-    if int(prestate["last_contest"]) + 1 != target:
-        raise ValueError("frozen learning policy cutoff mismatch")
-    if float(prestate["calibration_strength"]) != 0.0:
-        raise ValueError("predictive calibration requires independent promotion authority")
-    agent = SmartSignalAgent(
-        start=int(prestate["start_index"]),
-        eta=float(prestate["eta"]),
-        redundancy_threshold=float(prestate["redundancy_consensus_threshold"]),
-        meta_strength=float(prestate["meta_strength"]),
-        calibration_strength=0.0,
+    return _learned_agent_from_prestate(
+        prestate, target_contest=target_contest, agent_factory=SmartSignalAgent,
     )
-    agent._configure_target_profile(target)
-    agent._reset_states()  # binds expert and family guards to the target-specific cap
-    expected = (str(prestate["architecture_profile"]),
-                float(prestate["online_learning_max_abs_step"]),
-                float(prestate["redundancy_consensus_threshold"]))
-    observed = (agent.architecture_profile, agent.online_max_abs_step, agent.redundancy_threshold)
-    if observed != expected:
-        raise ValueError("frozen learning policy/profile mismatch; replay rejected")
-    return agent
 
 
 def _verify_existing_learned_policy(prestate: dict[str, Any], learned: dict[str, Any], target: int) -> None:
-    """Detect incompatible immutable historical snapshots; never silently re-use."""
-    agent = _agent_from_prestate(prestate, target_contest=target)
-    expected = (agent.architecture_profile, agent.online_max_abs_step, agent.redundancy_threshold, 0.0)
-    observed = (learned.get("architecture_profile"),
-                learned.get("online_learning_max_abs_step"),
-                learned.get("redundancy_consensus_threshold"),
-                learned.get("calibration_strength"))
-    if observed != expected:
-        raise ValueError("existing learned state policy differs from frozen target; immutable audit required")
-    for family in ("expert", "family"):
-        preguard = prestate.get("bounded_online_learning", {}).get(family, {})
-        guard = learned.get("bounded_online_learning", {}).get(family, {})
-        if guard.get("max_abs_step") != agent.online_max_abs_step:
-            raise ValueError("existing learned state policy guard cap mismatch")
-        if int(guard.get("clipped_update_count", -1)) < int(preguard.get("clipped_update_count", 0)):
-            raise ValueError("existing learned state policy guard counter regression")
-    before = int(prestate.get("meta_governor", {}).get("selected_cumulative_hits", -1))
-    after = int(learned.get("meta_governor", {}).get("selected_cumulative_hits", -1))
-    if before >= 0 and not 0 <= after - before <= 6:
-        raise ValueError("existing learned state policy governor counter anomaly")
-    if learned.get("training_rows") != int(prestate.get("training_rows", -2)) + 1:
-        raise ValueError("existing learned state policy training-row count mismatch")
+    return _learned_verify_existing_policy(
+        prestate, learned, target, agent_from_prestate=_agent_from_prestate,
+    )
 
 
 def _ensure_learned_state(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
     binding = binding or _runtime_binding(root)
-    through = root / RESULT_DATA
-    learned_path = binding["learned"]
-    prestate_path = binding["state"]
-    pre_result_data = binding["data"]
-    data_sha = sha256_file(through)
-    if learned_path.exists():
-        state = _read_json(learned_path)
-        if int(state.get("last_contest", -1)) != TARGET or state.get("data_sha256") != data_sha:
-            raise ValueError("existing learned state is not bound to official target data")
-        prestate = _read_json(prestate_path)
-        _verify_existing_learned_policy(prestate, state, TARGET)
-        return state
-    prestate = _read_json(prestate_path)
-    if int(prestate.get("last_contest", -1)) != CUTOFF:
-        raise ValueError("active epoch prestate does not end at cutoff")
-    if prestate.get("data_sha256") != sha256_file(pre_result_data):
-        raise ValueError("active epoch prestate data hash mismatch")
-    draws, contests = load_draws(through)
-    if int(contests[-1]) != TARGET:
-        raise ValueError("official result data does not end at target")
-    agent = _agent_from_prestate(prestate, target_contest=TARGET)
-    cwd = Path.cwd()
-    try:
-        os.chdir(root)
-        agent.replay_history(draws, contests)
-        state = agent.state_document(data_sha256=data_sha)
-    finally:
-        os.chdir(cwd)
-    state.update({
-        "sequential_learning_target": TARGET,
-        "learning_after_adjudication": True,
-        "official_result_learning": True,
-        "retroactive_rewrite": False,
-        "source_prestate_sha256": sha256_file(prestate_path),
-        "source_freeze_sha256": binding["freeze_sha256"],
-        "authority_mode": binding["mode"],
-    })
-    _atomic_write_json(learned_path, state)
-    return state
+    return _learned_ensure_state(
+        root, binding, target=TARGET, cutoff=CUTOFF, result_data=RESULT_DATA,
+        sha256_file=sha256_file, read_json=_read_json, load_draws=load_draws,
+        agent_from_prestate=_agent_from_prestate,
+        verify_existing_learned_policy=_verify_existing_learned_policy,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def _ensure_learning_and_sequence(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
