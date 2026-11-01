@@ -31,7 +31,6 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
-from smart_terminal_evaluation import evaluate_terminal_evidence as _evaluate_terminal_evidence
 from smart_terminal_result_data import (
     contest_max as _result_contest_max,
     target_events as _result_target_events,
@@ -723,7 +722,9 @@ def evaluate_terminal_rule(
     if binding["mode"] == "ACTIVE_EPOCH" and freeze_path.resolve() != Path(binding["freeze"]).resolve():
         raise ValueError("ledger freeze path differs from active epoch authority")
     freeze = _read_json(freeze_path)
-    return _evaluate_terminal_evidence(
+    # Keep the legacy AST-extracted evaluator directly executable for audit tests.
+    from smart_terminal_evaluation import evaluate_terminal_evidence
+    return evaluate_terminal_evidence(
         freeze_event=freeze_event,
         freeze=freeze,
         adjudications=_target_events(ledger, "ADJUDICATION"),
