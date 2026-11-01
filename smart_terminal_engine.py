@@ -42,6 +42,7 @@ from smart_terminal_official_evidence import (
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
+from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
@@ -420,23 +421,14 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     if fetcher is None:
         fetcher = _default_operator_fetcher(root)
     binding = _runtime_binding(root)
-    if not Path(binding["freeze"]).is_file() or sha256_file(Path(binding["freeze"])) != binding["freeze_sha256"]:
-        raise ValueError("active epoch freeze hash differs from immutable authority")
-    ledger = champion_challenger.load_ledger(binding["ledger"])
-    adjudications = _target_events(ledger, "ADJUDICATION")
-    if len(adjudications) > 1:
-        raise ValueError("multiple 3054 adjudications are forbidden")
-    scoped = _precheck_historical_freeze_evidence(
-        root, ledger,
-        allow_unverified_history=binding.get("mode") in {
-            "ACTIVE_EPOCH", "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY"
-        },
-        current_sha256=binding["freeze_sha256"],
+    adjudications, scoped = _execute_preflight_validate(
+        root, binding,
+        sha256_file=sha256_file,
+        load_ledger=champion_challenger.load_ledger,
+        target_events=_target_events,
+        historical_precheck=_precheck_historical_freeze_evidence,
+        preflight_readiness=_preflight_readiness,
     )
-    if not adjudications:
-        readiness = _preflight_readiness(root, binding)
-        if readiness.get("readiness_status") != "PASS":
-            raise RuntimeError("3054 preflight is not PASS")
     existing = _load_existing_official_evidence(root)
     try:
         fresh_payload, fresh_consensus = fetcher(TARGET)
