@@ -47,3 +47,34 @@ def precheck_historical_freeze_evidence(
                 f"historical freeze evidence unavailable for contest {contest}"
             ) from exc
     return None
+
+
+def write_unverified_history_audit(
+    root: Path, scope: dict[str, Any], *, target: int,
+    independent_audit_file: str, atomic_write_json: Callable,
+) -> dict[str, Any]:
+    """Persist incomplete scientific audit without silently promoting history."""
+    if (scope.get("status") != "DEGRADED_HISTORICAL_EVIDENCE_MISSING"
+            or scope.get("active_freeze_verified") is not True
+            or scope.get("promotion_authority") is not False
+            or not scope.get("unverified_contests")):
+        raise ValueError("unverified-history audit requires verified current freeze and real history gaps")
+    result = {
+        "schema": "SMART_HISTORICAL_EVIDENCE_NONPROMOTION_AUDIT_1",
+        "status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+        "target_contest": target,
+        "historical_verified": False,
+        "scientific_coverage_certified": False,
+        "independent_full_audit_completed": False,
+        "promotion_authority": False,
+        "terminal_promotion_permitted": False,
+        "active_freeze_verified": True,
+        "unverified_contests": list(scope["unverified_contests"]),
+        "prospective_ledger": {
+            "status": "NOT_PROVEN_HISTORICAL_EVIDENCE_MISSING",
+            "pair_count": None,
+            "no_future_leakage": False,
+        },
+    }
+    atomic_write_json(root / independent_audit_file, result)
+    return result
