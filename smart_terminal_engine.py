@@ -31,6 +31,14 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_result_data import (
+    contest_max as _result_contest_max,
+    target_events as _result_target_events,
+    normalize_primary as _result_normalize_primary,
+    payload_from_normalized as _result_payload_from_normalized,
+    consensus_rank as _result_consensus_rank,
+    draw_map as _result_draw_map,
+)
 from smart_terminal_integrity import (
     file_sha256 as _integrity_file_sha256,
     read_json_object as _integrity_read_json_object,
@@ -282,38 +290,19 @@ def _runtime_binding(root: Path) -> dict[str, Any]:
     }
 
 def _contest_max(path: Path) -> int:
-    frame = pd.read_excel(path, usecols=["Concurso"])
-    if frame.empty:
-        raise ValueError("result store is empty")
-    contests = frame["Concurso"].astype(int)
-    if contests.duplicated().any():
-        raise ValueError("result store contains duplicate contests")
-    return int(contests.max())
+    return _result_contest_max(path)
 
 
 def _target_events(ledger: dict[str, Any], event_type: str) -> list[dict[str, Any]]:
-    return [
-        event for event in ledger.get("events", [])
-        if event.get("event_type") == event_type and int(event.get("target_contest", -1)) == TARGET
-    ]
+    return _result_target_events(ledger, event_type, TARGET)
 
 
 def _normalized_primary(payload: dict[str, Any]) -> dict[str, Any]:
-    validated = official_ingest.validate_official_payload(payload, TARGET)
-    return {
-        "target_contest": TARGET,
-        "draw_date": validated["draw_date_text"],
-        "numbers": validated["numbers"],
-    }
+    return _result_normalize_primary(payload, TARGET, official_ingest.validate_official_payload)
 
 
 def _payload_from_normalized(normalized: dict[str, Any]) -> dict[str, Any]:
-    return {
-        "numero": TARGET,
-        "dataApuracao": normalized["draw_date"],
-        "listaDezenas": [f"{int(number):02d}" for number in normalized["numbers"]],
-        "acumulado": False,
-    }
+    return _result_payload_from_normalized(normalized, TARGET)
 
 
 def _ensure_primary_payload(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
@@ -329,7 +318,7 @@ def _ensure_primary_payload(root: Path, payload: dict[str, Any]) -> dict[str, An
 
 
 def _consensus_rank(document: dict[str, Any]) -> int:
-    return 2 if document.get("terminal_source_corroboration_authorized") is True else 1
+    return _result_consensus_rank(document)
 
 
 def _ensure_monotonic_consensus(root: Path, document: dict[str, Any]) -> dict[str, Any]:
@@ -658,18 +647,7 @@ def _run_independent_audit(root: Path, binding: dict[str, Any] | None = None) ->
 
 
 def _draw_map(path: Path) -> dict[int, tuple[int, ...]]:
-    frame = pd.read_excel(path)
-    required = {"Concurso", *official_ingest.BALL_COLUMNS}
-    if not required.issubset(frame.columns):
-        raise ValueError("result store draw columns missing")
-    result: dict[int, tuple[int, ...]] = {}
-    for _, row in frame.iterrows():
-        contest = int(row["Concurso"])
-        numbers = tuple(sorted(int(row[column]) for column in official_ingest.BALL_COLUMNS))
-        if contest in result or len(set(numbers)) != 6:
-            raise ValueError("invalid result store draw sequence")
-        result[contest] = numbers
-    return result
+    return _result_draw_map(path, official_ingest.BALL_COLUMNS)
 
 
 def _advance_canonical_result_store(root: Path) -> dict[str, Any]:
