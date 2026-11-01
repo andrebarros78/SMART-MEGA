@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_stale_coverage import verified_stale_coverage_observations as _resolve_stale_coverage_observations
 from smart_terminal_runtime_binding import resolve_runtime_binding as _resolve_terminal_runtime_binding
 from smart_terminal_active_epoch import active_epoch_binding as _resolve_active_epoch_binding
 from smart_terminal_prospective_lock import preserved_lock_binding as _prospective_lock_binding
@@ -392,46 +393,15 @@ def _ensure_learning_and_sequence(root: Path, binding: dict[str, Any] | None = N
 
 
 def _verified_stale_coverage_observations(root: Path, bindings: list[Path]) -> list[dict[str, Any]]:
-    """Record old P14 coverage as STALE evidence, never new source coverage."""
+    """Preserve the terminal engine's external audit and hash patch points."""
     from smart_source_identity import sha256_source_file
 
-    observed = []
-    for path in bindings:
-        path = Path(path).resolve()
-        if not path.is_relative_to(root.resolve()) or not path.is_file() or path.is_symlink():
-            raise ValueError("P14 coverage binding path is unsafe")
-        doc = _read_json(path)
-        if doc.get("schema") != independent_audit.COVERAGE_BINDING_SCHEMA:
-            raise ValueError("P14 coverage binding schema invalid")
-        raw_source = doc.get("source_file")
-        raw_report = doc.get("coverage_report_file")
-        if (not isinstance(raw_source, str) or not isinstance(raw_report, str)
-                or Path(raw_source).is_absolute() or Path(raw_report).is_absolute()):
-            raise ValueError("P14 coverage source/report path invalid")
-        source = (root / raw_source).resolve()
-        report = (root / raw_report).resolve()
-        if (not source.is_relative_to(root.resolve()) or not report.is_relative_to(root.resolve())
-                or not source.is_file() or not report.is_file()
-                or source.is_symlink() or report.is_symlink()):
-            raise ValueError("P14 coverage evidence path is unsafe or missing")
-        if sha256_file(report) != doc.get("coverage_report_sha256"):
-            raise ValueError("P14 coverage historical report hash mismatch")
-        old_hash = doc.get("source_sha256")
-        live_hash = sha256_source_file(source)
-        if old_hash == live_hash:
-            # A current source must still pass the ORIGINAL 100% P14 gate.
-            independent_audit.audit_coverage_binding(root, path)
-        observed.append({
-            "binding_file": path.relative_to(root).as_posix(),
-            "historical_source_sha256": old_hash,
-            "current_source_sha256": live_hash,
-            "source_file": source.relative_to(root).as_posix(),
-            "report_sha256_verified": True,
-            "current_source_coverage_proven": old_hash == live_hash,
-        })
-    if not any(not row["current_source_coverage_proven"] for row in observed):
-        raise RuntimeError("cannot classify a fully current P14 coverage set as stale")
-    return observed
+    return _resolve_stale_coverage_observations(
+        root, bindings, read_json=_read_json, sha256_file=sha256_file,
+        sha256_source_file=sha256_source_file,
+        coverage_binding_schema=independent_audit.COVERAGE_BINDING_SCHEMA,
+        audit_coverage_binding=independent_audit.audit_coverage_binding,
+    )
 
 
 def _degraded_result_audit(root: Path, binding: dict[str, Any],
