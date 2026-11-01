@@ -39,6 +39,10 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_epoch_document import (
+    epoch_artifact_paths as _epoch_artifact_paths,
+    build_active_epoch_document as _build_active_epoch_document,
+)
 from smart_operator_preflight_integrity import (
     active_epoch_integrity_checks as _active_epoch_integrity_checks,
     classify_active_epoch as _classify_active_epoch,
@@ -468,47 +472,23 @@ def prepare_operation(root: str | Path, target: int, *, supersede_existing: bool
     lifecycle_preparing = transition_lifecycle(root, "AUTHORIZED", "PREPARING", target_contest=int(target), actor="operator_prepare_begin", evidence={"prepare_transaction_id": transaction_id, "reserved_authority_sha256": authority_reservation["sha256"]})
     epoch_dir = runtime_path(root, "learning_epochs", epoch_id)
     epoch_dir.mkdir(parents=True, exist_ok=False)
-    snapshot = epoch_dir / f"Mega-Sena_cutoff_{int(target)-1}.xlsx"
+    layout = _epoch_artifact_paths(epoch_dir, target)
+    snapshot = layout["snapshot"]
     shutil.copy2(canonical, snapshot)
     if sha256_file(snapshot) != history["data_sha256"]:
         raise RuntimeError("operator immutable history snapshot hash mismatch")
-    ledger_path = epoch_dir / "SMART_SIGNAL_LEDGER.json"
-    ledger_seed = seed_ledger_from_canonical(root / "SMART_SIGNAL_LEDGER.json", ledger_path)
-    state_path = epoch_dir / "SMART_SIGNAL_STATE.json"
-    activation_authority = epoch_dir / "SMART_LEARNING_ACTIVATION_AUTHORITY.json"
-    expansion_registry = epoch_dir / "SMART_SIGNAL_EXPANSION_REGISTRY.json"
-    freeze_path = epoch_dir / f"SMART_{int(target)}_CHAMPION_CHALLENGER_FREEZE.json"
-    def rel(path: Path) -> str:
-        return str(path.resolve().relative_to(root)).replace("\\", "/")
-    active = write_active_epoch(active_path, {
-        "schema": EPOCH_SCHEMA,
-        "status": "RESET_READY",
-        "project": "SMART-MEGA",
-        "epoch_id": epoch_id,
-        "created_utc": datetime.now(timezone.utc).isoformat(),
-        "product_certification_file": str(PRODUCT_CERT_PATH).replace("\\", "/"),
-        "product_certification_sha256": certification["sha256"],
-        "operator_selected_target": True,
-        "state_paths": {"ledger": rel(ledger_path), "state": rel(state_path), "activation_authority": rel(activation_authority), "expansion_registry": rel(expansion_registry), "freeze": rel(freeze_path)},
-        "data_file": rel(snapshot),
-        "data_sha256": sha256_file(snapshot),
-        "canonical_source_file": "Mega-Sena.xlsx",
-        "canonical_source_sha256_at_prepare": history["data_sha256"],
-        "immutable_history_snapshot": True,
-        "cutoff_contest": int(target) - 1,
-        "target_contest": int(target),
-        "authority_mode": "OPERATOR_SELECTED_TARGET",
-        "current_engineering_role": "PRODUCT_CERTIFIED_OPERATION",
-        "first_possible_authoritative_target_for_current_engineering": int(target),
-        "target_schedule": schedule,
-        "temporal_guard": temporal,
-        "result_used": False,
-        "freeze_authority": None,
-        "learning_state_authority": None,
-        "supersedes_active_epoch_sha256": previous_sha,
-        "canonical_ledger_seed_sha256": ledger_seed["sha256"],
-        "canonical_ledger_seed_event_count": ledger_seed["event_count"],
-    })
+    ledger_seed = seed_ledger_from_canonical(root / "SMART_SIGNAL_LEDGER.json", layout["ledger"])
+    active_document = _build_active_epoch_document(
+        root=root, target=target, epoch_id=epoch_id,
+        created_utc=datetime.now(timezone.utc).isoformat(),
+        schema=EPOCH_SCHEMA, certification_file=PRODUCT_CERT_PATH,
+        certification_sha256=certification["sha256"],
+        layout=layout, data_sha256=sha256_file(snapshot),
+        canonical_history_sha256=history["data_sha256"],
+        schedule=schedule, temporal=temporal, previous_sha256=previous_sha,
+        ledger_seed=ledger_seed,
+    )
+    active = write_active_epoch(active_path, active_document)
     if _test_identity._authorized_pytest_sandbox(root) and "sha256" not in active:
         active = dict(active); active["sha256"] = "p" * 64
     authority_consumption = _consume_reserved_next_cycle_authority(root, int(target), transaction_id, epoch_id, active)
