@@ -39,6 +39,10 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_idempotency_context import (
+    authorization_payload as _operator_authorization_payload,
+    prepare_payload as _operator_prepare_payload,
+)
 from smart_operator_authority_documents import (
     sha256_json as _authority_sha256_json,
     load_hashed_doc as _authority_load_hashed_doc,
@@ -82,36 +86,14 @@ def _run_idempotent(root, operation, target, idempotency_key, payload, action):
 
 
 def _authorization_idempotency_payload(root, target, args, kwargs):
-    """Scope same-target reauthorization to its verified technical withdrawal.
-
-    The ordinary first-authorization key is preserved. A consumed authority
-    must never replay that prior success after a proven pre-freeze withdrawal.
-    """
-    payload = {"args": [str(x) for x in args],
-               "kwargs": {k: str(v) for k, v in sorted(kwargs.items())}}
-    root = Path(root).resolve()
-    lifecycle = load_lifecycle(root)
-    authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
-    if (lifecycle.get("state") != "HOLD"
-            or int(lifecycle.get("target_contest") or -1) != int(target)
-            or not authority_path.is_file()):
-        return payload
-    existing = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
-    if int(existing.get("target_contest", -1)) != int(target) or existing.get("consumed") is not True:
-        return payload
-    epoch_id = str(existing.get("prepared_epoch_id") or "")
-    proof = _find_valid_pre_freeze_withdrawal(root, int(target), epoch_id)
-    if proof is None:
-        raise FileExistsError("consumed next-cycle authority cannot be replayed without withdrawal proof")
-    proof_path, evidence = proof
-    payload["withdrawal_reauthorization"] = {
-        "prior_consumed_authority_sha256": existing["sha256"],
-        "withdrawal_proof_sha256": evidence["sha256"],
-        "withdrawn_epoch_id": epoch_id,
-        "withdrawal_proof_file": str(proof_path.relative_to(root)).replace("\\", "/"),
-    }
-    return payload
-
+    return _operator_authorization_payload(
+        root, target, args, kwargs,
+        load_lifecycle=load_lifecycle,
+        authority_path=NEXT_CYCLE_AUTHORITY_PATH,
+        authority_schema=NEXT_CYCLE_AUTHORITY_SCHEMA,
+        load_hashed_doc=_load_operator_hashed_doc,
+        find_withdrawal=_find_valid_pre_freeze_withdrawal,
+    )
 
 @locked_operation("AUTHORIZE_NEXT_CYCLE")
 @startup_guarded("AUTHORIZE_NEXT_CYCLE")
@@ -488,23 +470,13 @@ def preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
 
 
 def _prepare_idempotency_payload(root, target, args, kwargs):
-    """A new authorized cycle must not replay an old, withdrawn prepare."""
-    payload = {"args": [str(x) for x in args],
-               "kwargs": {k: str(v) for k, v in sorted(kwargs.items())}}
-    root = Path(root).resolve()
-    lifecycle = load_lifecycle(root)
-    authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
-    if (lifecycle.get("state") != "AUTHORIZED"
-            or int(lifecycle.get("target_contest") or -1) != int(target)
-            or not authority_path.is_file()):
-        return payload
-    authority = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
-    if (authority.get("status") != "AUTHORIZED" or authority.get("consumed") is not False
-            or int(authority.get("target_contest", -1)) != int(target)):
-        return payload
-    payload["authorized_cycle_sha256"] = authority["sha256"]
-    return payload
-
+    return _operator_prepare_payload(
+        root, target, args, kwargs,
+        load_lifecycle=load_lifecycle,
+        authority_path=NEXT_CYCLE_AUTHORITY_PATH,
+        authority_schema=NEXT_CYCLE_AUTHORITY_SCHEMA,
+        load_hashed_doc=_load_operator_hashed_doc,
+    )
 
 @locked_operation("PREPARE")
 @startup_guarded("PREPARE")
