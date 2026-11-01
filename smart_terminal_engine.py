@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_sequential_learning import ensure_learning_and_sequence as _ensure_terminal_sequence
 from smart_terminal_stale_coverage import run_terminal_independent_audit as _run_stale_independent_audit
 from smart_terminal_stale_coverage import build_degraded_result_audit as _build_degraded_result_audit
@@ -428,54 +429,13 @@ def _draw_map(path: Path) -> dict[int, tuple[int, ...]]:
 
 
 def _advance_canonical_result_store(root: Path) -> dict[str, Any]:
-    canonical = root / "Mega-Sena.xlsx"
-    through = root / RESULT_DATA
-    proof_path = root / RESULT_STORE_PROOF
-    canonical_draws = _draw_map(canonical)
-    through_draws = _draw_map(through)
-    max_current = max(canonical_draws)
-    if max(through_draws) != TARGET:
-        raise ValueError("official through-dataset does not end at 3054")
-    for contest, numbers in canonical_draws.items():
-        if through_draws.get(contest) != numbers:
-            raise ValueError(f"canonical result prefix mismatch at contest {contest}")
-    if max_current == TARGET:
-        if canonical_draws != through_draws:
-            raise ValueError("already-advanced canonical result store differs from official through-dataset")
-        if proof_path.exists():
-            return _read_json(proof_path)
-        raise ValueError("canonical store already advanced without its proof")
-    if max_current != CUTOFF:
-        raise ValueError("canonical result store is not at expected pre-advance cutoff")
-    before_sha = sha256_file(canonical)
-    fd, temporary = tempfile.mkstemp(prefix="Mega-Sena.3054.", suffix=".tmp.xlsx", dir=root)
-    os.close(fd)
-    temp = Path(temporary)
-    try:
-        shutil.copyfile(through, temp)
-        if _draw_map(temp) != through_draws:
-            raise RuntimeError("temporary canonical result store verification failed")
-        os.replace(temp, canonical)
-    finally:
-        if temp.exists():
-            temp.unlink()
-    proof = {
-        "schema": "SMART_CANONICAL_RESULT_STORE_ADVANCE_1",
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "target_contest": TARGET,
-        "canonical_sha256_before": before_sha,
-        "canonical_sha256_after": sha256_file(canonical),
-        "official_through_file": through.name,
-        "official_through_sha256": sha256_file(through),
-        "prefix_preserved": True,
-        "canonical_max_after": TARGET,
-        "draw_fields_authoritative": True,
-        "auxiliary_non_signal_fields_may_be_null_until_later_official_reconciliation": True,
-        "retroactive_rewrite": False,
-        "status": "PASS",
-    }
-    _atomic_write_json(proof_path, proof)
-    return proof
+    """Preserve terminal engine authority and injectable hash/data operations."""
+    return _store_advance(
+        root, target=TARGET, cutoff=CUTOFF, result_data=RESULT_DATA,
+        result_store_proof=RESULT_STORE_PROOF, draw_map=_draw_map,
+        sha256_file=sha256_file, read_json=_read_json,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def evaluate_terminal_rule(
