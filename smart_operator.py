@@ -39,6 +39,7 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_missed_draw_time import assert_missed_draw_elapsed as _assert_missed_draw_elapsed
 from smart_operator_recovery_validation import (
     select_recovery_batch as _select_recovery_batch,
     verify_adjudication_lineage as _verify_adjudication_lineage,
@@ -629,18 +630,10 @@ def recover_missed_unprepared_operation(root: str | Path, target: int, *, payloa
     canonical = root / "Mega-Sena.xlsx"
     history = validate_target_against_history(canonical, target)
     schedule = resolve_target_schedule(root, target)
-    scheduled_raw = schedule.get("scheduled_datetime")
-    if not isinstance(scheduled_raw, str):
-        raise ValueError("unprepared missed-target recovery requires scheduled draw authority")
-    scheduled = datetime.fromisoformat(scheduled_raw)
-    if scheduled.tzinfo is None or scheduled.utcoffset() is None:
-        raise ValueError("scheduled draw authority must be timezone-aware")
-    observed_now = now_utc if now_utc is not None else datetime.now(timezone.utc)
-    if observed_now.tzinfo is None or observed_now.utcoffset() is None:
-        raise ValueError("missed-target recovery clock must be timezone-aware")
-    if observed_now.astimezone(timezone.utc) <= scheduled.astimezone(timezone.utc):
-        raise ValueError("missed-target recovery is forbidden before the scheduled draw")
-
+    _assert_missed_draw_elapsed(
+        schedule, now_utc, mode="unprepared",
+        clock_now=lambda: datetime.now(timezone.utc),
+    )
     canonical_before = sha256_file(canonical)
     recovery_dir = evidence_path(root, "SMART_STATE_ARCHIVE") / f"missed-unprepared-{target}"
     recovery_dir.mkdir(parents=True, exist_ok=True)
@@ -751,16 +744,10 @@ def recover_missed_unfrozen_operation(root: str | Path, target: int, *, payload:
     if active.get("status") != "RESET_READY" or active.get("result_used") is not False or active.get("freeze_authority") is not None:
         raise ValueError("missed-target recovery requires unresolved RESET_READY state without freeze authority")
     schedule = active.get("target_schedule")
-    if not isinstance(schedule, dict) or not isinstance(schedule.get("scheduled_datetime"), str):
-        raise ValueError("missed-target recovery requires scheduled draw authority")
-    scheduled = datetime.fromisoformat(schedule["scheduled_datetime"])
-    if scheduled.tzinfo is None:
-        raise ValueError("scheduled draw authority must be timezone-aware")
-    observed_now = now_utc if now_utc is not None else datetime.now(timezone.utc)
-    if observed_now.tzinfo is None:
-        raise ValueError("missed-target recovery clock must be timezone-aware")
-    if observed_now.astimezone(timezone.utc) <= scheduled.astimezone(timezone.utc):
-        raise ValueError("missed-target recovery is forbidden before the scheduled draw")
+    _assert_missed_draw_elapsed(
+        schedule, now_utc, mode="unfrozen",
+        clock_now=lambda: datetime.now(timezone.utc),
+    )
     paths = active["state_paths"]
     ledger_path = root / paths["ledger"]
     ledger = load_ledger(ledger_path)
