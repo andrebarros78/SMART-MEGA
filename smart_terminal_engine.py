@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_historical_freeze import write_unverified_history_audit as _historical_write_unverified_audit
 from smart_terminal_historical_freeze import precheck_historical_freeze_evidence as _historical_freeze_precheck
 from smart_terminal_official_ingest import ensure_ingest as _official_ingest_guard
 from smart_terminal_official_ingest import ensure_adjudication as _official_adjudication_guard
@@ -562,31 +563,12 @@ def _precheck_historical_freeze_evidence(
 
 
 def _unverified_history_audit(root: Path, scope: dict[str, Any]) -> dict[str, Any]:
-    """Persist incomplete scientific audit without silently promoting history."""
-    if (scope.get("status") != "DEGRADED_HISTORICAL_EVIDENCE_MISSING"
-            or scope.get("active_freeze_verified") is not True
-            or scope.get("promotion_authority") is not False
-            or not scope.get("unverified_contests")):
-        raise ValueError("unverified-history audit requires verified current freeze and real history gaps")
-    result = {
-        "schema": "SMART_HISTORICAL_EVIDENCE_NONPROMOTION_AUDIT_1",
-        "status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
-        "target_contest": TARGET,
-        "historical_verified": False,
-        "scientific_coverage_certified": False,
-        "independent_full_audit_completed": False,
-        "promotion_authority": False,
-        "terminal_promotion_permitted": False,
-        "active_freeze_verified": True,
-        "unverified_contests": list(scope["unverified_contests"]),
-        "prospective_ledger": {
-            "status": "NOT_PROVEN_HISTORICAL_EVIDENCE_MISSING",
-            "pair_count": None,
-            "no_future_leakage": False,
-        },
-    }
-    _atomic_write_json(root / INDEPENDENT_AUDIT_FILE, result)
-    return result
+    """Persist only non-promotable history when current freeze is verified."""
+    return _historical_write_unverified_audit(
+        root, scope, target=TARGET,
+        independent_audit_file=INDEPENDENT_AUDIT_FILE,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_write: bool = True) -> dict[str, Any]:

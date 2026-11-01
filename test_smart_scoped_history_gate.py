@@ -114,7 +114,12 @@ class TestScopedHistoricalFreezeGate(unittest.TestCase):
                         execute_source.index("_unverified_history_audit"))
         self.assertLess(execute_source.index("_unverified_history_audit"),
                         execute_source.index("history_advance.advance_completed_epoch"))
-        degraded_source = ast.get_source_segment(source, functions["_unverified_history_audit"])
+        degraded_source_file = Path(__file__).resolve().with_name("smart_terminal_historical_freeze.py").read_text(encoding="utf-8")
+        degraded_functions = {node.name: node for node in ast.parse(degraded_source_file).body
+                              if isinstance(node, ast.FunctionDef)}
+        self.assertIn("write_unverified_history_audit", degraded_functions)
+        degraded_source = ast.get_source_segment(degraded_source_file, degraded_functions["write_unverified_history_audit"])
+        self.assertIn("_historical_write_unverified_audit(", ast.get_source_segment(source, functions["_unverified_history_audit"]))
         self.assertIn('"promotion_authority": False', degraded_source)
         self.assertIn('"independent_full_audit_completed": False', degraded_source)
         self.assertIn('"terminal_promotion_permitted": False', degraded_source)
