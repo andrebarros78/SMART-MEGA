@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_runtime_binding import resolve_runtime_binding as _resolve_terminal_runtime_binding
 from smart_terminal_active_epoch import active_epoch_binding as _resolve_active_epoch_binding
 from smart_terminal_prospective_lock import preserved_lock_binding as _prospective_lock_binding
 from smart_terminal_result_data import (
@@ -134,42 +135,16 @@ def _preserved_lock_binding(root: Path) -> dict[str, Any]:
 
 
 def _runtime_binding(root: Path) -> dict[str, Any]:
-    root = Path(root).resolve()
-    if isinstance(EXPECTED_FREEZE_SHA256, str) and len(EXPECTED_FREEZE_SHA256) == 64:
-        return {
-            "mode": "EXPLICIT_LEGACY_TEST_OVERRIDE",
-            "freeze": root / "SMART_3054_CHAMPION_CHALLENGER_FREEZE.v2.json",
-            "freeze_sha256": EXPECTED_FREEZE_SHA256,
-            "ledger": root / "SMART_SIGNAL_LEDGER.json",
-            "state": root / "SMART_SIGNAL_STATE_3054_V2.json",
-            "data": root / PRE_RESULT_DATA,
-            "learned": root / LEARNED_STATE,
-        }
-    active_binding = _active_epoch_binding(root)
-    if active_binding is not None:
-        return active_binding
-    try:
-        paths = preflight._current_paths(root)
-    except Exception:
-        ledger_path = root / "SMART_SIGNAL_LEDGER.json"
-        if ledger_path.is_file():
-            ledger = champion_challenger.load_ledger(ledger_path)
-            if len(_target_events(ledger, "ADJUDICATION")) == 1:
-                return _preserved_lock_binding(root)
-        raise
-    freeze_sha = str(paths.get("authority_freeze_sha256", ""))
-    if len(freeze_sha) != 64:
-        raise ValueError("terminal executor freeze authority hash missing")
-    mode = "ACTIVE_EPOCH" if paths.get("adjudication_authority_mode") == "ACTIVE_EPOCH_FROZEN" else "LOCKED_PROSPECTIVE_AUTHORITY"
-    return {
-        "mode": mode,
-        "freeze": paths["freeze"],
-        "freeze_sha256": freeze_sha,
-        "ledger": paths["ledger"],
-        "state": paths["state"],
-        "data": paths["data"],
-        "learned": paths["ledger"].parent / LEARNED_STATE if mode == "ACTIVE_EPOCH" else root / LEARNED_STATE,
-    }
+    """Preserve externally patchable terminal-engine evidence boundaries."""
+    return _resolve_terminal_runtime_binding(
+        root, expected_freeze_sha256=EXPECTED_FREEZE_SHA256,
+        pre_result_data=PRE_RESULT_DATA, learned_state=LEARNED_STATE,
+        active_epoch_binding=_active_epoch_binding,
+        current_paths=preflight._current_paths,
+        load_ledger=champion_challenger.load_ledger,
+        target_events=_target_events,
+        preserved_lock_binding=_preserved_lock_binding,
+    )
 
 def _contest_max(path: Path) -> int:
     return _result_contest_max(path)
