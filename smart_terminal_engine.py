@@ -42,6 +42,7 @@ from smart_terminal_official_evidence import (
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
+from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
 from smart_terminal_learned_state import (
@@ -477,28 +478,14 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     if evaluation["eligible_for_mission_proven"] and allow_terminal_write:
         mission = _promote_terminal_mission(root, evaluation, consensus, audit, sequence_validation, binding=binding)
 
-    status = {
-        "schema": SCHEMA,
-        "created_at_utc": datetime.now(timezone.utc).isoformat(),
-        "target_contest": TARGET,
-        "status": evaluation["status"] if mission.get("terminal_6of6_proven") is not True else "MISSION_PROVEN",
-        "official_result_available": True,
-        "actual_numbers": normalized["numbers"],
-        "official_evidence_status": consensus.get("status"),
-        "terminal_source_corroboration_authorized": consensus.get("terminal_source_corroboration_authorized") is True,
-        "ingest_status": ingest.get("schema"),
-        "adjudication_status": adjudication.get("status", "ADJUDICATED"),
-        "champion_hits": int(adjudication["champion_hits"]),
-        "challenger_hits": int(adjudication["challenger_hits"]),
-        "learned_state_last_contest": int(learned["last_contest"]),
-        "sequence_valid": sequence_validation.get("valid") is True,
-        "independent_audit_status": audit.get("status"),
-        "audited_pair_count": audit.get("prospective_ledger", {}).get("pair_count"),
-        "canonical_result_store_status": result_store.get("status"),
-        "terminal_evaluation": evaluation,
-        "mission_state": mission.get("status"),
-        "terminal_6of6_proven": mission.get("terminal_6of6_proven") is True,
-    }
+    status = _build_terminal_execution_status(
+        schema=SCHEMA, target=TARGET,
+        created_at_utc=datetime.now(timezone.utc).isoformat(),
+        normalized=normalized, consensus=consensus, ingest=ingest,
+        adjudication=adjudication, learned=learned,
+        sequence_validation=sequence_validation, audit=audit,
+        result_store=result_store, evaluation=evaluation, mission=mission,
+    )
     _atomic_write_json(root / STATUS_FILE, status)
     return status
 
