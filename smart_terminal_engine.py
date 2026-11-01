@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_stale_coverage import build_degraded_result_audit as _build_degraded_result_audit
 from smart_terminal_stale_coverage import verified_stale_coverage_observations as _resolve_stale_coverage_observations
 from smart_terminal_runtime_binding import resolve_runtime_binding as _resolve_terminal_runtime_binding
 from smart_terminal_active_epoch import active_epoch_binding as _resolve_active_epoch_binding
@@ -406,49 +407,17 @@ def _verified_stale_coverage_observations(root: Path, bindings: list[Path]) -> l
 
 def _degraded_result_audit(root: Path, binding: dict[str, Any],
                            bindings: list[Path]) -> dict[str, Any]:
-    """Independent replay remains mandatory; P14 certification remains blocked.
-
-    Post-draw observations must be retained even when historical 100% coverage
-    evidence is stale, but no such observation can earn scientific promotion.
-    All other audit errors remain fatal.
-    """
-    stale = _verified_stale_coverage_observations(root, bindings)
-    policy = independent_audit.policy_snapshot()
-    independence = independent_audit.audit_independence(root)
-    prospective = independent_audit.audit_prospective_ledger(root, binding["ledger"])
-    replay = independent_audit.audit_deterministic_replay(
-        root, binding["data"], TARGET, start=1000
+    """Preserve P14 independent audit hooks without promoting stale coverage."""
+    return _build_degraded_result_audit(
+        root, binding, bindings, target=TARGET, schema=independent_audit.SCHEMA,
+        verified_stale_coverage_observations=_verified_stale_coverage_observations,
+        policy_snapshot=independent_audit.policy_snapshot,
+        audit_independence=independent_audit.audit_independence,
+        audit_prospective_ledger=independent_audit.audit_prospective_ledger,
+        audit_deterministic_replay=independent_audit.audit_deterministic_replay,
+        load_material_deficiency_registry=independent_audit.load_material_deficiency_registry,
+        sha256_json=independent_audit.sha256_json,
     )
-    deficiency_registry = independent_audit.load_material_deficiency_registry(root=root)
-    result = {
-        "schema": independent_audit.SCHEMA,
-        "status": "DEGRADED_P14_COVERAGE_STALE",
-        "scientific_coverage_certified": False,
-        "terminal_promotion_permitted": False,
-        "promotion_authority": False,
-        "historical_coverage_source_bindings": stale,
-        "coverage": {"status": "BLOCKED_STALE_SOURCE_HASH", "bindings": stale},
-        "independence": independence,
-        "policy": policy,
-        "prospective_ledger": prospective,
-        "deterministic_replay": replay,
-        "checks": {
-            "coverage_lines_and_branches": False,
-            "hash_integrity": False,
-            "deterministic_replay": True,
-            "future_leakage_absent": True,
-            "full_champion_comparison": True,
-            "promotion_lineage_recomputed": True,
-            "independence_no_forbidden_dependencies": True,
-            "independent_freeze_decision_oracle":
-                replay.get("independent_decision_oracle", {}).get("verified") is True,
-        },
-        "independent_of_promotion_decision": True,
-        "material_deficiency_registry": deficiency_registry,
-        "material_deficiencies": list(deficiency_registry["open_deficiencies"]),
-    }
-    result["sha256"] = independent_audit.sha256_json(result)
-    return result
 
 
 def _run_independent_audit(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:

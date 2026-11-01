@@ -52,3 +52,56 @@ def verified_stale_coverage_observations(
     if not any(not row["current_source_coverage_proven"] for row in observed):
         raise RuntimeError("cannot classify a fully current P14 coverage set as stale")
     return observed
+
+
+def build_degraded_result_audit(
+    root: Path, binding: dict[str, Any], bindings: list[Path], *,
+    target: int, schema: str,
+    verified_stale_coverage_observations: Callable,
+    policy_snapshot: Callable, audit_independence: Callable,
+    audit_prospective_ledger: Callable, audit_deterministic_replay: Callable,
+    load_material_deficiency_registry: Callable, sha256_json: Callable,
+) -> dict[str, Any]:
+    """Independent replay remains mandatory; P14 certification remains blocked.
+
+    Post-draw observations must be retained even when historical 100% coverage
+    evidence is stale, but no such observation can earn scientific promotion.
+    All other audit errors remain fatal.
+    """
+    stale = verified_stale_coverage_observations(root, bindings)
+    policy = policy_snapshot()
+    independence = audit_independence(root)
+    prospective = audit_prospective_ledger(root, binding["ledger"])
+    replay = audit_deterministic_replay(
+        root, binding["data"], target, start=1000
+    )
+    deficiency_registry = load_material_deficiency_registry(root=root)
+    result = {
+        "schema": schema,
+        "status": "DEGRADED_P14_COVERAGE_STALE",
+        "scientific_coverage_certified": False,
+        "terminal_promotion_permitted": False,
+        "promotion_authority": False,
+        "historical_coverage_source_bindings": stale,
+        "coverage": {"status": "BLOCKED_STALE_SOURCE_HASH", "bindings": stale},
+        "independence": independence,
+        "policy": policy,
+        "prospective_ledger": prospective,
+        "deterministic_replay": replay,
+        "checks": {
+            "coverage_lines_and_branches": False,
+            "hash_integrity": False,
+            "deterministic_replay": True,
+            "future_leakage_absent": True,
+            "full_champion_comparison": True,
+            "promotion_lineage_recomputed": True,
+            "independence_no_forbidden_dependencies": True,
+            "independent_freeze_decision_oracle":
+                replay.get("independent_decision_oracle", {}).get("verified") is True,
+        },
+        "independent_of_promotion_decision": True,
+        "material_deficiency_registry": deficiency_registry,
+        "material_deficiencies": list(deficiency_registry["open_deficiencies"]),
+    }
+    result["sha256"] = sha256_json(result)
+    return result
