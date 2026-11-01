@@ -4,7 +4,10 @@ from __future__ import annotations
 from pathlib import Path
 import pytest
 
-from smart_terminal_historical_freeze import precheck_historical_freeze_evidence
+from smart_terminal_historical_freeze import (
+    precheck_historical_freeze_evidence,
+    write_unverified_history_audit,
+)
 
 
 def _case(tmp_path):
@@ -103,3 +106,68 @@ def test_invalid_adjudication_contest_does_not_become_ignored(tmp_path):
     with pytest.raises(ValueError):
         run()
     assert observed==[]
+
+
+def _unverified_report(tmp_path, scope):
+    writes=[]
+    def write_json(path, doc):
+        writes.append((Path(path), doc))
+    def run():
+        return write_unverified_history_audit(
+            tmp_path, scope, target=9001,
+            independent_audit_file="independent.json", atomic_write_json=write_json)
+    return writes,run
+
+
+def test_unverified_history_report_records_only_nonpromotion_evidence(tmp_path):
+    scope={
+        "status":"DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+        "active_freeze_verified":True,
+        "promotion_authority":False,
+        "unverified_contests":[9000,8999],
+    }
+    writes,run=_unverified_report(tmp_path,scope)
+    doc=run()
+    assert writes==[(tmp_path/"independent.json",doc)]
+    assert doc["schema"]=="SMART_HISTORICAL_EVIDENCE_NONPROMOTION_AUDIT_1"
+    assert doc["target_contest"]==9001
+    assert doc["unverified_contests"]==[9000,8999]
+    for key in ("historical_verified","scientific_coverage_certified",
+                "independent_full_audit_completed","promotion_authority",
+                "terminal_promotion_permitted"):
+        assert doc[key] is False
+    assert doc["active_freeze_verified"] is True
+    assert doc["prospective_ledger"]=={
+        "status":"NOT_PROVEN_HISTORICAL_EVIDENCE_MISSING",
+        "pair_count":None,"no_future_leakage":False,
+    }
+    assert not list(tmp_path.iterdir())
+
+
+@pytest.mark.parametrize("changes",[
+    {"status":"PASS_SCOPED_FREEZE_EVIDENCE"},
+    {"active_freeze_verified":False},
+    {"promotion_authority":True},
+    {"unverified_contests":[]},
+    {"unverified_contests":None},
+])
+def test_unverified_history_report_fails_closed_without_complete_scope(tmp_path,changes):
+    scope={"status":"DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+           "active_freeze_verified":True,"promotion_authority":False,
+           "unverified_contests":[9000]}
+    scope.update(changes)
+    writes,run=_unverified_report(tmp_path,scope)
+    with pytest.raises(ValueError,match="verified current freeze and real history gaps"):
+        run()
+    assert writes==[]
+
+
+def test_unverified_report_does_not_suppress_writer_errors(tmp_path):
+    scope={"status":"DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+           "active_freeze_verified":True,"promotion_authority":False,
+           "unverified_contests":[9000]}
+    with pytest.raises(OSError,match="audit disk unavailable"):
+        write_unverified_history_audit(
+            tmp_path,scope,target=9001,independent_audit_file="independent.json",
+            atomic_write_json=lambda *args: (_ for _ in ()).throw(OSError("audit disk unavailable")))
+    assert not list(tmp_path.iterdir())
