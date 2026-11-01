@@ -31,6 +31,13 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_integrity import (
+    file_sha256 as _integrity_file_sha256,
+    read_json_object as _integrity_read_json_object,
+    atomic_write_json as _integrity_atomic_write_json,
+    project_local_path as _integrity_project_local_path,
+    validate_post_result_temporal_guard as _integrity_validate_post_result_temporal_guard,
+)
 
 SCHEMA = "SMART_TERMINAL_ENGINE_LEGACY_COMPAT_V1"
 TARGET = 3054
@@ -58,95 +65,25 @@ Fetcher = Callable[[int], tuple[dict[str, Any], dict[str, Any]]]
 
 
 def sha256_file(path: Path) -> str:
-    h = hashlib.sha256()
-    with Path(path).open("rb") as stream:
-        for chunk in iter(lambda: stream.read(1024 * 1024), b""):
-            h.update(chunk)
-    return h.hexdigest()
+    return _integrity_file_sha256(path)
 
 
 def _read_json(path: Path) -> dict[str, Any]:
-    obj = json.loads(Path(path).read_text(encoding="utf-8-sig"))
-    if not isinstance(obj, dict):
-        raise ValueError(f"JSON object required: {path}")
-    return obj
+    return _integrity_read_json_object(path)
 
 
 def _atomic_write_json(path: Path, document: dict[str, Any]) -> None:
-    path = Path(path)
-    path.parent.mkdir(parents=True, exist_ok=True)
-    fd, temporary = tempfile.mkstemp(prefix=path.name + ".", suffix=".tmp", dir=path.parent)
-    os.close(fd)
-    temp = Path(temporary)
-    try:
-        temp.write_text(json.dumps(document, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
-        os.replace(temp, path)
-    finally:
-        if temp.exists():
-            temp.unlink()
-
+    return _integrity_atomic_write_json(path, document)
 
 
 def _project_local(root: Path, value: str | Path, label: str) -> Path:
-    path = (root / Path(value)).resolve() if not Path(value).is_absolute() else Path(value).resolve()
-    try:
-        path.relative_to(root.resolve())
-    except ValueError as exc:
-        raise ValueError(f"{label} escapes canonical root") from exc
-    return path
+    return _integrity_project_local_path(root, value, label)
 
 
 def _validate_post_result_temporal_guard(
     active: dict[str, Any], freeze_doc: dict[str, Any], target: int,
 ) -> str:
-    """Preserve an operator-only clock as UNVERIFIED, never as official pre-draw proof.
-
-    The immutable pre-result freeze is valid for operational adjudication even
-    when its source never claimed an independently known drawing timestamp.
-    Such a result can never upgrade its original temporal provenance.
-    """
-    guard = active.get("temporal_guard")
-    frozen_guard = freeze_doc.get("temporal_guard")
-    schedule = active.get("target_schedule")
-    frozen_schedule = freeze_doc.get("target_schedule")
-    if not all(isinstance(x, dict) for x in
-               (guard, frozen_guard, schedule, frozen_schedule)):
-        raise ValueError("post-result recovery temporal evidence missing")
-    if (int(guard.get("target_contest", -1)) != int(target)
-            or int(frozen_guard.get("target_contest", -1)) != int(target)
-            or guard.get("result_used") is not False
-            or frozen_guard.get("result_used") is not False
-            or int(freeze_doc.get("target_contest", -1)) != int(target)
-            or int(freeze_doc.get("cutoff_contest", -1)) != int(target)-1
-            or freeze_doc.get("frozen_before_result") is not True
-            or freeze_doc.get("causal_cutoff") is not True):
-        raise ValueError("post-result recovery temporal evidence is not causal")
-
-    if guard.get("status") == "PASS":
-        if (frozen_guard.get("status") != "PASS"
-                or guard.get("before_scheduled_draw") is not True
-                or frozen_guard.get("before_scheduled_draw") is not True):
-            raise ValueError("post-result recovery verified temporal guard invalid")
-        return "VERIFIED_PRE_DRAW_WINDOW"
-
-    if guard.get("status") != "OPERATOR_UNVERIFIED_DRAW_TIME":
-        raise ValueError("post-result recovery temporal status unsupported")
-    if (frozen_guard.get("status") != "OPERATOR_UNVERIFIED_DRAW_TIME"
-            or guard.get("before_scheduled_draw") is not False
-            or frozen_guard.get("before_scheduled_draw") is not False
-            or guard.get("operator_selected") is not True
-            or frozen_guard.get("operator_selected") is not True
-            or active.get("operator_selected_target") is not True):
-        raise ValueError("post-result operator temporal provenance mismatch")
-    for item in (schedule, frozen_schedule):
-        if (item.get("authority") != "OPERATOR_SELECTED_TARGET"
-                or item.get("operator_selected_target") is not True
-                or int(item.get("target_contest", -1)) != int(target)
-                or item.get("target_date") is not None
-                or item.get("draw_time_independently_verified") is not False
-                or item.get("result_used") is not False):
-            raise ValueError("post-result operator temporal schedule mismatch")
-    return "OPERATOR_TIME_UNVERIFIED_AUDIT_ONLY"
+    return _integrity_validate_post_result_temporal_guard(active, freeze_doc, target)
 
 
 def _active_epoch_binding(root: Path) -> dict[str, Any] | None:
