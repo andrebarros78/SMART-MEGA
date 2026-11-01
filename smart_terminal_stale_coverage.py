@@ -5,6 +5,7 @@ coverage gate. A changed source is an observation, never proof of coverage.
 """
 from __future__ import annotations
 
+import os
 from pathlib import Path
 from typing import Any, Callable
 
@@ -105,3 +106,30 @@ def build_degraded_result_audit(
     }
     result["sha256"] = sha256_json(result)
     return result
+
+
+def run_terminal_independent_audit(
+    root: Path, binding: dict[str, Any], *,
+    target: int, audit_filename: str,
+    coverage_bindings: tuple[str, ...] | list[str],
+    invoke_independent_audit: Callable, degraded_result_audit: Callable,
+    atomic_write_json: Callable,
+) -> dict[str, Any]:
+    bindings = [root / name for name in coverage_bindings]
+    cwd = Path.cwd()
+    try:
+        os.chdir(root)
+        try:
+            report = invoke_independent_audit(
+                root, binding["ledger"], bindings, binding["data"], target, start=1000
+            )
+        except ValueError as exc:
+            if str(exc) != "coverage binding source hash mismatch":
+                raise
+            report = degraded_result_audit(root, binding, bindings)
+    finally:
+        os.chdir(cwd)
+    if report.get("status") not in {"PASS", "DEGRADED_P14_COVERAGE_STALE"}:
+        raise RuntimeError("independent audit did not pass")
+    atomic_write_json(root / audit_filename, report)
+    return report
