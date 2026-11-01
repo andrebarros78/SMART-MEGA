@@ -61,10 +61,18 @@ def verify_adjudication_lineage(
     freeze = active_freeze(ledger, target)
     if not isinstance(freeze, dict) or freeze.get("freeze_sha256") != frozen_sha256:
         return False
-    events = [row for row in ledger.get("events", [])
-              if isinstance(row, dict)
-              and row.get("event_type") == "ADJUDICATION"
-              and int(row.get("target_contest", -1)) == target]
+    # Malformed operator adjudication entries invalidate the lineage;
+    # they must not crash recovery or be ignored beside a valid entry.
+    events = []
+    for row in ledger.get("events", []):
+        if not isinstance(row, dict) or row.get("event_type") != "ADJUDICATION":
+            continue
+        try:
+            event_target = int(row.get("target_contest", -1))
+        except (TypeError, ValueError, OverflowError):
+            return False
+        if event_target == target:
+            events.append(row)
     if len(events) != 1:
         return False
     adjudication = events[0]
