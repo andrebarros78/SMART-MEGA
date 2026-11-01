@@ -71,3 +71,26 @@ def test_corrupt_adjudication_cannot_be_ignored_beside_valid_event(tmp_path):
         active_freeze=lambda ledger, target: {"freeze_sha256": "frozen"},
         read_authority=lambda root, target: pytest.fail("authority must not be read"),
     ) is False
+
+
+
+@pytest.mark.parametrize(
+    ("contest", "raw_target"),
+    [(3080, 3080.5), (3080, 3080.0), (1, True)],
+)
+def test_adjudication_target_must_be_an_integer_or_integer_text(tmp_path, contest, raw_target):
+    (tmp_path / "ledger.json").write_text("{}", encoding="utf-8")
+    assert verify_adjudication_lineage(
+        tmp_path, {"state_paths": {"ledger": "ledger.json"}},
+        contest, "frozen",
+        {"result_input_authority": "OPERATOR", "actual_numbers": [1, 2, 3, 4, 5, 6]},
+        load_ledger=lambda path: {"events": [{
+            "event_type": "ADJUDICATION", "target_contest": raw_target,
+            "freeze_sha256": "frozen", "retroactive_rewrite": False,
+            "actual_numbers": [1, 2, 3, 4, 5, 6],
+        }]},
+        active_freeze=lambda ledger, target: {"freeze_sha256": "frozen"},
+        read_authority=lambda root, target: {
+            "source": "OPERATOR", "actual_numbers": [1, 2, 3, 4, 5, 6],
+            "predictive_weight_authorized": False},
+    ) is False

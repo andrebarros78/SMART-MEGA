@@ -67,8 +67,11 @@ def verify_adjudication_lineage(
     for row in ledger.get("events", []):
         if not isinstance(row, dict) or row.get("event_type") != "ADJUDICATION":
             continue
+        raw_target = row.get("target_contest", -1)
+        if isinstance(raw_target, bool) or not isinstance(raw_target, (int, str)):
+            return False
         try:
-            event_target = int(row.get("target_contest", -1))
+            event_target = int(raw_target)
         except (TypeError, ValueError, OverflowError):
             return False
         if event_target == target:
