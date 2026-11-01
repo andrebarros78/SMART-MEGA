@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_historical_freeze import precheck_historical_freeze_evidence as _historical_freeze_precheck
 from smart_terminal_official_ingest import ensure_ingest as _official_ingest_guard
 from smart_terminal_official_ingest import ensure_adjudication as _official_adjudication_guard
 from smart_terminal_official_evidence import (
@@ -550,37 +551,14 @@ def _precheck_historical_freeze_evidence(
     allow_unverified_history: bool = False,
     current_sha256: str | None = None,
 ) -> dict[str, Any] | None:
-    """Guard current freeze; retain missing prior freezes as unverified only when scoped.
-
-    The legacy/independent proof path keeps its original strict behavior.
-    """
-    if allow_unverified_history:
-        return inspect_freeze_evidence(
-            root, ledger, TARGET, independent_audit._resolve_audit_evidence,
-            current_sha256=current_sha256,
-        )
-    targets = {TARGET}
-    targets.update(
-        int(event["target_contest"])
-        for event in ledger.get("events", [])
-        if event.get("event_type") == "ADJUDICATION"
+    """Preserve engine authority injection and both strict/scoped policies."""
+    return _historical_freeze_precheck(
+        root, ledger, target=TARGET,
+        inspect_freeze_evidence=inspect_freeze_evidence,
+        resolve_audit_evidence=independent_audit._resolve_audit_evidence,
+        allow_unverified_history=allow_unverified_history,
+        current_sha256=current_sha256,
     )
-    for event in ledger.get("events", []):
-        if event.get("event_type") != "FREEZE":
-            continue
-        contest = int(event.get("target_contest", -1))
-        if contest not in targets:
-            continue
-        try:
-            independent_audit._resolve_audit_evidence(
-                root, str(event.get("freeze_file", "")),
-                str(event.get("freeze_sha256", "")), "frozen artifact"
-            )
-        except (ValueError, OSError) as exc:
-            raise ValueError(
-                f"historical freeze evidence unavailable for contest {contest}"
-            ) from exc
-    return None
 
 
 def _unverified_history_audit(root: Path, scope: dict[str, Any]) -> dict[str, Any]:
