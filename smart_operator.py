@@ -39,6 +39,10 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_recovery_validation import (
+    select_recovery_batch as _select_recovery_batch,
+    verify_adjudication_lineage as _verify_adjudication_lineage,
+)
 from smart_operator_previous_epoch import reconcile_previous_epoch as _reconcile_previous_epoch
 from smart_operator_epoch_document import (
     epoch_artifact_paths as _epoch_artifact_paths,
@@ -942,21 +946,7 @@ def recover_cycle_operation(
     Retains all underlying result, governance, certification and pre-draw gates.
     """
     root = Path(canonical_root(root)).resolve()
-    selected_batch = None
-    if payload_file is not None:
-        incoming = Path(payload_file)
-        if incoming.is_absolute() or not incoming.parts or ".." in incoming.parts:
-            raise ValueError("recovery official batch must be project-relative")
-        candidate = root
-        for part in incoming.parts:
-            candidate = candidate / part
-            if candidate.is_symlink():
-                raise ValueError("recovery official batch symbolic link forbidden")
-        if not candidate.is_file() or not candidate.resolve().is_relative_to(root):
-            raise ValueError("recovery official batch file absent or outside repository")
-        if candidate.stat().st_size > 2 * 1024 * 1024:
-            raise ValueError("recovery official batch file exceeds size limit")
-        selected_batch = candidate
+    selected_batch = _select_recovery_batch(root, payload_file)
 
     from smart_cycle_completion import CycleHandlers, complete_to_model_card
     from smart_missed_catchup import load_official_payload_batch
@@ -1023,44 +1013,14 @@ def _verified_adjudication_recovery(
     root: Path, active: dict[str, Any], target: int,
     frozen_sha256: str, observation: dict[str, Any],
 ) -> bool:
-    """Accept a resumed *operator-only* result once, with valid immutable lineage.
-
-    A resumed sequence is NOT a fresh prospective readiness gate. Never
-    upgrade its original time/source evidence or change historical values.
-    """
+    """Verify a resumed operator-only adjudication without changing authority."""
     from smart_operator_result import _read_authority
-    paths = active.get("state_paths")
-    if not isinstance(paths, dict) or not paths.get("ledger"):
-        return False
-    path = Path(str(paths["ledger"]))
-    if path.is_absolute() or ".." in path.parts:
-        return False
-    ledger_path = root / path
-    if (not ledger_path.is_file() or ledger_path.is_symlink()
-            or not ledger_path.resolve().is_relative_to(root)):
-        return False
-    if observation.get("result_input_authority") != "OPERATOR":
-        return False
-    ledger = load_ledger(ledger_path)
-    freeze = active_freeze(ledger, target)
-    if not isinstance(freeze, dict) or freeze.get("freeze_sha256") != frozen_sha256:
-        return False
-    events = [row for row in ledger.get("events", [])
-              if isinstance(row, dict)
-              and row.get("event_type") == "ADJUDICATION"
-              and int(row.get("target_contest", -1)) == target]
-    if len(events) != 1:
-        return False
-    adjudication = events[0]
-    if (adjudication.get("freeze_sha256") != frozen_sha256
-            or adjudication.get("retroactive_rewrite") is not False
-            or adjudication.get("actual_numbers") != observation.get("actual_numbers")):
-        return False
-    authority = _read_authority(root, target)
-    return (authority.get("source") == "OPERATOR"
-            and authority.get("actual_numbers") == adjudication["actual_numbers"]
-            and authority.get("predictive_weight_authorized") is False)
-
+    return _verify_adjudication_lineage(
+        root, active, target, frozen_sha256, observation,
+        load_ledger=load_ledger,
+        active_freeze=active_freeze,
+        read_authority=_read_authority,
+    )
 
 def result_preflight_operation(root: str | Path, target: int) -> dict[str, Any]:
     """Read-only official-result readiness gate for the immutable frozen epoch.
