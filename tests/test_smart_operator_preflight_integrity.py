@@ -58,10 +58,10 @@ def _checks(root, active, *, sha=_sha, loader=_ledger):
     return active_epoch_integrity_checks(root, active, TARGET, sha256_file=sha, load_ledger=loader)
 
 
-def test_valid_active_epoch_passes_all_twelve_integrity_checks(tmp_path):
+def test_valid_active_epoch_passes_all_thirteen_integrity_checks(tmp_path):
     active = _case(tmp_path)
     checks = _checks(tmp_path, active)
-    assert len(checks) == 12
+    assert len(checks) == 13
     assert all(checks.values())
 
 
