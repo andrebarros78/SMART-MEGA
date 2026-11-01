@@ -39,6 +39,12 @@ from smart_official_result_ingest import ingest as ingest_official_result
 from smart_operator_result import register as register_operator_result
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 import smart_terminal_executor as terminal_executor
+from smart_operator_authority_transitions import (
+    reserve_document as _reserve_authority_document,
+    release_document as _release_authority_document,
+    verify_consumable_reservation as _verify_consumable_reservation,
+    consume_document as _consume_authority_document,
+)
 from smart_operator_idempotency_context import (
     authorization_payload as _operator_authorization_payload,
     prepare_payload as _operator_prepare_payload,
@@ -200,17 +206,11 @@ def _reserve_next_cycle_authority(root: Path, target: int, transaction_id: str, 
     authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
     authority = _require_next_cycle_authority(root, int(target))
     original_sha = authority["sha256"]
-    updated = dict(authority)
-    updated.setdefault("schema", NEXT_CYCLE_AUTHORITY_SCHEMA)
-    updated.setdefault("target_contest", int(target))
-    updated.update({
-        "status": "RESERVED",
-        "consumed": False,
-        "reservation_transaction_id": str(transaction_id),
-        "reserved_utc": datetime.now(timezone.utc).isoformat(),
-        "prepared_epoch_id": str(prepared_epoch_id),
-        "authority_sha256_before_reservation": original_sha,
-    })
+    updated = _reserve_authority_document(
+        authority, target, transaction_id, prepared_epoch_id,
+        schema=NEXT_CYCLE_AUTHORITY_SCHEMA,
+        utc_now=lambda: datetime.now(timezone.utc).isoformat(),
+    )
     if not authority_path.exists() and _test_identity._authorized_pytest_sandbox(root):
         return _write_operator_hashed_doc(authority_path, updated)
     return _write_operator_hashed_doc(authority_path, updated, expected_sha256=original_sha)
@@ -219,39 +219,17 @@ def _reserve_next_cycle_authority(root: Path, target: int, transaction_id: str, 
 def _release_next_cycle_authority_reservation(root: Path, target: int, transaction_id: str, *, reason: str) -> dict[str, Any]:
     authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
     authority = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
-    if authority.get("status") != "RESERVED" or authority.get("consumed") is not False:
-        raise PermissionError("next-cycle authority is not reserved")
-    if int(authority.get("target_contest", -1)) != int(target):
-        raise PermissionError("reserved authority target mismatch")
-    if authority.get("reservation_transaction_id") != str(transaction_id):
-        raise PermissionError("reserved authority transaction mismatch")
-    reservation_sha = authority["sha256"]
-    updated = dict(authority)
-    updated.update({
-        "status": "AUTHORIZED",
-        "reservation_transaction_id": None,
-        "reserved_utc": None,
-        "prepared_epoch_id": None,
-        "reservation_released_utc": datetime.now(timezone.utc).isoformat(),
-        "reservation_release_reason": str(reason),
-        "authority_sha256_before_reservation_release": reservation_sha,
-    })
-    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=reservation_sha)
+    updated = _release_authority_document(
+        authority, target, transaction_id, reason=reason,
+        utc_now=lambda: datetime.now(timezone.utc).isoformat(),
+    )
+    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=authority["sha256"])
 
 
 def _consume_reserved_next_cycle_authority(root: Path, target: int, transaction_id: str, prepared_epoch_id: str, active: dict[str, Any]) -> dict[str, Any]:
     authority_path = root / NEXT_CYCLE_AUTHORITY_PATH
     authority = _load_operator_hashed_doc(authority_path, NEXT_CYCLE_AUTHORITY_SCHEMA)
-    if authority.get("status") != "RESERVED" or authority.get("consumed") is not False:
-        raise PermissionError("next-cycle authority is not reserved for prepare")
-    if int(authority.get("target_contest", -1)) != int(target):
-        raise PermissionError("reserved authority target mismatch")
-    if authority.get("reservation_transaction_id") != str(transaction_id):
-        raise PermissionError("reserved authority transaction mismatch")
-    if authority.get("prepared_epoch_id") != str(prepared_epoch_id):
-        raise PermissionError("reserved authority epoch mismatch")
-    if int(active.get("target_contest", -1)) != int(target) or active.get("epoch_id") != str(prepared_epoch_id):
-        raise PermissionError("active epoch does not prove reserved authority materialization")
+    _verify_consumable_reservation(authority, target, transaction_id, prepared_epoch_id, active)
     active_path = root / ACTIVE_PATH
     if _test_identity._authorized_pytest_sandbox(root):
         active = dict(active)
@@ -260,18 +238,11 @@ def _consume_reserved_next_cycle_authority(root: Path, target: int, transaction_
         verified_active = verify_active_epoch(active_path)
         if verified_active.get("sha256") != active.get("sha256"):
             raise PermissionError("active epoch verification changed before authority consumption")
-    reservation_sha = authority["sha256"]
-    updated = dict(authority)
-    updated.update({
-        "status": "CONSUMED",
-        "consumed": True,
-        "consumed_utc": datetime.now(timezone.utc).isoformat(),
-        "consumption_transaction_id": str(transaction_id),
-        "prepared_epoch_id": str(prepared_epoch_id),
-        "active_epoch_sha256_at_consumption": active["sha256"],
-        "authority_sha256_before_consumption": reservation_sha,
-    })
-    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=reservation_sha)
+    updated = _consume_authority_document(
+        authority, transaction_id, prepared_epoch_id, active,
+        utc_now=lambda: datetime.now(timezone.utc).isoformat(),
+    )
+    return _write_operator_hashed_doc(authority_path, updated, expected_sha256=authority["sha256"])
 
 
 
