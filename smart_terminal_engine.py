@@ -31,6 +31,11 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_official_evidence import (
+    ensure_primary_payload as _official_ensure_primary,
+    ensure_monotonic_consensus as _official_ensure_consensus,
+    load_existing_official_evidence as _official_load_existing,
+)
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_sequential_learning import ensure_learning_and_sequence as _ensure_terminal_sequence
 from smart_terminal_stale_coverage import run_terminal_independent_audit as _run_stale_independent_audit
@@ -168,15 +173,11 @@ def _payload_from_normalized(normalized: dict[str, Any]) -> dict[str, Any]:
 
 
 def _ensure_primary_payload(root: Path, payload: dict[str, Any]) -> dict[str, Any]:
-    path = root / PRIMARY_PAYLOAD
-    normalized = _normalized_primary(payload)
-    if path.exists():
-        existing = _read_json(path)
-        if _normalized_primary(existing) != normalized:
-            raise ValueError("official primary payload conflicts with immutable first observation")
-        return existing
-    _atomic_write_json(path, payload)
-    return payload
+    return _official_ensure_primary(
+        root, payload, primary_payload_file=PRIMARY_PAYLOAD,
+        normalize_primary=_normalized_primary, read_json=_read_json,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def _consensus_rank(document: dict[str, Any]) -> int:
@@ -184,44 +185,18 @@ def _consensus_rank(document: dict[str, Any]) -> int:
 
 
 def _ensure_monotonic_consensus(root: Path, document: dict[str, Any]) -> dict[str, Any]:
-    if int(document.get("target_contest", -1)) != TARGET:
-        raise ValueError("official consensus target mismatch")
-    primary = document.get("primary", {})
-    if primary.get("validated") is not True:
-        raise ValueError("official consensus primary channel is not validated")
-    path = root / CONSENSUS_FILE
-    if not path.exists():
-        _atomic_write_json(path, document)
-        return document
-    existing = _read_json(path)
-    if (
-        existing.get("primary", {}).get("numbers") != primary.get("numbers")
-        or existing.get("primary", {}).get("draw_date") != primary.get("draw_date")
-    ):
-        raise ValueError("official consensus primary observation changed")
-    if _consensus_rank(document) < _consensus_rank(existing):
-        return existing
-    if _consensus_rank(document) == _consensus_rank(existing) and document.get("status") == existing.get("status"):
-        return existing
-    _atomic_write_json(path, document)
-    return document
+    return _official_ensure_consensus(
+        root, document, target=TARGET, consensus_file=CONSENSUS_FILE,
+        consensus_rank=_consensus_rank, read_json=_read_json,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def _load_existing_official_evidence(root: Path) -> tuple[dict[str, Any], dict[str, Any]] | None:
-    payload_path = root / PRIMARY_PAYLOAD
-    consensus_path = root / CONSENSUS_FILE
-    if not payload_path.exists() and not consensus_path.exists():
-        return None
-    if not payload_path.exists() or not consensus_path.exists():
-        raise ValueError("official evidence is partially present")
-    payload = _read_json(payload_path)
-    consensus = _read_json(consensus_path)
-    normalized = _normalized_primary(payload)
-    if consensus.get("primary", {}).get("numbers") != normalized["numbers"]:
-        raise ValueError("stored official payload and consensus disagree")
-    if consensus.get("primary", {}).get("draw_date") != normalized["draw_date"]:
-        raise ValueError("stored official payload and consensus date disagree")
-    return payload, consensus
+    return _official_load_existing(
+        root, primary_payload_file=PRIMARY_PAYLOAD, consensus_file=CONSENSUS_FILE,
+        normalize_primary=_normalized_primary, read_json=_read_json,
+    )
 
 
 def _ensure_ingest(root: Path, payload: dict[str, Any], binding: dict[str, Any] | None = None) -> dict[str, Any]:
