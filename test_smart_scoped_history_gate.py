@@ -106,7 +106,15 @@ class TestScopedHistoricalFreezeGate(unittest.TestCase):
         self.assertIn("_unverified_history_audit", functions)
         self.assertIn("_precheck_historical_freeze_evidence", functions)
         execute_source = ast.get_source_segment(source, functions["execute"])
-        self.assertIn('allow_unverified_history=binding.get("mode")', execute_source)
+        gate_file = Path(__file__).resolve().with_name("smart_terminal_execution_preflight.py").read_text(encoding="utf-8")
+        gate_functions = {node.name: node for node in ast.parse(gate_file).body
+                          if isinstance(node, ast.FunctionDef)}
+        self.assertIn("validate_execution_preflight", gate_functions)
+        gate_source = ast.get_source_segment(gate_file, gate_functions["validate_execution_preflight"])
+        self.assertIn('allow_unverified_history=binding.get("mode")', gate_source)
+        self.assertIn("_execute_preflight_validate(", execute_source)
+        self.assertLess(execute_source.index("_execute_preflight_validate"),
+                        execute_source.index("_load_existing_official_evidence"))
         self.assertIn("_unverified_history_audit(root, scoped)", execute_source)
         self.assertIn("_ensure_learning_and_sequence(root, binding=binding)", execute_source)
         self.assertIn("history_advance.advance_completed_epoch", execute_source)
