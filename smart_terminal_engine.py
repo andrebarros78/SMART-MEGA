@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_stale_coverage import run_terminal_independent_audit as _run_stale_independent_audit
 from smart_terminal_stale_coverage import build_degraded_result_audit as _build_degraded_result_audit
 from smart_terminal_stale_coverage import verified_stale_coverage_observations as _resolve_stale_coverage_observations
 from smart_terminal_runtime_binding import resolve_runtime_binding as _resolve_terminal_runtime_binding
@@ -421,25 +422,15 @@ def _degraded_result_audit(root: Path, binding: dict[str, Any],
 
 
 def _run_independent_audit(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Keep terminal evidence callbacks patchable at the engine boundary."""
     binding = binding or _runtime_binding(root)
-    bindings = [root / name for name in COVERAGE_BINDINGS]
-    cwd = Path.cwd()
-    try:
-        os.chdir(root)
-        try:
-            report = independent_audit.run_independent_audit(
-                root, binding["ledger"], bindings, binding["data"], TARGET, start=1000
-            )
-        except ValueError as exc:
-            if str(exc) != "coverage binding source hash mismatch":
-                raise
-            report = _degraded_result_audit(root, binding, bindings)
-    finally:
-        os.chdir(cwd)
-    if report.get("status") not in {"PASS", "DEGRADED_P14_COVERAGE_STALE"}:
-        raise RuntimeError("independent audit did not pass")
-    _atomic_write_json(root / INDEPENDENT_AUDIT_FILE, report)
-    return report
+    return _run_stale_independent_audit(
+        root, binding, target=TARGET, audit_filename=INDEPENDENT_AUDIT_FILE,
+        coverage_bindings=COVERAGE_BINDINGS,
+        invoke_independent_audit=independent_audit.run_independent_audit,
+        degraded_result_audit=_degraded_result_audit,
+        atomic_write_json=_atomic_write_json,
+    )
 
 
 def _draw_map(path: Path) -> dict[int, tuple[int, ...]]:
