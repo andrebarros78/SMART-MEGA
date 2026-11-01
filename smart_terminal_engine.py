@@ -31,6 +31,7 @@ from smart_signal_agent import SmartSignalAgent
 from smart_v2_engine import load_draws
 from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
+from smart_terminal_sequential_learning import ensure_learning_and_sequence as _ensure_terminal_sequence
 from smart_terminal_stale_coverage import run_terminal_independent_audit as _run_stale_independent_audit
 from smart_terminal_stale_coverage import build_degraded_result_audit as _build_degraded_result_audit
 from smart_terminal_stale_coverage import verified_stale_coverage_observations as _resolve_stale_coverage_observations
@@ -371,27 +372,16 @@ def _ensure_learned_state(root: Path, binding: dict[str, Any] | None = None) -> 
 
 
 def _ensure_learning_and_sequence(root: Path, binding: dict[str, Any] | None = None) -> dict[str, Any]:
+    """Retain the terminal-engine authoritative dependencies and API."""
     binding = binding or _runtime_binding(root)
-    ledger_path = binding["ledger"]
-    learned_path = binding["learned"]
-    ledger = champion_challenger.load_ledger(ledger_path)
-    learning = _target_events(ledger, sequential.LEARNING_EVENT)
-    proofs = _target_events(ledger, sequential.PROOF_EVENT)
-    if len(learning) > 1 or len(proofs) > 1:
-        raise ValueError("duplicate target learning/proof events are forbidden")
-    if not learning:
-        sequential.append_learning_update(ledger_path, TARGET, learned_path, root / RESULT_DATA)
-    ledger = champion_challenger.load_ledger(ledger_path)
-    proofs = _target_events(ledger, sequential.PROOF_EVENT)
-    if not proofs:
-        sequential.append_sequence_proof(ledger_path, TARGET)
-    ledger = champion_challenger.load_ledger(ledger_path)
-    validation = sequential.validate_target_sequence(
-        ledger, TARGET, require_learning=True, require_proof=True, verify_files=True, root=root
+    return _ensure_terminal_sequence(
+        root, binding, target=TARGET, result_data=RESULT_DATA,
+        learning_event=sequential.LEARNING_EVENT, proof_event=sequential.PROOF_EVENT,
+        load_ledger=champion_challenger.load_ledger, target_events=_target_events,
+        append_learning_update=sequential.append_learning_update,
+        append_sequence_proof=sequential.append_sequence_proof,
+        validate_target_sequence=sequential.validate_target_sequence,
     )
-    if validation.get("valid") is not True:
-        raise RuntimeError("target sequential proof validation failed")
-    return validation
 
 
 def _verified_stale_coverage_observations(root: Path, bindings: list[Path]) -> list[dict[str, Any]]:
