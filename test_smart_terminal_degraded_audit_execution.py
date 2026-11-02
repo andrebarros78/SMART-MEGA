@@ -9,6 +9,8 @@ from pathlib import Path
 from types import SimpleNamespace
 from typing import Any
 
+from smart_terminal_evidence_guard import evaluate_verified_terminal_evidence
+
 
 class TestTerminalIncompleteAuditExecution(unittest.TestCase):
     def check(self, pair_count, *, actual=None):
@@ -33,6 +35,8 @@ class TestTerminalIncompleteAuditExecution(unittest.TestCase):
         fn = next(x for x in ast.parse(source).body if isinstance(x, ast.FunctionDef)
                   and x.name == "evaluate_terminal_rule")
         variables = dict(Path=Path, Any=Any, TARGET=3071, CUTOFF=3070,
+                         _evaluate_verified_terminal_evidence=evaluate_verified_terminal_evidence,
+                         _runtime_binding=lambda _root: (_ for _ in ()).throw(AssertionError("explicit evidence binding must be preserved")),
                          champion_challenger=SimpleNamespace(active_freeze=lambda _ledger, _target: ledger["events"][0]),
                          sha256_file=lambda p: hashlib.sha256(Path(p).read_bytes()).hexdigest(),
                          _read_json=lambda p: json.loads(Path(p).read_text(encoding="utf-8")),

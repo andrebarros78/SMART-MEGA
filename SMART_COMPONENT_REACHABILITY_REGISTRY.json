@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "3ba6f62f69d3b355093a89ebcc482db6c42f4a187ad02ee763c33e88e2e81474",
+  "inventory_sha256": "2ead0770efd947c9f21ad4d46f1b0d7c63e5594090a65cf7d7761b91e36aae61",
   "summary": {
-    "python_components": 622,
+    "python_components": 623,
     "workflow_entrypoints": 11,
     "production_components": 145,
     "shadow_components": 1,
     "diagnostic_components": 28,
     "validation_components": 23,
-    "test_components": 249,
+    "test_components": 250,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -5089,7 +5089,8 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_operator",
-        "test_smart_contingency_card"
+        "test_smart_contingency_card",
+        "tests.test_smart_operator_critical_coverage_closure"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -7138,6 +7139,7 @@
         "test_smart_postresult_preflight_resume",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch",
+        "tests.test_smart_operator_critical_coverage_closure",
         "tests.test_smart_operator_failure_boundaries_20261021",
         "tests.test_smart_operator_recovery_rollback_20261021"
       ],
@@ -9373,6 +9375,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_terminal_engine",
+        "test_smart_terminal_degraded_audit_execution",
         "tests.test_smart_terminal_evidence_guard"
       ],
       "reachable": true,
@@ -14138,7 +14141,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "9c21eb611185b72e7e9b0608c5034d4d8306dab993ed701c206f3ff4782a8836"
+      "sha256": "8a66de3c2222bf19f1f31aeac87bde047d75d804617605216a8ee364c2cb0dd8"
     },
     {
       "component_id": "test_smart_sequential_prospective_proof",
@@ -14474,7 +14477,9 @@
       "role": "TEST",
       "classification_reason": "test namespace",
       "entrypoints": [],
-      "producers": [],
+      "producers": [
+        "smart_terminal_evidence_guard"
+      ],
       "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
@@ -14485,7 +14490,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "7879b67df9ef0b5a001b198a6d338250f671048b71cb0406e636726abd1ba4c9"
+      "sha256": "5f7385b524e19d4ff9b930324b13bd85669408cc4d9dd0debee5aafdb06cc77f"
     },
     {
       "component_id": "test_smart_terminal_executor_active_epoch",
@@ -14777,6 +14782,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "24218b174935e9de3a1fd8ca8d1faef93f8771d24932edb19e657d659329df35"
+    },
+    {
+      "component_id": "tests.test_smart_operator_critical_coverage_closure",
+      "source_file": "tests/test_smart_operator_critical_coverage_closure.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_contingency_card",
+        "smart_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "20f64893e2e533d353610fa2c0684111c36ae997a2b7b3d0d3e1e4fd60d3636f"
     },
     {
       "component_id": "tests.test_smart_operator_epoch_document",
