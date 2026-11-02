@@ -64,7 +64,7 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "3ba6f62f69d3b355093a89ebcc482db6c42f4a187ad02ee763c33e88e2e81474",
+  "inventory_sha256": "2c38389f458cd49545013be8350e0494f643635ebb71c42fe9ba80343d9bc254",
   "summary": {
     "python_components": 622,
     "workflow_entrypoints": 11,
@@ -9373,6 +9373,7 @@
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_terminal_engine",
+        "test_smart_terminal_degraded_audit_execution",
         "tests.test_smart_terminal_evidence_guard"
       ],
       "reachable": true,
@@ -14138,7 +14139,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "9c21eb611185b72e7e9b0608c5034d4d8306dab993ed701c206f3ff4782a8836"
+      "sha256": "8a66de3c2222bf19f1f31aeac87bde047d75d804617605216a8ee364c2cb0dd8"
     },
     {
       "component_id": "test_smart_sequential_prospective_proof",
@@ -14474,7 +14475,9 @@
       "role": "TEST",
       "classification_reason": "test namespace",
       "entrypoints": [],
-      "producers": [],
+      "producers": [
+        "smart_terminal_evidence_guard"
+      ],
       "declared_execution_dependencies": [],
       "consumers": [],
       "reachable": false,
@@ -14485,7 +14488,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "7879b67df9ef0b5a001b198a6d338250f671048b71cb0406e636726abd1ba4c9"
+      "sha256": "5f7385b524e19d4ff9b930324b13bd85669408cc4d9dd0debee5aafdb06cc77f"
     },
     {
       "component_id": "test_smart_terminal_executor_active_epoch",
