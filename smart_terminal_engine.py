@@ -48,6 +48,7 @@ from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_nam
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
+from smart_terminal_post_result import finalize_terminal_result as _finalize_terminal_result
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
 from smart_terminal_learned_state import (
@@ -451,24 +452,21 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
         root, binding, epoch_advance=history_advance.advance_completed_epoch,
         canonical_advance=_advance_canonical_result_store,
     )
-    ledger = champion_challenger.load_ledger(binding["ledger"])
-    consensus = _read_json(root / CONSENSUS_FILE)
-    evaluation = evaluate_terminal_rule(root, ledger, consensus, audit, sequence_validation, binding=binding)
-
-    mission = load_mission_status(root / "SMART_MISSION_STATUS.json", root=root)
-    if evaluation["eligible_for_mission_proven"] and allow_terminal_write:
-        mission = _promote_terminal_mission(root, evaluation, consensus, audit, sequence_validation, binding=binding)
-
-    status = _build_terminal_execution_status(
-        schema=SCHEMA, target=TARGET,
-        created_at_utc=datetime.now(timezone.utc).isoformat(),
-        normalized=normalized, consensus=consensus, ingest=ingest,
+    return _finalize_terminal_result(
+        root, binding, normalized=normalized, ingest=ingest,
         adjudication=adjudication, learned=learned,
         sequence_validation=sequence_validation, audit=audit,
-        result_store=result_store, evaluation=evaluation, mission=mission,
+        result_store=result_store, schema=SCHEMA, target=TARGET,
+        status_file=STATUS_FILE, consensus_file=CONSENSUS_FILE,
+        allow_terminal_write=allow_terminal_write,
+        load_ledger=champion_challenger.load_ledger, read_json=_read_json,
+        evaluate_terminal_rule=evaluate_terminal_rule,
+        load_mission_status=load_mission_status,
+        promote_terminal_mission=_promote_terminal_mission,
+        build_terminal_execution_status=_build_terminal_execution_status,
+        atomic_write_json=_atomic_write_json,
+        current_time_utc=lambda: datetime.now(timezone.utc).isoformat(),
     )
-    _atomic_write_json(root / STATUS_FILE, status)
-    return status
 
 
 @contextmanager
