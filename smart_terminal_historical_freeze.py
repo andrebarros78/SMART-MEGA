@@ -78,3 +78,12 @@ def write_unverified_history_audit(
     }
     atomic_write_json(root / independent_audit_file, result)
     return result
+
+def select_terminal_audit(
+    root: Path, scoped: dict[str, Any] | None, binding: dict[str, Any], *,
+    independent_audit: Callable, unverified_audit: Callable,
+) -> dict[str, Any]:
+    """Preserve strict independent auditing unless historical gaps require a nonpromotable report."""
+    if scoped is not None and scoped["unverified_contests"]:
+        return unverified_audit(root, scoped)
+    return independent_audit(root, binding=binding)

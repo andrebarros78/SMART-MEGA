@@ -33,6 +33,7 @@ from smart_prospective_authority_lock import verify_lock
 from smart_scoped_history_gate import inspect_freeze_evidence
 from smart_terminal_historical_freeze import write_unverified_history_audit as _historical_write_unverified_audit
 from smart_terminal_historical_freeze import precheck_historical_freeze_evidence as _historical_freeze_precheck
+from smart_terminal_historical_freeze import select_terminal_audit as _select_terminal_audit
 from smart_terminal_official_ingest import ensure_ingest as _official_ingest_guard
 from smart_terminal_official_ingest import ensure_adjudication as _official_adjudication_guard
 from smart_terminal_official_evidence import (
@@ -440,10 +441,10 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
     adjudication = _ensure_adjudication(root, normalized["numbers"], binding=binding)
     learned = _ensure_learned_state(root, binding=binding)
     sequence_validation = _ensure_learning_and_sequence(root, binding=binding)
-    audit = (
-        _unverified_history_audit(root, scoped)
-        if scoped is not None and scoped["unverified_contests"]
-        else _run_independent_audit(root, binding=binding)
+    audit = _select_terminal_audit(
+        root, scoped, binding,
+        independent_audit=_run_independent_audit,
+        unverified_audit=_unverified_history_audit,
     )
     result_store = history_advance.advance_completed_epoch(root, binding["active"]) if binding.get("mode") == "ACTIVE_EPOCH" else _advance_canonical_result_store(root)
     ledger = champion_challenger.load_ledger(binding["ledger"])
