@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "9e7a94f101bdf8969e5f71259166f53f3258f6d507dca0f4b704a074ac64255d",
+  "source_reachability_inventory_sha256": "3ba6f62f69d3b355093a89ebcc482db6c42f4a187ad02ee763c33e88e2e81474",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 621,
+    "component_count": 622,
     "active": 145,
     "shadow": 1,
-    "diagnostic": 275,
+    "diagnostic": 276,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -8797,11 +8797,13 @@
       "component_id": "smart_release_attestation",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_release_attestation.py",
-      "implementation_sha256": "897af13a06dbf701997312c27cd4882c1cea5d0a221fde86f28fe6108acdd441",
+      "implementation_sha256": "91dfef9f9f14efee00e611dad563574b63f5022ee8ecf57aaafdef28e31ae8b4",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [],
-      "consumers": [],
+      "consumers": [
+        "tests.test_smart_release_attestation_refactor_closure"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -16002,6 +16004,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_release_attestation_refactor_closure",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_release_attestation_refactor_closure.py",
+      "implementation_sha256": "c0e16731720b2f601eb9d83af91292a26dd94f083a88e61f7eea88bb029cc7fd",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_release_attestation"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_smart_terminal_active_epoch_binding",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_terminal_active_epoch_binding.py",
@@ -16769,5 +16794,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "3552974f35762c055284c07ad7c6a76366029b6ed3e53f9658869036505dad0e"
+  "registry_sha256": "2b9296214c83b4e7695957ba6147d0a3c3d923e711df49e5f0669654c954cb9d"
 }

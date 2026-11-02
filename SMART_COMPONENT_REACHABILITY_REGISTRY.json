@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "9e7a94f101bdf8969e5f71259166f53f3258f6d507dca0f4b704a074ac64255d",
+  "inventory_sha256": "3ba6f62f69d3b355093a89ebcc482db6c42f4a187ad02ee763c33e88e2e81474",
   "summary": {
-    "python_components": 621,
+    "python_components": 622,
     "workflow_entrypoints": 11,
     "production_components": 145,
     "shadow_components": 1,
     "diagnostic_components": 28,
     "validation_components": 23,
-    "test_components": 248,
+    "test_components": 249,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -8316,7 +8316,9 @@
       "entrypoints": [],
       "producers": [],
       "declared_execution_dependencies": [],
-      "consumers": [],
+      "consumers": [
+        "tests.test_smart_release_attestation_refactor_closure"
+      ],
       "reachable": false,
       "production_reachable": false,
       "runtime_executed": null,
@@ -8325,7 +8327,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "897af13a06dbf701997312c27cd4882c1cea5d0a221fde86f28fe6108acdd441"
+      "sha256": "91dfef9f9f14efee00e611dad563574b63f5022ee8ecf57aaafdef28e31ae8b4"
     },
     {
       "component_id": "smart_repository_integrity",
@@ -14975,6 +14977,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "c1ccd6c801b1ef4cdc6d2352c22c86762c8c66cceaccd3005e7ad2c6843b8248"
+    },
+    {
+      "component_id": "tests.test_smart_release_attestation_refactor_closure",
+      "source_file": "tests/test_smart_release_attestation_refactor_closure.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_release_attestation"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "c0e16731720b2f601eb9d83af91292a26dd94f083a88e61f7eea88bb029cc7fd"
     },
     {
       "component_id": "tests.test_smart_terminal_active_epoch_binding",

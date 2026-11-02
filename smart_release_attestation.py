@@ -4,6 +4,7 @@ import hashlib
 import json
 import socket
 import subprocess
+import shutil
 from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
@@ -29,8 +30,13 @@ def _sha(path: Path) -> str:
 
 
 def _git(root: Path, *args: str) -> str:
-    git = Path(r"C:\Progra~1\Git\cmd\git.exe")
-    return subprocess.check_output([str(git), *args], cwd=root, text=True).strip()
+    git = shutil.which("git")
+    if git is None:
+        historical_windows_git = Path(r"C:\Progra~1\Git\cmd\git.exe")
+        if not historical_windows_git.is_file():
+            raise FileNotFoundError("Git executable unavailable for attestation")
+        git = str(historical_windows_git)
+    return subprocess.check_output([git, *args], cwd=root, text=True).strip()
 
 
 def build(root: str | Path) -> dict[str, Any]:
@@ -68,7 +74,7 @@ def verify(root: str | Path, doc: dict[str, Any]) -> dict[str, Any]:
     raw = json.dumps(comparable, ensure_ascii=False, sort_keys=True, separators=(",", ":")).encode("utf-8")
     if observed != hashlib.sha256(raw).hexdigest():
         raise RuntimeError("release attestation self-hash mismatch")
-    for field in ("host", "root", "version", "git_head", "dataset_sha256", "critical_code_manifest_sha256", "authority_hashes"):
+    for field in ("host", "root", "version", "git_head", "git_branch", "git_status_porcelain", "dataset_sha256", "critical_code_manifest_sha256", "authority_hashes"):
         if doc.get(field) != current.get(field):
             raise RuntimeError(f"release attestation stale: {field}")
     return doc
