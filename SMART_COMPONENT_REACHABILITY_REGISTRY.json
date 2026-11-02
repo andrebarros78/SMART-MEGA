@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "0fac0d2c014ec0b7d45fa3f8949c2395d8847686cadd4512d0613b1d82fee814",
+  "inventory_sha256": "3cccd8281719571a247ce7aaf40427ee038e638fb896c92e8057f9f9266d60da",
   "summary": {
-    "python_components": 617,
+    "python_components": 619,
     "workflow_entrypoints": 11,
-    "production_components": 143,
+    "production_components": 144,
     "shadow_components": 1,
     "diagnostic_components": 28,
     "validation_components": 23,
-    "test_components": 246,
+    "test_components": 247,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -9493,6 +9493,31 @@
       "sha256": "05260a12da58f206f2310d239fa367de8283fc5c87c3485b81f804d0c58a60c2"
     },
     {
+      "component_id": "smart_terminal_idempotency",
+      "source_file": "smart_terminal_idempotency.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_fast_result_ingest",
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_terminal_official_ingest",
+        "tests.test_smart_terminal_idempotency_replay"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "83d9a1e58a0111f01c074d47fea7a6e058ffa8ffcb38d72ef063d119bea91c1d"
+    },
+    {
       "component_id": "smart_terminal_integrity",
       "source_file": "smart_terminal_integrity.py",
       "role": "PRODUCTION",
@@ -9603,7 +9628,9 @@
         "smart_fast_result_ingest",
         "smart_github_operator"
       ],
-      "producers": [],
+      "producers": [
+        "smart_terminal_idempotency"
+      ],
       "declared_execution_dependencies": [],
       "consumers": [
         "smart_terminal_engine",
@@ -9617,7 +9644,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "7b7fe0ab15550c33f5cec6abebf494429349790423a4ea6fc646c541a20c6af2"
+      "sha256": "45b01032f46f35b71d645eaca26bce45df56a617efe02f73c24ccd09d398d672"
     },
     {
       "component_id": "smart_terminal_post_result",
@@ -15133,6 +15160,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "4f00d47a86fdefcdbc7688f609fb29c16688619e9d6b50f2b2e0a163076a7243"
+    },
+    {
+      "component_id": "tests.test_smart_terminal_idempotency_replay",
+      "source_file": "tests/test_smart_terminal_idempotency_replay.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_terminal_idempotency"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "3bbc38e5bf8c2ba3f224462fcfebfdccac2b56931f30355fe37dcf0c794bda1c"
     },
     {
       "component_id": "tests.test_smart_terminal_independent_audit_runner",

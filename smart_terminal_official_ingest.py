@@ -9,6 +9,10 @@ import os
 from pathlib import Path
 from typing import Any, Callable
 
+from smart_terminal_idempotency import (
+    verified_existing_ingest, replay_existing_adjudication,
+)
+
 
 def ensure_ingest(
     root: Path, payload: dict[str, Any], binding: dict[str, Any] | None = None, *,
@@ -20,18 +24,12 @@ def ensure_ingest(
     output = root / result_data
     proof_path = root / ingest_proof
     normalized = normalize_primary(payload)
-    if output.exists() or proof_path.exists():
-        if not output.exists() or not proof_path.exists():
-            raise ValueError("official result ingest is partially present")
-        proof = read_json(proof_path)
-        if int(proof.get("target_contest", -1)) != target or proof.get("actual_numbers") != normalized["numbers"]:
-            raise ValueError("existing official ingest proof conflicts with official result")
-        if proof.get("output_sha256") != sha256_file(output):
-            raise ValueError("existing official ingest output hash mismatch")
-        _, contests = load_draws(output)
-        if int(contests[-1]) != target:
-            raise ValueError("existing official ingest output does not end at target")
-        return proof
+    existing = verified_existing_ingest(
+        output, proof_path, normalized, target=target,
+        read_json=read_json, sha256_file=sha256_file, load_draws=load_draws,
+    )
+    if existing is not None:
+        return existing
     binding = binding or runtime_binding(root)
     source = binding["data"]
     if contest_max(source) != cutoff:
@@ -49,22 +47,11 @@ def ensure_adjudication(
     expected_freeze_sha256 = binding["freeze_sha256"]
     ledger = load_ledger(ledger_path)
     existing = target_events(ledger, "ADJUDICATION")
-    if len(existing) > 1:
-        raise ValueError("multiple 3054 adjudications are forbidden")
-    if existing:
-        event = existing[0]
-        if sorted(int(x) for x in event.get("actual_numbers", [])) != sorted(actual_numbers):
-            raise ValueError("existing 3054 adjudication conflicts with official result")
-        if event.get("freeze_sha256") != expected_freeze_sha256:
-            raise ValueError("existing adjudication references a freeze outside the active epoch")
-        return {
-            "status": "ALREADY_ADJUDICATED_EVENT_PRESERVED",
-            "target_contest": target,
-            "actual_numbers": event["actual_numbers"],
-            "champion_hits": int(event["champion_hits"]),
-            "challenger_hits": int(event["challenger_hits"]),
-            "e_value_after": float(event["e_value_after"]),
-        }
+    previous = replay_existing_adjudication(
+        existing, actual_numbers, expected_freeze_sha256, target,
+    )
+    if previous is not None:
+        return previous
     cwd = Path.cwd()
     try:
         os.chdir(root)
