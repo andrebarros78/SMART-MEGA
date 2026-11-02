@@ -46,6 +46,7 @@ from smart_terminal_result_store import advance_canonical_result_store as _store
 from smart_terminal_result_store import dispatch_result_store as _dispatch_result_store
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
 from smart_terminal_epoch_context import scoped_epoch_globals as _scoped_epoch_globals
+from smart_terminal_epoch_context import authorize_epoch_runtime as _authorize_epoch_runtime
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
@@ -463,11 +464,11 @@ def active_epoch_context(root: str | Path, target: int):
     global CONSENSUS_FILE, LEARNED_STATE, RESULT_STORE_PROOF, TERMINAL_PROOF, STATUS_FILE, INDEPENDENT_AUDIT_FILE
     root = Path(root).resolve()
     with _ACTIVE_CONTEXT_LOCK:
-        active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
-        selected = int(active.get("target_contest", -1))
-        if int(target) != selected:
-            raise ValueError("requested terminal target differs from active epoch")
-        overrides = _epoch_runtime_names(active, selected)
+        active, overrides = _authorize_epoch_runtime(
+            root, target,
+            verify_active_epoch=verify_active_epoch,
+            derive_runtime_names=_epoch_runtime_names,
+        )
         with _scoped_epoch_globals(globals(), overrides):
             yield active
 
