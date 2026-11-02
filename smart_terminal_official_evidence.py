@@ -72,3 +72,33 @@ def load_existing_official_evidence(
     if consensus.get("primary", {}).get("draw_date") != normalized["draw_date"]:
         raise ValueError("stored official payload and consensus date disagree")
     return payload, consensus
+
+
+def acquire_official_result(
+    root: Path, fetcher: Callable, adjudications: list[dict[str, Any]], *,
+    target: int, schema: str, load_existing: Callable,
+    ensure_primary: Callable, ensure_consensus: Callable,
+) -> tuple[dict[str, Any] | None, dict[str, Any] | None, dict[str, Any] | None]:
+    existing = load_existing(root)
+    try:
+        fresh_payload, fresh_consensus = fetcher(target)
+    except Exception as exc:
+        if existing is None and not adjudications:
+            return None, None, {
+                "schema": schema,
+                "target_contest": target,
+                "status": "WAITING_OFFICIAL_RESULT",
+                "preflight_status": "PASS",
+                "official_result_available": False,
+                "canonical_writes_performed": False,
+                "error_type": type(exc).__name__,
+                "terminal_6of6_proven": False,
+            }
+        if existing is None:
+            raise
+        payload, consensus = existing
+    else:
+        payload = ensure_primary(root, fresh_payload)
+        consensus = ensure_consensus(root, fresh_consensus)
+
+    return payload, consensus, None

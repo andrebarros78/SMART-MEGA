@@ -39,6 +39,7 @@ from smart_terminal_official_evidence import (
     ensure_primary_payload as _official_ensure_primary,
     ensure_monotonic_consensus as _official_ensure_consensus,
     load_existing_official_evidence as _official_load_existing,
+    acquire_official_result as _official_acquire_result,
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
@@ -429,27 +430,14 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
         historical_precheck=_precheck_historical_freeze_evidence,
         preflight_readiness=_preflight_readiness,
     )
-    existing = _load_existing_official_evidence(root)
-    try:
-        fresh_payload, fresh_consensus = fetcher(TARGET)
-    except Exception as exc:
-        if existing is None and not adjudications:
-            return {
-                "schema": SCHEMA,
-                "target_contest": TARGET,
-                "status": "WAITING_OFFICIAL_RESULT",
-                "preflight_status": "PASS",
-                "official_result_available": False,
-                "canonical_writes_performed": False,
-                "error_type": type(exc).__name__,
-                "terminal_6of6_proven": False,
-            }
-        if existing is None:
-            raise
-        payload, consensus = existing
-    else:
-        payload = _ensure_primary_payload(root, fresh_payload)
-        consensus = _ensure_monotonic_consensus(root, fresh_consensus)
+    payload, consensus, waiting = _official_acquire_result(
+        root, fetcher, adjudications, target=TARGET, schema=SCHEMA,
+        load_existing=_load_existing_official_evidence,
+        ensure_primary=_ensure_primary_payload,
+        ensure_consensus=_ensure_monotonic_consensus,
+    )
+    if waiting is not None:
+        return waiting
 
     normalized = _normalized_primary(payload)
     ingest = _ensure_ingest(root, payload, binding=binding)
