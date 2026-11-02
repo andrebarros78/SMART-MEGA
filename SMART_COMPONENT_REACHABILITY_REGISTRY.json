@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "9f81bbb64d3f2cc5ec8b83ed1359485113dcb59ccf4f90d72f66161d88b535d4",
+  "inventory_sha256": "1e8e84f530f407c5450413774d150540ec217ec046f5ee111fd1115598ae0d47",
   "summary": {
-    "python_components": 613,
+    "python_components": 615,
     "workflow_entrypoints": 11,
-    "production_components": 142,
+    "production_components": 143,
     "shadow_components": 1,
     "diagnostic_components": 28,
     "validation_components": 23,
-    "test_components": 243,
+    "test_components": 244,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -9237,6 +9237,7 @@
         "smart_signal_agent",
         "smart_source_identity",
         "smart_terminal_active_epoch",
+        "smart_terminal_epoch_context",
         "smart_terminal_epoch_names",
         "smart_terminal_evaluation",
         "smart_terminal_evidence_guard",
@@ -9278,7 +9279,32 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "99dbc8d54d65a61fe54dc8c24806c9fb64dfd7ae35ac1d7d2b07e8fbe755d217"
+      "sha256": "8aab1ac2c90a0ba8af53a3616634fafc8b794d936ff57d3ac1573e45d64333d3"
+    },
+    {
+      "component_id": "smart_terminal_epoch_context",
+      "source_file": "smart_terminal_epoch_context.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_fast_result_ingest",
+        "smart_github_operator"
+      ],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_terminal_engine",
+        "tests.test_smart_terminal_epoch_scoped_globals"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "0ece1a1e3c2c68f9c967c306215aca9a96a35ccb16095d835f86f698c836d367"
     },
     {
       "component_id": "smart_terminal_epoch_names",
@@ -14958,6 +14984,27 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "7433d72bd81840babc229b9fe626e3fc05f85ae6a40ec7800ee50d8872c6eff1"
+    },
+    {
+      "component_id": "tests.test_smart_terminal_epoch_scoped_globals",
+      "source_file": "tests/test_smart_terminal_epoch_scoped_globals.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_terminal_epoch_context"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "76cd514f012d32470dc25fc0cd3233aeb661fbc77f07dcbfa8cd9e7c4f1ed14a"
     },
     {
       "component_id": "tests.test_smart_terminal_evaluation",
