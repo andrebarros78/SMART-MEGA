@@ -43,6 +43,7 @@ from smart_terminal_official_evidence import (
     acquire_official_result as _official_acquire_result,
 )
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
+from smart_terminal_result_store import dispatch_result_store as _dispatch_result_store
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
@@ -446,7 +447,10 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
         independent_audit=_run_independent_audit,
         unverified_audit=_unverified_history_audit,
     )
-    result_store = history_advance.advance_completed_epoch(root, binding["active"]) if binding.get("mode") == "ACTIVE_EPOCH" else _advance_canonical_result_store(root)
+    result_store = _dispatch_result_store(
+        root, binding, epoch_advance=history_advance.advance_completed_epoch,
+        canonical_advance=_advance_canonical_result_store,
+    )
     ledger = champion_challenger.load_ledger(binding["ledger"])
     consensus = _read_json(root / CONSENSUS_FILE)
     evaluation = evaluate_terminal_rule(root, ledger, consensus, audit, sequence_validation, binding=binding)

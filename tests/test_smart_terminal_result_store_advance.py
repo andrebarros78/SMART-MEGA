@@ -309,3 +309,67 @@ def test_real_excel_terminal_hashes_and_restart_recovery(tmp_path):
     assert proof["canonical_sha256_after"]==terminal.sha256_file(official)
     assert terminal.sha256_file(original)==terminal.sha256_file(official)
     assert not list(tmp_path.glob(".Mega-Sena.3054.advance-*"))
+
+# Dispatch characterization: no mutation or implicit fallback is allowed here.
+def test_dispatch_result_store_active_epoch_uses_verified_epoch_path(tmp_path):
+    from smart_terminal_result_store import dispatch_result_store
+    active = {"target_contest": 3080, "authority": "frozen"}
+    binding = {"mode": "ACTIVE_EPOCH", "active": active}
+    calls = []
+    epoch_result = {"status": "PASS", "source": "epoch"}
+    def epoch_advance(root, state):
+        calls.append(("epoch", root, state))
+        return epoch_result
+    def canonical_advance(root):
+        calls.append(("canonical", root))
+        raise AssertionError("legacy store must not be used")
+    result = dispatch_result_store(
+        tmp_path, binding, epoch_advance=epoch_advance,
+        canonical_advance=canonical_advance,
+    )
+    assert result is epoch_result
+    assert calls == [("epoch", tmp_path, active)]
+    assert binding == {"mode": "ACTIVE_EPOCH", "active": active}
+
+
+@pytest.mark.parametrize("mode", ["LEGACY", "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY", "OTHER", None])
+def test_dispatch_result_store_nonactive_preserves_legacy_path(tmp_path, mode):
+    from smart_terminal_result_store import dispatch_result_store
+    calls = []
+    report = {"status": "PASS", "source": "canonical"}
+    result = dispatch_result_store(
+        tmp_path, {"mode": mode},
+        epoch_advance=lambda *args: (_ for _ in ()).throw(
+            AssertionError("epoch path must not run")),
+        canonical_advance=lambda root: (calls.append(root), report)[1],
+    )
+    assert result is report
+    assert calls == [tmp_path]
+
+
+def test_dispatch_result_store_missing_active_authority_fails_closed(tmp_path):
+    from smart_terminal_result_store import dispatch_result_store
+    calls = []
+    with pytest.raises(KeyError, match="active"):
+        dispatch_result_store(
+            tmp_path, {"mode": "ACTIVE_EPOCH"},
+            epoch_advance=lambda *args: calls.append("epoch"),
+            canonical_advance=lambda *args: calls.append("canonical"),
+        )
+    assert calls == []
+
+
+@pytest.mark.parametrize("mode", ["ACTIVE_EPOCH", "LEGACY"])
+def test_dispatch_result_store_preserves_storage_failure(tmp_path, mode):
+    from smart_terminal_result_store import dispatch_result_store
+    calls = []
+    def failing(*args):
+        calls.append("failed")
+        raise OSError("persistent store unavailable")
+    with pytest.raises(OSError, match="persistent store unavailable"):
+        dispatch_result_store(
+            tmp_path, {"mode": mode, "active": {"epoch": 3080}},
+            epoch_advance=failing if mode == "ACTIVE_EPOCH" else lambda *args: None,
+            canonical_advance=failing if mode == "LEGACY" else lambda *args: None,
+        )
+    assert calls == ["failed"]

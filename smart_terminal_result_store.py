@@ -13,6 +13,13 @@ from pathlib import Path
 from typing import Any, Callable
 
 
+def dispatch_result_store(root: Path, binding: dict[str, Any], *, epoch_advance: Callable, canonical_advance: Callable) -> dict[str, Any]:
+    """Route to the existing epoch or canonical persistence authority."""
+    if binding.get("mode") == "ACTIVE_EPOCH":
+        return epoch_advance(root, binding["active"])
+    return canonical_advance(root)
+
+
 def _pending_paths(root: Path, target: int) -> tuple[Path, Path]:
     return (
         root / f".Mega-Sena.{target}.advance-before.xlsx",
