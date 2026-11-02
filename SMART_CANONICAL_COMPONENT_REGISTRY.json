@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "ab89c51398b308e5a1e4a7d135de15e34d7fefa37b78318eb24db0f15c71613a",
+  "source_reachability_inventory_sha256": "9f81bbb64d3f2cc5ec8b83ed1359485113dcb59ccf4f90d72f66161d88b535d4",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 611,
-    "active": 141,
+    "component_count": 613,
+    "active": 142,
     "shadow": 1,
-    "diagnostic": 269,
+    "diagnostic": 270,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -9741,7 +9741,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "1527527fcca56af286796d6554237cf5dc5cbbd1f2b02139fc083f1a154b223f",
+      "implementation_sha256": "99dbc8d54d65a61fe54dc8c24806c9fb64dfd7ae35ac1d7d2b07e8fbe755d217",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9766,6 +9766,7 @@
         "smart_terminal_active_epoch",
         "smart_terminal_epoch_names",
         "smart_terminal_evaluation",
+        "smart_terminal_evidence_guard",
         "smart_terminal_execution_preflight",
         "smart_terminal_execution_status",
         "smart_terminal_historical_freeze",
@@ -9848,6 +9849,33 @@
       "consumers": [
         "smart_terminal_engine",
         "tests.test_smart_terminal_evaluation"
+      ],
+      "entrypoints": [
+        "smart_fast_result_ingest",
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_terminal_evidence_guard",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_terminal_evidence_guard.py",
+      "implementation_sha256": "4b49237f30235a4039af3f8a54e91b243efda119e10443eaa8a6571ca5887804",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [],
+      "consumers": [
+        "smart_terminal_engine",
+        "tests.test_smart_terminal_evidence_guard"
       ],
       "entrypoints": [
         "smart_fast_result_ingest",
@@ -15980,6 +16008,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_terminal_evidence_guard",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_terminal_evidence_guard.py",
+      "implementation_sha256": "5f69ebf550137999f41b636e28c330f5c1dea1c0c1773b181c82dc3db576459b",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_terminal_evidence_guard"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_smart_terminal_execution_preflight",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_terminal_execution_preflight.py",
@@ -16516,5 +16567,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "5749fdb00a3ac18996ae225aed8d05889601d221b027202874d3a46e6cfa5c0c"
+  "registry_sha256": "f46a5e945138c299db8bb964e775bbd972211c968d913d8ab1480d9a7d18a82a"
 }
