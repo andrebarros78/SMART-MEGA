@@ -115,7 +115,12 @@ class TestScopedHistoricalFreezeGate(unittest.TestCase):
         self.assertIn("_execute_preflight_validate(", execute_source)
         self.assertLess(execute_source.index("_execute_preflight_validate"),
                         execute_source.index("_load_existing_official_evidence"))
-        self.assertIn("_unverified_history_audit(root, scoped)", execute_source)
+        self.assertIn("unverified_audit=_unverified_history_audit", execute_source)
+        dispatcher_file = Path(__file__).resolve().with_name("smart_terminal_historical_freeze.py").read_text(encoding="utf-8")
+        dispatcher_functions = {node.name: node for node in ast.parse(dispatcher_file).body
+                                if isinstance(node, ast.FunctionDef)}
+        dispatcher_source = ast.get_source_segment(dispatcher_file, dispatcher_functions["select_terminal_audit"])
+        self.assertIn("return unverified_audit(root, scoped)", dispatcher_source)
         self.assertIn("_ensure_learning_and_sequence(root, binding=binding)", execute_source)
         self.assertIn("history_advance.advance_completed_epoch", execute_source)
         self.assertLess(execute_source.index("_ensure_learning_and_sequence"),
