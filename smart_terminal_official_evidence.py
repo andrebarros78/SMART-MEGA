@@ -74,6 +74,31 @@ def load_existing_official_evidence(
     return payload, consensus
 
 
+def official_fetch_failure_waiting(
+    *, existing: tuple[dict[str, Any], dict[str, Any]] | None,
+    adjudications: list[dict[str, Any]], error: Exception,
+    target: int, schema: str,
+) -> dict[str, Any] | None:
+    """Return a non-promotable waiting status only before first adjudication.
+
+    A missing persisted observation after adjudication requires the caller to
+    propagate the original provider exception. Existing evidence is reused by
+    the caller unchanged. No provider error text or write authority escapes.
+    """
+    if existing is not None or adjudications:
+        return None
+    return {
+        "schema": schema,
+        "target_contest": target,
+        "status": "WAITING_OFFICIAL_RESULT",
+        "preflight_status": "PASS",
+        "official_result_available": False,
+        "canonical_writes_performed": False,
+        "error_type": type(error).__name__,
+        "terminal_6of6_proven": False,
+    }
+
+
 def acquire_official_result(
     root: Path, fetcher: Callable, adjudications: list[dict[str, Any]], *,
     target: int, schema: str, load_existing: Callable,
@@ -83,17 +108,12 @@ def acquire_official_result(
     try:
         fresh_payload, fresh_consensus = fetcher(target)
     except Exception as exc:
-        if existing is None and not adjudications:
-            return None, None, {
-                "schema": schema,
-                "target_contest": target,
-                "status": "WAITING_OFFICIAL_RESULT",
-                "preflight_status": "PASS",
-                "official_result_available": False,
-                "canonical_writes_performed": False,
-                "error_type": type(exc).__name__,
-                "terminal_6of6_proven": False,
-            }
+        waiting = official_fetch_failure_waiting(
+            existing=existing, adjudications=adjudications, error=exc,
+            target=target, schema=schema,
+        )
+        if waiting is not None:
+            return None, None, waiting
         if existing is None:
             raise
         payload, consensus = existing
