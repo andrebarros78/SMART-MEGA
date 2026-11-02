@@ -45,6 +45,7 @@ from smart_terminal_official_evidence import (
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_result_store import dispatch_result_store as _dispatch_result_store
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
+from smart_terminal_epoch_context import scoped_epoch_globals as _scoped_epoch_globals
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
@@ -467,14 +468,8 @@ def active_epoch_context(root: str | Path, target: int):
         if int(target) != selected:
             raise ValueError("requested terminal target differs from active epoch")
         overrides = _epoch_runtime_names(active, selected)
-        names = tuple(overrides)
-        saved = {name: globals()[name] for name in names}
-        try:
-            globals().update(overrides)
+        with _scoped_epoch_globals(globals(), overrides):
             yield active
-        finally:
-            for name, value in saved.items():
-                globals()[name] = value
 
 
 def probe_active_epoch(root: str | Path, target: int, fetcher: Fetcher | None = None) -> dict[str, Any]:
