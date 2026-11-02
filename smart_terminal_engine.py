@@ -48,6 +48,7 @@ from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_nam
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
 from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
+from smart_terminal_evidence_guard import evaluate_verified_terminal_evidence as _evaluate_verified_terminal_evidence
 from smart_terminal_post_result import finalize_terminal_result as _finalize_terminal_result
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
@@ -330,33 +331,18 @@ def evaluate_terminal_rule(
     sequence_validation: dict[str, Any],
     binding: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
-    freeze_event = champion_challenger.active_freeze(ledger, TARGET)
-    if freeze_event is None:
-        raise ValueError("active 3054 freeze is missing")
-    freeze_path = Path(str(freeze_event["freeze_file"]))
-    if not freeze_path.is_absolute():
-        freeze_path = root / freeze_path
-    binding = binding or _runtime_binding(root)
-    expected_freeze_sha256 = binding["freeze_sha256"]
-    if not freeze_path.is_file() or sha256_file(freeze_path) != expected_freeze_sha256:
-        raise ValueError("active target freeze artifact hash mismatch")
-    if binding["mode"] == "ACTIVE_EPOCH" and freeze_path.resolve() != Path(binding["freeze"]).resolve():
-        raise ValueError("ledger freeze path differs from active epoch authority")
-    freeze = _read_json(freeze_path)
     # Keep the legacy AST-extracted evaluator directly executable for audit tests.
     from smart_terminal_evaluation import evaluate_terminal_evidence
-    return evaluate_terminal_evidence(
-        freeze_event=freeze_event,
-        freeze=freeze,
-        adjudications=_target_events(ledger, "ADJUDICATION"),
-        ledger=ledger,
-        consensus=consensus,
-        audit=audit,
-        sequence_validation=sequence_validation,
-        target=TARGET,
-        cutoff=CUTOFF,
-        expected_freeze_sha256=expected_freeze_sha256,
+    return _evaluate_verified_terminal_evidence(
+        root, ledger, consensus, audit, sequence_validation, binding=binding,
+        target=TARGET, cutoff=CUTOFF,
+        active_freeze=champion_challenger.active_freeze,
+        runtime_binding=_runtime_binding,
+        sha256_file=sha256_file, read_json=_read_json,
+        target_events=_target_events,
+        evaluate_terminal_evidence=evaluate_terminal_evidence,
     )
+
 
 def _promote_terminal_mission(root: Path, evaluation: dict[str, Any], consensus: dict[str, Any], audit: dict[str, Any], sequence: dict[str, Any], binding: dict[str, Any] | None = None) -> dict[str, Any]:
     """Retain terminal engine's verified evaluator and independent proof inputs."""
