@@ -52,6 +52,7 @@ from smart_terminal_execution_preflight import build_execution_readiness as _bui
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
 from smart_terminal_evidence_guard import evaluate_verified_terminal_evidence as _evaluate_verified_terminal_evidence
 from smart_terminal_post_result import finalize_terminal_result as _finalize_terminal_result
+from smart_terminal_result_transition import apply_official_result_transition as _apply_official_result_transition
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
 from smart_terminal_learned_state import (
@@ -427,8 +428,10 @@ def execute(root: str | Path, fetcher: Fetcher | None = None, *, allow_terminal_
         return waiting
 
     normalized = _normalized_primary(payload)
-    ingest = _ensure_ingest(root, payload, binding=binding)
-    adjudication = _ensure_adjudication(root, normalized["numbers"], binding=binding)
+    ingest, adjudication = _apply_official_result_transition(
+        root, payload, normalized, binding,
+        ensure_ingest=_ensure_ingest, ensure_adjudication=_ensure_adjudication,
+    )
     learned = _ensure_learned_state(root, binding=binding)
     sequence_validation = _ensure_learning_and_sequence(root, binding=binding)
     audit = _select_terminal_audit(
