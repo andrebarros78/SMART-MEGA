@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "1e8e84f530f407c5450413774d150540ec217ec046f5ee111fd1115598ae0d47",
+  "source_reachability_inventory_sha256": "06b40e3e759cba4f9415d8cdcffbc99181da6fd53d8c3fad19f95fea22b9a224",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 615,
+    "component_count": 616,
     "active": 143,
     "shadow": 1,
-    "diagnostic": 271,
+    "diagnostic": 272,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -9741,7 +9741,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "8aab1ac2c90a0ba8af53a3616634fafc8b794d936ff57d3ac1573e45d64333d3",
+      "implementation_sha256": "5268b520b69f98912d1280973ad2cf0f5e1d7137f5cf3089b1009de8bf0c060b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9816,12 +9816,13 @@
       "component_id": "smart_terminal_epoch_context",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_epoch_context.py",
-      "implementation_sha256": "0ece1a1e3c2c68f9c967c306215aca9a96a35ccb16095d835f86f698c836d367",
+      "implementation_sha256": "8b09cd6082695f08e97016bb1b7f117425254ec1f4f7e7dc27eafb5102f3e2ec",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
         "smart_terminal_engine",
+        "tests.test_smart_terminal_epoch_authority_selection",
         "tests.test_smart_terminal_epoch_scoped_globals"
       ],
       "entrypoints": [
@@ -15989,6 +15990,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_terminal_epoch_authority_selection",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_terminal_epoch_authority_selection.py",
+      "implementation_sha256": "2fe624dbbe82781cf7bea9758d3284de19481e0923b971d4b8d7dccb6c1d99c9",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_terminal_epoch_context"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_smart_terminal_epoch_runtime_names",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_terminal_epoch_runtime_names.py",
@@ -16618,5 +16642,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "3f9ac56aa2c15141554b056fd9519ddb7ebf0c5e8aa097e52a788774c8290604"
+  "registry_sha256": "aabbc0cd7e2033bd3f683eb0ed7b8acece0baf6d2361e0511fe34d6cd0b32806"
 }

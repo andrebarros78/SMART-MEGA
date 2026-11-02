@@ -6,7 +6,20 @@ helper never changes a rule, selects a draw, or writes external evidence.
 from __future__ import annotations
 
 from contextlib import contextmanager
-from typing import Any, Iterator, Mapping, MutableMapping
+from pathlib import Path
+from typing import Any, Callable, Iterator, Mapping, MutableMapping
+
+
+def authorize_epoch_runtime(
+    root: Path, target: int, *,
+    verify_active_epoch: Callable, derive_runtime_names: Callable,
+) -> tuple[dict[str, Any], dict[str, Any]]:
+    """Validate the selected epoch before deriving temporary engine globals."""
+    active = verify_active_epoch(root / "SMART_ACTIVE_EPOCH.json")
+    selected = int(active.get("target_contest", -1))
+    if int(target) != selected:
+        raise ValueError("requested terminal target differs from active epoch")
+    return active, derive_runtime_names(active, selected)
 
 
 @contextmanager
