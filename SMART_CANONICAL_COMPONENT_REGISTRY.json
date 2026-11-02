@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "6b7e73dfd7d4b81e4855494c706bc5686044325f5605ebbf10242e011a507590",
+  "source_reachability_inventory_sha256": "ab89c51398b308e5a1e4a7d135de15e34d7fefa37b78318eb24db0f15c71613a",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 609,
-    "active": 140,
+    "component_count": 611,
+    "active": 141,
     "shadow": 1,
-    "diagnostic": 268,
+    "diagnostic": 269,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -9741,7 +9741,7 @@
       "component_id": "smart_terminal_engine",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_terminal_engine.py",
-      "implementation_sha256": "5f10980976785f2a729e91c9afb7880c5dabb56f743036c43a14d174c8bfe914",
+      "implementation_sha256": "1527527fcca56af286796d6554237cf5dc5cbbd1f2b02139fc083f1a154b223f",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -9774,6 +9774,7 @@
         "smart_terminal_mission_promotion",
         "smart_terminal_official_evidence",
         "smart_terminal_official_ingest",
+        "smart_terminal_post_result",
         "smart_terminal_probe",
         "smart_terminal_prospective_lock",
         "smart_terminal_result_data",
@@ -10101,6 +10102,33 @@
       "consumers": [
         "smart_terminal_engine",
         "tests.test_smart_terminal_official_ingest"
+      ],
+      "entrypoints": [
+        "smart_fast_result_ingest",
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_terminal_post_result",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_terminal_post_result.py",
+      "implementation_sha256": "fbeb204685d75da2c5df4b58daa3306d4e75d374c34865bf2191c7698b6cb9cd",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [],
+      "consumers": [
+        "smart_terminal_engine",
+        "tests.test_smart_terminal_post_result"
       ],
       "entrypoints": [
         "smart_fast_result_ingest",
@@ -16205,6 +16233,29 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_terminal_post_result",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_terminal_post_result.py",
+      "implementation_sha256": "688b0367ab92077e6e5f875024ba4524e3ee43ce32aaadb63864bdc6d5ae313f",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_terminal_post_result"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_smart_terminal_prospective_lock",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_terminal_prospective_lock.py",
@@ -16465,5 +16516,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "18b2110791fadfa8adcb13fb804b7a7878dda9b2c72aa9933b8ecf81eeca5fc8"
+  "registry_sha256": "5749fdb00a3ac18996ae225aed8d05889601d221b027202874d3a46e6cfa5c0c"
 }
