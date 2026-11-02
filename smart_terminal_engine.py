@@ -44,6 +44,7 @@ from smart_terminal_official_evidence import (
 from smart_terminal_result_store import advance_canonical_result_store as _store_advance
 from smart_terminal_epoch_names import epoch_runtime_names as _epoch_runtime_names
 from smart_terminal_execution_preflight import validate_execution_preflight as _execute_preflight_validate
+from smart_terminal_execution_preflight import build_execution_readiness as _build_execution_readiness
 from smart_terminal_execution_status import build_terminal_execution_status as _build_terminal_execution_status
 from smart_terminal_probe import probe_terminal_result as _probe_terminal_result
 from smart_terminal_mission_promotion import promote_terminal_mission as _mission_proof_persist
@@ -136,16 +137,11 @@ def _active_epoch_binding(root: Path) -> dict[str, Any] | None:
 
 
 def _preflight_readiness(root: Path, binding: dict[str, Any]) -> dict[str, Any]:
-    if binding.get("mode") == "ACTIVE_EPOCH":
-        return {
-            "readiness_status": "PASS",
-            "target_contest": TARGET,
-            "cutoff_contest": CUTOFF,
-            "generation_proof_valid": binding.get("current", {}).get("generation_proof_valid") is True,
-            "freeze_sha256": binding.get("freeze_sha256"),
-            "result_used": False,
-        }
-    return preflight.build_preflight(root)
+    """Keep the engine's patchable preflight boundary intact."""
+    return _build_execution_readiness(
+        root, binding, target=TARGET, cutoff=CUTOFF,
+        legacy_preflight=preflight.build_preflight,
+    )
 
 
 def _preserved_lock_binding(root: Path) -> dict[str, Any]:
