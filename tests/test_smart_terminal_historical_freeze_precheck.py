@@ -171,3 +171,87 @@ def test_unverified_report_does_not_suppress_writer_errors(tmp_path):
             tmp_path,scope,target=9001,independent_audit_file="independent.json",
             atomic_write_json=lambda *args: (_ for _ in ()).throw(OSError("audit disk unavailable")))
     assert not list(tmp_path.iterdir())
+
+@pytest.mark.parametrize("scope,expected", [
+    (None, "independent"),
+    ({"unverified_contests": []}, "independent"),
+    ({"unverified_contests": [3079]}, "unverified"),
+    ({"unverified_contests": [3078, 3079]}, "unverified"),
+])
+def test_audit_selection_routes_scope_without_mutating_inputs(tmp_path, scope, expected):
+    from smart_terminal_historical_freeze import select_terminal_audit
+    import copy
+
+    binding = {"ledger": "frozen-ledger"}
+    original_scope, original_binding = copy.deepcopy(scope), copy.deepcopy(binding)
+    calls = []
+    def independent(root, *, binding):
+        calls.append(("independent", root, binding))
+        return {"status": "PASS", "source": "full"}
+    def unverified(root, document):
+        calls.append(("unverified", root, document))
+        return {
+            "status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+            "promotion_authority": False,
+            "terminal_promotion_permitted": False,
+        }
+
+    result = select_terminal_audit(
+        tmp_path, scope, binding,
+        independent_audit=independent, unverified_audit=unverified,
+    )
+    assert [c[0] for c in calls] == [expected]
+    if expected == "independent":
+        assert calls == [("independent", tmp_path, binding)]
+        assert result["status"] == "PASS"
+    else:
+        assert calls == [("unverified", tmp_path, scope)]
+        assert result["promotion_authority"] is False
+        assert result["terminal_promotion_permitted"] is False
+    assert scope == original_scope and binding == original_binding
+
+
+def test_audit_selection_missing_scope_contract_raises_without_fallback(tmp_path):
+    from smart_terminal_historical_freeze import select_terminal_audit
+    calls = []
+    with pytest.raises(KeyError, match="unverified_contests"):
+        select_terminal_audit(
+            tmp_path, {}, {},
+            independent_audit=lambda *args, **kwargs: calls.append("independent"),
+            unverified_audit=lambda *args: calls.append("unverified"),
+        )
+    assert calls == []
+
+
+@pytest.mark.parametrize("route", ["independent", "unverified"])
+def test_audit_selection_propagates_selected_audit_failure(tmp_path, route):
+    from smart_terminal_historical_freeze import select_terminal_audit
+    scope = {"unverified_contests": [3079]} if route == "unverified" else None
+    calls = []
+    def failing(*args, **kwargs):
+        calls.append("failed")
+        raise RuntimeError("audit evidence invalid")
+    def wrong(*args, **kwargs):
+        calls.append("wrong")
+        return {"status": "PASS"}
+    with pytest.raises(RuntimeError, match="audit evidence invalid"):
+        select_terminal_audit(
+            tmp_path, scope, {},
+            independent_audit=failing if route == "independent" else wrong,
+            unverified_audit=failing if route == "unverified" else wrong,
+        )
+    assert calls == ["failed"]
+
+
+def test_audit_selection_preserves_writer_identity_and_result(tmp_path):
+    from smart_terminal_historical_freeze import select_terminal_audit
+    report = {"status": "DEGRADED_HISTORICAL_EVIDENCE_MISSING",
+              "promotion_authority": False, "terminal_promotion_permitted": False}
+    scope = {"unverified_contests": [3079]}
+    result = select_terminal_audit(
+        tmp_path, scope, {"mode": "ACTIVE_EPOCH"},
+        independent_audit=lambda *args, **kwargs: (_ for _ in ()).throw(
+            AssertionError("scientific promotion path must not run")),
+        unverified_audit=lambda root, document: report,
+    )
+    assert result is report
