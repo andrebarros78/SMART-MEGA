@@ -10,6 +10,23 @@ from pathlib import Path
 from typing import Any, Callable
 
 
+def build_execution_readiness(
+    root: Path, binding: dict[str, Any], *,
+    target: int, cutoff: int, legacy_preflight: Callable,
+) -> dict[str, Any]:
+    """Project active frozen readiness without obtaining or using a result."""
+    if binding.get("mode") == "ACTIVE_EPOCH":
+        return {
+            "readiness_status": "PASS",
+            "target_contest": target,
+            "cutoff_contest": cutoff,
+            "generation_proof_valid": binding.get("current", {}).get("generation_proof_valid") is True,
+            "freeze_sha256": binding.get("freeze_sha256"),
+            "result_used": False,
+        }
+    return legacy_preflight(root)
+
+
 def validate_execution_preflight(
     root: Path, binding: dict[str, Any], *,
     sha256_file: Callable, load_ledger: Callable,

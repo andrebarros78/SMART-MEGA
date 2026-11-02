@@ -131,3 +131,67 @@ def test_preflight_does_not_write_any_file(tmp_path):
     names={f.name for f in tmp_path.iterdir()}
     run()
     assert {f.name for f in tmp_path.iterdir()}==names
+
+def test_active_epoch_readiness_preserves_frozen_proof(tmp_path):
+    from smart_terminal_execution_preflight import build_execution_readiness
+    binding = {
+        "mode": "ACTIVE_EPOCH",
+        "current": {"generation_proof_valid": True},
+        "freeze_sha256": "frozen-digest",
+    }
+    original = dict(binding)
+    observed = build_execution_readiness(
+        tmp_path, binding, target=3080, cutoff=3079,
+        legacy_preflight=lambda root: (_ for _ in ()).throw(AssertionError("legacy called")),
+    )
+    assert observed == {
+        "readiness_status": "PASS",
+        "target_contest": 3080,
+        "cutoff_contest": 3079,
+        "generation_proof_valid": True,
+        "freeze_sha256": "frozen-digest",
+        "result_used": False,
+    }
+    assert binding == original
+
+
+@pytest.mark.parametrize("current,expected", [
+    ({"generation_proof_valid": False}, False),
+    ({"generation_proof_valid": 1}, False),
+    ({}, False),
+])
+def test_active_epoch_readiness_requires_literal_generation_proof(tmp_path, current, expected):
+    from smart_terminal_execution_preflight import build_execution_readiness
+    result = build_execution_readiness(
+        tmp_path, {"mode": "ACTIVE_EPOCH", "current": current},
+        target=3080, cutoff=3079,
+        legacy_preflight=lambda root: None,
+    )
+    assert result["generation_proof_valid"] is expected
+    assert result["result_used"] is False
+
+
+@pytest.mark.parametrize("mode", ["LEGACY", "ACTIVE_EPOCH_POST_ADJUDICATION_RECOVERY", None])
+def test_non_active_readiness_delegates_to_unchanged_legacy_builder(tmp_path, mode):
+    from smart_terminal_execution_preflight import build_execution_readiness
+    calls = []
+    def legacy(root):
+        calls.append(root)
+        return {"readiness_status": "WAITING", "source": "legacy"}
+    result = build_execution_readiness(
+        tmp_path, {"mode": mode}, target=3080, cutoff=3079,
+        legacy_preflight=legacy,
+    )
+    assert result == {"readiness_status": "WAITING", "source": "legacy"}
+    assert calls == [tmp_path]
+
+
+def test_legacy_readiness_exception_is_never_suppressed(tmp_path):
+    from smart_terminal_execution_preflight import build_execution_readiness
+    def failing(root):
+        raise ValueError("untrusted preflight")
+    with pytest.raises(ValueError, match="untrusted preflight"):
+        build_execution_readiness(
+            tmp_path, {"mode": "LEGACY"}, target=3080, cutoff=3079,
+            legacy_preflight=failing,
+        )
