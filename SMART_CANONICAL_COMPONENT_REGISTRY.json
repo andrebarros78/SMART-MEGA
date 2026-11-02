@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "2c38389f458cd49545013be8350e0494f643635ebb71c42fe9ba80343d9bc254",
+  "source_reachability_inventory_sha256": "2ead0770efd947c9f21ad4d46f1b0d7c63e5594090a65cf7d7761b91e36aae61",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 622,
+    "component_count": 623,
     "active": 145,
     "shadow": 1,
-    "diagnostic": 276,
+    "diagnostic": 277,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -5381,7 +5381,8 @@
       "producers": [],
       "consumers": [
         "smart_operator",
-        "test_smart_contingency_card"
+        "test_smart_contingency_card",
+        "tests.test_smart_operator_critical_coverage_closure"
       ],
       "entrypoints": [
         "smart_fast_result_ingest",
@@ -7540,6 +7541,7 @@
         "test_smart_postresult_preflight_resume",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch",
+        "tests.test_smart_operator_critical_coverage_closure",
         "tests.test_smart_operator_failure_boundaries_20261021",
         "tests.test_smart_operator_recovery_rollback_20261021"
       ],
@@ -15789,6 +15791,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "tests.test_smart_operator_critical_coverage_closure",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "tests/test_smart_operator_critical_coverage_closure.py",
+      "implementation_sha256": "20f64893e2e533d353610fa2c0684111c36ae997a2b7b3d0d3e1e4fd60d3636f",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_contingency_card",
+        "smart_operator"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "tests.test_smart_operator_epoch_document",
       "type": "PYTHON_COMPONENT",
       "implementation": "tests/test_smart_operator_epoch_document.py",
@@ -16797,5 +16823,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "4701cd1656f96d80e26ce3f3002253247c897a3ecb8571a7886c834d9010bf0f"
+  "registry_sha256": "a612719144b64bc9095a95e6d94530372b4a31466c7e13301cbc7f3cca0f65dd"
 }
