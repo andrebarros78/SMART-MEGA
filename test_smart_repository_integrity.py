@@ -67,14 +67,20 @@ def test_frozen_operator_schedule_pins_verified_authorization_before_consumption
     import shutil
 
     origin = Path(__file__).resolve().parent
+    historical_target = 3071
     active_pointer = origin / "SMART_ACTIVE_EPOCH.json"
+    epoch = None
     if active_pointer.is_file():
-        epoch = json.loads(active_pointer.read_text(encoding="utf-8-sig"))
-    else:
-        # Post-result rollover retires the live 3071 pointer. The test must
-        # examine its integrity-verified historical authority, not resurrect it.
+        live = json.loads(active_pointer.read_text(encoding="utf-8-sig"))
+        if live.get("target_contest") == historical_target:
+            epoch = live
+    if epoch is None:
+        # The active pointer may already belong to a later FROZEN contest.
+        # Test the exact historical contest via its independently verified
+        # immutable archive, never substitute the newer live authority.
         from smart_frozen_card_reader import _immutable_archive
-        epoch = _immutable_archive(origin, 3071)["active"]
+        epoch = _immutable_archive(origin, historical_target)["active"]
+    assert epoch["target_contest"] == historical_target
     expected = epoch["target_schedule"]["source_sha256"]
     archive = list((origin / "runtime/idempotency/AUTHORIZE").glob("*.json"))
     matches = [p for p in archive if json.loads(p.read_text()).get("result", {}).get("sha256") == expected]
