@@ -1,0 +1,563 @@
+{
+  "schema": "SMART_AI_FINE_TUNING_1",
+  "status": "PASS",
+  "target_contest": 3081,
+  "cutoff_contest": 3080,
+  "data_file": "C:\\New Projet\\SMART-MEGA-RELEASE-AUDIT-20261102\\runtime\\learning_epochs\\operator-3081-5798858e2a87-20261103T112111692942Z\\Mega-Sena_cutoff_3080.xlsx",
+  "data_sha256": "809f88f8621f8909263d47389eb96b436648dfd60f1230752e150cea77c5c2fa",
+  "start": 1000,
+  "partitions": {
+    "calibration": [
+      1500,
+      2499
+    ],
+    "validation": [
+      2500,
+      2850
+    ],
+    "holdout": [
+      2851,
+      3080
+    ]
+  },
+  "candidate_count": 10,
+  "selection": {
+    "shortlist_ids": [
+      "eta_050x"
+    ],
+    "selected_candidate_id": "eta_050x",
+    "selection_stages": [
+      "calibration",
+      "validation"
+    ],
+    "holdout_used_for_selection": false
+  },
+  "adjudication": {
+    "selected_candidate_id": "eta_050x",
+    "baseline_candidate_id": "baseline",
+    "gains_vs_baseline": {
+      "calibration": 38,
+      "validation": 10,
+      "holdout": -2,
+      "global": 44
+    },
+    "decision_change_count": 1480,
+    "material_decision_effect": true,
+    "non_regressive_all_partitions": false,
+    "positive_validation_gain_required": true,
+    "holdout_used_only_for_final_acceptance": true,
+    "holdout_statistical_evidence": {
+      "schema": "SMART_AI_PAIRED_HOLDOUT_GATE_1",
+      "verified": false,
+      "paired_contests": 230,
+      "positive_differences": 0,
+      "negative_differences": 2,
+      "ties": 228,
+      "holdout_delta_hits": -2,
+      "one_sided_p_value": 1.0,
+      "alpha": 0.01,
+      "minimum_contests": 100,
+      "minimum_discordant": 20,
+      "holdout_used_for_candidate_selection": false,
+      "prospective_superiority_proven": false,
+      "reason": "INSUFFICIENT_PAIRED_HOLDOUT_ADVANTAGE"
+    },
+    "promotion_authorized": false,
+    "status": "BASELINE_RETAINED_NO_PROVEN_GAIN",
+    "effective_candidate_id": "baseline"
+  },
+  "results": [
+    {
+      "candidate": {
+        "candidate_id": "baseline",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 586,
+        "mean_hits": 0.586
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 236,
+        "mean_hits": 0.6723646723646723
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 137,
+        "mean_hits": 0.5956521739130435
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1249,
+        "mean_hits": 0.6004807692307692
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "60ff9fce36ed515eb43c4785a9b563e9548717f0f44010e01ee5ed4a77331f93",
+      "hit_trace_sha256": "0153a210e15740473921c8c7600d5ad7d5ad8f7823394c5155455ec42011eab1"
+    },
+    {
+      "candidate": {
+        "candidate_id": "eta_050x",
+        "eta": 0.34657359027997264,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 624,
+        "mean_hits": 0.624
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 246,
+        "mean_hits": 0.7008547008547008
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 135,
+        "mean_hits": 0.5869565217391305
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1293,
+        "mean_hits": 0.6216346153846154
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "df717f764f04efe5a0a4f33236311be7641f4a9a27e9361684e30b5b0555e72b",
+      "hit_trace_sha256": "aaf412e49c02ddec1176257deb3ba5fc12564514c4266879cd7d1e66bc07ab80"
+    },
+    {
+      "candidate": {
+        "candidate_id": "eta_075x",
+        "eta": 0.5198603854199589,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 607,
+        "mean_hits": 0.607
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 246,
+        "mean_hits": 0.7008547008547008
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 137,
+        "mean_hits": 0.5956521739130435
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1290,
+        "mean_hits": 0.6201923076923077
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "5d1f8d4d1359968ad25ab17b51828ac634398a19616029058269cd4729c27fc7",
+      "hit_trace_sha256": "a5a45d5168e04fe610d5dc8c9884ab54a206bbc2d96020983b3b4b08991cca84"
+    },
+    {
+      "candidate": {
+        "candidate_id": "eta_125x",
+        "eta": 0.8664339756999316,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 581,
+        "mean_hits": 0.581
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 247,
+        "mean_hits": 0.7037037037037037
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 138,
+        "mean_hits": 0.6
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1262,
+        "mean_hits": 0.6067307692307692
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        17,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "c2cd010ec83746495d96e1e37468e236eaa8cff151ad2af3bb8c3b6dcb8b95db",
+      "hit_trace_sha256": "f5e5c9b68da9fa640c970135eae41defd5758dbf039fa4a05b40417b2d68b537"
+    },
+    {
+      "candidate": {
+        "candidate_id": "redundancy_080",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.8,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 591,
+        "mean_hits": 0.591
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 241,
+        "mean_hits": 0.6866096866096866
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 133,
+        "mean_hits": 0.5782608695652174
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1258,
+        "mean_hits": 0.6048076923076923
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.8,
+      "decision_trace_sha256": "17aadae0e1e8026c3629ea94ad5190b79e45626b536aefd0d66fd733ba9d60b7",
+      "hit_trace_sha256": "6eb461644be96ec0588f09a577491d0f2162a932886295900201a5ce37e53aa1"
+    },
+    {
+      "candidate": {
+        "candidate_id": "redundancy_075",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.75,
+        "meta_strength": 0.06
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 588,
+        "mean_hits": 0.588
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 245,
+        "mean_hits": 0.698005698005698
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 134,
+        "mean_hits": 0.5826086956521739
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1263,
+        "mean_hits": 0.6072115384615384
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.75,
+      "decision_trace_sha256": "2341272248b4762052728c9b5663b0f31eb98783b0915e87747ec7b74a7bdee0",
+      "hit_trace_sha256": "ce81967973aa876da4869ff4f4f68e9cca45edc89574d6feb94178e43c3443a5"
+    },
+    {
+      "candidate": {
+        "candidate_id": "meta_000",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 583,
+        "mean_hits": 0.583
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 240,
+        "mean_hits": 0.6837606837606838
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 136,
+        "mean_hits": 0.591304347826087
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1252,
+        "mean_hits": 0.6019230769230769
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "1cf814cf77c70ffddc4cd47c9d5c72c2ec0b1b364dae4d306257255fe13da6bb",
+      "hit_trace_sha256": "0a5b30049f938b4ecd1e4448700d56c639267dcae2ef98114165c60b1e2241ad"
+    },
+    {
+      "candidate": {
+        "candidate_id": "meta_030",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.03
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 581,
+        "mean_hits": 0.581
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 238,
+        "mean_hits": 0.6780626780626781
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 136,
+        "mean_hits": 0.591304347826087
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1245,
+        "mean_hits": 0.5985576923076923
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "defc9881b13930761150a3932bd5c33a4492106f80ee0087e6073207243e25d2",
+      "hit_trace_sha256": "520c26f3bb906fc7fcb59c8d1d7a1e46189431319f8beb2b96b11e6b60bbd1e5"
+    },
+    {
+      "candidate": {
+        "candidate_id": "meta_090",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.09
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 583,
+        "mean_hits": 0.583
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 238,
+        "mean_hits": 0.6780626780626781
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 137,
+        "mean_hits": 0.5956521739130435
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1251,
+        "mean_hits": 0.6014423076923077
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "69fa0f7a3cef82be92a66bba58067e32bc7c911a950ecba98749cddb5bf7f951",
+      "hit_trace_sha256": "fdd5090ffedd06294d0c0ef85fad3726590f130d99e162e0d7adb42877c6383b"
+    },
+    {
+      "candidate": {
+        "candidate_id": "meta_120",
+        "eta": 0.6931471805599453,
+        "redundancy_threshold": 0.9,
+        "meta_strength": 0.12
+      },
+      "calibration": {
+        "start": 1500,
+        "end": 2499,
+        "n": 1000,
+        "hits": 585,
+        "mean_hits": 0.585
+      },
+      "validation": {
+        "start": 2500,
+        "end": 2850,
+        "n": 351,
+        "hits": 238,
+        "mean_hits": 0.6780626780626781
+      },
+      "holdout": {
+        "start": 2851,
+        "end": 3080,
+        "n": 230,
+        "hits": 137,
+        "mean_hits": 0.5956521739130435
+      },
+      "global": {
+        "start": 1001,
+        "end": 3080,
+        "n": 2080,
+        "hits": 1253,
+        "mean_hits": 0.6024038461538461
+      },
+      "next_top6": [
+        10,
+        27,
+        38,
+        11,
+        43,
+        14
+      ],
+      "architecture_profile": "DIVERSITY_HARDENED_V1",
+      "effective_redundancy_threshold": 0.85,
+      "decision_trace_sha256": "620efdf1b7302ce4c3ccb977330aa0768e50c116f761ce2bc503fb537ca775d0",
+      "hit_trace_sha256": "3800fa6bd1af1ac2361203a6d540b28c1da6534cf4c17298bd8029de3f7edc07"
+    }
+  ],
+  "guardrails": {
+    "future_result_used": false,
+    "holdout_used_for_selection": false,
+    "test_result_hyperparameter_selection_prohibited": true,
+    "baseline_wins_exact_ties": true,
+    "promotion_requires_material_decision_change": true,
+    "promotion_requires_non_regression_all_partitions": true,
+    "promotion_requires_positive_validation_gain": true,
+    "promotion_requires_verified_paired_holdout": true,
+    "paired_holdout_alpha": 0.01
+  },
+  "sha256": "6f0043c1923c115dc224a488253430a66e43385c3dd004cec6e5eccb2c075afd"
+}
