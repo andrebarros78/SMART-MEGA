@@ -67,7 +67,6 @@ def test_frozen_operator_schedule_pins_verified_authorization_before_consumption
     import shutil
 
     origin = Path(__file__).resolve().parent
-    authority = json.loads((origin / "SMART_NEXT_CYCLE_AUTHORITY.json").read_text())
     active_pointer = origin / "SMART_ACTIVE_EPOCH.json"
     if active_pointer.is_file():
         epoch = json.loads(active_pointer.read_text(encoding="utf-8-sig"))
@@ -84,14 +83,28 @@ def test_frozen_operator_schedule_pins_verified_authorization_before_consumption
     receipt = tmp_path / "runtime/idempotency/AUTHORIZE" / matches[0].name
     shutil.copyfile(matches[0], receipt)
     document = tmp_path / "SMART_NEXT_CYCLE_AUTHORITY.json"
-    shutil.copyfile(origin / document.name, document)
+    # Build the test's historical CONSUMED successor from the immutable,
+    # exact-target authorization receipt. The live authority now legitimately
+    # belongs to later contests and must never impersonate contest 3071.
+    snapshot = json.loads(receipt.read_text(encoding="utf-8"))["result"]
+    successor = {k: v for k, v in snapshot.items() if k not in
+                 {"sha256", "operational_lifecycle"}}
+    successor.update({"status": "CONSUMED", "consumed": True,
+                      "authority_sha256_before_reservation": expected,
+                      "prepared_epoch_id": epoch["epoch_id"],
+                      "consumption_transaction_id": "TEST_PROVEN_CONSUMPTION",
+                      "revision": int(snapshot["revision"]) + 2})
+    successor["sha256"] = hashlib.sha256(json.dumps(
+        {k: v for k, v in successor.items() if k != "sha256"},
+        sort_keys=True, ensure_ascii=False, separators=(",", ":")).encode()).hexdigest()
+    document.write_text(json.dumps(successor), encoding="utf-8")
     monkeypatch.setattr(integrity, "ROOT", tmp_path)
     schedule = epoch["target_schedule"]
     integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))
 
     # A recomputed current document hash cannot substitute for the pinned
     # pre-reservation authorization: the independent receipt must still match.
-    changed = dict(authority)
+    changed = dict(successor)
     changed["review_sha256"] = "0" * 64
     changed.pop("sha256")
     changed["sha256"] = hashlib.sha256(json.dumps(changed, sort_keys=True, ensure_ascii=False,
@@ -99,7 +112,7 @@ def test_frozen_operator_schedule_pins_verified_authorization_before_consumption
     document.write_text(json.dumps(changed))
     with pytest.raises(integrity.RepositoryIntegrityError, match="snapshot not proven"):
         integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))
-    shutil.copyfile(origin / document.name, document)
+    document.write_text(json.dumps(successor), encoding="utf-8")
     receipt.unlink()
     with pytest.raises(integrity.RepositoryIntegrityError, match="snapshot not proven"):
         integrity._require_frozen_schedule_source(schedule, int(epoch["target_contest"]))

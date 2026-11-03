@@ -382,7 +382,17 @@ def resolve_target_schedule(
         return verified
     operator = _operator_selected_schedule(root, int(target_contest))
     if operator is not None:
-        return operator
+        # An already archived and source-bound CAIXA monthly exception has
+        # higher temporal authority than an operator's undated target.
+        # Never substitute an unverified draw time for an official one.
+        policy_path = Path(time_policy)
+        if not policy_path.is_absolute():
+            policy_path = (root / policy_path).resolve()
+        if not policy_path.is_file():
+            return operator
+        policy, _ = load_draw_time_policy(root, time_policy)
+        if str(target_contest) not in policy.get("official_calendar_exceptions", {}):
+            return operator
     archive_path = Path(archive)
     if not archive_path.is_absolute():
         archive_path = (root / archive_path).resolve()
