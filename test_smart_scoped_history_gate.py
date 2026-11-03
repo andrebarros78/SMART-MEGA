@@ -115,12 +115,13 @@ class TestScopedHistoricalFreezeGate(unittest.TestCase):
         self.assertIn("_execute_preflight_validate(", execute_source)
         self.assertLess(execute_source.index("_execute_preflight_validate"),
                         execute_source.index("_load_existing_official_evidence"))
-        self.assertIn("_unverified_history_audit(root, scoped)", execute_source)
+        self.assertIn("_select_terminal_audit(", execute_source)
+        self.assertIn("unverified_audit=_unverified_history_audit", execute_source)
         self.assertIn("_ensure_learning_and_sequence(root, binding=binding)", execute_source)
         self.assertIn("history_advance.advance_completed_epoch", execute_source)
         self.assertLess(execute_source.index("_ensure_learning_and_sequence"),
-                        execute_source.index("_unverified_history_audit"))
-        self.assertLess(execute_source.index("_unverified_history_audit"),
+                        execute_source.index("_select_terminal_audit("))
+        self.assertLess(execute_source.index("_select_terminal_audit("),
                         execute_source.index("history_advance.advance_completed_epoch"))
         degraded_source_file = Path(__file__).resolve().with_name("smart_terminal_historical_freeze.py").read_text(encoding="utf-8")
         degraded_functions = {node.name: node for node in ast.parse(degraded_source_file).body

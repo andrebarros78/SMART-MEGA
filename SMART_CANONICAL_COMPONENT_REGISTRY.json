@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "3ba6f62f69d3b355093a89ebcc482db6c42f4a187ad02ee763c33e88e2e81474",
+  "source_reachability_inventory_sha256": "1285c4fd57ab99a14b91f23abc3f3f8da7fa485b1ed4c5629f74b200a415b8f1",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -9907,6 +9907,7 @@
       "producers": [],
       "consumers": [
         "smart_terminal_engine",
+        "test_smart_terminal_degraded_audit_execution",
         "tests.test_smart_terminal_evidence_guard"
       ],
       "entrypoints": [
@@ -15072,7 +15073,7 @@
       "component_id": "test_smart_scoped_history_gate",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_scoped_history_gate.py",
-      "implementation_sha256": "9c21eb611185b72e7e9b0608c5034d4d8306dab993ed701c206f3ff4782a8836",
+      "implementation_sha256": "cda9c702ce31f7999578b60780c75cc243ecec9aa7f609833e54b33539d20824",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -15451,10 +15452,12 @@
       "component_id": "test_smart_terminal_degraded_audit_execution",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_terminal_degraded_audit_execution.py",
-      "implementation_sha256": "7879b67df9ef0b5a001b198a6d338250f671048b71cb0406e636726abd1ba4c9",
+      "implementation_sha256": "971628a523079d5a451d48cb39ed95ffa06c45607c3ccd9ec062e489c076bedc",
       "role": "TEST",
       "state": "DIAGNOSTIC",
-      "producers": [],
+      "producers": [
+        "smart_terminal_evidence_guard"
+      ],
       "consumers": [],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
@@ -16794,5 +16797,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "2b9296214c83b4e7695957ba6147d0a3c3d923e711df49e5f0669654c954cb9d"
+  "registry_sha256": "fd7667660898ec9e5dc999de57f22ef609b82b4e87f2fbe904a4c5f1872e1024"
 }
