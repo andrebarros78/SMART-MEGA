@@ -2,12 +2,12 @@
   "schema": "SMART_PRODUCT_CERTIFICATION_V1",
   "status": "CONSTRUCTION_PROVEN",
   "project": "SMART-MEGA",
-  "generated_utc": "2026-10-28T15:41:25.416593+00:00",
+  "generated_utc": "2026-11-03T02:19:35.748781+00:00",
   "scope": "Product construction/integration certification only. No contest, freeze, generated combination or adjudication is required to complete the product.",
   "operation_boundary": "The operator chooses a target at runtime. Operational prepare/freeze/adjudicate state is not a construction gate.",
   "scientific_boundary": "Scientific predictive advantage and terminal 6/6 remain separate prospective claims and do not control product construction status.",
   "code_fingerprint": {
-    "file_count": 374,
+    "file_count": 445,
     "files": [
       {
         "path": "SMART_DATA_CONTRACT.md",
@@ -407,15 +407,51 @@
       },
       {
         "path": "smart_operator.py",
-        "sha256": "0266b4ecdaeda83c6890f019e0cca458f04577507b475c8c86b46d45b1305569"
+        "sha256": "4288682ea31c9e863688eabcea5682cd4c126108bdcb18c25b0e335b0cfaff82"
+      },
+      {
+        "path": "smart_operator_authority_documents.py",
+        "sha256": "5b30c82d4a85591d92fdc8c711a85672bef2acfcf5c2490e833cf329c49f3dac"
+      },
+      {
+        "path": "smart_operator_authority_transitions.py",
+        "sha256": "ce8e82d7fca4939279c2de55aafa6689d4e30d3c2cc6b74a6aefaedb9d777c2e"
       },
       {
         "path": "smart_operator_contract.py",
         "sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1"
       },
       {
+        "path": "smart_operator_epoch_document.py",
+        "sha256": "c241ee968dc9adc8ec1838c7237c25b596480c82f147df121a0335931adc1ec8"
+      },
+      {
+        "path": "smart_operator_idempotency_context.py",
+        "sha256": "2e448b30a93202213b5e4db7074fd04a0ff76d8cb4105df4495010cd5c14b501"
+      },
+      {
+        "path": "smart_operator_missed_draw_time.py",
+        "sha256": "5e21c57b8b65feb050a1db14a028596c25368aac2918b6d0f87526e6ba0e6d71"
+      },
+      {
+        "path": "smart_operator_preflight_integrity.py",
+        "sha256": "58b8c08672d7e9c3dc6d16eff1fb7d7f996b077849fc6257f8bbd4e8c277430c"
+      },
+      {
+        "path": "smart_operator_previous_epoch.py",
+        "sha256": "235ac768af7cc45af6c3ebc80aea79f4052f0364b203e46ef6f75abe6d582961"
+      },
+      {
+        "path": "smart_operator_recovery_validation.py",
+        "sha256": "d52596fd18683f98d5a8f33d728c1272514b1b188becee9ae26e6e906ff6482c"
+      },
+      {
         "path": "smart_operator_result.py",
         "sha256": "f6beadad4d875302c862e03e4e02c1274de1d7a867a986a977c0ea7dbbd4528b"
+      },
+      {
+        "path": "smart_operator_result_materialization.py",
+        "sha256": "c3cae9fc8012721478c2d791ef6a0a9f7267a0af1150683637dc2846d818484d"
       },
       {
         "path": "smart_path_semantics.py",
@@ -543,7 +579,7 @@
       },
       {
         "path": "smart_release_attestation.py",
-        "sha256": "897af13a06dbf701997312c27cd4882c1cea5d0a221fde86f28fe6108acdd441"
+        "sha256": "91dfef9f9f14efee00e611dad563574b63f5022ee8ecf57aaafdef28e31ae8b4"
       },
       {
         "path": "smart_repository_integrity.py",
@@ -638,12 +674,104 @@
         "sha256": "8b7d146fbb5a243ffc6fd10571ecb0156553f17d4c79171b46d40fb472f16de4"
       },
       {
+        "path": "smart_terminal_active_epoch.py",
+        "sha256": "2f8094f541d09aa01ed9fe0e2c0ead4b6dc42ef7308ee10b6ba37300d526c865"
+      },
+      {
         "path": "smart_terminal_engine.py",
-        "sha256": "97394c646444addf8b82e3d0687c0536ba90ac629880841ab93cfdb01c95a9a9"
+        "sha256": "58a57c8b68f420032a9cb9942c1a0e54b90b96024bbbee364ef0af54cf07e7b3"
+      },
+      {
+        "path": "smart_terminal_epoch_context.py",
+        "sha256": "8b09cd6082695f08e97016bb1b7f117425254ec1f4f7e7dc27eafb5102f3e2ec"
+      },
+      {
+        "path": "smart_terminal_epoch_names.py",
+        "sha256": "231adfe78a536e619991ccf06e9de172229beaab5e774284a9c3924566a512b5"
+      },
+      {
+        "path": "smart_terminal_evaluation.py",
+        "sha256": "6f5938304ade6093aeb5def237632925de3cb8e7c9c6ceb3e5bc86772f0137b5"
+      },
+      {
+        "path": "smart_terminal_evidence_guard.py",
+        "sha256": "4b49237f30235a4039af3f8a54e91b243efda119e10443eaa8a6571ca5887804"
+      },
+      {
+        "path": "smart_terminal_execution_preflight.py",
+        "sha256": "e3d1b3f313efd40b4825d8fab00eb6a87388c444c1f2d42199a69309936d4266"
+      },
+      {
+        "path": "smart_terminal_execution_status.py",
+        "sha256": "1e7e034da727195fdf654a589d6248f8ca3f2ff5899ec63cb9a6b2cc1415dee7"
       },
       {
         "path": "smart_terminal_executor.py",
         "sha256": "2b2f717a717af50b26c91cf6bf70ea4a21fb2ac2ccca91889521ed4433350782"
+      },
+      {
+        "path": "smart_terminal_historical_freeze.py",
+        "sha256": "05260a12da58f206f2310d239fa367de8283fc5c87c3485b81f804d0c58a60c2"
+      },
+      {
+        "path": "smart_terminal_idempotency.py",
+        "sha256": "83d9a1e58a0111f01c074d47fea7a6e058ffa8ffcb38d72ef063d119bea91c1d"
+      },
+      {
+        "path": "smart_terminal_integrity.py",
+        "sha256": "d9e473a2d6f6a077bb56bf761e7fa9730c8391c7b65240f9f70be34234aaf442"
+      },
+      {
+        "path": "smart_terminal_learned_state.py",
+        "sha256": "a15a1453a621afb0ef0056db42210fa2813d221733c8276ba31234dcaf54494f"
+      },
+      {
+        "path": "smart_terminal_mission_promotion.py",
+        "sha256": "75149b50bfcd1d3f17ec6a344fe89804bdd4ac133b95214e849b546b39e7dad1"
+      },
+      {
+        "path": "smart_terminal_official_evidence.py",
+        "sha256": "58cba29cd896a0125c647c93200288c382a86e67ede5f5d733ff4eea5eae20ac"
+      },
+      {
+        "path": "smart_terminal_official_ingest.py",
+        "sha256": "45b01032f46f35b71d645eaca26bce45df56a617efe02f73c24ccd09d398d672"
+      },
+      {
+        "path": "smart_terminal_post_result.py",
+        "sha256": "fbeb204685d75da2c5df4b58daa3306d4e75d374c34865bf2191c7698b6cb9cd"
+      },
+      {
+        "path": "smart_terminal_probe.py",
+        "sha256": "e021b7d19d91e190f1d02f08d6312c2f61c3020adf4e99b6bb0863a70aed07dd"
+      },
+      {
+        "path": "smart_terminal_prospective_lock.py",
+        "sha256": "3bc529719a1f51aae7a3020f5c20aa42ec3f9f933d5906cf24d1587cb1ae8fed"
+      },
+      {
+        "path": "smart_terminal_result_data.py",
+        "sha256": "abd030ddc732fe92b34de1303b0c570444eddaf2a1961d53df5f6cb779f1ef6d"
+      },
+      {
+        "path": "smart_terminal_result_store.py",
+        "sha256": "73362168b085b3ba8588693d8487bb3d3e43cb87994cbebebcf6979a0024e20e"
+      },
+      {
+        "path": "smart_terminal_result_transition.py",
+        "sha256": "57022808fe79d526bca9f7576b1e9c68313cc06780f32696f44601f2d092e6c1"
+      },
+      {
+        "path": "smart_terminal_runtime_binding.py",
+        "sha256": "ee1b5c3aef375f72750cba4b24e4a8fccfbb5fa5848f69dbadf38b91734399c1"
+      },
+      {
+        "path": "smart_terminal_sequential_learning.py",
+        "sha256": "ba566be195f8a611b42432fec832c4fe6f45e8307d6a56887f614322be9654b3"
+      },
+      {
+        "path": "smart_terminal_stale_coverage.py",
+        "sha256": "213d96d36ce93a67f77d6b341af2df6d8be5261e0068484f90021eda2363a143"
       },
       {
         "path": "smart_test_helpers.py",
@@ -1206,6 +1334,10 @@
         "sha256": "850b25b24a2e3fe4c4ba3eee3c5b49e83bb8fc7568380950675596a448e41957"
       },
       {
+        "path": "test_smart_operator_recovery_lineage_refactor.py",
+        "sha256": "5971093be0b4e651f4aeeb9692a962e8edb88949a56e6998f5fb105fc5e53376"
+      },
+      {
         "path": "test_smart_operator_result_authority.py",
         "sha256": "197437f34e1798b33b1f9e91a25b10d9479490e603859f1a926ee0ffc330962b"
       },
@@ -1387,7 +1519,7 @@
       },
       {
         "path": "test_smart_scoped_history_gate.py",
-        "sha256": "aacb285e873077d195610920b5eab355b3ba06dde36a251bae40b50ffd09eca9"
+        "sha256": "cda9c702ce31f7999578b60780c75cc243ecec9aa7f609833e54b33539d20824"
       },
       {
         "path": "test_smart_sequential_prospective_proof.py",
@@ -1447,7 +1579,7 @@
       },
       {
         "path": "test_smart_terminal_degraded_audit_execution.py",
-        "sha256": "7879b67df9ef0b5a001b198a6d338250f671048b71cb0406e636726abd1ba4c9"
+        "sha256": "971628a523079d5a451d48cb39ed95ffa06c45607c3ccd9ec062e489c076bedc"
       },
       {
         "path": "test_smart_terminal_executor_active_epoch.py",
@@ -1494,33 +1626,185 @@
         "sha256": "13ea5c15ac469988b7e6b8c2aba9471797b4612223cfff6f8575f06935e7cf1a"
       },
       {
+        "path": "tests/test_smart_operator_authority_documents.py",
+        "sha256": "5f23ab753d8d5d3dfa587638d3d8dea5bc392138846b328c3dd7af2dcf28312c"
+      },
+      {
+        "path": "tests/test_smart_operator_authority_transitions.py",
+        "sha256": "24218b174935e9de3a1fd8ca8d1faef93f8771d24932edb19e657d659329df35"
+      },
+      {
+        "path": "tests/test_smart_operator_epoch_document.py",
+        "sha256": "94a0f3ee1dfd606e9b3a888cbde466bc2e0050ba2985efe0fc139b04241f2729"
+      },
+      {
         "path": "tests/test_smart_operator_failure_boundaries_20261021.py",
         "sha256": "e6f67d943ec8527db89d76397a1dfab2666b444fac44ed1cbe4328ce9bfb7833"
+      },
+      {
+        "path": "tests/test_smart_operator_idempotency_context.py",
+        "sha256": "b7835741bed3465b9bcaf8e8f6c2a7925ab70ddcea5862c11c8ef81aeed2c0fb"
+      },
+      {
+        "path": "tests/test_smart_operator_missed_draw_time.py",
+        "sha256": "156b151bf35faa6f55d4f17d1f06216ff87e6dd092a90b36e624ec8cc984d738"
+      },
+      {
+        "path": "tests/test_smart_operator_preflight_integrity.py",
+        "sha256": "4ff2253d5940574b9d591d6cd97c7a48c014f17ac012b6e563baef36d0211630"
+      },
+      {
+        "path": "tests/test_smart_operator_previous_epoch.py",
+        "sha256": "d5ae94e78fb764adfc8b297a04ed882b3e4eeefa990edfacfe9239c23eebd86d"
       },
       {
         "path": "tests/test_smart_operator_recovery_rollback_20261021.py",
         "sha256": "7ba364b893fe98b13df245ec0d4c80a678d52715f5dfbc12bf72b490c6d4fc32"
       },
       {
+        "path": "tests/test_smart_operator_recovery_validation.py",
+        "sha256": "660a97452d668a5852da7a44d1332e55b578d716926f2e938f6c28a6777a957d"
+      },
+      {
+        "path": "tests/test_smart_operator_result_materialization_helper.py",
+        "sha256": "c1ccd6c801b1ef4cdc6d2352c22c86762c8c66cceaccd3005e7ad2c6843b8248"
+      },
+      {
+        "path": "tests/test_smart_release_attestation_refactor_closure.py",
+        "sha256": "c0e16731720b2f601eb9d83af91292a26dd94f083a88e61f7eea88bb029cc7fd"
+      },
+      {
+        "path": "tests/test_smart_terminal_active_epoch_binding.py",
+        "sha256": "e1eab4058cc6c00bd650d921586c03b1cd5bfdb6cf3d65c5ee511b90d9c710f9"
+      },
+      {
+        "path": "tests/test_smart_terminal_degraded_coverage_report.py",
+        "sha256": "b71c2d8dbe0ca88c5c43ea25a11ebc49921028f11018e82c95040fbefc92cb3f"
+      },
+      {
+        "path": "tests/test_smart_terminal_epoch_authority_selection.py",
+        "sha256": "2fe624dbbe82781cf7bea9758d3284de19481e0923b971d4b8d7dccb6c1d99c9"
+      },
+      {
+        "path": "tests/test_smart_terminal_epoch_runtime_names.py",
+        "sha256": "7433d72bd81840babc229b9fe626e3fc05f85ae6a40ec7800ee50d8872c6eff1"
+      },
+      {
+        "path": "tests/test_smart_terminal_epoch_scoped_globals.py",
+        "sha256": "76cd514f012d32470dc25fc0cd3233aeb661fbc77f07dcbfa8cd9e7c4f1ed14a"
+      },
+      {
+        "path": "tests/test_smart_terminal_evaluation.py",
+        "sha256": "ba3fcb2e98eeddf43a25c351dcda6725346f5c140764c43df70b5a94ad83a2de"
+      },
+      {
+        "path": "tests/test_smart_terminal_evidence_guard.py",
+        "sha256": "5f69ebf550137999f41b636e28c330f5c1dea1c0c1773b181c82dc3db576459b"
+      },
+      {
+        "path": "tests/test_smart_terminal_execution_preflight.py",
+        "sha256": "d85fb3ed9932b69217e92ce0c61ad36f8a41537b11b02c790982a594dad75d75"
+      },
+      {
+        "path": "tests/test_smart_terminal_execution_status.py",
+        "sha256": "4fea1a232ebbaff21a033352247fa832f14dea158f925bb4fc71ae54fdb13433"
+      },
+      {
+        "path": "tests/test_smart_terminal_historical_freeze_precheck.py",
+        "sha256": "4f00d47a86fdefcdbc7688f609fb29c16688619e9d6b50f2b2e0a163076a7243"
+      },
+      {
+        "path": "tests/test_smart_terminal_idempotency_replay.py",
+        "sha256": "3bbc38e5bf8c2ba3f224462fcfebfdccac2b56931f30355fe37dcf0c794bda1c"
+      },
+      {
+        "path": "tests/test_smart_terminal_independent_audit_runner.py",
+        "sha256": "417fb67184f5a9fbd01e27fe994f7719278e41cd84294985233ba71515c680de"
+      },
+      {
+        "path": "tests/test_smart_terminal_integrity.py",
+        "sha256": "bd8c259853f9cda75b6eb56bb44568de6580183812f5bb8f0582bffa9464b85f"
+      },
+      {
+        "path": "tests/test_smart_terminal_learned_state_module.py",
+        "sha256": "5e9b46b8fe84c6ba26a13f57800f742b62a0eba7db3cfdf31d3a12aa7ad0c59f"
+      },
+      {
+        "path": "tests/test_smart_terminal_learning_sequence_runner.py",
+        "sha256": "1277e0c8307b79f7fe77a541f4613db1fd36366eeb36ca2cac996f966d77d9e5"
+      },
+      {
+        "path": "tests/test_smart_terminal_mission_promotion.py",
+        "sha256": "7f8a674744a82c512c52f4f6f55e7531e5405137a96fd2d134ca8036e0c2f9b8"
+      },
+      {
+        "path": "tests/test_smart_terminal_official_acquisition.py",
+        "sha256": "b652070ac17a62b31e4096e8b8bc6e7eeaa77947d35e7f1ad4d3db2a26f46961"
+      },
+      {
+        "path": "tests/test_smart_terminal_official_evidence.py",
+        "sha256": "3f134426e4912fc44ad2e3ce8c513b6fc0910508f5082ad57605a33735e89370"
+      },
+      {
+        "path": "tests/test_smart_terminal_official_failure_decision.py",
+        "sha256": "6092c3dcb28551e438b45eb91c819192f13bf1e86f53365095640408e8f7db10"
+      },
+      {
+        "path": "tests/test_smart_terminal_official_ingest.py",
+        "sha256": "57b620041a961d719eccb9d17b203f74601b6b8166a2776daa19a27b1caefb93"
+      },
+      {
+        "path": "tests/test_smart_terminal_post_result.py",
+        "sha256": "688b0367ab92077e6e5f875024ba4524e3ee43ce32aaadb63864bdc6d5ae313f"
+      },
+      {
+        "path": "tests/test_smart_terminal_prospective_lock.py",
+        "sha256": "d32425af4c995a392cc1a3b51642048bbee4a3223d71e45f9993cf2b1d9e2d0b"
+      },
+      {
+        "path": "tests/test_smart_terminal_read_only_probe.py",
+        "sha256": "313d854503515cb4aee4c23bb809830ac6149c446544d703ea776475706c9cd4"
+      },
+      {
+        "path": "tests/test_smart_terminal_result_data.py",
+        "sha256": "823742a5ae0f8ddf90ee55d7b8db01bf39d3ca976ba6d6279ace55665746ccf1"
+      },
+      {
+        "path": "tests/test_smart_terminal_result_store_advance.py",
+        "sha256": "96fe29bdfd84796cf590e22ddc40c0100b89683da5ba2374bfa052952f9cccb7"
+      },
+      {
+        "path": "tests/test_smart_terminal_result_transition.py",
+        "sha256": "b1c65798b557157bd9a9beeb7a1844425d0a10a6e6f905de88645e561e622fef"
+      },
+      {
+        "path": "tests/test_smart_terminal_runtime_binding.py",
+        "sha256": "1e7be70b723e611a5b0e8375fbe75a851d46c217af1de28ac965a156b6c4894a"
+      },
+      {
+        "path": "tests/test_smart_terminal_stale_coverage_binding.py",
+        "sha256": "ed085d8272b26465e296774f7a4732f1f9418b0e54a25902ce3e500123dbe317"
+      },
+      {
         "path": "tests/test_wmcp_scientific_tools.py",
         "sha256": "06436ef27b2390288150e9f5264371564edadc6e556eaa4140dcec65509f05d5"
       }
     ],
-    "sha256": "6b5f04de001da1a6e892dd1e4f7e26fb3b6c28f1bbbc40c0dc084b1dcc07f652"
+    "sha256": "8fd2ac5b14ecd0c434b60710d25010d7c0d4590a586153c2db6202a5a8193251"
   },
   "regression_source": {
     "status": "PASS",
-    "source_commit": "fa5cafee2e10f85f09c3e7302a0833d2e84805ea",
-    "ci_run_id": "8c467d56-85c7-46b9-90e4-eebe684bfdc2",
+    "source_commit": "4cae7e61df9276c379d7bace80404db618b46f3b",
+    "ci_run_id": "a9cfbfdb-bf4e-49fb-a151-17a097a7501a",
     "execution": {
       "kind": "EXTERNAL_GOVERNED_EXECUTOR",
-      "execution_id": "8c467d56-85c7-46b9-90e4-eebe684bfdc2",
-      "hostname": "DESKTOP-JNS08PU",
-      "source_commit": "fa5cafee2e10f85f09c3e7302a0833d2e84805ea",
+      "execution_id": "a9cfbfdb-bf4e-49fb-a151-17a097a7501a",
+      "hostname": "Vendas",
+      "source_commit": "4cae7e61df9276c379d7bace80404db618b46f3b",
       "origin": "https://github.com/andrebarros78/SMART-MEGA.git"
     },
-    "code_fingerprint_sha256": "6b5f04de001da1a6e892dd1e4f7e26fb3b6c28f1bbbc40c0dc084b1dcc07f652",
-    "junit_sha256": "5c210bda579cb4619de8846d10b301338a47f024329c5ea6d9e906b5349191d3",
+    "code_fingerprint_sha256": "8fd2ac5b14ecd0c434b60710d25010d7c0d4590a586153c2db6202a5a8193251",
+    "junit_sha256": "aed11787d06676daf951721c865b1ce0f07da48182e4be115002bade4cf78be1",
     "checks": {
       "source_commit_recorded": true,
       "execution_recorded": true,
@@ -1532,7 +1816,7 @@
   },
   "critical_code_manifest": {
     "schema": "SMART_CRITICAL_CODE_MANIFEST_1",
-    "file_count": 157,
+    "file_count": 189,
     "files": {
       "adjudicate_signal_challenger.py": "f49fd60d73581d5cf29b822669736257e2b49fca3c48d319e5dc0f1f33c36bf4",
       "smart_3054_adjudication_preflight.py": "118a82d5c47840a9c2f9533d5d32bd2ac6708bbe9029c0f43aea1d73e01c03c9",
@@ -1626,9 +1910,18 @@
       "smart_operation_lock.py": "e304ba17a842e5d9205d6c2d821b88f0a87c027b9c34d2da45e75d1f209fc35f",
       "smart_operation_recovery.py": "a9ad05e75b2b316583200baeabe952031b580bda20e371dc3a7ae205fe97a1d4",
       "smart_operational_lifecycle.py": "5afb294f7166b72c86c0ba768078b3651cb32f761b207e90d6ed6eb6b452b812",
-      "smart_operator.py": "0266b4ecdaeda83c6890f019e0cca458f04577507b475c8c86b46d45b1305569",
+      "smart_operator.py": "4288682ea31c9e863688eabcea5682cd4c126108bdcb18c25b0e335b0cfaff82",
+      "smart_operator_authority_documents.py": "5b30c82d4a85591d92fdc8c711a85672bef2acfcf5c2490e833cf329c49f3dac",
+      "smart_operator_authority_transitions.py": "ce8e82d7fca4939279c2de55aafa6689d4e30d3c2cc6b74a6aefaedb9d777c2e",
       "smart_operator_contract.py": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1",
+      "smart_operator_epoch_document.py": "c241ee968dc9adc8ec1838c7237c25b596480c82f147df121a0335931adc1ec8",
+      "smart_operator_idempotency_context.py": "2e448b30a93202213b5e4db7074fd04a0ff76d8cb4105df4495010cd5c14b501",
+      "smart_operator_missed_draw_time.py": "5e21c57b8b65feb050a1db14a028596c25368aac2918b6d0f87526e6ba0e6d71",
+      "smart_operator_preflight_integrity.py": "58b8c08672d7e9c3dc6d16eff1fb7d7f996b077849fc6257f8bbd4e8c277430c",
+      "smart_operator_previous_epoch.py": "235ac768af7cc45af6c3ebc80aea79f4052f0364b203e46ef6f75abe6d582961",
+      "smart_operator_recovery_validation.py": "d52596fd18683f98d5a8f33d728c1272514b1b188becee9ae26e6e906ff6482c",
       "smart_operator_result.py": "f6beadad4d875302c862e03e4e02c1274de1d7a867a986a977c0ea7dbbd4528b",
+      "smart_operator_result_materialization.py": "c3cae9fc8012721478c2d791ef6a0a9f7267a0af1150683637dc2846d818484d",
       "smart_path_semantics.py": "865875f02156029bd0b2fb2757071c62e7f13c3d24b8303ffde165ca2d36be73",
       "smart_portfolio_backtest.py": "57941508f182cb8bcbb779d2b969f3d1f680fb58c131c076fdf8bcc2dc262bdc",
       "smart_portfolio_backtest_merge.py": "9c90e3d8115534eea63cf6b1c03e9b731c90c5faae69f6c0fcabcdcf5c1bada6",
@@ -1659,7 +1952,7 @@
       "smart_refresh_falsification_report.py": "73767dfc4a76ed42f1dd7b7f4cf4b271bde6e240862f659d260d0cb9548a1d87",
       "smart_regression_evidence.py": "f18924779d3237f468c02174df1529331117dd056838dda65a7aca83e0daf6bb",
       "smart_regression_runner.py": "71ffaaa0294668eeb043a228291932334774b38fa0d6c9301c8f0be6c952a37d",
-      "smart_release_attestation.py": "897af13a06dbf701997312c27cd4882c1cea5d0a221fde86f28fe6108acdd441",
+      "smart_release_attestation.py": "91dfef9f9f14efee00e611dad563574b63f5022ee8ecf57aaafdef28e31ae8b4",
       "smart_repository_integrity.py": "864801ab611210f931fa386d031aa21327c250ebe0023909216f6645075d3d1d",
       "smart_rollover.py": "35588cc9bbb313a54800ba4153be7ae1d965dc229b84d190672235f8d491ed26",
       "smart_runtime_guard.py": "59a9176dc54611f4ddcac26f6968b320d6be90c8b777db3b404474f6d794df8d",
@@ -1683,8 +1976,31 @@
       "smart_startup_reconciler.py": "382190f83c6325b8a4d8ae870c66b6c6241b3da737a7fc43d74d91256728e95a",
       "smart_storage_surfaces.py": "f455b76e2a907013debe39affbcd1f2fe399aa346e415ced6b5855b87a7b8fce",
       "smart_target_schedule.py": "8b7d146fbb5a243ffc6fd10571ecb0156553f17d4c79171b46d40fb472f16de4",
-      "smart_terminal_engine.py": "97394c646444addf8b82e3d0687c0536ba90ac629880841ab93cfdb01c95a9a9",
+      "smart_terminal_active_epoch.py": "2f8094f541d09aa01ed9fe0e2c0ead4b6dc42ef7308ee10b6ba37300d526c865",
+      "smart_terminal_engine.py": "58a57c8b68f420032a9cb9942c1a0e54b90b96024bbbee364ef0af54cf07e7b3",
+      "smart_terminal_epoch_context.py": "8b09cd6082695f08e97016bb1b7f117425254ec1f4f7e7dc27eafb5102f3e2ec",
+      "smart_terminal_epoch_names.py": "231adfe78a536e619991ccf06e9de172229beaab5e774284a9c3924566a512b5",
+      "smart_terminal_evaluation.py": "6f5938304ade6093aeb5def237632925de3cb8e7c9c6ceb3e5bc86772f0137b5",
+      "smart_terminal_evidence_guard.py": "4b49237f30235a4039af3f8a54e91b243efda119e10443eaa8a6571ca5887804",
+      "smart_terminal_execution_preflight.py": "e3d1b3f313efd40b4825d8fab00eb6a87388c444c1f2d42199a69309936d4266",
+      "smart_terminal_execution_status.py": "1e7e034da727195fdf654a589d6248f8ca3f2ff5899ec63cb9a6b2cc1415dee7",
       "smart_terminal_executor.py": "2b2f717a717af50b26c91cf6bf70ea4a21fb2ac2ccca91889521ed4433350782",
+      "smart_terminal_historical_freeze.py": "05260a12da58f206f2310d239fa367de8283fc5c87c3485b81f804d0c58a60c2",
+      "smart_terminal_idempotency.py": "83d9a1e58a0111f01c074d47fea7a6e058ffa8ffcb38d72ef063d119bea91c1d",
+      "smart_terminal_integrity.py": "d9e473a2d6f6a077bb56bf761e7fa9730c8391c7b65240f9f70be34234aaf442",
+      "smart_terminal_learned_state.py": "a15a1453a621afb0ef0056db42210fa2813d221733c8276ba31234dcaf54494f",
+      "smart_terminal_mission_promotion.py": "75149b50bfcd1d3f17ec6a344fe89804bdd4ac133b95214e849b546b39e7dad1",
+      "smart_terminal_official_evidence.py": "58cba29cd896a0125c647c93200288c382a86e67ede5f5d733ff4eea5eae20ac",
+      "smart_terminal_official_ingest.py": "45b01032f46f35b71d645eaca26bce45df56a617efe02f73c24ccd09d398d672",
+      "smart_terminal_post_result.py": "fbeb204685d75da2c5df4b58daa3306d4e75d374c34865bf2191c7698b6cb9cd",
+      "smart_terminal_probe.py": "e021b7d19d91e190f1d02f08d6312c2f61c3020adf4e99b6bb0863a70aed07dd",
+      "smart_terminal_prospective_lock.py": "3bc529719a1f51aae7a3020f5c20aa42ec3f9f933d5906cf24d1587cb1ae8fed",
+      "smart_terminal_result_data.py": "abd030ddc732fe92b34de1303b0c570444eddaf2a1961d53df5f6cb779f1ef6d",
+      "smart_terminal_result_store.py": "73362168b085b3ba8588693d8487bb3d3e43cb87994cbebebcf6979a0024e20e",
+      "smart_terminal_result_transition.py": "57022808fe79d526bca9f7576b1e9c68313cc06780f32696f44601f2d092e6c1",
+      "smart_terminal_runtime_binding.py": "ee1b5c3aef375f72750cba4b24e4a8fccfbb5fa5848f69dbadf38b91734399c1",
+      "smart_terminal_sequential_learning.py": "ba566be195f8a611b42432fec832c4fe6f45e8307d6a56887f614322be9654b3",
+      "smart_terminal_stale_coverage.py": "213d96d36ce93a67f77d6b341af2df6d8be5261e0068484f90021eda2363a143",
       "smart_test_helpers.py": "b4619caa72d6281bbca1390ea50e46a06a5179e5f3e5eac768c7bf2c1cf577ed",
       "smart_total_integration_gate.py": "58de27e3219cdf100f9857896be8b27c737ee33520a89213bf442d1608ae678a",
       "smart_transaction_journal.py": "ae3c7e1156471b956ceeb630e7c11db8f2437a315f3a90b59cf4d8581d988667",
@@ -1692,24 +2008,24 @@
       "smart_v2_production.py": "7abfebef4e9b96e39aa504753de86477771537c5818fbd7b6622994a523012c0",
       "smart_validation_gate.py": "8a1cf5a90bf50271e0fdd5ea7d7d3c0392558cc4743aa523b85c808757444363"
     },
-    "fingerprint_sha256": "af22aec3487a398d2a84a7164ca3ee0d970381e6c3f4f6de96259d39d5f8de27"
+    "fingerprint_sha256": "9f3a3f634cc04bac3714baf71cebfe94657b7c44444e1b08fd46208efd6abb7f"
   },
   "regression": {
-    "tests": 1786,
+    "tests": 2339,
     "failures": 0,
     "errors": 0,
     "skipped": 0,
     "status": "PASS",
-    "sha256": "5c210bda579cb4619de8846d10b301338a47f024329c5ea6d9e906b5349191d3"
+    "sha256": "aed11787d06676daf951721c865b1ce0f07da48182e4be115002bade4cf78be1"
   },
   "canonical_root_authority": {
     "status": "PASS",
     "file": "SMART_CANONICAL_ROOT.json",
-    "file_sha256": "eb85a7c494b56f085336650728c4bd69e78480eb65c424c3d735860f60ae5604",
-    "authority_sha256": "2602216587f3e721e4d7ed3f31a0568ee819bdf9a3e319d7fbcaa50fd9cb3731",
+    "file_sha256": "31af07a49691f07312a4f1cfd4e9690af147638c63c3494f9ccadccb15b7d88f",
+    "authority_sha256": "a8971532420d0f69a40f19b6ecf7074affece76424a84bac683c78952b3a53d7",
     "junit_file": "SMART_AUDIT_JUNIT_CURRENT.xml",
-    "junit_sha256": "5c210bda579cb4619de8846d10b301338a47f024329c5ea6d9e906b5349191d3",
-    "tests": 1786,
+    "junit_sha256": "aed11787d06676daf951721c865b1ce0f07da48182e4be115002bade4cf78be1",
+    "tests": 2339,
     "failures": 0,
     "errors": 0,
     "checks": {
@@ -1728,10 +2044,10 @@
   },
   "runtime_guard": {
     "schema": "SMART_RUNTIME_GUARD_V2",
-    "project_root": "C:\\SMPR120CERT",
-    "canonical_python": "C:\\Windows\\Temp\\SMART-MEGA-PR116-ENV-20261028\\Scripts\\python.exe",
-    "current_python": "C:\\Windows\\Temp\\SMART-MEGA-PR116-ENV-20261028\\Scripts\\python.exe",
-    "python_version": "3.12.10",
+    "project_root": "C:\\New Projet\\SMART-MEGA-RELEASE-AUDIT-20261102",
+    "canonical_python": "C:\\New Projet\\SMART-MEGA-RELEASE-AUDIT-20261102\\.venv\\Scripts\\python.exe",
+    "current_python": "C:\\New Projet\\SMART-MEGA-RELEASE-AUDIT-20261102\\.venv\\Scripts\\python.exe",
+    "python_version": "3.13.15",
     "modules": {
       "numpy": {
         "ok": true,
@@ -1771,10 +2087,10 @@
     },
     "status": "PASS"
   },
-  "build_orchestration_sha256": "a50ce547937604da10170699d9f320212040d2effd89f7167b30168736c5f401",
-  "build_runtime_sha256": "619b94c07cc135fab015fc7661d397b8a305227dfe0ed7563dd947c12e6fd25d",
-  "build_functional_sha256": "7adbe088e60a7d2d80c5406b1bea9f09bebf195fbf13ac23a432e52a6f9130d0",
-  "build_total_integration_sha256": "fa23cc3bce172ca6d53c7da8782169180cca379c7cd4240f30377e2a40fc8378",
+  "build_orchestration_sha256": "76bee9b82eab8131dd95c765a143b149d928db275fa38d9f6d4fefc450889642",
+  "build_runtime_sha256": "bbce5e6fa0d835fd34937321fb442ada825ea56372e3eb7d564be8f317c756a8",
+  "build_functional_sha256": "86575961988ecee9c2ad77d39ec321fbe64a090f7b81ed97a17bc4a3c53a0cba",
+  "build_total_integration_sha256": "4f59bd5377f24cc2a8032d9faf82fc4feb43d23c40a1136516739cd469a353c3",
   "operator_contract": {
     "schema": "SMART_OPERATOR_CONTRACT_V1",
     "product_completion_independent_of_operation": true,
@@ -1852,5 +2168,5 @@
     "zero_open_material_deficiencies": true,
     "scientific_terminal_claim_not_required_for_product_completion": true
   },
-  "sha256": "b5ffac2653c42f1e97a771a0c093d3f048748112dd222d66d8d26db55a31b020"
+  "sha256": "2427e16b8b1c08142a28e9b815a3f87f3a725aed32ed343d494a2c2cc22d695c"
 }
