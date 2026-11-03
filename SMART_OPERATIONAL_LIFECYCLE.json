@@ -1,16 +1,16 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "HOLD",
-  "revision": 54,
+  "state": "AUTHORIZED",
+  "revision": 55,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
   "target_contest": 3081,
   "completed_contest": 3080,
   "previous_state": "HOLD",
-  "transition": "HOLD_TO_HOLD_MISSED_RESULT_RECOVERY",
-  "transition_actor": "smart_missed_catchup",
-  "transition_utc": "2026-11-03T03:29:52.242946+00:00",
-  "previous_lifecycle_sha256": "355ff16e604e0a79d1a3651cdf8c45dd58fd3a86c01b4e0a448dc88e7462728a",
+  "transition": "HOLD_TO_AUTHORIZED",
+  "transition_actor": "operator_authorize_next_cycle",
+  "transition_utc": "2026-11-03T03:54:07.582363+00:00",
+  "previous_lifecycle_sha256": "9595969fef2ce477d30280f653393e4a557941117d8e9c6fe5bdff6ee751139c",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
@@ -94,5 +94,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "9595969fef2ce477d30280f653393e4a557941117d8e9c6fe5bdff6ee751139c"
+  "sha256": "cb98de419882261d563ca0cde412be39171502a4fced24d10a17a6fa1353e40a"
 }
