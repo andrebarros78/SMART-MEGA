@@ -83,10 +83,36 @@ def load_draw_time_policy(root: str | Path, path: str | Path = DEFAULT_TIME_POLI
                 or not source["url"].startswith("https://caixanoticias.caixa.gov.br/")
                 or source.get("published_date") != "2026-09-29"):
             raise ValueError("exceptional contest CAIXA source missing")
+    # Separate monthly CAIXA exceptions from the September Mega Week authority.
+    # Date, weekday, time and source bytes must agree; no blanket Wednesday rule.
+    month_specs = obj.get("official_calendar_exceptions", {})
+    if not isinstance(month_specs, dict):
+        raise ValueError("CAIXA monthly calendar exceptions must be an object")
+    for contest, spec in month_specs.items():
+        if (not isinstance(contest, str) or re.fullmatch(r"[1-9][0-9]*", contest) is None
+                or not isinstance(spec, dict)
+                or set(spec) != {"date", "time", "source_pdf", "source_sha256", "source_url"}):
+            raise ValueError("invalid monthly calendar exception identity or schema")
+        try:
+            date = datetime.strptime(spec["date"], "%Y-%m-%d")
+        except (ValueError, TypeError) as exc:
+            raise ValueError("invalid monthly calendar exception date") from exc
+        if (not isinstance(spec["time"], str)
+                or re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", spec["time"]) is None):
+            raise ValueError("invalid monthly calendar exception time")
+        expected_url = "https://www.caixa.gov.br/Downloads/caixa-loterias/" + Path(spec["source_pdf"]).name
+        if (spec["source_url"] != expected_url
+                or not isinstance(spec["source_sha256"], str)
+                or re.fullmatch(r"[0-9a-f]{64}", spec["source_sha256"]) is None):
+            raise ValueError("monthly calendar exception official provenance invalid")
+        relative = Path(spec["source_pdf"])
+        if (relative.is_absolute() or ".." in relative.parts
+                or relative.parts[:3] != ("runtime", "procedural_sources", "cronogramas_caixa")):
+            raise ValueError("monthly calendar PDF path unsafe")
     return obj, resolved
 
 
-def _scheduled_contest_time(policy: dict[str, Any], target: int, date: datetime) -> tuple[str, str]:
+def _scheduled_contest_time(policy: dict[str, Any], target: int, date: datetime, *, root: Path | None = None) -> tuple[str, str]:
     """Honor only exact, self-hashed contest/date exceptions; never allow all Wednesdays."""
     exceptional = policy.get("exceptional_contests", {})
     spec = exceptional.get(str(target))
@@ -94,6 +120,28 @@ def _scheduled_contest_time(policy: dict[str, Any], target: int, date: datetime)
         if spec["date"] != date.strftime("%Y-%m-%d"):
             raise ValueError("special contest date contradicts CAIXA Mega Week authority")
         return spec["time"], "CAIXA_MEGA_WEEK_2026_OFFICIAL"
+    monthly = policy.get("official_calendar_exceptions", {}).get(str(target))
+    if monthly is not None:
+        if monthly["date"] != date.strftime("%Y-%m-%d"):
+            raise ValueError("special contest date contradicts CAIXA monthly calendar")
+        if root is None:
+            raise ValueError("monthly CAIXA exception requires exact repository root")
+        spec = monthly
+        contest = str(target)
+        relative = Path(spec["source_pdf"])
+        calendar = (root / relative).resolve()
+        if (not calendar.is_relative_to(root) or not calendar.is_file()
+                or calendar.is_symlink() or sha256_file(calendar) != spec["source_sha256"]):
+            raise ValueError("monthly CAIXA PDF is absent or hash mismatched")
+        text = "\n".join(page.extract_text() or "" for page in PdfReader(str(calendar)).pages)
+        dated = extract_target_from_text(text, int(contest))
+        if dated["target_date"] != date.strftime("%d/%m/%Y"):
+            raise ValueError("monthly CAIXA PDF contradicts exact contest date")
+        weekday_token = ("SEG", "TER", "QUA", "QUI", "SEX", "SAB", "DOM")[date.weekday()]
+        time_token = str(int(spec["time"][:2])) + "h"
+        if re.search(r"\b" + weekday_token + r"\s+" + time_token + r"\b", text) is None:
+            raise ValueError("monthly CAIXA PDF does not attest weekday draw hour")
+        return monthly["time"], "CAIXA_OFFICIAL_MONTHLY_CALENDAR"
     regular = policy["weekday_times"].get(str(date.weekday()))
     if not isinstance(regular, str) or not re.fullmatch(r"(?:[01]\d|2[0-3]):[0-5]\d", regular):
         raise ValueError(f"CAIXA verified next contest has no applicable draw-time policy: target={target}")
@@ -300,7 +348,7 @@ def _verified_caixa_previous_result_schedule(root: Path, target: int, time_polic
     if sorted(prior) != sorted(numeric_balls):
         raise ValueError("CAIXA previous contest balls contradict canonical history")
     policy, policy_path = load_draw_time_policy(root, time_policy)
-    time_text, time_authority = _scheduled_contest_time(policy, target, next_date)
+    time_text, time_authority = _scheduled_contest_time(policy, target, next_date, root=root)
     hour, minute = map(int, time_text.split(":"))
     scheduled = next_date.replace(hour=hour, minute=minute, tzinfo=ZoneInfo(policy["timezone"]))
     source_hash = sha256_file(source)
@@ -385,7 +433,7 @@ def resolve_target_schedule(
     if nearest_date < effective_from:
         raise ValueError("target predates current Mega-Sena draw-time policy")
     weekday_key = str(nearest_date.weekday())
-    time_text, time_authority = _scheduled_contest_time(policy, int(target_contest), nearest_date)
+    time_text, time_authority = _scheduled_contest_time(policy, int(target_contest), nearest_date, root=root)
     hour, minute = (int(x) for x in time_text.split(":"))
     scheduled = nearest_date.replace(hour=hour, minute=minute, second=0, microsecond=0, tzinfo=ZoneInfo(policy["timezone"]))
 

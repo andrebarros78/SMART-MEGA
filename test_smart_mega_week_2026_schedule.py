@@ -41,7 +41,7 @@ def test_3077_wrong_date_rejected_even_when_regular_weekday(tmp_path,monkeypatch
 
 def test_nonlisted_wednesday_stays_blocked(tmp_path,monkeypatch):
     _fixture(tmp_path,monkeypatch,3080,3081,'03/11/2026','04/11/2026')
-    with pytest.raises(ValueError,match='draw.time.policy|weekday|time unavailable'):
+    with pytest.raises(ValueError,match='draw.time.policy|weekday|time unavailable|monthly CAIXA PDF'):
         schedules.resolve_target_schedule(tmp_path,3081)
 
 def test_megawweek_friday_3079_allowed_only_on_official_date(tmp_path,monkeypatch):

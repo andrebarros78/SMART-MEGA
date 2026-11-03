@@ -27,3 +27,17 @@ def test_archived_caixa_cronogram_resolves_3054_to_sunday_06_09_2026():
     assert doc["authority"] == "CAIXA_ARCHIVED_CRONOGRAM_PDF"
     assert doc["result_used"] is False
     assert len(doc["source_sha256"]) == 64
+
+def test_archived_caixa_november_3081_is_exact_and_before_draw():
+    from datetime import datetime, timezone
+    from smart_target_schedule import assert_pre_draw_window
+
+    doc = resolve_target_schedule(ROOT, 3081)
+    assert doc["target_contest"] == 3081
+    assert doc["target_date"] == "04/11/2026"
+    assert doc["scheduled_datetime"] == "2026-11-04T21:00:00-03:00"
+    assert doc["draw_time_policy_authority"] == "CAIXA_OFFICIAL_MONTHLY_CALENDAR"
+    assert doc["authority"] == "CAIXA_ARCHIVED_CRONOGRAM_PDF"
+    assert doc["result_used"] is False
+    check = assert_pre_draw_window(doc, now=datetime(2026, 11, 3, 3, 30, tzinfo=timezone.utc))
+    assert check["status"] == "PASS"
