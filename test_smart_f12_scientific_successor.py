@@ -23,7 +23,13 @@ def test_f12_successor_preserves_f11_and_rejects_unproved_superiority():
     assert actual["checks"]["all_other_predictive_sources_preserved_after_exact_guard_reversal"] is False
     assert all(v for k, v in actual["checks"].items()
                if k != "all_other_predictive_sources_preserved_after_exact_guard_reversal")
-    assert evaluate_scoped(ROOT)["status"] == "PASS_SCOPE_ONLY"
+    scoped = evaluate_scoped(ROOT)
+    assert scoped["status"] == "FAIL"
+    assert {name for name, passed in scoped["checks"].items() if not passed} == {
+        "only_fine_tuning_deviates_from_f11_approved_sources",
+        "other_f12_sources_preserved",
+    }
+    assert scoped["effective_model_promotion_authorized"] is False
     assert actual["historical_comparison"]["p10"]["total_delta"] == 0
     assert actual["historical_comparison"]["p06"]["approved_for_predictive_promotion"] is False
     assert actual["engineering_consumer_trace_fix_approved"] is False
