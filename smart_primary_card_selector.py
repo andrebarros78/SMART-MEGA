@@ -8,8 +8,10 @@ SCHEMA="SMART_PRIMARY_CARD_SELECTOR_2"
 @dataclass(frozen=True)
 class PrimaryCardSelectorConfig:
     candidate_pool_size:int=18; max_candidate_pool_size:int=30; numbers_per_card:int=6
-    min_low_band:int=2; max_low_band:int=4; min_mid_band:int=1; max_mid_band:int=3; min_high_band:int=0; max_high_band:int=2
-    require_top3_presence:bool=True; score_weight:float=1.0; rank_weight:float=0.035; band_balance_weight:float=0.08; concentration_penalty:float=0.18
+    # Production must never exclude scored combinations for a band-distribution heuristic.
+    # Nonuniform band limits remain opt-in for research, not the default card.
+    min_low_band:int=0; max_low_band:int=6; min_mid_band:int=0; max_mid_band:int=6; min_high_band:int=0; max_high_band:int=6
+    require_top3_presence:bool=False; score_weight:float=1.0; rank_weight:float=0.035; band_balance_weight:float=0.0; concentration_penalty:float=0.0
     def validate(self)->None:
         integer_fields = (
             "candidate_pool_size", "max_candidate_pool_size", "numbers_per_card",
