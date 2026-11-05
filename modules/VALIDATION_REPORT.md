@@ -24,3 +24,9 @@ Classificacao semantica e dependencias estaticas nao demonstram roteamento efeti
 - Nova referencia base: 3a810b1f05029ee1d5da793d6eaa36afa081e96a.
 - Inclusao explicita de smart_protected_pr_publication.py no M15; codigo e testes de publicacao preservados.
 - Regressao ampliada com test_smart_protected_pr_publication.py: 109 PASS, 1 warning, exit 0.
+
+## Atualizacao apos merge protegido do PR 195
+- Novo commit-base: 04f958b3f3579e0f8eb70f31a7fcc837ca7574a3.
+- Mudancas concorrentes em smart_protected_pr_publication.py foram incorporadas, e os hashes M15 foram regenerados.
+- Testes focados na versao final: 14 PASS em modules/tests/test_semantic_modules.py e test_smart_protected_pr_publication.py; exit 0.
+- A validacao anterior de 109 testes refere-se a arvore 99f2fa742c585126685e820b8f15b32bb7d06e81; nao substitui a retestagem da versao nova.
