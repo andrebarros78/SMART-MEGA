@@ -11,6 +11,7 @@ import json
 import os
 from pathlib import Path
 import re
+import shutil
 import subprocess
 from urllib.error import HTTPError, URLError
 from urllib.request import Request, urlopen
@@ -28,9 +29,18 @@ class GitHubAPI:
             (os.environ.get(name) for name in
              ("SMART_MEGA_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN")
              if os.environ.get(name)), None)
+        # Reuse an already-authorized GitHub CLI account on any executor.
+        # The bearer never leaves this process through stdout or logs.
+        if not self._token and shutil.which("gh"):
+            probe = subprocess.run(
+                ["gh", "auth", "token", "--hostname", "github.com"],
+                capture_output=True, text=True, check=False, timeout=15,
+            )
+            if probe.returncode == 0:
+                self._token = probe.stdout.strip() or None
         if not self._token:
             raise PermissionError("GitHub publication credential unavailable: "
-                                  "configure an authorized scoped credential")
+                                  "configure an authorized scoped credential or gh auth")
 
     def call(self, method: str, path: str, payload: dict | None = None) -> dict:
         if not path.startswith("/") or "://" in path or ".." in path:
