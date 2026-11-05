@@ -271,7 +271,12 @@ def _require_current_github_main(root: Path, source: str) -> None:
     """Prevent a stale or substituted checkout from authorizing even read-only status."""
     if not re.fullmatch(r"[0-9a-f]{40}", source):
         raise PermissionError("invalid source commit for canonical GitHub checkout")
-    if _git(root, "symbolic-ref", "--short", "HEAD") != "main":
+    try:
+        current_branch = _git(root, "symbolic-ref", "--short", "HEAD")
+    except subprocess.CalledProcessError:
+        # Detached checkout is a noncanonical execution surface.
+        raise PermissionError("external operator must use canonical main branch") from None
+    if current_branch != "main":
         raise PermissionError("external operator must use canonical main branch")
     origin = _git(root, "remote", "get-url", "origin")
     if origin not in {
@@ -323,21 +328,22 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         _require_current_github_main(root, _git(root, "rev-parse", "HEAD"))
     else:
         _require_external_operator_authority(root, operation, target)
-    # Canonical GitHub main is PR-protected. Check publication authority BEFORE
-    # mutating any operational state to avoid another unpublishable local epoch.
-    origin = _git(root, "remote", "get-url", "origin")
-    canonical_origin = origin in {
-        "https://github.com/" + REPOSITORY + ".git",
-        "https://github.com/" + REPOSITORY,
-        "git@github.com:" + REPOSITORY + ".git",
-        "ssh://git@github.com/" + REPOSITORY + ".git",
-    }
+    # Canonical main is protected. Only mutations need a publishing credential;
+    # read-only operations must not introduce another Git remote dependency.
     publisher = None
     source_commit = None
-    if operation not in READ_ONLY and canonical_origin:
-        from smart_protected_pr_publication import GitHubAPI
-        publisher = GitHubAPI()
-        source_commit = _git(root, "rev-parse", "HEAD")
+    if operation not in READ_ONLY:
+        origin = _git(root, "remote", "get-url", "origin")
+        canonical_origin = origin in {
+            "https://github.com/" + REPOSITORY + ".git",
+            "https://github.com/" + REPOSITORY,
+            "git@github.com:" + REPOSITORY + ".git",
+            "ssh://git@github.com/" + REPOSITORY + ".git",
+        }
+        if canonical_origin:
+            from smart_protected_pr_publication import GitHubAPI
+            publisher = GitHubAPI()
+            source_commit = _git(root, "rev-parse", "HEAD")
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout is dirty before operator action")
     if payload:
