@@ -1,14 +1,14 @@
 
 from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
 
-def test_selector_rejects_concentrated_top6_and_keeps_six_unique_numbers():
+def test_selector_preserves_top6_when_no_predictive_evidence_supports_band_quotas():
     ranking=[11,53,38,37,35,27,14,10,43,30,16,46,25,6,58,17,5,9]+[n for n in range(1,61) if n not in {11,53,38,37,35,27,14,10,43,30,16,46,25,6,58,17,5,9}]
     scores={n:60-i for i,n in enumerate(ranking)}
     result=select_primary_card(scores,ranking60=ranking,config=PrimaryCardSelectorConfig(candidate_pool_size=18))
     nums=result["selected_numbers"]
     assert result["status"]=="PASS" and len(nums)==6 and len(set(nums))==6
-    assert result["selected_band_counts"]["low"]>=2 and result["selected_band_counts"]["mid"]<=3
-    assert nums!=sorted(ranking[:6]) and result["result_used"] is False
+    assert result["selected_band_counts"]==result["pure_top6_band_counts"]
+    assert nums==sorted(ranking[:6]) and result["result_used"] is False
 
 def test_selector_is_deterministic_and_bounded():
     ranking=list(range(1,61)); scores={n:100-n for n in ranking}
@@ -36,7 +36,7 @@ def test_selector_refuses_infeasible_card_instead_of_passing_invalid_fallback():
     with pytest.raises(ValueError, match="no valid primary card"):
         select_primary_card(
             {n:61-n for n in range(1,61)},
-            config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6),
+            config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6,min_low_band=2,min_mid_band=1,max_high_band=2),
         )
 
 @pytest.mark.parametrize("key", [1.5, True])
@@ -72,3 +72,28 @@ def test_selector_rejects_objective_overflow():
             {n:61-i for i,n in enumerate(ranking)},ranking60=ranking,
             config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6,score_weight=1e308),
         )
+
+def test_default_selector_does_not_discard_perfect_high_band_signal():
+    winning=[41,42,43,44,45,46]
+    ranking=winning+[n for n in range(1,61) if n not in winning]
+    scores={n:float(60-i) for i,n in enumerate(ranking)}
+    result=select_primary_card(scores,ranking60=ranking)
+    assert result["selected_numbers"]==winning
+    assert result["selected_band_counts"]=={"low":0,"mid":0,"high":6}
+    assert result["config"]["max_high_band"]==6
+    assert result["config"]["band_balance_weight"]==0
+    assert result["config"]["concentration_penalty"]==0
+    assert result["result_used"] is False
+
+def test_legacy_selector_retains_immutable_audit_rule_when_explicitly_configured():
+    ranking=list(range(1,61))
+    scores={n:float(61-n) for n in ranking}
+    legacy=PrimaryCardSelectorConfig(
+        min_low_band=2,max_low_band=4,min_mid_band=1,max_mid_band=3,
+        min_high_band=0,max_high_band=2,require_top3_presence=True,
+        band_balance_weight=0.08,concentration_penalty=0.18,
+    )
+    old=select_primary_card(scores,ranking60=ranking,config=legacy)
+    assert old["selection_rule"]=="hybrid frozen-score single-card selector with bounded adaptive expansion and band concentration guard"
+    current=select_primary_card(scores,ranking60=ranking)
+    assert current["selection_rule"]=="unrestricted frozen-score single-card selector with bounded adaptive expansion"
