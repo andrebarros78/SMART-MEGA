@@ -97,6 +97,7 @@ def test_rejects_missing_credentials_before_network(monkeypatch):
     monkeypatch.delenv("SMART_MEGA_GITHUB_TOKEN", raising=False)
     monkeypatch.delenv("GH_TOKEN", raising=False)
     monkeypatch.delenv("GITHUB_TOKEN", raising=False)
+    monkeypatch.setattr(__import__("shutil"), "which", lambda _: None)
     with pytest.raises(PermissionError, match="credential"):
         GitHubAPI()
 
@@ -111,7 +112,29 @@ def test_canonical_operator_rejects_missing_auth_before_running_any_action(
                         lambda *_: pytest.fail("operator work began without publication auth"))
     for key in ("SMART_MEGA_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"):
         monkeypatch.delenv(key, raising=False)
+    monkeypatch.setattr(__import__("shutil"), "which", lambda _: None)
     with pytest.raises(PermissionError, match="credential"):
         operator.execute("prepare", "3081")
     assert git(root, "rev-parse", "HEAD") == head
     assert git(root, "status", "--porcelain") == ""
+
+def test_reuses_existing_github_cli_authorization_when_env_missing(monkeypatch):
+    import shutil
+    import subprocess
+    from smart_protected_pr_publication import GitHubAPI
+    for key in ("SMART_MEGA_GITHUB_TOKEN", "GH_TOKEN", "GITHUB_TOKEN"):
+        monkeypatch.delenv(key, raising=False)
+    monkeypatch.setattr(shutil, "which",
+                        lambda executable: "gh" if executable == "gh" else None)
+    real_run = subprocess.run
+
+    def fake_run(args, **kwargs):
+        if args[:2] == ["gh", "auth"]:
+            return subprocess.CompletedProcess(args, 0,
+                                               stdout="fake-scoped-token\n",
+                                               stderr="")
+        return real_run(args, **kwargs)
+
+    monkeypatch.setattr(subprocess, "run", fake_run)
+    api = GitHubAPI()
+    assert api._token == "fake-scoped-token"
