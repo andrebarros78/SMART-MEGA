@@ -24,7 +24,7 @@ SCHEMA = "SMART_V6_SEMANTIC_MODULES_V1"
 SPECS = [
  ("M21", "Ferramentas historicas e suporte", ["conftest.py", "fix_patch_e2e_*.py", "smart_3054_*.py"]),
  ("M14", "Execucao terminal", ["smart_terminal_*.py"]),
- ("M15", "Operador e autoridade GitHub", ["smart_github_*.py"]),
+ ("M15", "Operador e autoridade GitHub", ["smart_github_*.py", "smart_protected_pr_publication.py"]),
  ("M16", "Agentes, skills e SDKs", ["smart_agent_*.py", "smart_skill_*.py"]),
  ("M19", "Recuperacao, transacoes e seguranca operacional", [
     "smart_crash_safe_io.py", "smart_disconnection_gate.py", "smart_execution_checkpoint.py",

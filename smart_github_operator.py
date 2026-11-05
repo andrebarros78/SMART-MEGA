@@ -323,6 +323,21 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         _require_current_github_main(root, _git(root, "rev-parse", "HEAD"))
     else:
         _require_external_operator_authority(root, operation, target)
+    # Canonical GitHub main is PR-protected. Check publication authority BEFORE
+    # mutating any operational state to avoid another unpublishable local epoch.
+    origin = _git(root, "remote", "get-url", "origin")
+    canonical_origin = origin in {
+        "https://github.com/" + REPOSITORY + ".git",
+        "https://github.com/" + REPOSITORY,
+        "git@github.com:" + REPOSITORY + ".git",
+        "ssh://git@github.com/" + REPOSITORY + ".git",
+    }
+    publisher = None
+    source_commit = None
+    if operation not in READ_ONLY and canonical_origin:
+        from smart_protected_pr_publication import GitHubAPI
+        publisher = GitHubAPI()
+        source_commit = _git(root, "rev-parse", "HEAD")
     if _git(root, "status", "--porcelain=v1", "--untracked-files=all"):
         raise RuntimeError("checkout is dirty before operator action")
     if payload:
@@ -415,17 +430,29 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         # Recheck after the commit, before the push: the pre-draw cutoff can
         # expire while files are validated and artifacts are committed.
         _require_verified_pre_draw_window(frozen_card["schedule"], int(target))
-    _git(root, "push", "origin", "HEAD:main")
-    remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
-    if remote != commit:
-        raise RuntimeError("remote main does not match the operation commit")
+    publication = None
+    if publisher is not None:
+        from smart_protected_pr_publication import publish_commit
+        publication = publish_commit(root, operation, int(target),
+                                     source_commit, commit, api=publisher)
+        if publication["status"] != "PUBLISHED_CANONICAL_MAIN":
+            raise RuntimeError("PR not merged; protected main remains authoritative")
+        remote = publication["remote_commit"]
+    else:
+        # Local bare-repository fixtures only; a canonical remote never
+        # takes the direct-to-main route.
+        _git(root, "push", "origin", "HEAD:main")
+        remote = _git(root, "ls-remote", "origin", "refs/heads/main").split()[0]
+        if remote != commit:
+            raise RuntimeError("remote main does not match the operation commit")
     nested_proof = observation.get("proof")
     observed_status = nested_proof.get("status") if isinstance(nested_proof, dict) else observation.get("status")
     return {"operation": operation, "target": target, "changed_files": sorted(staged_expected),
             "observation_status": observed_status,
             "run_id": frozen_card["run_id"] if frozen_card else observation.get("epoch_id"),
             "primary_card": {key: frozen_card[key] for key in ("numbers", "file", "sha256", "run_id", "confidence")} if frozen_card else None,
-            "commit": commit}
+            "commit": remote, "local_commit": commit,
+            "publication": publication}
 
 
 def main() -> int:

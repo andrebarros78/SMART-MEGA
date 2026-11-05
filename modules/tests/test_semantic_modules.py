@@ -15,6 +15,8 @@ class SemanticModulesContractTest(unittest.TestCase):
         with self.assertRaises(ValueError):
             sm.classify_name("smart_new_undocumented_component.py")
 
+    def test_protected_pr_publication_has_explicit_owner(self):
+        self.assertEqual(sm.classify_name("smart_protected_pr_publication.py"), "M15")
     def test_registry_covers_each_source_exactly_once(self):
         registry = sm.load_registry()
         source_names = {

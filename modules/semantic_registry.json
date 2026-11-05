@@ -2,7 +2,7 @@
   "schema": "SMART_V6_SEMANTIC_MODULES_V1",
   "repository": "andrebarros78/SMART-MEGA",
   "branch": "main",
-  "source_count": 194,
+  "source_count": 195,
   "module_count": 21,
   "import_count": 412,
   "modules": [
@@ -2327,7 +2327,7 @@
         {
           "source": "smart_github_operator.py",
           "relative_path": "smart_github_operator.py",
-          "sha256": "ac5954affb3ed2db2f3a99df041bf355ce0793413827e1a949034ffc593b9b48",
+          "sha256": "c427f18a39cf62ff9cd3c9f4e82adfcb1e31341a48e78dea8bc7f708427efbe5",
           "imports": [
             "smart_transaction_journal.py"
           ],
@@ -2338,6 +2338,17 @@
             "main"
           ],
           "cli_guard": true
+        },
+        {
+          "source": "smart_protected_pr_publication.py",
+          "relative_path": "smart_protected_pr_publication.py",
+          "sha256": "d1fa40d0beb158371144664600a1c70b7dd07dd67b259a10942b9e984d9316ba",
+          "imports": [],
+          "public_symbols": [
+            "GitHubAPI",
+            "publish_commit"
+          ],
+          "cli_guard": false
         }
       ],
       "depends_on": [
