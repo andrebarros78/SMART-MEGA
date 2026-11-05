@@ -1,0 +1,57 @@
+{
+  "schema": "SMART_CAIXA_TRANSPORT_RECEIPT_1",
+  "target_contest": 3081,
+  "observed_at_utc": "2026-11-05T11:39:54.978646+00:00",
+  "primary_endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3081",
+  "actual_http_fetch_by_this_process": true,
+  "primary_payload_sha256": "d9633c27af35117605fe01ba12a6b8aff4fcb852a6e2dfdf4464167cd89f8b02",
+  "primary_numbers": [
+    10,
+    17,
+    42,
+    43,
+    57,
+    59
+  ],
+  "draw_date": "04/11/2026",
+  "consensus": {
+    "schema": "SMART_OFFICIAL_EVIDENCE_CONSENSUS_V1",
+    "target_contest": 3081,
+    "primary": {
+      "channel": "CAIXA_CONTEST_API",
+      "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3081",
+      "numbers": [
+        10,
+        17,
+        42,
+        43,
+        57,
+        59
+      ],
+      "draw_date": "04/11/2026",
+      "validated": true
+    },
+    "secondary": null,
+    "secondary_error": "HTTPError: 404 Client Error: Not Found for url: https://servicebus2.caixa.gov.br/portaldeloterias/api/resultados/download?modalidade=Mega-Sena",
+    "status": "PRIMARY_CAIXA_API_VALID_SECONDARY_UNAVAILABLE",
+    "operational_adjudication_authorized": true,
+    "dual_channel_corroborated": false,
+    "terminal_source_corroboration_authorized": false,
+    "independent_audit_still_required_for_terminal_6of6": true,
+    "predictive_weight_authorized": false,
+    "terminal_6of6_proven": false
+  },
+  "source_dataset_sha256": "809f88f8621f8909263d47389eb96b436648dfd60f1230752e150cea77c5c2fa",
+  "extended_dataset_file": "Mega-Sena_through_3081.xlsx",
+  "extended_dataset_sha256": "9000905324db824c18f526ecaa7627f399e12a8a0a19fd8b0d01a972ea2bd272",
+  "ingest_proof_file": "SMART_OFFICIAL_RESULT_3081.json",
+  "ingest_proof_sha256": "a274c4600869082c39ce485e9859bc1892c31e346b48df574e0cf389b9972d2a",
+  "freeze_file": "runtime/learning_epochs/operator-3081-5798858e2a87-20261103T112111692942Z/SMART_3081_CHAMPION_CHALLENGER_FREEZE.json",
+  "freeze_sha256_before_ingest": "2674e57d59fa04e4ce88612211bf63e712c714199ddced12bfa23c3301a553cd",
+  "official_result_confirmed": true,
+  "operator_attestation_created": false,
+  "terminal_adjudication_attempted": false,
+  "historical_freeze_modified": false,
+  "predictive_superiority_claimed": false,
+  "sha256": "de900276025f07040681ab2602276a155c9182793b0b1cfaea851d01ea5da757"
+}
