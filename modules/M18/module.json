@@ -1,0 +1,290 @@
+{
+  "id": "M18",
+  "title": "Auditoria, regressao e evidencia tecnica",
+  "sources": [
+    {
+      "source": "p14_coverage_plugin.py",
+      "relative_path": "p14_coverage_plugin.py",
+      "sha256": "95762b5ee547cafbadd6608b842c0ac3d8a7e3cdf10ad451f1ca485a1aac66f4",
+      "imports": [],
+      "public_symbols": [
+        "pytest_sessionstart",
+        "pytest_sessionfinish"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_adversarial_claim_audit.py",
+      "relative_path": "smart_adversarial_claim_audit.py",
+      "sha256": "70820466a00ad218027d04ac1aa5f6e603f5f6cbb1d023fc99e1f7a035f55eb3",
+      "imports": [
+        "smart_signal_agent.py",
+        "smart_signal_weights.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "run"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "relative_path": "smart_continuous_red_team.py",
+      "sha256": "5e2866e0254db8bfd82d6483598b102c2689eaf94a22e55352ea3b0d62aefc68",
+      "imports": [
+        "smart_context_regime.py",
+        "smart_meta_governor.py",
+        "smart_multi_challengers.py",
+        "smart_signal_agent.py",
+        "smart_signal_quality.py",
+        "smart_signal_redundancy_consensus.py",
+        "smart_signal_weights.py",
+        "smart_source_identity.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "current_behavior_hashes",
+        "scenario_iid",
+        "scenario_abrupt_shift",
+        "scenario_gradual_drift",
+        "scenario_recurring_regimes",
+        "scenario_regime_recovery",
+        "scenario_false_signal_and_recovery",
+        "scenario_redundancy_false_consensus",
+        "scenario_missing_and_corrupt_data",
+        "scenario_online_anti_ranking",
+        "scenario_full_stack_smoke",
+        "run_suite",
+        "write_report",
+        "verify_latest_report",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_f11_predictive_nonregression.py",
+      "relative_path": "smart_f11_predictive_nonregression.py",
+      "sha256": "f369d6cedc5f8786d71e94253fa55cb039f5f39719975fa5bbb41ecd98f4f59b",
+      "imports": [],
+      "public_symbols": [
+        "evaluate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_global_integrity.py",
+      "relative_path": "smart_global_integrity.py",
+      "sha256": "82cad5f3258a23ca29ccc5fa90ac1f2c364572e4e848f6616be5e7091a174cf8",
+      "imports": [
+        "smart_critical_code_manifest.py",
+        "smart_material_deficiency_registry.py",
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "policy_snapshot",
+        "gate_state_document",
+        "gate_state_sha256",
+        "validate_gate_state",
+        "current_source_hashes",
+        "coverage_summary",
+        "junit_summary",
+        "validate_p14_report",
+        "build_global_integrity_proof",
+        "verify_global_integrity"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "relative_path": "smart_independent_audit.py",
+      "sha256": "cfde5f435c9f7afe679dfc9ad4050a9b2e7c34ec2803bdd1b0b4e9ab1ea7b13f",
+      "imports": [
+        "freeze_next_research.py",
+        "smart_independent_oracle.py",
+        "smart_material_deficiency_registry.py",
+        "smart_path_semantics.py",
+        "smart_signal_agent.py",
+        "smart_source_identity.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "semantic_dataframe_sha256",
+        "audit_legacy_result_continuity",
+        "audit_legacy_state_continuity",
+        "audit_frozen_state_evidence",
+        "policy_snapshot",
+        "audit_independence",
+        "audit_coverage_binding",
+        "audit_coverage_bindings",
+        "audit_prospective_ledger",
+        "audit_deterministic_replay",
+        "run_independent_audit"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_independent_oracle.py",
+      "relative_path": "smart_independent_oracle.py",
+      "sha256": "1629c191e07edc83060e977379148c7f7ad432515d59d849c2a25a087e457f60",
+      "imports": [],
+      "public_symbols": [
+        "recompute_dynamic_weights",
+        "validate_prediction_snapshot",
+        "validate_frozen_decision"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_linux_ci.py",
+      "relative_path": "smart_linux_ci.py",
+      "sha256": "c9f98ff6866ed6634c0a2e1ef747ffbbfb439f041b949863fcf6a6568871f316",
+      "imports": [],
+      "public_symbols": [
+        "sign_receipt",
+        "verify_receipt",
+        "read_lock",
+        "installed_version",
+        "missing_packages",
+        "check_full_dependencies",
+        "interpret_focused",
+        "write_receipt",
+        "baseline_junit_counts",
+        "verify_full_junit",
+        "execute",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_product_certification.py",
+      "relative_path": "smart_product_certification.py",
+      "sha256": "34553cd1c9623370810c40f08fa74e17007fe56637c455c84cc59e251307329b",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_agent_skill_functional_gate.py",
+        "smart_agent_skill_orchestration.py",
+        "smart_canonical_identity.py",
+        "smart_critical_code_manifest.py",
+        "smart_global_integrity.py",
+        "smart_material_deficiency_policy.py",
+        "smart_material_deficiency_registry.py",
+        "smart_operator_contract.py",
+        "smart_regression_evidence.py",
+        "smart_runtime_guard.py",
+        "smart_source_identity.py",
+        "smart_total_integration_gate.py"
+      ],
+      "public_symbols": [
+        "code_fingerprint",
+        "canonical_root_authority_binding",
+        "regression_source_binding",
+        "verify_product_certification",
+        "build",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_proof_chain.py",
+      "relative_path": "smart_proof_chain.py",
+      "sha256": "7ffd1562ec2d0579558df24d15061a35d2ea559efa369e5a8ac53b60f292b632",
+      "imports": [],
+      "public_symbols": [
+        "contract",
+        "inspect",
+        "downstream",
+        "invalidation_plan",
+        "assert_order"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_regression_evidence.py",
+      "relative_path": "smart_regression_evidence.py",
+      "sha256": "02ddb892a80f6481b136f333cc83c59f978fc4b32e78589943336be6837ab632",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "junit_summary",
+        "normalize_pytest_subtest_junit",
+        "promote",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_regression_runner.py",
+      "relative_path": "smart_regression_runner.py",
+      "sha256": "b2dcac9d224f74a219642d1fe07b7afe5b104bb5e35bc8af501eb3e58c02b4f6",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_operation_lock.py",
+        "smart_regression_evidence.py",
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "code_fingerprint",
+        "canonical_environment_snapshot",
+        "run_regression",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_release_attestation.py",
+      "relative_path": "smart_release_attestation.py",
+      "sha256": "0bc57115d3d599e33f7bf73ae51728fd1af48b1f8e44ad11996bd187effd79bc",
+      "imports": [],
+      "public_symbols": [
+        "build",
+        "verify"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_test_helpers.py",
+      "relative_path": "smart_test_helpers.py",
+      "sha256": "648581496bd89f0bf4c09eb0a7ebb2a9e761064160ff4f07a1606b9ef75e73b2",
+      "imports": [],
+      "public_symbols": [
+        "make_valid_freeze_fixture",
+        "bind_valid_freeze_fixture"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_validation_gate.py",
+      "relative_path": "smart_validation_gate.py",
+      "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c",
+      "imports": [],
+      "public_symbols": [
+        "EvidenceValidation",
+        "validate_evidence_bundle",
+        "enforce_evidence_bundle"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M05",
+    "M06",
+    "M07",
+    "M08",
+    "M11",
+    "M12",
+    "M13",
+    "M16",
+    "M17",
+    "M19"
+  ]
+}

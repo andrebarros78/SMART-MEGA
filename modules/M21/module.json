@@ -1,0 +1,112 @@
+{
+  "id": "M21",
+  "title": "Ferramentas historicas e suporte",
+  "sources": [
+    {
+      "source": "conftest.py",
+      "relative_path": "conftest.py",
+      "sha256": "9631e723ae56f3f511c34adaad1e26bb6dc26f053d60d41926e491509b2c901d",
+      "imports": [],
+      "public_symbols": [
+        "isolated_legacy_sandbox_boundary",
+        "legacy_sandbox_contract_adapter"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "fix_patch_e2e_20260920.py",
+      "relative_path": "fix_patch_e2e_20260920.py",
+      "sha256": "cb7ea19fd992381d0a0a13a832f2349d50602309c3eb12856701f79e7a6b6c55",
+      "imports": [],
+      "public_symbols": [],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "relative_path": "smart_3054_adjudication_preflight.py",
+      "sha256": "b028959fb205086445c6f9bca0a93e61d557ed3641d1e876f485b85a0c78566a",
+      "imports": [
+        "adjudicate_signal_challenger.py",
+        "smart_current_epoch_contract.py",
+        "smart_learning_epoch_reset.py",
+        "smart_prospective_authority_lock.py",
+        "smart_sequential_prospective_proof.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "read_json",
+        "build_preflight",
+        "write_preflight"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "relative_path": "smart_3054_full_cycle_sandbox.py",
+      "sha256": "ffed6de8f502cc6db87b30b19316eecf2f595f3d66f49bf3b7b7f3cda79c0d60",
+      "imports": [
+        "adjudicate_signal_challenger.py",
+        "smart_3054_adjudication_preflight.py",
+        "smart_current_epoch_contract.py",
+        "smart_learning_epoch_reset.py",
+        "smart_official_result_ingest.py",
+        "smart_sequential_prospective_proof.py",
+        "smart_signal_agent.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "build_sandbox",
+        "write_sandbox"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "relative_path": "smart_3054_terminal_executor.py",
+      "sha256": "e080c0c0389d978b853cf0e522d3cdddff0da1d43748e9a12866c9bb039a0a22",
+      "imports": [
+        "adjudicate_signal_challenger.py",
+        "smart_3054_adjudication_preflight.py",
+        "smart_canonical_history_advance.py",
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_current_epoch_contract.py",
+        "smart_independent_audit.py",
+        "smart_learning_epoch_reset.py",
+        "smart_mission_status.py",
+        "smart_official_evidence_consensus.py",
+        "smart_official_result_ingest.py",
+        "smart_prospective_authority.py",
+        "smart_prospective_authority_lock.py",
+        "smart_sequential_prospective_proof.py",
+        "smart_signal_agent.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "evaluate_terminal_rule",
+        "probe",
+        "execute",
+        "active_epoch_context",
+        "probe_active_epoch",
+        "execute_active_epoch",
+        "main"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M03",
+    "M05",
+    "M08",
+    "M10",
+    "M11",
+    "M12",
+    "M18"
+  ]
+}

@@ -1,0 +1,125 @@
+{
+  "id": "M12",
+  "title": "Protocolo prospectivo e congelamento",
+  "sources": [
+    {
+      "source": "freeze_next_research.py",
+      "relative_path": "freeze_next_research.py",
+      "sha256": "af32da0753352f674bc1bdd1584d75a4ed91ba1716234dbd9233017f55873c77",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "current_policy",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_evidence_only_promotion.py",
+      "relative_path": "smart_evidence_only_promotion.py",
+      "sha256": "3bdc8f00bf2f0edf7502872ace54fb702a382d1c575a12e8b2165c61b7759384",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "sha256_file",
+        "policy_snapshot",
+        "assess_evidence_only_promotion",
+        "assess_evidence_only_promotion_from_files",
+        "require_authorized_promotion"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_promotion_gate.py",
+      "relative_path": "smart_promotion_gate.py",
+      "sha256": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+      "imports": [],
+      "public_symbols": [
+        "adaptive_min_contests",
+        "assess_promotion_records",
+        "policy_snapshot"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_prospective_authority.py",
+      "relative_path": "smart_prospective_authority.py",
+      "sha256": "69a69477b4f87cf55f79b726691c8ad4ff1e747dedc223c42b9b21697d7d2f4c",
+      "imports": [
+        "smart_canonical_identity.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "events_for",
+        "build_authority",
+        "write_authority",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_prospective_authority_lock.py",
+      "relative_path": "smart_prospective_authority_lock.py",
+      "sha256": "b7b4dcb53761a426310eaa23303eafec8279a4f434e3611a7d91fd4339f475bd",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_regression_evidence.py"
+      ],
+      "public_symbols": [
+        "resolve_unresolved_authority",
+        "build_lock",
+        "verify_lock",
+        "adjudicated_lock_evidence",
+        "close_adjudicated_lock",
+        "verify_closure",
+        "write_lock"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_prospective_cycle.py",
+      "relative_path": "smart_prospective_cycle.py",
+      "sha256": "df9d69c0942d27fe0082037763b55e52aff64d022f5c0702546acf1c72b53761",
+      "imports": [],
+      "public_symbols": [
+        "canonical_json",
+        "sha256_json",
+        "sha256_file",
+        "verify_embedded_hash",
+        "strict_top6",
+        "validate_probability_map",
+        "build_registration",
+        "register",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_sequential_prospective_proof.py",
+      "relative_path": "smart_sequential_prospective_proof.py",
+      "sha256": "9e5e850675b529b9292ed519f8312d07f3aea998cc8267e7062a643e6e7bdf8e",
+      "imports": [
+        "smart_path_semantics.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "canonical_event_hash",
+        "freeze_snapshot",
+        "validate_target_sequence",
+        "append_learning_update",
+        "append_sequence_proof"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M08",
+    "M11",
+    "M18"
+  ]
+}

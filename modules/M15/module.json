@@ -1,0 +1,72 @@
+{
+  "id": "M15",
+  "title": "Operador e autoridade GitHub",
+  "sources": [
+    {
+      "source": "smart_github_certify.py",
+      "relative_path": "smart_github_certify.py",
+      "sha256": "52b8dfd498febf3d2794484f34ba1997fb5eb9c4b9fbf788f28396fa7ee6905d",
+      "imports": [
+        "smart_agent_ecosystem_governance.py",
+        "smart_agent_runtime.py",
+        "smart_authority_freshness.py",
+        "smart_continuous_red_team.py",
+        "smart_global_integrity.py",
+        "smart_product_certification.py",
+        "smart_source_identity.py",
+        "smart_startup_reconciler.py"
+      ],
+      "public_symbols": [
+        "require_current_coverage_sources",
+        "execution_provenance",
+        "refresh"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_github_native_policy.py",
+      "relative_path": "smart_github_native_policy.py",
+      "sha256": "d8f00f0a82b73d2e3920348a8a9fb7ebca1fac993861c682a4c21e69e9556c5d",
+      "imports": [],
+      "public_symbols": [
+        "PolicyViolation",
+        "verify",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_github_operator.py",
+      "relative_path": "smart_github_operator.py",
+      "sha256": "c427f18a39cf62ff9cd3c9f4e82adfcb1e31341a48e78dea8bc7f708427efbe5",
+      "imports": [
+        "smart_transaction_journal.py"
+      ],
+      "public_symbols": [
+        "command_args",
+        "allowed_artifact",
+        "execute",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_protected_pr_publication.py",
+      "relative_path": "smart_protected_pr_publication.py",
+      "sha256": "d1fa40d0beb158371144664600a1c70b7dd07dd67b259a10942b9e984d9316ba",
+      "imports": [],
+      "public_symbols": [
+        "GitHubAPI",
+        "publish_commit"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M16",
+    "M18",
+    "M19"
+  ]
+}

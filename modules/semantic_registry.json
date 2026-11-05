@@ -1,0 +1,5819 @@
+{
+  "schema": "SMART_V6_SEMANTIC_MODULES_V1",
+  "repository": "andrebarros78/SMART-MEGA",
+  "branch": "main",
+  "source_count": 195,
+  "module_count": 21,
+  "import_count": 412,
+  "modules": [
+    {
+      "id": "M01",
+      "title": "Identidade, caminhos e integridade de fonte",
+      "sources": [
+        {
+          "source": "smart_canonical_component_registry.py",
+          "relative_path": "smart_canonical_component_registry.py",
+          "sha256": "6576430705d2bb90557db51040b98bee35d960bc80ff035aac112ba183e9d453",
+          "imports": [
+            "smart_component_reachability.py"
+          ],
+          "public_symbols": [
+            "build_registry",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_canonical_identity.py",
+          "relative_path": "smart_canonical_identity.py",
+          "sha256": "c7bded80f481403be9697b316d47830d9d6166e7ec7928c993159a132c7b5262",
+          "imports": [],
+          "public_symbols": [
+            "CanonicalIdentityError",
+            "canonical_root_id",
+            "discover_competing_roots",
+            "require_canonical_identity",
+            "canonical_root"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_canonical_root_rebind.py",
+          "relative_path": "smart_canonical_root_rebind.py",
+          "sha256": "44c2f1d60b449da4bcf0f6d91953df297bc5840fb6bbf49cc52097be4face0c3",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_crash_safe_io.py",
+            "smart_regression_evidence.py"
+          ],
+          "public_symbols": [
+            "rebind",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_component_reachability.py",
+          "relative_path": "smart_component_reachability.py",
+          "sha256": "8aaa94da5aa2598ade89a5bb18a7b8acbd276d3b2c51bedd8bf019fadbc90802",
+          "imports": [
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "build_registry",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_critical_code_manifest.py",
+          "relative_path": "smart_critical_code_manifest.py",
+          "sha256": "2a593f95c90867f105f6e308968352d8a20509695998933da809790f3a41a014",
+          "imports": [
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "critical_code_files",
+            "build",
+            "verify_document_binding",
+            "write"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_historical_binding.py",
+          "relative_path": "smart_historical_binding.py",
+          "sha256": "b8e6963ad4b3066345806c1a1c1141f631f60bee7cd7ce24af2f7f0a390069b7",
+          "imports": [
+            "smart_crash_safe_io.py"
+          ],
+          "public_symbols": [
+            "HistoricalBindingError",
+            "build",
+            "write_binding"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_path_semantics.py",
+          "relative_path": "smart_path_semantics.py",
+          "sha256": "e0bbb6e2256faeaea54b28696b0a66f892a386560c72549754bdcdce245ea397",
+          "imports": [],
+          "public_symbols": [
+            "is_windows_absolute",
+            "is_absolute_any",
+            "basename_any",
+            "windows_path_under"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_repository_integrity.py",
+          "relative_path": "smart_repository_integrity.py",
+          "sha256": "2407ba142edcc09873dedb7f8b10588a6c5d91089c698e77ef9e6f80076f007f",
+          "imports": [],
+          "public_symbols": [
+            "RepositoryIntegrityError",
+            "validate_repository",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_source_identity.py",
+          "relative_path": "smart_source_identity.py",
+          "sha256": "d1163a949169e03d89325d37949915d6d17dfa678fef2d4b6de2461346754fb7",
+          "imports": [],
+          "public_symbols": [
+            "normalize_source_bytes",
+            "sha256_source_bytes",
+            "sha256_source_file",
+            "source_hashes"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_storage_surfaces.py",
+          "relative_path": "smart_storage_surfaces.py",
+          "sha256": "1fa8a84bc2325800b8e11c6e68a8c77a2e6efdc60e8387644a5bbe30bfb735e7",
+          "imports": [
+            "smart_scientific_state_guard.py"
+          ],
+          "public_symbols": [
+            "StorageSurfaceError",
+            "root_path",
+            "runtime_path",
+            "evidence_path",
+            "require_within",
+            "classify"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M02",
+        "M18",
+        "M19"
+      ]
+    },
+    {
+      "id": "M02",
+      "title": "Contratos, estados e governanca",
+      "sources": [
+        {
+          "source": "smart_authority_freshness.py",
+          "relative_path": "smart_authority_freshness.py",
+          "sha256": "de7adee48d724ecac944753e700153e6663f041402d6570b5613044bbb1f75a8",
+          "imports": [
+            "smart_critical_code_manifest.py",
+            "smart_material_deficiency_registry.py",
+            "smart_product_certification.py"
+          ],
+          "public_symbols": [
+            "verify_governance",
+            "audit"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_contract_registry.py",
+          "relative_path": "smart_contract_registry.py",
+          "sha256": "b5412a01572e3b39415450b0d757489739d95cd503f9ff8997f6d24803af2673",
+          "imports": [],
+          "public_symbols": [
+            "load_registry",
+            "require_schema",
+            "validate_document"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_current_epoch_contract.py",
+          "relative_path": "smart_current_epoch_contract.py",
+          "sha256": "aae40a0cc00f6f2b321740d40f782c4ed84efe88c082953235737c0f4b897765",
+          "imports": [
+            "smart_learning_epoch_reset.py",
+            "smart_operational_lifecycle.py",
+            "smart_prospective_authority_lock.py"
+          ],
+          "public_symbols": [
+            "validate_generation_proof",
+            "resolve"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_material_deficiency_policy.py",
+          "relative_path": "smart_material_deficiency_policy.py",
+          "sha256": "07c376df2e7f4bcbe07f07f1bb8c419f4cbad665305147b5d8fd31f075c2eef2",
+          "imports": [],
+          "public_symbols": [
+            "material_blockers"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_material_deficiency_registry.py",
+          "relative_path": "smart_material_deficiency_registry.py",
+          "sha256": "ccefff9e70f0dc81726c67446400f38bd1766caaf8f6971178676d5a4fa0ee68",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "build_registry",
+            "load_registry",
+            "upsert_deficiency",
+            "write_registry"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_mission_status.py",
+          "relative_path": "smart_mission_status.py",
+          "sha256": "c059182e2ba8c967489ce4fe3bf9a27783d68d5c220419cec7f04351fb6ec1de",
+          "imports": [
+            "smart_canonical_identity.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "validate_mission_status",
+            "load_mission_status",
+            "write_mission_status"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_scientific_state_guard.py",
+          "relative_path": "smart_scientific_state_guard.py",
+          "sha256": "8361dfa98aeeef9616c07c6f577ecb74001a868a1f11295fa1b967fa01447d10",
+          "imports": [],
+          "public_symbols": [
+            "ScientificStateBoundaryError",
+            "classify",
+            "assert_operational_write",
+            "assert_scientific_write",
+            "audit_boundaries"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M10",
+        "M12",
+        "M13",
+        "M18"
+      ]
+    },
+    {
+      "id": "M03",
+      "title": "Coleta e conciliacao de resultados oficiais",
+      "sources": [
+        {
+          "source": "smart_canonical_history_advance.py",
+          "relative_path": "smart_canonical_history_advance.py",
+          "sha256": "e198d6d307f513e0abc89d04c37d0b21d26ad9debd053ff4bd8c477bfa88114d",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_champion_challenger.py",
+            "smart_path_semantics.py",
+            "smart_sequential_prospective_proof.py"
+          ],
+          "public_symbols": [
+            "advance_completed_epoch"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_canonical_result_store_reconcile.py",
+          "relative_path": "smart_canonical_result_store_reconcile.py",
+          "sha256": "0193975f9028b9fc7ce991b2ef6ae5b8947f0f3f068f735bbf3db571097647fd",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "build_plan",
+            "reconcile"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_fast_result_ingest.py",
+          "relative_path": "smart_fast_result_ingest.py",
+          "sha256": "3bb64f264b1f28f4ee0fcac15c2d5ec2660655ffeec441094281c7a9eb8ab574",
+          "imports": [],
+          "public_symbols": [
+            "ingest_result",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_frontier_adjudicator.py",
+          "relative_path": "smart_frontier_adjudicator.py",
+          "sha256": "569f9410e53717b0d60b78dcb8613fdded1f64a97244c74c9965ffe96bc67f5e",
+          "imports": [
+            "smart_frontier_signal_lab.py",
+            "smart_signal_agent.py",
+            "smart_signal_expansion_governance.py"
+          ],
+          "public_symbols": [
+            "adjudicate_frontier",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_official_dataset_reconcile.py",
+          "relative_path": "smart_official_dataset_reconcile.py",
+          "sha256": "3e65a3a4a8f7efdacd5685b86007da99c3aefa868400651cce876311be8acff9",
+          "imports": [
+            "smart_official_result_ingest.py"
+          ],
+          "public_symbols": [
+            "reconcile",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_official_evidence_consensus.py",
+          "relative_path": "smart_official_evidence_consensus.py",
+          "sha256": "d60e209ec4522446b063c961ef0d27cd0f4dbd1c1ea234efcb9092a8cf4f1ba5",
+          "imports": [
+            "smart_http_guard.py",
+            "smart_official_result_ingest.py"
+          ],
+          "public_symbols": [
+            "SecondaryObservation",
+            "observe_download_frame",
+            "corroborate",
+            "fetch_secondary_download",
+            "fetch_consensus",
+            "write_consensus"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_official_result_ingest.py",
+          "relative_path": "smart_official_result_ingest.py",
+          "sha256": "c9c3a25078df12b472f42cf309c00af62426dc6f3b5f6561d5da732a0f7e7254",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_http_guard.py",
+            "smart_official_result_validation.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "fetch_official_payload",
+            "build_extended_frame",
+            "ingest",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_official_result_validation.py",
+          "relative_path": "smart_official_result_validation.py",
+          "sha256": "66e5c347bac527f5998bfc125bf23f7d882bf91aa017a19cab56004797953c96",
+          "imports": [],
+          "public_symbols": [
+            "validate_official_payload"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_public_result_capture.py",
+          "relative_path": "smart_public_result_capture.py",
+          "sha256": "3015b8eb4e8be8353023a3bd344d908dd12b4576ae596ff74328a53bfd6a2e16",
+          "imports": [],
+          "public_symbols": [
+            "self_hash",
+            "capture",
+            "main"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M05",
+        "M08",
+        "M11",
+        "M12",
+        "M16",
+        "M19"
+      ]
+    },
+    {
+      "id": "M04",
+      "title": "Captacao, qualidade e integridade de dados",
+      "sources": [
+        {
+          "source": "smart_data_quality_gate.py",
+          "relative_path": "smart_data_quality_gate.py",
+          "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "DataQualityReport",
+            "audit_draw_file",
+            "enforce_draw_quality"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_procedural_actionability_gate.py",
+          "relative_path": "smart_procedural_actionability_gate.py",
+          "sha256": "16bd718fb5fe52148f08d2583da24db3040be27d4cc3f66a57bd8cb6a7971c0d",
+          "imports": [],
+          "public_symbols": [
+            "GateResult",
+            "evaluate",
+            "FreezeWindowResult",
+            "evaluate_freeze_window"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_procedural_caption_extract.py",
+          "relative_path": "smart_procedural_caption_extract.py",
+          "sha256": "eb78777382d94372a2ab339abd02be0d9870244864385aa00a85c0464112dcb0",
+          "imports": [],
+          "public_symbols": [
+            "extract_caption"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_procedural_coverage_gate.py",
+          "relative_path": "smart_procedural_coverage_gate.py",
+          "sha256": "8ba8b9b8424ade7153bfb17400f952c50d59bd987de07c333f2be6bc65203a66",
+          "imports": [],
+          "public_symbols": [
+            "noisy_location",
+            "build",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_procedural_cronogram_acquire.py",
+          "relative_path": "smart_procedural_cronogram_acquire.py",
+          "sha256": "edbe1be5ea3a5b454ae6d91cca3d19c42321dba3c96f471acc86903cf4d7d2dc",
+          "imports": [
+            "smart_http_guard.py"
+          ],
+          "public_symbols": [
+            "sha256_bytes",
+            "variants",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_procedural_cronogram_build_dataset.py",
+          "relative_path": "smart_procedural_cronogram_build_dataset.py",
+          "sha256": "07b9ac94436f69d5eb14a48c959918e1cc2e1193f93090ff6a43a0fc30d9ab00",
+          "imports": [],
+          "public_symbols": [
+            "pdf_text",
+            "norm",
+            "date_lines",
+            "location_candidate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_procedural_signal_intake.py",
+          "relative_path": "smart_procedural_signal_intake.py",
+          "sha256": "5f71dacc369ae8279b059077dd941fab3e86f99aed56271d0fc12b4d0e673ed5",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "validate_frame",
+            "validate_file"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_procedural_youtube_batch.py",
+          "relative_path": "smart_procedural_youtube_batch.py",
+          "sha256": "f7b9242513dca7ee955e7d8b640c97103a9a3cab83599c193a548c84c2765d7f",
+          "imports": [
+            "smart_procedural_caption_extract.py"
+          ],
+          "public_symbols": [
+            "find_official",
+            "acquire_caption",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_procedural_youtube_recent_acquire.py",
+          "relative_path": "smart_procedural_youtube_recent_acquire.py",
+          "sha256": "05013afae53aff7f9f663a1c72988f0abc8faf3dd7eaa211a7c6c339544ece5e",
+          "imports": [
+            "smart_http_guard.py",
+            "smart_procedural_caption_extract.py"
+          ],
+          "public_symbols": [
+            "find_official",
+            "caption_url",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_rag_excel.py",
+          "relative_path": "smart_rag_excel.py",
+          "sha256": "7541280e0e5c3ec9cf95be0943881a06e80b5bb4e8f5c2f18bf982b11d7e7e77",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_historical_training_intake.py"
+          ],
+          "public_symbols": [
+            "SmartExcelRAG",
+            "build_preparation_proof",
+            "write_preparation_proof",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_scoped_history_gate.py",
+          "relative_path": "smart_scoped_history_gate.py",
+          "sha256": "cc873a462cfe702697020ff3314a69dc70881501a5863dd5e86fd3f315d23f4a",
+          "imports": [],
+          "public_symbols": [
+            "inspect_freeze_evidence"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M10",
+        "M19"
+      ]
+    },
+    {
+      "id": "M05",
+      "title": "Sinais, relevancia e atribuicao",
+      "sources": [
+        {
+          "source": "smart_signal_2000_simulation.py",
+          "relative_path": "smart_signal_2000_simulation.py",
+          "sha256": "a4457db1bb90494395eb22122b42ba77a166177c46d04ff7e9e52a068607779f",
+          "imports": [
+            "smart_context_regime.py",
+            "smart_signal_50_round_simulation.py",
+            "smart_signal_agent.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "zscore",
+            "run_round",
+            "summarize",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_signal_50_round_simulation.py",
+          "relative_path": "smart_signal_50_round_simulation.py",
+          "sha256": "4f6e788ef6a6f2e8048637bc053ab7d68702bc9b6bc13578c6b2673001a07257",
+          "imports": [
+            "smart_signal_agent.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "zscore",
+            "gen_uniform",
+            "gen_weighted",
+            "build_scenario",
+            "run_round",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_signal_agent.py",
+          "relative_path": "smart_signal_agent.py",
+          "sha256": "04f1abc512178ffff767964021438fc9d8bcf52ec67ce88c2823542264a3f02f",
+          "imports": [
+            "smart_bounded_online_learning.py",
+            "smart_context_regime.py",
+            "smart_contextual_meta_weights.py",
+            "smart_learning_activation_gate.py",
+            "smart_meta_governor.py",
+            "smart_multi_challengers.py",
+            "smart_rank_score_calibration.py",
+            "smart_signal_interactions.py",
+            "smart_signal_marginal_utility.py",
+            "smart_signal_quality.py",
+            "smart_signal_redundancy_consensus.py",
+            "smart_signal_weights.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_bytes",
+            "sha256_json",
+            "SignalPrediction",
+            "SmartSignalAgent",
+            "write_state"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_attribution.py",
+          "relative_path": "smart_signal_attribution.py",
+          "sha256": "a5898abffc85e83a14a75c3ac678438f7a37fa16dd5c71a4ea672797b373c65f",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "analyze_attribution"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_expansion_governance.py",
+          "relative_path": "smart_signal_expansion_governance.py",
+          "sha256": "b55a672efb20307027f8fef71e71717d6b7fcc5efa17501bbe90f92ecb0ea796",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "sha256_file",
+            "CandidateSignalState",
+            "SignalExpansionGovernance",
+            "write_registry",
+            "load_registry"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_interactions.py",
+          "relative_path": "smart_signal_interactions.py",
+          "sha256": "666c959b9ae0ad7b0116f71d8ebfabb85ee172514b203611057ee6df6a07b447",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "analyze_interactions",
+            "analyze_snapshot",
+            "PairInteractionState",
+            "InteractionTracker"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_marginal_utility.py",
+          "relative_path": "smart_signal_marginal_utility.py",
+          "sha256": "036849b5ba96e9b5ed626c8451d69fb457895b10c310683577c276e86b03485b",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "evaluate_incremental_utility",
+            "analyze_marginal_utility_snapshot",
+            "MarginalUtilityState",
+            "update_marginal_states"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_quality.py",
+          "relative_path": "smart_signal_quality.py",
+          "sha256": "9866f89587847e3b42abcf2d81d1547fb95c92b9bad4f4e2eac8649d0d05ffb0",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "SignalQualityState"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_redundancy_consensus.py",
+          "relative_path": "smart_signal_redundancy_consensus.py",
+          "sha256": "eaa93c230dd6444547e8eb252bbd0e7bc3d2bd8addf82b67a62adffdfd5ab201",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "consensus_penalties"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M06",
+        "M07",
+        "M08",
+        "M10",
+        "M11"
+      ]
+    },
+    {
+      "id": "M06",
+      "title": "Pesos, calibracao e metagovernanca",
+      "sources": [
+        {
+          "source": "smart_calibration_safety_gate.py",
+          "relative_path": "smart_calibration_safety_gate.py",
+          "sha256": "eb64874111da1b77e9d1e7692d7ef016075433def331f24fed79707b3a6d8484",
+          "imports": [],
+          "public_symbols": [
+            "historical_baseline",
+            "verify_freeze_calibration",
+            "evaluate"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_context_calibration_confirm.py",
+          "relative_path": "smart_context_calibration_confirm.py",
+          "sha256": "0c568f72111d698bff45dcf62fd65115daa7722c1255b61b709ecc78e6a0c47a",
+          "imports": [
+            "smart_context_regime.py",
+            "smart_signal_50_round_simulation.py"
+          ],
+          "public_symbols": [
+            "one",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_context_calibration_confirm_v2.py",
+          "relative_path": "smart_context_calibration_confirm_v2.py",
+          "sha256": "66cd252339921d84df936984a428f9a5e699224ce4a7fbad5a248642d6543f77",
+          "imports": [
+            "smart_context_regime.py",
+            "smart_signal_50_round_simulation.py"
+          ],
+          "public_symbols": [
+            "one",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_contextual_meta_weights.py",
+          "relative_path": "smart_contextual_meta_weights.py",
+          "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "contextual_meta_factors"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_meta_governor.py",
+          "relative_path": "smart_meta_governor.py",
+          "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5",
+          "imports": [
+            "smart_multi_challengers.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "MetaGovernor"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_rank_score_calibration.py",
+          "relative_path": "smart_rank_score_calibration.py",
+          "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "brier_score",
+            "RankScoreCalibrator"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_drift_calibration.py",
+          "relative_path": "smart_signal_drift_calibration.py",
+          "sha256": "b838b01298a0167b2d8c174019a1c93e58abbcb1d697abe06dade5831a133835",
+          "imports": [
+            "smart_signal_50_round_simulation.py",
+            "smart_signal_agent.py"
+          ],
+          "public_symbols": [
+            "one",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_signal_weights.py",
+          "relative_path": "smart_signal_weights.py",
+          "sha256": "0a360601d21f47038e1f2a2fd21bc2b5b4fe52fd9d66ec1d75d6678ad4852b09",
+          "imports": [],
+          "public_symbols": [
+            "dynamic_weights"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M05",
+        "M07",
+        "M08",
+        "M11"
+      ]
+    },
+    {
+      "id": "M07",
+      "title": "Contexto e causalidade",
+      "sources": [
+        {
+          "source": "smart_causal_shadow_runner.py",
+          "relative_path": "smart_causal_shadow_runner.py",
+          "sha256": "d75f4adf9b33666e70ce81a3bbe3a36ca4974459a76f1c49946adb0527a29b8f",
+          "imports": [
+            "freeze_next_research.py",
+            "smart_champion_challenger.py",
+            "smart_data_quality_gate.py",
+            "smart_independent_oracle.py",
+            "smart_learning_activation_authority.py",
+            "smart_learning_epoch_reset.py",
+            "smart_procedural_actionability_gate.py",
+            "smart_signal_agent.py",
+            "smart_target_schedule.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "run_causal_shadow",
+            "verify_determinism"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_context_regime.py",
+          "relative_path": "smart_context_regime.py",
+          "sha256": "41b7f1e1900039900d638749649603063c0fe9f85d6ce037602b20f96f2efe59",
+          "imports": [],
+          "public_symbols": [
+            "signal_memory",
+            "ContextRegimeEngine"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M04",
+        "M05",
+        "M08",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M18"
+      ]
+    },
+    {
+      "id": "M08",
+      "title": "Motor matematico e cartografia",
+      "sources": [
+        {
+          "source": "smart_cartography_extended.py",
+          "relative_path": "smart_cartography_extended.py",
+          "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "binary_mi",
+            "temporal_memory",
+            "network_structure",
+            "regime_structure",
+            "build",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_monte_carlo_convergence.py",
+          "relative_path": "smart_monte_carlo_convergence.py",
+          "sha256": "4fffb02e7ba52e004b47af8db018b822231345b5fc9a262868d5d6e208d1d3f3",
+          "imports": [
+            "smart_randomness_cartography.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha",
+            "repair_existing",
+            "build",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_promote_cartography_1000.py",
+          "relative_path": "smart_promote_cartography_1000.py",
+          "sha256": "ab256bfb48a761671d497c247df52c5350add6f3da6f31818a7bbc4488a9f531",
+          "imports": [],
+          "public_symbols": [
+            "sha",
+            "read",
+            "promote"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_randomness_cartography.py",
+          "relative_path": "smart_randomness_cartography.py",
+          "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "u0_uniform_iid",
+            "u1_temporal_permutation",
+            "u2_label_permutation",
+            "u3_block_shuffle",
+            "empirical_marginals",
+            "prepare_u4_marginals",
+            "u4_marginals_preserved",
+            "fit_transition_weights",
+            "prepare_u5_dynamic",
+            "u5_fitted_dynamic",
+            "u6_adversarial_controls",
+            "atlas_descriptors",
+            "build_null_manifest",
+            "build_atlas",
+            "write_program_artifacts",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_v2_engine.py",
+          "relative_path": "smart_v2_engine.py",
+          "sha256": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+          "imports": [],
+          "public_symbols": [
+            "sha256",
+            "load_draws",
+            "onehot",
+            "row_minmax",
+            "precompute_scores",
+            "redundancy_penalty",
+            "rank_top6",
+            "softmax",
+            "regularize",
+            "family_of",
+            "WalkResult",
+            "walk_forward",
+            "placebo_walk",
+            "ablation",
+            "simulate_null",
+            "audit",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_v2_production.py",
+          "relative_path": "smart_v2_production.py",
+          "sha256": "a458d3c10de2eab8f19848527c01b4443f548e5213700dbc3cf644b4c2b244ca",
+          "imports": [],
+          "public_symbols": [
+            "sha256",
+            "validate_ledger",
+            "decide",
+            "main"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": []
+    },
+    {
+      "id": "M09",
+      "title": "Cartoes, selecao e portfolio",
+      "sources": [
+        {
+          "source": "smart_contingency_card.py",
+          "relative_path": "smart_contingency_card.py",
+          "sha256": "73b5e16d1912a6dd3ba92b85771e531f3175d5c4adba3b8552ab1619696d81c7",
+          "imports": [],
+          "public_symbols": [
+            "generate_contingency_card"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_frozen_card_reader.py",
+          "relative_path": "smart_frozen_card_reader.py",
+          "sha256": "0375a429b857fa0ac151c0cde6bc4aa8e1355cf51c4b6737941a48a872983571",
+          "imports": [],
+          "public_symbols": [
+            "file_sha256",
+            "sha256_json",
+            "verify_result",
+            "read_frozen_card",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_manual_generation_authority.py",
+          "relative_path": "smart_manual_generation_authority.py",
+          "sha256": "f3a980fcff2cb8b2033e31be7b61f03dc89ee679fcd00a6338c025599e7aa60f",
+          "imports": [],
+          "public_symbols": [
+            "path",
+            "authorize",
+            "validate",
+            "consume"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_portfolio_backtest.py",
+          "relative_path": "smart_portfolio_backtest.py",
+          "sha256": "dec45f45674881f3541672dec083fcf2ffb525dc47978b24e7bbc592a0dbc68b",
+          "imports": [
+            "smart_portfolio_optimizer.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "BudgetPolicy",
+            "run_backtest",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_portfolio_backtest_merge.py",
+          "relative_path": "smart_portfolio_backtest_merge.py",
+          "sha256": "b16fd5df0dd4731d7bf82b3e7dd51762e028fa9837a1be05934f4a2cd1a7ef41",
+          "imports": [
+            "smart_portfolio_backtest.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "merge",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_portfolio_optimizer.py",
+          "relative_path": "smart_portfolio_optimizer.py",
+          "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8",
+          "imports": [],
+          "public_symbols": [
+            "PortfolioConfig",
+            "optimize_portfolio",
+            "optimize_from_freeze"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_portfolio_pipeline.py",
+          "relative_path": "smart_portfolio_pipeline.py",
+          "sha256": "e99193887eb4d8341a4b230bd1c4ffa28c69d36d92569019ab69bde3764bc47b",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_false_negative_rescue.py",
+            "smart_portfolio_optimizer.py",
+            "smart_primary_card_selector.py",
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "build_portfolio_package",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_primary_card_selector.py",
+          "relative_path": "smart_primary_card_selector.py",
+          "sha256": "97c6642203419924f61b257d15bcd352bb758f1745cb41eaea606f9afab249ba",
+          "imports": [],
+          "public_symbols": [
+            "PrimaryCardSelectorConfig",
+            "sha256_json",
+            "select_primary_card"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M08",
+        "M11"
+      ]
+    },
+    {
+      "id": "M10",
+      "title": "Aprendizado e fine tuning",
+      "sources": [
+        {
+          "source": "smart_ai_fine_tuning.py",
+          "relative_path": "smart_ai_fine_tuning.py",
+          "sha256": "821d41d88eff9ea0fde6597339d0f679a05d9dc6bf5fcd73a67a188ae0dd5587",
+          "imports": [
+            "smart_contextual_meta_weights.py",
+            "smart_signal_agent.py",
+            "smart_signal_redundancy_consensus.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "sha256_file",
+            "Candidate",
+            "candidate_space",
+            "select_without_holdout",
+            "adjudicate_selected",
+            "build_authority",
+            "load_authority",
+            "run_fine_tuning",
+            "write_report_and_authority",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_bounded_online_learning.py",
+          "relative_path": "smart_bounded_online_learning.py",
+          "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07",
+          "imports": [],
+          "public_symbols": [
+            "BoundedOnlineLearningGuard"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_fine_tuning_lifecycle.py",
+          "relative_path": "smart_fine_tuning_lifecycle.py",
+          "sha256": "c0a205b40e53be54176e2c8d1764cee08819c1b64048d9f96477db722b47cc9a",
+          "imports": [
+            "smart_ai_fine_tuning.py"
+          ],
+          "public_symbols": [
+            "ensure_pre_freeze_authority"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_historical_training_intake.py",
+          "relative_path": "smart_historical_training_intake.py",
+          "sha256": "faf108906f384c7cdc438635f3db2e0802fff266d105a315f4a801d5881ddde3",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "load_frame",
+            "validate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_learning_activation_authority.py",
+          "relative_path": "smart_learning_activation_authority.py",
+          "sha256": "c13940df3bf2bf54afd6b263e9348348638181e2114da505916f399f11ce7dce",
+          "imports": [
+            "smart_learning_activation_gate.py",
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "build_materiality_evidence",
+            "ActivationRuntimeConfig",
+            "build_authority",
+            "load_activation_authority",
+            "write_authority"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_learning_activation_gate.py",
+          "relative_path": "smart_learning_activation_gate.py",
+          "sha256": "1b94e263ffaca2a3dddcc4d59aeb644cb2feabf696d9c3553283f506bb214f13",
+          "imports": [],
+          "public_symbols": [
+            "ActivationDecision",
+            "evaluate"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_learning_epoch_reset.py",
+          "relative_path": "smart_learning_epoch_reset.py",
+          "sha256": "26ea3d85e393aed82126c836f8763ebfa8cdbcda05c86808a1680af365371ced",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_crash_safe_io.py",
+            "smart_engineering_activation.py",
+            "smart_prospective_authority_lock.py",
+            "smart_regression_evidence.py",
+            "smart_target_schedule.py"
+          ],
+          "public_symbols": [
+            "write_active_epoch",
+            "verify_active_epoch",
+            "resolve_locked_prospective_registration",
+            "reset_learning_epoch"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M05",
+        "M06",
+        "M08",
+        "M11",
+        "M12",
+        "M13",
+        "M17",
+        "M18",
+        "M19"
+      ]
+    },
+    {
+      "id": "M11",
+      "title": "Laboratorio, challengers e falsificacao",
+      "sources": [
+        {
+          "source": "adjudicate_signal_challenger.py",
+          "relative_path": "adjudicate_signal_challenger.py",
+          "sha256": "19d61d0dbeb580d8c426e00e9e506e7055c02ca14d39d19b772c5a5f7edc1376",
+          "imports": [
+            "smart_champion_challenger.py",
+            "smart_meta_governor.py",
+            "smart_multi_challengers.py",
+            "smart_rank_score_calibration.py",
+            "smart_signal_attribution.py",
+            "smart_signal_interactions.py",
+            "smart_signal_marginal_utility.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "append_interactions_for_existing",
+            "append_marginal_utility_for_existing",
+            "append_attribution_for_existing",
+            "adjudicate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_50_round_simulation.py",
+          "relative_path": "smart_50_round_simulation.py",
+          "sha256": "aafa876cc642c2dd873325c7f9ea405c8687234f083a1fb57fc042efb7df73e6",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "file_sha256",
+            "zscore",
+            "gen_uniform",
+            "gen_weighted",
+            "disjoint_targets",
+            "evaluate",
+            "adwin_shift",
+            "round_record",
+            "summarize",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_cap60_experiment_engine.py",
+          "relative_path": "smart_cap60_experiment_engine.py",
+          "sha256": "2f06af0de5b9a5a61899a213eac05cddca65cf74861fe79fa2b3c1dc6779c9f3",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "current_policy",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_cap60_parallel.py",
+          "relative_path": "smart_cap60_parallel.py",
+          "sha256": "237d863b5be2fbaefc522418a2690596e560df1fa4498133b04d460be9b0286d",
+          "imports": [
+            "freeze_next_research.py",
+            "smart_cap60_experiment_engine.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "produce"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_champion_challenger.py",
+          "relative_path": "smart_champion_challenger.py",
+          "sha256": "8b643a2677b914263f0ecbd9cb650bc6f58dc83b5de056a924e4a5bafd4269df",
+          "imports": [
+            "freeze_next_research.py",
+            "smart_ai_fine_tuning.py",
+            "smart_canonical_identity.py",
+            "smart_data_quality_gate.py",
+            "smart_evidence_only_promotion.py",
+            "smart_learning_activation_authority.py",
+            "smart_portfolio_pipeline.py",
+            "smart_promotion_gate.py",
+            "smart_signal_agent.py",
+            "smart_signal_expansion_governance.py",
+            "smart_source_identity.py",
+            "smart_target_schedule.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "require_pre_3052_gate",
+            "sha256",
+            "archive_state_snapshot",
+            "source_cutoff_timestamp",
+            "load_ledger",
+            "write_ledger",
+            "seed_ledger_from_canonical",
+            "reconcile_completed_epoch_ledger",
+            "freeze_events",
+            "active_freeze",
+            "paired_events",
+            "promotion_eligibility_status",
+            "promotion_status",
+            "freeze_champion_challenger",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_experiment_lab.py",
+          "relative_path": "smart_experiment_lab.py",
+          "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "ExperimentSpec",
+            "ExperimentRegistry",
+            "monte_carlo_null_hits"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_extended_falsification.py",
+          "relative_path": "smart_extended_falsification.py",
+          "sha256": "acabb5cfa768d11eba9298aeb5450eeca037241cd30b94a87ef6e18b32b600df",
+          "imports": [
+            "smart_cartography_extended.py",
+            "smart_randomness_cartography.py"
+          ],
+          "public_symbols": [
+            "metrics",
+            "holm",
+            "compare",
+            "build",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_f12_scientific_successor.py",
+          "relative_path": "smart_f12_scientific_successor.py",
+          "sha256": "08dc3f48e775799ec867d01f8de15f9db68da0c86c3b55ef309a965a490ebd8a",
+          "imports": [
+            "smart_f11_predictive_nonregression.py"
+          ],
+          "public_symbols": [
+            "reconstruct_guard_only_source",
+            "reconstruct_approved_f12_source",
+            "reconstruct_predecessor",
+            "evaluate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_f12_scientific_successor_v2.py",
+          "relative_path": "smart_f12_scientific_successor_v2.py",
+          "sha256": "73a8ee21dd0db28e52fd9686f157b5c7d7d94b806c01915cd3dcea3ea937530e",
+          "imports": [
+            "smart_ai_fine_tuning.py",
+            "smart_f12_scientific_successor.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "evaluate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_false_negative_rescue.py",
+          "relative_path": "smart_false_negative_rescue.py",
+          "sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745",
+          "imports": [],
+          "public_symbols": [
+            "FalseNegativeRescueConfig",
+            "sha256_json",
+            "band",
+            "MissingCanonicalLineage",
+            "build_profile_from_reports",
+            "write_profile",
+            "apply_rescue",
+            "load_profile"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_falsification_lab.py",
+          "relative_path": "smart_falsification_lab.py",
+          "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99",
+          "imports": [
+            "smart_cartography_extended.py",
+            "smart_randomness_cartography.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "regime_max_cusum",
+            "metric_vector",
+            "holm_adjust",
+            "build_preregistration",
+            "evaluate_falsification",
+            "write_artifacts",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_falsification_power_audit.py",
+          "relative_path": "smart_falsification_power_audit.py",
+          "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da",
+          "imports": [],
+          "public_symbols": [
+            "sha",
+            "read_json",
+            "build_power_audit",
+            "write_power_audit"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_frontier_signal_lab.py",
+          "relative_path": "smart_frontier_signal_lab.py",
+          "sha256": "928b9a54290b26539a2c3f15deb637dd9580c4ab544664ea7ac0371ad1daaf76",
+          "imports": [
+            "smart_signal_agent.py",
+            "smart_signal_expansion_governance.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "scores_to_probabilities",
+            "brier",
+            "FrontierPrediction",
+            "FrontierState",
+            "sign_flip_pvalue",
+            "holm_adjust",
+            "run_historical",
+            "register_candidates",
+            "freeze_shadow",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_hypothesis_state_reconciler.py",
+          "relative_path": "smart_hypothesis_state_reconciler.py",
+          "sha256": "5a947908f84f198b60131e13351d2c2516cc176a41ad8cea043e1712898cc061",
+          "imports": [],
+          "public_symbols": [
+            "build_reconciliation",
+            "write_reconciliation"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_multi_challengers.py",
+          "relative_path": "smart_multi_challengers.py",
+          "sha256": "e1dd415ecd00261621e0a22007a178f295705bc758d79dc00de9ced39c107e3e",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "build_multi_challengers"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M04",
+        "M05",
+        "M06",
+        "M08",
+        "M09",
+        "M10",
+        "M12",
+        "M13",
+        "M18"
+      ]
+    },
+    {
+      "id": "M12",
+      "title": "Protocolo prospectivo e congelamento",
+      "sources": [
+        {
+          "source": "freeze_next_research.py",
+          "relative_path": "freeze_next_research.py",
+          "sha256": "af32da0753352f674bc1bdd1584d75a4ed91ba1716234dbd9233017f55873c77",
+          "imports": [
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256",
+            "current_policy",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_evidence_only_promotion.py",
+          "relative_path": "smart_evidence_only_promotion.py",
+          "sha256": "3bdc8f00bf2f0edf7502872ace54fb702a382d1c575a12e8b2165c61b7759384",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "sha256_file",
+            "policy_snapshot",
+            "assess_evidence_only_promotion",
+            "assess_evidence_only_promotion_from_files",
+            "require_authorized_promotion"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_promotion_gate.py",
+          "relative_path": "smart_promotion_gate.py",
+          "sha256": "bdade27fa98cc6e00337f0d31f085cc8beadeb36cc5f8f1990c5f658736be4d6",
+          "imports": [],
+          "public_symbols": [
+            "adaptive_min_contests",
+            "assess_promotion_records",
+            "policy_snapshot"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_prospective_authority.py",
+          "relative_path": "smart_prospective_authority.py",
+          "sha256": "69a69477b4f87cf55f79b726691c8ad4ff1e747dedc223c42b9b21697d7d2f4c",
+          "imports": [
+            "smart_canonical_identity.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "events_for",
+            "build_authority",
+            "write_authority",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_prospective_authority_lock.py",
+          "relative_path": "smart_prospective_authority_lock.py",
+          "sha256": "b7b4dcb53761a426310eaa23303eafec8279a4f434e3611a7d91fd4339f475bd",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_regression_evidence.py"
+          ],
+          "public_symbols": [
+            "resolve_unresolved_authority",
+            "build_lock",
+            "verify_lock",
+            "adjudicated_lock_evidence",
+            "close_adjudicated_lock",
+            "verify_closure",
+            "write_lock"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_prospective_cycle.py",
+          "relative_path": "smart_prospective_cycle.py",
+          "sha256": "df9d69c0942d27fe0082037763b55e52aff64d022f5c0702546acf1c72b53761",
+          "imports": [],
+          "public_symbols": [
+            "canonical_json",
+            "sha256_json",
+            "sha256_file",
+            "verify_embedded_hash",
+            "strict_top6",
+            "validate_probability_map",
+            "build_registration",
+            "register",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_sequential_prospective_proof.py",
+          "relative_path": "smart_sequential_prospective_proof.py",
+          "sha256": "9e5e850675b529b9292ed519f8312d07f3aea998cc8267e7062a643e6e7bdf8e",
+          "imports": [
+            "smart_path_semantics.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "canonical_event_hash",
+            "freeze_snapshot",
+            "validate_target_sequence",
+            "append_learning_update",
+            "append_sequence_proof"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M08",
+        "M11",
+        "M18"
+      ]
+    },
+    {
+      "id": "M13",
+      "title": "Operador local e ciclo operacional",
+      "sources": [
+        {
+          "source": "smart_continuity_consolidator.py",
+          "relative_path": "smart_continuity_consolidator.py",
+          "sha256": "b80610187af49139aeb78b1de2149ef1a0b395e0d30abd344937f499a8697657",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_agent_skill_functional_gate.py",
+            "smart_agent_skill_orchestration.py",
+            "smart_current_epoch_contract.py",
+            "smart_mission_status.py",
+            "smart_total_integration_gate.py"
+          ],
+          "public_symbols": [
+            "sha",
+            "read_json",
+            "git",
+            "refresh_wmcp_execution_proof",
+            "build",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_cycle_completion.py",
+          "relative_path": "smart_cycle_completion.py",
+          "sha256": "7023339610ece7a556d63f582fa179459dceffcdd91571690b85121a28fd4d88",
+          "imports": [],
+          "public_symbols": [
+            "CycleHandlers",
+            "complete_to_model_card"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operational_lifecycle.py",
+          "relative_path": "smart_operational_lifecycle.py",
+          "sha256": "d77ef20fe62328a6fb0f6437e1c5270b33a0d4c6dea70187c725650f0fbeeccc",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_crash_safe_io.py"
+          ],
+          "public_symbols": [
+            "LifecycleError",
+            "lifecycle_path",
+            "load_lifecycle",
+            "initialize_from_legacy",
+            "assert_state",
+            "transition",
+            "recover_to_hold",
+            "phase_for_state",
+            "runtime_phase"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator.py",
+          "relative_path": "smart_operator.py",
+          "sha256": "11dcc56b6e4bf9863eaec9fe74ad9bfc0a8f3d695b6eb81f6ac9e3fe18e21463",
+          "imports": [
+            "adjudicate_signal_challenger.py",
+            "smart_agent_runtime.py",
+            "smart_canonical_history_advance.py",
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_consumer_integration.py",
+            "smart_crash_safe_io.py",
+            "smart_current_epoch_contract.py",
+            "smart_full_process_pipeline.py",
+            "smart_idempotency.py",
+            "smart_learning_epoch_reset.py",
+            "smart_manual_generation_authority.py",
+            "smart_official_result_ingest.py",
+            "smart_operation_lock.py",
+            "smart_operation_recovery.py",
+            "smart_operational_lifecycle.py",
+            "smart_operator_authority_documents.py",
+            "smart_operator_authority_transitions.py",
+            "smart_operator_contract.py",
+            "smart_operator_epoch_document.py",
+            "smart_operator_idempotency_context.py",
+            "smart_operator_missed_draw_time.py",
+            "smart_operator_preflight_integrity.py",
+            "smart_operator_previous_epoch.py",
+            "smart_operator_recovery_validation.py",
+            "smart_operator_result.py",
+            "smart_operator_result_materialization.py",
+            "smart_rollover.py",
+            "smart_scientific_state_guard.py",
+            "smart_startup_reconciler.py",
+            "smart_storage_surfaces.py",
+            "smart_target_schedule.py",
+            "smart_terminal_executor.py",
+            "smart_transaction_journal.py"
+          ],
+          "public_symbols": [
+            "authorize_next_cycle_operation",
+            "validate_target_against_history",
+            "preflight_operation",
+            "prepare_operation",
+            "withdraw_pre_freeze_operation",
+            "recover_missed_unprepared_operation",
+            "recover_missed_unfrozen_operation",
+            "catch_up_missed_operation",
+            "authorize_generation_operation",
+            "freeze_operation",
+            "show_card_operation",
+            "recover_cycle_operation",
+            "generate_card_operation",
+            "register_result_operation",
+            "result_preflight_operation",
+            "adjudicate_operation",
+            "post_result_report_operation",
+            "review_operation",
+            "hold_operation",
+            "terminal_operation",
+            "complete_result_operation",
+            "status",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_operator_authority_documents.py",
+          "relative_path": "smart_operator_authority_documents.py",
+          "sha256": "1392b8ac82dda82132bcb4def2cfb9c4e31486d1717d1fc46ec565344227440d",
+          "imports": [],
+          "public_symbols": [
+            "sha256_json",
+            "load_hashed_doc",
+            "write_hashed_doc",
+            "find_valid_pre_freeze_withdrawal"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_authority_transitions.py",
+          "relative_path": "smart_operator_authority_transitions.py",
+          "sha256": "2a71b66634438c8b0d3c9bba1826b1d72f60adb63537aee27d2527c11a251f11",
+          "imports": [],
+          "public_symbols": [
+            "reserve_document",
+            "release_document",
+            "verify_consumable_reservation",
+            "consume_document"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_contract.py",
+          "relative_path": "smart_operator_contract.py",
+          "sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1",
+          "imports": [],
+          "public_symbols": [
+            "validate_target_sequence",
+            "contract"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_epoch_document.py",
+          "relative_path": "smart_operator_epoch_document.py",
+          "sha256": "c655e261128bd4c27d8f60f1ced96836103a867d0af35c5e78b24966a32306d4",
+          "imports": [],
+          "public_symbols": [
+            "epoch_artifact_paths",
+            "build_active_epoch_document"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_idempotency_context.py",
+          "relative_path": "smart_operator_idempotency_context.py",
+          "sha256": "6fa303678a107e267eba66f111c43b3f3c68406d72000c37e1126f98f851fb09",
+          "imports": [],
+          "public_symbols": [
+            "authorization_payload",
+            "prepare_payload"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_missed_draw_time.py",
+          "relative_path": "smart_operator_missed_draw_time.py",
+          "sha256": "a785858f321914c5cb0e04177420d3d7821dcec1fffb5eaaa6f2de1b179d2b85",
+          "imports": [],
+          "public_symbols": [
+            "assert_missed_draw_elapsed"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_preflight_integrity.py",
+          "relative_path": "smart_operator_preflight_integrity.py",
+          "sha256": "dec2390688ec2357198793abbbdea1c2f3233714de7b64e59f6d6af78fbbe11a",
+          "imports": [],
+          "public_symbols": [
+            "active_epoch_integrity_checks",
+            "classify_active_epoch"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_previous_epoch.py",
+          "relative_path": "smart_operator_previous_epoch.py",
+          "sha256": "75a4027885a4eb0d8d0dc3c54db0141ac028c145cc3373018a28c2617443f242",
+          "imports": [],
+          "public_symbols": [
+            "reconcile_previous_epoch"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_recovery_validation.py",
+          "relative_path": "smart_operator_recovery_validation.py",
+          "sha256": "652847c663dea124caead3b372fbfeda1f3b427285f8e036a293a0742eb2e463",
+          "imports": [],
+          "public_symbols": [
+            "select_recovery_batch",
+            "verify_adjudication_lineage"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_result.py",
+          "relative_path": "smart_operator_result.py",
+          "sha256": "e33be90f54fd5dc1dd28044a660fde57c7f21f97333c440af3a9049cd79ce6dd",
+          "imports": [
+            "smart_official_result_validation.py"
+          ],
+          "public_symbols": [
+            "register",
+            "fetch"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operator_result_materialization.py",
+          "relative_path": "smart_operator_result_materialization.py",
+          "sha256": "195265903454f304a3c57af9a166e0c25338034e87e711286ded70a302e3350f",
+          "imports": [],
+          "public_symbols": [
+            "materialize_adjudicated_result_dataset"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_target_schedule.py",
+          "relative_path": "smart_target_schedule.py",
+          "sha256": "d03d88e5ca1a0608c9d9e5c47818a9de081f57612a2b41507e7e1c60ef3a7b55",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "load_draw_time_policy",
+            "assert_pre_draw_window",
+            "extract_target_from_text",
+            "resolve_target_schedule"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M03",
+        "M09",
+        "M10",
+        "M11",
+        "M14",
+        "M16",
+        "M17",
+        "M19"
+      ]
+    },
+    {
+      "id": "M14",
+      "title": "Execucao terminal",
+      "sources": [
+        {
+          "source": "smart_terminal_active_epoch.py",
+          "relative_path": "smart_terminal_active_epoch.py",
+          "sha256": "f364e93db649d37098b795487cf2595e4994eb7c10179acd94c9e552f267423c",
+          "imports": [],
+          "public_symbols": [
+            "active_epoch_binding"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_engine.py",
+          "relative_path": "smart_terminal_engine.py",
+          "sha256": "f97120776f6d04a17180fbb808b50ed718b8ef08b6c982250348ae746b52f11a",
+          "imports": [
+            "adjudicate_signal_challenger.py",
+            "smart_3054_adjudication_preflight.py",
+            "smart_canonical_history_advance.py",
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_current_epoch_contract.py",
+            "smart_independent_audit.py",
+            "smart_learning_epoch_reset.py",
+            "smart_mission_status.py",
+            "smart_official_evidence_consensus.py",
+            "smart_official_result_ingest.py",
+            "smart_prospective_authority.py",
+            "smart_prospective_authority_lock.py",
+            "smart_scoped_history_gate.py",
+            "smart_sequential_prospective_proof.py",
+            "smart_signal_agent.py",
+            "smart_terminal_active_epoch.py",
+            "smart_terminal_epoch_context.py",
+            "smart_terminal_epoch_names.py",
+            "smart_terminal_evidence_guard.py",
+            "smart_terminal_execution_preflight.py",
+            "smart_terminal_execution_status.py",
+            "smart_terminal_historical_freeze.py",
+            "smart_terminal_integrity.py",
+            "smart_terminal_learned_state.py",
+            "smart_terminal_mission_promotion.py",
+            "smart_terminal_official_evidence.py",
+            "smart_terminal_official_ingest.py",
+            "smart_terminal_post_result.py",
+            "smart_terminal_probe.py",
+            "smart_terminal_prospective_lock.py",
+            "smart_terminal_result_data.py",
+            "smart_terminal_result_store.py",
+            "smart_terminal_result_transition.py",
+            "smart_terminal_runtime_binding.py",
+            "smart_terminal_sequential_learning.py",
+            "smart_terminal_stale_coverage.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "evaluate_terminal_rule",
+            "probe",
+            "execute",
+            "active_epoch_context",
+            "probe_active_epoch",
+            "execute_active_epoch",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_terminal_epoch_context.py",
+          "relative_path": "smart_terminal_epoch_context.py",
+          "sha256": "600ac2eda07aa3095f6582e466002efcb3802d23329e86d18a871b774d33e24c",
+          "imports": [],
+          "public_symbols": [
+            "authorize_epoch_runtime",
+            "scoped_epoch_globals"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_epoch_names.py",
+          "relative_path": "smart_terminal_epoch_names.py",
+          "sha256": "35646325db8966c87781cd66646234318e02706d0937dc8d2a00f886c7dd7c71",
+          "imports": [],
+          "public_symbols": [
+            "epoch_runtime_names"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_evaluation.py",
+          "relative_path": "smart_terminal_evaluation.py",
+          "sha256": "5d51dd840831be6ea1a359cc86f273b605de1384b71ad87f16a199bfd4aa0f62",
+          "imports": [],
+          "public_symbols": [
+            "evaluate_terminal_evidence"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_evidence_guard.py",
+          "relative_path": "smart_terminal_evidence_guard.py",
+          "sha256": "67d031106c40ae2d8cb924c72e33c3bf39056b432becbd054927b20d55822ba0",
+          "imports": [],
+          "public_symbols": [
+            "evaluate_verified_terminal_evidence"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_execution_preflight.py",
+          "relative_path": "smart_terminal_execution_preflight.py",
+          "sha256": "71388b88e84866ad254d7103c487e896f41f666e85ba914d984565c9b4e1d97e",
+          "imports": [],
+          "public_symbols": [
+            "build_execution_readiness",
+            "validate_execution_preflight"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_execution_status.py",
+          "relative_path": "smart_terminal_execution_status.py",
+          "sha256": "6355a5f16de9d1e8b788612d3d85427a26c79dae0313816271b6d57f6c517e83",
+          "imports": [],
+          "public_symbols": [
+            "build_terminal_execution_status"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_executor.py",
+          "relative_path": "smart_terminal_executor.py",
+          "sha256": "3c4d36c18f1b6435219ce6e86a16471192575577c8325690d778b911058183eb",
+          "imports": [
+            "smart_operator_result.py",
+            "smart_terminal_engine.py"
+          ],
+          "public_symbols": [
+            "probe",
+            "execute",
+            "complete_adjudicated_sequence"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_historical_freeze.py",
+          "relative_path": "smart_terminal_historical_freeze.py",
+          "sha256": "5952f7e1ab11c837320e99b9c7862304672da36a897db08f7503404f689ada0f",
+          "imports": [],
+          "public_symbols": [
+            "precheck_historical_freeze_evidence",
+            "write_unverified_history_audit",
+            "select_terminal_audit"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_idempotency.py",
+          "relative_path": "smart_terminal_idempotency.py",
+          "sha256": "11e55deb2a9396913369e8fbff03565b76df637cd1713b7b03bc1b9994b87e1b",
+          "imports": [],
+          "public_symbols": [
+            "verified_existing_ingest",
+            "replay_existing_adjudication"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_integrity.py",
+          "relative_path": "smart_terminal_integrity.py",
+          "sha256": "68cace0fe3d0551ae897fb5ae162bc45700a525bbc8e57c90360ae81a33c78e1",
+          "imports": [],
+          "public_symbols": [
+            "file_sha256",
+            "read_json_object",
+            "atomic_write_json",
+            "project_local_path",
+            "validate_post_result_temporal_guard"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_learned_state.py",
+          "relative_path": "smart_terminal_learned_state.py",
+          "sha256": "878d62ab60e184a37e969e640a7e1d4397911c68f7143bff1cb69df758f94b8a",
+          "imports": [],
+          "public_symbols": [
+            "agent_from_prestate",
+            "verify_existing_learned_policy",
+            "ensure_learned_state"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_mission_promotion.py",
+          "relative_path": "smart_terminal_mission_promotion.py",
+          "sha256": "66f75444b3e1549f0f038ac268a933765994220ff7bbf0578c41845f7213de4c",
+          "imports": [],
+          "public_symbols": [
+            "promote_terminal_mission"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_official_evidence.py",
+          "relative_path": "smart_terminal_official_evidence.py",
+          "sha256": "2aeda809ba7d41242be7b7eb9a947ebda1847686575f14f4afb9cfd208a4d4f4",
+          "imports": [],
+          "public_symbols": [
+            "ensure_primary_payload",
+            "ensure_monotonic_consensus",
+            "load_existing_official_evidence",
+            "official_fetch_failure_waiting",
+            "acquire_official_result"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_official_ingest.py",
+          "relative_path": "smart_terminal_official_ingest.py",
+          "sha256": "49105a2f1be1fda8b7fc9af0ec3f02b1d913f5bd8a20eb397041ac22474c3b8a",
+          "imports": [
+            "smart_terminal_idempotency.py"
+          ],
+          "public_symbols": [
+            "ensure_ingest",
+            "ensure_adjudication"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_post_result.py",
+          "relative_path": "smart_terminal_post_result.py",
+          "sha256": "b49ff72f5d4d57e59fa548ea301b684e4b8274b93c692b9cc03480662978b34d",
+          "imports": [],
+          "public_symbols": [
+            "finalize_terminal_result"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_probe.py",
+          "relative_path": "smart_terminal_probe.py",
+          "sha256": "43e2ac8201e98a8bbae28f93304401ee94dea46d761e974a2c943660377e5587",
+          "imports": [],
+          "public_symbols": [
+            "probe_terminal_result"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_prospective_lock.py",
+          "relative_path": "smart_terminal_prospective_lock.py",
+          "sha256": "dc551556c027ac9f57c23bea170894d77c1b8139cf9f0c4df1250fed0538d3eb",
+          "imports": [],
+          "public_symbols": [
+            "preserved_lock_binding"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_result_data.py",
+          "relative_path": "smart_terminal_result_data.py",
+          "sha256": "8e6b18dd2d5c79dc9902d140503679b7439d435eb4ebb47d304b084e143d0b1c",
+          "imports": [],
+          "public_symbols": [
+            "contest_max",
+            "target_events",
+            "normalize_primary",
+            "payload_from_normalized",
+            "consensus_rank",
+            "draw_map"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_result_store.py",
+          "relative_path": "smart_terminal_result_store.py",
+          "sha256": "05d556b3e14106edce148b05d7f4ab9c3ecd07039c930b4b575d056622788214",
+          "imports": [],
+          "public_symbols": [
+            "dispatch_result_store",
+            "advance_canonical_result_store"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_result_transition.py",
+          "relative_path": "smart_terminal_result_transition.py",
+          "sha256": "e2462b996c5f7dde2f8e5c729203ec471fe27134c5775643b899f6858483ae4b",
+          "imports": [],
+          "public_symbols": [
+            "apply_official_result_transition"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_runtime_binding.py",
+          "relative_path": "smart_terminal_runtime_binding.py",
+          "sha256": "2041e4c26621ef86bfa3b196692b012e2217d4dee7ddf546dad24b68f5d1c994",
+          "imports": [],
+          "public_symbols": [
+            "resolve_runtime_binding"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_sequential_learning.py",
+          "relative_path": "smart_terminal_sequential_learning.py",
+          "sha256": "db1d6a59100c9eca8aa009e906eadc066a55466e5efea9f96b14d350c336f39a",
+          "imports": [],
+          "public_symbols": [
+            "ensure_learning_and_sequence"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_terminal_stale_coverage.py",
+          "relative_path": "smart_terminal_stale_coverage.py",
+          "sha256": "095a6d763e6764df987bf488662d47e851a5f86e99d9442fd0920820d63fae18",
+          "imports": [],
+          "public_symbols": [
+            "verified_stale_coverage_observations",
+            "build_degraded_result_audit",
+            "run_terminal_independent_audit"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M03",
+        "M04",
+        "M05",
+        "M08",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M18",
+        "M21"
+      ]
+    },
+    {
+      "id": "M15",
+      "title": "Operador e autoridade GitHub",
+      "sources": [
+        {
+          "source": "smart_github_certify.py",
+          "relative_path": "smart_github_certify.py",
+          "sha256": "52b8dfd498febf3d2794484f34ba1997fb5eb9c4b9fbf788f28396fa7ee6905d",
+          "imports": [
+            "smart_agent_ecosystem_governance.py",
+            "smart_agent_runtime.py",
+            "smart_authority_freshness.py",
+            "smart_continuous_red_team.py",
+            "smart_global_integrity.py",
+            "smart_product_certification.py",
+            "smart_source_identity.py",
+            "smart_startup_reconciler.py"
+          ],
+          "public_symbols": [
+            "require_current_coverage_sources",
+            "execution_provenance",
+            "refresh"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_github_native_policy.py",
+          "relative_path": "smart_github_native_policy.py",
+          "sha256": "d8f00f0a82b73d2e3920348a8a9fb7ebca1fac993861c682a4c21e69e9556c5d",
+          "imports": [],
+          "public_symbols": [
+            "PolicyViolation",
+            "verify",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_github_operator.py",
+          "relative_path": "smart_github_operator.py",
+          "sha256": "c427f18a39cf62ff9cd3c9f4e82adfcb1e31341a48e78dea8bc7f708427efbe5",
+          "imports": [
+            "smart_transaction_journal.py"
+          ],
+          "public_symbols": [
+            "command_args",
+            "allowed_artifact",
+            "execute",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_protected_pr_publication.py",
+          "relative_path": "smart_protected_pr_publication.py",
+          "sha256": "d1fa40d0beb158371144664600a1c70b7dd07dd67b259a10942b9e984d9316ba",
+          "imports": [],
+          "public_symbols": [
+            "GitHubAPI",
+            "publish_commit"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M16",
+        "M18",
+        "M19"
+      ]
+    },
+    {
+      "id": "M16",
+      "title": "Agentes, skills e SDKs",
+      "sources": [
+        {
+          "source": "smart_agent_ecosystem_governance.py",
+          "relative_path": "smart_agent_ecosystem_governance.py",
+          "sha256": "196e5e3110a92ad2a51bac289bfca437503f752e1feba3d1c8bbab4bf81c8021",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_critical_code_manifest.py",
+            "smart_material_deficiency_policy.py"
+          ],
+          "public_symbols": [
+            "build_acquisition_manifest",
+            "write_acquisition_manifest",
+            "evaluate",
+            "write",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_agent_handoff_runtime.py",
+          "relative_path": "smart_agent_handoff_runtime.py",
+          "sha256": "d029ccdef69c4e706ee87e740266633c0c1a16b1ad3339971a3b220369f8aea7",
+          "imports": [],
+          "public_symbols": [
+            "validate_sdk_handoff",
+            "create_handoff",
+            "consume_handoff",
+            "build_operational_handoff_ledger"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_agent_runtime.py",
+          "relative_path": "smart_agent_runtime.py",
+          "sha256": "c35a59f418063e744cf04ac8ba7cd3b86ad59700d2cc9961c0b33972a15a949d",
+          "imports": [
+            "smart_agent_handoff_runtime.py",
+            "smart_agent_skill_orchestration.py",
+            "smart_canonical_identity.py",
+            "smart_mission_status.py",
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "AgentExecution",
+            "SmartAgentRuntime",
+            "write_runtime",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_agent_skill_functional_gate.py",
+          "relative_path": "smart_agent_skill_functional_gate.py",
+          "sha256": "e18379772fde61954fa627d064b519d4cb5cc26a7ea7533934f6bc62cb122c56",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_canonical_identity.py",
+            "smart_skill_runtime.py"
+          ],
+          "public_symbols": [
+            "evaluate",
+            "write",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_agent_skill_orchestration.py",
+          "relative_path": "smart_agent_skill_orchestration.py",
+          "sha256": "de0cf9980cf6c2136fffc5f8de58fb23e3c95ec5197d1ab6ec84b4beeb8849a4",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_mission_status.py",
+            "smart_operational_lifecycle.py",
+            "smart_path_semantics.py"
+          ],
+          "public_symbols": [
+            "resolve_runtime_phase",
+            "build_orchestration",
+            "write_orchestration",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_skill_adapter_registry.py",
+          "relative_path": "smart_skill_adapter_registry.py",
+          "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148",
+          "imports": [
+            "smart_agent_skill_orchestration.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "sha256_file",
+            "build_registry",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_skill_runtime.py",
+          "relative_path": "smart_skill_runtime.py",
+          "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_agent_skill_orchestration.py",
+            "smart_canonical_identity.py",
+            "smart_skill_adapter_registry.py"
+          ],
+          "public_symbols": [
+            "CapabilityRegistration",
+            "SmartSkillRuntime",
+            "write_gate",
+            "main"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M13"
+      ]
+    },
+    {
+      "id": "M17",
+      "title": "Integracao e entrega",
+      "sources": [
+        {
+          "source": "smart_capability_integration_v2.py",
+          "relative_path": "smart_capability_integration_v2.py",
+          "sha256": "01a86a48b7a4e11d25a25e10ccbedb22f2e8ee07fe64248a7a756868d86673e1",
+          "imports": [
+            "smart_data_quality_gate.py",
+            "smart_experiment_lab.py",
+            "smart_portfolio_optimizer.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "prepare_pre3053_integration"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_consumer_integration.py",
+          "relative_path": "smart_consumer_integration.py",
+          "sha256": "7401f11ed240677e3baf0d96a559b13219b613fd39821e26c1c2f42b81a55e8d",
+          "imports": [
+            "smart_agent_handoff_runtime.py",
+            "smart_data_quality_gate.py",
+            "smart_portfolio_optimizer.py",
+            "smart_primary_card_selector.py",
+            "smart_signal_weights.py",
+            "smart_target_schedule.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "evaluate",
+            "audit_generation"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_engineering_activation.py",
+          "relative_path": "smart_engineering_activation.py",
+          "sha256": "4448c45255b026c32a4653267c45b5a49725dcf0435fca1ec64f668db9e3f307",
+          "imports": [
+            "smart_agent_skill_orchestration.py",
+            "smart_canonical_identity.py",
+            "smart_prospective_authority_lock.py",
+            "smart_regression_evidence.py",
+            "smart_runtime_guard.py",
+            "smart_target_schedule.py",
+            "smart_total_integration_gate.py"
+          ],
+          "public_symbols": [
+            "verify_activation",
+            "activate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_finalize_capability_integration_v3.py",
+          "relative_path": "smart_finalize_capability_integration_v3.py",
+          "sha256": "96823bdf9410a356de97d038099eb9d8d3c369a180335f6d421add067b18794e",
+          "imports": [
+            "smart_data_quality_gate.py",
+            "smart_experiment_lab.py",
+            "smart_validation_gate.py"
+          ],
+          "public_symbols": [
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_finalize_deployment.py",
+          "relative_path": "smart_finalize_deployment.py",
+          "sha256": "45ba7de380872fe1104b7d879e1a885cb7cf889ae90dabe3ea9d38e001cbfefb",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_continuity_consolidator.py",
+            "smart_current_epoch_contract.py",
+            "smart_mission_status.py",
+            "smart_product_certification.py"
+          ],
+          "public_symbols": [
+            "validate_engineering_chain_terminal_boundary",
+            "write_engineering_chain_proof",
+            "verify_engineering_chain_proof",
+            "build",
+            "render_continuity",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_full_process_pipeline.py",
+          "relative_path": "smart_full_process_pipeline.py",
+          "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_engineering_activation.py",
+            "smart_fine_tuning_lifecycle.py",
+            "smart_frontier_signal_lab.py",
+            "smart_learning_epoch_reset.py",
+            "smart_manual_generation_authority.py",
+            "smart_operation_lock.py",
+            "smart_operation_recovery.py",
+            "smart_operational_lifecycle.py",
+            "smart_procedural_actionability_gate.py",
+            "smart_prospective_cycle.py",
+            "smart_startup_reconciler.py",
+            "smart_storage_surfaces.py",
+            "smart_target_schedule.py",
+            "smart_total_integration_gate.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "run_full_process",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_total_integration_gate.py",
+          "relative_path": "smart_total_integration_gate.py",
+          "sha256": "bdb45da12125318c21854ee456490a989cd091a5e45a9f3745b90257810fa7b9",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_agent_skill_functional_gate.py"
+          ],
+          "public_symbols": [
+            "evaluate",
+            "write"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M04",
+        "M06",
+        "M08",
+        "M09",
+        "M10",
+        "M11",
+        "M12",
+        "M13",
+        "M16",
+        "M18",
+        "M19"
+      ]
+    },
+    {
+      "id": "M18",
+      "title": "Auditoria, regressao e evidencia tecnica",
+      "sources": [
+        {
+          "source": "p14_coverage_plugin.py",
+          "relative_path": "p14_coverage_plugin.py",
+          "sha256": "95762b5ee547cafbadd6608b842c0ac3d8a7e3cdf10ad451f1ca485a1aac66f4",
+          "imports": [],
+          "public_symbols": [
+            "pytest_sessionstart",
+            "pytest_sessionfinish"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_adversarial_claim_audit.py",
+          "relative_path": "smart_adversarial_claim_audit.py",
+          "sha256": "70820466a00ad218027d04ac1aa5f6e603f5f6cbb1d023fc99e1f7a035f55eb3",
+          "imports": [
+            "smart_signal_agent.py",
+            "smart_signal_weights.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "run"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_continuous_red_team.py",
+          "relative_path": "smart_continuous_red_team.py",
+          "sha256": "5e2866e0254db8bfd82d6483598b102c2689eaf94a22e55352ea3b0d62aefc68",
+          "imports": [
+            "smart_context_regime.py",
+            "smart_meta_governor.py",
+            "smart_multi_challengers.py",
+            "smart_signal_agent.py",
+            "smart_signal_quality.py",
+            "smart_signal_redundancy_consensus.py",
+            "smart_signal_weights.py",
+            "smart_source_identity.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "current_behavior_hashes",
+            "scenario_iid",
+            "scenario_abrupt_shift",
+            "scenario_gradual_drift",
+            "scenario_recurring_regimes",
+            "scenario_regime_recovery",
+            "scenario_false_signal_and_recovery",
+            "scenario_redundancy_false_consensus",
+            "scenario_missing_and_corrupt_data",
+            "scenario_online_anti_ranking",
+            "scenario_full_stack_smoke",
+            "run_suite",
+            "write_report",
+            "verify_latest_report",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_f11_predictive_nonregression.py",
+          "relative_path": "smart_f11_predictive_nonregression.py",
+          "sha256": "f369d6cedc5f8786d71e94253fa55cb039f5f39719975fa5bbb41ecd98f4f59b",
+          "imports": [],
+          "public_symbols": [
+            "evaluate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_global_integrity.py",
+          "relative_path": "smart_global_integrity.py",
+          "sha256": "82cad5f3258a23ca29ccc5fa90ac1f2c364572e4e848f6616be5e7091a174cf8",
+          "imports": [
+            "smart_critical_code_manifest.py",
+            "smart_material_deficiency_registry.py",
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "policy_snapshot",
+            "gate_state_document",
+            "gate_state_sha256",
+            "validate_gate_state",
+            "current_source_hashes",
+            "coverage_summary",
+            "junit_summary",
+            "validate_p14_report",
+            "build_global_integrity_proof",
+            "verify_global_integrity"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_independent_audit.py",
+          "relative_path": "smart_independent_audit.py",
+          "sha256": "cfde5f435c9f7afe679dfc9ad4050a9b2e7c34ec2803bdd1b0b4e9ab1ea7b13f",
+          "imports": [
+            "freeze_next_research.py",
+            "smart_independent_oracle.py",
+            "smart_material_deficiency_registry.py",
+            "smart_path_semantics.py",
+            "smart_signal_agent.py",
+            "smart_source_identity.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "semantic_dataframe_sha256",
+            "audit_legacy_result_continuity",
+            "audit_legacy_state_continuity",
+            "audit_frozen_state_evidence",
+            "policy_snapshot",
+            "audit_independence",
+            "audit_coverage_binding",
+            "audit_coverage_bindings",
+            "audit_prospective_ledger",
+            "audit_deterministic_replay",
+            "run_independent_audit"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_independent_oracle.py",
+          "relative_path": "smart_independent_oracle.py",
+          "sha256": "1629c191e07edc83060e977379148c7f7ad432515d59d849c2a25a087e457f60",
+          "imports": [],
+          "public_symbols": [
+            "recompute_dynamic_weights",
+            "validate_prediction_snapshot",
+            "validate_frozen_decision"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_linux_ci.py",
+          "relative_path": "smart_linux_ci.py",
+          "sha256": "c9f98ff6866ed6634c0a2e1ef747ffbbfb439f041b949863fcf6a6568871f316",
+          "imports": [],
+          "public_symbols": [
+            "sign_receipt",
+            "verify_receipt",
+            "read_lock",
+            "installed_version",
+            "missing_packages",
+            "check_full_dependencies",
+            "interpret_focused",
+            "write_receipt",
+            "baseline_junit_counts",
+            "verify_full_junit",
+            "execute",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_product_certification.py",
+          "relative_path": "smart_product_certification.py",
+          "sha256": "34553cd1c9623370810c40f08fa74e17007fe56637c455c84cc59e251307329b",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_agent_skill_functional_gate.py",
+            "smart_agent_skill_orchestration.py",
+            "smart_canonical_identity.py",
+            "smart_critical_code_manifest.py",
+            "smart_global_integrity.py",
+            "smart_material_deficiency_policy.py",
+            "smart_material_deficiency_registry.py",
+            "smart_operator_contract.py",
+            "smart_regression_evidence.py",
+            "smart_runtime_guard.py",
+            "smart_source_identity.py",
+            "smart_total_integration_gate.py"
+          ],
+          "public_symbols": [
+            "code_fingerprint",
+            "canonical_root_authority_binding",
+            "regression_source_binding",
+            "verify_product_certification",
+            "build",
+            "write"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_proof_chain.py",
+          "relative_path": "smart_proof_chain.py",
+          "sha256": "7ffd1562ec2d0579558df24d15061a35d2ea559efa369e5a8ac53b60f292b632",
+          "imports": [],
+          "public_symbols": [
+            "contract",
+            "inspect",
+            "downstream",
+            "invalidation_plan",
+            "assert_order"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_regression_evidence.py",
+          "relative_path": "smart_regression_evidence.py",
+          "sha256": "02ddb892a80f6481b136f333cc83c59f978fc4b32e78589943336be6837ab632",
+          "imports": [],
+          "public_symbols": [
+            "sha256_file",
+            "junit_summary",
+            "normalize_pytest_subtest_junit",
+            "promote",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_regression_runner.py",
+          "relative_path": "smart_regression_runner.py",
+          "sha256": "b2dcac9d224f74a219642d1fe07b7afe5b104bb5e35bc8af501eb3e58c02b4f6",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_operation_lock.py",
+            "smart_regression_evidence.py",
+            "smart_source_identity.py"
+          ],
+          "public_symbols": [
+            "code_fingerprint",
+            "canonical_environment_snapshot",
+            "run_regression",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_release_attestation.py",
+          "relative_path": "smart_release_attestation.py",
+          "sha256": "0bc57115d3d599e33f7bf73ae51728fd1af48b1f8e44ad11996bd187effd79bc",
+          "imports": [],
+          "public_symbols": [
+            "build",
+            "verify"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_test_helpers.py",
+          "relative_path": "smart_test_helpers.py",
+          "sha256": "648581496bd89f0bf4c09eb0a7ebb2a9e761064160ff4f07a1606b9ef75e73b2",
+          "imports": [],
+          "public_symbols": [
+            "make_valid_freeze_fixture",
+            "bind_valid_freeze_fixture"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_validation_gate.py",
+          "relative_path": "smart_validation_gate.py",
+          "sha256": "41febdceb91ca6f27fde1c1ab885ed0a99cd747b0246d04991275a1abc79648c",
+          "imports": [],
+          "public_symbols": [
+            "EvidenceValidation",
+            "validate_evidence_bundle",
+            "enforce_evidence_bundle"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M05",
+        "M06",
+        "M07",
+        "M08",
+        "M11",
+        "M12",
+        "M13",
+        "M16",
+        "M17",
+        "M19"
+      ]
+    },
+    {
+      "id": "M19",
+      "title": "Recuperacao, transacoes e seguranca operacional",
+      "sources": [
+        {
+          "source": "smart_crash_safe_io.py",
+          "relative_path": "smart_crash_safe_io.py",
+          "sha256": "04c98543192ad6ba501899f32f45e31e097da75c3826e8cc269002aabebca754",
+          "imports": [],
+          "public_symbols": [
+            "atomic_write_bytes",
+            "atomic_write_text",
+            "atomic_write_json"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_disconnection_gate.py",
+          "relative_path": "smart_disconnection_gate.py",
+          "sha256": "9db6bdc7710c97128712e5b17b180647cf3bb80701e2f33ab99517eb3d402608",
+          "imports": [
+            "smart_canonical_component_registry.py",
+            "smart_component_reachability.py",
+            "smart_skill_adapter_registry.py"
+          ],
+          "public_symbols": [
+            "audit_disconnections",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_execution_checkpoint.py",
+          "relative_path": "smart_execution_checkpoint.py",
+          "sha256": "a4643241790c5b6fd46f69a29440a5d69260fe4accc594d4916b4b0e5589a1a4",
+          "imports": [
+            "smart_mission_status.py"
+          ],
+          "public_symbols": [
+            "load_json",
+            "sha",
+            "junit_totals",
+            "build_checkpoint",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_frozen_terminal_recovery.py",
+          "relative_path": "smart_frozen_terminal_recovery.py",
+          "sha256": "9cc2e48d2bea9da1f86532165f7b4493cc29101aa05bbfc0410ccfb3b2de4eeb",
+          "imports": [],
+          "public_symbols": [
+            "verified_frozen_terminal_recovery"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_http_guard.py",
+          "relative_path": "smart_http_guard.py",
+          "sha256": "682391b373046f47b6bd7be6c4b7629bc36eaedd464e61c198adebe00ede7d55",
+          "imports": [],
+          "public_symbols": [
+            "read_limited_bytes",
+            "validate_https_url"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_idempotency.py",
+          "relative_path": "smart_idempotency.py",
+          "sha256": "68d90b28171a7acfa936b16fbaf8319a0d028c4635ba95a7da5ba6446f958e9e",
+          "imports": [
+            "smart_crash_safe_io.py"
+          ],
+          "public_symbols": [
+            "make_key",
+            "record_path",
+            "load",
+            "commit",
+            "resolve_key",
+            "replay",
+            "idempotent_operation"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_missed_catchup.py",
+          "relative_path": "smart_missed_catchup.py",
+          "sha256": "5a29092d9564e1c5f57087f3a0239faa3210380da0a3e7b5ed9177f07c8e54a4",
+          "imports": [
+            "smart_agent_runtime.py",
+            "smart_canonical_history_advance.py",
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_crash_safe_io.py",
+            "smart_learning_epoch_reset.py",
+            "smart_official_result_ingest.py",
+            "smart_operational_lifecycle.py",
+            "smart_product_certification.py",
+            "smart_rollover.py",
+            "smart_storage_surfaces.py",
+            "smart_terminal_executor.py"
+          ],
+          "public_symbols": [
+            "load_official_payload_batch",
+            "catch_up_missed_results"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operation_lock.py",
+          "relative_path": "smart_operation_lock.py",
+          "sha256": "949a12a64341074fec0b746947a19024d138e46cc8c2871771f7b3ed091bc755",
+          "imports": [
+            "smart_canonical_identity.py"
+          ],
+          "public_symbols": [
+            "OperationalLockError",
+            "OperationLock",
+            "operation_lock",
+            "read_lock_metadata",
+            "update_current_process_lock",
+            "locked_operation"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_operation_recovery.py",
+          "relative_path": "smart_operation_recovery.py",
+          "sha256": "ef2b83da8351b235fef52b06643860186d75c6cd98e0aaf3a73d5ccb822e510f",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_learning_epoch_reset.py",
+            "smart_operational_lifecycle.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "recover_interrupted_freeze_operation"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_rollover.py",
+          "relative_path": "smart_rollover.py",
+          "sha256": "3a31bc686a89b1032b9c35a94b6a16d1ebddcad87a2daf73e0d9ca42ac2d3696",
+          "imports": [
+            "smart_champion_challenger.py",
+            "smart_crash_safe_io.py",
+            "smart_learning_epoch_reset.py",
+            "smart_operation_lock.py",
+            "smart_operational_lifecycle.py",
+            "smart_startup_reconciler.py",
+            "smart_storage_surfaces.py",
+            "smart_transaction_journal.py"
+          ],
+          "public_symbols": [
+            "RolloverError",
+            "archive_completed_epoch",
+            "canonical_rollover"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_runtime_guard.py",
+          "relative_path": "smart_runtime_guard.py",
+          "sha256": "ba75e158f92da5bbd4cc74f3b9be55e495fbeeadca612cd3b7a5d0d69ffe3034",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_path_semantics.py"
+          ],
+          "public_symbols": [
+            "audit"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_startup_reconciler.py",
+          "relative_path": "smart_startup_reconciler.py",
+          "sha256": "bf4bd0b78e8f6cb4f07547810970f97abd171feb98dc09bec51fe17242ca2ab6",
+          "imports": [
+            "smart_canonical_identity.py",
+            "smart_frozen_terminal_recovery.py",
+            "smart_operation_lock.py",
+            "smart_operational_lifecycle.py",
+            "smart_transaction_journal.py"
+          ],
+          "public_symbols": [
+            "RecoveryRequired",
+            "reconcile",
+            "assert_reconciled",
+            "startup_guarded"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_transaction_journal.py",
+          "relative_path": "smart_transaction_journal.py",
+          "sha256": "06d0a2451b6c991e0cc2c974130eb5884deffd376e4fe9c220af61a123e48581",
+          "imports": [],
+          "public_symbols": [
+            "TransactionJournalError",
+            "journal_path",
+            "read_entries",
+            "transaction_entries",
+            "current_phase",
+            "append_phase",
+            "begin",
+            "prepared",
+            "committing",
+            "committed",
+            "rolled_back",
+            "open_transactions"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M03",
+        "M10",
+        "M11",
+        "M13",
+        "M14",
+        "M16",
+        "M18"
+      ]
+    },
+    {
+      "id": "M20",
+      "title": "Metricas, analise pos-resultado e relatorios",
+      "sources": [
+        {
+          "source": "smart_post_result_report.py",
+          "relative_path": "smart_post_result_report.py",
+          "sha256": "88615f41e7c4a7de4306f642aabac81150147e74b9e0f6f34e45fefa36442659",
+          "imports": [],
+          "public_symbols": [
+            "emit_post_result_report"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_probability_audit.py",
+          "relative_path": "smart_probability_audit.py",
+          "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b",
+          "imports": [
+            "smart_experiment_lab.py",
+            "smart_falsification_lab.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_json",
+            "sha256_file",
+            "verify_embedded_hash",
+            "moving_block_mean_ci",
+            "audit_historical",
+            "write_audit",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_refresh_falsification_report.py",
+          "relative_path": "smart_refresh_falsification_report.py",
+          "sha256": "49d5ed1ba38698a280462f74d5b4ff3110273a76331e6f3828c52e7569818b4b",
+          "imports": [],
+          "public_symbols": [
+            "sha",
+            "build_report",
+            "write_report",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smartmega_apply_post_result_report_20260920.py",
+          "relative_path": "smartmega_apply_post_result_report_20260920.py",
+          "sha256": "b93eb1a54f9a20b8e0d7290f77a660b49189d37dc06f04fbbbd53a6faad79be9",
+          "imports": [],
+          "public_symbols": [
+            "die",
+            "read",
+            "atomic_write",
+            "backup",
+            "run"
+          ],
+          "cli_guard": false
+        }
+      ],
+      "depends_on": [
+        "M08",
+        "M11"
+      ]
+    },
+    {
+      "id": "M21",
+      "title": "Ferramentas historicas e suporte",
+      "sources": [
+        {
+          "source": "conftest.py",
+          "relative_path": "conftest.py",
+          "sha256": "9631e723ae56f3f511c34adaad1e26bb6dc26f053d60d41926e491509b2c901d",
+          "imports": [],
+          "public_symbols": [
+            "isolated_legacy_sandbox_boundary",
+            "legacy_sandbox_contract_adapter"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "fix_patch_e2e_20260920.py",
+          "relative_path": "fix_patch_e2e_20260920.py",
+          "sha256": "cb7ea19fd992381d0a0a13a832f2349d50602309c3eb12856701f79e7a6b6c55",
+          "imports": [],
+          "public_symbols": [],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_3054_adjudication_preflight.py",
+          "relative_path": "smart_3054_adjudication_preflight.py",
+          "sha256": "b028959fb205086445c6f9bca0a93e61d557ed3641d1e876f485b85a0c78566a",
+          "imports": [
+            "adjudicate_signal_challenger.py",
+            "smart_current_epoch_contract.py",
+            "smart_learning_epoch_reset.py",
+            "smart_prospective_authority_lock.py",
+            "smart_sequential_prospective_proof.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "sha256_json",
+            "read_json",
+            "build_preflight",
+            "write_preflight"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_3054_full_cycle_sandbox.py",
+          "relative_path": "smart_3054_full_cycle_sandbox.py",
+          "sha256": "ffed6de8f502cc6db87b30b19316eecf2f595f3d66f49bf3b7b7f3cda79c0d60",
+          "imports": [
+            "adjudicate_signal_challenger.py",
+            "smart_3054_adjudication_preflight.py",
+            "smart_current_epoch_contract.py",
+            "smart_learning_epoch_reset.py",
+            "smart_official_result_ingest.py",
+            "smart_sequential_prospective_proof.py",
+            "smart_signal_agent.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "build_sandbox",
+            "write_sandbox"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_3054_terminal_executor.py",
+          "relative_path": "smart_3054_terminal_executor.py",
+          "sha256": "e080c0c0389d978b853cf0e522d3cdddff0da1d43748e9a12866c9bb039a0a22",
+          "imports": [
+            "adjudicate_signal_challenger.py",
+            "smart_3054_adjudication_preflight.py",
+            "smart_canonical_history_advance.py",
+            "smart_canonical_identity.py",
+            "smart_champion_challenger.py",
+            "smart_current_epoch_contract.py",
+            "smart_independent_audit.py",
+            "smart_learning_epoch_reset.py",
+            "smart_mission_status.py",
+            "smart_official_evidence_consensus.py",
+            "smart_official_result_ingest.py",
+            "smart_prospective_authority.py",
+            "smart_prospective_authority_lock.py",
+            "smart_sequential_prospective_proof.py",
+            "smart_signal_agent.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "sha256_file",
+            "evaluate_terminal_rule",
+            "probe",
+            "execute",
+            "active_epoch_context",
+            "probe_active_epoch",
+            "execute_active_epoch",
+            "main"
+          ],
+          "cli_guard": true
+        }
+      ],
+      "depends_on": [
+        "M01",
+        "M02",
+        "M03",
+        "M05",
+        "M08",
+        "M10",
+        "M11",
+        "M12",
+        "M18"
+      ]
+    }
+  ],
+  "imports": [
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_meta_governor.py",
+      "from_module": "M11",
+      "to_module": "M06"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_multi_challengers.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_rank_score_calibration.py",
+      "from_module": "M11",
+      "to_module": "M06"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_signal_attribution.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_signal_interactions.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_signal_marginal_utility.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "freeze_next_research.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M12",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "adjudicate_signal_challenger.py",
+      "from_module": "M21",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M21",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M21",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "smart_sequential_prospective_proof.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_adjudication_preflight.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M21",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "adjudicate_signal_challenger.py",
+      "from_module": "M21",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_3054_adjudication_preflight.py",
+      "from_module": "M21",
+      "to_module": "M21"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M21",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M21",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M21",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_sequential_prospective_proof.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M21",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_3054_full_cycle_sandbox.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M21",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "adjudicate_signal_challenger.py",
+      "from_module": "M21",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_3054_adjudication_preflight.py",
+      "from_module": "M21",
+      "to_module": "M21"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_canonical_history_advance.py",
+      "from_module": "M21",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M21",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M21",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M21",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_independent_audit.py",
+      "from_module": "M21",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M21",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M21",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_official_evidence_consensus.py",
+      "from_module": "M21",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M21",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_prospective_authority.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_sequential_prospective_proof.py",
+      "from_module": "M21",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M21",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_3054_terminal_executor.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M21",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_50_round_simulation.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_adversarial_claim_audit.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M18",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_adversarial_claim_audit.py",
+      "target": "smart_signal_weights.py",
+      "from_module": "M18",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_adversarial_claim_audit.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M18",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_agent_ecosystem_governance.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_ecosystem_governance.py",
+      "target": "smart_critical_code_manifest.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_ecosystem_governance.py",
+      "target": "smart_material_deficiency_policy.py",
+      "from_module": "M16",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "target": "smart_agent_handoff_runtime.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M16",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_skill_functional_gate.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_agent_skill_functional_gate.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_skill_functional_gate.py",
+      "target": "smart_skill_runtime.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_agent_skill_orchestration.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_agent_skill_orchestration.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M16",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_agent_skill_orchestration.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M16",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_agent_skill_orchestration.py",
+      "target": "smart_path_semantics.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_ai_fine_tuning.py",
+      "target": "smart_contextual_meta_weights.py",
+      "from_module": "M10",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_ai_fine_tuning.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M10",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_ai_fine_tuning.py",
+      "target": "smart_signal_redundancy_consensus.py",
+      "from_module": "M10",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_ai_fine_tuning.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M10",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_authority_freshness.py",
+      "target": "smart_critical_code_manifest.py",
+      "from_module": "M02",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_authority_freshness.py",
+      "target": "smart_material_deficiency_registry.py",
+      "from_module": "M02",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_authority_freshness.py",
+      "target": "smart_product_certification.py",
+      "from_module": "M02",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_canonical_component_registry.py",
+      "target": "smart_component_reachability.py",
+      "from_module": "M01",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_canonical_history_advance.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M03",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_canonical_history_advance.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M03",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_canonical_history_advance.py",
+      "target": "smart_path_semantics.py",
+      "from_module": "M03",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_canonical_history_advance.py",
+      "target": "smart_sequential_prospective_proof.py",
+      "from_module": "M03",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_canonical_result_store_reconcile.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M03",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_canonical_root_rebind.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M01",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_canonical_root_rebind.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M01",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_canonical_root_rebind.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M01",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_cap60_experiment_engine.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_cap60_parallel.py",
+      "target": "freeze_next_research.py",
+      "from_module": "M11",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_cap60_parallel.py",
+      "target": "smart_cap60_experiment_engine.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_cap60_parallel.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_capability_integration_v2.py",
+      "target": "smart_data_quality_gate.py",
+      "from_module": "M17",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_capability_integration_v2.py",
+      "target": "smart_experiment_lab.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_capability_integration_v2.py",
+      "target": "smart_portfolio_optimizer.py",
+      "from_module": "M17",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_capability_integration_v2.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M17",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_cartography_extended.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "freeze_next_research.py",
+      "from_module": "M07",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M07",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_data_quality_gate.py",
+      "from_module": "M07",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_independent_oracle.py",
+      "from_module": "M07",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_learning_activation_authority.py",
+      "from_module": "M07",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M07",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_procedural_actionability_gate.py",
+      "from_module": "M07",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M07",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M07",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_causal_shadow_runner.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M07",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "freeze_next_research.py",
+      "from_module": "M11",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_ai_fine_tuning.py",
+      "from_module": "M11",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M11",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_data_quality_gate.py",
+      "from_module": "M11",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_evidence_only_promotion.py",
+      "from_module": "M11",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_learning_activation_authority.py",
+      "from_module": "M11",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_portfolio_pipeline.py",
+      "from_module": "M11",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_promotion_gate.py",
+      "from_module": "M11",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_signal_expansion_governance.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M11",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M11",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_component_reachability.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M01",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_agent_handoff_runtime.py",
+      "from_module": "M17",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_data_quality_gate.py",
+      "from_module": "M17",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_portfolio_optimizer.py",
+      "from_module": "M17",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_primary_card_selector.py",
+      "from_module": "M17",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_signal_weights.py",
+      "from_module": "M17",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M17",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M17",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_context_calibration_confirm.py",
+      "target": "smart_context_regime.py",
+      "from_module": "M06",
+      "to_module": "M07"
+    },
+    {
+      "source": "smart_context_calibration_confirm.py",
+      "target": "smart_signal_50_round_simulation.py",
+      "from_module": "M06",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_context_calibration_confirm_v2.py",
+      "target": "smart_context_regime.py",
+      "from_module": "M06",
+      "to_module": "M07"
+    },
+    {
+      "source": "smart_context_calibration_confirm_v2.py",
+      "target": "smart_signal_50_round_simulation.py",
+      "from_module": "M06",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M13",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_agent_skill_functional_gate.py",
+      "from_module": "M13",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M13",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M13",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M13",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_continuity_consolidator.py",
+      "target": "smart_total_integration_gate.py",
+      "from_module": "M13",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_context_regime.py",
+      "from_module": "M18",
+      "to_module": "M07"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_meta_governor.py",
+      "from_module": "M18",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_multi_challengers.py",
+      "from_module": "M18",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M18",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_signal_quality.py",
+      "from_module": "M18",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_signal_redundancy_consensus.py",
+      "from_module": "M18",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_signal_weights.py",
+      "from_module": "M18",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_continuous_red_team.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M18",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_critical_code_manifest.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M01",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_current_epoch_contract.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M02",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_current_epoch_contract.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M02",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_current_epoch_contract.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M02",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_disconnection_gate.py",
+      "target": "smart_canonical_component_registry.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_disconnection_gate.py",
+      "target": "smart_component_reachability.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_disconnection_gate.py",
+      "target": "smart_skill_adapter_registry.py",
+      "from_module": "M19",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M17",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M17",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M17",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M17",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_runtime_guard.py",
+      "from_module": "M17",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M17",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "target": "smart_total_integration_gate.py",
+      "from_module": "M17",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_execution_checkpoint.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M19",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_extended_falsification.py",
+      "target": "smart_cartography_extended.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_extended_falsification.py",
+      "target": "smart_randomness_cartography.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_f12_scientific_successor.py",
+      "target": "smart_f11_predictive_nonregression.py",
+      "from_module": "M11",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_f12_scientific_successor_v2.py",
+      "target": "smart_ai_fine_tuning.py",
+      "from_module": "M11",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_f12_scientific_successor_v2.py",
+      "target": "smart_f12_scientific_successor.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_falsification_lab.py",
+      "target": "smart_cartography_extended.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_falsification_lab.py",
+      "target": "smart_randomness_cartography.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_falsification_lab.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_finalize_capability_integration_v3.py",
+      "target": "smart_data_quality_gate.py",
+      "from_module": "M17",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_finalize_capability_integration_v3.py",
+      "target": "smart_experiment_lab.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_finalize_capability_integration_v3.py",
+      "target": "smart_validation_gate.py",
+      "from_module": "M17",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M17",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "target": "smart_continuity_consolidator.py",
+      "from_module": "M17",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M17",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M17",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "target": "smart_product_certification.py",
+      "from_module": "M17",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_fine_tuning_lifecycle.py",
+      "target": "smart_ai_fine_tuning.py",
+      "from_module": "M10",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_frontier_adjudicator.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M03",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_frontier_adjudicator.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M03",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_frontier_adjudicator.py",
+      "target": "smart_signal_expansion_governance.py",
+      "from_module": "M03",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_frontier_signal_lab.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_frontier_signal_lab.py",
+      "target": "smart_signal_expansion_governance.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_frontier_signal_lab.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M17",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M17",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_engineering_activation.py",
+      "from_module": "M17",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_fine_tuning_lifecycle.py",
+      "from_module": "M17",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M17",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_manual_generation_authority.py",
+      "from_module": "M17",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_operation_lock.py",
+      "from_module": "M17",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_operation_recovery.py",
+      "from_module": "M17",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M17",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_procedural_actionability_gate.py",
+      "from_module": "M17",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_prospective_cycle.py",
+      "from_module": "M17",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_startup_reconciler.py",
+      "from_module": "M17",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_storage_surfaces.py",
+      "from_module": "M17",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M17",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_total_integration_gate.py",
+      "from_module": "M17",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M17",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_agent_ecosystem_governance.py",
+      "from_module": "M15",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M15",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_authority_freshness.py",
+      "from_module": "M15",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_continuous_red_team.py",
+      "from_module": "M15",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_global_integrity.py",
+      "from_module": "M15",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_product_certification.py",
+      "from_module": "M15",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M15",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_github_certify.py",
+      "target": "smart_startup_reconciler.py",
+      "from_module": "M15",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_github_operator.py",
+      "target": "smart_transaction_journal.py",
+      "from_module": "M15",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_global_integrity.py",
+      "target": "smart_critical_code_manifest.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_global_integrity.py",
+      "target": "smart_material_deficiency_registry.py",
+      "from_module": "M18",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_global_integrity.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_historical_binding.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M01",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_idempotency.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "freeze_next_research.py",
+      "from_module": "M18",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_independent_oracle.py",
+      "from_module": "M18",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_material_deficiency_registry.py",
+      "from_module": "M18",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_path_semantics.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M18",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_independent_audit.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M18",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_learning_activation_authority.py",
+      "target": "smart_learning_activation_gate.py",
+      "from_module": "M10",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_learning_activation_authority.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M10",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M10",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M10",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M10",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_engineering_activation.py",
+      "from_module": "M10",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M10",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M10",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M10",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_meta_governor.py",
+      "target": "smart_multi_challengers.py",
+      "from_module": "M06",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M19",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_canonical_history_advance.py",
+      "from_module": "M19",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M19",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M19",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M19",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M19",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_product_certification.py",
+      "from_module": "M19",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_rollover.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_storage_surfaces.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "target": "smart_terminal_executor.py",
+      "from_module": "M19",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_mission_status.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M02",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_monte_carlo_convergence.py",
+      "target": "smart_randomness_cartography.py",
+      "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_monte_carlo_convergence.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_official_dataset_reconcile.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M03",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_official_evidence_consensus.py",
+      "target": "smart_http_guard.py",
+      "from_module": "M03",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_official_evidence_consensus.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M03",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_official_result_ingest.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M03",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_official_result_ingest.py",
+      "target": "smart_http_guard.py",
+      "from_module": "M03",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_official_result_ingest.py",
+      "target": "smart_official_result_validation.py",
+      "from_module": "M03",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_operation_lock.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_operation_recovery.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_operation_recovery.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M19",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_operation_recovery.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M19",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operational_lifecycle.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M13",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_operational_lifecycle.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "adjudicate_signal_challenger.py",
+      "from_module": "M13",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M13",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_canonical_history_advance.py",
+      "from_module": "M13",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M13",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M13",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_consumer_integration.py",
+      "from_module": "M13",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M13",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_full_process_pipeline.py",
+      "from_module": "M13",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_idempotency.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M13",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_manual_generation_authority.py",
+      "from_module": "M13",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M13",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operation_lock.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operation_recovery.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_authority_documents.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_authority_transitions.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_contract.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_epoch_document.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_idempotency_context.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_missed_draw_time.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_preflight_integrity.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_previous_epoch.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_recovery_validation.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_result.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_operator_result_materialization.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_rollover.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_scientific_state_guard.py",
+      "from_module": "M13",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_startup_reconciler.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_storage_surfaces.py",
+      "from_module": "M13",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_target_schedule.py",
+      "from_module": "M13",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_terminal_executor.py",
+      "from_module": "M13",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_operator.py",
+      "target": "smart_transaction_journal.py",
+      "from_module": "M13",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_operator_result.py",
+      "target": "smart_official_result_validation.py",
+      "from_module": "M13",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_portfolio_backtest.py",
+      "target": "smart_portfolio_optimizer.py",
+      "from_module": "M09",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_portfolio_backtest.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M09",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_portfolio_backtest_merge.py",
+      "target": "smart_portfolio_backtest.py",
+      "from_module": "M09",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M09",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "target": "smart_false_negative_rescue.py",
+      "from_module": "M09",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "target": "smart_portfolio_optimizer.py",
+      "from_module": "M09",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "target": "smart_primary_card_selector.py",
+      "from_module": "M09",
+      "to_module": "M09"
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M09",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_probability_audit.py",
+      "target": "smart_experiment_lab.py",
+      "from_module": "M20",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_probability_audit.py",
+      "target": "smart_falsification_lab.py",
+      "from_module": "M20",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_probability_audit.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M20",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_procedural_cronogram_acquire.py",
+      "target": "smart_http_guard.py",
+      "from_module": "M04",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_procedural_youtube_batch.py",
+      "target": "smart_procedural_caption_extract.py",
+      "from_module": "M04",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_procedural_youtube_recent_acquire.py",
+      "target": "smart_http_guard.py",
+      "from_module": "M04",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_procedural_youtube_recent_acquire.py",
+      "target": "smart_procedural_caption_extract.py",
+      "from_module": "M04",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M18",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_agent_skill_functional_gate.py",
+      "from_module": "M18",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M18",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_critical_code_manifest.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_global_integrity.py",
+      "from_module": "M18",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_material_deficiency_policy.py",
+      "from_module": "M18",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_material_deficiency_registry.py",
+      "from_module": "M18",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_operator_contract.py",
+      "from_module": "M18",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M18",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_runtime_guard.py",
+      "from_module": "M18",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_product_certification.py",
+      "target": "smart_total_integration_gate.py",
+      "from_module": "M18",
+      "to_module": "M17"
+    },
+    {
+      "source": "smart_prospective_authority.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M12",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_prospective_authority_lock.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M12",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_prospective_authority_lock.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M12",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_prospective_authority_lock.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M12",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_rag_excel.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M04",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_rag_excel.py",
+      "target": "smart_historical_training_intake.py",
+      "from_module": "M04",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_randomness_cartography.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_rank_score_calibration.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M06",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_regression_runner.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_regression_runner.py",
+      "target": "smart_operation_lock.py",
+      "from_module": "M18",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_regression_runner.py",
+      "target": "smart_regression_evidence.py",
+      "from_module": "M18",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_regression_runner.py",
+      "target": "smart_source_identity.py",
+      "from_module": "M18",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M19",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_crash_safe_io.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M19",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_operation_lock.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M19",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_startup_reconciler.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_storage_surfaces.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_rollover.py",
+      "target": "smart_transaction_journal.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_runtime_guard.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_runtime_guard.py",
+      "target": "smart_path_semantics.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_sequential_prospective_proof.py",
+      "target": "smart_path_semantics.py",
+      "from_module": "M12",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_signal_2000_simulation.py",
+      "target": "smart_context_regime.py",
+      "from_module": "M05",
+      "to_module": "M07"
+    },
+    {
+      "source": "smart_signal_2000_simulation.py",
+      "target": "smart_signal_50_round_simulation.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_2000_simulation.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_2000_simulation.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_50_round_simulation.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_50_round_simulation.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_bounded_online_learning.py",
+      "from_module": "M05",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_context_regime.py",
+      "from_module": "M05",
+      "to_module": "M07"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_contextual_meta_weights.py",
+      "from_module": "M05",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_learning_activation_gate.py",
+      "from_module": "M05",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_meta_governor.py",
+      "from_module": "M05",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_multi_challengers.py",
+      "from_module": "M05",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_rank_score_calibration.py",
+      "from_module": "M05",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_signal_interactions.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_signal_marginal_utility.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_signal_quality.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_signal_redundancy_consensus.py",
+      "from_module": "M05",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_signal_weights.py",
+      "from_module": "M05",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_attribution.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_drift_calibration.py",
+      "target": "smart_signal_50_round_simulation.py",
+      "from_module": "M06",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_drift_calibration.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M06",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_signal_interactions.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_marginal_utility.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_signal_quality.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M05",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_skill_adapter_registry.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_skill_runtime.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_skill_runtime.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_skill_runtime.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M16",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_skill_runtime.py",
+      "target": "smart_skill_adapter_registry.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M19",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "target": "smart_frozen_terminal_recovery.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "target": "smart_operation_lock.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "target": "smart_operational_lifecycle.py",
+      "from_module": "M19",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "target": "smart_transaction_journal.py",
+      "from_module": "M19",
+      "to_module": "M19"
+    },
+    {
+      "source": "smart_storage_surfaces.py",
+      "target": "smart_scientific_state_guard.py",
+      "from_module": "M01",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "adjudicate_signal_challenger.py",
+      "from_module": "M14",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_3054_adjudication_preflight.py",
+      "from_module": "M14",
+      "to_module": "M21"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_canonical_history_advance.py",
+      "from_module": "M14",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_canonical_identity.py",
+      "from_module": "M14",
+      "to_module": "M01"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_champion_challenger.py",
+      "from_module": "M14",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_current_epoch_contract.py",
+      "from_module": "M14",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_independent_audit.py",
+      "from_module": "M14",
+      "to_module": "M18"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_learning_epoch_reset.py",
+      "from_module": "M14",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_mission_status.py",
+      "from_module": "M14",
+      "to_module": "M02"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_official_evidence_consensus.py",
+      "from_module": "M14",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_official_result_ingest.py",
+      "from_module": "M14",
+      "to_module": "M03"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_prospective_authority.py",
+      "from_module": "M14",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_prospective_authority_lock.py",
+      "from_module": "M14",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_scoped_history_gate.py",
+      "from_module": "M14",
+      "to_module": "M04"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_sequential_prospective_proof.py",
+      "from_module": "M14",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_signal_agent.py",
+      "from_module": "M14",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_active_epoch.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_epoch_context.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_epoch_names.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_evidence_guard.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_execution_preflight.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_execution_status.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_historical_freeze.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_integrity.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_learned_state.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_mission_promotion.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_official_evidence.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_official_ingest.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_post_result.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_probe.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_prospective_lock.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_result_data.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_result_store.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_result_transition.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_runtime_binding.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_sequential_learning.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_terminal_stale_coverage.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M14",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_terminal_executor.py",
+      "target": "smart_operator_result.py",
+      "from_module": "M14",
+      "to_module": "M13"
+    },
+    {
+      "source": "smart_terminal_executor.py",
+      "target": "smart_terminal_engine.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_terminal_official_ingest.py",
+      "target": "smart_terminal_idempotency.py",
+      "from_module": "M14",
+      "to_module": "M14"
+    },
+    {
+      "source": "smart_total_integration_gate.py",
+      "target": "smart_agent_runtime.py",
+      "from_module": "M17",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_total_integration_gate.py",
+      "target": "smart_agent_skill_functional_gate.py",
+      "from_module": "M17",
+      "to_module": "M16"
+    }
+  ]
+}

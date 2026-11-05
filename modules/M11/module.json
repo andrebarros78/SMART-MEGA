@@ -1,0 +1,286 @@
+{
+  "id": "M11",
+  "title": "Laboratorio, challengers e falsificacao",
+  "sources": [
+    {
+      "source": "adjudicate_signal_challenger.py",
+      "relative_path": "adjudicate_signal_challenger.py",
+      "sha256": "19d61d0dbeb580d8c426e00e9e506e7055c02ca14d39d19b772c5a5f7edc1376",
+      "imports": [
+        "smart_champion_challenger.py",
+        "smart_meta_governor.py",
+        "smart_multi_challengers.py",
+        "smart_rank_score_calibration.py",
+        "smart_signal_attribution.py",
+        "smart_signal_interactions.py",
+        "smart_signal_marginal_utility.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "append_interactions_for_existing",
+        "append_marginal_utility_for_existing",
+        "append_attribution_for_existing",
+        "adjudicate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_50_round_simulation.py",
+      "relative_path": "smart_50_round_simulation.py",
+      "sha256": "aafa876cc642c2dd873325c7f9ea405c8687234f083a1fb57fc042efb7df73e6",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "file_sha256",
+        "zscore",
+        "gen_uniform",
+        "gen_weighted",
+        "disjoint_targets",
+        "evaluate",
+        "adwin_shift",
+        "round_record",
+        "summarize",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_cap60_experiment_engine.py",
+      "relative_path": "smart_cap60_experiment_engine.py",
+      "sha256": "2f06af0de5b9a5a61899a213eac05cddca65cf74861fe79fa2b3c1dc6779c9f3",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "current_policy",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_cap60_parallel.py",
+      "relative_path": "smart_cap60_parallel.py",
+      "sha256": "237d863b5be2fbaefc522418a2690596e560df1fa4498133b04d460be9b0286d",
+      "imports": [
+        "freeze_next_research.py",
+        "smart_cap60_experiment_engine.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "produce"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_champion_challenger.py",
+      "relative_path": "smart_champion_challenger.py",
+      "sha256": "8b643a2677b914263f0ecbd9cb650bc6f58dc83b5de056a924e4a5bafd4269df",
+      "imports": [
+        "freeze_next_research.py",
+        "smart_ai_fine_tuning.py",
+        "smart_canonical_identity.py",
+        "smart_data_quality_gate.py",
+        "smart_evidence_only_promotion.py",
+        "smart_learning_activation_authority.py",
+        "smart_portfolio_pipeline.py",
+        "smart_promotion_gate.py",
+        "smart_signal_agent.py",
+        "smart_signal_expansion_governance.py",
+        "smart_source_identity.py",
+        "smart_target_schedule.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "require_pre_3052_gate",
+        "sha256",
+        "archive_state_snapshot",
+        "source_cutoff_timestamp",
+        "load_ledger",
+        "write_ledger",
+        "seed_ledger_from_canonical",
+        "reconcile_completed_epoch_ledger",
+        "freeze_events",
+        "active_freeze",
+        "paired_events",
+        "promotion_eligibility_status",
+        "promotion_status",
+        "freeze_champion_challenger",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_experiment_lab.py",
+      "relative_path": "smart_experiment_lab.py",
+      "sha256": "9c5ff5ee12bd581a46628181e8204fd72ca383800b3940e9e7fa45732c6b1a8f",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "ExperimentSpec",
+        "ExperimentRegistry",
+        "monte_carlo_null_hits"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_extended_falsification.py",
+      "relative_path": "smart_extended_falsification.py",
+      "sha256": "acabb5cfa768d11eba9298aeb5450eeca037241cd30b94a87ef6e18b32b600df",
+      "imports": [
+        "smart_cartography_extended.py",
+        "smart_randomness_cartography.py"
+      ],
+      "public_symbols": [
+        "metrics",
+        "holm",
+        "compare",
+        "build",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_f12_scientific_successor.py",
+      "relative_path": "smart_f12_scientific_successor.py",
+      "sha256": "08dc3f48e775799ec867d01f8de15f9db68da0c86c3b55ef309a965a490ebd8a",
+      "imports": [
+        "smart_f11_predictive_nonregression.py"
+      ],
+      "public_symbols": [
+        "reconstruct_guard_only_source",
+        "reconstruct_approved_f12_source",
+        "reconstruct_predecessor",
+        "evaluate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_f12_scientific_successor_v2.py",
+      "relative_path": "smart_f12_scientific_successor_v2.py",
+      "sha256": "73a8ee21dd0db28e52fd9686f157b5c7d7d94b806c01915cd3dcea3ea937530e",
+      "imports": [
+        "smart_ai_fine_tuning.py",
+        "smart_f12_scientific_successor.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "evaluate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_false_negative_rescue.py",
+      "relative_path": "smart_false_negative_rescue.py",
+      "sha256": "befeee0d5b620ddb592a91a9b3bee5b3709e49f8d58194c149082f19f92ef745",
+      "imports": [],
+      "public_symbols": [
+        "FalseNegativeRescueConfig",
+        "sha256_json",
+        "band",
+        "MissingCanonicalLineage",
+        "build_profile_from_reports",
+        "write_profile",
+        "apply_rescue",
+        "load_profile"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_falsification_lab.py",
+      "relative_path": "smart_falsification_lab.py",
+      "sha256": "ecd53df5f50fed0d3a8011ca173696d5e4b216dcfc65548bb239fc4859973f99",
+      "imports": [
+        "smart_cartography_extended.py",
+        "smart_randomness_cartography.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "regime_max_cusum",
+        "metric_vector",
+        "holm_adjust",
+        "build_preregistration",
+        "evaluate_falsification",
+        "write_artifacts",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_falsification_power_audit.py",
+      "relative_path": "smart_falsification_power_audit.py",
+      "sha256": "a1898fd5b616968d0ded92e0a75718bbb310bdf93a77ecab8d0719e2b3a6c8da",
+      "imports": [],
+      "public_symbols": [
+        "sha",
+        "read_json",
+        "build_power_audit",
+        "write_power_audit"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_frontier_signal_lab.py",
+      "relative_path": "smart_frontier_signal_lab.py",
+      "sha256": "928b9a54290b26539a2c3f15deb637dd9580c4ab544664ea7ac0371ad1daaf76",
+      "imports": [
+        "smart_signal_agent.py",
+        "smart_signal_expansion_governance.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "scores_to_probabilities",
+        "brier",
+        "FrontierPrediction",
+        "FrontierState",
+        "sign_flip_pvalue",
+        "holm_adjust",
+        "run_historical",
+        "register_candidates",
+        "freeze_shadow",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_hypothesis_state_reconciler.py",
+      "relative_path": "smart_hypothesis_state_reconciler.py",
+      "sha256": "5a947908f84f198b60131e13351d2c2516cc176a41ad8cea043e1712898cc061",
+      "imports": [],
+      "public_symbols": [
+        "build_reconciliation",
+        "write_reconciliation"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_multi_challengers.py",
+      "relative_path": "smart_multi_challengers.py",
+      "sha256": "e1dd415ecd00261621e0a22007a178f295705bc758d79dc00de9ced39c107e3e",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "build_multi_challengers"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M04",
+    "M05",
+    "M06",
+    "M08",
+    "M09",
+    "M10",
+    "M12",
+    "M13",
+    "M18"
+  ]
+}

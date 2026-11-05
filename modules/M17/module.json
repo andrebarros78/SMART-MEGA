@@ -1,0 +1,154 @@
+{
+  "id": "M17",
+  "title": "Integracao e entrega",
+  "sources": [
+    {
+      "source": "smart_capability_integration_v2.py",
+      "relative_path": "smart_capability_integration_v2.py",
+      "sha256": "01a86a48b7a4e11d25a25e10ccbedb22f2e8ee07fe64248a7a756868d86673e1",
+      "imports": [
+        "smart_data_quality_gate.py",
+        "smart_experiment_lab.py",
+        "smart_portfolio_optimizer.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "prepare_pre3053_integration"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_consumer_integration.py",
+      "relative_path": "smart_consumer_integration.py",
+      "sha256": "7401f11ed240677e3baf0d96a559b13219b613fd39821e26c1c2f42b81a55e8d",
+      "imports": [
+        "smart_agent_handoff_runtime.py",
+        "smart_data_quality_gate.py",
+        "smart_portfolio_optimizer.py",
+        "smart_primary_card_selector.py",
+        "smart_signal_weights.py",
+        "smart_target_schedule.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "evaluate",
+        "audit_generation"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_engineering_activation.py",
+      "relative_path": "smart_engineering_activation.py",
+      "sha256": "4448c45255b026c32a4653267c45b5a49725dcf0435fca1ec64f668db9e3f307",
+      "imports": [
+        "smart_agent_skill_orchestration.py",
+        "smart_canonical_identity.py",
+        "smart_prospective_authority_lock.py",
+        "smart_regression_evidence.py",
+        "smart_runtime_guard.py",
+        "smart_target_schedule.py",
+        "smart_total_integration_gate.py"
+      ],
+      "public_symbols": [
+        "verify_activation",
+        "activate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_finalize_capability_integration_v3.py",
+      "relative_path": "smart_finalize_capability_integration_v3.py",
+      "sha256": "96823bdf9410a356de97d038099eb9d8d3c369a180335f6d421add067b18794e",
+      "imports": [
+        "smart_data_quality_gate.py",
+        "smart_experiment_lab.py",
+        "smart_validation_gate.py"
+      ],
+      "public_symbols": [
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_finalize_deployment.py",
+      "relative_path": "smart_finalize_deployment.py",
+      "sha256": "45ba7de380872fe1104b7d879e1a885cb7cf889ae90dabe3ea9d38e001cbfefb",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_continuity_consolidator.py",
+        "smart_current_epoch_contract.py",
+        "smart_mission_status.py",
+        "smart_product_certification.py"
+      ],
+      "public_symbols": [
+        "validate_engineering_chain_terminal_boundary",
+        "write_engineering_chain_proof",
+        "verify_engineering_chain_proof",
+        "build",
+        "render_continuity",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
+      "relative_path": "smart_full_process_pipeline.py",
+      "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_engineering_activation.py",
+        "smart_fine_tuning_lifecycle.py",
+        "smart_frontier_signal_lab.py",
+        "smart_learning_epoch_reset.py",
+        "smart_manual_generation_authority.py",
+        "smart_operation_lock.py",
+        "smart_operation_recovery.py",
+        "smart_operational_lifecycle.py",
+        "smart_procedural_actionability_gate.py",
+        "smart_prospective_cycle.py",
+        "smart_startup_reconciler.py",
+        "smart_storage_surfaces.py",
+        "smart_target_schedule.py",
+        "smart_total_integration_gate.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "run_full_process",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_total_integration_gate.py",
+      "relative_path": "smart_total_integration_gate.py",
+      "sha256": "bdb45da12125318c21854ee456490a989cd091a5e45a9f3745b90257810fa7b9",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_agent_skill_functional_gate.py"
+      ],
+      "public_symbols": [
+        "evaluate",
+        "write"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M04",
+    "M06",
+    "M08",
+    "M09",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M16",
+    "M18",
+    "M19"
+  ]
+}

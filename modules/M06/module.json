@@ -1,0 +1,114 @@
+{
+  "id": "M06",
+  "title": "Pesos, calibracao e metagovernanca",
+  "sources": [
+    {
+      "source": "smart_calibration_safety_gate.py",
+      "relative_path": "smart_calibration_safety_gate.py",
+      "sha256": "eb64874111da1b77e9d1e7692d7ef016075433def331f24fed79707b3a6d8484",
+      "imports": [],
+      "public_symbols": [
+        "historical_baseline",
+        "verify_freeze_calibration",
+        "evaluate"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_context_calibration_confirm.py",
+      "relative_path": "smart_context_calibration_confirm.py",
+      "sha256": "0c568f72111d698bff45dcf62fd65115daa7722c1255b61b709ecc78e6a0c47a",
+      "imports": [
+        "smart_context_regime.py",
+        "smart_signal_50_round_simulation.py"
+      ],
+      "public_symbols": [
+        "one",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_context_calibration_confirm_v2.py",
+      "relative_path": "smart_context_calibration_confirm_v2.py",
+      "sha256": "66cd252339921d84df936984a428f9a5e699224ce4a7fbad5a248642d6543f77",
+      "imports": [
+        "smart_context_regime.py",
+        "smart_signal_50_round_simulation.py"
+      ],
+      "public_symbols": [
+        "one",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_contextual_meta_weights.py",
+      "relative_path": "smart_contextual_meta_weights.py",
+      "sha256": "879082ba5e2babc49f8164161ea3373572bad9c8eef02933e8ca9f805d0947bc",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "contextual_meta_factors"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_meta_governor.py",
+      "relative_path": "smart_meta_governor.py",
+      "sha256": "b1465b7f27bd3acdec43be67d0f3f49f54e3727d9e2fb73a25ec681b743f48a5",
+      "imports": [
+        "smart_multi_challengers.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "MetaGovernor"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_rank_score_calibration.py",
+      "relative_path": "smart_rank_score_calibration.py",
+      "sha256": "0a35f4462105a373b202c1c37c34b334e628ad0916061ff86f2c0df2e02a2333",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "brier_score",
+        "RankScoreCalibrator"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_drift_calibration.py",
+      "relative_path": "smart_signal_drift_calibration.py",
+      "sha256": "b838b01298a0167b2d8c174019a1c93e58abbcb1d697abe06dade5831a133835",
+      "imports": [
+        "smart_signal_50_round_simulation.py",
+        "smart_signal_agent.py"
+      ],
+      "public_symbols": [
+        "one",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_signal_weights.py",
+      "relative_path": "smart_signal_weights.py",
+      "sha256": "0a360601d21f47038e1f2a2fd21bc2b5b4fe52fd9d66ec1d75d6678ad4852b09",
+      "imports": [],
+      "public_symbols": [
+        "dynamic_weights"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M05",
+    "M07",
+    "M08",
+    "M11"
+  ]
+}

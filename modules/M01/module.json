@@ -1,0 +1,151 @@
+{
+  "id": "M01",
+  "title": "Identidade, caminhos e integridade de fonte",
+  "sources": [
+    {
+      "source": "smart_canonical_component_registry.py",
+      "relative_path": "smart_canonical_component_registry.py",
+      "sha256": "6576430705d2bb90557db51040b98bee35d960bc80ff035aac112ba183e9d453",
+      "imports": [
+        "smart_component_reachability.py"
+      ],
+      "public_symbols": [
+        "build_registry",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_canonical_identity.py",
+      "relative_path": "smart_canonical_identity.py",
+      "sha256": "c7bded80f481403be9697b316d47830d9d6166e7ec7928c993159a132c7b5262",
+      "imports": [],
+      "public_symbols": [
+        "CanonicalIdentityError",
+        "canonical_root_id",
+        "discover_competing_roots",
+        "require_canonical_identity",
+        "canonical_root"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_canonical_root_rebind.py",
+      "relative_path": "smart_canonical_root_rebind.py",
+      "sha256": "44c2f1d60b449da4bcf0f6d91953df297bc5840fb6bbf49cc52097be4face0c3",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_crash_safe_io.py",
+        "smart_regression_evidence.py"
+      ],
+      "public_symbols": [
+        "rebind",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_component_reachability.py",
+      "relative_path": "smart_component_reachability.py",
+      "sha256": "8aaa94da5aa2598ade89a5bb18a7b8acbd276d3b2c51bedd8bf019fadbc90802",
+      "imports": [
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "build_registry",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_critical_code_manifest.py",
+      "relative_path": "smart_critical_code_manifest.py",
+      "sha256": "2a593f95c90867f105f6e308968352d8a20509695998933da809790f3a41a014",
+      "imports": [
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "critical_code_files",
+        "build",
+        "verify_document_binding",
+        "write"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_historical_binding.py",
+      "relative_path": "smart_historical_binding.py",
+      "sha256": "b8e6963ad4b3066345806c1a1c1141f631f60bee7cd7ce24af2f7f0a390069b7",
+      "imports": [
+        "smart_crash_safe_io.py"
+      ],
+      "public_symbols": [
+        "HistoricalBindingError",
+        "build",
+        "write_binding"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_path_semantics.py",
+      "relative_path": "smart_path_semantics.py",
+      "sha256": "e0bbb6e2256faeaea54b28696b0a66f892a386560c72549754bdcdce245ea397",
+      "imports": [],
+      "public_symbols": [
+        "is_windows_absolute",
+        "is_absolute_any",
+        "basename_any",
+        "windows_path_under"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_repository_integrity.py",
+      "relative_path": "smart_repository_integrity.py",
+      "sha256": "2407ba142edcc09873dedb7f8b10588a6c5d91089c698e77ef9e6f80076f007f",
+      "imports": [],
+      "public_symbols": [
+        "RepositoryIntegrityError",
+        "validate_repository",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_source_identity.py",
+      "relative_path": "smart_source_identity.py",
+      "sha256": "d1163a949169e03d89325d37949915d6d17dfa678fef2d4b6de2461346754fb7",
+      "imports": [],
+      "public_symbols": [
+        "normalize_source_bytes",
+        "sha256_source_bytes",
+        "sha256_source_file",
+        "source_hashes"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_storage_surfaces.py",
+      "relative_path": "smart_storage_surfaces.py",
+      "sha256": "1fa8a84bc2325800b8e11c6e68a8c77a2e6efdc60e8387644a5bbe30bfb735e7",
+      "imports": [
+        "smart_scientific_state_guard.py"
+      ],
+      "public_symbols": [
+        "StorageSurfaceError",
+        "root_path",
+        "runtime_path",
+        "evidence_path",
+        "require_within",
+        "classify"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M02",
+    "M18",
+    "M19"
+  ]
+}

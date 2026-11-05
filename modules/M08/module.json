@@ -1,0 +1,120 @@
+{
+  "id": "M08",
+  "title": "Motor matematico e cartografia",
+  "sources": [
+    {
+      "source": "smart_cartography_extended.py",
+      "relative_path": "smart_cartography_extended.py",
+      "sha256": "c51a2941f029d6bc3b83d0ddd34ff66684ead30f2c699aa9f54b8f2ab66f1191",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "binary_mi",
+        "temporal_memory",
+        "network_structure",
+        "regime_structure",
+        "build",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_monte_carlo_convergence.py",
+      "relative_path": "smart_monte_carlo_convergence.py",
+      "sha256": "4fffb02e7ba52e004b47af8db018b822231345b5fc9a262868d5d6e208d1d3f3",
+      "imports": [
+        "smart_randomness_cartography.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha",
+        "repair_existing",
+        "build",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_promote_cartography_1000.py",
+      "relative_path": "smart_promote_cartography_1000.py",
+      "sha256": "ab256bfb48a761671d497c247df52c5350add6f3da6f31818a7bbc4488a9f531",
+      "imports": [],
+      "public_symbols": [
+        "sha",
+        "read",
+        "promote"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_randomness_cartography.py",
+      "relative_path": "smart_randomness_cartography.py",
+      "sha256": "abb258c6ccbebff641355a91e17fe687f228bc096370437362a1285c8182f70f",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "u0_uniform_iid",
+        "u1_temporal_permutation",
+        "u2_label_permutation",
+        "u3_block_shuffle",
+        "empirical_marginals",
+        "prepare_u4_marginals",
+        "u4_marginals_preserved",
+        "fit_transition_weights",
+        "prepare_u5_dynamic",
+        "u5_fitted_dynamic",
+        "u6_adversarial_controls",
+        "atlas_descriptors",
+        "build_null_manifest",
+        "build_atlas",
+        "write_program_artifacts",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_v2_engine.py",
+      "relative_path": "smart_v2_engine.py",
+      "sha256": "edf434aabe1a140a6b3fdb16aaa332cbc46077545abebd1612b109a6839a074a",
+      "imports": [],
+      "public_symbols": [
+        "sha256",
+        "load_draws",
+        "onehot",
+        "row_minmax",
+        "precompute_scores",
+        "redundancy_penalty",
+        "rank_top6",
+        "softmax",
+        "regularize",
+        "family_of",
+        "WalkResult",
+        "walk_forward",
+        "placebo_walk",
+        "ablation",
+        "simulate_null",
+        "audit",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_v2_production.py",
+      "relative_path": "smart_v2_production.py",
+      "sha256": "a458d3c10de2eab8f19848527c01b4443f548e5213700dbc3cf644b4c2b244ca",
+      "imports": [],
+      "public_symbols": [
+        "sha256",
+        "validate_ledger",
+        "decide",
+        "main"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": []
+}

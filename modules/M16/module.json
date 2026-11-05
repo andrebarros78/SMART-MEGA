@@ -1,0 +1,130 @@
+{
+  "id": "M16",
+  "title": "Agentes, skills e SDKs",
+  "sources": [
+    {
+      "source": "smart_agent_ecosystem_governance.py",
+      "relative_path": "smart_agent_ecosystem_governance.py",
+      "sha256": "196e5e3110a92ad2a51bac289bfca437503f752e1feba3d1c8bbab4bf81c8021",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_critical_code_manifest.py",
+        "smart_material_deficiency_policy.py"
+      ],
+      "public_symbols": [
+        "build_acquisition_manifest",
+        "write_acquisition_manifest",
+        "evaluate",
+        "write",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_agent_handoff_runtime.py",
+      "relative_path": "smart_agent_handoff_runtime.py",
+      "sha256": "d029ccdef69c4e706ee87e740266633c0c1a16b1ad3339971a3b220369f8aea7",
+      "imports": [],
+      "public_symbols": [
+        "validate_sdk_handoff",
+        "create_handoff",
+        "consume_handoff",
+        "build_operational_handoff_ledger"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_agent_runtime.py",
+      "relative_path": "smart_agent_runtime.py",
+      "sha256": "c35a59f418063e744cf04ac8ba7cd3b86ad59700d2cc9961c0b33972a15a949d",
+      "imports": [
+        "smart_agent_handoff_runtime.py",
+        "smart_agent_skill_orchestration.py",
+        "smart_canonical_identity.py",
+        "smart_mission_status.py",
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "AgentExecution",
+        "SmartAgentRuntime",
+        "write_runtime",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_agent_skill_functional_gate.py",
+      "relative_path": "smart_agent_skill_functional_gate.py",
+      "sha256": "e18379772fde61954fa627d064b519d4cb5cc26a7ea7533934f6bc62cb122c56",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_canonical_identity.py",
+        "smart_skill_runtime.py"
+      ],
+      "public_symbols": [
+        "evaluate",
+        "write",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_agent_skill_orchestration.py",
+      "relative_path": "smart_agent_skill_orchestration.py",
+      "sha256": "de0cf9980cf6c2136fffc5f8de58fb23e3c95ec5197d1ab6ec84b4beeb8849a4",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_mission_status.py",
+        "smart_operational_lifecycle.py",
+        "smart_path_semantics.py"
+      ],
+      "public_symbols": [
+        "resolve_runtime_phase",
+        "build_orchestration",
+        "write_orchestration",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_skill_adapter_registry.py",
+      "relative_path": "smart_skill_adapter_registry.py",
+      "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148",
+      "imports": [
+        "smart_agent_skill_orchestration.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "sha256_file",
+        "build_registry",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_skill_runtime.py",
+      "relative_path": "smart_skill_runtime.py",
+      "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_agent_skill_orchestration.py",
+        "smart_canonical_identity.py",
+        "smart_skill_adapter_registry.py"
+      ],
+      "public_symbols": [
+        "CapabilityRegistration",
+        "SmartSkillRuntime",
+        "write_gate",
+        "main"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M13"
+  ]
+}

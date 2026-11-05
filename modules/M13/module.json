@@ -1,0 +1,277 @@
+{
+  "id": "M13",
+  "title": "Operador local e ciclo operacional",
+  "sources": [
+    {
+      "source": "smart_continuity_consolidator.py",
+      "relative_path": "smart_continuity_consolidator.py",
+      "sha256": "b80610187af49139aeb78b1de2149ef1a0b395e0d30abd344937f499a8697657",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_agent_skill_functional_gate.py",
+        "smart_agent_skill_orchestration.py",
+        "smart_current_epoch_contract.py",
+        "smart_mission_status.py",
+        "smart_total_integration_gate.py"
+      ],
+      "public_symbols": [
+        "sha",
+        "read_json",
+        "git",
+        "refresh_wmcp_execution_proof",
+        "build",
+        "write"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_cycle_completion.py",
+      "relative_path": "smart_cycle_completion.py",
+      "sha256": "7023339610ece7a556d63f582fa179459dceffcdd91571690b85121a28fd4d88",
+      "imports": [],
+      "public_symbols": [
+        "CycleHandlers",
+        "complete_to_model_card"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operational_lifecycle.py",
+      "relative_path": "smart_operational_lifecycle.py",
+      "sha256": "d77ef20fe62328a6fb0f6437e1c5270b33a0d4c6dea70187c725650f0fbeeccc",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_crash_safe_io.py"
+      ],
+      "public_symbols": [
+        "LifecycleError",
+        "lifecycle_path",
+        "load_lifecycle",
+        "initialize_from_legacy",
+        "assert_state",
+        "transition",
+        "recover_to_hold",
+        "phase_for_state",
+        "runtime_phase"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator.py",
+      "relative_path": "smart_operator.py",
+      "sha256": "11dcc56b6e4bf9863eaec9fe74ad9bfc0a8f3d695b6eb81f6ac9e3fe18e21463",
+      "imports": [
+        "adjudicate_signal_challenger.py",
+        "smart_agent_runtime.py",
+        "smart_canonical_history_advance.py",
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_consumer_integration.py",
+        "smart_crash_safe_io.py",
+        "smart_current_epoch_contract.py",
+        "smart_full_process_pipeline.py",
+        "smart_idempotency.py",
+        "smart_learning_epoch_reset.py",
+        "smart_manual_generation_authority.py",
+        "smart_official_result_ingest.py",
+        "smart_operation_lock.py",
+        "smart_operation_recovery.py",
+        "smart_operational_lifecycle.py",
+        "smart_operator_authority_documents.py",
+        "smart_operator_authority_transitions.py",
+        "smart_operator_contract.py",
+        "smart_operator_epoch_document.py",
+        "smart_operator_idempotency_context.py",
+        "smart_operator_missed_draw_time.py",
+        "smart_operator_preflight_integrity.py",
+        "smart_operator_previous_epoch.py",
+        "smart_operator_recovery_validation.py",
+        "smart_operator_result.py",
+        "smart_operator_result_materialization.py",
+        "smart_rollover.py",
+        "smart_scientific_state_guard.py",
+        "smart_startup_reconciler.py",
+        "smart_storage_surfaces.py",
+        "smart_target_schedule.py",
+        "smart_terminal_executor.py",
+        "smart_transaction_journal.py"
+      ],
+      "public_symbols": [
+        "authorize_next_cycle_operation",
+        "validate_target_against_history",
+        "preflight_operation",
+        "prepare_operation",
+        "withdraw_pre_freeze_operation",
+        "recover_missed_unprepared_operation",
+        "recover_missed_unfrozen_operation",
+        "catch_up_missed_operation",
+        "authorize_generation_operation",
+        "freeze_operation",
+        "show_card_operation",
+        "recover_cycle_operation",
+        "generate_card_operation",
+        "register_result_operation",
+        "result_preflight_operation",
+        "adjudicate_operation",
+        "post_result_report_operation",
+        "review_operation",
+        "hold_operation",
+        "terminal_operation",
+        "complete_result_operation",
+        "status",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_operator_authority_documents.py",
+      "relative_path": "smart_operator_authority_documents.py",
+      "sha256": "1392b8ac82dda82132bcb4def2cfb9c4e31486d1717d1fc46ec565344227440d",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "load_hashed_doc",
+        "write_hashed_doc",
+        "find_valid_pre_freeze_withdrawal"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_authority_transitions.py",
+      "relative_path": "smart_operator_authority_transitions.py",
+      "sha256": "2a71b66634438c8b0d3c9bba1826b1d72f60adb63537aee27d2527c11a251f11",
+      "imports": [],
+      "public_symbols": [
+        "reserve_document",
+        "release_document",
+        "verify_consumable_reservation",
+        "consume_document"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_contract.py",
+      "relative_path": "smart_operator_contract.py",
+      "sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1",
+      "imports": [],
+      "public_symbols": [
+        "validate_target_sequence",
+        "contract"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_epoch_document.py",
+      "relative_path": "smart_operator_epoch_document.py",
+      "sha256": "c655e261128bd4c27d8f60f1ced96836103a867d0af35c5e78b24966a32306d4",
+      "imports": [],
+      "public_symbols": [
+        "epoch_artifact_paths",
+        "build_active_epoch_document"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_idempotency_context.py",
+      "relative_path": "smart_operator_idempotency_context.py",
+      "sha256": "6fa303678a107e267eba66f111c43b3f3c68406d72000c37e1126f98f851fb09",
+      "imports": [],
+      "public_symbols": [
+        "authorization_payload",
+        "prepare_payload"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_missed_draw_time.py",
+      "relative_path": "smart_operator_missed_draw_time.py",
+      "sha256": "a785858f321914c5cb0e04177420d3d7821dcec1fffb5eaaa6f2de1b179d2b85",
+      "imports": [],
+      "public_symbols": [
+        "assert_missed_draw_elapsed"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_preflight_integrity.py",
+      "relative_path": "smart_operator_preflight_integrity.py",
+      "sha256": "dec2390688ec2357198793abbbdea1c2f3233714de7b64e59f6d6af78fbbe11a",
+      "imports": [],
+      "public_symbols": [
+        "active_epoch_integrity_checks",
+        "classify_active_epoch"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_previous_epoch.py",
+      "relative_path": "smart_operator_previous_epoch.py",
+      "sha256": "75a4027885a4eb0d8d0dc3c54db0141ac028c145cc3373018a28c2617443f242",
+      "imports": [],
+      "public_symbols": [
+        "reconcile_previous_epoch"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_recovery_validation.py",
+      "relative_path": "smart_operator_recovery_validation.py",
+      "sha256": "652847c663dea124caead3b372fbfeda1f3b427285f8e036a293a0742eb2e463",
+      "imports": [],
+      "public_symbols": [
+        "select_recovery_batch",
+        "verify_adjudication_lineage"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_result.py",
+      "relative_path": "smart_operator_result.py",
+      "sha256": "e33be90f54fd5dc1dd28044a660fde57c7f21f97333c440af3a9049cd79ce6dd",
+      "imports": [
+        "smart_official_result_validation.py"
+      ],
+      "public_symbols": [
+        "register",
+        "fetch"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operator_result_materialization.py",
+      "relative_path": "smart_operator_result_materialization.py",
+      "sha256": "195265903454f304a3c57af9a166e0c25338034e87e711286ded70a302e3350f",
+      "imports": [],
+      "public_symbols": [
+        "materialize_adjudicated_result_dataset"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_target_schedule.py",
+      "relative_path": "smart_target_schedule.py",
+      "sha256": "d03d88e5ca1a0608c9d9e5c47818a9de081f57612a2b41507e7e1c60ef3a7b55",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "load_draw_time_policy",
+        "assert_pre_draw_window",
+        "extract_target_from_text",
+        "resolve_target_schedule"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M03",
+    "M09",
+    "M10",
+    "M11",
+    "M14",
+    "M16",
+    "M17",
+    "M19"
+  ]
+}

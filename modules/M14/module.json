@@ -1,0 +1,347 @@
+{
+  "id": "M14",
+  "title": "Execucao terminal",
+  "sources": [
+    {
+      "source": "smart_terminal_active_epoch.py",
+      "relative_path": "smart_terminal_active_epoch.py",
+      "sha256": "f364e93db649d37098b795487cf2595e4994eb7c10179acd94c9e552f267423c",
+      "imports": [],
+      "public_symbols": [
+        "active_epoch_binding"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_engine.py",
+      "relative_path": "smart_terminal_engine.py",
+      "sha256": "f97120776f6d04a17180fbb808b50ed718b8ef08b6c982250348ae746b52f11a",
+      "imports": [
+        "adjudicate_signal_challenger.py",
+        "smart_3054_adjudication_preflight.py",
+        "smart_canonical_history_advance.py",
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_current_epoch_contract.py",
+        "smart_independent_audit.py",
+        "smart_learning_epoch_reset.py",
+        "smart_mission_status.py",
+        "smart_official_evidence_consensus.py",
+        "smart_official_result_ingest.py",
+        "smart_prospective_authority.py",
+        "smart_prospective_authority_lock.py",
+        "smart_scoped_history_gate.py",
+        "smart_sequential_prospective_proof.py",
+        "smart_signal_agent.py",
+        "smart_terminal_active_epoch.py",
+        "smart_terminal_epoch_context.py",
+        "smart_terminal_epoch_names.py",
+        "smart_terminal_evidence_guard.py",
+        "smart_terminal_execution_preflight.py",
+        "smart_terminal_execution_status.py",
+        "smart_terminal_historical_freeze.py",
+        "smart_terminal_integrity.py",
+        "smart_terminal_learned_state.py",
+        "smart_terminal_mission_promotion.py",
+        "smart_terminal_official_evidence.py",
+        "smart_terminal_official_ingest.py",
+        "smart_terminal_post_result.py",
+        "smart_terminal_probe.py",
+        "smart_terminal_prospective_lock.py",
+        "smart_terminal_result_data.py",
+        "smart_terminal_result_store.py",
+        "smart_terminal_result_transition.py",
+        "smart_terminal_runtime_binding.py",
+        "smart_terminal_sequential_learning.py",
+        "smart_terminal_stale_coverage.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "evaluate_terminal_rule",
+        "probe",
+        "execute",
+        "active_epoch_context",
+        "probe_active_epoch",
+        "execute_active_epoch",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_terminal_epoch_context.py",
+      "relative_path": "smart_terminal_epoch_context.py",
+      "sha256": "600ac2eda07aa3095f6582e466002efcb3802d23329e86d18a871b774d33e24c",
+      "imports": [],
+      "public_symbols": [
+        "authorize_epoch_runtime",
+        "scoped_epoch_globals"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_epoch_names.py",
+      "relative_path": "smart_terminal_epoch_names.py",
+      "sha256": "35646325db8966c87781cd66646234318e02706d0937dc8d2a00f886c7dd7c71",
+      "imports": [],
+      "public_symbols": [
+        "epoch_runtime_names"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_evaluation.py",
+      "relative_path": "smart_terminal_evaluation.py",
+      "sha256": "5d51dd840831be6ea1a359cc86f273b605de1384b71ad87f16a199bfd4aa0f62",
+      "imports": [],
+      "public_symbols": [
+        "evaluate_terminal_evidence"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_evidence_guard.py",
+      "relative_path": "smart_terminal_evidence_guard.py",
+      "sha256": "67d031106c40ae2d8cb924c72e33c3bf39056b432becbd054927b20d55822ba0",
+      "imports": [],
+      "public_symbols": [
+        "evaluate_verified_terminal_evidence"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_execution_preflight.py",
+      "relative_path": "smart_terminal_execution_preflight.py",
+      "sha256": "71388b88e84866ad254d7103c487e896f41f666e85ba914d984565c9b4e1d97e",
+      "imports": [],
+      "public_symbols": [
+        "build_execution_readiness",
+        "validate_execution_preflight"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_execution_status.py",
+      "relative_path": "smart_terminal_execution_status.py",
+      "sha256": "6355a5f16de9d1e8b788612d3d85427a26c79dae0313816271b6d57f6c517e83",
+      "imports": [],
+      "public_symbols": [
+        "build_terminal_execution_status"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_executor.py",
+      "relative_path": "smart_terminal_executor.py",
+      "sha256": "3c4d36c18f1b6435219ce6e86a16471192575577c8325690d778b911058183eb",
+      "imports": [
+        "smart_operator_result.py",
+        "smart_terminal_engine.py"
+      ],
+      "public_symbols": [
+        "probe",
+        "execute",
+        "complete_adjudicated_sequence"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_historical_freeze.py",
+      "relative_path": "smart_terminal_historical_freeze.py",
+      "sha256": "5952f7e1ab11c837320e99b9c7862304672da36a897db08f7503404f689ada0f",
+      "imports": [],
+      "public_symbols": [
+        "precheck_historical_freeze_evidence",
+        "write_unverified_history_audit",
+        "select_terminal_audit"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_idempotency.py",
+      "relative_path": "smart_terminal_idempotency.py",
+      "sha256": "11e55deb2a9396913369e8fbff03565b76df637cd1713b7b03bc1b9994b87e1b",
+      "imports": [],
+      "public_symbols": [
+        "verified_existing_ingest",
+        "replay_existing_adjudication"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_integrity.py",
+      "relative_path": "smart_terminal_integrity.py",
+      "sha256": "68cace0fe3d0551ae897fb5ae162bc45700a525bbc8e57c90360ae81a33c78e1",
+      "imports": [],
+      "public_symbols": [
+        "file_sha256",
+        "read_json_object",
+        "atomic_write_json",
+        "project_local_path",
+        "validate_post_result_temporal_guard"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_learned_state.py",
+      "relative_path": "smart_terminal_learned_state.py",
+      "sha256": "878d62ab60e184a37e969e640a7e1d4397911c68f7143bff1cb69df758f94b8a",
+      "imports": [],
+      "public_symbols": [
+        "agent_from_prestate",
+        "verify_existing_learned_policy",
+        "ensure_learned_state"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_mission_promotion.py",
+      "relative_path": "smart_terminal_mission_promotion.py",
+      "sha256": "66f75444b3e1549f0f038ac268a933765994220ff7bbf0578c41845f7213de4c",
+      "imports": [],
+      "public_symbols": [
+        "promote_terminal_mission"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_official_evidence.py",
+      "relative_path": "smart_terminal_official_evidence.py",
+      "sha256": "2aeda809ba7d41242be7b7eb9a947ebda1847686575f14f4afb9cfd208a4d4f4",
+      "imports": [],
+      "public_symbols": [
+        "ensure_primary_payload",
+        "ensure_monotonic_consensus",
+        "load_existing_official_evidence",
+        "official_fetch_failure_waiting",
+        "acquire_official_result"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_official_ingest.py",
+      "relative_path": "smart_terminal_official_ingest.py",
+      "sha256": "49105a2f1be1fda8b7fc9af0ec3f02b1d913f5bd8a20eb397041ac22474c3b8a",
+      "imports": [
+        "smart_terminal_idempotency.py"
+      ],
+      "public_symbols": [
+        "ensure_ingest",
+        "ensure_adjudication"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_post_result.py",
+      "relative_path": "smart_terminal_post_result.py",
+      "sha256": "b49ff72f5d4d57e59fa548ea301b684e4b8274b93c692b9cc03480662978b34d",
+      "imports": [],
+      "public_symbols": [
+        "finalize_terminal_result"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_probe.py",
+      "relative_path": "smart_terminal_probe.py",
+      "sha256": "43e2ac8201e98a8bbae28f93304401ee94dea46d761e974a2c943660377e5587",
+      "imports": [],
+      "public_symbols": [
+        "probe_terminal_result"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_prospective_lock.py",
+      "relative_path": "smart_terminal_prospective_lock.py",
+      "sha256": "dc551556c027ac9f57c23bea170894d77c1b8139cf9f0c4df1250fed0538d3eb",
+      "imports": [],
+      "public_symbols": [
+        "preserved_lock_binding"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_result_data.py",
+      "relative_path": "smart_terminal_result_data.py",
+      "sha256": "8e6b18dd2d5c79dc9902d140503679b7439d435eb4ebb47d304b084e143d0b1c",
+      "imports": [],
+      "public_symbols": [
+        "contest_max",
+        "target_events",
+        "normalize_primary",
+        "payload_from_normalized",
+        "consensus_rank",
+        "draw_map"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_result_store.py",
+      "relative_path": "smart_terminal_result_store.py",
+      "sha256": "05d556b3e14106edce148b05d7f4ab9c3ecd07039c930b4b575d056622788214",
+      "imports": [],
+      "public_symbols": [
+        "dispatch_result_store",
+        "advance_canonical_result_store"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_result_transition.py",
+      "relative_path": "smart_terminal_result_transition.py",
+      "sha256": "e2462b996c5f7dde2f8e5c729203ec471fe27134c5775643b899f6858483ae4b",
+      "imports": [],
+      "public_symbols": [
+        "apply_official_result_transition"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_runtime_binding.py",
+      "relative_path": "smart_terminal_runtime_binding.py",
+      "sha256": "2041e4c26621ef86bfa3b196692b012e2217d4dee7ddf546dad24b68f5d1c994",
+      "imports": [],
+      "public_symbols": [
+        "resolve_runtime_binding"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_sequential_learning.py",
+      "relative_path": "smart_terminal_sequential_learning.py",
+      "sha256": "db1d6a59100c9eca8aa009e906eadc066a55466e5efea9f96b14d350c336f39a",
+      "imports": [],
+      "public_symbols": [
+        "ensure_learning_and_sequence"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_terminal_stale_coverage.py",
+      "relative_path": "smart_terminal_stale_coverage.py",
+      "sha256": "095a6d763e6764df987bf488662d47e851a5f86e99d9442fd0920820d63fae18",
+      "imports": [],
+      "public_symbols": [
+        "verified_stale_coverage_observations",
+        "build_degraded_result_audit",
+        "run_terminal_independent_audit"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M03",
+    "M04",
+    "M05",
+    "M08",
+    "M10",
+    "M11",
+    "M12",
+    "M13",
+    "M18",
+    "M21"
+  ]
+}
