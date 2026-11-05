@@ -1,0 +1,141 @@
+{
+  "id": "M03",
+  "title": "Coleta e conciliacao de resultados oficiais",
+  "sources": [
+    {
+      "source": "smart_canonical_history_advance.py",
+      "relative_path": "smart_canonical_history_advance.py",
+      "sha256": "e198d6d307f513e0abc89d04c37d0b21d26ad9debd053ff4bd8c477bfa88114d",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_champion_challenger.py",
+        "smart_path_semantics.py",
+        "smart_sequential_prospective_proof.py"
+      ],
+      "public_symbols": [
+        "advance_completed_epoch"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_canonical_result_store_reconcile.py",
+      "relative_path": "smart_canonical_result_store_reconcile.py",
+      "sha256": "0193975f9028b9fc7ce991b2ef6ae5b8947f0f3f068f735bbf3db571097647fd",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "build_plan",
+        "reconcile"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_fast_result_ingest.py",
+      "relative_path": "smart_fast_result_ingest.py",
+      "sha256": "3bb64f264b1f28f4ee0fcac15c2d5ec2660655ffeec441094281c7a9eb8ab574",
+      "imports": [],
+      "public_symbols": [
+        "ingest_result",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_frontier_adjudicator.py",
+      "relative_path": "smart_frontier_adjudicator.py",
+      "sha256": "569f9410e53717b0d60b78dcb8613fdded1f64a97244c74c9965ffe96bc67f5e",
+      "imports": [
+        "smart_frontier_signal_lab.py",
+        "smart_signal_agent.py",
+        "smart_signal_expansion_governance.py"
+      ],
+      "public_symbols": [
+        "adjudicate_frontier",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_official_dataset_reconcile.py",
+      "relative_path": "smart_official_dataset_reconcile.py",
+      "sha256": "3e65a3a4a8f7efdacd5685b86007da99c3aefa868400651cce876311be8acff9",
+      "imports": [
+        "smart_official_result_ingest.py"
+      ],
+      "public_symbols": [
+        "reconcile",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_official_evidence_consensus.py",
+      "relative_path": "smart_official_evidence_consensus.py",
+      "sha256": "d60e209ec4522446b063c961ef0d27cd0f4dbd1c1ea234efcb9092a8cf4f1ba5",
+      "imports": [
+        "smart_http_guard.py",
+        "smart_official_result_ingest.py"
+      ],
+      "public_symbols": [
+        "SecondaryObservation",
+        "observe_download_frame",
+        "corroborate",
+        "fetch_secondary_download",
+        "fetch_consensus",
+        "write_consensus"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_official_result_ingest.py",
+      "relative_path": "smart_official_result_ingest.py",
+      "sha256": "c9c3a25078df12b472f42cf309c00af62426dc6f3b5f6561d5da732a0f7e7254",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_http_guard.py",
+        "smart_official_result_validation.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "fetch_official_payload",
+        "build_extended_frame",
+        "ingest",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_official_result_validation.py",
+      "relative_path": "smart_official_result_validation.py",
+      "sha256": "66e5c347bac527f5998bfc125bf23f7d882bf91aa017a19cab56004797953c96",
+      "imports": [],
+      "public_symbols": [
+        "validate_official_payload"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_public_result_capture.py",
+      "relative_path": "smart_public_result_capture.py",
+      "sha256": "3015b8eb4e8be8353023a3bd344d908dd12b4576ae596ff74328a53bfd6a2e16",
+      "imports": [],
+      "public_symbols": [
+        "self_hash",
+        "capture",
+        "main"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M05",
+    "M08",
+    "M11",
+    "M12",
+    "M16",
+    "M19"
+  ]
+}

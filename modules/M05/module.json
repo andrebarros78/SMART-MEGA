@@ -1,0 +1,161 @@
+{
+  "id": "M05",
+  "title": "Sinais, relevancia e atribuicao",
+  "sources": [
+    {
+      "source": "smart_signal_2000_simulation.py",
+      "relative_path": "smart_signal_2000_simulation.py",
+      "sha256": "a4457db1bb90494395eb22122b42ba77a166177c46d04ff7e9e52a068607779f",
+      "imports": [
+        "smart_context_regime.py",
+        "smart_signal_50_round_simulation.py",
+        "smart_signal_agent.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "zscore",
+        "run_round",
+        "summarize",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_signal_50_round_simulation.py",
+      "relative_path": "smart_signal_50_round_simulation.py",
+      "sha256": "4f6e788ef6a6f2e8048637bc053ab7d68702bc9b6bc13578c6b2673001a07257",
+      "imports": [
+        "smart_signal_agent.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "zscore",
+        "gen_uniform",
+        "gen_weighted",
+        "build_scenario",
+        "run_round",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_signal_agent.py",
+      "relative_path": "smart_signal_agent.py",
+      "sha256": "04f1abc512178ffff767964021438fc9d8bcf52ec67ce88c2823542264a3f02f",
+      "imports": [
+        "smart_bounded_online_learning.py",
+        "smart_context_regime.py",
+        "smart_contextual_meta_weights.py",
+        "smart_learning_activation_gate.py",
+        "smart_meta_governor.py",
+        "smart_multi_challengers.py",
+        "smart_rank_score_calibration.py",
+        "smart_signal_interactions.py",
+        "smart_signal_marginal_utility.py",
+        "smart_signal_quality.py",
+        "smart_signal_redundancy_consensus.py",
+        "smart_signal_weights.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_bytes",
+        "sha256_json",
+        "SignalPrediction",
+        "SmartSignalAgent",
+        "write_state"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_attribution.py",
+      "relative_path": "smart_signal_attribution.py",
+      "sha256": "a5898abffc85e83a14a75c3ac678438f7a37fa16dd5c71a4ea672797b373c65f",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "analyze_attribution"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_expansion_governance.py",
+      "relative_path": "smart_signal_expansion_governance.py",
+      "sha256": "b55a672efb20307027f8fef71e71717d6b7fcc5efa17501bbe90f92ecb0ea796",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "sha256_file",
+        "CandidateSignalState",
+        "SignalExpansionGovernance",
+        "write_registry",
+        "load_registry"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_interactions.py",
+      "relative_path": "smart_signal_interactions.py",
+      "sha256": "666c959b9ae0ad7b0116f71d8ebfabb85ee172514b203611057ee6df6a07b447",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "analyze_interactions",
+        "analyze_snapshot",
+        "PairInteractionState",
+        "InteractionTracker"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_marginal_utility.py",
+      "relative_path": "smart_signal_marginal_utility.py",
+      "sha256": "036849b5ba96e9b5ed626c8451d69fb457895b10c310683577c276e86b03485b",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "evaluate_incremental_utility",
+        "analyze_marginal_utility_snapshot",
+        "MarginalUtilityState",
+        "update_marginal_states"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_quality.py",
+      "relative_path": "smart_signal_quality.py",
+      "sha256": "9866f89587847e3b42abcf2d81d1547fb95c92b9bad4f4e2eac8649d0d05ffb0",
+      "imports": [
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "SignalQualityState"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_signal_redundancy_consensus.py",
+      "relative_path": "smart_signal_redundancy_consensus.py",
+      "sha256": "eaa93c230dd6444547e8eb252bbd0e7bc3d2bd8addf82b67a62adffdfd5ab201",
+      "imports": [],
+      "public_symbols": [
+        "sha256_json",
+        "consensus_penalties"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M06",
+    "M07",
+    "M08",
+    "M10",
+    "M11"
+  ]
+}

@@ -1,0 +1,229 @@
+{
+  "id": "M19",
+  "title": "Recuperacao, transacoes e seguranca operacional",
+  "sources": [
+    {
+      "source": "smart_crash_safe_io.py",
+      "relative_path": "smart_crash_safe_io.py",
+      "sha256": "04c98543192ad6ba501899f32f45e31e097da75c3826e8cc269002aabebca754",
+      "imports": [],
+      "public_symbols": [
+        "atomic_write_bytes",
+        "atomic_write_text",
+        "atomic_write_json"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_disconnection_gate.py",
+      "relative_path": "smart_disconnection_gate.py",
+      "sha256": "9db6bdc7710c97128712e5b17b180647cf3bb80701e2f33ab99517eb3d402608",
+      "imports": [
+        "smart_canonical_component_registry.py",
+        "smart_component_reachability.py",
+        "smart_skill_adapter_registry.py"
+      ],
+      "public_symbols": [
+        "audit_disconnections",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_execution_checkpoint.py",
+      "relative_path": "smart_execution_checkpoint.py",
+      "sha256": "a4643241790c5b6fd46f69a29440a5d69260fe4accc594d4916b4b0e5589a1a4",
+      "imports": [
+        "smart_mission_status.py"
+      ],
+      "public_symbols": [
+        "load_json",
+        "sha",
+        "junit_totals",
+        "build_checkpoint",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_frozen_terminal_recovery.py",
+      "relative_path": "smart_frozen_terminal_recovery.py",
+      "sha256": "9cc2e48d2bea9da1f86532165f7b4493cc29101aa05bbfc0410ccfb3b2de4eeb",
+      "imports": [],
+      "public_symbols": [
+        "verified_frozen_terminal_recovery"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_http_guard.py",
+      "relative_path": "smart_http_guard.py",
+      "sha256": "682391b373046f47b6bd7be6c4b7629bc36eaedd464e61c198adebe00ede7d55",
+      "imports": [],
+      "public_symbols": [
+        "read_limited_bytes",
+        "validate_https_url"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_idempotency.py",
+      "relative_path": "smart_idempotency.py",
+      "sha256": "68d90b28171a7acfa936b16fbaf8319a0d028c4635ba95a7da5ba6446f958e9e",
+      "imports": [
+        "smart_crash_safe_io.py"
+      ],
+      "public_symbols": [
+        "make_key",
+        "record_path",
+        "load",
+        "commit",
+        "resolve_key",
+        "replay",
+        "idempotent_operation"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_missed_catchup.py",
+      "relative_path": "smart_missed_catchup.py",
+      "sha256": "5a29092d9564e1c5f57087f3a0239faa3210380da0a3e7b5ed9177f07c8e54a4",
+      "imports": [
+        "smart_agent_runtime.py",
+        "smart_canonical_history_advance.py",
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_crash_safe_io.py",
+        "smart_learning_epoch_reset.py",
+        "smart_official_result_ingest.py",
+        "smart_operational_lifecycle.py",
+        "smart_product_certification.py",
+        "smart_rollover.py",
+        "smart_storage_surfaces.py",
+        "smart_terminal_executor.py"
+      ],
+      "public_symbols": [
+        "load_official_payload_batch",
+        "catch_up_missed_results"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operation_lock.py",
+      "relative_path": "smart_operation_lock.py",
+      "sha256": "949a12a64341074fec0b746947a19024d138e46cc8c2871771f7b3ed091bc755",
+      "imports": [
+        "smart_canonical_identity.py"
+      ],
+      "public_symbols": [
+        "OperationalLockError",
+        "OperationLock",
+        "operation_lock",
+        "read_lock_metadata",
+        "update_current_process_lock",
+        "locked_operation"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_operation_recovery.py",
+      "relative_path": "smart_operation_recovery.py",
+      "sha256": "ef2b83da8351b235fef52b06643860186d75c6cd98e0aaf3a73d5ccb822e510f",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_learning_epoch_reset.py",
+        "smart_operational_lifecycle.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "recover_interrupted_freeze_operation"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_rollover.py",
+      "relative_path": "smart_rollover.py",
+      "sha256": "3a31bc686a89b1032b9c35a94b6a16d1ebddcad87a2daf73e0d9ca42ac2d3696",
+      "imports": [
+        "smart_champion_challenger.py",
+        "smart_crash_safe_io.py",
+        "smart_learning_epoch_reset.py",
+        "smart_operation_lock.py",
+        "smart_operational_lifecycle.py",
+        "smart_startup_reconciler.py",
+        "smart_storage_surfaces.py",
+        "smart_transaction_journal.py"
+      ],
+      "public_symbols": [
+        "RolloverError",
+        "archive_completed_epoch",
+        "canonical_rollover"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_runtime_guard.py",
+      "relative_path": "smart_runtime_guard.py",
+      "sha256": "ba75e158f92da5bbd4cc74f3b9be55e495fbeeadca612cd3b7a5d0d69ffe3034",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_path_semantics.py"
+      ],
+      "public_symbols": [
+        "audit"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_startup_reconciler.py",
+      "relative_path": "smart_startup_reconciler.py",
+      "sha256": "bf4bd0b78e8f6cb4f07547810970f97abd171feb98dc09bec51fe17242ca2ab6",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_frozen_terminal_recovery.py",
+        "smart_operation_lock.py",
+        "smart_operational_lifecycle.py",
+        "smart_transaction_journal.py"
+      ],
+      "public_symbols": [
+        "RecoveryRequired",
+        "reconcile",
+        "assert_reconciled",
+        "startup_guarded"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_transaction_journal.py",
+      "relative_path": "smart_transaction_journal.py",
+      "sha256": "06d0a2451b6c991e0cc2c974130eb5884deffd376e4fe9c220af61a123e48581",
+      "imports": [],
+      "public_symbols": [
+        "TransactionJournalError",
+        "journal_path",
+        "read_entries",
+        "transaction_entries",
+        "current_phase",
+        "append_phase",
+        "begin",
+        "prepared",
+        "committing",
+        "committed",
+        "rolled_back",
+        "open_transactions"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M02",
+    "M03",
+    "M10",
+    "M11",
+    "M13",
+    "M14",
+    "M16",
+    "M18"
+  ]
+}

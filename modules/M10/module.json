@@ -1,0 +1,127 @@
+{
+  "id": "M10",
+  "title": "Aprendizado e fine tuning",
+  "sources": [
+    {
+      "source": "smart_ai_fine_tuning.py",
+      "relative_path": "smart_ai_fine_tuning.py",
+      "sha256": "821d41d88eff9ea0fde6597339d0f679a05d9dc6bf5fcd73a67a188ae0dd5587",
+      "imports": [
+        "smart_contextual_meta_weights.py",
+        "smart_signal_agent.py",
+        "smart_signal_redundancy_consensus.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "sha256_file",
+        "Candidate",
+        "candidate_space",
+        "select_without_holdout",
+        "adjudicate_selected",
+        "build_authority",
+        "load_authority",
+        "run_fine_tuning",
+        "write_report_and_authority",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_bounded_online_learning.py",
+      "relative_path": "smart_bounded_online_learning.py",
+      "sha256": "72b73f296015de8f4f71c75a15e16594b81a4ec59b17b6df80526c3b4ec28d07",
+      "imports": [],
+      "public_symbols": [
+        "BoundedOnlineLearningGuard"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_fine_tuning_lifecycle.py",
+      "relative_path": "smart_fine_tuning_lifecycle.py",
+      "sha256": "c0a205b40e53be54176e2c8d1764cee08819c1b64048d9f96477db722b47cc9a",
+      "imports": [
+        "smart_ai_fine_tuning.py"
+      ],
+      "public_symbols": [
+        "ensure_pre_freeze_authority"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_historical_training_intake.py",
+      "relative_path": "smart_historical_training_intake.py",
+      "sha256": "faf108906f384c7cdc438635f3db2e0802fff266d105a315f4a801d5881ddde3",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "load_frame",
+        "validate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_learning_activation_authority.py",
+      "relative_path": "smart_learning_activation_authority.py",
+      "sha256": "c13940df3bf2bf54afd6b263e9348348638181e2114da505916f399f11ce7dce",
+      "imports": [
+        "smart_learning_activation_gate.py",
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "build_materiality_evidence",
+        "ActivationRuntimeConfig",
+        "build_authority",
+        "load_activation_authority",
+        "write_authority"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_learning_activation_gate.py",
+      "relative_path": "smart_learning_activation_gate.py",
+      "sha256": "1b94e263ffaca2a3dddcc4d59aeb644cb2feabf696d9c3553283f506bb214f13",
+      "imports": [],
+      "public_symbols": [
+        "ActivationDecision",
+        "evaluate"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_learning_epoch_reset.py",
+      "relative_path": "smart_learning_epoch_reset.py",
+      "sha256": "26ea3d85e393aed82126c836f8763ebfa8cdbcda05c86808a1680af365371ced",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_champion_challenger.py",
+        "smart_crash_safe_io.py",
+        "smart_engineering_activation.py",
+        "smart_prospective_authority_lock.py",
+        "smart_regression_evidence.py",
+        "smart_target_schedule.py"
+      ],
+      "public_symbols": [
+        "write_active_epoch",
+        "verify_active_epoch",
+        "resolve_locked_prospective_registration",
+        "reset_learning_epoch"
+      ],
+      "cli_guard": true
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M05",
+    "M06",
+    "M08",
+    "M11",
+    "M12",
+    "M13",
+    "M17",
+    "M18",
+    "M19"
+  ]
+}

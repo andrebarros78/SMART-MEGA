@@ -1,0 +1,154 @@
+{
+  "id": "M04",
+  "title": "Captacao, qualidade e integridade de dados",
+  "sources": [
+    {
+      "source": "smart_data_quality_gate.py",
+      "relative_path": "smart_data_quality_gate.py",
+      "sha256": "905a39dd723c857780b0e28d3e4c68944ffddbf561457c90294b474e0ae9fd52",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "DataQualityReport",
+        "audit_draw_file",
+        "enforce_draw_quality"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_procedural_actionability_gate.py",
+      "relative_path": "smart_procedural_actionability_gate.py",
+      "sha256": "16bd718fb5fe52148f08d2583da24db3040be27d4cc3f66a57bd8cb6a7971c0d",
+      "imports": [],
+      "public_symbols": [
+        "GateResult",
+        "evaluate",
+        "FreezeWindowResult",
+        "evaluate_freeze_window"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_procedural_caption_extract.py",
+      "relative_path": "smart_procedural_caption_extract.py",
+      "sha256": "eb78777382d94372a2ab339abd02be0d9870244864385aa00a85c0464112dcb0",
+      "imports": [],
+      "public_symbols": [
+        "extract_caption"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_procedural_coverage_gate.py",
+      "relative_path": "smart_procedural_coverage_gate.py",
+      "sha256": "8ba8b9b8424ade7153bfb17400f952c50d59bd987de07c333f2be6bc65203a66",
+      "imports": [],
+      "public_symbols": [
+        "noisy_location",
+        "build",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_procedural_cronogram_acquire.py",
+      "relative_path": "smart_procedural_cronogram_acquire.py",
+      "sha256": "edbe1be5ea3a5b454ae6d91cca3d19c42321dba3c96f471acc86903cf4d7d2dc",
+      "imports": [
+        "smart_http_guard.py"
+      ],
+      "public_symbols": [
+        "sha256_bytes",
+        "variants",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_procedural_cronogram_build_dataset.py",
+      "relative_path": "smart_procedural_cronogram_build_dataset.py",
+      "sha256": "07b9ac94436f69d5eb14a48c959918e1cc2e1193f93090ff6a43a0fc30d9ab00",
+      "imports": [],
+      "public_symbols": [
+        "pdf_text",
+        "norm",
+        "date_lines",
+        "location_candidate",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_procedural_signal_intake.py",
+      "relative_path": "smart_procedural_signal_intake.py",
+      "sha256": "5f71dacc369ae8279b059077dd941fab3e86f99aed56271d0fc12b4d0e673ed5",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "validate_frame",
+        "validate_file"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_procedural_youtube_batch.py",
+      "relative_path": "smart_procedural_youtube_batch.py",
+      "sha256": "f7b9242513dca7ee955e7d8b640c97103a9a3cab83599c193a548c84c2765d7f",
+      "imports": [
+        "smart_procedural_caption_extract.py"
+      ],
+      "public_symbols": [
+        "find_official",
+        "acquire_caption",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_procedural_youtube_recent_acquire.py",
+      "relative_path": "smart_procedural_youtube_recent_acquire.py",
+      "sha256": "05013afae53aff7f9f663a1c72988f0abc8faf3dd7eaa211a7c6c339544ece5e",
+      "imports": [
+        "smart_http_guard.py",
+        "smart_procedural_caption_extract.py"
+      ],
+      "public_symbols": [
+        "find_official",
+        "caption_url",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_rag_excel.py",
+      "relative_path": "smart_rag_excel.py",
+      "sha256": "7541280e0e5c3ec9cf95be0943881a06e80b5bb4e8f5c2f18bf982b11d7e7e77",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_historical_training_intake.py"
+      ],
+      "public_symbols": [
+        "SmartExcelRAG",
+        "build_preparation_proof",
+        "write_preparation_proof",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_scoped_history_gate.py",
+      "relative_path": "smart_scoped_history_gate.py",
+      "sha256": "cc873a462cfe702697020ff3314a69dc70881501a5863dd5e86fd3f315d23f4a",
+      "imports": [],
+      "public_symbols": [
+        "inspect_freeze_evidence"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M10",
+    "M19"
+  ]
+}

@@ -1,0 +1,110 @@
+{
+  "id": "M02",
+  "title": "Contratos, estados e governanca",
+  "sources": [
+    {
+      "source": "smart_authority_freshness.py",
+      "relative_path": "smart_authority_freshness.py",
+      "sha256": "de7adee48d724ecac944753e700153e6663f041402d6570b5613044bbb1f75a8",
+      "imports": [
+        "smart_critical_code_manifest.py",
+        "smart_material_deficiency_registry.py",
+        "smart_product_certification.py"
+      ],
+      "public_symbols": [
+        "verify_governance",
+        "audit"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_contract_registry.py",
+      "relative_path": "smart_contract_registry.py",
+      "sha256": "b5412a01572e3b39415450b0d757489739d95cd503f9ff8997f6d24803af2673",
+      "imports": [],
+      "public_symbols": [
+        "load_registry",
+        "require_schema",
+        "validate_document"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_current_epoch_contract.py",
+      "relative_path": "smart_current_epoch_contract.py",
+      "sha256": "aae40a0cc00f6f2b321740d40f782c4ed84efe88c082953235737c0f4b897765",
+      "imports": [
+        "smart_learning_epoch_reset.py",
+        "smart_operational_lifecycle.py",
+        "smart_prospective_authority_lock.py"
+      ],
+      "public_symbols": [
+        "validate_generation_proof",
+        "resolve"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_material_deficiency_policy.py",
+      "relative_path": "smart_material_deficiency_policy.py",
+      "sha256": "07c376df2e7f4bcbe07f07f1bb8c419f4cbad665305147b5d8fd31f075c2eef2",
+      "imports": [],
+      "public_symbols": [
+        "material_blockers"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_material_deficiency_registry.py",
+      "relative_path": "smart_material_deficiency_registry.py",
+      "sha256": "ccefff9e70f0dc81726c67446400f38bd1766caaf8f6971178676d5a4fa0ee68",
+      "imports": [],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "build_registry",
+        "load_registry",
+        "upsert_deficiency",
+        "write_registry"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_mission_status.py",
+      "relative_path": "smart_mission_status.py",
+      "sha256": "c059182e2ba8c967489ce4fe3bf9a27783d68d5c220419cec7f04351fb6ec1de",
+      "imports": [
+        "smart_canonical_identity.py"
+      ],
+      "public_symbols": [
+        "sha256_file",
+        "sha256_json",
+        "validate_mission_status",
+        "load_mission_status",
+        "write_mission_status"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_scientific_state_guard.py",
+      "relative_path": "smart_scientific_state_guard.py",
+      "sha256": "8361dfa98aeeef9616c07c6f577ecb74001a868a1f11295fa1b967fa01447d10",
+      "imports": [],
+      "public_symbols": [
+        "ScientificStateBoundaryError",
+        "classify",
+        "assert_operational_write",
+        "assert_scientific_write",
+        "audit_boundaries"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M10",
+    "M12",
+    "M13",
+    "M18"
+  ]
+}

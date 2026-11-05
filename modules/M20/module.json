@@ -1,0 +1,67 @@
+{
+  "id": "M20",
+  "title": "Metricas, analise pos-resultado e relatorios",
+  "sources": [
+    {
+      "source": "smart_post_result_report.py",
+      "relative_path": "smart_post_result_report.py",
+      "sha256": "88615f41e7c4a7de4306f642aabac81150147e74b9e0f6f34e45fefa36442659",
+      "imports": [],
+      "public_symbols": [
+        "emit_post_result_report"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_probability_audit.py",
+      "relative_path": "smart_probability_audit.py",
+      "sha256": "58900711be610be72b754bdbedb3fb061e866c58ec06133fa6ca7624149a9d5b",
+      "imports": [
+        "smart_experiment_lab.py",
+        "smart_falsification_lab.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "sha256_json",
+        "sha256_file",
+        "verify_embedded_hash",
+        "moving_block_mean_ci",
+        "audit_historical",
+        "write_audit",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_refresh_falsification_report.py",
+      "relative_path": "smart_refresh_falsification_report.py",
+      "sha256": "49d5ed1ba38698a280462f74d5b4ff3110273a76331e6f3828c52e7569818b4b",
+      "imports": [],
+      "public_symbols": [
+        "sha",
+        "build_report",
+        "write_report",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smartmega_apply_post_result_report_20260920.py",
+      "relative_path": "smartmega_apply_post_result_report_20260920.py",
+      "sha256": "b93eb1a54f9a20b8e0d7290f77a660b49189d37dc06f04fbbbd53a6faad79be9",
+      "imports": [],
+      "public_symbols": [
+        "die",
+        "read",
+        "atomic_write",
+        "backup",
+        "run"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M08",
+    "M11"
+  ]
+}

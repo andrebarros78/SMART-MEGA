@@ -1,0 +1,119 @@
+{
+  "id": "M09",
+  "title": "Cartoes, selecao e portfolio",
+  "sources": [
+    {
+      "source": "smart_contingency_card.py",
+      "relative_path": "smart_contingency_card.py",
+      "sha256": "73b5e16d1912a6dd3ba92b85771e531f3175d5c4adba3b8552ab1619696d81c7",
+      "imports": [],
+      "public_symbols": [
+        "generate_contingency_card"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_frozen_card_reader.py",
+      "relative_path": "smart_frozen_card_reader.py",
+      "sha256": "0375a429b857fa0ac151c0cde6bc4aa8e1355cf51c4b6737941a48a872983571",
+      "imports": [],
+      "public_symbols": [
+        "file_sha256",
+        "sha256_json",
+        "verify_result",
+        "read_frozen_card",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_manual_generation_authority.py",
+      "relative_path": "smart_manual_generation_authority.py",
+      "sha256": "f3a980fcff2cb8b2033e31be7b61f03dc89ee679fcd00a6338c025599e7aa60f",
+      "imports": [],
+      "public_symbols": [
+        "path",
+        "authorize",
+        "validate",
+        "consume"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_portfolio_backtest.py",
+      "relative_path": "smart_portfolio_backtest.py",
+      "sha256": "dec45f45674881f3541672dec083fcf2ffb525dc47978b24e7bbc592a0dbc68b",
+      "imports": [
+        "smart_portfolio_optimizer.py",
+        "smart_v2_engine.py"
+      ],
+      "public_symbols": [
+        "BudgetPolicy",
+        "run_backtest",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_portfolio_backtest_merge.py",
+      "relative_path": "smart_portfolio_backtest_merge.py",
+      "sha256": "b16fd5df0dd4731d7bf82b3e7dd51762e028fa9837a1be05934f4a2cd1a7ef41",
+      "imports": [
+        "smart_portfolio_backtest.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "merge",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_portfolio_optimizer.py",
+      "relative_path": "smart_portfolio_optimizer.py",
+      "sha256": "10c634183327bf1d4e0387f37dd6c9f73097514f6131cb479dce29662f1b57c8",
+      "imports": [],
+      "public_symbols": [
+        "PortfolioConfig",
+        "optimize_portfolio",
+        "optimize_from_freeze"
+      ],
+      "cli_guard": false
+    },
+    {
+      "source": "smart_portfolio_pipeline.py",
+      "relative_path": "smart_portfolio_pipeline.py",
+      "sha256": "e99193887eb4d8341a4b230bd1c4ffa28c69d36d92569019ab69bde3764bc47b",
+      "imports": [
+        "smart_canonical_identity.py",
+        "smart_false_negative_rescue.py",
+        "smart_portfolio_optimizer.py",
+        "smart_primary_card_selector.py",
+        "smart_source_identity.py"
+      ],
+      "public_symbols": [
+        "sha256",
+        "build_portfolio_package",
+        "main"
+      ],
+      "cli_guard": true
+    },
+    {
+      "source": "smart_primary_card_selector.py",
+      "relative_path": "smart_primary_card_selector.py",
+      "sha256": "97c6642203419924f61b257d15bcd352bb758f1745cb41eaea606f9afab249ba",
+      "imports": [],
+      "public_symbols": [
+        "PrimaryCardSelectorConfig",
+        "sha256_json",
+        "select_primary_card"
+      ],
+      "cli_guard": false
+    }
+  ],
+  "depends_on": [
+    "M01",
+    "M08",
+    "M11"
+  ]
+}
