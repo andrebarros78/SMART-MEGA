@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "24a4b1ed79a00d10d6ee7795356edd04ec75bdba5e485649d386385c35170ac6",
+  "source_reachability_inventory_sha256": "fe51a878a52a7280116f7534270a6a709b42d7be969ca2aae35da51278a623e4",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 622,
-    "active": 145,
+    "component_count": 626,
+    "active": 146,
     "shadow": 1,
-    "diagnostic": 276,
+    "diagnostic": 279,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4183,6 +4183,48 @@
       "production_reachable": true
     },
     {
+      "component_id": "modules.semantic_modules",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "modules/semantic_modules.py",
+      "implementation_sha256": "78e047c72cb1282d5b6e76fd0f294846f2c0f906442be7605d11cc704b3aceaf",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "modules.tests.test_semantic_modules",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "modules/tests/test_semantic_modules.py",
+      "implementation_sha256": "773d7dd0c5f6964c3593fe8da9397f773db773d85c0b0e25af95685ab4857904",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "p14_coverage_plugin",
       "type": "PYTHON_COMPONENT",
       "implementation": "p14_coverage_plugin.py",
@@ -6430,7 +6472,7 @@
       "component_id": "smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_operator.py",
-      "implementation_sha256": "01bdad678d030f174e3f0960e800c59657d49e537f3157399e91d5633afe6d32",
+      "implementation_sha256": "bdb4787e0d0240d5cb06b6eccdef9bbae6ec3b2336cdcda44b9261236ab35746",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6438,6 +6480,7 @@
         "smart_frozen_card_reader",
         "smart_github_native_policy",
         "smart_operator",
+        "smart_protected_pr_publication",
         "smart_target_schedule",
         "smart_transaction_journal"
       ],
@@ -6445,9 +6488,11 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
+        "smart_protected_pr_publication",
         "test_smart_github_operator",
         "test_smart_operator_result_integration",
         "test_smart_operator_single_command_card",
+        "test_smart_protected_pr_publication",
         "test_smart_result_consumption_readiness",
         "test_smart_signal_agent"
       ],
@@ -8550,6 +8595,34 @@
       ],
       "entrypoints": [
         "smart_fast_result_ingest",
+        "smart_github_operator"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_protected_pr_publication",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_protected_pr_publication.py",
+      "implementation_sha256": "debcfda2933ed0703fb55c8cfba4ade723e4e46da10ce6b3d9533348b6aee23d",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
+        "smart_github_operator"
+      ],
+      "consumers": [
+        "smart_github_operator",
+        "test_smart_protected_pr_publication"
+      ],
+      "entrypoints": [
         "smart_github_operator"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
@@ -14754,6 +14827,30 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_protected_pr_publication",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_protected_pr_publication.py",
+      "implementation_sha256": "4c6e9c104c99fdefe6d384737c388afa64f408ef9ccdf8439a7ba6f79a61e3a2",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_github_operator",
+        "smart_protected_pr_publication"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_public_result_capture",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_public_result_capture.py",
@@ -16797,5 +16894,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "9c73dcccdf9f3ddf58344676d96b020f07c3b27f143c8dd6f597920514f5e1d1"
+  "registry_sha256": "5af18fe27debd035873300b3429c6e75878c5cebf3bc5416b19b71fba8b061a5"
 }

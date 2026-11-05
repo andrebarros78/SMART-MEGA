@@ -64,21 +64,21 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "24a4b1ed79a00d10d6ee7795356edd04ec75bdba5e485649d386385c35170ac6",
+  "inventory_sha256": "fe51a878a52a7280116f7534270a6a709b42d7be969ca2aae35da51278a623e4",
   "summary": {
-    "python_components": 622,
+    "python_components": 626,
     "workflow_entrypoints": 11,
-    "production_components": 145,
+    "production_components": 146,
     "shadow_components": 1,
-    "diagnostic_components": 28,
+    "diagnostic_components": 29,
     "validation_components": 23,
-    "test_components": 249,
+    "test_components": 251,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
     "production_unreachable": 0,
-    "independent_entrypoints": 39,
-    "import_cycles": 1,
+    "independent_entrypoints": 40,
+    "import_cycles": 2,
     "parse_errors": 0,
     "declared_execution_dependencies": 1,
     "execution_dependency_errors": 0
@@ -97,6 +97,7 @@
     "legacy_3054_terminal_executor_reachable": false,
     "generic_terminal_engine_reachable": true,
     "independent_entrypoints": [
+      "modules/semantic_modules.py",
       "smart_3054_full_cycle_sandbox.py",
       "smart_3054_terminal_executor.py",
       "smart_50_round_simulation.py",
@@ -155,6 +156,10 @@
       "smart_skill_runtime.py",
       "smart_target_schedule.py",
       "smart_total_integration_gate.py"
+    ],
+    [
+      "smart_github_operator.py",
+      "smart_protected_pr_publication.py"
     ]
   ],
   "components": [
@@ -3942,6 +3947,44 @@
       "sha256": "1a644c064d7f93485ac6396143938d0b943e9d920ec8bd0e4c76c609a3a79230"
     },
     {
+      "component_id": "modules.semantic_modules",
+      "source_file": "modules/semantic_modules.py",
+      "role": "DIAGNOSTIC",
+      "classification_reason": "not reachable from canonical production entrypoints; retained for F08 reconciliation",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "78e047c72cb1282d5b6e76fd0f294846f2c0f906442be7605d11cc704b3aceaf"
+    },
+    {
+      "component_id": "modules.tests.test_semantic_modules",
+      "source_file": "modules/tests/test_semantic_modules.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": true,
+      "cycle_ids": [],
+      "sha256": "773d7dd0c5f6964c3593fe8da9397f773db773d85c0b0e25af95685ab4857904"
+    },
+    {
       "component_id": "p14_coverage_plugin",
       "source_file": "p14_coverage_plugin.py",
       "role": "VALIDATION",
@@ -6084,6 +6127,7 @@
         "smart_frozen_card_reader",
         "smart_github_native_policy",
         "smart_operator",
+        "smart_protected_pr_publication",
         "smart_target_schedule",
         "smart_transaction_journal"
       ],
@@ -6094,9 +6138,11 @@
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_fixture_discovery",
         "SMART_STATE_ARCHIVE.DEEP_REPAIR_20261005.full_cycle_module_discovery",
+        "smart_protected_pr_publication",
         "test_smart_github_operator",
         "test_smart_operator_result_integration",
         "test_smart_operator_single_command_card",
+        "test_smart_protected_pr_publication",
         "test_smart_result_consumption_readiness",
         "test_smart_signal_agent"
       ],
@@ -6107,8 +6153,10 @@
       "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
-      "cycle_ids": [],
-      "sha256": "01bdad678d030f174e3f0960e800c59657d49e537f3157399e91d5633afe6d32"
+      "cycle_ids": [
+        2
+      ],
+      "sha256": "bdb4787e0d0240d5cb06b6eccdef9bbae6ec3b2336cdcda44b9261236ab35746"
     },
     {
       "component_id": "smart_global_integrity",
@@ -8091,6 +8139,34 @@
       "has_main_guard": true,
       "cycle_ids": [],
       "sha256": "0ec962e0e8a43ac274449e5ce2c4d8610412c1ed160ce19bc11ec72a607ea24e"
+    },
+    {
+      "component_id": "smart_protected_pr_publication",
+      "source_file": "smart_protected_pr_publication.py",
+      "role": "PRODUCTION",
+      "classification_reason": "statically reachable from approved external entrypoint with GitHub canonical source",
+      "entrypoints": [
+        "smart_github_operator"
+      ],
+      "producers": [
+        "smart_github_operator"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [
+        "smart_github_operator",
+        "test_smart_protected_pr_publication"
+      ],
+      "reachable": true,
+      "production_reachable": true,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [
+        2
+      ],
+      "sha256": "debcfda2933ed0703fb55c8cfba4ade723e4e46da10ce6b3d9533348b6aee23d"
     },
     {
       "component_id": "smart_public_result_capture",
@@ -13829,6 +13905,28 @@
       "has_main_guard": false,
       "cycle_ids": [],
       "sha256": "6cc8616390187090e5937ae3942a1c68a3a4295e935cb72d64ca25b288c9daf2"
+    },
+    {
+      "component_id": "test_smart_protected_pr_publication",
+      "source_file": "test_smart_protected_pr_publication.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_github_operator",
+        "smart_protected_pr_publication"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "4c6e9c104c99fdefe6d384737c388afa64f408ef9ccdf8439a7ba6f79a61e3a2"
     },
     {
       "component_id": "test_smart_public_result_capture",
