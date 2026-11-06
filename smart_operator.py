@@ -953,22 +953,18 @@ def recover_cycle_operation(
 
 
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
-    """Generate the active frozen card or a non-certified next-contest contingency."""
+    """Generate only a prospective model card; never a random substitute."""
     root = Path(canonical_root(root)).resolve()
     target = int(target)
     lifecycle = load_lifecycle(root)
     if int(lifecycle.get("target_contest", -1)) != target:
-        # An incomplete prior adjudication cannot prevent obtaining a playable
-        # NEXT-contest card. The independent contingency is never a production
-        # model freeze, scientific proof or substitute for lifecycle review.
-        prior = int(lifecycle.get("target_contest", -1))
-        if target == prior + 1 and lifecycle.get("state") in {"FROZEN", "ADJUDICATED", "REVIEWED"}:
-            from smart_contingency_card import generate_contingency_card
-            return generate_contingency_card(
-                root, target, preceding_target=prior,
-                lifecycle_sha256=str(lifecycle.get("sha256", "")),
-            )
-        raise ValueError("operator requested target differs from lifecycle")
+        raise ValueError(
+            f"PREDICTIVE_CARD_BLOCKED: target={target}; "
+            f"lifecycle_target={lifecycle.get('target_contest')}; "
+            f"state={lifecycle.get('state')}. "
+            "Complete the prior result review and rollover before generating "
+            "the model card. A contingency card is never a predictive substitute."
+        )
     if lifecycle.get("state") == "HOLD":
         authorize_next_cycle_operation(root, target)
         lifecycle = load_lifecycle(root)

@@ -105,22 +105,21 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         exec(compile(ast.Module(body=[node], type_ignores=[]), str(Path(__file__).resolve().with_name("smart_operator.py")), "exec"), environment)
         return environment["generate_card_operation"]
 
-    def test_unadjudicated_previous_cycle_routes_to_contingency(self):
+    def test_unadjudicated_previous_cycle_blocks_predictive_dispatch(self):
         with tempfile.TemporaryDirectory() as d:
             env = {"Path": Path, "canonical_root": lambda r: r,
                    "load_lifecycle": lambda r: {"state": "FROZEN",
                                                  "target_contest": 3071, "sha256": SHA}}
             operation = self._operator_function(**env)
-            output = operation(d, 3072)
-            self.assertEqual(output["status"], "CONTINGENCY_NOT_CERTIFIED")
-            self.assertEqual(output["target_contest"], 3072)
-            self.assertFalse(output["changes_productive_epoch"])
+            with self.assertRaisesRegex(ValueError, "PREDICTIVE_CARD_BLOCKED"):
+                operation(d, 3072)
+            self.assertFalse((Path(d) / "runtime" / "contingency_cards").exists())
 
     def test_skip_not_permitted(self):
         env = {"Path": Path, "canonical_root": lambda r: r,
                "load_lifecycle": lambda r: {"state": "FROZEN",
                                              "target_contest": 3071, "sha256": SHA}}
-        with self.assertRaisesRegex(ValueError, "differs from lifecycle"):
+        with self.assertRaisesRegex(ValueError, "PREDICTIVE_CARD_BLOCKED"):
             self._operator_function(**env)("/tmp", 3073)
 
     def test_official_frozen_same_target_remains_unchanged(self):
