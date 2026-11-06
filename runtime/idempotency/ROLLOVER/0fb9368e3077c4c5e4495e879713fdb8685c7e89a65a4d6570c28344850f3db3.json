@@ -1,0 +1,152 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "ROLLOVER",
+  "idempotency_key": "0fb9368e3077c4c5e4495e879713fdb8685c7e89a65a4d6570c28344850f3db3",
+  "target": 3081,
+  "result": {
+    "status": "ROLLOVER_COMMITTED",
+    "transaction_id": "ROLLOVER:3081:3082",
+    "completed_contest": 3081,
+    "next_target": 3082,
+    "archive": {
+      "status": "ARCHIVED",
+      "archive_manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3081/operator-3081-5798858e2a87-20261103T112111692942Z/ARCHIVE_MANIFEST.json",
+      "archive_manifest_sha256": "1f142ff89ddbc4fff3a548ab07a562e863ba99f62a8407a9653910c52a7528a6",
+      "reconciliation": {
+        "schema": "SMART_CANONICAL_SIGNAL_LEDGER_RECONCILIATION_1",
+        "status": "PASS",
+        "target_contest": 3081,
+        "source_epoch_ledger": "C:\\SM88\\runtime\\learning_epochs\\operator-3081-5798858e2a87-20261103T112111692942Z\\SMART_SIGNAL_LEDGER.json",
+        "source_epoch_ledger_sha256": "edf5a2f0053171e4bfef27a5291ed0cf44c94099dcbe9759c07eeea531ede65a",
+        "canonical_sha256_before": "2db47ccf48790bcef0d00870f554c3f2911b0ed37393f389d400a16c379b09c1",
+        "canonical_sha256_after": "edf5a2f0053171e4bfef27a5291ed0cf44c94099dcbe9759c07eeea531ede65a",
+        "canonical_backup": "SMART_STATE_ARCHIVE/canonical-ledger/SMART_SIGNAL_LEDGER.2db47ccf48790bcef0d00870f554c3f2911b0ed37393f389d400a16c379b09c1.json",
+        "appended_event_count": 10,
+        "event_count_after": 142,
+        "all_prior_events_preserved": true,
+        "source_events_preserved_exactly": true,
+        "completed_sequence_required": true,
+        "retroactive_rewrite": false,
+        "sha256": "1f2ccfadc3a25020d87709dcc6f391c3251144fe78544e5f0b56729e5a27e441"
+      }
+    },
+    "hold": {
+      "schema": "SMART_NEXT_CYCLE_HOLD_1",
+      "status": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+      "completed_contest": 3081,
+      "next_target": 3082,
+      "created_utc": "2026-11-06T17:24:56.860089+00:00",
+      "review_file": "SMART_POST_RESULT_REVIEW_3081.json",
+      "review_file_sha256": "8fb8431aa82119be18a4403e7fbb89c3f0f56b51a7f0f06730296a9b1ef3069d",
+      "review_sha256": "24045e7333f77cbde6295e5c66ff7366803a4a50167104e1839929e957c5ce02",
+      "canonical_sha256_at_review": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "automatic_prepare_forbidden": true,
+      "prepare_allowed": false,
+      "reason": "VERIFIED_3081_POST_RESULT_REVIEW_COMPLETED_OPERATOR_NEXT_TARGET",
+      "generation_allowed": false,
+      "operator_command_required": true,
+      "required_command_semantics": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "revision": 12,
+      "previous_document_sha256": "abbc015304c3fef0044106b2526435caadf93d88b986654fef778240ee081342",
+      "sha256": "d917fa8e220d57e0a79cccfba7434c2b226f689441beb13855b00080594c8e58"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "HOLD",
+      "revision": 62,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3082,
+      "completed_contest": 3081,
+      "previous_state": "REVIEWED",
+      "transition": "REVIEWED_TO_HOLD",
+      "transition_actor": "smart_rollover.canonical_rollover",
+      "transition_utc": "2026-11-06T17:36:44.118255+00:00",
+      "previous_lifecycle_sha256": "838c7fc1e9d5dc8d9a6e7185464f6f4dc62791d7001c661546aaebdb3252f027",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "d917fa8e220d57e0a79cccfba7434c2b226f689441beb13855b00080594c8e58"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3080.json",
+          "sha256": "58e4952367ceb34a57b0df4a97a5327d46c3da9fbb39ada7f597937d0be34610"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3081:operator-3081-5798858e2a87-20261103T112111692942Z",
+        "reserved_authority_sha256": "36b168916a264487e8a5211b823d50d3095bb51495f55aa521c86c907fd34e02",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "e9d6d361957209c28982f248b8537e2680b118f56add1d798a9f6f0e4231a38f",
+          "epoch_id": "operator-3081-5798858e2a87-20261103T112111692942Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3081/operator-3081-5798858e2a87-20261103T112111692942Z/ARCHIVE_MANIFEST.json",
+          "sha256": "1f142ff89ddbc4fff3a548ab07a562e863ba99f62a8407a9653910c52a7528a6"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3078,
+          "through_target": 3080,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3078.json",
+              "sha256": "8af74a4a8315cde1ac457a370ba2927aac66b102ee75b329ee6983f1380255f8",
+              "target_contest": 3078
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3079.json",
+              "sha256": "27d22bc8303f4f4f9d61f9e079c7a02aa99a2d9c21081eca576bf1bc85bcaf19",
+              "target_contest": 3079
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3080.json",
+              "sha256": "540ec54284a3c239a3a2d8e1bcd4c32d27627f605a8f331eb9d75a53039a39df",
+              "target_contest": 3080
+            }
+          ],
+          "product_certification_sha256": "2427e16b8b1c08142a28e9b815a3f87f3a725aed32ed343d494a2c2cc22d695c",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "raw_api_independently_verified": false,
+            "official_transport_attested": false,
+            "scientific_certification_authorized": false,
+            "predictive_weight_change_authorized": false,
+            "declared_authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3078_3080_20261103.json",
+            "file_sha256": "ac9385e85977ab6c738275ef10359c3a1bdf39d25021d38c4812dec87f99e7a3",
+            "document_sha256": "72a1243e167e90459e4cb10e101eeef229d6de33760fc12fee5b4029ad6803be",
+            "authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+            "retrieved_at_utc": "2026-11-03T03:28:05.416300+00:00",
+            "capture_transport": "LOCALLY_OBSERVED_HTTPS_WITH_SEPARATE_RAW_CAPTURE",
+            "targets": [
+              3078,
+              3079,
+              3080
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "fb867c56f0f6b8da459a00f7a3473d62fb8b074548bfbf5a694b64b5c8364e5d"
+    }
+  }
+}

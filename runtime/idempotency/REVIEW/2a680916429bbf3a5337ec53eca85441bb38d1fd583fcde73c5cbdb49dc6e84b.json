@@ -1,0 +1,159 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "REVIEW",
+  "idempotency_key": "2a680916429bbf3a5337ec53eca85441bb38d1fd583fcde73c5cbdb49dc6e84b",
+  "target": 3081,
+  "result": {
+    "status": "REVIEWED",
+    "review": {
+      "schema": "SMART_POST_RESULT_REVIEW_1",
+      "status": "POST_RESULT_REVIEW_COMPLETE",
+      "target_contest": 3081,
+      "next_target": 3082,
+      "created_utc": "2026-11-05T21:13:37.579812+00:00",
+      "source": "VERIFIED_POST_RESULT_REPORT_3081",
+      "report_file": "SMART_POST_RESULT_REPORT_3081.json",
+      "report_file_sha256": "c66b0e2b361f4c7ffc059fe1a3fb780e9e3228b111517a2551a46ae2ec9d3b4f",
+      "actual_result": [
+        10,
+        17,
+        42,
+        43,
+        57,
+        59
+      ],
+      "champion_card": [
+        10,
+        38,
+        27,
+        11,
+        35,
+        43
+      ],
+      "champion_hits": 2,
+      "matched_numbers": [
+        10,
+        43
+      ],
+      "canonical_history": {
+        "file": "Mega-Sena.xlsx",
+        "sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+        "history_max": 3081,
+        "row_count": 3081
+      },
+      "learning_policy": {
+        "automatic_weight_change": false,
+        "requires_out_of_sample_validation": true,
+        "future_information_used": false
+      },
+      "operator_next_action": "HOLD_OR_AUTHORIZE_NEXT_CYCLE",
+      "stop_required": true,
+      "terminal_state": "AWAITING_OPERATOR_APPLY_OR_GENERATE",
+      "automatic_weight_change_performed": false,
+      "statistical_adjustment_authorized": false,
+      "result_used_for_prediction": false,
+      "no_future_leakage": true,
+      "reviewed_utc": "2026-11-05T21:13:37.579812+00:00",
+      "parecer": "POST_RESULT_3081_REPORT_PASS_2_OF_6; EPOCH_ADJUDICATED; NO_SCIENTIFIC_PROMOTION; EXPLICIT_USER_NEXT_TARGET_3082",
+      "sha256": "24045e7333f77cbde6295e5c66ff7366803a4a50167104e1839929e957c5ce02"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "REVIEWED",
+      "revision": 61,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3081,
+      "completed_contest": 3080,
+      "previous_state": "ADJUDICATED",
+      "transition": "ADJUDICATED_TO_REVIEWED",
+      "transition_actor": "operator_review_complete",
+      "transition_utc": "2026-11-06T17:35:08.136584+00:00",
+      "previous_lifecycle_sha256": "de64899913ba1582a581139afd68793fecfea3d3898ea2be2a93bd38a1e1203a",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "abbc015304c3fef0044106b2526435caadf93d88b986654fef778240ee081342"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3080.json",
+          "sha256": "58e4952367ceb34a57b0df4a97a5327d46c3da9fbb39ada7f597937d0be34610"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3081:operator-3081-5798858e2a87-20261103T112111692942Z",
+        "reserved_authority_sha256": "36b168916a264487e8a5211b823d50d3095bb51495f55aa521c86c907fd34e02",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "e9d6d361957209c28982f248b8537e2680b118f56add1d798a9f6f0e4231a38f",
+          "epoch_id": "operator-3081-5798858e2a87-20261103T112111692942Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3071/operator-3071-10553e1b5911-20261015T184134194917Z/ARCHIVE_MANIFEST.json",
+          "sha256": "8c2a3b3f9b218fc3f935120223cda22f54f9c9a6cfb8a35f9276e0d9a900d6a4"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3078,
+          "through_target": 3080,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3078.json",
+              "sha256": "8af74a4a8315cde1ac457a370ba2927aac66b102ee75b329ee6983f1380255f8",
+              "target_contest": 3078
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3079.json",
+              "sha256": "27d22bc8303f4f4f9d61f9e079c7a02aa99a2d9c21081eca576bf1bc85bcaf19",
+              "target_contest": 3079
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3080.json",
+              "sha256": "540ec54284a3c239a3a2d8e1bcd4c32d27627f605a8f331eb9d75a53039a39df",
+              "target_contest": 3080
+            }
+          ],
+          "product_certification_sha256": "2427e16b8b1c08142a28e9b815a3f87f3a725aed32ed343d494a2c2cc22d695c",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "raw_api_independently_verified": false,
+            "official_transport_attested": false,
+            "scientific_certification_authorized": false,
+            "predictive_weight_change_authorized": false,
+            "declared_authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3078_3080_20261103.json",
+            "file_sha256": "ac9385e85977ab6c738275ef10359c3a1bdf39d25021d38c4812dec87f99e7a3",
+            "document_sha256": "72a1243e167e90459e4cb10e101eeef229d6de33760fc12fee5b4029ad6803be",
+            "authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+            "retrieved_at_utc": "2026-11-03T03:28:05.416300+00:00",
+            "capture_transport": "LOCALLY_OBSERVED_HTTPS_WITH_SEPARATE_RAW_CAPTURE",
+            "targets": [
+              3078,
+              3079,
+              3080
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "838c7fc1e9d5dc8d9a6e7185464f6f4dc62791d7001c661546aaebdb3252f027"
+    }
+  }
+}
