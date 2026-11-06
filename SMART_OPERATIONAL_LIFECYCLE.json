@@ -1,23 +1,23 @@
 {
   "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
-  "state": "ADJUDICATED",
-  "revision": 60,
+  "state": "FROZEN",
+  "revision": 67,
   "project": "SMART-MEGA",
   "effective_version": "6.3.2",
-  "target_contest": 3081,
-  "completed_contest": 3080,
-  "previous_state": "FROZEN",
-  "transition": "FROZEN_TO_ADJUDICATED",
-  "transition_actor": "terminal_adjudicate_complete",
-  "transition_utc": "2026-11-05T14:01:40.302556+00:00",
-  "previous_lifecycle_sha256": "ee8c40052f7bcf5759f7ca57ce49a99721bda445a0da7218d39b575d93a6b31f",
+  "target_contest": 3082,
+  "completed_contest": 3081,
+  "previous_state": "FREEZING",
+  "transition": "FREEZING_TO_FROZEN",
+  "transition_actor": "full_process_freeze_complete",
+  "transition_utc": "2026-11-06T17:44:36.500296+00:00",
+  "previous_lifecycle_sha256": "0ff5f52d6085f20cc873a6b2670f2d19e614826d3f4b0cc72d00b0663909d459",
   "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
   "legacy_documents_are_evidence_not_authority": true,
   "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
   "evidence": {
     "post_result_hold": {
       "file": "SMART_NEXT_CYCLE_HOLD.json",
-      "sha256": "abbc015304c3fef0044106b2526435caadf93d88b986654fef778240ee081342"
+      "sha256": "d917fa8e220d57e0a79cccfba7434c2b226f689441beb13855b00080594c8e58"
     },
     "post_result_review": {
       "file": "SMART_POST_RESULT_REVIEW_3080.json",
@@ -35,16 +35,16 @@
       "status": "CONSUMED_FOR_PREPARE",
       "target_contest": 3060
     },
-    "prepare_transaction_id": "PREPARE:3081:operator-3081-5798858e2a87-20261103T112111692942Z",
-    "reserved_authority_sha256": "36b168916a264487e8a5211b823d50d3095bb51495f55aa521c86c907fd34e02",
+    "prepare_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+    "reserved_authority_sha256": "070a576c6bd30d1e1db6b261093fdd1f74184e86b604e5f1d5821769dbcbb4d1",
     "active_epoch": {
       "file": "SMART_ACTIVE_EPOCH.json",
-      "sha256": "e9d6d361957209c28982f248b8537e2680b118f56add1d798a9f6f0e4231a38f",
-      "epoch_id": "operator-3081-5798858e2a87-20261103T112111692942Z"
+      "sha256": "e70d9b72bb1929d84c6888e4d3e24093f241d08087185fcef11e06cdfd126231",
+      "epoch_id": "operator-3082-0e9936ac2a96-20261106T173846762042Z"
     },
     "rollover_archive": {
-      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3071/operator-3071-10553e1b5911-20261015T184134194917Z/ARCHIVE_MANIFEST.json",
-      "sha256": "8c2a3b3f9b218fc3f935120223cda22f54f9c9a6cfb8a35f9276e0d9a900d6a4"
+      "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3081/operator-3081-5798858e2a87-20261103T112111692942Z/ARCHIVE_MANIFEST.json",
+      "sha256": "1f142ff89ddbc4fff3a548ab07a562e863ba99f62a8407a9653910c52a7528a6"
     },
     "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
     "active_pointer_absent_expected": true,
@@ -94,5 +94,5 @@
       "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
     }
   },
-  "sha256": "de64899913ba1582a581139afd68793fecfea3d3898ea2be2a93bd38a1e1203a"
+  "sha256": "7e97c11ca5cb486744c01317d0bdc8b2351076ea0a118c1e20ba2d4eff234248"
 }

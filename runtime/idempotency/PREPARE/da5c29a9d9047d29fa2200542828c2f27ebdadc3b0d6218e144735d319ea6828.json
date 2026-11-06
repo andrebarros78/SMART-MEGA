@@ -1,0 +1,320 @@
+{
+  "schema": "SMART_IDEMPOTENCY_1",
+  "operation": "PREPARE",
+  "idempotency_key": "da5c29a9d9047d29fa2200542828c2f27ebdadc3b0d6218e144735d319ea6828",
+  "target": 3082,
+  "result": {
+    "status": "READY_TO_FREEZE",
+    "product_certification_sha256": "0e9936ac2a9632cbfb69e02cac349906c6568c578825b672076ac9fddfbcd01b",
+    "active_epoch": {
+      "schema": "SMART_ACTIVE_LEARNING_EPOCH_2",
+      "status": "RESET_READY",
+      "project": "SMART-MEGA",
+      "epoch_id": "operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "created_utc": "2026-11-06T17:38:47.310559+00:00",
+      "product_certification_file": "SMART_PRODUCT_CERTIFICATION.json",
+      "product_certification_sha256": "0e9936ac2a9632cbfb69e02cac349906c6568c578825b672076ac9fddfbcd01b",
+      "operator_selected_target": true,
+      "state_paths": {
+        "ledger": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/SMART_SIGNAL_LEDGER.json",
+        "state": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/SMART_SIGNAL_STATE.json",
+        "activation_authority": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/SMART_LEARNING_ACTIVATION_AUTHORITY.json",
+        "expansion_registry": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/SMART_SIGNAL_EXPANSION_REGISTRY.json",
+        "freeze": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/SMART_3082_CHAMPION_CHALLENGER_FREEZE.json"
+      },
+      "data_file": "runtime/learning_epochs/operator-3082-0e9936ac2a96-20261106T173846762042Z/Mega-Sena_cutoff_3081.xlsx",
+      "data_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "canonical_source_file": "Mega-Sena.xlsx",
+      "canonical_source_sha256_at_prepare": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "immutable_history_snapshot": true,
+      "cutoff_contest": 3081,
+      "target_contest": 3082,
+      "authority_mode": "OPERATOR_SELECTED_TARGET",
+      "current_engineering_role": "PRODUCT_CERTIFIED_OPERATION",
+      "first_possible_authoritative_target_for_current_engineering": 3082,
+      "target_schedule": {
+        "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+        "target_contest": 3082,
+        "previous_contest": 3081,
+        "previous_contest_date": "04/11/2026",
+        "target_date": "06/11/2026",
+        "weekday": "sexta-feira",
+        "scheduled_datetime": "2026-11-06T21:00:00-03:00",
+        "scheduled_timezone": "America/Sao_Paulo",
+        "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+        "draw_time_policy_sha256": "f782e6c9da25a6a2b78a69538087f5c4f99a4ac5dfdea80b69575c17ce7151aa",
+        "draw_time_policy_authority": "CAIXA_OFFICIAL_MONTHLY_CALENDAR",
+        "source_file": "runtime/procedural_sources/cronogramas_caixa/Cronograma_11_novembro_2026.pdf",
+        "source_sha256": "5f1b7dacdb8e6213253ff626483e9ed94de1b2213c55e905da918eba91fe8416",
+        "source_line": "06/11/2026 sexta-feira 3823 2996 7161 3029 3082 1341 919 405",
+        "source_count": 1,
+        "sources": [
+          {
+            "file": "runtime/procedural_sources/cronogramas_caixa/Cronograma_11_novembro_2026.pdf",
+            "sha256": "5f1b7dacdb8e6213253ff626483e9ed94de1b2213c55e905da918eba91fe8416",
+            "source_line": "06/11/2026 sexta-feira 3823 2996 7161 3029 3082 1341 919 405"
+          }
+        ],
+        "rejected_occurrences_before_cutoff": [
+          {
+            "file": "runtime/procedural_sources/cronogramas_caixa/2024-04.pdf",
+            "target_date": "18/04/2024",
+            "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+          }
+        ],
+        "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+        "schedule_consensus": true,
+        "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+        "result_used": false
+      },
+      "temporal_guard": {
+        "schema": "SMART_PRE_DRAW_TEMPORAL_GUARD_1",
+        "status": "PASS",
+        "target_contest": 3082,
+        "checked_at_utc": "2026-11-06T17:38:46.761907+00:00",
+        "scheduled_datetime": "2026-11-06T21:00:00-03:00",
+        "seconds_until_draw": 22873.238093,
+        "minimum_lead_seconds": 60,
+        "before_scheduled_draw": true,
+        "result_used": false
+      },
+      "result_used": false,
+      "freeze_authority": null,
+      "learning_state_authority": null,
+      "supersedes_active_epoch_sha256": null,
+      "canonical_ledger_seed_sha256": "edf5a2f0053171e4bfef27a5291ed0cf44c94099dcbe9759c07eeea531ede65a",
+      "canonical_ledger_seed_event_count": 142,
+      "revision": 1,
+      "previous_active_sha256": null,
+      "sha256": "e70d9b72bb1929d84c6888e4d3e24093f241d08087185fcef11e06cdfd126231"
+    },
+    "history": {
+      "target_contest": 3082,
+      "cutoff_contest": 3081,
+      "history_max": 3081,
+      "data_file": "C:\\SM88\\Mega-Sena.xlsx",
+      "data_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "row_count": 3081
+    },
+    "schedule": {
+      "schema": "SMART_TARGET_SCHEDULE_AUTHORITY_3",
+      "target_contest": 3082,
+      "previous_contest": 3081,
+      "previous_contest_date": "04/11/2026",
+      "target_date": "06/11/2026",
+      "weekday": "sexta-feira",
+      "scheduled_datetime": "2026-11-06T21:00:00-03:00",
+      "scheduled_timezone": "America/Sao_Paulo",
+      "draw_time_policy_file": "SMART_MEGA_SENA_DRAW_TIME_POLICY.json",
+      "draw_time_policy_sha256": "f782e6c9da25a6a2b78a69538087f5c4f99a4ac5dfdea80b69575c17ce7151aa",
+      "draw_time_policy_authority": "CAIXA_OFFICIAL_MONTHLY_CALENDAR",
+      "source_file": "runtime/procedural_sources/cronogramas_caixa/Cronograma_11_novembro_2026.pdf",
+      "source_sha256": "5f1b7dacdb8e6213253ff626483e9ed94de1b2213c55e905da918eba91fe8416",
+      "source_line": "06/11/2026 sexta-feira 3823 2996 7161 3029 3082 1341 919 405",
+      "source_count": 1,
+      "sources": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/Cronograma_11_novembro_2026.pdf",
+          "sha256": "5f1b7dacdb8e6213253ff626483e9ed94de1b2213c55e905da918eba91fe8416",
+          "source_line": "06/11/2026 sexta-feira 3823 2996 7161 3029 3082 1341 919 405"
+        }
+      ],
+      "rejected_occurrences_before_cutoff": [
+        {
+          "file": "runtime/procedural_sources/cronogramas_caixa/2024-04.pdf",
+          "target_date": "18/04/2024",
+          "reason": "NOT_AFTER_PREVIOUS_MEGA_SENA_CONTEST"
+        }
+      ],
+      "modality_binding": "MEGA_SENA_PREVIOUS_CONTEST_SEQUENCE",
+      "schedule_consensus": true,
+      "authority": "CAIXA_ARCHIVED_CRONOGRAM_PDF",
+      "result_used": false
+    },
+    "prior_epoch_reconciliation": null,
+    "canonical_result_store_reconciliation": null,
+    "ledger_seed": {
+      "status": "SEEDED",
+      "sha256": "edf5a2f0053171e4bfef27a5291ed0cf44c94099dcbe9759c07eeea531ede65a",
+      "event_count": 142
+    },
+    "next_cycle_authority": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "AUTHORIZED",
+      "target_contest": 3082,
+      "completed_contest": 3081,
+      "review_file": "SMART_POST_RESULT_REVIEW_3081.json",
+      "review_file_sha256": "8fb8431aa82119be18a4403e7fbb89c3f0f56b51a7f0f06730296a9b1ef3069d",
+      "review_sha256": "24045e7333f77cbde6295e5c66ff7366803a4a50167104e1839929e957c5ce02",
+      "canonical_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-11-06T17:37:48.400021+00:00",
+      "consumed": false,
+      "consumed_utc": null,
+      "prepared_epoch_id": null,
+      "reservation_transaction_id": null,
+      "reserved_utc": null,
+      "consumption_transaction_id": null,
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "21eba7e1e80a365cd12b2c8902458bb28fce76e4a7c2fe3488f882c1adaffbb1",
+      "prior_consumed_target_contest": 3081,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 25,
+      "previous_document_sha256": "21eba7e1e80a365cd12b2c8902458bb28fce76e4a7c2fe3488f882c1adaffbb1",
+      "sha256": "fb3b94a94c5508b8758ed92a25096f7e562cadec2d59e332500d853b614193c4"
+    },
+    "next_cycle_authority_consumption": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "CONSUMED",
+      "target_contest": 3082,
+      "completed_contest": 3081,
+      "review_file": "SMART_POST_RESULT_REVIEW_3081.json",
+      "review_file_sha256": "8fb8431aa82119be18a4403e7fbb89c3f0f56b51a7f0f06730296a9b1ef3069d",
+      "review_sha256": "24045e7333f77cbde6295e5c66ff7366803a4a50167104e1839929e957c5ce02",
+      "canonical_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-11-06T17:37:48.400021+00:00",
+      "consumed": true,
+      "consumed_utc": "2026-11-06T17:38:47.334397+00:00",
+      "prepared_epoch_id": "operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "reservation_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "reserved_utc": "2026-11-06T17:38:46.786650+00:00",
+      "consumption_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "21eba7e1e80a365cd12b2c8902458bb28fce76e4a7c2fe3488f882c1adaffbb1",
+      "prior_consumed_target_contest": 3081,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 27,
+      "previous_document_sha256": "070a576c6bd30d1e1db6b261093fdd1f74184e86b604e5f1d5821769dbcbb4d1",
+      "authority_sha256_before_reservation": "fb3b94a94c5508b8758ed92a25096f7e562cadec2d59e332500d853b614193c4",
+      "active_epoch_sha256_at_consumption": "e70d9b72bb1929d84c6888e4d3e24093f241d08087185fcef11e06cdfd126231",
+      "authority_sha256_before_consumption": "070a576c6bd30d1e1db6b261093fdd1f74184e86b604e5f1d5821769dbcbb4d1",
+      "sha256": "a0976398e90448e1672edfa8fdcd4c29fe06357c6cef27d0ff122d5e6510e70e"
+    },
+    "operational_lifecycle": {
+      "schema": "SMART_OPERATIONAL_LIFECYCLE_1",
+      "state": "PREPARED",
+      "revision": 65,
+      "project": "SMART-MEGA",
+      "effective_version": "6.3.2",
+      "target_contest": 3082,
+      "completed_contest": 3081,
+      "previous_state": "PREPARING",
+      "transition": "PREPARING_TO_PREPARED",
+      "transition_actor": "operator_prepare_complete",
+      "transition_utc": "2026-11-06T17:38:47.351707+00:00",
+      "previous_lifecycle_sha256": "228ab495a69542d5c15764e2b3c9844abe3cfb6bafce02bf5f9aaa0c3ea1327e",
+      "authority": "SINGLE_OPERATIONAL_LIFECYCLE",
+      "legacy_documents_are_evidence_not_authority": true,
+      "migration_mode": "LEGACY_POST_RESULT_HOLD_AUTHORITATIVE",
+      "evidence": {
+        "post_result_hold": {
+          "file": "SMART_NEXT_CYCLE_HOLD.json",
+          "sha256": "d917fa8e220d57e0a79cccfba7434c2b226f689441beb13855b00080594c8e58"
+        },
+        "post_result_review": {
+          "file": "SMART_POST_RESULT_REVIEW_3080.json",
+          "sha256": "58e4952367ceb34a57b0df4a97a5327d46c3da9fbb39ada7f597937d0be34610"
+        },
+        "legacy_active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "a1a2a22fd118e2a7e27bfa234fa932c6434b3528127463ebca936640658869f2",
+          "status": "FROZEN",
+          "target_contest": 3060
+        },
+        "legacy_next_cycle_authority": {
+          "file": "SMART_NEXT_CYCLE_AUTHORITY.json",
+          "sha256": "02620c3e2d309618fc1abe75e6436086bc99310ace2885db2d3190fb7454a7ad",
+          "status": "CONSUMED_FOR_PREPARE",
+          "target_contest": 3060
+        },
+        "prepare_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+        "reserved_authority_sha256": "070a576c6bd30d1e1db6b261093fdd1f74184e86b604e5f1d5821769dbcbb4d1",
+        "active_epoch": {
+          "file": "SMART_ACTIVE_EPOCH.json",
+          "sha256": "e70d9b72bb1929d84c6888e4d3e24093f241d08087185fcef11e06cdfd126231",
+          "epoch_id": "operator-3082-0e9936ac2a96-20261106T173846762042Z"
+        },
+        "rollover_archive": {
+          "manifest": "SMART_STATE_ARCHIVE/adjudicated-epochs/3081/operator-3081-5798858e2a87-20261103T112111692942Z/ARCHIVE_MANIFEST.json",
+          "sha256": "1f142ff89ddbc4fff3a548ab07a562e863ba99f62a8407a9653910c52a7528a6"
+        },
+        "recovery_reason": "complete interrupted REVIEWED_TO_HOLD after immutable archive and active pointer removal",
+        "active_pointer_absent_expected": true,
+        "missed_result_catchup": {
+          "start_target": 3078,
+          "through_target": 3080,
+          "proofs": [
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3078.json",
+              "sha256": "8af74a4a8315cde1ac457a370ba2927aac66b102ee75b329ee6983f1380255f8",
+              "target_contest": 3078
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3079.json",
+              "sha256": "27d22bc8303f4f4f9d61f9e079c7a02aa99a2d9c21081eca576bf1bc85bcaf19",
+              "target_contest": 3079
+            },
+            {
+              "file": "SMART_MISSED_TARGET_RECOVERY_3080.json",
+              "sha256": "540ec54284a3c239a3a2d8e1bcd4c32d27627f605a8f331eb9d75a53039a39df",
+              "target_contest": 3080
+            }
+          ],
+          "product_certification_sha256": "2427e16b8b1c08142a28e9b815a3f87f3a725aed32ed343d494a2c2cc22d695c",
+          "official_result_batch": {
+            "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+            "raw_api_independently_verified": false,
+            "official_transport_attested": false,
+            "scientific_certification_authorized": false,
+            "predictive_weight_change_authorized": false,
+            "declared_authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+            "file": "SMART_OFFICIAL_RESULT_BATCH_3078_3080_20261103.json",
+            "file_sha256": "ac9385e85977ab6c738275ef10359c3a1bdf39d25021d38c4812dec87f99e7a3",
+            "document_sha256": "72a1243e167e90459e4cb10e101eeef229d6de33760fc12fee5b4029ad6803be",
+            "authority": "CAIXA_API_BATCH_CLAIM_UNVERIFIED_TRANSPORT",
+            "retrieved_at_utc": "2026-11-03T03:28:05.416300+00:00",
+            "capture_transport": "LOCALLY_OBSERVED_HTTPS_WITH_SEPARATE_RAW_CAPTURE",
+            "targets": [
+              3078,
+              3079,
+              3080
+            ]
+          }
+        },
+        "pre_freeze_withdrawal": {
+          "file": "SMART_STATE_ARCHIVE/operator_pre_freeze_withdrawal_e640b15715da0f139cc9b755fc97f140ffa33bd3dfd5ee3edb873570d1a8ad68.json",
+          "sha256": "b85743f20e0dceaf4b8fd22217354b80ba9ace81146d05b6b1b8f26b54c430b9"
+        }
+      },
+      "sha256": "c0e00695e22a9b9921fc2dabded70026b85b257cc5d7a2b79365297381d7c369"
+    },
+    "prepare_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+    "next_cycle_authority_reservation": {
+      "schema": "SMART_NEXT_CYCLE_AUTHORITY_1",
+      "status": "RESERVED",
+      "target_contest": 3082,
+      "completed_contest": 3081,
+      "review_file": "SMART_POST_RESULT_REVIEW_3081.json",
+      "review_file_sha256": "8fb8431aa82119be18a4403e7fbb89c3f0f56b51a7f0f06730296a9b1ef3069d",
+      "review_sha256": "24045e7333f77cbde6295e5c66ff7366803a4a50167104e1839929e957c5ce02",
+      "canonical_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "authorized_by": "USER_EXPLICIT_APPLY_OR_GENERATE",
+      "authorized_utc": "2026-11-06T17:37:48.400021+00:00",
+      "consumed": false,
+      "consumed_utc": null,
+      "prepared_epoch_id": "operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "reservation_transaction_id": "PREPARE:3082:operator-3082-0e9936ac2a96-20261106T173846762042Z",
+      "reserved_utc": "2026-11-06T17:38:46.786650+00:00",
+      "consumption_transaction_id": null,
+      "supersedes_completed_cycle_authority": true,
+      "prior_consumed_authority_sha256": "21eba7e1e80a365cd12b2c8902458bb28fce76e4a7c2fe3488f882c1adaffbb1",
+      "prior_consumed_target_contest": 3081,
+      "prior_consumed_status": "CONSUMED",
+      "revision": 26,
+      "previous_document_sha256": "fb3b94a94c5508b8758ed92a25096f7e562cadec2d59e332500d853b614193c4",
+      "authority_sha256_before_reservation": "fb3b94a94c5508b8758ed92a25096f7e562cadec2d59e332500d853b614193c4",
+      "sha256": "070a576c6bd30d1e1db6b261093fdd1f74184e86b604e5f1d5821769dbcbb4d1"
+    }
+  }
+}
