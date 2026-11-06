@@ -32,7 +32,7 @@ from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import _rel, _resolve, run_full_process
 from smart_consumer_integration import audit_generation
 from smart_operation_recovery import recover_interrupted_freeze_operation
-from smart_operator_contract import contract, validate_target_sequence
+from smart_operator_contract import contract, validate_target_sequence, require_predictive_card_result
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
 from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
@@ -953,22 +953,21 @@ def recover_cycle_operation(
 
 
 def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
-    """Generate the active frozen card or a non-certified next-contest contingency."""
+    """Generate ONLY a verified prospective model card, never random fallback.
+
+    A pending preceding contest is an unmet dependency, not permission to
+    silently downgrade an operator prediction request to a CSPRNG receipt.
+    """
     root = Path(canonical_root(root)).resolve()
     target = int(target)
     lifecycle = load_lifecycle(root)
     if int(lifecycle.get("target_contest", -1)) != target:
-        # An incomplete prior adjudication cannot prevent obtaining a playable
-        # NEXT-contest card. The independent contingency is never a production
-        # model freeze, scientific proof or substitute for lifecycle review.
-        prior = int(lifecycle.get("target_contest", -1))
-        if target == prior + 1 and lifecycle.get("state") in {"FROZEN", "ADJUDICATED", "REVIEWED"}:
-            from smart_contingency_card import generate_contingency_card
-            return generate_contingency_card(
-                root, target, preceding_target=prior,
-                lifecycle_sha256=str(lifecycle.get("sha256", "")),
-            )
-        raise ValueError("operator requested target differs from lifecycle")
+        raise ValueError(
+            f"PREDICTIVE_CARD_ONLY: requested target {target} differs from "
+            f"lifecycle {lifecycle.get('target_contest')} "
+            f"({lifecycle.get('state')}); complete review and rollover first. "
+            "No contingency card has been generated."
+        )
     if lifecycle.get("state") == "HOLD":
         authorize_next_cycle_operation(root, target)
         lifecycle = load_lifecycle(root)
@@ -977,10 +976,10 @@ def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
         lifecycle = load_lifecycle(root)
     if lifecycle.get("state") == "PREPARED":
         authorize_generation_operation(root, target)
-        return freeze_operation(root, target)
+        return require_predictive_card_result(freeze_operation(root, target), target)
     if lifecycle.get("state") == "FROZEN":
-        return freeze_operation(root, target)
-    raise ValueError(f"card generation requires HOLD/AUTHORIZED/PREPARED/FROZEN: {lifecycle.get('state')}")
+        return require_predictive_card_result(freeze_operation(root, target), target)
+    raise ValueError(f"PREDICTIVE_CARD_ONLY: model generation requires HOLD/AUTHORIZED/PREPARED/FROZEN for target {target}; actual={lifecycle.get('state')}")
 
 
 @locked_operation("REGISTER_RESULT")

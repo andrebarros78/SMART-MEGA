@@ -18,7 +18,7 @@ def test_generate_card_is_one_operator_command_without_secondary_confirmation(tm
         calls.append("authorize-generation")
     def freeze(*args):
         calls.append("freeze")
-        return {"status":"FROZEN","proof":{"status":"PASS","target_contest":3071}}
+        return {"schema":"SMART_FREEZE_OPERATION_1","status":"FROZEN","target_contest":3071,"proof":{"status":"PASS","target_contest":3071,"result_used":False},"consumer_integration":{"status":"PASS"}}
     monkeypatch.setattr(op,"authorize_next_cycle_operation",authorize)
     monkeypatch.setattr(op,"prepare_operation",prepare)
     monkeypatch.setattr(op,"authorize_generation_operation",authorize_generation)
@@ -33,9 +33,8 @@ def test_generate_card_rejects_unrelated_or_invalid_lifecycle(tmp_path,monkeypat
     monkeypatch.setattr(op,"load_lifecycle",lambda root:{"target_contest":3071,"state":"ADJUDICATED"})
     with pytest.raises(ValueError,match="requires"):
         op.generate_card_operation(tmp_path,3071)
-    # A next-contest contingency still needs authenticated preceding lifecycle
-    # evidence; this intentionally incomplete fixture must fail closed.
-    with pytest.raises(ValueError,match="prior operational lifecycle SHA-256 invalid"):
+    # A predictive command cannot downgrade silently to a random contingency.
+    with pytest.raises(ValueError,match="PREDICTIVE_CARD_ONLY"):
         op.generate_card_operation(tmp_path,3072)
 
 

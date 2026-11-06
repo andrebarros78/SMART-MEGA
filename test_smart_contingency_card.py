@@ -105,16 +105,15 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         exec(compile(ast.Module(body=[node], type_ignores=[]), str(Path(__file__).resolve().with_name("smart_operator.py")), "exec"), environment)
         return environment["generate_card_operation"]
 
-    def test_unadjudicated_previous_cycle_routes_to_contingency(self):
+    def test_unadjudicated_previous_cycle_cannot_downgrade_to_contingency(self):
         with tempfile.TemporaryDirectory() as d:
             env = {"Path": Path, "canonical_root": lambda r: r,
                    "load_lifecycle": lambda r: {"state": "FROZEN",
                                                  "target_contest": 3071, "sha256": SHA}}
             operation = self._operator_function(**env)
-            output = operation(d, 3072)
-            self.assertEqual(output["status"], "CONTINGENCY_NOT_CERTIFIED")
-            self.assertEqual(output["target_contest"], 3072)
-            self.assertFalse(output["changes_productive_epoch"])
+            with self.assertRaisesRegex(ValueError, "PREDICTIVE_CARD_ONLY"):
+                operation(d, 3072)
+            self.assertFalse((Path(d) / "runtime" / "contingency_cards").exists())
 
     def test_skip_not_permitted(self):
         env = {"Path": Path, "canonical_root": lambda r: r,
@@ -127,7 +126,8 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         env = {"Path": Path, "canonical_root": lambda r: r,
                "load_lifecycle": lambda r: {"state": "FROZEN", "target_contest": 3071,
                                              "sha256": SHA},
-               "freeze_operation": lambda root, target: {"status": "FROZEN", "target_contest": target}}
+               "freeze_operation": lambda root, target: {"status": "FROZEN", "target_contest": target},
+               "require_predictive_card_result": lambda result, target: result}
         result = self._operator_function(**env)("/tmp", 3071)
         self.assertEqual(result, {"status": "FROZEN", "target_contest": 3071})
 

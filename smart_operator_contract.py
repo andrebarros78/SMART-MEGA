@@ -47,6 +47,7 @@ def contract() -> dict[str, Any]:
         "explicit_result_completion_is_resumable": True,
         "result_completion_never_auto_promotes_scientific_claim": True,
         "next_contest_contingency_generation_independent_of_prior_adjudication": True,
+        "implicit_contingency_fallback_forbidden": True,
         "contingency_card_never_proves_predictive_6of6": True,
         "generic_active_epoch_terminal_executor": True,
         "terminal_action_revalidates_official_consensus_and_scientific_guards": True,
@@ -62,3 +63,27 @@ def contract() -> dict[str, Any]:
         "preflight_validates_active_epoch_integrity": True,
         "technical_withdrawal_allows_same_target_reauthorization_with_proof": True,
     }
+
+
+def require_predictive_card_result(result: Any, target: int) -> dict[str, Any]:
+    """Fail closed at the last direct-operator boundary.
+
+    FROZEN is not enough: a prospective run must include bound process
+    evidence, or an authenticated previously frozen replay.
+    """
+    if (not isinstance(result, dict)
+            or result.get("schema") != "SMART_FREEZE_OPERATION_1"
+            or result.get("status") != "FROZEN"
+            or result.get("target_contest") != int(target)):
+        raise ValueError("PREDICTIVE_CARD_ONLY: model-freeze result/target invalid")
+    if result.get("idempotent_replay") is True:
+        if not result.get("freeze_file") or not result.get("freeze_sha256"):
+            raise ValueError("PREDICTIVE_CARD_ONLY: unverified frozen replay")
+    else:
+        proof = result.get("proof")
+        if (not isinstance(proof, dict) or proof.get("status") != "PASS"
+                or proof.get("target_contest") != int(target)
+                or proof.get("result_used") is not False
+                or (result.get("consumer_integration") or {}).get("status") != "PASS"):
+            raise ValueError("PREDICTIVE_CARD_ONLY: missing audited model generation proof")
+    return result
