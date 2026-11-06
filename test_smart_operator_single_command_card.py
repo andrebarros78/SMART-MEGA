@@ -35,7 +35,7 @@ def test_generate_card_rejects_unrelated_or_invalid_lifecycle(tmp_path,monkeypat
         op.generate_card_operation(tmp_path,3071)
     # A next-contest contingency still needs authenticated preceding lifecycle
     # evidence; this intentionally incomplete fixture must fail closed.
-    with pytest.raises(ValueError,match="prior operational lifecycle SHA-256 invalid"):
+    with pytest.raises(ValueError,match="PREDICTIVE_CARD_BLOCKED"):
         op.generate_card_operation(tmp_path,3072)
 
 
