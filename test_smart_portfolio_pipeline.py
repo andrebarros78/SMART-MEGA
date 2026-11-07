@@ -77,3 +77,24 @@ def test_pipeline_builds_rescue_profile_at_freeze_cutoff(tmp_path, monkeypatch):
     result=spp.build_portfolio_package(path,config=PortfolioConfig(game_count=1,candidate_pool_size=6,time_limit_seconds=5))
     assert seen["through_contest"] == 9
     assert result["primary_card"]["false_negative_rescue"]["result_used"] is False
+
+def test_production_portfolio_emits_highest_six_without_artificial_band_quotas(tmp_path, monkeypatch):
+    """End-to-end card consumption may not replace genuine high-score candidates by band."""
+    numbers = [41, 42, 43, 44, 45, 46]
+    ranking = numbers + [n for n in range(1, 61) if n not in numbers]
+    scores = {str(n): float(61 - i) for i, n in enumerate(ranking)}
+    freeze = {
+        "target_contest": 10,
+        "cutoff_contest": 9,
+        "frozen_before_result": True,
+        "champion": {"top6": numbers, "aggregate_scores": scores},
+    }
+    source = tmp_path / "freeze.json"
+    source.write_text(json.dumps(freeze), encoding="utf-8")
+    monkeypatch.setattr(spp, "build_profile_from_reports", lambda *args, **kwargs: None)
+    result = build_portfolio_package(
+        source, config=PortfolioConfig(game_count=1, candidate_pool_size=6, time_limit_seconds=5)
+    )
+    assert result["status"] == "PASS"
+    assert result["primary_card"]["numbers"] == numbers
+    assert result["primary_card"]["selector"]["selected_band_counts"]["high"] == 6
