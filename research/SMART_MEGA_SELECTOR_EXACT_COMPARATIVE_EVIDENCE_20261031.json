@@ -1,0 +1,353 @@
+{
+  "schema": "SMART_SELECTOR_EXACT_COMPARATIVE_EVIDENCE_1",
+  "status": "RESEARCH_ONLY_NO_PROSPECTIVE_CERTIFICATION",
+  "hypotheses_defined_after_known_3079_result": true,
+  "not_an_independent_scientific_holdout": true,
+  "future_result_in_input": false,
+  "target_3079_used_in_parameter_selection": true,
+  "data_cutoff": 3078,
+  "data_file": "Mega-Sena.xlsx",
+  "source_sha256": "dc8a2054cf7a857dd8c6108f8bc87c9e02e2318f1a862216335c1b1e0c70a078",
+  "backtest_script_sha256": "0360b76353dc3ff182b77ecfc5871663f5b9a481b619e34470cd2672db345795",
+  "selector_module_sha256": "c5429ea8375ec156ab8e81e98e09db574bf8387d73bae1919609fe8d055ee38c",
+  "champion_selector_sha256": "97c6642203419924f61b257d15bcd352bb758f1745cb41eaea606f9afab249ba",
+  "causal_weighting": "walk_forward learned from earlier contests only; fixed research comparisons per t",
+  "variants": [
+    {
+      "name": "A_DEFAULT_18_TOP3",
+      "pool": 18,
+      "require_top3": true,
+      "effective_freq1000_cap": null
+    },
+    {
+      "name": "B_POOL18_NO_TOP3",
+      "pool": 18,
+      "require_top3": false,
+      "effective_freq1000_cap": null
+    },
+    {
+      "name": "C_POOL30_NO_TOP3",
+      "pool": 30,
+      "require_top3": false,
+      "effective_freq1000_cap": null
+    },
+    {
+      "name": "D_POOL60_NO_TOP3",
+      "pool": 60,
+      "require_top3": false,
+      "effective_freq1000_cap": null
+    },
+    {
+      "name": "E_POOL60_NO_TOP3_FREQ1000_CAP20",
+      "pool": 60,
+      "require_top3": false,
+      "effective_freq1000_cap": 0.2
+    },
+    {
+      "name": "F_POOL60_TOP3_CONTROL",
+      "pool": 60,
+      "require_top3": true,
+      "effective_freq1000_cap": null
+    }
+  ],
+  "windows": [
+    {
+      "start": 2600,
+      "end": 2850,
+      "role": "DEVELOPMENT"
+    },
+    {
+      "start": 2851,
+      "end": 2950,
+      "role": "SELECTION"
+    },
+    {
+      "start": 2951,
+      "end": 3078,
+      "role": "RETROSPECTIVE_EVALUATION"
+    }
+  ],
+  "exact_solver_equivalence_checked_against_exhaustive_champion": 16,
+  "sections": {
+    "DEVELOPMENT": {
+      "contests": [
+        2600,
+        2850
+      ],
+      "metrics": {
+        "A_DEFAULT_18_TOP3": {
+          "draws": 251,
+          "total_hits": 171,
+          "mean_hits": 0.6812749003984063,
+          "zero_hit_count": 117,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.9282868525896415
+        },
+        "B_POOL18_NO_TOP3": {
+          "draws": 251,
+          "total_hits": 171,
+          "mean_hits": 0.6812749003984063,
+          "zero_hit_count": 117,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.9282868525896415
+        },
+        "C_POOL30_NO_TOP3": {
+          "draws": 251,
+          "total_hits": 170,
+          "mean_hits": 0.6772908366533864,
+          "zero_hit_count": 118,
+          "six_hit_count": 0,
+          "paired_excess_hits": -1,
+          "paired_mean_hit_difference": -0.00398406374501992,
+          "paired_bootstrap95_interval": [
+            -0.01195219123505976,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 3.0836653386454183
+        },
+        "D_POOL60_NO_TOP3": {
+          "draws": 251,
+          "total_hits": 170,
+          "mean_hits": 0.6772908366533864,
+          "zero_hit_count": 118,
+          "six_hit_count": 0,
+          "paired_excess_hits": -1,
+          "paired_mean_hit_difference": -0.00398406374501992,
+          "paired_bootstrap95_interval": [
+            -0.01195219123505976,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "E_POOL60_NO_TOP3_FREQ1000_CAP20": {
+          "draws": 251,
+          "total_hits": 164,
+          "mean_hits": 0.6533864541832669,
+          "zero_hit_count": 125,
+          "six_hit_count": 0,
+          "paired_excess_hits": -7,
+          "paired_mean_hit_difference": -0.027888446215139442,
+          "paired_bootstrap95_interval": [
+            -0.07569721115537849,
+            0.0199203187250996
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "F_POOL60_TOP3_CONTROL": {
+          "draws": 251,
+          "total_hits": 170,
+          "mean_hits": 0.6772908366533864,
+          "zero_hit_count": 118,
+          "six_hit_count": 0,
+          "paired_excess_hits": -1,
+          "paired_mean_hit_difference": -0.00398406374501992,
+          "paired_bootstrap95_interval": [
+            -0.01195219123505976,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 6.0
+        }
+      }
+    },
+    "SELECTION": {
+      "contests": [
+        2851,
+        2950
+      ],
+      "metrics": {
+        "A_DEFAULT_18_TOP3": {
+          "draws": 100,
+          "total_hits": 56,
+          "mean_hits": 0.56,
+          "zero_hit_count": 56,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.8
+        },
+        "B_POOL18_NO_TOP3": {
+          "draws": 100,
+          "total_hits": 56,
+          "mean_hits": 0.56,
+          "zero_hit_count": 56,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.8
+        },
+        "C_POOL30_NO_TOP3": {
+          "draws": 100,
+          "total_hits": 57,
+          "mean_hits": 0.57,
+          "zero_hit_count": 55,
+          "six_hit_count": 0,
+          "paired_excess_hits": 1,
+          "paired_mean_hit_difference": 0.01,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.03
+          ],
+          "mean_candidate_pool_recall": 3.07
+        },
+        "D_POOL60_NO_TOP3": {
+          "draws": 100,
+          "total_hits": 57,
+          "mean_hits": 0.57,
+          "zero_hit_count": 55,
+          "six_hit_count": 0,
+          "paired_excess_hits": 1,
+          "paired_mean_hit_difference": 0.01,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.03
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "E_POOL60_NO_TOP3_FREQ1000_CAP20": {
+          "draws": 100,
+          "total_hits": 53,
+          "mean_hits": 0.53,
+          "zero_hit_count": 58,
+          "six_hit_count": 0,
+          "paired_excess_hits": -3,
+          "paired_mean_hit_difference": -0.03,
+          "paired_bootstrap95_interval": [
+            -0.14,
+            0.08
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "F_POOL60_TOP3_CONTROL": {
+          "draws": 100,
+          "total_hits": 57,
+          "mean_hits": 0.57,
+          "zero_hit_count": 55,
+          "six_hit_count": 0,
+          "paired_excess_hits": 1,
+          "paired_mean_hit_difference": 0.01,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.03
+          ],
+          "mean_candidate_pool_recall": 6.0
+        }
+      }
+    },
+    "RETROSPECTIVE_EVALUATION": {
+      "contests": [
+        2951,
+        3078
+      ],
+      "metrics": {
+        "A_DEFAULT_18_TOP3": {
+          "draws": 128,
+          "total_hits": 77,
+          "mean_hits": 0.6015625,
+          "zero_hit_count": 67,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.8359375
+        },
+        "B_POOL18_NO_TOP3": {
+          "draws": 128,
+          "total_hits": 77,
+          "mean_hits": 0.6015625,
+          "zero_hit_count": 67,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 1.8359375
+        },
+        "C_POOL30_NO_TOP3": {
+          "draws": 128,
+          "total_hits": 77,
+          "mean_hits": 0.6015625,
+          "zero_hit_count": 67,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            0.0,
+            0.0
+          ],
+          "mean_candidate_pool_recall": 3.046875
+        },
+        "D_POOL60_NO_TOP3": {
+          "draws": 128,
+          "total_hits": 77,
+          "mean_hits": 0.6015625,
+          "zero_hit_count": 68,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            -0.0234375,
+            0.0234375
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "E_POOL60_NO_TOP3_FREQ1000_CAP20": {
+          "draws": 128,
+          "total_hits": 72,
+          "mean_hits": 0.5625,
+          "zero_hit_count": 72,
+          "six_hit_count": 0,
+          "paired_excess_hits": -5,
+          "paired_mean_hit_difference": -0.0390625,
+          "paired_bootstrap95_interval": [
+            -0.125,
+            0.046875
+          ],
+          "mean_candidate_pool_recall": 6.0
+        },
+        "F_POOL60_TOP3_CONTROL": {
+          "draws": 128,
+          "total_hits": 77,
+          "mean_hits": 0.6015625,
+          "zero_hit_count": 68,
+          "six_hit_count": 0,
+          "paired_excess_hits": 0,
+          "paired_mean_hit_difference": 0.0,
+          "paired_bootstrap95_interval": [
+            -0.0234375,
+            0.0234375
+          ],
+          "mean_candidate_pool_recall": 6.0
+        }
+      }
+    }
+  },
+  "promotion_authorized": false,
+  "scientific_6_of_6_proven": false,
+  "created_utc": "2026-10-31T13:15:37.024725+00:00",
+  "sha256": "ba14d17663c784d7da36b29f95dd940e9f3644f94ba86b299d93b63204407fa5"
+}
