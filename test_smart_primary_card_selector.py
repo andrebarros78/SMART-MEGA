@@ -1,10 +1,14 @@
 
 from smart_primary_card_selector import PrimaryCardSelectorConfig, select_primary_card
 
-def test_selector_rejects_concentrated_top6_and_keeps_six_unique_numbers():
+def test_research_only_explicit_band_constraints_reject_concentrated_top6():
     ranking=[11,53,38,37,35,27,14,10,43,30,16,46,25,6,58,17,5,9]+[n for n in range(1,61) if n not in {11,53,38,37,35,27,14,10,43,30,16,46,25,6,58,17,5,9}]
     scores={n:60-i for i,n in enumerate(ranking)}
-    result=select_primary_card(scores,ranking60=ranking,config=PrimaryCardSelectorConfig(candidate_pool_size=18))
+    result=select_primary_card(scores,ranking60=ranking,config=PrimaryCardSelectorConfig(
+        candidate_pool_size=18, min_low_band=2, max_low_band=4,
+        min_mid_band=1, max_mid_band=3, min_high_band=0, max_high_band=2,
+        require_top3_presence=True, band_balance_weight=0.08, concentration_penalty=0.18,
+    ))
     nums=result["selected_numbers"]
     assert result["status"]=="PASS" and len(nums)==6 and len(set(nums))==6
     assert result["selected_band_counts"]["low"]>=2 and result["selected_band_counts"]["mid"]<=3
@@ -36,7 +40,8 @@ def test_selector_refuses_infeasible_card_instead_of_passing_invalid_fallback():
     with pytest.raises(ValueError, match="no valid primary card"):
         select_primary_card(
             {n:61-n for n in range(1,61)},
-            config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6),
+            config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6,
+                                             min_mid_band=1),
         )
 
 @pytest.mark.parametrize("key", [1.5, True])
@@ -72,3 +77,22 @@ def test_selector_rejects_objective_overflow():
             {n:61-i for i,n in enumerate(ranking)},ranking60=ranking,
             config=PrimaryCardSelectorConfig(candidate_pool_size=6,max_candidate_pool_size=6,score_weight=1e308),
         )
+
+def test_production_selector_preserves_all_six_highest_scored_numbers_without_band_quotas():
+    """A correct scoring signal must not be discarded by an unproven band rule."""
+    winning_numbers = [41, 42, 43, 44, 45, 46]
+    ranking = winning_numbers + [n for n in range(1, 61) if n not in winning_numbers]
+    scores = {n: float(61 - i) for i, n in enumerate(ranking)}
+    observed = select_primary_card(scores, ranking60=ranking)
+    assert observed["selected_numbers"] == winning_numbers
+    assert observed["selected_band_counts"]["high"] == 6
+    assert observed["status"] == "PASS"
+
+
+def test_production_selector_preserves_all_six_lowest_band_numbers():
+    """Causally scored low-band concentrations remain valid six-number cards."""
+    ranking = list(range(1, 61))
+    scores = {n: float(61 - i) for i, n in enumerate(ranking)}
+    observed = select_primary_card(scores, ranking60=ranking)
+    assert observed["selected_numbers"] == list(range(1, 7))
+    assert observed["selected_band_counts"]["low"] == 6
