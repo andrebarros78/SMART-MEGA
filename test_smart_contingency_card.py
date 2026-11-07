@@ -102,6 +102,8 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         node = next(n for n in ast.parse(source).body
                     if isinstance(n, ast.FunctionDef) and n.name == "generate_card_operation")
         environment["Any"] = Any
+        from smart_operator_contract import require_predictive_card_result
+        environment["require_predictive_card_result"] = require_predictive_card_result
         exec(compile(ast.Module(body=[node], type_ignores=[]), str(Path(__file__).resolve().with_name("smart_operator.py")), "exec"), environment)
         return environment["generate_card_operation"]
 
@@ -126,9 +128,14 @@ class TestOperatorDispatchWithoutThirdPartyRuntime(unittest.TestCase):
         env = {"Path": Path, "canonical_root": lambda r: r,
                "load_lifecycle": lambda r: {"state": "FROZEN", "target_contest": 3071,
                                              "sha256": SHA},
-               "freeze_operation": lambda root, target: {"status": "FROZEN", "target_contest": target}}
+               "freeze_operation": lambda root, target: {"schema": "SMART_FREEZE_OPERATION_1",
+                  "status": "FROZEN", "target_contest": target, "idempotent_replay": True,
+                  "freeze_file": "runtime/freeze.json", "freeze_sha256": "a" * 64,
+                  "result_used": False, "consumer_integration": {"status": "PASS"}}}
         result = self._operator_function(**env)("/tmp", 3071)
-        self.assertEqual(result, {"status": "FROZEN", "target_contest": 3071})
+        self.assertEqual(result["schema"], "SMART_FREEZE_OPERATION_1")
+        self.assertEqual(result["target_contest"], 3071)
+        self.assertTrue(result["idempotent_replay"])
 
 
 

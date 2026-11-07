@@ -32,7 +32,7 @@ from smart_current_epoch_contract import resolve as resolve_current_epoch
 from smart_full_process_pipeline import _rel, _resolve, run_full_process
 from smart_consumer_integration import audit_generation
 from smart_operation_recovery import recover_interrupted_freeze_operation
-from smart_operator_contract import contract, validate_target_sequence
+from smart_operator_contract import contract, validate_target_sequence, require_predictive_card_result
 from smart_learning_epoch_reset import ACTIVE_PATH, SCHEMA as EPOCH_SCHEMA, write_active_epoch, verify_active_epoch
 from smart_manual_generation_authority import authorize as authorize_manual_generation, validate as validate_manual_generation
 from smart_official_result_ingest import ingest as ingest_official_result
@@ -973,9 +973,9 @@ def generate_card_operation(root: str | Path, target: int) -> dict[str, Any]:
         lifecycle = load_lifecycle(root)
     if lifecycle.get("state") == "PREPARED":
         authorize_generation_operation(root, target)
-        return freeze_operation(root, target)
+        return require_predictive_card_result(freeze_operation(root, target), target)
     if lifecycle.get("state") == "FROZEN":
-        return freeze_operation(root, target)
+        return require_predictive_card_result(freeze_operation(root, target), target)
     raise ValueError(f"card generation requires HOLD/AUTHORIZED/PREPARED/FROZEN: {lifecycle.get('state')}")
 
 
