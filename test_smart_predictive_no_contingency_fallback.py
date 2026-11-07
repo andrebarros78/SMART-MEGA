@@ -17,8 +17,8 @@ def test_no_silent_substitution_for_unfinished_prior_cycle(tmp_path, state):
             operator.generate_card_operation(tmp_path, 3082)
 
 def test_prepared_target_runs_model_path(tmp_path):
-    with patch.object(operator, 'canonical_root', return_value=tmp_path), patch.object(operator, 'load_lifecycle', return_value={'target_contest': 3082, 'state': 'PREPARED'}), patch.object(operator, 'authorize_generation_operation') as auth, patch.object(operator, 'freeze_operation', return_value={'status':'FROZEN','target_contest':3082,'model_certified':True}) as freeze:
+    with patch.object(operator, 'canonical_root', return_value=tmp_path), patch.object(operator, 'load_lifecycle', return_value={'target_contest': 3082, 'state': 'PREPARED'}), patch.object(operator, 'authorize_generation_operation') as auth, patch.object(operator, 'freeze_operation', return_value={'proof':{'status':'PASS','target_contest':3082,'result_used':False,'freeze_sha256':'a'*64,'freeze_file':'runtime/freeze.json'},'freeze':{'status':'FROZEN','freeze_sha256':'a'*64},'consumer_integration':{'status':'PASS'}}) as freeze:
         result = operator.generate_card_operation(tmp_path, 3082)
-    assert result['status'] == 'FROZEN'
+    assert result['freeze']['status'] == 'FROZEN'
     auth.assert_called_once_with(tmp_path, 3082)
     freeze.assert_called_once_with(tmp_path, 3082)

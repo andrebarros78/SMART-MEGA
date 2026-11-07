@@ -64,15 +64,15 @@
     "smart_terminal_engine.py",
     "smart_terminal_executor.py"
   ],
-  "inventory_sha256": "9904d16136fbc18fdd377e7187436397b977706a01512916540ba5b06bfcd95b",
+  "inventory_sha256": "a159b4fa900329bfb9d8f2b8819369b53353948cd06053cadceca51e89099206",
   "summary": {
-    "python_components": 627,
+    "python_components": 628,
     "workflow_entrypoints": 11,
     "production_components": 145,
     "shadow_components": 1,
     "diagnostic_components": 30,
     "validation_components": 23,
-    "test_components": 252,
+    "test_components": 253,
     "archive_components": 176,
     "quarantine_components": 0,
     "unclassified_components": 0,
@@ -6123,6 +6123,7 @@
         "smart_frozen_card_reader",
         "smart_github_native_policy",
         "smart_operator",
+        "smart_operator_contract",
         "smart_protected_pr_publication",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -6152,7 +6153,7 @@
       "cycle_ids": [
         2
       ],
-      "sha256": "bdb4787e0d0240d5cb06b6eccdef9bbae6ec3b2336cdcda44b9261236ab35746"
+      "sha256": "e80ebb21459753e4d6c86a3b32bb6a3af265bfdeb969b82f451a2b771660f8a8"
     },
     {
       "component_id": "smart_global_integrity",
@@ -7180,6 +7181,7 @@
         "test_smart_operator_unprepared_missed_recovery_20260915",
         "test_smart_postresult_preflight_resume",
         "test_smart_predictive_no_contingency_fallback",
+        "test_smart_predictive_only_delivery",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch",
         "tests.test_smart_operator_failure_boundaries_20261021",
@@ -7193,7 +7195,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "b5e88672d68641f77c615dd909d96ab40af8fb073f2cb12d05bf6500404fa8c2"
+      "sha256": "4231250c15975dd32e2cf1df9e61132f1d45834568efafe9397a869e081af108"
     },
     {
       "component_id": "smart_operator_authority_documents",
@@ -7261,9 +7263,12 @@
       "producers": [],
       "declared_execution_dependencies": [],
       "consumers": [
+        "smart_github_operator",
         "smart_operator",
         "smart_product_certification",
-        "test_smart_f02_dependency_direction"
+        "test_smart_contingency_card",
+        "test_smart_f02_dependency_direction",
+        "test_smart_predictive_only_delivery"
       ],
       "reachable": true,
       "production_reachable": true,
@@ -7273,7 +7278,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1"
+      "sha256": "cc3b7c009bc62867fc4b2505ba841f86bea844ba2bc0450f45019366512a1d21"
     },
     {
       "component_id": "smart_operator_epoch_document",
@@ -11173,7 +11178,8 @@
       "classification_reason": "test namespace",
       "entrypoints": [],
       "producers": [
-        "smart_contingency_card"
+        "smart_contingency_card",
+        "smart_operator_contract"
       ],
       "declared_execution_dependencies": [],
       "consumers": [],
@@ -11185,7 +11191,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": true,
       "cycle_ids": [],
-      "sha256": "a32ee9b39481441cfda8da628fb15c640fe7c2e712b293c460cda8cca9dfe2b9"
+      "sha256": "7f49e2975b04e6c37d9cb35a96415b41a0299d6f7f8c2eb09842868eb21aa568"
     },
     {
       "component_id": "test_smart_continuity_consolidator",
@@ -13361,7 +13367,7 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "4f2024e1d63804c62fb4c13a6fe841397d162a24d199e1a343f2504e6aec637a"
+      "sha256": "6289c89a097790d193859489a08d9319adc0b4dc91664b0c1e5b8a90e89104c4"
     },
     {
       "component_id": "test_smart_operator_unprepared_missed_recovery_20260915",
@@ -13620,7 +13626,29 @@
       "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
       "has_main_guard": false,
       "cycle_ids": [],
-      "sha256": "1885ed50cb4e56c32dbf6d820cb59e37e15d9d16c5b9e8a10230dc3b0824516e"
+      "sha256": "b39388fe81d68a79ca1946dfb4626f9778d04e22303586e55002d334d62a87d4"
+    },
+    {
+      "component_id": "test_smart_predictive_only_delivery",
+      "source_file": "test_smart_predictive_only_delivery.py",
+      "role": "TEST",
+      "classification_reason": "test namespace",
+      "entrypoints": [],
+      "producers": [
+        "smart_operator",
+        "smart_operator_contract"
+      ],
+      "declared_execution_dependencies": [],
+      "consumers": [],
+      "reachable": false,
+      "production_reachable": false,
+      "runtime_executed": null,
+      "runtime_execution_scope": "STATIC_REACHABILITY_ONLY_F01",
+      "decision_effect": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "predictive_authority": "NOT_ESTABLISHED_BY_STATIC_REACHABILITY",
+      "has_main_guard": false,
+      "cycle_ids": [],
+      "sha256": "6e64d9fd3149751828147e566a915651bef1c49dbe56170a55081eb3dec13956"
     },
     {
       "component_id": "test_smart_primary_card_contract",

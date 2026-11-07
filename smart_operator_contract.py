@@ -47,6 +47,7 @@ def contract() -> dict[str, Any]:
         "explicit_result_completion_is_resumable": True,
         "result_completion_never_auto_promotes_scientific_claim": True,
         "next_contest_contingency_generation_independent_of_prior_adjudication": True,
+        "implicit_contingency_fallback_forbidden": True,
         "contingency_card_never_proves_predictive_6of6": True,
         "generic_active_epoch_terminal_executor": True,
         "terminal_action_revalidates_official_consensus_and_scientific_guards": True,
@@ -62,3 +63,50 @@ def contract() -> dict[str, Any]:
         "preflight_validates_active_epoch_integrity": True,
         "technical_withdrawal_allows_same_target_reauthorization_with_proof": True,
     }
+
+
+def _predictive_sha256(value: Any) -> bool:
+    return isinstance(value, str) and len(value) == 64 and all(c in "0123456789abcdefABCDEF" for c in value)
+
+
+def _predictive_relative_path(value: Any) -> bool:
+    if not isinstance(value, str) or not value or value.startswith(("/", "\\")) or ":" in value:
+        return False
+    parts = value.replace("\\", "/").split("/")
+    return all(p not in ("", ".", "..") for p in parts)
+
+
+def require_predictive_card_result(result: Any, target: int) -> dict[str, Any]:
+    """Validate actual freeze-operation output, not an invented wrapper schema.
+
+    New freezes return the native full-process dict with proof and freeze;
+    authenticated replays return SMART_FREEZE_OPERATION_1. Both are checked
+    after the upstream source-bound consumer audit. Never reinterpret a
+    contingency or a failed integration as a production model card.
+    """
+    target = int(target)
+    if not isinstance(result, dict):
+        raise ValueError("PREDICTIVE_CARD_ONLY: invalid model-generation response")
+    consumer = result.get("consumer_integration")
+    if not isinstance(consumer, dict) or consumer.get("status") != "PASS":
+        raise ValueError("PREDICTIVE_CARD_ONLY: consumer evidence is not verified")
+    if result.get("schema") == "SMART_FREEZE_OPERATION_1":
+        if (result.get("status") != "FROZEN"
+                or result.get("target_contest") != target
+                or result.get("idempotent_replay") is not True
+                or result.get("result_used") is not False
+                or not _predictive_relative_path(result.get("freeze_file"))
+                or not _predictive_sha256(result.get("freeze_sha256"))):
+            raise ValueError("PREDICTIVE_CARD_ONLY: replay is not bound to model freeze")
+        return result
+    proof = result.get("proof")
+    freeze = result.get("freeze")
+    if (not isinstance(proof, dict) or not isinstance(freeze, dict)
+            or proof.get("status") != "PASS"
+            or proof.get("target_contest") != target
+            or proof.get("result_used") is not False
+            or not _predictive_relative_path(proof.get("freeze_file"))
+            or not _predictive_sha256(proof.get("freeze_sha256"))
+            or proof.get("freeze_sha256") != freeze.get("freeze_sha256")):
+        raise ValueError("PREDICTIVE_CARD_ONLY: missing audited native model-generation proof")
+    return result

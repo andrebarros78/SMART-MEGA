@@ -356,6 +356,9 @@ def execute(operation: str, target: str = "", payload: str = "") -> dict:
         observation = json.loads(result.stdout)
     except json.JSONDecodeError as exc:
         raise RuntimeError("operator did not return one JSON document") from exc
+    if operation == "generate-card":
+        from smart_operator_contract import require_predictive_card_result
+        require_predictive_card_result(observation, int(target))
     changes = _changes(root)
     _require_no_unpersisted_state(root)
     if operation in READ_ONLY:

@@ -18,13 +18,13 @@ def test_generate_card_is_one_operator_command_without_secondary_confirmation(tm
         calls.append("authorize-generation")
     def freeze(*args):
         calls.append("freeze")
-        return {"status":"FROZEN","proof":{"status":"PASS","target_contest":3071}}
+        return {"proof":{"status":"PASS","target_contest":3071,"result_used":False,"freeze_sha256":"a"*64,"freeze_file":"runtime/freeze.json"},"freeze":{"status":"FROZEN","freeze_sha256":"a"*64},"consumer_integration":{"status":"PASS"}}
     monkeypatch.setattr(op,"authorize_next_cycle_operation",authorize)
     monkeypatch.setattr(op,"prepare_operation",prepare)
     monkeypatch.setattr(op,"authorize_generation_operation",authorize_generation)
     monkeypatch.setattr(op,"freeze_operation",freeze)
     result=op.generate_card_operation(tmp_path,3071)
-    assert result["status"]=="FROZEN"
+    assert result["freeze"]["status"]=="FROZEN"
     assert calls==["authorize-next-cycle","prepare","authorize-generation","freeze"]
 
 

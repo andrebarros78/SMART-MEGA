@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "9904d16136fbc18fdd377e7187436397b977706a01512916540ba5b06bfcd95b",
+  "source_reachability_inventory_sha256": "a159b4fa900329bfb9d8f2b8819369b53353948cd06053cadceca51e89099206",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 627,
+    "component_count": 628,
     "active": 145,
     "shadow": 1,
-    "diagnostic": 281,
+    "diagnostic": 282,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -6468,7 +6468,7 @@
       "component_id": "smart_github_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_github_operator.py",
-      "implementation_sha256": "bdb4787e0d0240d5cb06b6eccdef9bbae6ec3b2336cdcda44b9261236ab35746",
+      "implementation_sha256": "e80ebb21459753e4d6c86a3b32bb6a3af265bfdeb969b82f451a2b771660f8a8",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6476,6 +6476,7 @@
         "smart_frozen_card_reader",
         "smart_github_native_policy",
         "smart_operator",
+        "smart_operator_contract",
         "smart_protected_pr_publication",
         "smart_target_schedule",
         "smart_transaction_journal"
@@ -7504,7 +7505,7 @@
       "component_id": "smart_operator",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator.py",
-      "implementation_sha256": "b5e88672d68641f77c615dd909d96ab40af8fb073f2cb12d05bf6500404fa8c2",
+      "implementation_sha256": "4231250c15975dd32e2cf1df9e61132f1d45834568efafe9397a869e081af108",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7579,6 +7580,7 @@
         "test_smart_operator_unprepared_missed_recovery_20260915",
         "test_smart_postresult_preflight_resume",
         "test_smart_predictive_no_contingency_fallback",
+        "test_smart_predictive_only_delivery",
         "test_smart_result_consumption_readiness",
         "test_smart_terminal_executor_active_epoch",
         "tests.test_smart_operator_failure_boundaries_20261021",
@@ -7657,14 +7659,17 @@
       "component_id": "smart_operator_contract",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_operator_contract.py",
-      "implementation_sha256": "db1dae39b0719a2e168cbc06e37d13434b519bad654c9f736feaef119f9037c1",
+      "implementation_sha256": "cc3b7c009bc62867fc4b2505ba841f86bea844ba2bc0450f45019366512a1d21",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [],
       "consumers": [
+        "smart_github_operator",
         "smart_operator",
         "smart_product_certification",
-        "test_smart_f02_dependency_direction"
+        "test_smart_contingency_card",
+        "test_smart_f02_dependency_direction",
+        "test_smart_predictive_only_delivery"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -11842,11 +11847,12 @@
       "component_id": "test_smart_contingency_card",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_contingency_card.py",
-      "implementation_sha256": "a32ee9b39481441cfda8da628fb15c640fe7c2e712b293c460cda8cca9dfe2b9",
+      "implementation_sha256": "7f49e2975b04e6c37d9cb35a96415b41a0299d6f7f8c2eb09842868eb21aa568",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
-        "smart_contingency_card"
+        "smart_contingency_card",
+        "smart_operator_contract"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -14213,7 +14219,7 @@
       "component_id": "test_smart_operator_single_command_card",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_operator_single_command_card.py",
-      "implementation_sha256": "4f2024e1d63804c62fb4c13a6fe841397d162a24d199e1a343f2504e6aec637a",
+      "implementation_sha256": "6289c89a097790d193859489a08d9319adc0b4dc91664b0c1e5b8a90e89104c4",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -14497,11 +14503,35 @@
       "component_id": "test_smart_predictive_no_contingency_fallback",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_predictive_no_contingency_fallback.py",
-      "implementation_sha256": "1885ed50cb4e56c32dbf6d820cb59e37e15d9d16c5b9e8a10230dc3b0824516e",
+      "implementation_sha256": "b39388fe81d68a79ca1946dfb4626f9778d04e22303586e55002d334d62a87d4",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_operator"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_predictive_only_delivery",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_predictive_only_delivery.py",
+      "implementation_sha256": "6e64d9fd3149751828147e566a915651bef1c49dbe56170a55081eb3dec13956",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_operator",
+        "smart_operator_contract"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -16913,5 +16943,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "82010b14a9c0969f4c8ac0b6a62029b23e09f8e579dd0db82b3a8b9cdeb1447b"
+  "registry_sha256": "27cb8e7b077d5273d56d6f52ab0898daadf9d34f9a696e04b71d3be585cabc7c"
 }
