@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Any
 
 from smart_agent_runtime import ORDER, sha256_json
+from smart_discovery_charter import EXPECTED_PRINCIPLE, verify_discovery_charter
 from smart_agent_skill_functional_gate import evaluate as evaluate_functional
 
 SCHEMA = "SMART_TOTAL_INTEGRATION_GATE_V3"
@@ -34,6 +35,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     predictive advantage are outside this gate and are not inferred from it.
     """
     root = Path(root).resolve()
+    charter = verify_discovery_charter(root)
     functional = evaluate_functional(root, phase=phase)
     runtime = functional["runtime_proof"]
     skills = functional["skill_runtime_proof"]
@@ -59,6 +61,19 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
         for name in ORDER if name in executions
     ]
     gates = {
+        "G12_DISCOVERY_CHARTER": {
+            "owner_principle_pinned": charter["canonical_principle"] == EXPECTED_PRINCIPLE,
+            "anti_dogma_and_falsifiability": (
+                charter["method"]["allow_unconventional_hypotheses"] is True
+                and charter["method"]["no_a_priori_predictive_impossibility_verdict"] is True
+                and charter["method"]["no_a_priori_predictive_superiority_verdict"] is True
+                and charter["method"]["evaluate_out_of_sample_and_prospectively"] is True
+            ),
+            "owner_review_required_to_change": (
+                charter["change_control"]["ai_chat_unilateral_edit_permitted"] is False
+                and charter["change_control"]["explicit_owner_approval_required"] is True
+            ),
+        },
         "G1_ROLE_EXECUTORS": {
             "nine_executed": len(agents) == 9 and runtime["agent_count"] == 9,
             "all_native_probes_pass": all(
@@ -146,6 +161,7 @@ def evaluate(root: str | Path, phase: str = "AUTO") -> dict[str, Any]:
     document: dict[str, Any] = {
         "schema": SCHEMA,
         "phase": functional["phase"],
+        "discovery_charter_sha256": charter["sha256"],
         "status": "PASS" if passed else "FAIL",
         "health": "HEALTHY" if passed else "UNHEALTHY",
         "service_model": "BATCH_EXECUTION_WITH_PERSISTENT_CANONICAL_ARTIFACTS",

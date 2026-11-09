@@ -25,6 +25,7 @@ from smart_prospective_cycle import register as register_prospective_cycle
 from smart_procedural_actionability_gate import FreezeWindowResult, evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
+from smart_discovery_charter import verify_discovery_charter
 
 SCHEMA = "SMART_FULL_PROCESS_PROOF_2"
 TRACE_FIELDS = (
@@ -234,6 +235,7 @@ def _fine_tuning_consumed_by_challenger(freeze: dict[str, Any], tuning: dict[str
 @locked_operation("FULL_PROCESS_FREEZE", positional_target=False)
 def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_generation_authorized: bool = False) -> dict[str, Any]:
     root = canonical_root(root)
+    verify_discovery_charter(root)
     if manual_generation_authorized is not True:
         raise PermissionError("MANUAL_GENERATION_AUTHORITY_REQUIRED")
     root = Path(root).resolve()

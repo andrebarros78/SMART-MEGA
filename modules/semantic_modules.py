@@ -45,7 +45,7 @@ SPECS = [
     "smart_critical_code_manifest.py", "smart_repository_integrity.py",
     "smart_historical_binding.py"]),
  ("M02", "Contratos, estados e governanca", [
-    "smart_contract_registry.py", "smart_current_epoch_contract.py",
+    "smart_contract_registry.py", "smart_current_epoch_contract.py", "smart_discovery_charter.py",
     "smart_material_deficiency_*.py", "smart_scientific_state_guard.py",
     "smart_authority_freshness.py", "smart_mission_status.py"]),
  ("M03", "Coleta e conciliacao de resultados oficiais", [
