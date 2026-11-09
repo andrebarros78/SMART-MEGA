@@ -16,6 +16,7 @@ import pandas as pd
 from smart_frontier_signal_lab import CANDIDATES, FREEZE_SCHEMA, brier, sha256_file, sha256_json
 from smart_signal_agent import SIGNAL_NAMES
 from smart_signal_expansion_governance import load_registry, write_registry
+from smart_signal_llm_shadow import CANDIDATE_ID as LLM_CANDIDATE_ID, FAMILY as LLM_FAMILY
 
 LEDGER_SCHEMA = "SMART_FRONTIER_LEDGER_1"
 
@@ -93,7 +94,20 @@ def adjudicate_frontier(
     if freeze.get("production_authority") is not False or freeze.get("material_weight") != 0.0 or freeze.get("result_used") is not False:
         raise ValueError("frontier freeze is not shadow-only")
     predictions = freeze.get("candidate_predictions")
-    if not isinstance(predictions, dict) or set(predictions) != set(CANDIDATES):
+    expected_candidates = dict(CANDIDATES)
+    if "llm_shadow_input" in freeze:
+        provenance = freeze["llm_shadow_input"]
+        candidate = predictions.get(LLM_CANDIDATE_ID) if isinstance(predictions, dict) else None
+        if (not isinstance(provenance, dict) or not isinstance(candidate, dict)
+                or provenance.get("provider_verified") is not False
+                or provenance.get("external_model_call_proven") is not False
+                or provenance.get("production_authority") is not False
+                or provenance.get("result_used") is not False
+                or candidate.get("input_file_sha256") != provenance.get("input_file_sha256")
+                or candidate.get("family") != LLM_FAMILY):
+            raise ValueError("LLM shadow provenance mismatch")
+        expected_candidates[LLM_CANDIDATE_ID] = LLM_FAMILY
+    if not isinstance(predictions, dict) or set(predictions) != set(expected_candidates):
         raise ValueError("frontier freeze candidate set mismatch")
 
     main_freeze = json.loads(main_freeze_path.read_text(encoding="utf-8"))
@@ -114,7 +128,7 @@ def adjudicate_frontier(
     registry_before = sha256_file(registry_path)
     evaluations: dict[str, Any] = {}
 
-    for name, family in CANDIDATES.items():
+    for name, family in expected_candidates.items():
         if name not in governance.candidates:
             raise ValueError(f"frontier candidate is not registered: {name}")
         state = governance.candidates[name]

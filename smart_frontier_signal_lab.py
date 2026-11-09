@@ -16,6 +16,7 @@ import pandas as pd
 import smart_v2_engine as e
 from smart_signal_agent import SIGNAL_NAMES
 from smart_signal_expansion_governance import load_registry, write_registry
+from smart_signal_llm_shadow import CANDIDATE_ID as LLM_CANDIDATE_ID, load_proposal
 
 SCHEMA = "SMART_FRONTIER_SIGNAL_LAB_1"
 FREEZE_SCHEMA = "SMART_FRONTIER_SHADOW_FREEZE_1"
@@ -349,7 +350,8 @@ def run_historical(data_path: Path, start_index: int = 1000) -> tuple[dict[str, 
     return result, state, frame
 
 
-def register_candidates(registry_path: Path, cutoff: int) -> dict[str, Any]:
+def register_candidates(registry_path: Path, cutoff: int,
+                        extra_candidates: dict[str, str] | None = None) -> dict[str, Any]:
     governance = load_registry(registry_path, tuple(SIGNAL_NAMES))
     for candidate_id, family in CANDIDATES.items():
         if candidate_id not in governance.candidates:
@@ -358,6 +360,13 @@ def register_candidates(registry_path: Path, cutoff: int) -> dict[str, Any]:
             state = governance.candidates[candidate_id]
             if state.family != family or state.registered_cutoff != int(cutoff):
                 raise ValueError("existing frontier candidate registration differs")
+    for candidate_id, family in (extra_candidates or {}).items():
+        if candidate_id not in governance.candidates:
+            governance.register(candidate_id, family, int(cutoff))
+        else:
+            existing = governance.candidates[candidate_id]
+            if existing.family != family or existing.registered_cutoff != int(cutoff):
+                raise ValueError("existing LLM candidate registration differs")
     registry_sha = write_registry(registry_path, governance)
     return {"sha256": registry_sha, "snapshot": governance.snapshot()}
 
@@ -370,6 +379,8 @@ def freeze_shadow(
     report_path: Path,
     freeze_path: Path,
     registry_path: Path,
+    *,
+    llm_candidate_path: Path | None = None,
 ) -> dict[str, Any]:
     if freeze_path.exists():
         raise FileExistsError(f"refusing to overwrite existing frontier freeze: {freeze_path}")
@@ -377,10 +388,36 @@ def freeze_shadow(
                  else datetime.strptime(str(target_date), "%d/%m/%Y"))
     prediction = state.predict(None if draw_date is None else draw_date.weekday()).document()
     cutoff = int(target) - 1
-    registration = register_candidates(registry_path, cutoff)
+    frozen_utc = datetime.now(timezone.utc).isoformat()
+    llm_proposal = None
+    if llm_candidate_path is not None:
+        llm_proposal = load_proposal(
+            llm_candidate_path, target=target,
+            history_sha256=sha256_file(data_path), frozen_at_utc=frozen_utc,
+        )
+        raw = np.asarray([llm_proposal["scores"][str(n)] for n in range(1, 61)], dtype=float)
+        scores = _minmax(raw)
+        probabilities = scores_to_probabilities(raw)
+        ranked = sorted(range(1, 61), key=lambda n: (-float(scores[n - 1]), n))
+        prediction[LLM_CANDIDATE_ID] = {
+            "family": llm_proposal["family"],
+            "top6": ranked[:6],
+            "ranking60": ranked,
+            "scores": {str(n): float(scores[n - 1]) for n in range(1, 61)},
+            "probabilities": {str(n): float(probabilities[n - 1]) for n in range(1, 61)},
+            "probability_sum": float(probabilities.sum()),
+            "production_authority": False,
+            "result_used": False,
+            "calibrated": False,
+            "external_model_call_proven": False,
+            "status": "SHADOW_ONLY",
+            "input_file_sha256": llm_proposal["input_file_sha256"],
+        }
+    extra = ({LLM_CANDIDATE_ID: llm_proposal["family"]} if llm_proposal else None)
+    registration = register_candidates(registry_path, cutoff, extra_candidates=extra)
     freeze = {
         "schema": FREEZE_SCHEMA,
-        "frozen_utc": datetime.now(timezone.utc).isoformat(),
+        "frozen_utc": frozen_utc,
         "target_contest": int(target),
         "target_date": None if draw_date is None else draw_date.strftime("%d/%m/%Y"),
         "cutoff_contest": cutoff,
@@ -402,6 +439,16 @@ def freeze_shadow(
         "promotion_requires_future_oos_evidence": True,
         "result_used": False,
     }
+    if llm_proposal is not None:
+        freeze["llm_shadow_input"] = {
+            field: llm_proposal[field]
+            for field in (
+                "input_file", "input_file_sha256", "input_embedded_sha256",
+                "prompt_sha256", "generated_utc", "provider_claim", "model_claim",
+                "provider_verified", "external_model_call_proven",
+                "predictive_benefit_proven", "result_used", "production_authority",
+            )
+        }
     if draw_date is None:
         freeze["calendar_conditioning"] = "NEUTRALIZED_MISSING_TARGET_DATE"
     freeze["sha256"] = sha256_json(freeze)

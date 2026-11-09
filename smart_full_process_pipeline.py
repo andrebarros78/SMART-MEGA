@@ -364,6 +364,11 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             frontier_report_path,
             frontier_freeze_path,
             expansion_registry_path,
+            llm_candidate_path=(
+                root / f"SMART_LLM_SHADOW_CANDIDATE_{target}.json"
+                if (root / f"SMART_LLM_SHADOW_CANDIDATE_{target}.json").is_file()
+                else None
+            ),
         )
         probability_registration = register_prospective_cycle(
             frontier_freeze_path,
