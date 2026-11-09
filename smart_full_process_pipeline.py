@@ -106,11 +106,9 @@ def _rel(root: Path, path: Path) -> str:
 def _valid_top6(values: Any) -> bool:
     if not isinstance(values, list) or len(values) != 6:
         return False
-    try:
-        nums = [int(x) for x in values]
-    except (TypeError, ValueError):
+    if not all(type(number) is int for number in values):
         return False
-    return len(set(nums)) == 6 and all(1 <= x <= 60 for x in nums)
+    return len(set(values)) == 6 and all(1 <= number <= 60 for number in values)
 
 
 def _verified_primary_card(root: Path, freeze_result: dict[str, Any],
