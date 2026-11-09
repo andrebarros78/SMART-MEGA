@@ -2,9 +2,9 @@
   "schema": "SMART_V6_SEMANTIC_MODULES_V1",
   "repository": "andrebarros78/SMART-MEGA",
   "branch": "main",
-  "source_count": 195,
+  "source_count": 196,
   "module_count": 21,
-  "import_count": 412,
+  "import_count": 414,
   "modules": [
     {
       "id": "M01",
@@ -314,11 +314,12 @@
         {
           "source": "smart_frontier_adjudicator.py",
           "relative_path": "smart_frontier_adjudicator.py",
-          "sha256": "569f9410e53717b0d60b78dcb8613fdded1f64a97244c74c9965ffe96bc67f5e",
+          "sha256": "cff91d01727ed213ca653df18dc88fa6a710b1cc32a2ed11abd46312c1033ea1",
           "imports": [
             "smart_frontier_signal_lab.py",
             "smart_signal_agent.py",
-            "smart_signal_expansion_governance.py"
+            "smart_signal_expansion_governance.py",
+            "smart_signal_llm_shadow.py"
           ],
           "public_symbols": [
             "adjudicate_frontier",
@@ -672,6 +673,16 @@
             "analyze_snapshot",
             "PairInteractionState",
             "InteractionTracker"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_signal_llm_shadow.py",
+          "relative_path": "smart_signal_llm_shadow.py",
+          "sha256": "904eb514f97b925ae5406098378acc99a71b0a215b31996a14b9a3d86916cdd1",
+          "imports": [],
+          "public_symbols": [
+            "load_proposal"
           ],
           "cli_guard": false
         },
@@ -1480,10 +1491,11 @@
         {
           "source": "smart_frontier_signal_lab.py",
           "relative_path": "smart_frontier_signal_lab.py",
-          "sha256": "928b9a54290b26539a2c3f15deb637dd9580c4ab544664ea7ac0371ad1daaf76",
+          "sha256": "f74453d640c45d27c6a99dc5a54cd04b4b673d551a209db5c2c61ebb7b58fd2e",
           "imports": [
             "smart_signal_agent.py",
             "smart_signal_expansion_governance.py",
+            "smart_signal_llm_shadow.py",
             "smart_v2_engine.py"
           ],
           "public_symbols": [
@@ -1622,7 +1634,7 @@
         {
           "source": "smart_prospective_cycle.py",
           "relative_path": "smart_prospective_cycle.py",
-          "sha256": "df9d69c0942d27fe0082037763b55e52aff64d022f5c0702546acf1c72b53761",
+          "sha256": "773717ee1ee6eee07edb3004f2f9fc7a307fb11a64474b07bc4917d1607152f6",
           "imports": [],
           "public_symbols": [
             "canonical_json",
@@ -2586,7 +2598,7 @@
         {
           "source": "smart_full_process_pipeline.py",
           "relative_path": "smart_full_process_pipeline.py",
-          "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1",
+          "sha256": "268e1b2ef28852a2a616b51f48612c0d8e43654d04072fe66e2555f4ed1d4eed",
           "imports": [
             "smart_agent_runtime.py",
             "smart_canonical_identity.py",
@@ -4353,6 +4365,12 @@
       "to_module": "M05"
     },
     {
+      "source": "smart_frontier_adjudicator.py",
+      "target": "smart_signal_llm_shadow.py",
+      "from_module": "M03",
+      "to_module": "M05"
+    },
+    {
       "source": "smart_frontier_signal_lab.py",
       "target": "smart_signal_agent.py",
       "from_module": "M11",
@@ -4361,6 +4379,12 @@
     {
       "source": "smart_frontier_signal_lab.py",
       "target": "smart_signal_expansion_governance.py",
+      "from_module": "M11",
+      "to_module": "M05"
+    },
+    {
+      "source": "smart_frontier_signal_lab.py",
+      "target": "smart_signal_llm_shadow.py",
       "from_module": "M11",
       "to_module": "M05"
     },

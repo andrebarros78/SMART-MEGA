@@ -139,6 +139,30 @@ def build_registration(
         "terminal_6of6_proven": False,
         "status": "REGISTERED_PROSPECTIVE_AWAITING_RESULT",
     }
+    if "llm_shadow_v1" in retained:
+        provenance = freeze.get("llm_shadow_input")
+        candidate = candidates["llm_shadow_v1"]
+        if (not isinstance(provenance, dict)
+                or provenance.get("provider_verified") is not False
+                or provenance.get("external_model_call_proven") is not False
+                or provenance.get("result_used") is not False
+                or provenance.get("production_authority") is not False
+                or candidate.get("input_file_sha256") != provenance.get("input_file_sha256")):
+            raise ValueError("LLM shadow provenance is invalid")
+        llm_top6 = set(retained["llm_shadow_v1"]["top6"])
+        entry["llm_shadow"] = {
+            "input_file": provenance["input_file"],
+            "input_file_sha256": provenance["input_file_sha256"],
+            "provider_claim": provenance["provider_claim"],
+            "model_claim": provenance["model_claim"],
+            "provider_verified": False,
+            "external_model_call_proven": False,
+            "overlap_with_champion": len(llm_top6.intersection(champion)),
+            "effect_on_production_card": False,
+            "material_weight": 0.0,
+            "oos_benefit_proven": False,
+            "pending_official_result": True,
+        }
     entry["entry_sha256"] = sha256_json(entry)
     return entry
 
