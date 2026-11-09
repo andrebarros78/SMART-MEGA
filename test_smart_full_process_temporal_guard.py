@@ -31,6 +31,10 @@ def _active(tmp_path: Path):
 
 
 def _wire(monkeypatch,tmp_path,schedule):
+    # The real freeze entrypoint now requires the owner's protected charter.
+    # Copy the genuine repository artifact; never mock or bypass the guard.
+    policy = Path(fp.__file__).resolve().parent / "SMART_DISCOVERY_CHARTER.json"
+    (tmp_path / policy.name).write_bytes(policy.read_bytes())
     active=_active(tmp_path)
     monkeypatch.setattr(fp,'verify_active_epoch',lambda _p:active)
     monkeypatch.setattr(fp,'verify_activation',lambda *_a,**_k:{"sha256":"activation-sha"})
