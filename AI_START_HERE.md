@@ -24,7 +24,11 @@ Ela é a autoridade operacional geral do projeto e define:
 - persistência obrigatória no GitHub do estado que deva sobreviver à execução;
 - continuidade até o objetivo ou bloqueio externo realmente irredutível e comprovado.
 
-Não exigir hostname, letra de unidade ou caminho físico fixo.
+Não exigir hostname, letra de unidade ou caminho físico fixo **para
+verificação portátil em executores externos**. **Exceção expressa do
+proprietário (09/11/2026):** no PC Casa, desenvolvimento do V6 somente em
+`C:\New Projet\SMART-MEGA-V6-CANONICAL`; entradas externas ao diretório
+são rejeitadas por `smart_canonical_identity.py`. Não desenvolver em TEMP.
 
 ## Referência histórica
 

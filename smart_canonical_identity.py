@@ -20,6 +20,13 @@ LEGACY_CANONICAL_ROOT = Path(CANONICAL_ROOT_TEXT)
 OPERATIONAL_ROOT = Path(__file__).resolve().parent
 CANONICAL_ROOT = OPERATIONAL_ROOT
 
+# Owner-authorized PC Casa development location. Provenance identity above
+# deliberately remains unchanged to preserve existing immutable attestations.
+# Other execution hosts may still run portable checkout verification, but this
+# does not authorize local SMART-MEGA development in arbitrary directories.
+LOCAL_DEVELOPMENT_ROOT = Path(r"C:\New Projet\SMART-MEGA-V6-CANONICAL")
+LOCAL_DEVELOPMENT_HOST = "DESKTOP-JNS08PU"
+
 AUTHORITY_FILE = "SMART_CANONICAL_ROOT.json"
 IDENTITY_FILE = "SMART_CANONICAL_IDENTITY.json"
 ROOT_MARKERS = ("SMART_CANONICAL_ROOT.json", "smart_operator.py", "smart_full_process_pipeline.py")
@@ -134,9 +141,33 @@ def _authorized_pytest_sandbox(candidate: str | Path | None) -> bool:
     """
     return False
 
+def _local_development_host() -> bool:
+    """Apply the owner's physical workspace restriction on PC Casa only."""
+    return os.name == "nt" and socket.gethostname().casefold() == LOCAL_DEVELOPMENT_HOST.casefold()
+
+
+def _require_authorized_pc_casa_checkout(checkout: Path) -> None:
+    """No Windows PC Casa execution from an external SMART-MEGA checkout.
+
+    Reject sibling-prefix tricks and NTFS junction/symlink escapes after
+    resolution. This is a project-integrity guard, not an OS ACL.
+    """
+    if not _local_development_host():
+        return
+    approved = LOCAL_DEVELOPMENT_ROOT.resolve()
+    try:
+        checkout.resolve().relative_to(approved)
+    except ValueError as exc:
+        raise CanonicalIdentityError(
+            f"outside authorized local development root: {checkout}; "
+            f"allowed only inside {approved}"
+        ) from exc
+
+
 def _resolve_operational_root(candidate: str | Path | None) -> Path:
     supplied = Path(candidate).resolve() if candidate is not None else OPERATIONAL_ROOT.resolve()
     expected = OPERATIONAL_ROOT.resolve()
+    _require_authorized_pc_casa_checkout(expected)
     if _norm(supplied) != _norm(expected):
         raise CanonicalIdentityError(f"non-canonical repository root: {supplied}; expected checkout root: {expected}")
     if not _looks_like_root(expected):
