@@ -38,6 +38,40 @@
       "reason": "PC Casa measured CPU 100%; process stopped to avoid sustained resource saturation",
       "passed": "NOT_MEASURED",
       "failed": "NOT_MEASURED"
+    },
+    "semantic_reachability_canonical_reconciliation": {
+      "passed": 21,
+      "failed": 0,
+      "execution_id": "ps-a2c1dd4c2bd44032b511a67f05650062",
+      "exit_code": 0
+    },
+    "full_attempt_short_temp": {
+      "passed": 291,
+      "failed": 1,
+      "warnings": 45,
+      "reason": "stale F01 reachability registry after adding research modules",
+      "execution_id": "ps-a68e15a85ba24835a057133af0033ef6",
+      "exit_code": 1,
+      "corrective_action": "exclude _local disposable scripts; regenerate F01/F05 and semantic registries",
+      "focused_retest_passed": 21
+    },
+    "atomic_os_link_windows": {
+      "independent_races": 12,
+      "passed": true,
+      "execution_id": "ps-90e07ce386f54fbeb29093732e4fcd53",
+      "exit_code": 0
+    },
+    "atomic_adjudication_real_function": {
+      "conflicting_concurrent_races": 8,
+      "passed": true,
+      "execution_id": "ps-3a604b6fca7c4a0a985bcb6124aa4773",
+      "exit_code": 0
+    },
+    "pytest_concurrency_unresolved": {
+      "status": "TIMED_OUT",
+      "passed": "NOT_MEASURED",
+      "attempts": 2,
+      "note": "pytest concurrency commands timed out under PC Casa CPU saturation; direct real-function probe passed"
     }
   },
   "replay": {
@@ -66,12 +100,24 @@
     "scope": "same byte hashes for selected Champion/portfolio/state/ledger/data files; no consumer E2E"
   },
   "open_acceptance_gaps": [
-    "complete full-suite PASS on the published commit",
-    "reproduce in clean authorized worktree from published GitHub HEAD",
-    "authenticated Champion vs Challenger ablation with paired metrics",
-    "restart/crash and concurrent adjudication exactly-once proof",
-    "all physical T21 junction/path escape cases",
-    "owner-approved main merge, final source/version/hash proof"
+    "full test suite PASS at final published HEAD",
+    "clean authorized clone/worktree reproduction from published GitHub commit",
+    "authenticated paired Champion versus Challenger OOS comparison and significance",
+    "forced-crash recovery and service-account concurrent adjudication test",
+    "owner-governed PR/main integration and final source-version-hash proof"
   ],
-  "status": "NOT_APPROVED_6_OF_6_NOT_PROVEN"
+  "status": "NOT_APPROVED_6_OF_6_NOT_PROVEN",
+  "git_reconciliation": {
+    "current_reconciled_head_before_atomic_patch": "8dc9553402dbebe7e72a3c5bf9bd7bd9e8616bf3",
+    "remote_branch_parent": "3710343a53aa1050b8cdb3858270e4970d93a038",
+    "local_fix_parent": "295f5ced571054e68366c864b150bd72dcb1d232",
+    "tree_preserved": true,
+    "force_push": false
+  },
+  "scientific_advantage_program": {
+    "status": "UNPROVEN_SEPARATE_PROGRAM",
+    "required_for_technical_6_of_6": false,
+    "source": "SMART_MEGA_V6_PROJETO_EXECUTIVO_ARQUITETURA_PREDITIVA_NATIVA_20261109_CORRIGIDO.md"
+  },
+  "technical_acceptance_contract": "A1_A6_ONLY"
 }

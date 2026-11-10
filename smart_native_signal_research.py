@@ -424,16 +424,27 @@ def adjudicate_replay(
         if observed != receipt:
             raise ValueError("conflict: replay already adjudicated with different result")
         return observed
-    # Atomic new-file publication; do not overwrite existing receipt on race.
-    temporary = folder / f".{destination.name}.{os.getpid()}.tmp"
+    # Publish an fsync'd complete temp inode with an atomic create-if-absent link.
+    # os.replace() is unsafe here: two concurrent writers can both pass exists()
+    # and the second can silently overwrite the first receipt.
+    import tempfile
+
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=folder,
+        prefix=f".{destination.name}.", suffix=".tmp", delete=False,
+    ) as stream:
+        temporary = Path(stream.name)
+        stream.write(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
     try:
-        with temporary.open("x", encoding="utf-8") as stream:
-            stream.write(json.dumps(receipt, ensure_ascii=False, sort_keys=True, indent=2) + "\n")
-            stream.flush()
-            os.fsync(stream.fileno())
-        if destination.exists():
-            raise ValueError("conflict: receipt appeared during atomic write")
-        os.replace(temporary, destination)
+        try:
+            os.link(temporary, destination)
+        except FileExistsError:
+            existing = strict_json_loads(destination.read_text(encoding="utf-8"))
+            if existing != receipt:
+                raise ValueError("conflict: replay already adjudicated with different result")
+            return existing
     finally:
         temporary.unlink(missing_ok=True)
     return receipt

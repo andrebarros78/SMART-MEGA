@@ -12,7 +12,7 @@ from typing import Iterable
 from smart_source_identity import sha256_source_bytes
 
 SCHEMA = "SMART_COMPONENT_REACHABILITY_REGISTRY_V1"
-EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", "venv", ".tox", "node_modules"}
+EXCLUDED_DIRS = {".git", ".pytest_cache", "__pycache__", ".venv", "venv", ".tox", "node_modules", "_local"}
 ARCHIVE_PREFIXES = ("archive/", "SMART_STATE_ARCHIVE/", "portable_evidence/", "release_evidence/")
 QUARANTINE_PREFIXES = (".external_",)
 VALIDATION_TOKENS = (
