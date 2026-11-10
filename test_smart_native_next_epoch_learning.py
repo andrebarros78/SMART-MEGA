@@ -12,8 +12,15 @@ def _case(tmp_path: Path):
     data = tmp_path / "cutoff_only.bin"
     data.write_bytes(b"controlled snapshot with no next result")
     ids = ("frontier_gap_hazard", "frontier_recent_lift", "frontier_weekday_bayes")
+    # Use independent vectors: alias-equivalent signals must be rejected
+    # by the consumer, not accepted as a valid learning test fixture.
+    vectors = {
+        ids[0]: {str(i): float(i / 60) for i in range(1, 61)},
+        ids[1]: {str(i): float((61 - i) / 60) for i in range(1, 61)},
+        ids[2]: {str(i): 0.0 for i in range(1, 61)},
+    }
     signals = [make_contribution(
-        name, {str(i): float(i / 60) for i in range(1, 61)},
+        name, vectors[name],
         data_path=data, target_contest=200, epoch_id="EPOCH-200",
     ) for name in ids]
     weights = {ids[0]: 0.05, ids[1]: 0.1, ids[2]: 0.0}
