@@ -2,9 +2,9 @@
   "schema": "SMART_V6_SEMANTIC_MODULES_V1",
   "repository": "andrebarros78/SMART-MEGA",
   "branch": "main",
-  "source_count": 195,
+  "source_count": 198,
   "module_count": 21,
-  "import_count": 412,
+  "import_count": 422,
   "modules": [
     {
       "id": "M01",
@@ -1523,6 +1523,49 @@
             "build_multi_challengers"
           ],
           "cli_guard": false
+        },
+        {
+          "source": "smart_native_replay_runner.py",
+          "relative_path": "smart_native_replay_runner.py",
+          "sha256": "ccf1f892a60e4bd65ec5c9a94bda6dcbec34f0df3cc68e5dfe64c7ce9e77aead",
+          "imports": [
+            "smart_frontier_signal_lab.py",
+            "smart_native_signal_research.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "prepare",
+            "freeze",
+            "adjudicate",
+            "learn_next_epoch",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_native_signal_research.py",
+          "relative_path": "smart_native_signal_research.py",
+          "sha256": "cf05ae5e329233ff6a2de2bbc074af963f872afbecf5816895706b78869e799d",
+          "imports": [
+            "smart_bounded_online_learning.py",
+            "smart_frontier_signal_lab.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "canonical_json",
+            "canonical_hash",
+            "hash_document",
+            "strict_json_loads",
+            "make_contribution",
+            "validate_contribution",
+            "produce_contributions",
+            "build_research_challenger",
+            "ablate_research",
+            "adjudicate_replay",
+            "build_native_pre_freeze_package",
+            "next_epoch_research_weights"
+          ],
+          "cli_guard": false
         }
       ],
       "depends_on": [
@@ -2451,6 +2494,20 @@
           "cli_guard": true
         },
         {
+          "source": "smart_native_signal_catalog.py",
+          "relative_path": "smart_native_signal_catalog.py",
+          "sha256": "d472f182a3884cc6227dc85752d16d43be632ddadae84af1d11b1f443a09df01",
+          "imports": [
+            "smart_agent_skill_orchestration.py",
+            "smart_native_signal_research.py",
+            "smart_skill_adapter_registry.py"
+          ],
+          "public_symbols": [
+            "classify_capabilities"
+          ],
+          "cli_guard": false
+        },
+        {
           "source": "smart_skill_adapter_registry.py",
           "relative_path": "smart_skill_adapter_registry.py",
           "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148",
@@ -2468,7 +2525,7 @@
         {
           "source": "smart_skill_runtime.py",
           "relative_path": "smart_skill_runtime.py",
-          "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f",
+          "sha256": "d5bab7b0730a9ced1ec2d10e8f175f901a638106d046afaee412444f6b2950ec",
           "imports": [
             "smart_agent_runtime.py",
             "smart_agent_skill_orchestration.py",
@@ -2487,6 +2544,7 @@
       "depends_on": [
         "M01",
         "M02",
+        "M11",
         "M13"
       ]
     },
@@ -2586,7 +2644,7 @@
         {
           "source": "smart_full_process_pipeline.py",
           "relative_path": "smart_full_process_pipeline.py",
-          "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1",
+          "sha256": "37089100af0ba8258fe4fd2bceec91e150d3a855a063e42869367bd4fb171611",
           "imports": [
             "smart_agent_runtime.py",
             "smart_canonical_identity.py",
@@ -2596,6 +2654,7 @@
             "smart_frontier_signal_lab.py",
             "smart_learning_epoch_reset.py",
             "smart_manual_generation_authority.py",
+            "smart_native_signal_research.py",
             "smart_operation_lock.py",
             "smart_operation_recovery.py",
             "smart_operational_lifecycle.py",
@@ -4420,6 +4479,12 @@
     },
     {
       "source": "smart_full_process_pipeline.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
       "target": "smart_operation_lock.py",
       "from_module": "M17",
       "to_module": "M19"
@@ -4752,6 +4817,60 @@
       "source": "smart_monte_carlo_convergence.py",
       "target": "smart_v2_engine.py",
       "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M16",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_skill_adapter_registry.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_bounded_online_learning.py",
+      "from_module": "M11",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
       "to_module": "M08"
     },
     {

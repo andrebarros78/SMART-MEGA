@@ -1,0 +1,77 @@
+{
+  "schema": "SMART_NATIVE_VALIDATION_STATUS_V1",
+  "project_id": "SMART-V6-PE-NATIVE-SIGNALS-001",
+  "mission_state": "MISSION_ACTIVE",
+  "source_baseline_sha": "37afffbb8f3334749b06cef9ba5767caadbd7863",
+  "development_branch": "feature/native-signals-g00-g08-20261110",
+  "research_only": true,
+  "production_authority": false,
+  "tests": {
+    "original_focused": {
+      "passed": 35,
+      "failures": 0,
+      "warning_count": 1
+    },
+    "native_after_contract_patch": {
+      "passed": 23,
+      "failures": 0
+    },
+    "next_epoch_temporal": {
+      "passed": 10,
+      "failures": 0,
+      "warning_count": 1
+    },
+    "semantic_registry_repair": {
+      "passed": 9,
+      "failures": 0
+    },
+    "full_attempt_1": {
+      "status": "FAILED",
+      "failed": 1,
+      "passed": 3,
+      "reason": "three new source files absent from semantic module registry",
+      "corrective_action": "owners M11/M16 declared and registry regenerated",
+      "retest_status": "PASS_9"
+    },
+    "full_attempt_2": {
+      "status": "CANCELLED_RESOURCE_PRESSURE",
+      "reason": "PC Casa measured CPU 100%; process stopped to avoid sustained resource saturation",
+      "passed": "NOT_MEASURED",
+      "failed": "NOT_MEASURED"
+    }
+  },
+  "replay": {
+    "historical_cutoffs": [
+      3073,
+      3074,
+      3075,
+      3076,
+      3077,
+      3078,
+      3079,
+      3080
+    ],
+    "freeze_count": 8,
+    "adjudication_count": 8,
+    "verified_from_project_workbook": true,
+    "independently_verified_against_caixa": false,
+    "challenger_total_hits": 7,
+    "numeric_score_effect_per_cut_max_approx": 0.1,
+    "next_epoch_effect_3075_to_3076": 0.0017813444085778285,
+    "predictive_advantage_proven": false
+  },
+  "critical_file_sha256_comparison": {
+    "files_checked": 5,
+    "equal": 5,
+    "scope": "same byte hashes for selected Champion/portfolio/state/ledger/data files; no consumer E2E"
+  },
+  "open_acceptance_gaps": [
+    "complete full-suite PASS on the published commit",
+    "reproduce in clean authorized worktree from published GitHub HEAD",
+    "authenticated Champion vs Challenger ablation with paired metrics",
+    "restart/crash and concurrent adjudication exactly-once proof",
+    "all physical T21 junction/path escape cases",
+    "owner-approved main merge, final source/version/hash proof"
+  ],
+  "status": "NOT_APPROVED_6_OF_6_NOT_PROVEN"
+}

@@ -25,7 +25,7 @@ SPECS = [
  ("M21", "Ferramentas historicas e suporte", ["conftest.py", "fix_patch_e2e_*.py", "smart_3054_*.py"]),
  ("M14", "Execucao terminal", ["smart_terminal_*.py"]),
  ("M15", "Operador e autoridade GitHub", ["smart_github_*.py", "smart_protected_pr_publication.py"]),
- ("M16", "Agentes, skills e SDKs", ["smart_agent_*.py", "smart_skill_*.py"]),
+ ("M16", "Agentes, skills e SDKs", ["smart_agent_*.py", "smart_skill_*.py", "smart_native_signal_catalog.py"]),
  ("M19", "Recuperacao, transacoes e seguranca operacional", [
     "smart_crash_safe_io.py", "smart_disconnection_gate.py", "smart_execution_checkpoint.py",
     "smart_frozen_terminal_recovery.py", "smart_http_guard.py", "smart_idempotency.py",
@@ -74,6 +74,7 @@ SPECS = [
     "smart_cap60_*.py", "*challenger*.py", "*falsification*.py",
     "smart_false_negative_rescue.py", "smart_frontier_signal_lab.py",
     "smart_hypothesis_state_reconciler.py", "smart_experiment_lab.py",
+    "smart_native_signal_research.py", "smart_native_replay_runner.py",
     "smart_f12_scientific_successor*.py"]),
  ("M12", "Protocolo prospectivo e congelamento", [
     "*prospective*.py", "freeze_next_research.py", "smart_evidence_only_promotion.py",

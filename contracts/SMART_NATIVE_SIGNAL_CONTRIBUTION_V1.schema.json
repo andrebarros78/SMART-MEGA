@@ -1,0 +1,126 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "SMART Native Signal Contribution V1",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "schema",
+    "target_contest",
+    "cutoff_contest",
+    "epoch_id",
+    "producer_id",
+    "feature_family",
+    "algorithm_sha256",
+    "dataset_sha256",
+    "source_skill_aliases",
+    "score_kind",
+    "score_semantics",
+    "scores_by_number",
+    "quality",
+    "pre_result_only",
+    "target_result_used",
+    "production_authority",
+    "research_only",
+    "sha256"
+  ],
+  "properties": {
+    "schema": {
+      "const": "SMART_NATIVE_SIGNAL_CONTRIBUTION_V1"
+    },
+    "target_contest": {
+      "type": "integer",
+      "minimum": 2
+    },
+    "cutoff_contest": {
+      "type": "integer",
+      "minimum": 1
+    },
+    "epoch_id": {
+      "type": "string",
+      "minLength": 1
+    },
+    "producer_id": {
+      "enum": [
+        "frontier_gap_hazard",
+        "frontier_transition_markov",
+        "frontier_cooccurrence_graph",
+        "frontier_weekday_bayes",
+        "frontier_recent_lift"
+      ]
+    },
+    "feature_family": {
+      "type": "string",
+      "minLength": 1
+    },
+    "algorithm_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "dataset_sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    },
+    "source_skill_aliases": {
+      "type": "array",
+      "uniqueItems": true,
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "score_kind": {
+      "const": "RELATIVE_SIGNAL_NOT_CALIBRATED_PROBABILITY"
+    },
+    "score_semantics": {
+      "const": "finite relative score, bounded [-1e6,1e6], not probability"
+    },
+    "scores_by_number": {
+      "type": "object",
+      "minProperties": 60,
+      "maxProperties": 60,
+      "patternProperties": {
+        "^(?:[1-9]|[1-5][0-9]|60)$": {
+          "type": "number",
+          "minimum": -1000000,
+          "maximum": 1000000
+        }
+      },
+      "additionalProperties": false
+    },
+    "quality": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": [
+        "data_coverage",
+        "missing_count"
+      ],
+      "properties": {
+        "data_coverage": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "missing_count": {
+          "type": "integer",
+          "minimum": 0
+        }
+      }
+    },
+    "pre_result_only": {
+      "const": true
+    },
+    "target_result_used": {
+      "const": false
+    },
+    "production_authority": {
+      "const": false
+    },
+    "research_only": {
+      "const": true
+    },
+    "sha256": {
+      "type": "string",
+      "pattern": "^[0-9a-f]{64}$"
+    }
+  }
+}

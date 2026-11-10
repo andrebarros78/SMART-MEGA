@@ -22,6 +22,7 @@ from smart_startup_reconciler import assert_reconciled
 from smart_storage_surfaces import require_within
 from smart_manual_generation_authority import validate as validate_manual_generation, consume as consume_manual_generation
 from smart_prospective_cycle import register as register_prospective_cycle
+from smart_native_signal_research import build_native_pre_freeze_package, hash_document
 from smart_procedural_actionability_gate import FreezeWindowResult, evaluate_freeze_window
 from smart_target_schedule import assert_pre_draw_window, resolve_target_schedule
 from smart_total_integration_gate import write as write_total_integration
@@ -277,6 +278,7 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
     frontier_report_path = epoch_dir / "SMART_FRONTIER_HISTORICAL.json"
     frontier_freeze_path = epoch_dir / f"SMART_{int(active['target_contest'])}_FRONTIER_SHADOW_FREEZE.json"
     probability_ledger_path = epoch_dir / "SMART_PROBABILITY_PROSPECTIVE_LEDGER.json"
+    native_research_path = epoch_dir / f"SMART_{int(active['target_contest'])}_NATIVE_RESEARCH_CHALLENGER.json"
 
     ledger_before = load_ledger(ledger_path)
     draws, contests = engine.load_draws(data_path)
@@ -336,6 +338,9 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             epoch_dir,
             start=int(start),
         )
+        native_pre_freeze = build_native_pre_freeze_package(
+            data_path, target_contest=target, epoch_id=str(epoch_id),
+        )
         freeze_result = freeze_champion_challenger(
             data_path,
             target,
@@ -364,6 +369,19 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
             frontier_report_path,
             frontier_freeze_path,
             expansion_registry_path,
+        )
+        native_research_doc = hash_document({
+            "schema": "SMART_NATIVE_RESEARCH_FROZEN_LINK_V1",
+            "pre_freeze_package": native_pre_freeze,
+            "official_freeze_sha256": freeze_result["freeze_sha256"],
+            "target_contest": target, "cutoff_contest": cutoff,
+            "pre_result_only": True, "result_used": False,
+            "research_only": True, "production_authority": False,
+        })
+        if native_research_path.exists():
+            raise FileExistsError("refusing to rewrite prior native research freeze")
+        native_research_path.write_text(
+            json.dumps(native_research_doc, ensure_ascii=False, indent=2) + "\n", encoding="utf-8"
         )
         probability_registration = register_prospective_cycle(
             frontier_freeze_path,
@@ -521,6 +539,8 @@ def run_full_process(root: str | Path = ".", start: int = 1000, *, manual_genera
         "frontier_freeze_sha256": sha256_file(frontier_freeze_path),
         "probability_ledger_file": _rel(root, probability_ledger_path),
         "probability_ledger_sha256": sha256_file(probability_ledger_path),
+        "native_research_file": _rel(root, native_research_path),
+        "native_research_sha256": sha256_file(native_research_path),
         "pre_freeze_total_integration_sha256": pre_gate["sha256"],
         "post_freeze_total_integration_sha256": post_gate["sha256"],
         "primary_card": primary_card,
