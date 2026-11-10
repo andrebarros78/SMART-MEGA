@@ -72,6 +72,41 @@
       "passed": "NOT_MEASURED",
       "attempts": 2,
       "note": "pytest concurrency commands timed out under PC Casa CPU saturation; direct real-function probe passed"
+    },
+    "paired_metrics_unit": {
+      "passed": 5,
+      "failed": 0,
+      "scope": "research Brier and ranks, synthetic causal pair"
+    },
+    "direct_focused_20261110": {
+      "status": "PASS",
+      "checks": 6,
+      "exit_code": 0,
+      "execution_id": "ps-72c3d63bb6734e4fba6bf6517db4841a",
+      "scope": "synthetic direct integration, duplicate affine signals, atomic conflicts, paired hash"
+    },
+    "t16_child_crash_boundary": {
+      "status": "PASS",
+      "exit_code": 0,
+      "execution_id": "ps-7fc51ba08c274bfab94b01abc3bea403",
+      "pre_link_child_exit": 41,
+      "post_link_child_exit": 42,
+      "scope": "real child process termination at link boundary, real writer recovery; NOT full-service reboot"
+    },
+    "candidate_junit_20261110": {
+      "status": "CANCELLED_RESOURCE_PRESSURE",
+      "execution_id": "ps-4549e5d2b9de4faca2486ae401358ebb",
+      "passed": "NOT_MEASURED",
+      "failed": "NOT_MEASURED",
+      "reason": "CPU 100%, process received little CPU and JUnit was not emitted"
+    },
+    "semantic_f01_f05_rebuild": {
+      "status": "PASS",
+      "exit_code": 0,
+      "execution_id": "ps-13afc38288f94a53959b24219d0d4f41",
+      "semantic_module_count": 21,
+      "semantic_source_count": 199,
+      "semantic_import_count": 427
     }
   },
   "replay": {
@@ -92,7 +127,18 @@
     "challenger_total_hits": 7,
     "numeric_score_effect_per_cut_max_approx": 0.1,
     "next_epoch_effect_3075_to_3076": 0.0017813444085778285,
-    "predictive_advantage_proven": false
+    "predictive_advantage_proven": false,
+    "paired_summary": {
+      "schema": "SMART_NATIVE_PAIRED_REPLAY_SUMMARY_V1",
+      "count": 8,
+      "champion_hits": 5,
+      "challenger_hits": 7,
+      "champion_mean_binary_brier": 0.17916666666666667,
+      "challenger_mean_binary_brier": 0.17083333333333334,
+      "sha256": "f03ecb871f5185fc69570707040f1f981107cb658c08c9a57164ba9fe92f398c",
+      "independently_verified_against_caixa": false,
+      "predictive_advantage_proven": false
+    }
   },
   "critical_file_sha256_comparison": {
     "files_checked": 5,
@@ -100,11 +146,10 @@
     "scope": "same byte hashes for selected Champion/portfolio/state/ledger/data files; no consumer E2E"
   },
   "open_acceptance_gaps": [
-    "full test suite PASS at final published HEAD",
-    "clean authorized clone/worktree reproduction from published GitHub commit",
-    "authenticated paired Champion versus Challenger OOS comparison and significance",
-    "forced-crash recovery and service-account concurrent adjudication test",
-    "owner-governed PR/main integration and final source-version-hash proof"
+    "Fresh full regression PASS on final published commit",
+    "T20 reproducibility and tests from final published commit",
+    "Owner-governed PR #225 main integration and final source authority",
+    "Verify report integrity and operational acceptance from final clean checkout"
   ],
   "status": "NOT_APPROVED_6_OF_6_NOT_PROVEN",
   "git_reconciliation": {
@@ -119,5 +164,6 @@
     "required_for_technical_6_of_6": false,
     "source": "SMART_MEGA_V6_PROJETO_EXECUTIVO_ARQUITETURA_PREDITIVA_NATIVA_20261109_CORRIGIDO.md"
   },
-  "technical_acceptance_contract": "A1_A6_ONLY"
+  "technical_acceptance_contract": "A1_A6_ONLY",
+  "checkpoint_brasilia": "2026-11-10T11:47:01.267507-03:00"
 }

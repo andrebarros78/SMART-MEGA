@@ -2,6 +2,8 @@
 from __future__ import annotations
 import argparse
 import json
+import os
+import tempfile
 from pathlib import Path
 import pandas as pd
 from smart_native_signal_research import (
@@ -10,6 +12,10 @@ from smart_native_signal_research import (
     adjudicate_replay, next_epoch_research_weights,
 )
 from smart_frontier_signal_lab import sha256_file
+from smart_native_research_metrics import (
+    build_pre_result_paired_comparison, adjudicate_paired_comparison,
+)
+import freeze_next_research as champion_engine
 import smart_v2_engine as e
 
 SCHEMA = "SMART_NATIVE_RESEARCH_E2E_V1"
@@ -24,13 +30,34 @@ RESEARCH_WEIGHTS = {
 
 
 def _save(path: Path, document: dict) -> None:
+    """Durably create a complete report exactly once without replacing a prior one."""
+    path = _approved_local(Path(path))
     path.parent.mkdir(parents=True, exist_ok=True)
     if path.exists():
         actual = strict_json_loads(path.read_text(encoding="utf-8"))
         if actual != document:
             raise ValueError(f"conflict: refuses overwriting recorded replay artifact {path}")
         return
-    path.write_text(json.dumps(document, indent=2, ensure_ascii=False, sort_keys=True) + "\n", encoding="utf-8")
+    # A crash may leave an orphan .tmp, but NEVER a partial authoritative report.
+    # This mirrors the fail-closed adjudication receipt writer.
+    with tempfile.NamedTemporaryFile(
+        mode="w", encoding="utf-8", dir=path.parent,
+        prefix=f".{path.name}.", suffix=".tmp", delete=False,
+    ) as stream:
+        temp = Path(stream.name)
+        stream.write(json.dumps(document, indent=2, ensure_ascii=False, sort_keys=True) + "\n")
+        stream.flush()
+        os.fsync(stream.fileno())
+    try:
+        try:
+            os.link(temp, path)
+        except FileExistsError:
+            actual = strict_json_loads(path.read_text(encoding="utf-8"))
+            if actual != document:
+                raise ValueError(f"conflict: refuses overwriting recorded replay artifact {path}")
+            return
+    finally:
+        temp.unlink(missing_ok=True)
 
 
 def _load(path: Path) -> dict:
@@ -205,21 +232,143 @@ def learn_next_epoch(out: Path, *, previous_target: int = 3075) -> dict:
             "proof_sha256": proof["sha256"]}
 
 
+
+def paired_freeze(out: Path) -> dict:
+    """Freeze the existing Champion policy and all native arms BEFORE seeing N."""
+    out = _approved_local(out)
+    manifest = _load(out / "REPLAY_MANIFEST.json")
+    if tuple(manifest["cutoffs_predeclared"]) != CUTS:
+        raise ValueError("paired test windows differ from precommitted cuts")
+    rows = []
+    source_sha = sha256_file(Path(champion_engine.__file__).resolve())
+    for entry in manifest["snapshots"]:
+        target = int(entry["target_contest"])
+        path = _approved_local(out / entry["filename"])
+        if sha256_file(path) != entry["dataset_sha256"]:
+            raise ValueError("paired Champion source cutoff hash mismatch")
+        frozen = _load(out / f"REPLAY_FREEZE_{target}.json")
+        if (frozen["target_contest"] != target
+                or frozen["cutoff_contest"] != target - 1
+                or frozen["dataset_sha256"] != entry["dataset_sha256"]
+                or frozen["manifest_sha256"] != manifest["sha256"]
+                or frozen["result_used"] is not False):
+            raise ValueError("paired Champion input is not pre-result frozen")
+        draws, contests = e.load_draws(path)
+        if len(contests) < 1000 or int(contests[-1]) != target - 1:
+            raise ValueError("paired Champion causal data cutoff mismatch")
+        champion_policy = champion_engine.current_policy(draws, start=1000)
+        prepared = build_pre_result_paired_comparison(
+            frozen["contributions"].values(), RESEARCH_WEIGHTS,
+            champion_policy, data_path=path,
+            target_contest=target, epoch_id=f"REPLAY-{target}",
+            champion_engine_sha256=source_sha,
+        )
+        result = hash_document({
+            "schema": "SMART_NATIVE_PAIRED_FREEZE_ENVELOPE_V1",
+            "target_contest": target, "cutoff_contest": target - 1,
+            "manifest_sha256": manifest["sha256"],
+            "native_research_freeze_sha256": frozen["sha256"],
+            "snapshot_sha256": entry["dataset_sha256"],
+            "pre_result": prepared,
+            "result_used": False,
+            "research_only": True, "production_authority": False,
+        })
+        _save(out / f"REPLAY_PAIRED_FREEZE_{target}.json", result)
+        rows.append({"target": target, "champion_top6": prepared["champion"]["top6"],
+                     "paired_pre_result_sha256": result["sha256"]})
+    return {"phase": "PAIRED_CHAMPION_BEFORE_RESULT", "count": len(rows),
+            "frozen": rows, "future_result_used": False}
+
+
+def paired_adjudicate(master: Path, out: Path) -> dict:
+    """Adjudicate all arms only after verifying eight frozen historical baselines."""
+    out = _approved_local(out)
+    master = _approved_local(master)
+    manifest = _load(out / "REPLAY_MANIFEST.json")
+    if manifest["master_file_sha256"] != sha256_file(master):
+        raise ValueError("historical result workbook source changed")
+    frozen_rows = []
+    # Separate precondition phase: do not load target results until ALL
+    # immutable paired freezes and cutoffs are accounted for.
+    for entry in manifest["snapshots"]:
+        target = int(entry["target_contest"])
+        frozen = _load(out / f"REPLAY_PAIRED_FREEZE_{target}.json")
+        native = _load(out / f"REPLAY_FREEZE_{target}.json")
+        if (frozen["manifest_sha256"] != manifest["sha256"]
+                or frozen["snapshot_sha256"] != entry["dataset_sha256"]
+                or frozen["native_research_freeze_sha256"] != native["sha256"]
+                or frozen["pre_result"]["snapshot_sha256"] != entry["dataset_sha256"]
+                or frozen["target_contest"] != target
+                or frozen["result_used"] is not False
+                or frozen["production_authority"] is not False):
+            raise ValueError("paired baseline is not bound to immutable cutoff")
+        frozen_rows.append((target, frozen))
+    draws, contests = e.load_draws(master)
+    lookup = {int(contests[i]): sorted(map(int, draws[i].tolist()))
+              for i in range(len(contests))}
+    rows = []
+    for target, frozen in frozen_rows:
+        result = {
+            "contest": target, "numbers": lookup[target],
+            "source_sha256": sha256_file(master),
+            "source_kind": "HISTORICAL_REPLAY",
+        }
+        receipt = adjudicate_paired_comparison(
+            frozen["pre_result"], result, source_verified=True,
+        )
+        _save(out / f"REPLAY_PAIRED_RESULT_{target}.json", receipt)
+        rows.append({
+            "target_contest": target,
+            "paired_pre_result_sha256": frozen["sha256"],
+            "paired_receipt_sha256": receipt["sha256"],
+            "champion_hits": receipt["champion"]["hits"],
+            "challenger_hits": receipt["full"]["hits"],
+            "delta_hits": receipt["challenger_minus_champion_hits"],
+            "champion_selection_brier": receipt["champion"]["selection_brier"],
+            "challenger_selection_brier": receipt["full"]["selection_brier"],
+            "by_producer_contribution": receipt["by_producer_contribution"],
+        })
+    total_champion = sum(x["champion_hits"] for x in rows)
+    total_challenger = sum(x["challenger_hits"] for x in rows)
+    report = hash_document({
+        "schema": "SMART_NATIVE_PAIRED_REPLAY_SUMMARY_V1",
+        "source_master_sha256": manifest["master_file_sha256"],
+        "precommitted_cutoffs": list(CUTS),
+        "count": len(rows), "paired": rows,
+        "champion_total_hits": total_champion,
+        "challenger_total_hits": total_challenger,
+        "delta_hits_challenger_minus_champion": total_challenger - total_champion,
+        "champion_mean_binary_brier": sum(x["champion_selection_brier"]
+                                           for x in rows)/len(rows),
+        "challenger_mean_binary_brier": sum(x["challenger_selection_brier"]
+                                             for x in rows)/len(rows),
+        "brier_semantics": "HARD_TOP6_BINARY_SELECTION_NOT_CALIBRATED_PROBABILITY",
+        "independent_caixa_verification": False,
+        "historical_replay": True, "research_only": True,
+        "production_authority": False, "predictive_advantage_proven": False,
+    })
+    _save(out / "SMART_NATIVE_PAIRED_REPLAY_SUMMARY.json", report)
+    return report
+
+
 def main() -> None:
     parser = argparse.ArgumentParser()
-    parser.add_argument("phase", choices=["prepare", "freeze", "adjudicate", "learn"])
+    parser.add_argument("phase", choices=["prepare", "freeze", "adjudicate", "learn", "paired-freeze", "paired-adjudicate"])
     parser.add_argument("--master", type=Path)
     parser.add_argument("--out", required=True, type=Path)
     args = parser.parse_args()
-    if args.phase in {"freeze", "learn"}:
+    if args.phase in {"freeze", "learn", "paired-freeze"}:
         if args.master is not None:
             parser.error("freeze must never receive future-result source")
-        answer = freeze(args.out) if args.phase == "freeze" else learn_next_epoch(args.out)
+        answer = (freeze(args.out) if args.phase == "freeze"
+                  else learn_next_epoch(args.out) if args.phase == "learn"
+                  else paired_freeze(args.out))
     else:
         if args.master is None:
             parser.error("historical source required outside freeze phase")
         answer = (prepare(args.master, args.out) if args.phase == "prepare"
-                  else adjudicate(args.master, args.out))
+                  else adjudicate(args.master, args.out) if args.phase == "adjudicate"
+                  else paired_adjudicate(args.master, args.out))
     print(json.dumps(answer, ensure_ascii=False, sort_keys=True)[:3000])
 
 

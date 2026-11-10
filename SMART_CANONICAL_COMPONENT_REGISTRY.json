@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "4087d66ff4b7bbf7e55b6d64f7b4ae45c2c8a7ef5a5d813ae636d132e6ba67cc",
+  "source_reachability_inventory_sha256": "d9029b8dceca98f536530070cbde86beba7f69e867cae480ff5448d5e014be2b",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 634,
+    "component_count": 639,
     "active": 146,
     "shadow": 1,
-    "diagnostic": 287,
+    "diagnostic": 292,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4161,6 +4161,7 @@
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
         "smart_independent_audit",
+        "smart_native_replay_runner",
         "test_smart_coverage_governance"
       ],
       "entrypoints": [
@@ -4186,7 +4187,7 @@
       "component_id": "modules.semantic_modules",
       "type": "PYTHON_COMPONENT",
       "implementation": "modules/semantic_modules.py",
-      "implementation_sha256": "1055b588cd900a8d414baaae7663bdee781b6b298bd236ea950d3c208bb4279c",
+      "implementation_sha256": "3eecb7b97f2b78e6e65928ca083c043615ebcfd9772aadc913fee6717d5ecb02",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [],
@@ -6260,6 +6261,7 @@
         "smart_frontier_adjudicator",
         "smart_full_process_pipeline",
         "smart_native_replay_runner",
+        "smart_native_research_metrics",
         "smart_native_signal_research",
         "test_smart_frontier_adjudicator",
         "test_smart_frontier_operator_undated",
@@ -7266,15 +7268,47 @@
       "component_id": "smart_native_replay_runner",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_native_replay_runner.py",
-      "implementation_sha256": "75286d4714b19aeae4c9eec50a3ef1bb1fd90136aa39fae5bd4cd29c6ed37519",
+      "implementation_sha256": "8f7205cb8157c621fa1c737c67b40fa5c59423521c3f63ef11c8e339d0507d05",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "freeze_next_research",
+        "smart_frontier_signal_lab",
+        "smart_native_research_metrics",
+        "smart_native_signal_research",
+        "smart_v2_engine"
+      ],
+      "consumers": [
+        "test_smart_native_replay_publication"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_native_research_metrics",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_native_research_metrics.py",
+      "implementation_sha256": "c89235448178461cf4ad4b94d2cebb1c5d0a92a4369071b603717038048f7ff6",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [
         "smart_frontier_signal_lab",
         "smart_native_signal_research",
-        "smart_v2_engine"
+        "smart_rank_score_calibration"
       ],
-      "consumers": [],
+      "consumers": [
+        "smart_native_replay_runner",
+        "test_smart_native_research_metrics"
+      ],
       "entrypoints": [],
       "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -7318,7 +7352,7 @@
       "component_id": "smart_native_signal_research",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_native_signal_research.py",
-      "implementation_sha256": "5c43fdbe8c183d904a40bce511fbee222f36a8c5b94c0abe95b86beea1a747c7",
+      "implementation_sha256": "f8cd5998acfee102e70846be845d83bf197c8fde31cbb1a91f80e791363da27b",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -7329,10 +7363,15 @@
       "consumers": [
         "smart_full_process_pipeline",
         "smart_native_replay_runner",
+        "smart_native_research_metrics",
         "smart_native_signal_catalog",
         "smart_skill_runtime",
         "test_smart_native_adjudication_concurrency",
+        "test_smart_native_adjudication_crash",
+        "test_smart_native_duplicate_vector",
         "test_smart_native_next_epoch_learning",
+        "test_smart_native_replay_publication",
+        "test_smart_native_research_metrics",
         "test_smart_native_signal_research"
       ],
       "entrypoints": [
@@ -8849,6 +8888,7 @@
         "archive.p06_calibrate_strength",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_agent_runtime",
+        "smart_native_research_metrics",
         "smart_signal_agent",
         "test_smart_learning_input_contracts",
         "test_smart_rank_score_calibration"
@@ -13845,6 +13885,52 @@
       "production_reachable": false
     },
     {
+      "component_id": "test_smart_native_adjudication_crash",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_adjudication_crash.py",
+      "implementation_sha256": "36b5f949c62e5f7cec08793deb3f8a9b99909e44714a9189a3faa968b92dc469",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_duplicate_vector",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_duplicate_vector.py",
+      "implementation_sha256": "5427be30e977685f7e4f636dcbb491c18b803bbc74960021425bd49e558db578",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
       "component_id": "test_smart_native_next_epoch_learning",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_native_next_epoch_learning.py",
@@ -13852,6 +13938,54 @@
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_replay_publication",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_replay_publication.py",
+      "implementation_sha256": "84586bdc08f482dd88898666ded2c96337999b0ff0382888710eba237b1381b7",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_replay_runner",
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_research_metrics",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_research_metrics.py",
+      "implementation_sha256": "c7e7ae87fa53c9b6eed609338688897035e0508e8576489f141775a9be48f44c",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_research_metrics",
         "smart_native_signal_research"
       ],
       "consumers": [],
@@ -17120,5 +17254,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "003b3070b423a4920ac39c8a12828b3fefe009a4193baa8b04237bc62b29e74a"
+  "registry_sha256": "b7e68a8054d7dd828b86506f94b3e42bd9ccde36c2b01fc251062b73631d77a0"
 }

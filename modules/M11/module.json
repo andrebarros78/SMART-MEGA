@@ -273,9 +273,11 @@
     {
       "source": "smart_native_replay_runner.py",
       "relative_path": "smart_native_replay_runner.py",
-      "sha256": "ccf1f892a60e4bd65ec5c9a94bda6dcbec34f0df3cc68e5dfe64c7ce9e77aead",
+      "sha256": "d0fb405decc244b3458f3f67fe7ab158f470ff7253d4a41bb25d16ccdeb200ce",
       "imports": [
+        "freeze_next_research.py",
         "smart_frontier_signal_lab.py",
+        "smart_native_research_metrics.py",
         "smart_native_signal_research.py",
         "smart_v2_engine.py"
       ],
@@ -284,14 +286,33 @@
         "freeze",
         "adjudicate",
         "learn_next_epoch",
+        "paired_freeze",
+        "paired_adjudicate",
         "main"
       ],
       "cli_guard": true
     },
     {
+      "source": "smart_native_research_metrics.py",
+      "relative_path": "smart_native_research_metrics.py",
+      "sha256": "f56800d06b5b84352a11a09f1a5e9a94571b923d05aaef322d710c13474151c2",
+      "imports": [
+        "smart_frontier_signal_lab.py",
+        "smart_native_signal_research.py",
+        "smart_rank_score_calibration.py"
+      ],
+      "public_symbols": [
+        "rank_comparison",
+        "hard_selection_brier",
+        "build_pre_result_paired_comparison",
+        "adjudicate_paired_comparison"
+      ],
+      "cli_guard": false
+    },
+    {
       "source": "smart_native_signal_research.py",
       "relative_path": "smart_native_signal_research.py",
-      "sha256": "e8c647510106326a07211125ad156f3d755249810ecd86d5b0a337def9d3d0f3",
+      "sha256": "4a78d4d6aa39d8578de70ee800f601bf07db80ecc6a5c707fbb162045554e0fa",
       "imports": [
         "smart_bounded_online_learning.py",
         "smart_frontier_signal_lab.py",

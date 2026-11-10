@@ -74,7 +74,7 @@ SPECS = [
     "smart_cap60_*.py", "*challenger*.py", "*falsification*.py",
     "smart_false_negative_rescue.py", "smart_frontier_signal_lab.py",
     "smart_hypothesis_state_reconciler.py", "smart_experiment_lab.py",
-    "smart_native_signal_research.py", "smart_native_replay_runner.py",
+    "smart_native_signal_research.py", "smart_native_replay_runner.py", "smart_native_research_metrics.py",
     "smart_f12_scientific_successor*.py"]),
  ("M12", "Protocolo prospectivo e congelamento", [
     "*prospective*.py", "freeze_next_research.py", "smart_evidence_only_promotion.py",

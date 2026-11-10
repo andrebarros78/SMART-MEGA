@@ -261,6 +261,27 @@ def build_research_challenger(
         if type(w) not in (int, float) or not math.isfinite(w) or not 0 <= w <= 1:
             raise ValueError("research weight invalid")
         clean_weights[name] = float(w)
+    # Different names for the same *effective* signal cannot earn two votes.
+    # Compare normalized numeric vectors (not only raw score hashes) so that a
+    # rescaled alias is also rejected. Zero-weight or flat vectors carry no
+    # influence and do not create false redundancy failures.
+    independent_vectors: list[tuple[str, np.ndarray]] = []
+    for item in sorted(values, key=lambda c: c["producer_id"]):
+        name = item["producer_id"]
+        if clean_weights[name] <= 0.0:
+            continue
+        normalized_vector = _normalized(item)
+        if float(np.ptp(normalized_vector)) <= 1e-12:
+            continue
+        for existing_name, existing_vector in independent_vectors:
+            # An affine rescaling can differ by a few IEEE-754 ULPs;
+            # comparing raw bytes misses an otherwise exact duplicate.
+            if bool(np.allclose(normalized_vector, existing_vector, rtol=0.0, atol=1e-12)):
+                raise ValueError(
+                    "redundant duplicate normalized signal vectors across producers: "
+                    f"{existing_name} and {name}"
+                )
+        independent_vectors.append((name, normalized_vector))
     aggregate = np.full(60, 0.1, dtype=float)
     ledger = {}
     for item in sorted(values, key=lambda c: c["producer_id"]):
