@@ -99,3 +99,21 @@ def test_f12_scientific_successor_accepts_pinned_source_across_git_eol_styles():
     tampered = raw.replace(b"expected_value != effective_value", b"expected_value == effective_value", 1)
     assert tampered != raw
     assert reconstruct_predecessor(tampered) is None
+
+def test_f12_native_overlay_is_exact_scoped_and_tamper_fail_closed():
+    from smart_f12_scientific_successor import (
+        _strip_pinned_native_research_overlay,
+        NATIVE_RESEARCH_PIPELINE_LF_SHA256,
+        PRE_NATIVE_PIPELINE_LF_SHA256,
+    )
+    import hashlib
+    current = (ROOT / PREDICTIVE_FILE).read_bytes()
+    normalized = current.replace(b"\r\n", b"\n")
+    assert hashlib.sha256(normalized).hexdigest() == NATIVE_RESEARCH_PIPELINE_LF_SHA256
+    predecessor = _strip_pinned_native_research_overlay(current)
+    assert predecessor is not None
+    assert hashlib.sha256(predecessor).hexdigest() == PRE_NATIVE_PIPELINE_LF_SHA256
+    assert _strip_pinned_native_research_overlay(current + b"\n# unauthorized mutation\n") is None
+    bad = current.replace(b'"production_authority": False', b'"production_authority": True', 1)
+    assert bad != current
+    assert _strip_pinned_native_research_overlay(bad) is None

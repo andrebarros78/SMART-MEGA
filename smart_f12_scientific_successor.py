@@ -106,8 +106,33 @@ def reconstruct_guard_only_source(path: str, value: bytes) -> bytes | None:
     return None
 
 
+# Exactly pinned, research-only PR225 overlay. Never authorizes F11/F12 promotion.
+NATIVE_RESEARCH_PIPELINE_LF_SHA256 = '5729a09fb87fda705f41076faf0c83c0e4c8c8e21f322417a73fa06ce4e32940'
+PRE_NATIVE_PIPELINE_LF_SHA256 = '75760d2b59767a34f2328f5295de3a8588b447ea864a23700473e5bdddb56916'
+NATIVE_RESEARCH_INSERTIONS = (
+    b'from smart_native_signal_research import build_native_pre_freeze_package, hash_document\n',
+    b'    native_research_path = epoch_dir / f"SMART_{int(active[\'target_contest\'])}_NATIVE_RESEARCH_CHALLENGER.json"\n',
+    b'        native_pre_freeze = build_native_pre_freeze_package(\n            data_path, target_contest=target, epoch_id=str(epoch_id),\n        )\n',
+    b'        )\n        native_research_doc = hash_document({\n            "schema": "SMART_NATIVE_RESEARCH_FROZEN_LINK_V1",\n            "pre_freeze_package": native_pre_freeze,\n            "official_freeze_sha256": freeze_result["freeze_sha256"],\n            "target_contest": target, "cutoff_contest": cutoff,\n            "pre_result_only": True, "result_used": False,\n            "research_only": True, "production_authority": False,\n        })\n        if native_research_path.exists():\n            raise FileExistsError("refusing to rewrite prior native research freeze")\n        native_research_path.write_text(\n            json.dumps(native_research_doc, ensure_ascii=False, indent=2) + "\\n", encoding="utf-8"\n',
+    b'        "native_research_file": _rel(root, native_research_path),\n        "native_research_sha256": sha256_file(native_research_path),\n',
+)
+
+def _strip_pinned_native_research_overlay(value: bytes) -> bytes | None:
+    normalized = value.replace(b"\r\n", b"\n")
+    if _sha256(normalized) != NATIVE_RESEARCH_PIPELINE_LF_SHA256:
+        return None
+    for fragment in NATIVE_RESEARCH_INSERTIONS:
+        if normalized.count(fragment) != 1:
+            return None
+        normalized = normalized.replace(fragment, b"", 1)
+    return normalized if _sha256(normalized) == PRE_NATIVE_PIPELINE_LF_SHA256 else None
+
+
 def reconstruct_approved_f12_source(value: bytes) -> bytes | None:
     '''Return the exact pre-operator F12 pipeline; reject arbitrary diffs.'''
+    native_research_predecessor = _strip_pinned_native_research_overlay(value)
+    if native_research_predecessor is not None:
+        value = native_research_predecessor
     if _matches_expected_code(value, APPROVED_F12_PIPELINE_SHA256):
         return value
     # Search the same EOL variants already accepted by the pinned SHA proof.
