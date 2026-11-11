@@ -1,0 +1,84 @@
+{
+  "schema": "SMART_POST_CAP_PROSPECTIVE_REGISTRATION_1",
+  "experiment_id": "post-redundancy-cap60-independent-v1",
+  "status": "REGISTERED_AWAITING_RESULT",
+  "registration_authority": "immutable GitHub commit of this file, before official target draw; no retroactive changes",
+  "target_contest": 3071,
+  "cutoff_contest": 3070,
+  "expected_draw_brasilia": "2026-10-18T11:00:00-03:00",
+  "schedule_basis": "https://www.metropoles.com/brasil/mega-sena-nao-tera-sorteio-nesta-quinta-feira-veja-calendario",
+  "official_draw_time_verified_by_caixa": false,
+  "source_dataset": "Mega-Sena.xlsx",
+  "source_dataset_sha256": "ac1659a4818c67a9509c51015941390ddc3d80f6e4551b4339e298f8147a0436",
+  "baseline": {
+    "source_commit": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+    "source_path": "freeze_next_research.py",
+    "source_file_sha256": "af32da0753352f674bc1bdd1584d75a4ed91ba1716234dbd9233017f55873c77",
+    "numbers": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "max_within_frequency_family": 0.6583086514001786
+  },
+  "candidate": {
+    "source_commit": "ada7b5c4d1df46f8883728f672c94674e273c820",
+    "source_path": "freeze_next_research.py",
+    "source_file_sha256": "2f06af0de5b9a5a61899a213eac05cddca65cf74861fe79fa2b3c1dc6779c9f3",
+    "numbers": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "max_within_frequency_family": 0.6
+  },
+  "source_freeze": {
+    "path": "runtime/learning_epochs/operator-3071-10553e1b5911-20261015T184134194917Z/SMART_3071_CHAMPION_CHALLENGER_FREEZE.json",
+    "github_blob_sha": "f3814faa0dc3b5b1b1f8dd0a457787bd901d110c",
+    "frozen_utc": "2026-10-15T18:49:21.734145+00:00",
+    "production_freeze_untouched": true
+  },
+  "primary_metric": "sum_per_contest_hits(candidate)-sum_per_contest_hits(baseline)",
+  "signed_difference_domain": [
+    -6,
+    6
+  ],
+  "inclusion": "every next chronologically complete contest with paired pre-result GitHub registration; ties count as zero; no selective exclusions",
+  "sequential_e_process": {
+    "test_null": "conditional expected candidate_hits - baseline_hits <= 0",
+    "predeclared_factor": "1 + (candidate_hits - baseline_hits)/12",
+    "initial_e_value": 1,
+    "minimum_e_value_for_promotion": 20,
+    "maximum_optional_stake_changes": 0,
+    "rule": "fixed nonnegative betting fraction equivalent to lambda=1; Ville bound for ever-crossing 20 under conditional null <= 0.05"
+  },
+  "sample_policy": {
+    "min_contests": 20,
+    "reuse_existing_gate": "smart_promotion_gate.assess_promotion_records",
+    "existing_gate_e_value_at_least": 10,
+    "requires_positive_cumulative_difference": true,
+    "requires_adaptive_min_contests": true,
+    "requires_independent_official_result": true,
+    "first_adjudication_does_not_equal_statistical_proof": true
+  },
+  "controls": {
+    "candidate_production_weight": 0,
+    "retraining_from_target_result_before_registration": false,
+    "result_used": false,
+    "actual_numbers": null,
+    "adjudicated": false,
+    "simulation_or_backtest_counts_toward_prospective_n": false,
+    "promote_to_main": false,
+    "retroactive_reselection_prohibited": true,
+    "prediction_codes_frozen": true
+  },
+  "evidence_status": "NOT_YET_PROVEN",
+  "notes": "The 3071 pairs are the same six numbers. The future paired delta must equal zero regardless of official result; this is still a valid chronological record but supplies no positive sequential evidence.",
+  "registration_sha256": "c81b70209caf802ae255ab9746502d27b0bcd51dab58210cf97aec0b68610257"
+}

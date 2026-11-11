@@ -1,0 +1,87 @@
+{
+  "schema": "SMART_POST_CAP_PROSPECTIVE_READINESS_AND_GATES_1",
+  "date_brasilia": "2026-10-15",
+  "objective": "Independently demonstrate predictive non-regression or superiority prospectively for the cap 60% change; keep champion until proven",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "baseline_main_sha": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "candidate_source_sha": "ada7b5c4d1df46f8883728f672c94674e273c820",
+  "preregistration": {
+    "file": "release_evidence/PROSPECTIVE_CAP60/REGISTRATION_3071.json",
+    "github_commit": "e7e896c192d5a0840196e2b6cd3d70ee763c2113",
+    "github_commit_time_utc": "2026-10-15T22:33:46Z",
+    "registration_sha256": "c81b70209caf802ae255ab9746502d27b0bcd51dab58210cf97aec0b68610257",
+    "target": 3071,
+    "cutoff": 3070,
+    "scheduled_brasilia": "2026-10-18T11:00:00-03:00",
+    "scheduled_source": "https://www.metropoles.com/brasil/mega-sena-nao-tera-sorteio-nesta-quinta-feira-veja-calendario",
+    "baseline_card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "cap_card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "pair_informativeness": "identical cards; paired improvement exactly zero for this target regardless of outcome",
+    "future_result_included": false
+  },
+  "implementation": {
+    "file": "smart_post_cap_prospective.py",
+    "test_file": "test_smart_post_cap_prospective.py",
+    "tested_source_commit": "42bb9f291cc41dd1092af856796619f973d3baf0",
+    "targeted_test_files": [
+      "test_smart_post_cap_prospective.py",
+      "test_smart_promotion_gate.py"
+    ],
+    "targeted_tests_pass": 28,
+    "targeted_tests_fail": 0,
+    "junit_sha256": "9b6debe99c3fb9141aac2cfc627733f2e2b623678d65cab88a06c6a2af59d8e6",
+    "test_execution": "SentinelX Linux isolated GitHub clone; research-only no production modification",
+    "known_broader_regression": "not rerun with new research-only source; prior 1266/1266 on integrated earlier commit",
+    "predeclared_sequential_e_process": "E_t = product_{i<=t}(1 + (candidate_hits_i-baseline_hits_i)/12)",
+    "predeclared_min_e_value": 20,
+    "existing_adaptive_sample_floor": "20-80 contests, see smart_promotion_gate.py",
+    "release_requires": "Official independent outcome and review of prior GitHub registration timestamp; engineering technical green and promotion policy must pass"
+  },
+  "external_results": {
+    "caixa_internal_json_api": "HTTP 403 from temporary Linux executor on verified previous contest 3070; no claim official fetch succeeded",
+    "mirror_a": "https://loteriascaixa-api.herokuapp.com/api/megasena/3070",
+    "mirror_b": "https://resultadomega.com.br/api/concursos.json",
+    "mirror_quorum_3070": "PASS_TWO_INDEPENDENT_PUBLISHERS",
+    "mirror_3070_date": "2026-10-14",
+    "mirror_3070_numbers": [
+      19,
+      27,
+      29,
+      43,
+      54,
+      60
+    ],
+    "mirror_consensus_status": "PROVISIONAL_NOT_OFFICIAL",
+    "mirror_can_promote": false
+  },
+  "current_audit": {
+    "registered_pairs": 1,
+    "officially_adjudicated_pairs": 0,
+    "paired_cumulative_delta": null,
+    "e_value": 1,
+    "decision": "KEEP_CHAMPION",
+    "status": "PROSPECTIVE_NOT_PROVEN",
+    "minimum_20_contests_met": false,
+    "scientific_6of6_proven": false,
+    "release_to_main_allowed": false
+  },
+  "continuity": {
+    "next_action": "After official draw 3071 result is public, verify matching official result independently, score the precommitted registration; before each subsequent draw preregister both exact source predictions with causal cutoff and commit timestamps; never backfill an unregistered contest.",
+    "immutable_protections": "Do not edit registration_3071, existing prod freeze or signed scientific ledger; later adjudications must be new files and maintain Git provenance.",
+    "state": "MISSION_ACTIVE"
+  }
+}
