@@ -1,0 +1,106 @@
+{
+  "schema": "SMART_ECC_INTEGRAL_HOMOLOGATION_RETEST_20261015",
+  "mission_id": "smartmega-v6-ecc-finetune-20261015",
+  "date": "2026-10-15",
+  "scope": "INDEPENDENT_RETEST_NO_PRODUCTION_MUTATION",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "baseline_sha": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "candidate_source_sha": "4abd08883f1fa07cb1ac9747a59df6fee4317b50",
+  "execution": {
+    "host": "wmcp-cloud-01",
+    "executor": "LMCP durable mission and quick_execute",
+    "lmcp_mission_id": "m_17224b0add8e43a3a76be6e97e99e27c",
+    "checkout": "fresh private GitHub clone per isolated Linux test shell",
+    "static_checks": {
+      "root_python_files_parsed": 318,
+      "root_python_ast_failures": 0,
+      "all_json_files_parsed": 886,
+      "json_parse_failures": 0,
+      "git_diff_check": "PASS",
+      "candidate_files_changed_vs_main": 5
+    },
+    "historical_consumer_artifact_integrity": {
+      "status": "PASS_HISTORICAL_ONLY",
+      "contest": 3071,
+      "frozen_numbers": [
+        10,
+        11,
+        27,
+        38,
+        43,
+        53
+      ],
+      "primary_card_matches_consumer": true,
+      "primary_card_matches_champion_freeze": true,
+      "consumer_artifact_status": "PASS",
+      "no_target_result_consumed": true,
+      "fresh_candidate_e2e_executed": false
+    },
+    "scientific_gates": {
+      "main": {
+        "F11": "FAIL",
+        "F11_failed_checks": [
+          "production_prediction_source_unchanged_from_F10"
+        ],
+        "F12": "FAIL",
+        "F12_failed_checks": [
+          "operator_schedule_only_change_reversible_to_F12",
+          "candidate_diff_exactly_explained_by_guard"
+        ]
+      },
+      "candidate": {
+        "F11": "FAIL",
+        "F11_failed_checks": [
+          "production_prediction_source_unchanged_from_F10"
+        ],
+        "F12": "FAIL",
+        "F12_failed_checks": [
+          "operator_schedule_only_change_reversible_to_F12",
+          "candidate_diff_exactly_explained_by_guard"
+        ]
+      },
+      "baseline_causes": {
+        "current_source": "smart_full_process_pipeline.py",
+        "F11_expected_sha_prefix": "f154252a116604",
+        "main_observed_sha_prefix": "049c4fdf81116b",
+        "F12_inverse_operator_transform_matches": false
+      },
+      "scope_gap": {
+        "F11_monitors_freeze_next_research_py": false,
+        "product_critical_manifest_includes_freeze_next_research_py": false,
+        "note": "Historical PASS reports alone do not certify post-redundancy champion cap source changes."
+      }
+    },
+    "full_regression": {
+      "status": "NOT_RUN",
+      "reason": "No pytest and required pinned packages in the authorized Linux runner; ordinary shell install blocked by typed administration policy; administration refused pip_install. Approved capability acquisition request was DISCOVERY_PENDING and not proven ready.",
+      "required_dependencies": [
+        "pytest==9.1.1",
+        "pandas==3.0.5",
+        "openpyxl==3.1.5",
+        "river==0.26.1"
+      ],
+      "earlier_windows_targeted_tests": "8_PASS_PREVIOUS_GATE_NOT_SUBSTITUTE_FOR_FULL_REGRESSION"
+    },
+    "historical_nonregression": {
+      "status": "FAIL_HISTORICAL_GLOBAL",
+      "source": "release_evidence/ECC_FINETUNE_20261015/SHADOW_FINETUNING_RESULTS.json (prior measured replay)",
+      "baseline_hits": 1274,
+      "candidate_hits": 1268,
+      "delta": -6,
+      "n": 2070,
+      "prospective_predictive_advantage_proven": false
+    }
+  },
+  "gate_decision": "BLOCKED",
+  "production_merge_allowed": false,
+  "main_modified": false,
+  "frozen_card_modified": false,
+  "mission_proven": false,
+  "next_required": [
+    "Provision approved isolated test dependencies and run actual full pytest suite on exact candidate SHA",
+    "Repair or supersede F11/F12 guard with independent, hash-bound science without rewriting historical evidence",
+    "Demonstrate candidate predictive nonregression beyond historical noise and complete consumer E2E",
+    "Only then reconsider production promotion"
+  ]
+}

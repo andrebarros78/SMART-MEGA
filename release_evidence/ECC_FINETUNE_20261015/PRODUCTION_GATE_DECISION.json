@@ -1,0 +1,60 @@
+{
+  "schema": "SMART_ECC_PRODUCTION_RELEASE_DECISION_1",
+  "date_brasilia": "2026-10-15",
+  "mission_id": "smartmega-v6-ecc-finetune-20261015",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "main_before": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "candidate_branch": "ecc/finetuning-shadow-20261015",
+  "candidate_head_before_evidence": "82be54782e34da9a9819fc0b72bd66db24e7f2e9",
+  "change": "post-redundancy projection of champion expert weights to 0.60 cap",
+  "tests_observed": {
+    "windows_pc_casa_targeted_engine_tests": 8,
+    "failed": 0,
+    "full_regression_current_commit": "NOT_EXECUTED",
+    "consumer_e2e_current_commit": "NOT_EXECUTED"
+  },
+  "comparative_historical_replay": {
+    "total_compared_contests": 2070,
+    "baseline_hits": 1274,
+    "candidate_hits": 1268,
+    "delta_hits": -6,
+    "validation_n": 351,
+    "validation_baseline": 244,
+    "validation_candidate": 244,
+    "holdout_n": 220,
+    "holdout_baseline": 128,
+    "holdout_candidate": 131,
+    "prospective_predictive_advantage_proven": false
+  },
+  "active_release_protection": {
+    "F11_immutable_historical_evidence": "MUST_PRESERVE",
+    "F12_scientific_successor": "MUST_RECERTIFY",
+    "frozen_3071_primary_card_sha256": "db0ee23813508175234c782da16fcb56f694e75e9d3f179827828c539dcc04b0",
+    "frozen_card_numbers": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ]
+  },
+  "environment": {
+    "private_git_checkout_pc_casa": "broken_ref",
+    "git_unauthenticated_vendas": "fetch_failed",
+    "visual_pc_casa": "BLOCKED_EXECUTOR_TARGET_MISMATCH",
+    "github_connector_read_write": "available",
+    "controlled_tests": "available"
+  },
+  "release_decision": "REJECT_PRODUCTION_PROMOTION",
+  "release_blockers": [
+    "HISTORICAL_GLOBAL_OUTCOME_REGRESSION",
+    "NO_FRESH_FULL_REGRESSION",
+    "NO_CURRENT_CONSUMER_E2E",
+    "SCIENCE_UNPROVEN"
+  ],
+  "production_main_modified": false,
+  "candidate_is_production": false,
+  "terminal_state": "MISSION_ACTIVE",
+  "next_acceptance": "A future distinct candidate must pass independent predictive nonregression plus current full suite and E2E before merge to main"
+}

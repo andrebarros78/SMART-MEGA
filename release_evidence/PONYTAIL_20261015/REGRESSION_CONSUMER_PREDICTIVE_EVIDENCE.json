@@ -1,0 +1,173 @@
+{
+  "schema": "SMART_PONYTAIL_FULL_REGRESSION_CONSUMER_PREDICTIVE_1",
+  "date_brasilia": "2026-10-15",
+  "execution_mode": "PONYTAIL_FULL_CONSERVATIVE_RETEST",
+  "repository": "andrebarros78/SMART-MEGA",
+  "baseline_branch": "main",
+  "baseline_sha": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+  "candidate_branch": "ecc/finetuning-shadow-20261015",
+  "candidate_sha_before_report": "74cf82e1bbe7303a4efc4f58017be2a0ca7a5132",
+  "scope": "Do not promote mathematically changed champion without full regression, independent E2E, and outcome proof",
+  "regression": {
+    "requested": "ALL_EXISTING_APPLICABLE_PYTEST",
+    "result": "NOT_EXECUTED",
+    "github_native_ci_reruns": [
+      {
+        "run_id": 38803646341,
+        "workflow": "SMART-MEGA CI",
+        "attempt": 2,
+        "job": "regression",
+        "conclusion": "failure",
+        "steps_observed": 0
+      },
+      {
+        "run_id": 38803646272,
+        "workflow": "GitHub Operator",
+        "attempt": 2,
+        "job": "smoke",
+        "conclusion": "failure",
+        "steps_observed": 0
+      },
+      {
+        "run_id": 38803646256,
+        "workflow": "Repository Integrity",
+        "attempt": 2,
+        "job": "integrity",
+        "conclusion": "failure",
+        "steps_observed": 0
+      }
+    ],
+    "github_rerun_requests_acknowledged": true,
+    "jobs_had_no_executed_steps": true,
+    "job_log_fetch_result": "404 BLOB_NOT_FOUND",
+    "runner_failure_root_cause": "UNDETERMINED; no step logs available",
+    "runner_workflow_defined_for_python": "3.13",
+    "requirements_lock_file": "requirements.lock.txt",
+    "prior_targeted_regression_tests": {
+      "passed": 8,
+      "failed": 0,
+      "location": "previous ECC test run; not full regression"
+    },
+    "F11": {
+      "main": "FAIL",
+      "candidate": "FAIL",
+      "failed_check": [
+        "production_prediction_source_unchanged_from_F10"
+      ],
+      "note": "Same failure in baseline and challenger; not a result of this patch"
+    },
+    "F12": {
+      "main": "FAIL",
+      "candidate": "FAIL",
+      "failed_checks": [
+        "operator_schedule_only_change_reversible_to_F12",
+        "candidate_diff_exactly_explained_by_guard"
+      ],
+      "note": "Same failures in baseline and challenger; no pass certification"
+    }
+  },
+  "consumer_effective_usage": {
+    "method": "Authentic repository frozen contest 3070 inputs and actual smart_primary_card_selector.select_primary_card() recomputed in isolated Linux clone; no regeneration of productive freeze",
+    "sample_path": "runtime/learning_epochs/operator-3070-ee1bc13734e4-20261013T225858165681Z/SMART_3070_PRIMARY_CARD.json",
+    "result": "PASS",
+    "checks": 14,
+    "failed": 0,
+    "challenger_used_for_primary_card": false,
+    "raw_signals": 12,
+    "confirmed": [
+      "signal content hashes",
+      "cutoff 3069 before target 3070",
+      "champion and challenger weight normalization",
+      "numeric score reconstruction from signal weights",
+      "ranking for both heads",
+      "champion top6",
+      "actual selector exact serialized audit",
+      "primary card number set",
+      "target result not consumed",
+      "tampering of champion weight detected"
+    ],
+    "generated_primary_card": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "scope_limitation": "Historical frozen consumer replay; does not replace new-end-to-end generating a candidate freeze/portfolio/SDK solver",
+    "caller_chain_live_source": {
+      "smart_champion_challenger_py": "import freeze_next_research as champion_engine; champion_engine.current_policy(draws,start=start)",
+      "smart_full_process_pipeline_py": "consumes frozen champion and produces selected primary card",
+      "change_reachable_by_regeneration": true,
+      "frozen_historical_artifact_not_modified": true
+    }
+  },
+  "predictive_comparison": {
+    "source": "User-provided Mega-Sena (2).xlsx through contest 3070",
+    "dataset_sha256": "7c8fe0c2f06ebf07118809758454169a755a9e91885cb47624387eeb236e9d81",
+    "method": "Separate historical walk-forward baseline and capped challenger, each frozen prior to target result; exploratory paired bootstrap on per-contest hit difference",
+    "bootstrap_seed": 20261015,
+    "bootstrap_repetitions": 15000,
+    "cap_expert_max": 0.6,
+    "historical_cap_violations_before": 716,
+    "historical_cap_violations_after": 0,
+    "cards_changed": 151,
+    "whole_history": {
+      "contests": 2070,
+      "baseline_hits": 1274,
+      "candidate_hits": 1268,
+      "difference": -6,
+      "paired_bootstrap_95pct_total_hits": [
+        -17,
+        5
+      ],
+      "contains_zero": true
+    },
+    "calibration": {
+      "contests": 1000,
+      "baseline_hits": 607,
+      "candidate_hits": 597,
+      "difference": -10,
+      "paired_bootstrap_95pct_total_hits": [
+        -18,
+        -2
+      ],
+      "contains_zero": false
+    },
+    "validation": {
+      "contests": 351,
+      "baseline_hits": 244,
+      "candidate_hits": 244,
+      "difference": 0,
+      "paired_bootstrap_95pct_total_hits": [
+        -5,
+        6
+      ],
+      "contains_zero": true
+    },
+    "holdout": {
+      "contests": 220,
+      "baseline_hits": 128,
+      "candidate_hits": 131,
+      "difference": 3,
+      "paired_bootstrap_95pct_total_hits": [
+        -2,
+        8
+      ],
+      "contains_zero": true
+    },
+    "scientific_conclusion": "NO_CONFIRMED_PROSPECTIVE_GAIN",
+    "caveat": "Exploratory historical replay and bootstrap are not a new untouched prospective sample; fair lottery hit expectation is 0.6 for each six-number card"
+  },
+  "overall": {
+    "state": "MISSION_ACTIVE",
+    "release_approved": false,
+    "action": "PRESERVE_MAIN_AND_PRODUCTION_FREEZES",
+    "reasons": [
+      "Full pytest suite not run, native Github workflow job startup fails, reason undiagnosed",
+      "F11/F12 current evaluations FAIL on both branches",
+      "Candidate loses 6 hits across full historical replay and no significant independent superiority",
+      "Fresh consumer E2E of new candidate not run"
+    ]
+  }
+}

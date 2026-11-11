@@ -1,0 +1,108 @@
+{
+  "schema": "SMART_PONYTAIL_POST_REDUNDANCY_PRODUCTION_PROMOTION_GATE_1",
+  "date_brasilia": "2026-10-15",
+  "canonical_repo": "andrebarros78/SMART-MEGA",
+  "requested_action": "PROMOTE_POST_REDUNDANCY_EXPERT_CAP_TO_PRODUCTION",
+  "scientific_release_rule": "6/6 must be demonstrably met, no known material result degradation or false performance claim",
+  "source": {
+    "main_sha": "fc13475442f4c1e059eb7ba583fa6bd4ed84a746",
+    "candidate_pr": 51,
+    "candidate_branch": "ecc/finetuning-shadow-20261015",
+    "candidate_source_sha": "ada7b5c4d1df46f8883728f672c94674e273c820",
+    "integrated_tested_source_sha": "6d550758b54be1a3c3482d10ce0a1605ef8eb56f",
+    "frozen_dataset_sha256": "ac1659a4818c67a9509c51015941390ddc3d80f6e4551b4339e298f8147a0436",
+    "last_historical_contest": 3070
+  },
+  "technically_certified": {
+    "full_pytest_unique_tests": 1266,
+    "failed": 0,
+    "errors": 0,
+    "skipped": 0,
+    "certifier": "smart_github_certify.refresh()",
+    "construction_status": "CONSTRUCTION_PROVEN",
+    "consumer_checks": "16/16 historical frozen checks PASS",
+    "f12_and_integrity": "PASS",
+    "reference": "release_evidence/PONYTAIL_20261015/FEDERATED_CONSTRUCTION_CERTIFICATION_20261015.json (validation branch)"
+  },
+  "causal_shadow": {
+    "baseline": {
+      "all_hits": 1274,
+      "calibration_hits": 607,
+      "validation_hits": 244,
+      "holdout_hits": 128,
+      "hard_cap_family_occurrences": 720
+    },
+    "kl_capped_current_candidate": {
+      "all_hits": 1268,
+      "calibration_hits": 597,
+      "validation_hits": 244,
+      "holdout_hits": 131,
+      "hard_cap_family_occurrences": 0,
+      "changed_cards": 151,
+      "full_delta": -6,
+      "holdout_paired_bootstrap95_total_delta": [
+        -2,
+        8
+      ]
+    },
+    "euclidean_l2_capped_alternative": {
+      "all_hits": 1266,
+      "calibration_hits": 597,
+      "validation_hits": 243,
+      "holdout_hits": 131,
+      "hard_cap_family_occurrences": 0,
+      "changed_cards": 156,
+      "full_delta": -8,
+      "holdout_paired_bootstrap95_total_delta": [
+        -2,
+        8
+      ]
+    },
+    "note": "Both projection methods were evaluated on already available historical outcomes, so choosing the apparent best after seeing them would not independently validate prospective benefit.",
+    "baseline_cap_occurrence_metric": "720 is the number of violating family-by-contest observations; earlier 716 counted contests with at least one violation",
+    "uniform_random_expected_hits_per_six_number_ticket": 0.6
+  },
+  "target3071_predraw": {
+    "history_rows": 3070,
+    "baseline_card_order": [
+      11,
+      10,
+      43,
+      27,
+      38,
+      53
+    ],
+    "candidate_card_order": [
+      43,
+      11,
+      10,
+      27,
+      38,
+      53
+    ],
+    "same_unordered_six_numbers": true,
+    "numbers_sorted": [
+      10,
+      11,
+      27,
+      38,
+      43,
+      53
+    ],
+    "baseline_freq_family_max_expert_share": 0.6583086514001786,
+    "candidate_freq_family_max_expert_share": 0.6,
+    "frozen_production_card_preserved": true,
+    "performance_future_not_known": true
+  },
+  "decision": {
+    "engineering_math_cap_correct": "YES",
+    "current_ticket_selection_nonregression": "PASS_FOR_3071_ONLY",
+    "predictive_independent_global_improvement": "NOT_PROVEN",
+    "six_of_six_mission": "NOT_PROVEN",
+    "promotion_to_main": "NOT_AUTHORIZED_BY_SCOPED_SCIENTIFIC_RELEASE_RULE",
+    "main_changed": false,
+    "candidate_merge": false,
+    "next_success_condition": "Prospective, preregistered no-regression evidence across unseen contests and signed new-product consumer certification of the exact proposed production source",
+    "state": "MISSION_ACTIVE"
+  }
+}
