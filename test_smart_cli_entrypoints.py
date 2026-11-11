@@ -12,6 +12,10 @@ import pytest
 
 ROOT = Path(__file__).resolve().parent
 
+def _cli_help_creationflags() -> int:
+    """Give Windows CLI smoke children usable CPU while keeping the 30s bound."""
+    return subprocess.BELOW_NORMAL_PRIORITY_CLASS if sys.platform == "win32" else 0
+
 
 def _cli_files():
     paths = []
@@ -37,6 +41,7 @@ def test_root_cli_help_imports_and_exits_cleanly(path, record_property):
     result = subprocess.run(
         [sys.executable, str(path), "--help"],
         cwd=ROOT, capture_output=True, text=True, timeout=30,
+        creationflags=_cli_help_creationflags(),
         env={**__import__("os").environ, "PYTHONDONTWRITEBYTECODE": "1"},
     )
     evidence = {"command": path.name, "input": "--help",
@@ -45,3 +50,9 @@ def test_root_cli_help_imports_and_exits_cleanly(path, record_property):
     record_property("cli_smoke", json.dumps(evidence, ensure_ascii=False))
     assert result.returncode == 0, json.dumps(evidence, ensure_ascii=False)
     assert "usage:" in result.stdout.lower(), json.dumps(evidence, ensure_ascii=False)
+
+def test_cli_help_subprocess_priority_contract():
+    if sys.platform == "win32":
+        assert _cli_help_creationflags() == subprocess.BELOW_NORMAL_PRIORITY_CLASS
+    else:
+        assert _cli_help_creationflags() == 0
