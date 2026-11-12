@@ -24,6 +24,14 @@ RESEARCH_ONLY = True
 ALL_NUMBERS = tuple(str(i) for i in range(1, 61))
 SOURCE_FILE = Path(__file__).resolve().parent / "smart_frontier_signal_lab.py"
 
+NATIVE_ALIAS_TO_PRODUCER = {
+    "aeon": "frontier_gap_hazard",
+    "regime-detection": "frontier_transition_markov",
+    "networkx": "frontier_cooccurrence_graph",
+    "statsmodels": "frontier_weekday_bayes",
+    "time-series-forecasting": "frontier_recent_lift",
+}
+
 
 def canonical_json(data: Any) -> str:
     return json.dumps(data, sort_keys=True, ensure_ascii=False,
@@ -108,6 +116,8 @@ def make_contribution(
         raise ValueError("invalid aliases")
     if len(set(aliases)) != len(aliases):
         raise ValueError("duplicate aliases")
+    if any(NATIVE_ALIAS_TO_PRODUCER.get(alias) != producer_id for alias in aliases):
+        raise ValueError("source alias is not bound to native producer")
     result = {
         "schema": SIGNAL_SCHEMA,
         "target_contest": target,
@@ -169,6 +179,8 @@ def validate_contribution(value: dict[str, Any], data_path: Path | None = None) 
         raise ValueError("invalid aliases")
     if sorted(set(aliases)) != aliases:
         raise ValueError("aliases must be sorted and unique")
+    if any(NATIVE_ALIAS_TO_PRODUCER.get(alias) != value["producer_id"] for alias in aliases):
+        raise ValueError("source alias does not belong to declared producer")
     if value["quality"] != {"data_coverage": 1.0, "missing_count": 0}:
         raise ValueError("quality contract invalid")
     _check_scores(value["scores_by_number"])
@@ -219,8 +231,10 @@ def produce_contributions(
         name: make_contribution(
             name, row["scores"], data_path=path,
             target_contest=target_contest, epoch_id=epoch_id,
-            source_aliases=("time-series-forecasting",)
-            if name in {"frontier_recent_lift", "frontier_weekday_bayes"} else (),
+            source_aliases=tuple(
+            alias for alias, bound_producer in NATIVE_ALIAS_TO_PRODUCER.items()
+            if bound_producer == name
+        ),
         )
         for name, row in sorted(raw.items())
     }

@@ -30,7 +30,7 @@ def example(tmp_path, *, name=NAMES[0], scores=None):
         scores = {str(i): float(i / 60) for i in range(1, 61)}
     c = make_contribution(name, scores, data_path=dataset,
                           target_contest=3082, epoch_id="REPLAY-3082",
-                          source_aliases=("time-series-forecasting",))
+                          source_aliases=("aeon",))
     return c, dataset
 
 
@@ -66,7 +66,7 @@ def test_contribution_reproducible_and_bound_to_exact_file(tmp_path):
     assert make_contribution(c["producer_id"], c["scores_by_number"],
                              data_path=data, target_contest=3082,
                              epoch_id="REPLAY-3082",
-                             source_aliases=("time-series-forecasting",)) == c
+                             source_aliases=("aeon",)) == c
     data.write_bytes(b"changed")
     with pytest.raises(ValueError, match="dataset"):
         validate_contribution(c, data)
@@ -241,3 +241,30 @@ def test_t21_exclusive_root_denies_external_and_lookalike_paths(monkeypatch):
     monkeypatch.setenv("SMART_CANONICAL_ROOT", "C:/Windows/Temp")
     with pytest.raises(ValueError, match="BLOCKED_INVALID_LOCAL_ROOT"):
         _approved_local(Path("C:/Windows/Temp"))
+
+
+def test_real_frontier_provenance_matches_capability_aliases(root_data):
+    """Every real Frontier output must carry the methodology alias bound in the catalog."""
+    from smart_native_signal_catalog import ALIAS_TO_PRODUCER
+
+    dataset, target = root_data
+    signals = produce_contributions(dataset, target_contest=target,
+                                    epoch_id=f"REPLAY-{target}")
+    for alias, producer_id in sorted(ALIAS_TO_PRODUCER.items()):
+        assert signals[producer_id]["source_skill_aliases"] == [alias], (
+            producer_id, signals[producer_id]["source_skill_aliases"], alias
+        )
+
+
+def test_rehashed_wrong_skill_alias_is_rejected(tmp_path):
+    """A valid hash must not authenticate an alias belonging to another producer."""
+    from smart_native_signal_research import canonical_hash
+
+    contribution, dataset = example(tmp_path)
+    counterfeit = copy.deepcopy(contribution)
+    counterfeit["source_skill_aliases"] = ["statsmodels"]
+    counterfeit["sha256"] = canonical_hash({
+        key: value for key, value in counterfeit.items() if key != "sha256"
+    })
+    with pytest.raises(ValueError, match="alias"):
+        validate_contribution(counterfeit, dataset)

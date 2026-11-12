@@ -6,7 +6,7 @@ from typing import Any
 
 from smart_agent_skill_orchestration import AGENTS
 from smart_skill_adapter_registry import build_registry
-from smart_native_signal_research import SIGNAL_SCHEMA, canonical_hash, hash_document
+from smart_native_signal_research import SIGNAL_SCHEMA, canonical_hash, hash_document, NATIVE_ALIAS_TO_PRODUCER
 
 ROLE_BY_LANE = {
     "data_quality_and_contracts": "QUALITY_GATE",
@@ -19,13 +19,7 @@ ROLE_BY_LANE = {
     "retained_quarantine_no_current_lane": "QUARANTINED",
 }
 # These are methodology aliases to a *native Python function*, not external library invocations.
-ALIAS_TO_PRODUCER = {
-    "aeon": "frontier_gap_hazard",
-    "regime-detection": "frontier_transition_markov",
-    "networkx": "frontier_cooccurrence_graph",
-    "statsmodels": "frontier_weekday_bayes",
-    "time-series-forecasting": "frontier_recent_lift",
-}
+ALIAS_TO_PRODUCER = NATIVE_ALIAS_TO_PRODUCER
 
 
 def classify_capabilities(root: str | Path) -> dict[str, Any]:
