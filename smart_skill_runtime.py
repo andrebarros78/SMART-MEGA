@@ -160,6 +160,19 @@ class SmartSkillRuntime:
         evidence["invocation_sha256"] = sha256_json(evidence)
         return evidence
 
+    def produce_signals(self, *, data_path: str | Path,
+                        target_contest: int, epoch_id: str) -> dict[str, dict[str, Any]]:
+        """Distinct RESEARCH-ONLY producer route; invoke() remains a probe."""
+        from smart_native_signal_research import produce_contributions, validate_contribution
+        path = Path(data_path).resolve()
+        if not path.is_relative_to(self.root):
+            raise ValueError("native research input escapes the checkout")
+        if self.phase == "POST_FREEZE":
+            raise PermissionError("native research signal calculation requires pre-result phase")
+        produced = produce_contributions(path, target_contest=target_contest, epoch_id=epoch_id)
+        for item in produced.values():
+            validate_contribution(item, path)
+        return produced
     def execute_gate(self) -> dict[str, Any]:
         critical_before = self.agent_runtime._critical_hashes()
         rows: list[dict[str, Any]] = []

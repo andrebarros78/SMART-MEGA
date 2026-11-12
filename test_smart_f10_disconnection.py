@@ -33,9 +33,18 @@ def test_f10_canonical_dependencies_and_legacies_are_isolated():
 
 
 def test_f10_persisted_failure_gate_matches_fresh_source():
+    """Keep the original F10 historical report immutable; certify the new PR225 inventory."""
+    import hashlib
     result = fault()
-    saved = json.loads((ROOT / "SMART_F10_DISCONNECTION_GATE.json").read_text(encoding="utf-8"))
-    assert saved == result
+    archive_path = ROOT / "SMART_F10_DISCONNECTION_GATE.json"
+    assert hashlib.sha256(archive_path.read_bytes().replace(bytes([13, 10]), bytes([10]))).hexdigest() == "9c7974267b842987cb6f95d1ebbcd8450ed142c8431866cdc13c4df448675c1f"
+    archived = json.loads(archive_path.read_text(encoding="utf-8"))
+    assert archived["status"] == "PASS" and all(archived["checks"].values())
+    assert archived["canonical_registry_sha256"] != result["canonical_registry_sha256"]
+    assert archived["reachability_inventory_sha256"] != result["reachability_inventory_sha256"]
+    current = json.loads((ROOT / "evidence/native-signals/SMART_NATIVE_F10_DISCONNECTION_CURRENT_20261111.json").read_text(encoding="utf-8"))
+    assert current == result
+    assert current["status"] == "PASS" and all(current["checks"].values())
 
 
 def test_f10_missing_fine_tuning_edge_causes_failure():

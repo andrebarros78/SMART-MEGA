@@ -1,7 +1,7 @@
 {
   "schema": "SMART_CANONICAL_COMPONENT_REGISTRY_V1",
   "source_reachability_schema": "SMART_COMPONENT_REACHABILITY_REGISTRY_V1",
-  "source_reachability_inventory_sha256": "a159b4fa900329bfb9d8f2b8819369b53353948cd06053cadceca51e89099206",
+  "source_reachability_inventory_sha256": "ba014d704ba1d311b3f2f8413cddb7731bbcb71016fa53409eb8071618c936ee",
   "state_model": [
     "ACTIVE",
     "ARCHIVED",
@@ -24,10 +24,10 @@
     "static_registry_does_not_prove_predictive_advantage": true
   },
   "summary": {
-    "component_count": 628,
-    "active": 145,
+    "component_count": 639,
+    "active": 146,
     "shadow": 1,
-    "diagnostic": 282,
+    "diagnostic": 292,
     "validation_only": 23,
     "quarantined": 0,
     "deprecated": 1,
@@ -4161,6 +4161,7 @@
         "smart_causal_shadow_runner",
         "smart_champion_challenger",
         "smart_independent_audit",
+        "smart_native_replay_runner",
         "test_smart_coverage_governance"
       ],
       "entrypoints": [
@@ -4186,7 +4187,7 @@
       "component_id": "modules.semantic_modules",
       "type": "PYTHON_COMPONENT",
       "implementation": "modules/semantic_modules.py",
-      "implementation_sha256": "78e047c72cb1282d5b6e76fd0f294846f2c0f906442be7605d11cc704b3aceaf",
+      "implementation_sha256": "3eecb7b97f2b78e6e65928ca083c043615ebcfd9772aadc913fee6717d5ecb02",
       "role": "DIAGNOSTIC",
       "state": "DIAGNOSTIC",
       "producers": [],
@@ -4604,6 +4605,7 @@
         "smart_agent_runtime",
         "smart_continuity_consolidator",
         "smart_engineering_activation",
+        "smart_native_signal_catalog",
         "smart_product_certification",
         "smart_skill_adapter_registry",
         "smart_skill_runtime",
@@ -4729,6 +4731,7 @@
         "archive.p10_historical_nonregression",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_agent_runtime",
+        "smart_native_signal_research",
         "smart_signal_agent",
         "test_p10_active_guard_hardening",
         "test_smart_bounded_online_learning"
@@ -5223,7 +5226,7 @@
       "component_id": "smart_component_reachability",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_component_reachability.py",
-      "implementation_sha256": "8d47e14bda00866e05270dae76ec88690b37f368f70f73f59a22f391ae2554a1",
+      "implementation_sha256": "d6a4ee01de960d66f779a4af2c83219748a0a4bd9fae463da903aa7f5c3d04a1",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -5960,7 +5963,7 @@
       "component_id": "smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_f12_scientific_successor.py",
-      "implementation_sha256": "217cd621e09c57f3d3da3ae68d02b389537dce4f7c96cc6efc0bdd4e6d965d9a",
+      "implementation_sha256": "99f55ab51a3bf1f7a2c4a8fa1e22521c39c92b6b23f57de06965c70a7242df09",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6257,13 +6260,20 @@
         "SMART_STATE_ARCHIVE.D042_MANUAL_GENERATION_GATE.smart_full_process_pipeline",
         "smart_frontier_adjudicator",
         "smart_full_process_pipeline",
+        "smart_native_replay_runner",
+        "smart_native_research_metrics",
+        "smart_native_signal_research",
         "test_smart_frontier_adjudicator",
         "test_smart_frontier_operator_undated",
         "test_smart_frontier_signal_lab"
       ],
       "entrypoints": [
+        "smart_disconnection_gate",
         "smart_fast_result_ingest",
-        "smart_github_operator"
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
       ],
       "execution_mode": "CANONICAL_STATIC_REACHABLE",
       "decision_effect": "NONE_ESTABLISHED",
@@ -6344,7 +6354,7 @@
       "component_id": "smart_full_process_pipeline",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_full_process_pipeline.py",
-      "implementation_sha256": "75760d2b59767a34f2328f5295de3a8588b447ea864a23700473e5bdddb56916",
+      "implementation_sha256": "5729a09fb87fda705f41076faf0c83c0e4c8c8e21f322417a73fa06ce4e32940",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
@@ -6356,6 +6366,7 @@
         "smart_frontier_signal_lab",
         "smart_learning_epoch_reset",
         "smart_manual_generation_authority",
+        "smart_native_signal_research",
         "smart_operation_lock",
         "smart_operation_recovery",
         "smart_operational_lifecycle",
@@ -7233,6 +7244,135 @@
         "smart_signal_agent",
         "test_smart_meta_governor",
         "test_smart_multi_challengers"
+      ],
+      "entrypoints": [
+        "smart_disconnection_gate",
+        "smart_fast_result_ingest",
+        "smart_github_certify",
+        "smart_github_operator",
+        "smart_repository_integrity",
+        "smart_skill_adapter_registry"
+      ],
+      "execution_mode": "CANONICAL_STATIC_REACHABLE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": true,
+      "production_reachable": true
+    },
+    {
+      "component_id": "smart_native_replay_runner",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_native_replay_runner.py",
+      "implementation_sha256": "8f7205cb8157c621fa1c737c67b40fa5c59423521c3f63ef11c8e339d0507d05",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "freeze_next_research",
+        "smart_frontier_signal_lab",
+        "smart_native_research_metrics",
+        "smart_native_signal_research",
+        "smart_v2_engine"
+      ],
+      "consumers": [
+        "test_smart_native_replay_publication"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_native_research_metrics",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_native_research_metrics.py",
+      "implementation_sha256": "c89235448178461cf4ad4b94d2cebb1c5d0a92a4369071b603717038048f7ff6",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_frontier_signal_lab",
+        "smart_native_signal_research",
+        "smart_rank_score_calibration"
+      ],
+      "consumers": [
+        "smart_native_replay_runner",
+        "test_smart_native_research_metrics"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_native_signal_catalog",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_native_signal_catalog.py",
+      "implementation_sha256": "2e32e31937f8c75a80653c2847468892d149c16f6d0ae9ff9d3708fda796e17c",
+      "role": "DIAGNOSTIC",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_agent_skill_orchestration",
+        "smart_native_signal_research",
+        "smart_skill_adapter_registry"
+      ],
+      "consumers": [
+        "test_smart_native_signal_research"
+      ],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "smart_native_signal_research",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "smart_native_signal_research.py",
+      "implementation_sha256": "e5a947f1a232f83dd6314e98adf4f74f56911ff91f98541df9bdec800d95873f",
+      "role": "PRODUCTION",
+      "state": "ACTIVE",
+      "producers": [
+        "smart_bounded_online_learning",
+        "smart_frontier_signal_lab",
+        "smart_v2_engine"
+      ],
+      "consumers": [
+        "smart_full_process_pipeline",
+        "smart_native_replay_runner",
+        "smart_native_research_metrics",
+        "smart_native_signal_catalog",
+        "smart_skill_runtime",
+        "test_smart_native_adjudication_concurrency",
+        "test_smart_native_adjudication_crash",
+        "test_smart_native_duplicate_vector",
+        "test_smart_native_next_epoch_learning",
+        "test_smart_native_replay_publication",
+        "test_smart_native_research_metrics",
+        "test_smart_native_signal_research"
       ],
       "entrypoints": [
         "smart_disconnection_gate",
@@ -8748,6 +8888,7 @@
         "archive.p06_calibrate_strength",
         "archive.smart_signal_agent.pre_p10_active_guard",
         "smart_agent_runtime",
+        "smart_native_research_metrics",
         "smart_signal_agent",
         "test_smart_learning_input_contracts",
         "test_smart_rank_score_calibration"
@@ -9555,6 +9696,7 @@
       ],
       "consumers": [
         "smart_disconnection_gate",
+        "smart_native_signal_catalog",
         "smart_skill_runtime",
         "test_smart_f07_skill_adapters",
         "test_smart_f10_disconnection"
@@ -9582,13 +9724,14 @@
       "component_id": "smart_skill_runtime",
       "type": "PYTHON_COMPONENT",
       "implementation": "smart_skill_runtime.py",
-      "implementation_sha256": "4332af6d363cac0ee0e60cca82269c8d25dc3e5b1d79634be18b6544e63f0ae1",
+      "implementation_sha256": "6fa88cbdff158049313c7f7aac3e743fc8351e2bea4fc77835caac52a6994463",
       "role": "PRODUCTION",
       "state": "ACTIVE",
       "producers": [
         "smart_agent_runtime",
         "smart_agent_skill_orchestration",
         "smart_canonical_identity",
+        "smart_native_signal_research",
         "smart_skill_adapter_registry"
       ],
       "consumers": [
@@ -10692,6 +10835,8 @@
         "smart_full_process_pipeline",
         "smart_independent_audit",
         "smart_monte_carlo_convergence",
+        "smart_native_replay_runner",
+        "smart_native_signal_research",
         "smart_portfolio_backtest",
         "smart_probability_audit",
         "smart_randomness_cartography",
@@ -10710,6 +10855,7 @@
         "test_smart_contextual_meta_weights",
         "test_smart_coverage_core",
         "test_smart_coverage_governance",
+        "test_smart_native_signal_research",
         "test_smart_rank_score_calibration",
         "test_smart_sequential_prospective_proof",
         "test_smart_signal_agent",
@@ -11752,7 +11898,7 @@
       "component_id": "test_smart_component_reachability",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_component_reachability.py",
-      "implementation_sha256": "98eacf906e910cc84972d131344e15b20f4d3a64bf1d2a9b467b9985d53d4534",
+      "implementation_sha256": "cf462755699fdc3983a5f02b23d579e174685d65ec8086c8638b99f844a7c684",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -12411,7 +12557,7 @@
       "component_id": "test_smart_f08_parallel_components",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f08_parallel_components.py",
-      "implementation_sha256": "6fdd24e6f1f3a955ac148e3bffc7fd454581d61a6a7d7b441b53712b12559aac",
+      "implementation_sha256": "0739e3ba260c3c83f9c362f658dedf3bbf237296d9a801c34a53a4233e5f0f7a",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -12460,7 +12606,7 @@
       "component_id": "test_smart_f10_disconnection",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f10_disconnection.py",
-      "implementation_sha256": "500f7d859737e72c14f2b787630b67afb7be57d0716a01ca7a895ddbfd603a17",
+      "implementation_sha256": "1f611b3564ea9df2bda8891c6e7caa5feb665aeb6422fee63150aa642ffe9eb5",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -12509,7 +12655,7 @@
       "component_id": "test_smart_f12_scientific_successor",
       "type": "PYTHON_COMPONENT",
       "implementation": "test_smart_f12_scientific_successor.py",
-      "implementation_sha256": "4c04f75f252c6d83cbde05328694db2be3a0e62812366f75529a81b22d814740",
+      "implementation_sha256": "99d97c8176e864620fe2b8804686ddc376c93b950b9180ed9104a38077e26162",
       "role": "TEST",
       "state": "DIAGNOSTIC",
       "producers": [
@@ -13701,6 +13847,171 @@
         "smart_multi_challengers",
         "smart_signal_agent",
         "smart_test_helpers"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_adjudication_concurrency",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_adjudication_concurrency.py",
+      "implementation_sha256": "f0a333647cf168e12bcd1ddd240e21265b05ca2e81e961cb2e4a26a851c52a1f",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_adjudication_crash",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_adjudication_crash.py",
+      "implementation_sha256": "36b5f949c62e5f7cec08793deb3f8a9b99909e44714a9189a3faa968b92dc469",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_duplicate_vector",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_duplicate_vector.py",
+      "implementation_sha256": "5427be30e977685f7e4f636dcbb491c18b803bbc74960021425bd49e558db578",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_next_epoch_learning",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_next_epoch_learning.py",
+      "implementation_sha256": "4a4357d6c200d3eb0750b3c9cce7108ae299fd702b0d0366cb748a09bfec9cdd",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_replay_publication",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_replay_publication.py",
+      "implementation_sha256": "84586bdc08f482dd88898666ded2c96337999b0ff0382888710eba237b1381b7",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_replay_runner",
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_research_metrics",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_research_metrics.py",
+      "implementation_sha256": "c7e7ae87fa53c9b6eed609338688897035e0508e8576489f141775a9be48f44c",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_research_metrics",
+        "smart_native_signal_research"
+      ],
+      "consumers": [],
+      "entrypoints": [],
+      "execution_mode": "DIAGNOSTIC_NON_AUTHORITATIVE",
+      "decision_effect": "NONE_ESTABLISHED",
+      "predictive_authority": "NONE",
+      "weight_authority": "NONE",
+      "freeze_authority": "NONE",
+      "external_dependency": "NOT_DECLARED_BY_F05_STATIC_REGISTRY",
+      "evidence_gate": "STATIC_REACHABILITY_AND_STATE_CLASSIFICATION_ONLY",
+      "retirement_status": "NOT_RETIRED",
+      "reachable": false,
+      "production_reachable": false
+    },
+    {
+      "component_id": "test_smart_native_signal_research",
+      "type": "PYTHON_COMPONENT",
+      "implementation": "test_smart_native_signal_research.py",
+      "implementation_sha256": "5d8623b212ad6f81decca2513bd5e0e24d16a27bffca0ce7fe0a41e398b9cdc5",
+      "role": "TEST",
+      "state": "DIAGNOSTIC",
+      "producers": [
+        "smart_native_signal_catalog",
+        "smart_native_signal_research",
+        "smart_v2_engine"
       ],
       "consumers": [],
       "entrypoints": [],
@@ -16943,5 +17254,5 @@
       "production_reachable": false
     }
   ],
-  "registry_sha256": "27cb8e7b077d5273d56d6f52ab0898daadf9d34f9a696e04b71d3be585cabc7c"
+  "registry_sha256": "3e537b050c8b9953d32a1dabee18e538e2f8109a66472b69746333fe367548ab"
 }

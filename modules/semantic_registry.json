@@ -2,9 +2,9 @@
   "schema": "SMART_V6_SEMANTIC_MODULES_V1",
   "repository": "andrebarros78/SMART-MEGA",
   "branch": "main",
-  "source_count": 195,
+  "source_count": 199,
   "module_count": 21,
-  "import_count": 412,
+  "import_count": 427,
   "modules": [
     {
       "id": "M01",
@@ -55,7 +55,7 @@
         {
           "source": "smart_component_reachability.py",
           "relative_path": "smart_component_reachability.py",
-          "sha256": "8aaa94da5aa2598ade89a5bb18a7b8acbd276d3b2c51bedd8bf019fadbc90802",
+          "sha256": "9d1c1941922fb211b9caf53ec2cc7249812e1d1c2f42ae472bc605cd62f999d6",
           "imports": [
             "smart_source_identity.py"
           ],
@@ -1399,7 +1399,7 @@
         {
           "source": "smart_f12_scientific_successor.py",
           "relative_path": "smart_f12_scientific_successor.py",
-          "sha256": "08dc3f48e775799ec867d01f8de15f9db68da0c86c3b55ef309a965a490ebd8a",
+          "sha256": "84d52f7d2fa76358ed9aac283c819eb588665ba4d99ed45239e32e6f0ddbeae9",
           "imports": [
             "smart_f11_predictive_nonregression.py"
           ],
@@ -1521,6 +1521,70 @@
           "public_symbols": [
             "sha256_json",
             "build_multi_challengers"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_native_replay_runner.py",
+          "relative_path": "smart_native_replay_runner.py",
+          "sha256": "d0fb405decc244b3458f3f67fe7ab158f470ff7253d4a41bb25d16ccdeb200ce",
+          "imports": [
+            "freeze_next_research.py",
+            "smart_frontier_signal_lab.py",
+            "smart_native_research_metrics.py",
+            "smart_native_signal_research.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "prepare",
+            "freeze",
+            "adjudicate",
+            "learn_next_epoch",
+            "paired_freeze",
+            "paired_adjudicate",
+            "main"
+          ],
+          "cli_guard": true
+        },
+        {
+          "source": "smart_native_research_metrics.py",
+          "relative_path": "smart_native_research_metrics.py",
+          "sha256": "f56800d06b5b84352a11a09f1a5e9a94571b923d05aaef322d710c13474151c2",
+          "imports": [
+            "smart_frontier_signal_lab.py",
+            "smart_native_signal_research.py",
+            "smart_rank_score_calibration.py"
+          ],
+          "public_symbols": [
+            "rank_comparison",
+            "hard_selection_brier",
+            "build_pre_result_paired_comparison",
+            "adjudicate_paired_comparison"
+          ],
+          "cli_guard": false
+        },
+        {
+          "source": "smart_native_signal_research.py",
+          "relative_path": "smart_native_signal_research.py",
+          "sha256": "465392b11c2134817c340f4254e13fdc96dcc50ef17835292a3e114728978fd0",
+          "imports": [
+            "smart_bounded_online_learning.py",
+            "smart_frontier_signal_lab.py",
+            "smart_v2_engine.py"
+          ],
+          "public_symbols": [
+            "canonical_json",
+            "canonical_hash",
+            "hash_document",
+            "strict_json_loads",
+            "make_contribution",
+            "validate_contribution",
+            "produce_contributions",
+            "build_research_challenger",
+            "ablate_research",
+            "adjudicate_replay",
+            "build_native_pre_freeze_package",
+            "next_epoch_research_weights"
           ],
           "cli_guard": false
         }
@@ -2451,6 +2515,20 @@
           "cli_guard": true
         },
         {
+          "source": "smart_native_signal_catalog.py",
+          "relative_path": "smart_native_signal_catalog.py",
+          "sha256": "a976bf8194b3c49691cbf2ad734abade76f588a4538915d9285d42d030a4c0b5",
+          "imports": [
+            "smart_agent_skill_orchestration.py",
+            "smart_native_signal_research.py",
+            "smart_skill_adapter_registry.py"
+          ],
+          "public_symbols": [
+            "classify_capabilities"
+          ],
+          "cli_guard": false
+        },
+        {
           "source": "smart_skill_adapter_registry.py",
           "relative_path": "smart_skill_adapter_registry.py",
           "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148",
@@ -2468,7 +2546,7 @@
         {
           "source": "smart_skill_runtime.py",
           "relative_path": "smart_skill_runtime.py",
-          "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f",
+          "sha256": "dd38ba7098c3e9d99d944ef80f7907884d01cda0e142613806f7d71d477e5c89",
           "imports": [
             "smart_agent_runtime.py",
             "smart_agent_skill_orchestration.py",
@@ -2487,6 +2565,7 @@
       "depends_on": [
         "M01",
         "M02",
+        "M11",
         "M13"
       ]
     },
@@ -2586,7 +2665,7 @@
         {
           "source": "smart_full_process_pipeline.py",
           "relative_path": "smart_full_process_pipeline.py",
-          "sha256": "d9670e9d25304ea3de0ce95938a64c29eae498d3708549d149f6f3f6ff298ab1",
+          "sha256": "37089100af0ba8258fe4fd2bceec91e150d3a855a063e42869367bd4fb171611",
           "imports": [
             "smart_agent_runtime.py",
             "smart_canonical_identity.py",
@@ -2596,6 +2675,7 @@
             "smart_frontier_signal_lab.py",
             "smart_learning_epoch_reset.py",
             "smart_manual_generation_authority.py",
+            "smart_native_signal_research.py",
             "smart_operation_lock.py",
             "smart_operation_recovery.py",
             "smart_operational_lifecycle.py",
@@ -4420,6 +4500,12 @@
     },
     {
       "source": "smart_full_process_pipeline.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M17",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_full_process_pipeline.py",
       "target": "smart_operation_lock.py",
       "from_module": "M17",
       "to_module": "M19"
@@ -4752,6 +4838,90 @@
       "source": "smart_monte_carlo_convergence.py",
       "target": "smart_v2_engine.py",
       "from_module": "M08",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "freeze_next_research.py",
+      "from_module": "M11",
+      "to_module": "M12"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_native_research_metrics.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_replay_runner.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
+      "to_module": "M08"
+    },
+    {
+      "source": "smart_native_research_metrics.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_research_metrics.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_research_metrics.py",
+      "target": "smart_rank_score_calibration.py",
+      "from_module": "M11",
+      "to_module": "M06"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_agent_skill_orchestration.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_native_signal_research.py",
+      "from_module": "M16",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_signal_catalog.py",
+      "target": "smart_skill_adapter_registry.py",
+      "from_module": "M16",
+      "to_module": "M16"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_bounded_online_learning.py",
+      "from_module": "M11",
+      "to_module": "M10"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_frontier_signal_lab.py",
+      "from_module": "M11",
+      "to_module": "M11"
+    },
+    {
+      "source": "smart_native_signal_research.py",
+      "target": "smart_v2_engine.py",
+      "from_module": "M11",
       "to_module": "M08"
     },
     {

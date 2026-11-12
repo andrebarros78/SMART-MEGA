@@ -78,3 +78,12 @@ def test_f01_external_native_policy_and_linux_runner_are_reachable():
         assert row["role"] == "PRODUCTION"
         assert row["production_reachable"] is True
         assert row["predictive_authority"] == "NOT_ESTABLISHED_BY_STATIC_REACHABILITY"
+
+def test_f01_untracked_local_test_artifacts_do_not_poison_release_registry(tmp_path):
+    from smart_component_reachability import _python_files
+    (tmp_path / "real_source.py").write_text("def f(): pass", encoding="utf-8")
+    scratch = tmp_path / "_local"
+    scratch.mkdir()
+    (scratch / "patching_script.py").write_text("def f(): pass", encoding="utf-8")
+    sources = {p.relative_to(tmp_path).as_posix() for p in _python_files(tmp_path)}
+    assert sources == {"real_source.py"}

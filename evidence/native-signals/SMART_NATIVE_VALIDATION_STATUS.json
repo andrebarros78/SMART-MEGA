@@ -1,0 +1,211 @@
+{
+  "schema": "SMART_NATIVE_VALIDATION_STATUS_V1",
+  "project_id": "SMART-V6-PE-NATIVE-SIGNALS-001",
+  "mission_state": "MISSION_ACTIVE",
+  "source_baseline_sha": "37afffbb8f3334749b06cef9ba5767caadbd7863",
+  "development_branch": "feature/native-signals-g00-g08-20261110",
+  "research_only": true,
+  "production_authority": false,
+  "tests": {
+    "original_focused": {
+      "passed": 35,
+      "failures": 0,
+      "warning_count": 1
+    },
+    "native_after_contract_patch": {
+      "passed": 23,
+      "failures": 0
+    },
+    "next_epoch_temporal": {
+      "passed": 10,
+      "failures": 0,
+      "warning_count": 1
+    },
+    "semantic_registry_repair": {
+      "passed": 9,
+      "failures": 0
+    },
+    "full_attempt_1": {
+      "status": "FAILED",
+      "failed": 1,
+      "passed": 3,
+      "reason": "three new source files absent from semantic module registry",
+      "corrective_action": "owners M11/M16 declared and registry regenerated",
+      "retest_status": "PASS_9"
+    },
+    "full_attempt_2": {
+      "status": "CANCELLED_RESOURCE_PRESSURE",
+      "reason": "PC Casa measured CPU 100%; process stopped to avoid sustained resource saturation",
+      "passed": "NOT_MEASURED",
+      "failed": "NOT_MEASURED"
+    },
+    "semantic_reachability_canonical_reconciliation": {
+      "passed": 21,
+      "failed": 0,
+      "execution_id": "ps-a2c1dd4c2bd44032b511a67f05650062",
+      "exit_code": 0
+    },
+    "full_attempt_short_temp": {
+      "passed": 291,
+      "failed": 1,
+      "warnings": 45,
+      "reason": "stale F01 reachability registry after adding research modules",
+      "execution_id": "ps-a68e15a85ba24835a057133af0033ef6",
+      "exit_code": 1,
+      "corrective_action": "exclude _local disposable scripts; regenerate F01/F05 and semantic registries",
+      "focused_retest_passed": 21
+    },
+    "atomic_os_link_windows": {
+      "independent_races": 12,
+      "passed": true,
+      "execution_id": "ps-90e07ce386f54fbeb29093732e4fcd53",
+      "exit_code": 0
+    },
+    "atomic_adjudication_real_function": {
+      "conflicting_concurrent_races": 8,
+      "passed": true,
+      "execution_id": "ps-3a604b6fca7c4a0a985bcb6124aa4773",
+      "exit_code": 0
+    },
+    "pytest_concurrency_unresolved": {
+      "status": "TIMED_OUT",
+      "passed": "NOT_MEASURED",
+      "attempts": 2,
+      "note": "pytest concurrency commands timed out under PC Casa CPU saturation; direct real-function probe passed"
+    },
+    "paired_metrics_unit": {
+      "passed": 5,
+      "failed": 0,
+      "scope": "research Brier and ranks, synthetic causal pair"
+    },
+    "direct_focused_20261110": {
+      "status": "PASS",
+      "checks": 6,
+      "exit_code": 0,
+      "execution_id": "ps-72c3d63bb6734e4fba6bf6517db4841a",
+      "scope": "synthetic direct integration, duplicate affine signals, atomic conflicts, paired hash"
+    },
+    "t16_child_crash_boundary": {
+      "status": "PASS",
+      "exit_code": 0,
+      "execution_id": "ps-7fc51ba08c274bfab94b01abc3bea403",
+      "pre_link_child_exit": 41,
+      "post_link_child_exit": 42,
+      "scope": "real child process termination at link boundary, real writer recovery; NOT full-service reboot"
+    },
+    "candidate_junit_20261110": {
+      "status": "CANCELLED_RESOURCE_PRESSURE",
+      "execution_id": "ps-4549e5d2b9de4faca2486ae401358ebb",
+      "passed": "NOT_MEASURED",
+      "failed": "NOT_MEASURED",
+      "reason": "CPU 100%, process received little CPU and JUnit was not emitted"
+    },
+    "semantic_f01_f05_rebuild": {
+      "status": "PASS",
+      "exit_code": 0,
+      "execution_id": "ps-13afc38288f94a53959b24219d0d4f41",
+      "semantic_module_count": 21,
+      "semantic_source_count": 199,
+      "semantic_import_count": 427
+    }
+  },
+  "replay": {
+    "historical_cutoffs": [
+      3073,
+      3074,
+      3075,
+      3076,
+      3077,
+      3078,
+      3079,
+      3080
+    ],
+    "freeze_count": 8,
+    "adjudication_count": 8,
+    "verified_from_project_workbook": true,
+    "independently_verified_against_caixa": false,
+    "challenger_total_hits": 7,
+    "numeric_score_effect_per_cut_max_approx": 0.1,
+    "next_epoch_effect_3075_to_3076": 0.0017813444085778285,
+    "predictive_advantage_proven": false,
+    "paired_summary": {
+      "schema": "SMART_NATIVE_PAIRED_REPLAY_SUMMARY_V1",
+      "count": 8,
+      "champion_hits": 5,
+      "challenger_hits": 7,
+      "champion_mean_binary_brier": 0.17916666666666667,
+      "challenger_mean_binary_brier": 0.17083333333333334,
+      "sha256": "d6ce47b2ee5f75fec377edc7cca13513235c65b78dde6d7b1e98ba6a4d70e10e",
+      "independently_verified_against_caixa": false,
+      "predictive_advantage_proven": false
+    }
+  },
+  "critical_file_sha256_comparison": {
+    "files_checked": 5,
+    "equal": 5,
+    "scope": "same byte hashes for selected Champion/portfolio/state/ledger/data files; no consumer E2E"
+  },
+  "open_acceptance_gaps": [
+    "Fresh full regression PASS on final published commit",
+    "T20 reproducibility and tests from final published commit",
+    "Owner-governed PR #225 main integration and final source authority",
+    "Verify report integrity and operational acceptance from final clean checkout"
+  ],
+  "status": "NOT_APPROVED_6_OF_6_NOT_PROVEN",
+  "git_reconciliation": {
+    "current_reconciled_head_before_atomic_patch": "8dc9553402dbebe7e72a3c5bf9bd7bd9e8616bf3",
+    "remote_branch_parent": "3710343a53aa1050b8cdb3858270e4970d93a038",
+    "local_fix_parent": "295f5ced571054e68366c864b150bd72dcb1d232",
+    "tree_preserved": true,
+    "force_push": false
+  },
+  "scientific_advantage_program": {
+    "status": "UNPROVEN_SEPARATE_PROGRAM",
+    "required_for_technical_6_of_6": false,
+    "source": "SMART_MEGA_V6_PROJETO_EXECUTIVO_ARQUITETURA_PREDITIVA_NATIVA_20261109_CORRIGIDO.md"
+  },
+  "technical_acceptance_contract": "A1_A6_ONLY",
+  "checkpoint_brasilia": "2026-11-10T11:47:01.267507-03:00",
+  "latest_provenance_correction": {
+    "parent_commit": "b406b293c174c51fa7d369b14656e6b110904d28",
+    "branch": "fix/native-frontier-alias-provenance-20261111",
+    "provenance_red": {
+      "cases": 2,
+      "failed_before_patch": 2,
+      "verified": true
+    },
+    "focused_green": {
+      "passed": 2,
+      "failed": 0
+    },
+    "native_family": {
+      "passed": 41,
+      "failed": 0
+    },
+    "canonical_registry_checks": {
+      "passed": 3,
+      "failed": 0
+    },
+    "causal_replay": {
+      "historical_cutoffs": 8,
+      "phase_exit_codes": [
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "source_workbook_sha256": "06c97a6253eefc4e68c7148eca4ad4fda277042cd4a6dd8ea6ef8532c29c001f",
+      "numeric_predictions_unchanged_across_8": true,
+      "technical_proof_sha256": "8b3771b330c55e304bf1aab969b474158e2635c9791f72325ec244d7124d5940",
+      "paired_proof_sha256": "d6ce47b2ee5f75fec377edc7cca13513235c65b78dde6d7b1e98ba6a4d70e10e",
+      "independent_caixa_verification": false,
+      "prospective_advantage_proven": false
+    },
+    "windows_full_suite": "NOT_GREEN_30S_CLI_TIMEOUT",
+    "new_crossproof_test": "NOT_RUN_CPU_GUARD_77_PERCENT",
+    "github_publication": "NOT_VERIFIED",
+    "checkpoint_brasilia": "2026-11-12T01:56:22.671462-03:00"
+  }
+}

@@ -89,6 +89,20 @@
       "cli_guard": true
     },
     {
+      "source": "smart_native_signal_catalog.py",
+      "relative_path": "smart_native_signal_catalog.py",
+      "sha256": "a976bf8194b3c49691cbf2ad734abade76f588a4538915d9285d42d030a4c0b5",
+      "imports": [
+        "smart_agent_skill_orchestration.py",
+        "smart_native_signal_research.py",
+        "smart_skill_adapter_registry.py"
+      ],
+      "public_symbols": [
+        "classify_capabilities"
+      ],
+      "cli_guard": false
+    },
+    {
       "source": "smart_skill_adapter_registry.py",
       "relative_path": "smart_skill_adapter_registry.py",
       "sha256": "45d87480b979f398ebf338a2c73b83651b93157846170e18dbfc3ab0f9588148",
@@ -106,7 +120,7 @@
     {
       "source": "smart_skill_runtime.py",
       "relative_path": "smart_skill_runtime.py",
-      "sha256": "c5d393abab43a0dc770fb999f3f72b40e81a17a963c698d70cc276ddddb0c97f",
+      "sha256": "dd38ba7098c3e9d99d944ef80f7907884d01cda0e142613806f7d71d477e5c89",
       "imports": [
         "smart_agent_runtime.py",
         "smart_agent_skill_orchestration.py",
@@ -125,6 +139,7 @@
   "depends_on": [
     "M01",
     "M02",
+    "M11",
     "M13"
   ]
 }

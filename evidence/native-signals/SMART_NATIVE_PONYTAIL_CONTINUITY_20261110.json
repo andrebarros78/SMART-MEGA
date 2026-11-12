@@ -1,0 +1,68 @@
+{
+  "schema": "SMART_NATIVE_PONYTAIL_CONTINUITY_V1",
+  "project_id": "SMART-V6-PE-NATIVE-SIGNALS-001",
+  "state": "MISSION_ACTIVE",
+  "technical_six_of_six_proven": false,
+  "canonical_root": "C:\\New Projet\\SMART-MEGA-V6-CANONICAL",
+  "development_worktree": "C:\\New Projet\\SMART-MEGA-V6-CANONICAL\\_worktrees\\native-signals-G00-G08",
+  "development_branch": "feature/native-signals-g00-g08-20261110",
+  "local_head_before_new_commit": "d082b68183b2db72743457144706850a34702b49",
+  "last_published_head": "71cfec5de7f20813f1060fd848be061e74fd81e7",
+  "pull_request": 225,
+  "evidence": {
+    "paired_replay": {
+      "status": "PASS",
+      "count": 8,
+      "champion_hits": 5,
+      "challenger_hits": 7,
+      "sha256": "f03ecb871f5185fc69570707040f1f981107cb658c08c9a57164ba9fe92f398c",
+      "independent_caixa_verification": false
+    },
+    "direct_integration": {
+      "status": "PASS",
+      "execution_id": "ps-72c3d63bb6734e4fba6bf6517db4841a",
+      "checks": 6
+    },
+    "crash_boundary_recovery": {
+      "status": "PASS",
+      "execution_id": "ps-7fc51ba08c274bfab94b01abc3bea403",
+      "before_link_exit": 41,
+      "after_link_exit": 42
+    },
+    "semantic_registry": {
+      "status": "PASS",
+      "source_count": 199,
+      "import_count": 427,
+      "module_count": 21
+    },
+    "f01_and_f05_rebuild": {
+      "status": "PASS",
+      "execution_id": "ps-13afc38288f94a53959b24219d0d4f41"
+    },
+    "targeted_junit": {
+      "status": "CANCELLED_RESOURCE_PRESSURE",
+      "execution_id": "ps-4549e5d2b9de4faca2486ae401358ebb",
+      "passed": "NOT_MEASURED"
+    },
+    "paired_metric_unit": {
+      "status": "PASS",
+      "passed": 5,
+      "failed": 0
+    }
+  },
+  "controls": {
+    "main_untouched": true,
+    "production_authority": false,
+    "experiment_only": true,
+    "llm_disabled": true,
+    "github_actions_unused": true
+  },
+  "open_items": [
+    "Fresh full regression PASS on final published commit",
+    "T20 reproducibility and tests from final published commit",
+    "Owner-governed PR #225 main integration and final source authority",
+    "Verify report integrity and operational acceptance from final clean checkout"
+  ],
+  "note": "T16 is verified at the atomic-publication boundary with a real child process. Not a full-service restart claim.",
+  "last_updated_brasilia": "2026-11-10T11:47:01.267507-03:00"
+}
