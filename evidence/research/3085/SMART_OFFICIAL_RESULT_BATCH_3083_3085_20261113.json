@@ -1,0 +1,75 @@
+{
+  "schema": "SMART_OFFICIAL_RESULT_BATCH_1",
+  "authority": "CAIXA_LOTERIAS_OFFICIAL_API",
+  "capture_transport": "DERIVED_FROM_PREVIOUSLY_OBSERVED_CAIXA_API_INGEST_RECEIPTS__NOT_INDEPENDENT_TRANSPORT_ATTESTED",
+  "raw_api_independently_verified": false,
+  "official_transport_attested": false,
+  "scientific_certification_authorized": false,
+  "predictive_weight_change_authorized": false,
+  "retrieved_at_utc": "2026-11-13T10:06:28.473174+00:00",
+  "raw_capture_evidence": [
+    {
+      "target": 3083,
+      "ingest_receipt": "SMART_3085_CAIXA_INGEST_3083.json",
+      "ingest_receipt_logical_sha256": "29182594cc6155016f6a1ca2047abd93987a65f0aadb74e044a20f39aa8da078"
+    },
+    {
+      "target": 3084,
+      "ingest_receipt": "SMART_3085_CAIXA_INGEST_3084.json",
+      "ingest_receipt_logical_sha256": "a7747cebb6a74be054d60f860ae4f2ceb62549a5673d07aacaaf5c5d77bdffa4"
+    },
+    {
+      "target": 3085,
+      "ingest_receipt": "SMART_3085_CAIXA_INGEST_3085.json",
+      "ingest_receipt_logical_sha256": "535922550b69f5c890ee90aae9c5f9ad88db9539c665b3bf074cabba39996715"
+    }
+  ],
+  "results": [
+    {
+      "numero": 3083,
+      "dataApuracao": "08/11/2026",
+      "listaDezenas": [
+        "22",
+        "25",
+        "29",
+        "37",
+        "46",
+        "54"
+      ],
+      "acumulado": false,
+      "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3083",
+      "source": "CAIXA_CONTEST_API"
+    },
+    {
+      "numero": 3084,
+      "dataApuracao": "10/11/2026",
+      "listaDezenas": [
+        "06",
+        "14",
+        "22",
+        "30",
+        "31",
+        "37"
+      ],
+      "acumulado": false,
+      "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3084",
+      "source": "CAIXA_CONTEST_API"
+    },
+    {
+      "numero": 3085,
+      "dataApuracao": "12/11/2026",
+      "listaDezenas": [
+        "10",
+        "27",
+        "29",
+        "37",
+        "39",
+        "59"
+      ],
+      "acumulado": false,
+      "endpoint": "https://servicebus2.caixa.gov.br/portaldeloterias/api/megasena/3085",
+      "source": "CAIXA_CONTEST_API"
+    }
+  ],
+  "sha256": "5a051ec454ad09e6050016babd7e30289763bc6c0c8d27c0d09e372e3b22d441"
+}
